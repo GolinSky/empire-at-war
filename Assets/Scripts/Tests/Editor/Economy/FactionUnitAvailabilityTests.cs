@@ -62,8 +62,12 @@ namespace EmpireAtWar.Tests.Editor
                     IsSecondStationSelected = secondStation
                 };
                 view.SetModel(model);
-                view.SetResearch(new FactionResearchModel(roster));
-                view.AssignPresenter(new UnlockedPresenter(CreatePresenter(model)));
+                var research = new FactionResearchModel(roster);
+                view.SetResearch(research);
+                view.AssignPresenter(new UnlockedPresenter(CreatePresenter(model))
+                {
+                    LevelGatedData = roster.ResearchLines[ResearchType.IncreasedProduction].Tiers[1].FactionData
+                });
                 view.SetData(roster);
                 view.SetUnitRequestFactory(new UnitRequestFactory());
                 view.SetSecondStation(new SecondStationLevelModel { IsBuilt = true }, levels);
@@ -144,6 +148,32 @@ namespace EmpireAtWar.Tests.Editor
                     Assert.That(card.gameObject.activeSelf, Is.True, card.Request.Id);
                 }
                 Assert.That(structures.All(card => card.gameObject.activeSelf), Is.True);
+
+                var menus = hud.ProductionMenus;
+                var serializedMenus = new SerializedObject(menus);
+                var researchButton = (Button)serializedMenus.FindProperty("researchButton").objectReferenceValue;
+                var structuresButton = (Button)serializedMenus.FindProperty("structuresButton").objectReferenceValue;
+                GameObject researchMarker = researchButton.transform.Find("ReadyIndicator").gameObject;
+                GameObject structuresMarker = structuresButton.transform.Find("ReadyIndicator").gameObject;
+                Assert.That(researchMarker.activeSelf && structuresMarker.activeSelf, Is.True);
+
+                menus.Initialize();
+                menus.SetAvailable(true);
+                researchButton.onClick.Invoke();
+                Assert.That(researchMarker.activeSelf, Is.False);
+                Assert.That(structuresMarker.activeSelf, Is.True);
+                structuresButton.onClick.Invoke();
+                Assert.That(structuresMarker.activeSelf, Is.False);
+                menus.Close();
+                view.RefreshAvailability(10000f, false);
+                Assert.That(researchMarker.activeSelf || structuresMarker.activeSelf, Is.False);
+
+                research.Complete(ResearchType.IncreasedProduction);
+                Assert.That(researchMarker.activeSelf, Is.False, "The next tier is still locked.");
+                model.CompleteLevelUpgrade();
+                Assert.That(researchMarker.activeSelf, Is.True, "The level upgrade unlocks a new tier in the same line.");
+                Assert.That(structuresMarker.activeSelf, Is.False);
+                menus.Dispose();
             }
             finally
             {
@@ -399,8 +429,11 @@ namespace EmpireAtWar.Tests.Editor
 
             public UnlockedPresenter(FactionUiController stationPresenter) => _stationPresenter = stationPresenter;
 
+            public FactionData LevelGatedData { get; set; }
+
             public bool TryPurchaseUnit(UnitRequest unitRequest) => true;
-            public bool IsUnitAvailable(FactionData data) => true;
+            public bool IsUnitAvailable(FactionData data) =>
+                data != LevelGatedData || _stationPresenter.IsUnitAvailable(data);
             public bool IsUnlockedAtCurrentLevel(FactionData data) => false;
             public bool IsCarrier(UnitRequest request) => false;
             public bool IsScout(UnitRequest request) => false;

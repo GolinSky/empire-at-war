@@ -1,4 +1,7 @@
 using System;
+using System.Collections.Generic;
+using EmpireAtWar.Components.Ui;
+using EmpireAtWar.Controllers.Factions;
 using TMPro;
 using UnityEngine;
 using UnityEngine.UI;
@@ -9,11 +12,16 @@ namespace EmpireAtWar.Entities.Faction.Ui
     {
         [SerializeField] private Button researchButton;
         [SerializeField] private Button structuresButton;
+        [SerializeField] private HudButtonAttention researchAttention;
+        [SerializeField] private HudButtonAttention structuresAttention;
         [SerializeField] private Button closeButton;
         [SerializeField] private RectTransform popup;
         [SerializeField] private RectTransform researchCards;
         [SerializeField] private RectTransform structureCards;
         [SerializeField] private TMP_Text title;
+
+        private readonly MenuAttention _research = new();
+        private readonly MenuAttention _structures = new();
 
         public RectTransform ResearchCards => researchCards;
         public RectTransform StructureCards => structureCards;
@@ -34,6 +42,8 @@ namespace EmpireAtWar.Entities.Faction.Ui
             structuresButton.onClick.RemoveListener(ToggleStructures);
             closeButton.onClick.RemoveListener(Close);
             Close();
+            _research.Reset(researchAttention);
+            _structures.Reset(structuresAttention);
         }
 
         public void SetPopupParent(Transform parent) => popup.SetParent(parent, false);
@@ -43,6 +53,20 @@ namespace EmpireAtWar.Entities.Faction.Ui
             researchButton.gameObject.SetActive(available);
             structuresButton.gameObject.SetActive(available);
             if (!available) Close();
+        }
+
+        public void RefreshAvailableCards(IReadOnlyList<FactionUnitUi> cards)
+        {
+            for (int i = 0; i < cards.Count; i++)
+            {
+                FactionUnitUi card = cards[i];
+                if (!card.gameObject.activeSelf) continue;
+                if (card.transform.parent == researchCards) _research.Add(card.Request);
+                else if (card.transform.parent == structureCards) _structures.Add(card.Request);
+            }
+
+            _research.Refresh(researchAttention, IsOpen && researchCards.gameObject.activeSelf);
+            _structures.Refresh(structuresAttention, IsOpen && structureCards.gameObject.activeSelf);
         }
 
         public void DismissOutside(Vector2 position)
@@ -74,6 +98,8 @@ namespace EmpireAtWar.Entities.Faction.Ui
             title.text = research ? "Research" : "Structures";
             researchCards.gameObject.SetActive(research);
             structureCards.gameObject.SetActive(!research);
+            if (research) _research.Acknowledge(researchAttention);
+            else _structures.Acknowledge(structuresAttention);
             popup.SetAsLastSibling();
             if (IsOpen) return;
             popup.gameObject.SetActive(true);
@@ -84,6 +110,43 @@ namespace EmpireAtWar.Entities.Faction.Ui
         {
             if (popup != null && !popup.IsChildOf(transform))
                 Destroy(popup.gameObject);
+        }
+
+        private sealed class MenuAttention
+        {
+            private HashSet<UnitRequest> _visible = new();
+            private HashSet<UnitRequest> _next = new();
+            private readonly HashSet<UnitRequest> _unread = new();
+
+            public void Add(UnitRequest request) => _next.Add(request);
+
+            public void Refresh(HudButtonAttention attention, bool open)
+            {
+                if (!open)
+                {
+                    foreach (UnitRequest request in _next)
+                    {
+                        if (!_visible.Contains(request)) _unread.Add(request);
+                    }
+                }
+
+                _unread.IntersectWith(_next);
+                (_visible, _next) = (_next, _visible);
+                _next.Clear();
+                attention.SetReady(_unread.Count > 0, pulse: true);
+            }
+
+            public void Acknowledge(HudButtonAttention attention)
+            {
+                _unread.Clear();
+                attention.SetReady(false, pulse: true);
+            }
+
+            public void Reset(HudButtonAttention attention)
+            {
+                _visible.Clear();
+                Acknowledge(attention);
+            }
         }
     }
 }

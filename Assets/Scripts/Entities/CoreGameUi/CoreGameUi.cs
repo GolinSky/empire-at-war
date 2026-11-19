@@ -1,4 +1,5 @@
 using System;
+using EmpireAtWar.Components.Ui;
 using EmpireAtWar.Components.Ui.Tooltip;
 using EmpireAtWar.Controllers.Game;
 using EmpireAtWar.Entities.Game;
@@ -22,7 +23,7 @@ namespace EmpireAtWar.Entities.CoreGameUi
         [SerializeField] private TooltipHoverView tooltipHover;
         [SerializeField] private Button speedUpButton;
         [SerializeField] private Button reinforcementButton;
-        [SerializeField] private GameObject reinforcementReadyIndicator;
+        [SerializeField] private HudButtonAttention reinforcementAttention;
         [SerializeField] private Button videoModeButton;
         [SerializeField] private Image timeImage;
         [SerializeField] private Image speedUpImage;
@@ -93,7 +94,7 @@ namespace EmpireAtWar.Entities.CoreGameUi
 
         public void SetReinforcementReady(bool ready)
         {
-            reinforcementReadyIndicator.SetActive(ready);
+            reinforcementAttention.SetReady(ready, pulse: true);
         }
 
         public void SetHudStatus(string faction, int level, int selectionCount, bool battleEnded)

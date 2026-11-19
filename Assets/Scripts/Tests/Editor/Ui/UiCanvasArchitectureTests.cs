@@ -1,4 +1,5 @@
 using EmpireAtWar.Ui.Base;
+using EmpireAtWar.Components.Ui;
 using EmpireAtWar.Controllers.Game;
 using EmpireAtWar.Entities.Fade;
 using EmpireAtWar.Entities.CaptureSites;
@@ -412,12 +413,16 @@ namespace EmpireAtWar.Tests.Editor
                 Button research = (Button)serializedMenus.FindProperty("researchButton").objectReferenceValue;
                 Button structures = (Button)serializedMenus.FindProperty("structuresButton").objectReferenceValue;
                 Button close = (Button)serializedMenus.FindProperty("closeButton").objectReferenceValue;
+                var orbitalView = new SerializedObject((MonoBehaviour)ui.SuperWeaponsView);
+                AssertLauncherAttention(serializedUi, "reinforcementButton", "reinforcementAttention");
+                AssertLauncherAttention(orbitalView, "orbitalButton", "orbitalAttention");
+                AssertLauncherAttention(serializedMenus, "researchButton", "researchAttention");
+                AssertLauncherAttention(serializedMenus, "structuresButton", "structuresAttention");
                 foreach (Button launcher in new[]
                          {
                              (Button)serializedUi.FindProperty("reinforcementButton").objectReferenceValue,
                              (Button)serializedUi.FindProperty("videoModeButton").objectReferenceValue,
-                             (Button)new SerializedObject((MonoBehaviour)ui.SuperWeaponsView)
-                                 .FindProperty("orbitalButton").objectReferenceValue,
+                             (Button)orbitalView.FindProperty("orbitalButton").objectReferenceValue,
                              research, structures
                          })
                 {
@@ -454,6 +459,19 @@ namespace EmpireAtWar.Tests.Editor
             {
                 PrefabUtility.UnloadPrefabContents(root);
             }
+        }
+
+        private static void AssertLauncherAttention(SerializedObject owner, string buttonField, string attentionField)
+        {
+            var button = (Button)owner.FindProperty(buttonField).objectReferenceValue;
+            var attention = (HudButtonAttention)owner.FindProperty(attentionField).objectReferenceValue;
+            Assert.That(attention, Is.Not.Null, attentionField);
+            Assert.That(attention.gameObject, Is.SameAs(button.gameObject));
+            var serialized = new SerializedObject(attention);
+            Assert.That(serialized.FindProperty("button").objectReferenceValue, Is.SameAs(button));
+            var marker = (GameObject)serialized.FindProperty("readyIndicator").objectReferenceValue;
+            Assert.That(marker.transform.parent, Is.SameAs(button.transform));
+            Assert.That(marker.activeSelf, Is.False);
         }
 
         [Test]

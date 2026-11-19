@@ -189,6 +189,7 @@ namespace EmpireAtWar.Entities.Faction.Ui
                 unit.RenderAvailability(unlocked,
                     credits >= unit.FactionData.Price, queued, battleEnded, atLimit);
             }
+            if (_isInitialized) _productionMenus.RefreshAvailableCards(_factionUnitsUi);
         }
 
         public override void Show()
@@ -398,6 +399,7 @@ namespace EmpireAtWar.Entities.Faction.Ui
             MarkTutorialButton(TutorialAnchorId.FleetResearchButton, fleetResearch);
             MarkTutorialButton(TutorialAnchorId.NewShipButton, newShip);
             MarkTutorialButton(TutorialAnchorId.MiningFacilityButton, miningFacility);
+            if (_isInitialized) _productionMenus.RefreshAvailableCards(_factionUnitsUi);
         }
 
         // The tutorial's new unit: a carrier first, otherwise the most expensive (strongest) new ship.

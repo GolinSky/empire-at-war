@@ -1,3 +1,4 @@
+using EmpireAtWar.Components.Ui;
 using EmpireAtWar.Components.Ui.Tooltip;
 using System;
 using System.Collections.Generic;
@@ -13,7 +14,7 @@ namespace EmpireAtWar.Entities.SuperWeapons.Ui
         [SerializeField] private Button orbitalButton;
         [SerializeField] private Button closeButton;
         [SerializeField] private GameObject popup;
-        [SerializeField] private GameObject readyIndicator;
+        [SerializeField] private HudButtonAttention orbitalAttention;
         [SerializeField] private GameObject targetingIndicator;
         private readonly HashSet<SuperWeaponType> _readyWeapons = new();
 
@@ -32,7 +33,7 @@ namespace EmpireAtWar.Entities.SuperWeapons.Ui
             if (!available)
             {
                 SetOpen(false);
-                readyIndicator.SetActive(false);
+                orbitalAttention.SetReady(false, pulse: false);
                 targetingIndicator.SetActive(false);
             }
         }
@@ -68,7 +69,7 @@ namespace EmpireAtWar.Entities.SuperWeapons.Ui
         {
             if (ready) _readyWeapons.Add(type);
             else _readyWeapons.Remove(type);
-            readyIndicator.SetActive(_readyWeapons.Count > 0);
+            orbitalAttention.SetReady(_readyWeapons.Count > 0, pulse: false);
         }
 
         public void SetRow(SuperWeaponType type, SuperWeaponState state, bool canAct, string detail, float progress)
