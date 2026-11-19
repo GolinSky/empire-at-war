@@ -286,7 +286,7 @@ MonoBehaviour:
         canCancel: 0
         isToggle: 0
         requiresEnemyTarget: 1
-        range: 500
+        range: 750
         aiUse: 2
         autoPower: 3
         settings:
