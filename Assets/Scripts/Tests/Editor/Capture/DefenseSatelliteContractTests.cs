@@ -1,3 +1,4 @@
+using System.Collections.Generic;
 using System.Linq;
 using EmpireAtWar.Components.AttackComponent;
 using EmpireAtWar.Components.Combat;
@@ -8,7 +9,9 @@ using EmpireAtWar.Components.Ship.Health;
 using EmpireAtWar.Entities.CaptureSites;
 using EmpireAtWar.Entities.DefendPlatform;
 using EmpireAtWar.Entities.Map;
+using EmpireAtWar.Entities.Tooltip;
 using EmpireAtWar.Models.Health;
+using EmpireAtWar.Services.Tooltip;
 using NUnit.Framework;
 using UnityEditor;
 using UnityEngine;
@@ -156,6 +159,28 @@ namespace EmpireAtWar.Tests.Editor
             Assert.That(turret.Health, Is.Zero);
             Assert.That(model.Hull, Is.EqualTo(data.ComponentData.Hull));
             Assert.That(model.Shields, Is.EqualTo(data.ComponentData.Shields));
+        }
+
+        [TestCase(DefendPlatformType.QuadLaserSatellite, "Quad Laser Satellite")]
+        [TestCase(DefendPlatformType.TurbolaserSatellite, "Turbolaser Satellite")]
+        [TestCase(DefendPlatformType.IonSatellite, "Ion Satellite")]
+        [TestCase(DefendPlatformType.MassDriverSatellite, "Mass Driver Satellite")]
+        [TestCase(DefendPlatformType.MissileSatellite, "Missile Satellite")]
+        [TestCase(DefendPlatformType.BattleAsteroid, "Battle Asteroid")]
+        public void DefendPlatformTooltipFacade_ShowsPlatformTypeAsTitle(DefendPlatformType platform, string expectedTitle)
+        {
+            var catalog = AssetDatabase.LoadAssetAtPath<DefendPlatformCatalog>(
+                "Assets/Settings/Data/Factions/Shared/DefendPlatformCatalog.asset");
+            var icons = AssetDatabase.LoadAssetAtPath<TooltipIconData>(
+                "Assets/Settings/Data/Tooltip/TooltipIconData.asset");
+            var facade = new DefendPlatformTooltipFacade(catalog, platform);
+
+            TooltipContent content = facade.Build(new List<TooltipStat>(), "Owner: Player · Structure");
+
+            Assert.That(content.Title, Is.EqualTo(expectedTitle));
+            Assert.That(content.Status, Is.EqualTo("Owner: Player · Structure"));
+            if (platform != DefendPlatformType.BattleAsteroid)
+                Assert.That(icons.Resolve(content.IconKey), Is.Not.Null);
         }
 
         private static DefendPlatformData LoadData(DefendPlatformType platform)

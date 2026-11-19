@@ -62,7 +62,7 @@ MonoBehaviour:
         role: Stationary mining-point defense
         iconKey: 4f34eb7cb55a9c24abc10d378515d62e:21300000
         isHero: 0
-        <Name>k__BackingField: QuadLaser Satellite
+        <Name>k__BackingField: Quad Laser Satellite
         <MaxCount>k__BackingField: 0
         <AvailableLevel>k__BackingField: 1
         <Price>k__BackingField: 300
@@ -113,7 +113,7 @@ MonoBehaviour:
         role: Stationary mining-point defense
         iconKey: 26f532f229fa8e64a8505e23c65bd5cf:21300000
         isHero: 0
-        <Name>k__BackingField: MassDriver Satellite
+        <Name>k__BackingField: Mass Driver Satellite
         <MaxCount>k__BackingField: 0
         <AvailableLevel>k__BackingField: 1
         <Price>k__BackingField: 1600

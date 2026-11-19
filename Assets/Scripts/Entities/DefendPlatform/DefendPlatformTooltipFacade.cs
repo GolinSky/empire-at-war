@@ -16,7 +16,9 @@ namespace EmpireAtWar.Entities.DefendPlatform
         }
 
         public TooltipContent Build(List<TooltipStat> stats, string status) =>
-            new TooltipContent(title: "Defensive platform", description: "Defends the surrounding area.", stats: stats,
-                status: status, populationCost: _type == DefendPlatformType.BattleAsteroid ? 0 : _catalog.Get(_type).UnitCapacity);
+            _type == DefendPlatformType.BattleAsteroid
+                ? new TooltipContent(title: "Battle Asteroid", description: "Defends the surrounding area.", stats: stats,
+                    status: status)
+                : UnitTooltipContent.Build(_catalog.Get(_type), stats, status: status);
     }
 }
