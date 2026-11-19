@@ -3,7 +3,7 @@ namespace EmpireAtWar.Entities.StructureStatusIcons
     public enum StructureStatusIconState
     {
         Captured,
-        Built,
-        Destroyed
+        Destroyed,
+        BuildAvailable
     }
 }

@@ -252,7 +252,7 @@ tags:
 - Position regressions must assert rendered screen coordinates on a real canvas across camera changes, not only active flags and clocks. Fix/source/compilation evidence → [[Done/Bugs/Structure_Status_Icons_Projection]]; tests and live acceptance pending.
 
 - Structure status fade clocks: 0.2 s in / 0.3 s out; world transient stays within 2 s, minimap retains full 3 s opaque hold. Dismiss snapshots current alpha and is idempotent; baseline/map teardown clears immediately.
-- State replacement crossfades use three prewarmed outgoing graphics per display, disabled after fading. Advance from the shared presenter; no per-icon Update/tween or event-time view allocation. Gameplay rules → [[GameDesign/Capture_And_Structures#Structure status icons]].
+- State replacement crossfades use one prewarmed outgoing graphic per display, disabled after fading. Advance from the shared presenter; no per-icon Update/tween or event-time view allocation. Gameplay rules → [[GameDesign/Capture_And_Structures#Structure status icons]].
 
 ### Capture probes and decision cadence · 2026-11-16
 

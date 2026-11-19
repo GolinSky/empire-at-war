@@ -455,7 +455,7 @@ created: "2026-10-29\r"
 
 ## Structure Status Icons
 
-- [ ] [[Done/Features/Structure_Status_Icons_Plan]] — Check satellite purchase dismisses captured on world/minimap, failed purchase keeps it, completion shows built, and all statuses fade smoothly including replacements. Check online/save-load constructing satellites do not regain reminders. World: 0.2 s in / 0.3 s out inside 2 s; minimap: 0.2 s in + 3 s hold + 0.3 s out.
+- [ ] [[Done/Features/Structure_Status_Icons_Plan]] — Check Captured and Destroyed in the HUD and minimap, and Build available over the site. Capture confirmation lasts 2 s of displayed world time, then locally owned empty sites show Build available over the site. Successful purchase dismisses it, failed purchase keeps it, and completion leaves the overlay clear. Check online/save-load restores only empty-site reminders and capture/destruction minimap fades remain independent.
 
 - [ ] [[Done/Features/Structure_Status_Icons_Plan]] — Run authored Capture/Ui/Networking regressions and affected BattleInput/EnemyAi/GameFlow interface fixtures when explicitly authorized; local test execution was disabled. Final purchase/fade correction compiled successfully on 2026-11-16.
 - [ ] [[Done/Features/Structure_Status_Icons_Plan]] — Profile matched idle/many-reminder/camera-pan/destruction workloads; record source/active/visible counts, CPU and allocations. Zero-allocation target and CPU budget are unmeasured.

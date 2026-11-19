@@ -2,12 +2,19 @@
 category: Features
 status: done
 created: 2026-11-16
-updated: 2026-11-16
+updated: 2026-11-19
 design_state: implemented
 completed: 2026-11-16
 acceptance: pending-user
 ---
 # Structure Status Icons
+
+## Solid Emblems update · 2026-11-19
+
+- Three shared sprites replace the structure glyph and badge combinations. Gold shield/check → Captured. Red octagon/cross → Destroyed. Blue pad/plus → Build available.
+- Capture/destruction use 2 s of displayed HUD time and independent minimap fades. After capture, locally owned empty mining/satellite sites show Build available in the HUD until purchase or ownership loss. Relays show capture only. Construction completion clears the overlay.
+- Save/online baselines restore only local owned, empty site reminders. Current rules and open gates → [[GameDesign/Capture_And_Structures#Structure status icons]], [[TODOs/User_Acceptance_Queue]]. Earlier decisions below record the original implementation.
+- Game and Editor assemblies compiled. Unity imported and resolved all three sprites, reserialized `MiniMapData.asset`, and deleted the two unused textures. Isolated Unity UI preview verified at 48 and 26 px. Ui fixtures updated and reviewed. Tests not run.
 
 ## Goal
 

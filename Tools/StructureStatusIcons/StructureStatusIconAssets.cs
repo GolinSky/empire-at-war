@@ -11,7 +11,7 @@ using UnityEngine.UI;
 public static class StructureStatusIconAssets
 {
     private const string DATA_PATH = "Assets/Settings/Data/Models/MiniMap/MiniMapData.asset";
-    private const string WHITE_ICONS = "Assets/ThirdParty/SCI-FI UI Pack Pro/Common/White Icons/Textures/Icons1/";
+    private const string ICON_FOLDER = "Assets/Art/Textures/Ui/Icons/MiniMap/";
     private const int PREVIEW_LAYER = 31;
 
     public static string Bind()
@@ -19,25 +19,22 @@ public static class StructureStatusIconAssets
         var data = AssetDatabase.LoadAssetAtPath<MiniMapData>(DATA_PATH);
         var serialized = new SerializedObject(data);
         SerializedProperty artwork = serialized.FindProperty("structureStatusIcons");
-        string[] fields = { "mining", "satellite", "relay", "captured", "built", "destroyed" };
-        string[] paths = {
-            "Assets/Art/Textures/Ui/Icons/MiniMap/MiningFacilityWhite.png",
-            "Assets/Art/Textures/Ui/Icons/MiniMap/DefendPlatformWhite.png",
-            WHITE_ICONS + "ICON_Wifi.png",
-            "Assets/Art/Textures/Ui/TacticalMarkers/Capture.png",
-            WHITE_ICONS + "Icon_Right.png",
-            WHITE_ICONS + "Icon_Wrong.png"
+        (string Field, string FileName)[] bindings = {
+            ("captured", "StructureCaptured.png"),
+            ("destroyed", "StructureDestroyed.png"),
+            ("buildAvailable", "StructureBuildAvailable.png")
         };
-        for (int i = 0; i < fields.Length; i++)
+        foreach ((string field, string fileName) in bindings)
         {
-            Sprite sprite = AssetDatabase.LoadAssetAtPath<Sprite>(paths[i]);
-            if (sprite == null) throw new InvalidOperationException("Missing sprite: " + paths[i]);
-            artwork.FindPropertyRelative(fields[i]).objectReferenceValue = sprite;
+            string path = ICON_FOLDER + fileName;
+            Sprite sprite = AssetDatabase.LoadAssetAtPath<Sprite>(path);
+            if (sprite == null) throw new InvalidOperationException("Missing sprite: " + path);
+            artwork.FindPropertyRelative(field).objectReferenceValue = sprite;
         }
         serialized.ApplyModifiedPropertiesWithoutUndo();
         EditorUtility.SetDirty(data);
         AssetDatabase.SaveAssets();
-        return "Saved six shared structure-status sprite bindings.";
+        return "Saved three shared structure status sprite bindings.";
     }
 
     public static string Preview()
@@ -72,29 +69,27 @@ public static class StructureStatusIconAssets
             var root = (RectTransform)canvasObject.transform;
             root.sizeDelta = new Vector2(1040, 560);
             Label(root, "STRUCTURE STATUS ICONS", -470, 230, 700, 28, FontStyle.Bold);
-            Label(root, "Shared artwork in world and minimap • actual Unity UI render", -470, 192, 950, 16);
-            string[] rows = { "Mining / Battle Asteroid", "Satellite pad", "Relay" };
-            string[] columns = { "CAPTURED", "BUILT", "DESTROYED" };
-            for (int c = 0; c < 3; c++) Label(root, columns[c], -130 + c * 220, 135, 200, 17, FontStyle.Bold);
-            for (int r = 0; r < 3; r++)
+            Label(root, "Artwork rendered by the Unity UI", -470, 192, 950, 16);
+            Label(root, "Battle HUD · 48 px", -470, 45, 260, 18);
+            Label(root, "Minimap · 26 px", -470, -65, 260, 18);
+            (string Label, StructureStatusIconState State)[] columns = {
+                ("CAPTURED", StructureStatusIconState.Captured),
+                ("DESTROYED", StructureStatusIconState.Destroyed),
+                ("BUILD AVAILABLE", StructureStatusIconState.BuildAvailable)
+            };
+            for (int column = 0; column < columns.Length; column++)
             {
-                float y = 65 - r * 115;
-                Label(root, rows[r], -470, y, 320, 18);
-                for (int c = 0; c < 3; c++)
-                {
-                    if (r == 2 && c > 0) continue;
-                    float x = -80 + c * 220;
-                    var kind = (StructureStatusIconKind)r;
-                    var state = (StructureStatusIconState)c;
-                    StructureStatusIconView world = StructureStatusIconView.Create(root, 64f, PREVIEW_LAYER);
-                    world.SetAppearance(artwork, kind, state);
-                    world.Display(true, 1f, new Vector2(x, y));
-                    StructureStatusIconView mini = StructureStatusIconView.Create(root, 26f, PREVIEW_LAYER);
-                    mini.SetAppearance(artwork, kind, state);
-                    mini.Display(true, 1f, new Vector2(x + 70f, y - 12f));
-                }
+                (string label, StructureStatusIconState state) = columns[column];
+                float x = -100 + column * 220;
+                Label(root, label, x - 45, 125, 200, 17, FontStyle.Bold);
+                StructureStatusIconView world = StructureStatusIconView.Create(root, 48f, PREVIEW_LAYER);
+                world.SetAppearance(artwork, state);
+                world.Display(true, 1f, new Vector2(x, 45));
+                StructureStatusIconView minimap = StructureStatusIconView.Create(root, 26f, PREVIEW_LAYER);
+                minimap.SetAppearance(artwork, state);
+                minimap.Display(true, 1f, new Vector2(x, -65));
             }
-            Label(root, "Enlarged world artwork + 26 px minimap sample. Relay has capture only.", -470, -235, 950, 16);
+            Label(root, "The Build Available reminder appears in the battle HUD.", -470, -165, 950, 16);
             Canvas.ForceUpdateCanvases();
             camera.Render();
             RenderTexture.active = texture;

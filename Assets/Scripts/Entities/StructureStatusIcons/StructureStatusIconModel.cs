@@ -30,12 +30,12 @@ namespace EmpireAtWar.Entities.StructureStatusIcons
         // Advance/Clear swap-remove expired entries; iterate backwards when advancing a frame.
         public int GetActiveSource(int activeIndex) => _activeSources[activeIndex];
 
-        public void Show(int sourceIndex, StructureStatusIconKind kind, StructureStatusIconState state)
+        public void Show(int sourceIndex, StructureStatusIconState state, bool showBuildReminder = false)
         {
             _records[sourceIndex] = new StructureStatusIconRecord
             {
-                Kind = kind,
                 State = state,
+                ShowBuildReminder = showBuildReminder,
                 WorldActive = true,
                 MinimapActive = true,
                 WorldSecondsLeft = WORLD_DISPLAY_SECONDS
@@ -43,14 +43,12 @@ namespace EmpireAtWar.Entities.StructureStatusIcons
             Activate(sourceIndex);
         }
 
-        public void RestoreCaptured(int sourceIndex, StructureStatusIconKind kind)
+        public void RestoreBuildAvailable(int sourceIndex)
         {
             _records[sourceIndex] = new StructureStatusIconRecord
             {
-                Kind = kind,
-                State = StructureStatusIconState.Captured,
-                WorldActive = true,
-                WorldSecondsLeft = WORLD_DISPLAY_SECONDS
+                State = StructureStatusIconState.BuildAvailable,
+                WorldActive = true
             };
             Activate(sourceIndex);
         }
@@ -90,6 +88,13 @@ namespace EmpireAtWar.Entities.StructureStatusIcons
                 {
                     record.WorldSecondsLeft = Math.Max(0f, record.WorldSecondsLeft - seconds);
                     record.WorldActive = record.WorldSecondsLeft > 0f;
+                    if (!record.WorldActive && record.ShowBuildReminder && !record.IsDismissing)
+                    {
+                        record.State = StructureStatusIconState.BuildAvailable;
+                        record.WorldActive = true;
+                        record.WorldFadeInSeconds = 0f;
+                        record.ShowBuildReminder = false;
+                    }
                 }
             }
             if (record.MinimapActive && minimapDisplayed)

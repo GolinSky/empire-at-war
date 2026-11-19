@@ -68,13 +68,9 @@ namespace EmpireAtWar.Entities.StructureStatusIcons
         {
             int index = _indices[site];
             Model.Clear(index);
-            if (_localPlayer.IsLocal(site.Owner) && !site.IsOperational &&
-                !(site.Kind == CaptureSiteKind.Satellite && site.State == CaptureSiteState.Constructing))
-                Model.RestoreCaptured(index, Kind(site));
+            if (_localPlayer.IsLocal(site.Owner) && site.State == CaptureSiteState.Owned)
+                Model.RestoreBuildAvailable(index);
         }
-
-        private static StructureStatusIconKind Kind(ICaptureSite site) =>
-            site.Kind == CaptureSiteKind.Mining ? StructureStatusIconKind.Mining : StructureStatusIconKind.Satellite;
 
         private void OnSiteChanged(CaptureSiteStatusChange change)
         {
@@ -87,24 +83,19 @@ namespace EmpireAtWar.Entities.StructureStatusIcons
                     Restore(change.Site);
                     break;
                 case CaptureSiteStatusTransition.Captured:
-                case CaptureSiteStatusTransition.Built:
-                    if (_localPlayer.IsLocal(change.Owner) &&
-                        !(change.Transition == CaptureSiteStatusTransition.Captured &&
-                          change.Site.Kind == CaptureSiteKind.Satellite && change.Site.State == CaptureSiteState.Constructing))
-                        Model.Show(index, Kind(change.Site), change.Transition == CaptureSiteStatusTransition.Captured
-                            ? StructureStatusIconState.Captured : StructureStatusIconState.Built);
+                    if (_localPlayer.IsLocal(change.Owner) && change.Site.State == CaptureSiteState.Owned)
+                        Model.Show(index, StructureStatusIconState.Captured, showBuildReminder: true);
                     else Model.Dismiss(index);
                     break;
+                case CaptureSiteStatusTransition.Built:
                 case CaptureSiteStatusTransition.ConstructionStarted:
-                    if (change.Site.Kind == CaptureSiteKind.Satellite) Model.Dismiss(index);
+                case CaptureSiteStatusTransition.OwnershipLost:
+                    Model.Dismiss(index);
                     break;
                 case CaptureSiteStatusTransition.Destroyed:
                     if (_localPlayer.IsLocal(change.PreviousOwner))
-                        Model.Show(index, Kind(change.Site), StructureStatusIconState.Destroyed);
+                        Model.Show(index, StructureStatusIconState.Destroyed);
                     else Model.Dismiss(index);
-                    break;
-                case CaptureSiteStatusTransition.OwnershipLost:
-                    Model.Dismiss(index);
                     break;
             }
         }
@@ -115,7 +106,7 @@ namespace EmpireAtWar.Entities.StructureStatusIcons
             _revisions[index]++;
             _positions[index] = change.Position;
             if (_localPlayer.IsLocal(change.Owner))
-                Model.Show(index, StructureStatusIconKind.Relay, StructureStatusIconState.Captured);
+                Model.Show(index, StructureStatusIconState.Captured);
             else Model.Dismiss(index);
         }
 

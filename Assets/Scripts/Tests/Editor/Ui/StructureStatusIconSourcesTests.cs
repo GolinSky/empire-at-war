@@ -15,21 +15,24 @@ namespace EmpireAtWar.Tests.Editor
     public sealed class StructureStatusIconSourcesTests
     {
         [Test]
-        public void StartupReconstructsOnlyLocalNonOperationalRemindersAcrossAllSources()
+        public void StartupReconstructsOnlyLocalOwnedEmptySitesAcrossAllSources()
         {
             var first = new SiteEvents(new Site { Owner = TestPlayers.Human });
             var second = new SiteEvents(
+                new Site { Owner = TestPlayers.Human, Kind = CaptureSiteKind.Satellite },
                 new Site { Owner = TestPlayers.Human, State = CaptureSiteState.Constructing },
                 new Site { Owner = TestPlayers.Human, State = CaptureSiteState.Operational },
                 new Site { Owner = TestPlayers.Enemy });
             var relays = new RelayEvents();
             StructureStatusIconSources sources = Create(relays, first, second);
             sources.Initialize();
-            Assert.That(sources.Count, Is.EqualTo(4));
+            Assert.That(sources.Count, Is.EqualTo(5));
             Assert.That(sources.Model.ActiveCount, Is.EqualTo(2));
             Assert.That(sources.Model.Get(0).WorldActive, Is.True);
             Assert.That(sources.Model.Get(1).WorldActive, Is.True);
-            for (int i = 0; i < 4; i++) Assert.That(sources.Model.Get(i).MinimapActive, Is.False);
+            Assert.That(sources.Model.Get(0).State, Is.EqualTo(StructureStatusIconState.BuildAvailable));
+            Assert.That(sources.Model.Get(1).State, Is.EqualTo(StructureStatusIconState.BuildAvailable));
+            for (int i = 0; i < 5; i++) Assert.That(sources.Model.Get(i).MinimapActive, Is.False);
             sources.LateDispose();
         }
 
@@ -47,7 +50,6 @@ namespace EmpireAtWar.Tests.Editor
             Assert.That(sources.GetRevision(0), Is.GreaterThan(revision),
                 "A fresh transition cannot inherit the previous icon's displayed frame interval.");
             Assert.That(sources.Model.Get(0).State, Is.EqualTo(StructureStatusIconState.Destroyed));
-            Assert.That(sources.Model.Get(0).Kind, Is.EqualTo(StructureStatusIconKind.Satellite));
             Assert.That(sources.Model.Get(0).MinimapActive, Is.True);
             Assert.That(sources.GetPosition(0), Is.EqualTo(position));
             events.Emit(site, TestPlayers.Enemy, CaptureSiteStatusTransition.Destroyed, position);
@@ -57,7 +59,7 @@ namespace EmpireAtWar.Tests.Editor
         }
 
         [Test]
-        public void OwnershipLossClearsWithoutDestroyedAndBaselineDoesNotReplayBuilt()
+        public void OwnershipLossClearsWithoutDestroyedAndBaselineSkipsOccupiedSites()
         {
             var site = new Site { Owner = TestPlayers.Human };
             var events = new SiteEvents(site);
@@ -75,8 +77,7 @@ namespace EmpireAtWar.Tests.Editor
             Assert.That(sources.Model.ActiveCount, Is.Zero);
             site.State = CaptureSiteState.Constructing;
             events.Emit(site, TestPlayers.Human, CaptureSiteStatusTransition.Baseline, Vector3.zero);
-            Assert.That(sources.Model.Get(0).WorldActive, Is.True);
-            Assert.That(sources.Model.Get(0).MinimapActive, Is.False);
+            Assert.That(sources.Model.ActiveCount, Is.Zero);
             sources.LateDispose();
         }
 
@@ -88,7 +89,7 @@ namespace EmpireAtWar.Tests.Editor
             var relays = new RelayEvents();
             StructureStatusIconSources sources = Create(relays, first, second);
             sources.Initialize();
-            sources.Model.Show(0, StructureStatusIconKind.Mining, StructureStatusIconState.Destroyed);
+            sources.Model.Show(0, StructureStatusIconState.Destroyed);
             int version = sources.Version;
             first.Replace(new Site { Owner = TestPlayers.Enemy });
             Assert.That(sources.Version, Is.GreaterThan(version));
@@ -111,46 +112,47 @@ namespace EmpireAtWar.Tests.Editor
             sources.Initialize();
             Assert.That(sources.GetPosition(0), Is.EqualTo(site.FacilityPosition));
             Assert.That(sources.Model.Get(0).WorldActive, Is.True);
+            Assert.That(sources.Model.Get(0).State, Is.EqualTo(StructureStatusIconState.BuildAvailable));
             Assert.That(sources.Model.Get(0).MinimapActive, Is.False);
             events.Emit(site, PlayerId.None, CaptureSiteStatusTransition.Captured, site.FacilityPosition);
             Assert.That(sources.GetPosition(0), Is.EqualTo(site.FacilityPosition));
+            Assert.That(sources.Model.Get(0).State, Is.EqualTo(StructureStatusIconState.Captured));
             var replacement = new Site { Owner = TestPlayers.Human, Kind = kind,
                 State = CaptureSiteState.Constructing, Center = new Vector3(-8f, 2f, 4f),
                 FacilityPosition = new Vector3(-8f, 20f, 4f) };
             events.Replace(replacement);
             Assert.That(sources.GetPosition(0), Is.EqualTo(replacement.FacilityPosition));
-            Assert.That(sources.Model.Get(0).WorldActive, Is.EqualTo(kind == CaptureSiteKind.Mining));
-            Assert.That(sources.Model.Get(0).MinimapActive, Is.False);
+            Assert.That(sources.Model.ActiveCount, Is.Zero);
             sources.LateDispose();
         }
 
         [TestCase(CaptureSiteKind.Mining)]
         [TestCase(CaptureSiteKind.Satellite)]
-        public void ConstructionPurchaseDismissesOnlySatelliteReminderAndCompletionStillShowsBuilt(CaptureSiteKind kind)
+        public void ConstructionPurchaseDismissesReminderAndCompletionLeavesItHidden(CaptureSiteKind kind)
         {
             var site = new Site { Owner = TestPlayers.Human, Kind = kind };
             var events = new SiteEvents(site);
             StructureStatusIconSources sources = Create(new RelayEvents(), events);
             sources.Initialize();
             events.Emit(site, PlayerId.None, CaptureSiteStatusTransition.Captured, Vector3.zero);
-            sources.Model.Advance(0, 1f, true, true);
+            sources.Model.Advance(0, 2f, true, true);
+            Assert.That(sources.Model.Get(0).State, Is.EqualTo(StructureStatusIconState.BuildAvailable));
+            sources.Model.Advance(0, 0.25f, true, true);
             site.State = CaptureSiteState.Constructing;
             events.Emit(site, TestPlayers.Human, CaptureSiteStatusTransition.ConstructionStarted, Vector3.zero);
             sources.Model.Advance(0, 1f, true, true);
-            Assert.That(sources.Model.Get(0).WorldActive, Is.EqualTo(kind == CaptureSiteKind.Mining));
-            Assert.That(sources.Model.Get(0).MinimapActive, Is.EqualTo(kind == CaptureSiteKind.Mining));
+            Assert.That(sources.Model.ActiveCount, Is.Zero);
             site.State = CaptureSiteState.Operational;
             events.Emit(site, TestPlayers.Human, CaptureSiteStatusTransition.Built, Vector3.zero);
-            Assert.That(sources.Model.Get(0).State, Is.EqualTo(StructureStatusIconState.Built));
-            Assert.That(sources.Model.Get(0).WorldActive, Is.True);
-            Assert.That(sources.Model.Get(0).MinimapActive, Is.True);
+            Assert.That(sources.Model.ActiveCount, Is.Zero);
             sources.LateDispose();
         }
 
-        [Test]
-        public void ConstructingSatelliteBaselineAndCoalescedCaptureNeverRestorePurchaseReminder()
+        [TestCase(CaptureSiteKind.Mining)]
+        [TestCase(CaptureSiteKind.Satellite)]
+        public void ConstructingBaselineAndCoalescedCaptureNeverRestorePurchaseReminder(CaptureSiteKind kind)
         {
-            var site = new Site { Owner = TestPlayers.Human, Kind = CaptureSiteKind.Satellite,
+            var site = new Site { Owner = TestPlayers.Human, Kind = kind,
                 State = CaptureSiteState.Constructing };
             var events = new SiteEvents(site);
             StructureStatusIconSources sources = Create(new RelayEvents(), events);
@@ -159,6 +161,23 @@ namespace EmpireAtWar.Tests.Editor
             events.Emit(site, PlayerId.None, CaptureSiteStatusTransition.Captured, Vector3.zero);
             Assert.That(sources.Model.ActiveCount, Is.Zero);
             events.Emit(site, TestPlayers.Human, CaptureSiteStatusTransition.Baseline, Vector3.zero);
+            Assert.That(sources.Model.ActiveCount, Is.Zero);
+            sources.LateDispose();
+        }
+
+        [Test]
+        public void CoalescedCompletionDismissesAnExistingBuildReminder()
+        {
+            var site = new Site { Owner = TestPlayers.Human };
+            var events = new SiteEvents(site);
+            StructureStatusIconSources sources = Create(new RelayEvents(), events);
+            sources.Initialize();
+            sources.Model.Advance(0, 0.2f, true, false);
+            Assert.That(sources.Model.Get(0).WorldAlpha, Is.EqualTo(1f));
+
+            site.State = CaptureSiteState.Operational;
+            events.Emit(site, TestPlayers.Human, CaptureSiteStatusTransition.Built, Vector3.zero);
+            sources.Model.Advance(0, 0.31f, true, true);
             Assert.That(sources.Model.ActiveCount, Is.Zero);
             sources.LateDispose();
         }

@@ -95,7 +95,7 @@ namespace EmpireAtWar.Tests.Editor
         [Test]
         public void NewTransitionDoesNotConsumeThePreviousDisplayedInterval()
         {
-            ShowAt(450f, 325f);
+            ShowAt(450f, 325f, CaptureSiteStatusTransition.Captured);
             Advance(20f);
             AssertClocks(2f, 0f);
             Advance(0.75f);
@@ -338,8 +338,31 @@ namespace EmpireAtWar.Tests.Editor
             AssertClocks(2f, 0f);
         }
 
-        private void ShowAt(float x, float y, CaptureSiteStatusTransition transition = CaptureSiteStatusTransition.Built,
+        private void ShowAt(float x, float y, CaptureSiteStatusTransition transition = CaptureSiteStatusTransition.Destroyed,
             float depth = 10f) => _events.Emit(_camera.ScreenToWorldPoint(new Vector3(x, y - 42f, depth)), transition);
+
+        [Test]
+        public void BuildReminderReplacesWorldCaptureWithoutChangingTheMinimapSprite()
+        {
+            StructureStatusIconArtwork artwork = AssetDatabase.LoadAssetAtPath<MiniMapData>(
+                "Assets/Settings/Data/Models/MiniMap/MiniMapData.asset").StructureStatusIcons;
+            Sprite captured = artwork.GetSprite(StructureStatusIconState.Captured);
+            ShowAt(450f, 325f, CaptureSiteStatusTransition.Captured);
+            Advance(0f);
+            Assert.That(Icon("_world").sprite, Is.SameAs(captured));
+            Assert.That(Icon("_map").sprite, Is.SameAs(captured));
+
+            Advance(2f);
+            Assert.That(Icon("_world").sprite, Is.SameAs(artwork.GetSprite(StructureStatusIconState.BuildAvailable)));
+            AssertViewAlpha("_world", 0f);
+            Assert.That(Icon("_map").sprite, Is.SameAs(captured));
+            AssertViewAlpha("_map", 1f);
+
+            Advance(1.6f);
+            Assert.That(View("_world").Root.gameObject.activeSelf, Is.True);
+            AssertViewAlpha("_world", 1f);
+            Assert.That(View("_map").Root.gameObject.activeSelf, Is.False);
+        }
 
         [Test]
         public void PresenterAppliesFadeAlphaToWorldAndMinimapGraphics()
@@ -363,12 +386,10 @@ namespace EmpireAtWar.Tests.Editor
             Assert.That(View("_map").Root.gameObject.activeSelf, Is.False);
         }
 
-        private void AssertViewAlpha(string field, float expected)
-        {
-            foreach (string graphic in new[] { "_glyph", "_badge", "_background" })
-                Assert.That(GetField<Image>(View(field), graphic).color.a,
-                    Is.EqualTo(expected).Within(0.00001f));
-        }
+        private Image Icon(string field) => View(field).Root.Find("Icon").GetComponent<Image>();
+
+        private void AssertViewAlpha(string field, float expected) =>
+            Assert.That(Icon(field).color.a, Is.EqualTo(expected).Within(0.00001f));
 
         private void Advance(float seconds) => typeof(StructureStatusIconPresenter)
             .GetMethod("Advance", PRIVATE_INSTANCE).Invoke(_presenter, new object[] { seconds });

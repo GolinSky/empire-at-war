@@ -88,17 +88,16 @@ namespace EmpireAtWar.Entities.StructureStatusIcons
                     _anchors[source] = anchor;
                     Project(source, anchor);
                 }
-                StructureStatusIconRecord record = model.Get(source);
-                _world[source].SetAppearance(_data.StructureStatusIcons, record.Kind, record.State);
-                _map[source].SetAppearance(_data.StructureStatusIcons, record.Kind, record.State);
                 model.Advance(source, seconds,
                     sameTransition && _worldDisplayed[source] && worldDisplayed && _inside[source],
                     sameTransition && _mapDisplayed[source] && mapDisplayed);
-                record = model.Get(source);
+                StructureStatusIconRecord record = model.Get(source);
                 _worldDisplayed[source] = worldDisplayed && record.WorldActive && _inside[source];
                 _mapDisplayed[source] = mapDisplayed && record.MinimapActive;
                 _revisions[source] = _sources.GetRevision(source);
                 float fadeSeconds = sameTransition ? seconds : 0f;
+                if (_worldDisplayed[source]) _world[source].SetAppearance(_data.StructureStatusIcons, record.State);
+                if (_mapDisplayed[source]) _map[source].SetAppearance(_data.StructureStatusIcons, record.MinimapState);
                 _world[source].Display(_worldDisplayed[source], record.WorldAlpha, _projected[source], fadeSeconds);
                 _map[source].Display(_mapDisplayed[source], record.MinimapAlpha, view.GetPosition(anchor), fadeSeconds);
                 _previous[_previousCount++] = source;
