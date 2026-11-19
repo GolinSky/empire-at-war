@@ -702,11 +702,16 @@ namespace EmpireAtWar.Tests.Editor
             Assert.That(defended.Invoke(builder, new object[] { Vector3.zero, 0f }), Is.EqualTo(expectedDefended));
         }
 
-        [TestCase(0f, false)]
-        [TestCase(3000f, true)]
-        public void RaidSelection_RejectsUndefendedTargetBehindStrongerRouteForce(float hostileZ, bool expectedRaid)
+        // Hostiles on the way no longer block a raid (the encounter is a local fight or a pull-back);
+        // a visible armed hostile structure covering the target does.
+        [TestCase(0f, false, true)]
+        [TestCase(3000f, false, true)]
+        [TestCase(3000f, true, false)]
+        public void RaidSelection_RouteForceNoLongerBlocksButAStaticDefenseDoes(float hostileZ, bool guardedByStructure,
+            bool expectedRaid)
         {
             GameObject mineView = new GameObject("Mine");
+            GameObject turretView = new GameObject("Satellite");
             try
             {
                 mineView.transform.position = Vector3.right * 3000f;
@@ -716,6 +721,12 @@ namespace EmpireAtWar.Tests.Editor
                 var mine = new FakeEntity(new FakeHealthModel(mineView.transform), TestPlayers.Human, 2)
                     { IsUnit = false, IsMine = true };
                 locator.AddEntity(mine);
+                if (guardedByStructure)
+                {
+                    turretView.transform.position = Vector3.right * 3200f;
+                    locator.AddEntity(new FakeEntity(new FakeHealthModel(turretView.transform), TestPlayers.Human, 3)
+                        { IsUnit = false, WeaponRange = 500f });
+                }
                 var catalog = new UnitCombatProfileCatalog(null, null, null, null);
                 float[] damage = Enumerable.Repeat(10f, ForceComposition.ClassSlots).ToArray();
                 var profile = new UnitCombatProfile(ShipClass.Capital, 100f, 0f,
@@ -724,7 +735,7 @@ namespace EmpireAtWar.Tests.Editor
                     .GetField("_profiles", BindingFlags.Instance | BindingFlags.NonPublic).GetValue(catalog);
                 profiles.Add(UnitTypeId.Ship(ShipType.Venator), profile);
                 var registry = new TeamIntelRegistry();
-                // Three hostiles midway: beyond the target's defense radius, but on or off the raid route.
+                // Three hostiles midway: beyond the target's defense radius, on or off the raid route.
                 for (int i = 0; i < 3; i++)
                     registry.Get(owner.Team).Report(new HostileSighting(10 + i, UnitTypeId.Ship(ShipType.Venator),
                         TestPlayers.Human, new FormationPoint(1500f, hostileZ), 100f, 0f, 1f, 0f));
@@ -740,7 +751,11 @@ namespace EmpireAtWar.Tests.Editor
 
                 Assert.That(raid, expectedRaid ? Is.SameAs(mine) : Is.Null);
             }
-            finally { UnityEngine.Object.DestroyImmediate(mineView); }
+            finally
+            {
+                UnityEngine.Object.DestroyImmediate(mineView);
+                UnityEngine.Object.DestroyImmediate(turretView);
+            }
         }
 
 [TestCase(false)]

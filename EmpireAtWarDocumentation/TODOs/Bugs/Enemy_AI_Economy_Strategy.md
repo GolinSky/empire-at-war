@@ -117,7 +117,7 @@ Files: `BattleTelemetry/Loading_20261119_173121_ai.csv`, `_ai_orders.csv`, `_squ
 - [x] P7 dead code: `GetOwnCaptureStrength`, `CAPTURE_STRENGTH_MARGIN`, `_routeHostileShipCount`, `_checkingExpansion`; architecture note updated.
 - Deviations: zone score = existing best-site score − missing-force cost (keeps today's Go ranking); structure DPS is a flat estimate (60/class, no weapon profile in the catalog); unseen-fleet share for never-scouted zones not built.
 - Tests: added `EnemyZoneEvaluatorTests`, 3 pull-back tests (`EnemyStrategicDecisionModelTests`), 1 wing test. Changed contract → updated `CentreCapture_ReinforcesWhenKnownDefendersOutmatchTheGroup`, `CaptureSelection_ZoneVerdictWeighsTheGroupForceAgainstEveryZoneDefender`, `CaptureProbe_OpeningCentreFocusDetachesIntoAContestedCentre` (presence count no longer blocks). Not run (local override). Category: `EnemyAi`.
-- [ ] Run `EnemyAi` EditMode category.
+- [x] Test run 2026-11-19 19:02 (user-run, `TestResults_20261119_190221.xml`): 4222/4227 passed, 1 failed, 4 not counted as pass or fail (likely skipped or inconclusive; not checked). Failure `RaidSelection_RejectsUndefendedTargetBehindStrongerRouteForce(0,False)` asserted the removed raid route gate (V8) → rewritten as `RaidSelection_RouteForceNoLongerBlocksButAStaticDefenseDoes` (route force no longer blocks; a covering armed structure does). Compiled; not rerun.
 - [ ] Battle: UltraHard Small 1v1 replay of the 17:31 situation; check `zoneEval`, `captureBlocked` = 0, no `GuardSite` at hostile zones, `RetreatValue` with reason "pull back to the gathering point".
 
 ### Original proposal
