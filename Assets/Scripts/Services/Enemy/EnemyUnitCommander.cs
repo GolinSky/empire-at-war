@@ -148,8 +148,9 @@ namespace EmpireAtWar.Services.Enemy
                 if (!group.IsMainForce || group.Context == null) continue;
                 if (TryGetTaskRally(group, out rally)) return true;
             }
-            // Every force is out at a zone: a new ship gathers for the next force instead of joining a fight alone.
-            if (_taskGroups.GatherPoint is Vector3 gather)
+            // Every force is out at a zone: a new ship arrives at the held relay or station nearest the zone that needs
+            // ships most; without one it gathers for the next force instead of joining a fight alone.
+            if ((_taskGroups.DeploymentPoint ?? _taskGroups.GatherPoint) is Vector3 gather)
             {
                 rally = gather;
                 return true;

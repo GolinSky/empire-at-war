@@ -363,7 +363,8 @@ namespace EmpireAtWar.Services.Enemy
             _includeWithdrawBlocker = IncludeWithdrawBlocker;
             _includeNearbyOwn = IncludeNearbyOwn;
             _isNearHostileBase = IsNearHostileBase;
-            _zoneObjectives = new EnemyZoneObjectiveCollector(zones, playerRoster, worldSnapshot, vision, _teamPicture, owner.Id);
+            _zoneObjectives = new EnemyZoneObjectiveCollector(zones, playerRoster, worldSnapshot, vision, _teamPicture,
+                forceBuilder, owner.Id);
             _assessedForce = _ownForce;
         }
 
@@ -394,7 +395,8 @@ namespace EmpireAtWar.Services.Enemy
             _includeWithdrawBlocker = IncludeWithdrawBlocker;
             _includeNearbyOwn = IncludeNearbyOwn;
             _isNearHostileBase = IsNearHostileBase;
-            _zoneObjectives = new EnemyZoneObjectiveCollector(_zones, _playerRoster, _worldSnapshot, _vision, _teamPicture, _owner.Id);
+            _zoneObjectives = new EnemyZoneObjectiveCollector(_zones, _playerRoster, _worldSnapshot, _vision, _teamPicture,
+                _forceBuilder, _owner.Id);
             _assessedForce = _ownForce;
         }
 

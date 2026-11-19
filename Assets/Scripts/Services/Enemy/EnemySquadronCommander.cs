@@ -23,9 +23,11 @@ using EmpireAtWar.Presenters.ReinforcementZones;
 namespace EmpireAtWar.Services.Enemy
 {
     /// <summary>
-    /// Orders AI wings. Station-launched and bought wings are free and form two groups (<see cref="EnemyWingGroup"/>):
-    /// group A takes and holds the centre, group B the own-side outer zone, then the next outer zone, then raids
-    /// hostile mines. Each group chooses free sites inside its zone and holds inside a pad's circle until it flips.
+    /// Orders AI wings. Station-launched and bought wings are free and form groups (<see cref="EnemyWingGroup"/>):
+    /// group A takes and holds the centre; one group B per outer zone takes that zone (2 wings to the nearer one
+    /// when wings are cheap, 1 otherwise), then the next outer zone, then raids hostile mines. Groups land on mining
+    /// spots, where the mine and the satellite pads in reach flip together, and keep their zone until it is taken
+    /// or they fall below half of their peak size.
     /// Carrier wings stay with their carrier and are the only wings used as escorts against hostile strikecraft.
     /// Wings without a group zone are spread over all capture targets; they hunt when nothing is left.
     /// </summary>
@@ -46,10 +48,10 @@ namespace EmpireAtWar.Services.Enemy
         private float _nextWingAssignmentReport;
 #endif
         /// <summary>
-        /// A capturing wing this close to its site switches from attack-move to move: it stays inside the pad circle
-        /// (radius 60) instead of drifting out while it fights.
+        /// A wing on an uncontested mining spot switches from attack-move to move within this many spot radii, so it
+        /// settles inside the circle instead of drifting out to fight.
         /// </summary>
-        private const float CAPTURE_HOLD_DISTANCE = 400f;
+        private const float HOLD_ENTRY_SCALE = 2f;
         // Matches the ship capture rule: sites this close to an allied station are taken last.
         private const float ALLIED_BASE_SITE_RADIUS = 1000f;
 
@@ -80,7 +82,10 @@ namespace EmpireAtWar.Services.Enemy
         private readonly List<KeyValuePair<ISquadron, float>> _escortCandidates =
             new List<KeyValuePair<ISquadron, float>>();
         private readonly EnemyWingGroup _centreGroup = new EnemyWingGroup(EnemyWingRole.Centre);
-        private readonly EnemyWingGroup _outerGroup = new EnemyWingGroup(EnemyWingRole.Outer);
+        // One group per outer zone, nearest home first.
+        private readonly List<EnemyWingGroup> _outerGroups = new List<EnemyWingGroup>();
+        private readonly ForceComposition _groupForce = new ForceComposition();
+        private readonly ForceComposition _zoneDefenders = new ForceComposition();
         private readonly List<ISquadron> _groupWings = new List<ISquadron>();
         private readonly List<ISquadron> _scoutPool = new List<ISquadron>();
         private readonly ForceComposition _raidForce = new ForceComposition();
@@ -447,9 +452,11 @@ namespace EmpireAtWar.Services.Enemy
             // Attack-Move re-issued to the same point is ignored by the squadron, so repeats are cheap.
             if (_captureAssignments.TryGetTarget(squadron, out Vector3 target))
             {
-                // The last leg is a move: a wing that stops to fight would drift out of the pad circle.
-                if (_captureAssignments.IsSite(target) &&
-                    PlanarDistanceSquared(squadron.WorldPosition, target) <= CAPTURE_HOLD_DISTANCE * CAPTURE_HOLD_DISTANCE)
+                // On an uncontested mining spot the last leg is a move: a wing that stops to fight would drift out.
+                float entry = 0f;
+                if (_captureAssignments.TryGetHold(squadron, out float holdRadius))
+                    entry = HOLD_ENTRY_SCALE * holdRadius;
+                if (PlanarDistanceSquared(squadron.WorldPosition, target) <= entry * entry)
                     _entityLocator.GetEntity(squadron.EntityId).GetFacade<IMoveFacade>().MoveTo(target);
                 else
                     squadron.AttackMoveTo(target);
@@ -611,50 +618,132 @@ namespace EmpireAtWar.Services.Enemy
         }
 
         /// <summary>
-        /// Keeps the two wing groups filled: a new free wing joins group B until it has its opening size (bombers
-        /// always join B, the raid group), every other wing joins group A. A lost wing's replacement fills the gap.
+        /// Keeps the wing groups filled. A new free wing goes to the outer groups first: one wing to every outer zone,
+        /// then up to the outer wing count for the zone nearest home; every other wing joins group A. Bombers join the
+        /// outer group nearest home, the raid group. A lost wing's replacement fills the gap.
         /// </summary>
         private void UpdateGroups()
         {
+            Vector3 home = GetHome();
+            if (_outerGroups.Count == 0) CreateOuterGroups(home);
             _centreGroup.Members.RemoveAll(_leftGroup);
-            _outerGroup.Members.RemoveAll(_leftGroup);
-            int outerCapturers = 0;
-            foreach (ISquadron wing in _outerGroup.Members)
-                if (_squadrons[wing].Profile.ShipClass != ShipClass.Bomber) outerCapturers++;
+            foreach (EnemyWingGroup group in _outerGroups)
+            {
+                group.Members.RemoveAll(_leftGroup);
+                UpdateOuterZone(group);
+            }
             foreach (KeyValuePair<ISquadron, CommandedSquadron> pair in _squadrons)
             {
                 if (!IsFree(pair.Value) || IsGrouped(pair.Key)) continue;
-                bool bomber = pair.Value.Profile.ShipClass == ShipClass.Bomber;
-                if (bomber || outerCapturers < _outerWingCount)
-                {
-                    _outerGroup.Members.Add(pair.Key);
-                    if (!bomber) outerCapturers++;
-                }
-                else _centreGroup.Members.Add(pair.Key);
+                EnemyWingGroup group = pair.Value.Profile.ShipClass == ShipClass.Bomber
+                    ? _outerGroups.Count > 0 ? _outerGroups[0] : _centreGroup
+                    : SelectGroupWithRoom() ?? _centreGroup;
+                group.Members.Add(pair.Key);
             }
-            Vector3 home = GetHome();
+            foreach (EnemyWingGroup group in _outerGroups) group.Peak = Mathf.Max(group.Peak, CountCapturers(group));
             _centreGroup.Zone = EnemyShipTaskGroupPlanner.GetCentre(_zones.Zones);
-            _outerGroup.Zone = SelectOuterZone(home);
         }
 
-        private bool IsGrouped(ISquadron wing) =>
-            _centreGroup.Members.Contains(wing) || _outerGroup.Members.Contains(wing);
-
-        /// <summary>The outer zone nearest home that still has a site to take; null when none is left.</summary>
-        private ReinforcementZonePresenter SelectOuterZone(Vector3 home)
+        private void CreateOuterGroups(Vector3 home)
         {
-            ReinforcementZonePresenter best = null;
-            float bestDistance = float.PositiveInfinity;
             foreach (ReinforcementZonePresenter zone in _zones.Zones)
+                if (zone.IsCapturable && !zone.IsMain) _outerGroups.Add(new EnemyWingGroup(EnemyWingRole.Outer, zone));
+            _outerGroups.Sort((left, right) => PlanarDistanceSquared(left.HomeZone.Center, home)
+                .CompareTo(PlanarDistanceSquared(right.HomeZone.Center, home)));
+        }
+
+        /// <summary>
+        /// An outer group keeps its zone while the zone has something to take and the group holds at least half of its
+        /// peak size. A taken zone → the next outer zone with targets (one no other group works first); a group below
+        /// half → the nearest zone it beats, else it stays. Either way it commits again from its current size.
+        /// </summary>
+        private void UpdateOuterZone(EnemyWingGroup group)
+        {
+            int capturers = CountCapturers(group);
+            bool taken = group.Zone == null || !HasTargetsIn(group.Zone);
+            bool weak = capturers * 2 < group.Peak;
+            if (!taken && !weak) return;
+            group.Zone = taken ? SelectNextOuterZone(group) : SelectWinnableZone(group) ?? group.Zone;
+            group.Peak = capturers;
+        }
+
+        private ReinforcementZonePresenter SelectNextOuterZone(EnemyWingGroup group)
+        {
+            Vector3 from = (group.Zone ?? group.HomeZone).Center;
+            ReinforcementZonePresenter best = null;
+            bool bestShared = true;
+            float bestDistance = float.PositiveInfinity;
+            foreach (EnemyWingGroup candidate in _outerGroups)
             {
-                if (!zone.IsCapturable || zone.IsMain ||
-                    !_captureAssignments.HasTargetIn(ToVector(ToPoint(zone.Center)), 2f * zone.Radius)) continue;
-                float distance = PlanarDistanceSquared(zone.Center, home);
-                if (distance >= bestDistance) continue;
+                ReinforcementZonePresenter zone = candidate.HomeZone;
+                if (!HasTargetsIn(zone)) continue;
+                bool shared = IsWorkedByOther(zone, group);
+                float distance = PlanarDistanceSquared(zone.Center, from);
+                if (shared && !bestShared || shared == bestShared && distance >= bestDistance) continue;
                 best = zone;
+                bestShared = shared;
                 bestDistance = distance;
             }
             return best;
+        }
+
+        /// <summary>The outer zone with targets nearest home whose defenders the group at least matches; null when none.</summary>
+        private ReinforcementZonePresenter SelectWinnableZone(EnemyWingGroup group)
+        {
+            _groupForce.Clear();
+            foreach (ISquadron wing in group.Members) AddWingForce(wing, _groupForce);
+            foreach (EnemyWingGroup candidate in _outerGroups)
+            {
+                ReinforcementZonePresenter zone = candidate.HomeZone;
+                if (!HasTargetsIn(zone)) continue;
+                _zoneDefenders.Clear();
+                FillTargetDefenders(ToVector(ToPoint(zone.Center)), _zoneDefenders);
+                if (_zoneDefenders.IsEmpty || CombatMatchup.Advantage(_groupForce, _zoneDefenders) >= EVEN_FIGHT)
+                    return zone;
+            }
+            return null;
+        }
+
+        private bool IsWorkedByOther(ReinforcementZonePresenter zone, EnemyWingGroup group)
+        {
+            foreach (EnemyWingGroup other in _outerGroups)
+                if (other != group && other.Zone == zone) return true;
+            return false;
+        }
+
+        /// <summary>
+        /// The outer group that still has room: every working group to one capturing wing first, then the group of
+        /// the zone nearest home up to the outer wing count. Null when every group is full.
+        /// </summary>
+        private EnemyWingGroup SelectGroupWithRoom()
+        {
+            for (int level = 1; level <= Mathf.Max(1, _outerWingCount); level++)
+                for (int i = 0; i < _outerGroups.Count; i++)
+                {
+                    EnemyWingGroup group = _outerGroups[i];
+                    int quota = i == 0 ? _outerWingCount : 1;
+                    if (group.Zone != null && CountCapturers(group) < Mathf.Min(level, quota)) return group;
+                }
+            return null;
+        }
+
+        private int CountCapturers(EnemyWingGroup group)
+        {
+            int count = 0;
+            foreach (ISquadron wing in group.Members)
+                if (_squadrons[wing].Profile.ShipClass != ShipClass.Bomber) count++;
+            return count;
+        }
+
+        private bool HasTargetsIn(ReinforcementZonePresenter zone) =>
+            _captureAssignments.HasTargetIn(ToVector(ToPoint(zone.Center)), 2f * zone.Radius);
+
+        private bool IsGrouped(ISquadron wing)
+        {
+            if (_centreGroup.Members.Contains(wing)) return true;
+            foreach (EnemyWingGroup group in _outerGroups)
+                if (group.Members.Contains(wing)) return true;
+            return false;
         }
 
         private Vector3 GetHome()
@@ -673,8 +762,8 @@ namespace EmpireAtWar.Services.Enemy
             _captureAssignments.BeginAssignment();
             _captureSquadrons.Clear();
             Vector3 home = GetHome();
-            AssignGroup(_centreGroup, home, relayBeforeMines: false);
-            AssignGroup(_outerGroup, home, relayBeforeMines: true);
+            AssignGroup(_centreGroup, home);
+            foreach (EnemyWingGroup group in _outerGroups) AssignGroup(group, home);
             ReinforcementZonePresenter centre = EnemyShipTaskGroupPlanner.GetCentre(_zones.Zones);
             if (_captureSquadrons.Count > 0)
             {
@@ -692,7 +781,7 @@ namespace EmpireAtWar.Services.Enemy
 #if UNITY_EDITOR || DEVELOPMENT_BUILD
             // Which wings go where: the opening race for zones is decided here, before any ship exists.
             string assignment = FormattableString.Invariant(
-                $"wings={_squadrons.Count};groupA={_centreGroup.Members.Count};groupB={_outerGroup.Members.Count};groupBZone={(_outerGroup.Zone != null ? $"({_outerGroup.Zone.Center.x:F0} {_outerGroup.Zone.Center.z:F0})" : "none")};captureWings={_captureSquadrons.Count};openingBudget={captureWings};escorts={_escorts.Count};raids={_raids.Count};scout={(_scout != null)};targets=") +
+                $"wings={_squadrons.Count};groupA={_centreGroup.Members.Count};groupB={DescribeOuterGroups()};captureWings={_captureSquadrons.Count};openingBudget={captureWings};escorts={_escorts.Count};raids={_raids.Count};scout={(_scout != null)};targets=") +
                 _captureAssignments.Describe();
             if (assignment != _lastWingAssignment && Time.time >= _nextWingAssignmentReport)
             {
@@ -703,11 +792,24 @@ namespace EmpireAtWar.Services.Enemy
 #endif
         }
 
+#if UNITY_EDITOR || DEVELOPMENT_BUILD
+        // Per outer group: wings @ zone worked, or "raid" when it has no zone.
+        private string DescribeOuterGroups()
+        {
+            var text = new System.Text.StringBuilder();
+            foreach (EnemyWingGroup group in _outerGroups)
+                text.Append(group.Zone != null
+                    ? FormattableString.Invariant($"{group.Members.Count}@({group.Zone.Center.x:F0} {group.Zone.Center.z:F0}) ")
+                    : $"{group.Members.Count}@raid ");
+            return text.ToString();
+        }
+#endif
+
         /// <summary>
-        /// Assigns a group's wings inside its zone. Without a zone they join the ungrouped wings spread over every
-        /// target. Raiding wings and escorts are left out.
+        /// Assigns a group's wings inside its zone, onto its mining spots. Without a zone they join the ungrouped wings
+        /// spread over every target. Raiding wings and escorts are left out.
         /// </summary>
-        private void AssignGroup(EnemyWingGroup group, Vector3 home, bool relayBeforeMines)
+        private void AssignGroup(EnemyWingGroup group, Vector3 home)
         {
             _groupWings.Clear();
             foreach (ISquadron wing in group.Members)
@@ -717,11 +819,8 @@ namespace EmpireAtWar.Services.Enemy
                 _captureSquadrons.AddRange(_groupWings);
                 return;
             }
-            Vector3 centre = ToVector(ToPoint(group.Zone.Center));
-            Vector3 toHome = home - centre;
-            toHome.y = 0f;
-            Vector3 bait = toHome.sqrMagnitude > 1f ? centre + toHome.normalized * group.Zone.Radius : centre;
-            _captureAssignments.AssignInZone(_groupWings, centre, 2f * group.Zone.Radius, home, relayBeforeMines, bait);
+            _captureAssignments.AssignInZone(_groupWings, ToVector(ToPoint(group.Zone.Center)), 2f * group.Zone.Radius,
+                home, _addWingForce);
         }
 
         private void PrioritizeZone(ReinforcementZonePresenter zone)
@@ -730,7 +829,7 @@ namespace EmpireAtWar.Services.Enemy
         }
 
         /// <summary>
-        /// Group B raids known hostile mines: all of it once no outer zone is left to take, its bombers at any time.
+        /// Outer groups raid known hostile mines: a group without a zone with all its wings, bombers at any time.
         /// A wing raids a mine only when it at least matches the units and armed structures there (the power rule);
         /// no blanket structure-near-route block applies. One wing per mine, best damage per distance first.
         /// </summary>
@@ -745,27 +844,30 @@ namespace EmpireAtWar.Services.Enemy
                 ISquadron bestWing = null;
                 HostileSighting bestMine = default;
                 float bestScore = 0f;
-                foreach (ISquadron candidate in _outerGroup.Members)
+                foreach (EnemyWingGroup group in _outerGroups)
                 {
-                    CommandedSquadron commanded = _squadrons[candidate];
-                    if (_raids.ContainsKey(candidate) ||
-                        _outerGroup.Zone != null && commanded.Profile.ShipClass != ShipClass.Bomber) continue;
-                    float damage = commanded.Profile.HullDps(ShipClass.Structure) +
-                                   commanded.Profile.PiercingDps(ShipClass.Structure);
-                    if (damage <= 0f) continue;
-
-                    foreach (HostileSighting mine in _intel.Mines)
+                    foreach (ISquadron candidate in group.Members)
                     {
-                        if (_reservedRaidTargets.Contains(mine.EntityId) ||
-                            !_entityLocator.TryGetEntity(mine.EntityId, out IEntity target) ||
-                            !_playerRoster.IsHostile(_owner.Id, target.Owner) || target.HealthModel.IsDestroyed) continue;
-                        Vector3 position = ToVector(mine.Position);
-                        float distance = Mathf.Sqrt(PlanarDistanceSquared(candidate.WorldPosition, position));
-                        float score = damage / Mathf.Max(1f, distance);
-                        if (score <= bestScore || !WinsRaid(candidate, position)) continue;
-                        bestWing = candidate;
-                        bestMine = mine;
-                        bestScore = score;
+                        CommandedSquadron commanded = _squadrons[candidate];
+                        if (_raids.ContainsKey(candidate) ||
+                            group.Zone != null && commanded.Profile.ShipClass != ShipClass.Bomber) continue;
+                        float damage = commanded.Profile.HullDps(ShipClass.Structure) +
+                                       commanded.Profile.PiercingDps(ShipClass.Structure);
+                        if (damage <= 0f) continue;
+
+                        foreach (HostileSighting mine in _intel.Mines)
+                        {
+                            if (_reservedRaidTargets.Contains(mine.EntityId) ||
+                                !_entityLocator.TryGetEntity(mine.EntityId, out IEntity target) ||
+                                !_playerRoster.IsHostile(_owner.Id, target.Owner) || target.HealthModel.IsDestroyed) continue;
+                            Vector3 position = ToVector(mine.Position);
+                            float distance = Mathf.Sqrt(PlanarDistanceSquared(candidate.WorldPosition, position));
+                            float score = damage / Mathf.Max(1f, distance);
+                            if (score <= bestScore || !WinsRaid(candidate, position)) continue;
+                            bestWing = candidate;
+                            bestMine = mine;
+                            bestScore = score;
+                        }
                     }
                 }
 
@@ -812,7 +914,7 @@ namespace EmpireAtWar.Services.Enemy
             _squadrons.Remove(squadron);
             _escorts.Remove(squadron);
             _centreGroup.Members.Remove(squadron);
-            _outerGroup.Members.Remove(squadron);
+            foreach (EnemyWingGroup group in _outerGroups) group.Members.Remove(squadron);
             _captureAssignments.Release(squadron);
             _raids.Remove(squadron);
             if (_scout == squadron)

@@ -224,76 +224,155 @@ namespace EmpireAtWar.Tests.Editor
             Assert.That(target, Is.EqualTo(nearestPad));
         }
 
+        // Capture radii from the capture check in the plan: mine 60, satellite pad 500.
+        private const float MINE_RADIUS = 60f;
+        private const float PAD_RADIUS = 500f;
+
         [Test]
-        public void AssignInZone_ContestedPadIsSkippedForTheNextFreeSiteInTheSameZone()
+        public void AssignInZone_GroupLandsOnTheBaseSideMiningSpotAndHoldsInsideItsCircle()
         {
             var assignments = new EnemySquadronCaptureAssignments();
-            var wing = new Squadron(Vector3.zero);
-            Vector3 contested = new Vector3(-50f, 0f, 0f);
-            Vector3 free = new Vector3(50f, 0f, 0f);
-            Vector3 outside = new Vector3(-900f, 0f, 0f);
-            assignments.AddTarget(contested, isSatellitePad: true);
-            assignments.AddTarget(free, isSatellitePad: true);
-            assignments.AddTarget(outside, isSatellitePad: true);
-            assignments.RateTargets((target, defenders) => { if (target == contested) AddWings(defenders, 3); });
-            Vector3 home = new Vector3(-1000f, 0f, 0f);
+            Vector3 home = new Vector3(-2000f, 0f, 0f);
+            Vector3 nearSpot = new Vector3(-270f, 0f, 0f);
+            Vector3 farSpot = new Vector3(270f, 0f, 0f);
+            assignments.AddMiningSpot(nearSpot, MINE_RADIUS);
+            assignments.AddMiningSpot(farSpot, MINE_RADIUS);
+            assignments.AddTarget(nearSpot, isMine: true);
+            assignments.AddTarget(farSpot, isMine: true);
+            assignments.AddTarget(new Vector3(-470f, 0f, 0f), isSatellitePad: true, captureRadius: PAD_RADIUS);
+            assignments.RateTargets((target, defenders) => { });
+            var wings = new ISquadron[] { new Squadron(home), new Squadron(home) };
 
             assignments.BeginAssignment();
-            assignments.AssignInZone(new[] { wing }, Vector3.zero, 200f, home, false, new Vector3(-100f, 0f, 0f));
+            assignments.AssignInZone(wings, Vector3.zero, 1000f, home, AddWing);
+
+            foreach (ISquadron wing in wings)
+            {
+                Assert.That(assignments.TryGetTarget(wing, out Vector3 target), Is.True);
+                Assert.That(target, Is.EqualTo(nearSpot), "The whole group lands on the base-side mining spot.");
+                Assert.That(assignments.TryGetHold(wing, out float radius), Is.True);
+                Assert.That(radius, Is.EqualTo(MINE_RADIUS), "An uncontested spot is held from inside its circle.");
+            }
+        }
+
+        [Test]
+        public void AssignInZone_OwnedMineSpotStillTakesThePadsInItsReach()
+        {
+            var assignments = new EnemySquadronCaptureAssignments();
+            Vector3 home = new Vector3(-2000f, 0f, 0f);
+            Vector3 spentSpot = new Vector3(-600f, 0f, -600f);
+            Vector3 padSpot = new Vector3(-270f, 0f, 0f);
+            Vector3 farSpot = new Vector3(270f, 0f, 0f);
+            assignments.AddMiningSpot(spentSpot, MINE_RADIUS);
+            assignments.AddMiningSpot(padSpot, MINE_RADIUS);
+            assignments.AddMiningSpot(farSpot, MINE_RADIUS);
+            assignments.AddTarget(farSpot, isMine: true);
+            // The mine at padSpot is already owned (no target), but a free pad still lies in reach of it.
+            assignments.AddTarget(new Vector3(-270f, 0f, 400f), isSatellitePad: true, captureRadius: PAD_RADIUS);
+            assignments.RateTargets((target, defenders) => { });
+            var wing = new Squadron(home);
+
+            assignments.BeginAssignment();
+            assignments.AssignInZone(new ISquadron[] { wing }, Vector3.zero, 1000f, home, AddWing);
 
             Assert.That(assignments.TryGetTarget(wing, out Vector3 target), Is.True);
-            Assert.That(target, Is.EqualTo(free), "The wing stays in its zone and takes the free pad.");
+            Assert.That(target, Is.EqualTo(padSpot),
+                "A spot with nothing left is skipped; an owned mine spot with a free pad in reach is not.");
         }
 
         [Test]
-        public void AssignInZone_NoFreeSiteBaitsAtTheZoneEdgeAndReturnsOnceASiteIsFree()
+        public void AssignInZone_ContestedSpotIsFoughtForOnlyWhenTheGroupMatchesItsDefenders()
         {
             var assignments = new EnemySquadronCaptureAssignments();
-            var wing = new Squadron(Vector3.zero);
-            Vector3 pad = new Vector3(50f, 0f, 0f);
-            Vector3 bait = new Vector3(-100f, 0f, 0f);
-            assignments.AddTarget(pad, isSatellitePad: true);
-            assignments.RateTargets((target, defenders) => AddWings(defenders, 3));
+            Vector3 home = new Vector3(-2000f, 0f, 0f);
+            Vector3 contested = new Vector3(-270f, 0f, 0f);
+            Vector3 free = new Vector3(270f, 0f, 0f);
+            assignments.AddMiningSpot(contested, MINE_RADIUS);
+            assignments.AddMiningSpot(free, MINE_RADIUS);
+            assignments.AddTarget(contested, isMine: true);
+            assignments.AddTarget(free, isMine: true);
+            assignments.RateTargets((target, defenders) => { if (target == contested) AddWings(defenders, 2); });
+            var lone = new Squadron(home);
+            var group = new ISquadron[] { new Squadron(home), new Squadron(home), new Squadron(home) };
 
             assignments.BeginAssignment();
-            assignments.AssignInZone(new[] { wing }, Vector3.zero, 200f, Vector3.left * 1000f, false, bait);
-            assignments.TryGetTarget(wing, out Vector3 baiting);
-
-            assignments.ClearTargets();
-            assignments.AddTarget(pad, isSatellitePad: true);
-            assignments.RateTargets((target, defenders) => { });
+            assignments.AssignInZone(new ISquadron[] { lone }, Vector3.zero, 1000f, home, AddWing);
+            assignments.TryGetTarget(lone, out Vector3 loneTarget);
             assignments.BeginAssignment();
-            assignments.AssignInZone(new[] { wing }, Vector3.zero, 200f, Vector3.left * 1000f, false, bait);
-            assignments.TryGetTarget(wing, out Vector3 returned);
+            assignments.AssignInZone(group, Vector3.zero, 1000f, home, AddWing);
 
-            Assert.That(baiting, Is.EqualTo(bait));
-            Assert.That(assignments.IsSite(bait), Is.False, "A bait point is not a capture site.");
-            Assert.That(returned, Is.EqualTo(pad));
+            Assert.That(loneTarget, Is.EqualTo(free), "One wing cannot beat two defenders: it takes the next spot.");
+            foreach (ISquadron wing in group)
+            {
+                Assert.That(assignments.TryGetTarget(wing, out Vector3 target), Is.True);
+                Assert.That(target, Is.EqualTo(contested), "Three wings beat two defenders and fight for the spot.");
+                Assert.That(assignments.TryGetHold(wing, out _), Is.False, "A contested spot is attack-moved onto.");
+            }
         }
 
         [Test]
-        public void AssignInZone_PadsFirstBaseSideFirstThenTheGroupOrder()
+        public void AssignInZone_LargeGroupSplitsInHalfOverTheTwoBestSpots()
         {
             var assignments = new EnemySquadronCaptureAssignments();
-            Vector3 relay = Vector3.zero;
-            Vector3 mine = new Vector3(0f, 0f, 80f);
-            Vector3 farPad = new Vector3(120f, 0f, 0f);
-            Vector3 nearPad = new Vector3(-120f, 0f, 0f);
-            assignments.AddTarget(relay);
-            assignments.AddTarget(mine, isMine: true);
-            assignments.AddTarget(farPad, isSatellitePad: true);
-            assignments.AddTarget(nearPad, isSatellitePad: true);
+            Vector3 home = new Vector3(-2000f, 0f, 0f);
+            Vector3 nearSpot = new Vector3(-270f, 0f, 0f);
+            Vector3 farSpot = new Vector3(270f, 0f, 0f);
+            assignments.AddMiningSpot(nearSpot, MINE_RADIUS);
+            assignments.AddMiningSpot(farSpot, MINE_RADIUS);
+            assignments.AddTarget(nearSpot, isMine: true);
+            assignments.AddTarget(farSpot, isMine: true);
             assignments.RateTargets((target, defenders) => { });
-            Vector3 home = Vector3.left * 1000f;
-            var wings = new ISquadron[4];
-            for (int i = 0; i < wings.Length; i++) wings[i] = new Squadron(Vector3.zero);
+            var wings = new ISquadron[EnemySquadronCaptureAssignments.SPLIT_GROUP_WINGS];
+            for (int i = 0; i < wings.Length; i++) wings[i] = new Squadron(home);
 
             assignments.BeginAssignment();
-            assignments.AssignInZone(wings, relay, 200f, home, relayBeforeMines: true, home);
+            assignments.AssignInZone(wings, Vector3.zero, 1000f, home, AddWing);
 
-            Vector3[] targets = new Vector3[wings.Length];
-            for (int i = 0; i < wings.Length; i++) assignments.TryGetTarget(wings[i], out targets[i]);
-            Assert.That(targets, Is.EqualTo(new[] { nearPad, farPad, relay, mine }));
+            int atNear = 0;
+            int atFar = 0;
+            foreach (ISquadron wing in wings)
+            {
+                assignments.TryGetTarget(wing, out Vector3 target);
+                if (target == nearSpot) atNear++;
+                else if (target == farSpot) atFar++;
+            }
+            Assert.That(atNear, Is.EqualTo(wings.Length / 2));
+            Assert.That(atFar, Is.EqualTo(wings.Length - wings.Length / 2));
+        }
+
+        [Test]
+        public void AssignInZone_NoWinnableSpot_TakesTheRemainingSiteNearestHomeAndIsNeverIdle()
+        {
+            var assignments = new EnemySquadronCaptureAssignments();
+            Vector3 home = new Vector3(-2000f, 0f, 0f);
+            Vector3 spot = new Vector3(0f, 0f, 270f);
+            Vector3 freePad = new Vector3(470f, 0f, -470f);
+            Vector3 nearPad = new Vector3(-470f, 0f, -470f);
+            assignments.AddMiningSpot(spot, MINE_RADIUS);
+            assignments.AddTarget(spot, isMine: true);
+            assignments.AddTarget(freePad, isSatellitePad: true, captureRadius: PAD_RADIUS);
+            assignments.AddTarget(nearPad, isSatellitePad: true, captureRadius: PAD_RADIUS);
+            bool padContested = false;
+            Action<Vector3, ForceComposition> rate = (target, defenders) =>
+            {
+                if (target == spot || target == nearPad || padContested && target == freePad) AddWings(defenders, 3);
+            };
+            var wing = new Squadron(home);
+
+            assignments.RateTargets(rate);
+            assignments.BeginAssignment();
+            assignments.AssignInZone(new ISquadron[] { wing }, Vector3.zero, 1000f, home, AddWing);
+            assignments.TryGetTarget(wing, out Vector3 freeTarget);
+
+            padContested = true;
+            assignments.RateTargets(rate);
+            assignments.BeginAssignment();
+            assignments.AssignInZone(new ISquadron[] { wing }, Vector3.zero, 1000f, home, AddWing);
+            assignments.TryGetTarget(wing, out Vector3 foughtTarget);
+
+            Assert.That(freeTarget, Is.EqualTo(freePad), "With no winnable spot the wing takes the free pad.");
+            Assert.That(foughtTarget, Is.EqualTo(nearPad),
+                "With every site contested the wing fights for the one nearest home instead of idling.");
         }
 
         private static void AddWing(ISquadron squadron, ForceComposition force) => AddWings(force, 1);

@@ -7,7 +7,8 @@ namespace EmpireAtWar.Entities.EnemyFaction.Models.Objectives
 {
     /// <summary>
     /// Pools every available ship and sends forces to zones in rank order. A zone gets ships only when together they
-    /// beat its defenders; the centre force is led by the strongest free ship. A force already sent keeps its zone:
+    /// beat its defenders, or when it is held, under attack and has own satellites standing (the ships fight around
+    /// them); the centre force is led by the strongest free ship. A force already sent keeps its zone:
     /// it leaves on its own lost local fight, not on a zone recount. No ship idles: ships that complete no new force
     /// join the nearest force out, or, when no zone can be beaten, attack <see cref="WeakTarget"/> together.
     /// </summary>
@@ -31,6 +32,12 @@ namespace EmpireAtWar.Entities.EnemyFaction.Models.Objectives
         /// is served or denied.
         /// </summary>
         public int GatherZone { get; private set; } = RESERVE;
+
+        /// <summary>
+        /// The zone new ships are needed at most: the gather zone, else the best-ranked zone a force went to, else the
+        /// weak-phase target. New ships arrive at the held anchor nearest it. <see cref="RESERVE"/> when none.
+        /// </summary>
+        public int DeployZone { get; private set; } = RESERVE;
 
         /// <summary>
         /// Weak-phase target: the zone every leftover ship attacks when no zone can be beaten and no force is out.
@@ -98,6 +105,16 @@ namespace EmpireAtWar.Entities.EnemyFaction.Models.Objectives
             }
 
             AssignLeftovers(zones, ships.Count, distance, assignment);
+            SelectDeployZone(assignment);
+        }
+
+        private void SelectDeployZone(List<int> assignment)
+        {
+            DeployZone = GatherZone;
+            if (DeployZone != RESERVE) return;
+            for (int zone = 0; zone < _served.Count; zone++)
+                if (_served[zone] && (DeployZone == RESERVE || CompareZones(zone, DeployZone) < 0)) DeployZone = zone;
+            if (DeployZone == RESERVE && WeakTarget != RESERVE && assignment.Contains(WeakTarget)) DeployZone = WeakTarget;
         }
 
         /// <summary>
@@ -134,18 +151,25 @@ namespace EmpireAtWar.Entities.EnemyFaction.Models.Objectives
         /// <summary>
         /// Adds free ships to <see cref="_force"/> until it is a Go for the zone, then assigns them: the nearest
         /// first, except that the centre force is led by the strongest free ship. Assigns nothing when the free ships
-        /// together are not enough.
+        /// together are not enough, except at a held zone under attack with own satellites standing: every free ship
+        /// goes to fight around them.
         /// </summary>
         private bool TryFill(int zone, IReadOnlyList<EnemyZoneObjective> zones, IReadOnlyList<ForceComposition> ships,
             Func<int, int, float> distance, List<int> assignment)
         {
             _picked.Clear();
+            bool defendSatellites = zones[zone].IsHeldUnderAttack && zones[zone].OwnStructures > 0;
             while (true)
             {
                 int next = _picked.Count == 0 && zones[zone].IsCentre
                     ? FindStrongestFree(ships, assignment)
                     : FindNearestFree(zone, ships.Count, distance, assignment);
-                if (next == RESERVE) return false;
+                if (next == RESERVE)
+                {
+                    if (!defendSatellites || _picked.Count == 0) return false;
+                    foreach (int ship in _picked) assignment[ship] = zone;
+                    return true;
+                }
                 _picked.Add(next);
                 _force.Add(ships[next]);
                 if (_evaluator.Assess(zones[zone], _force, EnemyZoneEvaluator.COMMIT_ADVANTAGE).Verdict !=

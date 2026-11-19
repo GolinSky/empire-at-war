@@ -320,6 +320,20 @@ namespace EmpireAtWar.Tests.Editor
                 // Wings capture the opening: no corvette in the first 30 s.
                 scheduler.Step(10f);
                 Assert.That(purchases.Purchases.OfType<ShipUnitRequest>(), Is.Empty);
+                // Before the first ship the wings stop at the opening cap, however long ships stay locked.
+                strategy.PriorityConstructionPending = false;
+                for (int i = 0; i < 8; i++)
+                {
+                    int before = purchases.Purchases.Count;
+                    scheduler.Step(10f);
+                    if (purchases.Purchases.Count > before && purchases.LastRequest is SquadronUnitRequest wing)
+                        unitLimits.Adopt(UnitLimitKey.From(wing), wing.FactionData.UnitCapacity);
+                }
+                int openingCap = EnemyWingPricing.HasCheapFighterWing(factionModel.SquadronFactionData, catalog)
+                    ? EnemyWingPricing.CHEAP_OPENING_WING_CAP : EnemyWingPricing.OPENING_WING_CAP;
+                Assert.That(purchases.Purchases.OfType<SquadronUnitRequest>().Count(), Is.LessThanOrEqualTo(openingCap));
+                Assert.That(purchases.Purchases.OfType<ShipUnitRequest>(), Is.Empty);
+                strategy.PriorityConstructionPending = true;
                 // Satellites and mines on captured sites are paid before any ship.
                 clock.Restore(EnemyProductionStrategy.OPENING_NO_CORVETTE_SECONDS);
                 scheduler.Step(10f);

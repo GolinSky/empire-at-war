@@ -11,10 +11,16 @@ namespace EmpireAtWar.Entities.EnemyFaction.Models.Objectives
         /// <summary>Known hostile units and armed structures that fight for the zone; reused between collections.</summary>
         public ForceComposition Defenders { get; } = new ForceComposition();
         /// <summary>
-        /// This AI's own armed structures (satellites, platforms) in the zone. They fight beside any force sent, so a
-        /// small force can hold a zone around them.
+        /// This AI's own armed structures (satellites, platforms) and wings in the zone. They fight beside any force
+        /// sent, so a small force can hold a zone around them.
         /// </summary>
         public ForceComposition OwnSupport { get; } = new ForceComposition();
+        /// <summary>This AI's own satellites and platforms standing in the zone.</summary>
+        public int OwnStructures { get; private set; }
+        /// <summary>The team holds the zone's relay, or this AI has a satellite or platform standing in it.</summary>
+        public bool IsHeld { get; private set; }
+        /// <summary>A held zone with hostiles in reach: defended before any new zone, around its satellites.</summary>
+        public bool IsHeldUnderAttack => IsHeld && !Defenders.IsEmpty;
 
         public string Id { get; private set; }
         public bool IsCentre { get; private set; }
@@ -32,8 +38,11 @@ namespace EmpireAtWar.Entities.EnemyFaction.Models.Objectives
         public bool IsThreatened { get; private set; }
 
         public void Reset(string id, bool isCentre, bool isOwnSide, float priority, float travelSeconds,
-            int staticDefenders, string denyReason, bool isThreatened = false)
+            int staticDefenders, string denyReason, bool isThreatened = false, bool isHeld = false,
+            int ownStructures = 0)
         {
+            IsHeld = isHeld;
+            OwnStructures = ownStructures;
             Id = id;
             IsCentre = isCentre;
             IsOwnSide = isOwnSide;

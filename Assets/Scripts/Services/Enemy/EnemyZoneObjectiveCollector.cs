@@ -19,7 +19,8 @@ namespace EmpireAtWar.Services.Enemy
     /// Groups capture candidates into zone objectives: one per reinforcement zone holding a candidate, one per lone
     /// site outside every zone. Defenders are the known hostile units around the zone plus its visible armed
     /// hostile structures, so a fortified zone is a stronger target, never a hidden one. The AI's own armed
-    /// structures in the zone are its support. No zone is denied for the route to it: ships path around.
+    /// structures and wings in the zone are its support; a zone whose relay the team holds or where the AI has a
+    /// satellite standing is held. No zone is denied for the route to it: ships path around.
     /// </summary>
     public sealed class EnemyZoneObjectiveCollector
     {
@@ -47,6 +48,7 @@ namespace EmpireAtWar.Services.Enemy
         private readonly AiWorldSnapshot _world;
         private readonly IVisionService _vision;
         private readonly TeamAiPicture _picture;
+        private readonly ForceCompositionBuilder _forceBuilder;
         private readonly PlayerId _owner;
         private readonly List<EnemyZoneObjective> _pool = new List<EnemyZoneObjective>();
         private readonly List<EnemyZoneObjective> _objectives = new List<EnemyZoneObjective>();
@@ -65,8 +67,9 @@ namespace EmpireAtWar.Services.Enemy
         private float _defenderRadiusSquared;
 
         public EnemyZoneObjectiveCollector(IReinforcementZoneSource zones, IPlayerRoster roster, AiWorldSnapshot world,
-            IVisionService vision, TeamAiPicture picture, PlayerId owner)
+            IVisionService vision, TeamAiPicture picture, ForceCompositionBuilder forceBuilder, PlayerId owner)
         {
+            _forceBuilder = forceBuilder;
             _zones = zones;
             _roster = roster;
             _world = world;
@@ -126,14 +129,17 @@ namespace EmpireAtWar.Services.Enemy
                 ReinforcementZonePresenter zone = _areaZones[area];
                 int statics = BuildDefenders(objective.Defenders, centre, _radii[area]);
                 objective.OwnSupport.Clear();
-                AddOwnArmedStructures(objective.OwnSupport, centre, 2f * _radii[area]);
+                int ownStructures = AddOwnArmedStructures(objective.OwnSupport, centre, 2f * _radii[area]);
+                AddOwnWings(objective.OwnSupport, centre, 2f * _radii[area]);
+                bool held = ownStructures > 0 || zone != null && !zone.Owner.IsNone && _roster.IsAllied(_owner, zone.Owner);
                 bool isCentre = zone != null && zone.IsMain;
                 bool ownSide = IsOwnSide(centre);
                 string deny = !_threatened[area] && isNearHostileBase(centre) ? "hostileBase" : null;
                 if (deny == null && !ownSide && objective.Defenders.IsEmpty) AddUnscoutedShare(objective.Defenders, centre);
                 objective.Reset(zone != null ? $"zone:{IndexOf(zone)}" : $"site:({centre.x:F0} {centre.z:F0})",
                     isCentre, ownSide, _priorities[area],
-                    PlanarDistance(origin, centre) / Mathf.Max(1f, speed), statics, deny, _threatened[area]);
+                    PlanarDistance(origin, centre) / Mathf.Max(1f, speed), statics, deny, _threatened[area], held,
+                    ownStructures);
                 _objectives.Add(objective);
             }
         }
@@ -207,9 +213,12 @@ namespace EmpireAtWar.Services.Enemy
             return count;
         }
 
-        /// <summary>Adds this AI's living armed structures within <paramref name="reach"/> of the zone centre.</summary>
-        private void AddOwnArmedStructures(ForceComposition support, Vector3 centre, float reach)
+        /// <summary>
+        /// Adds this AI's living armed structures within <paramref name="reach"/> of the zone centre and returns how many.
+        /// </summary>
+        private int AddOwnArmedStructures(ForceComposition support, Vector3 centre, float reach)
         {
+            int count = 0;
             IReadOnlyList<AiWorldSnapshot.Entry> structures = _world.RaidStructures;
             for (int i = 0; i < structures.Count; i++)
             {
@@ -219,6 +228,20 @@ namespace EmpireAtWar.Services.Enemy
                     structure.Kind != StructureKind.DefendPlatform ||
                     PlanarDistance(entry.Position, centre) > reach) continue;
                 support.Add(STATIC_PROFILE, entry.Entity.HealthModel.Hull, entry.Entity.HealthModel.Shields, 1f);
+                count++;
+            }
+            return count;
+        }
+
+        /// <summary>Adds this AI's wings within <paramref name="reach"/> of the zone centre at their current strength.</summary>
+        private void AddOwnWings(ForceComposition support, Vector3 centre, float reach)
+        {
+            IReadOnlyList<AiWorldSnapshot.Entry> owned = _world.GetOwnedUnits(_owner);
+            for (int i = 0; i < owned.Count; i++)
+            {
+                AiWorldSnapshot.Entry entry = owned[i];
+                if (!entry.UnitTypeId.IsSquadron || PlanarDistance(entry.Position, centre) > reach) continue;
+                _forceBuilder.AddUnit(support, entry.Entity);
             }
         }
 

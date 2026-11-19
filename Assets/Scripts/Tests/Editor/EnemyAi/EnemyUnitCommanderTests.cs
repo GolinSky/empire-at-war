@@ -452,8 +452,8 @@ namespace EmpireAtWar.Tests.Editor
 
         [TestCase(true, true, 2)]
         [TestCase(false, true, 0)]
-        [TestCase(false, false, 1)]
-        public void SquadronRaid_GroupBRaidsDistinctMinesOnceNoOuterZoneIsLeft(bool bombers, bool outerZoneLeft,
+        [TestCase(false, false, 2)]
+        public void SquadronRaid_OuterGroupsRaidDistinctMinesOnceTheirZoneIsTaken(bool bombers, bool outerZoneLeft,
             int expectedRaids)
         {
             PlayerRoster roster = TestPlayers.CreateDuel();
@@ -461,9 +461,11 @@ namespace EmpireAtWar.Tests.Editor
             var intel = new TeamIntelRegistry();
             var locator = new EntityLocator();
             var battleState = new ReplayNotifier<BattleState>(BattleState.Running);
+            // Without a zone left to take, both outer zones are already held by the AI.
             var zones = outerZoneLeft
                 ? new ZoneSource(roster, 1, Vector3.right * 100f, Vector3.forward * 200f, Vector3.left * 300f)
-                : new ZoneSource(roster);
+                : new ZoneSource(roster, new[] { TestPlayers.Enemy, TestPlayers.Enemy },
+                    Vector3.right * 100f, Vector3.left * 300f);
             var snapshot = new AiWorldSnapshot(locator);
             var forces = new ForceCompositionBuilder(locator, null, snapshot);
             var commander = new EnemySquadronCommander(Array.Empty<IEnemyCaptureObjectiveSource>(), zones, locator, roster,
@@ -496,21 +498,24 @@ namespace EmpireAtWar.Tests.Editor
                 .GetField("_raids", flags).GetValue(commander);
             Assert.That(raids.Count, Is.EqualTo(expectedRaids));
             Assert.That(raids.Values.Select(raid => raid.EntityId).Distinct().Count(), Is.EqualTo(expectedRaids));
-            var outer = (EnemyWingGroup)typeof(EnemySquadronCommander).GetField("_outerGroup", flags).GetValue(commander);
-            Assert.That(raids.Keys, Is.SubsetOf(outer.Members), "Only group B raids.");
+            var outer = (List<EnemyWingGroup>)typeof(EnemySquadronCommander).GetField("_outerGroups", flags)
+                .GetValue(commander);
+            Assert.That(raids.Keys, Is.SubsetOf(outer.SelectMany(group => group.Members)), "Only outer groups raid.");
             var assignments = (EnemySquadronCaptureAssignments)typeof(EnemySquadronCommander)
                 .GetField("_captureAssignments", flags).GetValue(commander);
             Assert.That(raids.Keys.Count(squadron => assignments.TryGetTarget(squadron, out _)), Is.Zero);
         }
 
         [Test]
-        public void WingGroups_OuterGroupGetsItsOpeningSizeAndBombersTheRestGoToTheCentre()
+        public void WingGroups_EveryOuterZoneGetsAWingFirst_TheNearerOneItsSecond_BombersRaid_TheRestGoToTheCentre()
         {
             PlayerRoster roster = TestPlayers.CreateDuel();
             var locator = new EntityLocator();
             var battleState = new ReplayNotifier<BattleState>(BattleState.Running);
             var snapshot = new AiWorldSnapshot(locator);
-            var commander = new EnemySquadronCommander(Array.Empty<IEnemyCaptureObjectiveSource>(), new ZoneSource(roster),
+            // Wings sit at the origin, the fallback home: the zone at x = 500 is the nearer outer zone.
+            var zones = new ZoneSource(roster, 2, Vector3.left * 1500f, Vector3.right * 500f, Vector3.forward * 800f);
+            var commander = new EnemySquadronCommander(Array.Empty<IEnemyCaptureObjectiveSource>(), zones,
                 locator, roster, null, null, null, new TeamIntelRegistry(), roster.Get(TestPlayers.Enemy), null, null,
                 battleState, snapshot, new EnemyAiScheduler(battleState), null);
             BindingFlags flags = BindingFlags.Instance | BindingFlags.NonPublic;
@@ -521,26 +526,70 @@ namespace EmpireAtWar.Tests.Editor
             var bomber = new UnitCombatProfile(ShipClass.Bomber, 1f, 0f, new float[ForceComposition.ClassSlots],
                 new float[ForceComposition.ClassSlots], new float[ForceComposition.ClassSlots], Array.Empty<UnitCombatProfile>());
             var wings = new List<FakeSquadron>();
-            for (int i = 0; i < 4; i++)
+            for (int i = 0; i < 5; i++)
             {
                 var wing = new FakeSquadron(i + 1, TestPlayers.Enemy);
                 wings.Add(wing);
-                tracked.Add(wing, new CommandedSquadron(i == 3 ? bomber : fighter, null));
+                tracked.Add(wing, new CommandedSquadron(i == 4 ? bomber : fighter, null));
             }
             commander.SetOuterWingCount(2);
 
             typeof(EnemySquadronCommander).GetMethod("UpdateGroups", flags).Invoke(commander, null);
 
-            var outer = (EnemyWingGroup)typeof(EnemySquadronCommander).GetField("_outerGroup", flags).GetValue(commander);
+            var outer = (List<EnemyWingGroup>)typeof(EnemySquadronCommander).GetField("_outerGroups", flags)
+                .GetValue(commander);
             var centre = (EnemyWingGroup)typeof(EnemySquadronCommander).GetField("_centreGroup", flags).GetValue(commander);
-            Assert.That(outer.Members, Is.EquivalentTo(new[] { wings[0], wings[1], wings[3] }));
-            Assert.That(centre.Members, Is.EquivalentTo(new[] { wings[2] }));
+            Assert.That(outer.Count, Is.EqualTo(2), "One group per outer zone.");
+            Assert.That(outer[0].HomeZone, Is.SameAs(zones.Zones[1]), "The nearer outer zone is listed first.");
+            Assert.That(outer[0].Members, Is.EquivalentTo(new[] { wings[0], wings[2], wings[4] }));
+            Assert.That(outer[1].Members, Is.EquivalentTo(new[] { wings[1] }));
+            Assert.That(centre.Members, Is.EquivalentTo(new[] { wings[3] }));
 
-            tracked.Remove(wings[0]);
-            var replacement = new FakeSquadron(5, TestPlayers.Enemy);
+            tracked.Remove(wings[1]);
+            var replacement = new FakeSquadron(6, TestPlayers.Enemy);
             tracked.Add(replacement, new CommandedSquadron(fighter, null));
             typeof(EnemySquadronCommander).GetMethod("UpdateGroups", flags).Invoke(commander, null);
-            Assert.That(outer.Members, Does.Contain(replacement), "A rebought wing rejoins the group that lost one.");
+            Assert.That(outer[1].Members, Does.Contain(replacement), "A rebought wing rejoins the group that lost one.");
+        }
+
+        [Test]
+        public void WingGroups_OuterGroupKeepsItsZoneUntilTheZoneIsTaken()
+        {
+            PlayerRoster roster = TestPlayers.CreateDuel();
+            var locator = new EntityLocator();
+            var battleState = new ReplayNotifier<BattleState>(BattleState.Running);
+            var snapshot = new AiWorldSnapshot(locator);
+            Vector3 far = Vector3.left * 1500f;
+            Vector3 near = Vector3.right * 500f;
+            var zones = new ZoneSource(roster, -1, far, near);
+            var commander = new EnemySquadronCommander(Array.Empty<IEnemyCaptureObjectiveSource>(), zones,
+                locator, roster, null, null, null, new TeamIntelRegistry(), roster.Get(TestPlayers.Enemy), null, null,
+                battleState, snapshot, new EnemyAiScheduler(battleState), null);
+            BindingFlags flags = BindingFlags.Instance | BindingFlags.NonPublic;
+            var tracked = (Dictionary<ISquadron, CommandedSquadron>)typeof(EnemySquadronCommander)
+                .GetField("_squadrons", flags).GetValue(commander);
+            var assignments = (EnemySquadronCaptureAssignments)typeof(EnemySquadronCommander)
+                .GetField("_captureAssignments", flags).GetValue(commander);
+            var fighter = new UnitCombatProfile(ShipClass.Fighter, 1f, 0f, new float[ForceComposition.ClassSlots],
+                new float[ForceComposition.ClassSlots], new float[ForceComposition.ClassSlots], Array.Empty<UnitCombatProfile>());
+            tracked.Add(new FakeSquadron(1, TestPlayers.Enemy), new CommandedSquadron(fighter, null));
+            tracked.Add(new FakeSquadron(2, TestPlayers.Enemy), new CommandedSquadron(fighter, null));
+            var outer = (List<EnemyWingGroup>)typeof(EnemySquadronCommander).GetField("_outerGroups", flags)
+                .GetValue(commander);
+            MethodInfo updateGroups = typeof(EnemySquadronCommander).GetMethod("UpdateGroups", flags);
+
+            assignments.AddTarget(far);
+            assignments.AddTarget(near);
+            for (int pass = 0; pass < 3; pass++) updateGroups.Invoke(commander, null);
+            ReinforcementZonePresenter farZone = outer[1].Zone;
+
+            assignments.ClearTargets();
+            assignments.AddTarget(near);
+            updateGroups.Invoke(commander, null);
+
+            Assert.That(farZone, Is.SameAs(zones.Zones[0]),
+                "The far group keeps its zone across passes although the nearer zone also has targets.");
+            Assert.That(outer[1].Zone, Is.SameAs(zones.Zones[1]), "Once its zone is taken it moves to the next one.");
         }
 
         [TestCase(false, false)]

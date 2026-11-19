@@ -48,6 +48,11 @@ namespace EmpireAtWar.Services.Enemy
         public IReadOnlyList<EnemyShipTaskGroup> Groups => _groups;
         /// <summary>Where the reserve gathers; new ships are sent here. Null before the first allocation.</summary>
         public Vector3? GatherPoint { get; private set; }
+        /// <summary>
+        /// Centre of the zone new ships are needed at most (<see cref="EnemyZoneAllocator.DeployZone"/>); they arrive at
+        /// the held relay or station nearest it. Null before the first allocation or when no zone needs ships.
+        /// </summary>
+        public Vector3? DeploymentPoint { get; private set; }
         /// <summary>Outer zones ships may take this cycle; production sizes capture wings from it.</summary>
         public int EligibleExpansionZoneCount { get; private set; }
 
@@ -137,6 +142,8 @@ namespace EmpireAtWar.Services.Enemy
                 _contextBuilder.ReserveStagingPoint = gather == EnemyZoneAllocator.RESERVE
                     ? (Vector3?)null : _pool.GetPoolStagingPoint(gather, home);
                 GatherPoint = _contextBuilder.ReserveStagingPoint ?? _pool.GetIdleGatherPoint(home);
+                int deploy = _allocator.DeployZone;
+                DeploymentPoint = deploy == EnemyZoneAllocator.RESERVE ? (Vector3?)null : _pool.GetPoolZoneCentre(deploy);
                 EligibleExpansionZoneCount = 0;
                 _zoneReservations.Clear();
                 for (int zone = 0; zone < zones.Count; zone++)

@@ -34,6 +34,8 @@ namespace EmpireAtWar.Services.Enemy
         private const float SECOND_STATION_LATE_SECONDS = 480f;
         private const float STATION_PLACEMENT_RETRY_SECONDS = 10f;
         private const int MAX_LEVEL1_CORVETTES = 2;
+        /// <summary>Bombers are wanted only to raid: at most this many per known hostile mine.</summary>
+        private const int BOMBERS_PER_HOSTILE_MINE = 3;
         /// <summary>Wings capture the opening; the first corvette may be bought from this battle time.</summary>
         public const float OPENING_NO_CORVETTE_SECONDS = 30f;
         private const float NON_COMPETING_RESEARCH_SHARE = 0.25f;
@@ -207,7 +209,7 @@ namespace EmpireAtWar.Services.Enemy
                 !hasSquadronRoom || !critical && canOrderShips && _decisionModel.NeedsMinimumFleet(shipCount),
                 hasSquadronRoom, out counterId, out counterData);
             bool hasSquadronFallback = !hasCounter && (needsCaptureWings || !critical && !canOrderShips) &&
-                                       TrySelectSquadron(shipCount, !canOrderShips, out squadron) &&
+                                       TrySelectSquadron(shipCount, out squadron) &&
                                        IsAffordable(squadron.Value);
             bool hasShip = hasDefenseShip ||
                            !critical && !hasCounter && !hasSquadronFallback && canOrderShips && TrySelectShip(shipCount, out ship);
@@ -335,11 +337,12 @@ namespace EmpireAtWar.Services.Enemy
                                   !_decisionModel.NeedsMinimumFleet(shipCount) &&
                                   (_factionModel.CurrentLevel < 4 || !combatChoice.IsShip ||
                                    !_factionModel.IsAssaultCapital(combatChoice.ShipType, _profileCatalog.Get(combatChoice).ShipClass)) &&
-                                  TrySelectSquadron(shipCount, false, out squadron) &&
+                                  TrySelectSquadron(shipCount, out squadron) &&
                                   IsAffordable(squadron.Value));
-            // Satellites and mines on captured sites are paid before any ship; wings keep capturing meanwhile.
+            // Satellites and mines on captured sites are paid before any ship and any extra wing; only missing capture
+            // wings keep being bought meanwhile.
             if (!critical && PriorityConstructionPending && category == EnemyProductionCategory.Ship &&
-                !buildSquadron && !(hasCounter && !counterId.IsShip))
+                !(buildSquadron && needsCaptureWings) && !(hasCounter && !counterId.IsShip))
                 return;
             UnitRequest request = category switch
             {
@@ -664,14 +667,23 @@ namespace EmpireAtWar.Services.Enemy
             return _purchaseProcessor.GetQueueRemainingTime(unitTypeId.ToString()) + data.BuildTime + travel;
         }
 
-        /// <summary>True while bought squadrons number fewer than one per <see cref="SHIPS_PER_SQUADRON"/> ships.</summary>
-        /// <remarks>Carrier hangars count toward the cap so carriers are no way around it.</remarks>
+        /// <summary>
+        /// True while wings number fewer than one per <see cref="SHIPS_PER_SQUADRON"/> ships. Before the first ship is
+        /// bought the wings are the whole fleet and stop at the opening cap (<see cref="EnemyWingPricing"/>: 6 cheap,
+        /// 4 otherwise), so the opening money reaches mines and satellites.
+        /// </summary>
+        /// <remarks>Station and carrier hangar wings count toward the cap so hangars are no way around it.</remarks>
         private bool HasSquadronRoom(int shipCount)
         {
-            int cap = _stationPressure.IsStationCritical ? MINIMUM_CAPTURE_WINGS :
-                Math.Max(GetCaptureWingTarget(), shipCount / SHIPS_PER_SQUADRON);
-            return CountReservedSquadrons() + CountHangarSquadrons() < cap;
+            int wings = CountReservedSquadrons() + CountHangarSquadrons();
+            if (_stationPressure.IsStationCritical) return wings < MINIMUM_CAPTURE_WINGS;
+            if (shipCount == 0) return wings < GetOpeningWingCap();
+            return wings < Math.Max(GetCaptureWingTarget(), shipCount / SHIPS_PER_SQUADRON);
         }
+
+        private int GetOpeningWingCap() =>
+            EnemyWingPricing.HasCheapFighterWing(_factionModel.SquadronFactionData, _profileCatalog)
+                ? EnemyWingPricing.CHEAP_OPENING_WING_CAP : EnemyWingPricing.OPENING_WING_CAP;
 
         // Big maps have more expansion zones than early ships: one capture wing per eligible zone plus one.
         private int GetCaptureWingTarget() =>
@@ -732,6 +744,15 @@ namespace EmpireAtWar.Services.Enemy
             return count;
         }
 
+        private int CountReservedBombers()
+        {
+            int count = 0;
+            foreach (KeyValuePair<SquadronType, FactionData> option in _factionModel.SquadronFactionData)
+                if (_profileCatalog.Get(UnitTypeId.Squadron(option.Key)).ShipClass == ShipClass.Bomber)
+                    count += _unitLimitModel.GetReservedCount<SquadronUnitRequest>(option.Key.ToString());
+            return count;
+        }
+
         private int CountReservedSquadrons()
         {
             int squadronCount = 0;
@@ -772,7 +793,7 @@ namespace EmpireAtWar.Services.Enemy
                 canPlaceStructure ||
                 CountReservedSquadrons() > 0 ||
                 !_enemyStructurePlacementService.TryGetScoutTarget(out _) ||
-                !TrySelectSquadron(shipCount, true, out KeyValuePair<SquadronType, FactionData> scout) ||
+                !TrySelectSquadron(shipCount, out KeyValuePair<SquadronType, FactionData> scout) ||
                 !IsAffordable(scout.Value))
             {
                 return false;
@@ -787,17 +808,17 @@ namespace EmpireAtWar.Services.Enemy
         }
 
         /// <summary>
-        /// Picks a wing while <see cref="HasSquadronRoom"/>, or regardless of the ship ratio: fighters and interceptors
-        /// first, the type with the fewest copies so two types build side by side, then the cheapest. Bombers only once
-        /// a hostile mine is known to raid, or when no other type is available. Hero wings are never picked here.
+        /// Picks a wing while <see cref="HasSquadronRoom"/>: fighters and interceptors first, the type with the fewest
+        /// copies so two types build side by side, then the cheapest. Bombers only once a hostile mine is known to
+        /// raid (at most <see cref="BOMBERS_PER_HOSTILE_MINE"/> per mine), or when no other type is available. Hero
+        /// wings are never picked here.
         /// </summary>
         private bool TrySelectSquadron(
             int shipCount,
-            bool ignoreShipRatio,
             out KeyValuePair<SquadronType, FactionData> selected)
         {
             selected = default;
-            if (!ignoreShipRatio && !HasSquadronRoom(shipCount))
+            if (!HasSquadronRoom(shipCount))
             {
                 return false;
             }
@@ -806,6 +827,7 @@ namespace EmpireAtWar.Services.Enemy
             bool selectedIsBomber = false;
             int selectedCount = 0;
             bool bombersWanted = _intel.Mines.Count > 0;
+            bool bomberRoom = CountReservedBombers() < BOMBERS_PER_HOSTILE_MINE * _intel.Mines.Count;
             foreach (KeyValuePair<SquadronType, FactionData> option
                      in _factionModel.SquadronFactionData)
             {
@@ -818,7 +840,8 @@ namespace EmpireAtWar.Services.Enemy
                 }
 
                 ShipClass wingClass = _profileCatalog.Get(UnitTypeId.Squadron(option.Key)).ShipClass;
-                if (wingClass == ShipClass.HeroStrikecraft) continue;
+                if (wingClass == ShipClass.HeroStrikecraft || wingClass == ShipClass.Bomber && bombersWanted && !bomberRoom)
+                    continue;
                 bool isBomber = wingClass == ShipClass.Bomber && !bombersWanted;
                 int count = _unitLimitModel.GetReservedCount<SquadronUnitRequest>(option.Key.ToString());
                 if (found && (isBomber && !selectedIsBomber ||

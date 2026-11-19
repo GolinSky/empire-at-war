@@ -181,6 +181,45 @@ namespace EmpireAtWar.Tests.Editor
             Assert.That(ahead.Single(), Is.EqualTo(0));
         }
 
+        [Test]
+        public void Tier_HeldZoneUnderAttackIsTheTopTierEvenBelowAnEvenFight()
+        {
+            EnemyZoneObjective held = Zone("held", defenders: 5, held: true, ownStructures: 1);
+            EnemyZoneObjective quiet = Zone("quiet", held: true, ownStructures: 1);
+
+            Assert.That(EnemyZoneEvaluator.GetTier(held, EnemyZoneVerdict.Assemble, behindOnZones: true), Is.EqualTo(-1));
+            Assert.That(EnemyZoneEvaluator.GetTier(quiet, EnemyZoneVerdict.Go, behindOnZones: true), Is.GreaterThan(-1),
+                "A held zone without hostiles needs no defence.");
+        }
+
+        [Test]
+        public void Allocate_HeldZoneWithOwnSatellitesGetsShipsBelowAnEvenFight_ARelayAloneDoesNot()
+        {
+            EnemyZoneObjective satellites = Zone("satellites", defenders: 10, held: true, ownStructures: 2);
+            EnemyZoneObjective relayOnly = Zone("relayOnly", defenders: 10, held: true);
+
+            List<int> defended = Allocate(new EnemyZoneAllocator(), new[] { satellites }, ships: 2);
+            List<int> gathered = Allocate(new EnemyZoneAllocator(), new[] { relayOnly }, ships: 2);
+
+            Assert.That(defended, Is.All.EqualTo(0), "Ships fight around their own satellites.");
+            Assert.That(gathered, Is.All.EqualTo(RESERVE));
+        }
+
+        [Test]
+        public void Allocate_DeployZoneIsTheGatherZone_ElseTheBestServedZone()
+        {
+            EnemyZoneObjective[] zones = { Zone("free", priority: 100f), Zone("defended", defenders: 5, priority: 900f) };
+            var gathering = new EnemyZoneAllocator();
+            var served = new EnemyZoneAllocator();
+
+            Allocate(gathering, zones, ships: 1);
+            Allocate(served, new[] { zones[0] }, ships: 1);
+
+            Assert.That(gathering.GatherZone, Is.EqualTo(1));
+            Assert.That(gathering.DeployZone, Is.EqualTo(1), "New ships are needed where the next force gathers.");
+            Assert.That(served.DeployZone, Is.EqualTo(0), "With every zone served they go to the best-ranked force.");
+        }
+
         private static List<int> Allocate(EnemyZoneAllocator allocator, IReadOnlyList<EnemyZoneObjective> zones, int ships,
             int current = RESERVE, List<int> currentPerShip = null, Func<int, int, float> distance = null,
             bool behindOnZones = false)
@@ -200,10 +239,11 @@ namespace EmpireAtWar.Tests.Editor
         }
 
         private static EnemyZoneObjective Zone(string id, int defenders = 0, float priority = 500f,
-            string denyReason = null, bool threatened = false, bool ownSide = false, bool centre = false)
+            string denyReason = null, bool threatened = false, bool ownSide = false, bool centre = false,
+            bool held = false, int ownStructures = 0)
         {
             var zone = new EnemyZoneObjective();
-            zone.Reset(id, centre, ownSide, priority, 30f, 0, denyReason, threatened);
+            zone.Reset(id, centre, ownSide, priority, 30f, 0, denyReason, threatened, held, ownStructures);
             AddShips(zone.Defenders, defenders);
             return zone;
         }

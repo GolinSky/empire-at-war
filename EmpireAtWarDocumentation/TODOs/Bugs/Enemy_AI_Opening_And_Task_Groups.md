@@ -43,7 +43,10 @@ follows: "[[TODOs/Bugs/Enemy_AI_Economy_Strategy]]"
 - Ships do not wait. Task force groups as before. One or two wing groups that act.
 
 ## Capture check (source, 2026-11-19)
-- Capture works. `CaptureSiteData.asset`: pad radius **60**, 10 s per net ship; mining site radius 500, 6 s; relay per zone data. One wing = 0.5 ship → pad in 20 s alone, 10 s with two wings; mine in 12 s alone.
+- **Correction 2026-11-19 22:40:** the radii below were read reversed. `CaptureSiteKind.Mining = 0` → radius **60**, 10 s per net ship. `Satellite = 2` → radius **500**, 6 s. One wing = 0.5 ship → a pad in 12 s from anywhere within 500; a mine in 20 s, only inside its 60 circle.
+  - Centre layout (22:29 map): mines ≈ 270 from the centre, pads ≈ 470. A group standing **on a mine spot** captures that mine and 2–3 pads at once (user: "a couple of seconds").
+  - Steps built on the wrong radii: one wing per pad, the 400 "hold near a pad" move order, mines after pads. Replaced by round 2 (B1).
+- ~~Capture works. `CaptureSiteData.asset`: pad radius 60, 10 s per net ship; mining site radius 500, 6 s.~~
 - AI builds on an owned site within ≤ 3 s (`EnemySiteConstructionController`, 3 s tick). 21:11: pad 7 owned 45 s → satellite 45 s; pad 6 owned 52 s → satellite 54 s.
 - Satellites: 300–1,600 credits, 21–47 s build. Mine 25 s.
 - Gate: no site construction at level 1 until the miners are bought and the level-2 upgrade has started (`OpeningMiningPending`, `OpeningLevelReserve`). 21:11: open from 6 s.
@@ -156,6 +159,79 @@ follows: "[[TODOs/Bugs/Enemy_AI_Economy_Strategy]]"
 - Unity recompile: 0 errors (`Assembly-CSharp`, `Assembly-CSharp-Editor`).
 - `EnemyAi` EditMode (user request, 2026-11-19): 533/542 → 9 failures fixed → **542/542 pass** (quick run, explicit tests excluded). Fixes: outer wing count pushed on first `EnemyFactionController.Tick` (not `Initialize`); test catalogs given squadron profiles; evaluator test updated to the new centre rule; production snapshot treats missing capture wings as orderable fleet before 30 s (else income research came before the opening wings). Updated: `EnemyZoneAllocatorTests`, `EnemyUnitCommanderTests` (allocation, scout, raid, groups, station wings, escorts, station defence), `EnemySquadronCaptureAssignmentsTests` (`AssignInZone` ×3), `EnemyProductionStrategyTests` (opening, level-1 corvette). Reviewed, no change: `EnemyDecisionSchedulingTests` (constructor unchanged).
 - Reusable guidance → [[Architecture/Enemy_AI_Objectives#Opening and wing groups (2026-11-19, A1–A7) — current]].
+
+## Evidence — battle 2026-11-19 22:29 (A8 run 1; UltraHard Small 1v1, code `70a3e0bb5` dirty) — user: opening better, then broken
+Files: `%USERPROFILE%/AppData/LocalLow/GolinSkyCompany/EmpireAtWar/BattleTelemetry/Loading_20261119_222941_ai.csv`, `_ai_orders.csv`, `_squadrons.csv`, `Battle_20261119_222944_map.csv`, `Battle_20261119_223051.csv`.
+- AI Separatist (1015, −1086) vs human Republic (−1015, 1086). Coruscant, seed −94196682. Log 10.9 s = battle 0 s. Recorded 286 s.
+- Outer zones: SW (−1555, −1458), NE (1555, 1458); both ≈ 2,600 from the AI station.
+
+### Worked
+- Station wings ordered at launch (first order ≤ 6 s). Centre: pads 4 / 9 / 5 / 8 at 28–40 s, relay 37 s, 3 satellites by 39 s. SW zone: pads 51–52 s, relay 59 s, mine 64 s.
+- No corvette before 30 s; none from level 2. `escorts` 0–3.
+
+### Faults
+- **R1 (P0) Centre mines never taken.** Sites 0–3 `got0` on all 48 `wingAssignment` rows. From 38 s each mine shows `defenders1+` → "contested" → skipped. Human took them at 45 / 76 / 150 / 175 s. AI first centre mine at 168 s (a ship).
+  - Wings went one per pad, never onto a mine spot (wrong radii, see Capture check).
+- **R2 (P0) Wing swarm stands still.** 12–27 wings circled at the bait point ≈ (370, −400) from 43 s to 250 s, ≈ 250 from the free mine at (213, −166). Rule: "every site contested → wait at the zone edge". With 23 wings vs 5–16 defenders nobody attacked.
+- **R3 (P0) Wing overbuy.** 24 wings at 7–29 s (12 Vulture + 12 Belbullab, 6,000 credits), 12 more at 62–86 s (9 bombers) → 36 bought + 5 station wings. Cause: `TrySelectSquadron(ignoreShipRatio: !canOrderShips)` → no cap while ships are forbidden.
+  - Effects: first ship deployed 64 s; mine construction `started=False` × 9 (66–96 s, no money); level 3 bought 118 s; first frigate 154 s.
+- **R4 (P0) Second outer zone not visited at the start.** Group B took the SW zone, then moved to the NE zone at 74 s. Human took the NE pads 110 s, relay 117 s.
+- **R5 (P0) Group B order swapping.** `groupBZone` flipped SW ↔ NE at 74 / 110 / 128 s; 10–11 wings sat on the NE relay point 128–182 s; at 200 s `defenders3` → all recalled. Hostile mine 14 never targeted; `raids=0` on all rows. Turbolaser satellites rated as a flat 60 DPS against wings.
+- **R6 (P0) Held centre gets no ships.** AI owned the centre relay 37–273 s with 3 satellites. `zoneAlloc zone:0 ships0` on all 68 rows (`defenders 5–16, statics 2–5`). All 3–10 ships went to the NE zone. Centre lost 273 s.
+  - Cause: the centre is rated as an attack on its remaining mines, not as an own zone under threat; own wings in the zone are not counted.
+- **R7 (P0) Ships deploy at home only.** All 14 deployments at the station (`tier=A`), rally (674, −721), while the AI held the centre relay and the SW relay. Then a 2,600 march past the centre; human ships intercepted.
+- **R8 (P1) NE zone attack.** 3–10 ships there 119–286 s; relay flipped 227 s, lost 263 s; objective switched relay ↔ mine ↔ pads; satellites not targeted first (A5 gap).
+- **R9 (P1) Ships late.** Follows R3.
+
+## Round 2 — steps (B1–B6 + B9 done 2026-11-19; B7, B8, B4 satellite types open)
+### User rules added 2026-11-19 22:40
+- Wings fly **onto mining spots** in the centre: mine + nearby pads are captured together. Build mine or battle asteroid at once.
+- Both outer zones are visited at the start.
+- A swarm never stands still: capture every mining spot, build, attack.
+- A raid finishes the job. In a zone with turbolaser satellites, bombers hit the mine first. No retreat of part of the group; no order swapping.
+- A held zone is defended: support comes to fight around the satellites.
+- Reinforcements spawn **inside held zones**.
+- Ship routes do not skirt the enemy-held centre.
+
+- [x] **B1 Wing capture by mining spot (R1, R2).**
+  - Group A target = a centre **mine spot**; the whole group (or half per spot when ≥ 6 wings) holds inside its 60 circle until the mine and the pads within 500 flip, then the next spot, base-side first.
+  - Delete: one wing per pad, `CAPTURE_HOLD_DISTANCE`, the bait point, "contested → skip".
+  - Contested spot: group advantage vs units within 500 ≥ 1 → fight there (attack-move onto the spot); else next spot; no spot → the pad nearest home. Never idle.
+- [x] **B2 Wing budget (R3, R9).** Opening purchase cap: free wings (station + bought) ≤ 6 for cheap wings, ≤ 4 otherwise, until the first ship is deployed. Bombers ≤ 3 per known hostile mine. Remove the uncapped `ignoreShipRatio` path. Mines and satellites are paid before extra wings.
+- [x] **B3 Outer zones at the start (R4).** One B group per outer zone: 1 wing each from the first decision (2 to the own-side or nearer zone when wings are cheap). Each lands on the zone's mine spot.
+- [ ] **B4 Group commitment (R5).** Commitment done; satellite threat by type and satellite raid order open (see Round 2 notes). A group keeps its zone until it is taken or the group is below 50 % of its wings. No per-pass zone switch. Raid target order inside a zone: mine → satellites → relay for bombers. Satellite threat vs wings by type (turbolaser low, quad laser high) instead of flat 60.
+- [x] **B5 Defend held zones (R6).** A zone where the team holds the relay or a satellite and hostiles are present = top tier. Force rated with own satellites **and own wings in the zone**. Ships are sent even below an even fight while own satellites stand (fight around them).
+- [x] **B6 Deploy in held zones (R7).** `EnemyFactionController.TryFindShipSpawnPosition`: spawn in the held zone nearest the ship's task (centre for the centre force, outer relay for that zone) when its spawn rule is open; else home. Check `ReinforcementSpawnRule.IsOpen` for AI-held capturable zones.
+- [ ] **B7 Route (R7).** Waypoint around a hostile-held centre for ship groups (deferred from A3).
+- [ ] **B8 Hostile zone order (R8, A5 gap).** Satellites → relay → pads for ships.
+- [x] **B9 Tests (`EnemyAi`).** Written, not run (local override); spawn-point and own-wing support covered only at allocator level. Group lands on a mine spot; never idle with a free spot in the zone; purchase cap; one group per outer zone; group keeps its zone across passes; held zone under attack is top tier and counts wings; spawn point picks a held zone.
+- [ ] **B10 Battle.** Same matchup. Gates: all 4 centre mines AI-owned or contested by 60 s; no wing circling > 15 s with a free site in its zone; wings bought ≤ cap before the first ship; first ship ≤ 45 s; NE and SW zones both visited by 40 s; ≥ 50 % of ships at the centre while it is held and attacked; ≥ 1 deployment outside the home zone once a relay is held.
+
+## Round 2 — implementation notes (2026-11-19)
+### Wings (B1, B3, B4)
+- `EnemySiteObjectives.AddSquadronTargets` → `AddMiningSpot` for every mining site (any owner); pads carry their capture radius.
+- `EnemySquadronCaptureAssignments.AssignInZone(wings, centre, reach, home, addWing)`: spot with work (mine target or pad whose radius covers the spot), base-side first. ≥ `SPLIT_GROUP_WINGS` 6 wings + ≥ 2 spots → halves on the two best spots.
+- Uncontested spot → hold (`TryGetHold`): attack-move, then `MoveTo` within `HOLD_ENTRY_SCALE` 2 × spot radius. Contested → attack-move only when the part's advantage ≥ 1, else next spot.
+- No spot → free site nearest home → contested site nearest home → zone centre. Deleted: bait point, one wing per pad, `CAPTURE_HOLD_DISTANCE`, `IsSite`, relay/mine order.
+- `EnemySquadronCommander._outerGroups`: one `EnemyWingGroup` per outer zone (`HomeZone`), nearest home first. Fill: 1 wing per outer group, then group 0 up to `_outerWingCount`; rest → A. Bombers → outer group 0.
+- Commitment: zone kept while it has targets and capturers ≥ `Peak` / 2. Taken → next outer zone with targets (unworked first); weak → nearest winnable zone, else stays. `Peak` resets on change.
+- Raids: outer groups without a zone with all wings; bombers any time. Telemetry `groupB=n@(x z)|n@raid`, `spots=`.
+### Production (B2)
+- `EnemyWingPricing`: `CHEAP_WING_PRICE` 300, opening cap 6 cheap / 4 otherwise. `HasSquadronRoom`: ship count 0 → opening cap (station + hangar wings count). `ignoreShipRatio` removed.
+- Bombers ≤ `BOMBERS_PER_HOSTILE_MINE` 3 × known hostile mines.
+- `PriorityConstructionPending` blocks ships and every wing except missing capture wings.
+- "First ship deployed" approximated as first ship **bought** (reserved count > 0).
+### Ships (B5, B6)
+- `EnemyZoneObjective.IsHeld` (relay allied or own satellite/platform), `OwnStructures`, `IsHeldUnderAttack`. `OwnSupport` += own wings within 2 × radius.
+- `GetTier`: held under attack → −1 whatever the verdict. `TryFill`: held under attack with `OwnStructures > 0` → all free ships committed below even.
+- `EnemyZoneAllocator.DeployZone` = gather zone → best served zone → weak target. Planner `DeploymentPoint` = its centre; `TryGetReinforcementRally` prefers it over `GatherPoint` → `TryGetSpawnPositionNear` picks the held relay or station nearest it (spawn rule must be open).
+### Open
+- **B4 satellite threat by type:** armed structures still a flat 60 DPS. Needs a platform-type facade (only `IStructureSaveFacade.TypeId` exposes it) and `UnitCombatProfileCatalog` profiles from `DefendPlatformData.WeaponLoadout`; test fakes need both.
+- **B7 route waypoint** and **B8 satellites → relay → pads** not started (B8 needs hostile satellites as blocking-facility candidates).
+- A held zone with no candidate site left gives its zone group nothing to capture (not verified).
+### Verification
+- Unity recompile: 0 errors. Tests not run (local override).
+- Updated: `EnemySquadronCaptureAssignmentsTests` (5 `AssignInZone` tests replace 3), `EnemyUnitCommanderTests` (raid, group fill, commitment), `EnemyZoneAllocatorTests` (+3), `EnemyProductionDecisionModelTests` (opening cap step). Reviewed, no change: rally test (no allocation → `GatherPoint` path), `OwnedSiteDefense_*` (data has Mining settings).
 
 ## Acceptance (telemetry)
 - First wing order ≤ 6 s. Wings at the centre ≥ 3 by 40 s; outer-zone group 1–2 wings.

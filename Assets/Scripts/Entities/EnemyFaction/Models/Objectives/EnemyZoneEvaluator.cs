@@ -69,13 +69,14 @@ namespace EmpireAtWar.Entities.EnemyFaction.Models.Objectives
         /// Selection order before score: lower tiers win. Go zones of the chosen tier are interchangeable. The centre
         /// is never excluded. Behind on zones it is the last target while it needs assembly, unless the economy
         /// already stands (an outer zone and the home mine held); a centre the force beats is taken like any other
-        /// enemy-side zone.
+        /// enemy-side zone. A held zone under attack is the top tier whatever the verdict: its satellites fight beside
+        /// the force sent.
         /// </summary>
         public static int GetTier(EnemyZoneObjective zone, EnemyZoneVerdict verdict, bool behindOnZones,
             bool strongEconomy = false)
         {
             bool go = verdict == EnemyZoneVerdict.Go;
-            if (zone.IsThreatened && go) return -1;
+            if (zone.IsHeldUnderAttack || zone.IsThreatened && go) return -1;
             if (!behindOnZones) return go ? 0 : 1;
             if (zone.IsOwnSide && !zone.IsCentre) return go ? 0 : 1;
             if (zone.IsCentre && !go && !strongEconomy) return 4;

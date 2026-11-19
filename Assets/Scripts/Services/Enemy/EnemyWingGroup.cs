@@ -5,8 +5,9 @@ using EmpireAtWar.Presenters.ReinforcementZones;
 namespace EmpireAtWar.Services.Enemy
 {
     /// <summary>
-    /// A standing AI wing group: its members, its role and the zone it works this pass. Group wings capture; they
-    /// are never pulled off to escort. A lost wing is replaced by the next free wing.
+    /// A standing AI wing group: its members, its role and the zone it works. Group wings capture; they are never
+    /// pulled off to escort. A lost wing is replaced by the next free wing. An outer group keeps its zone until the
+    /// zone is taken or the group falls below half of its peak size.
     /// </summary>
     public sealed class EnemyWingGroup
     {
@@ -14,7 +15,16 @@ namespace EmpireAtWar.Services.Enemy
         public List<ISquadron> Members { get; } = new List<ISquadron>();
         /// <summary>The zone the group works; null when it has none (no centre on the map, or no outer zone left).</summary>
         public ReinforcementZonePresenter Zone { get; set; }
+        /// <summary>The outer zone the group was formed for; it fills the group's quota. Null for the centre group.</summary>
+        public ReinforcementZonePresenter HomeZone { get; }
+        /// <summary>Most capturing (non-bomber) wings the group held since it last chose its zone.</summary>
+        public int Peak { get; set; }
 
-        public EnemyWingGroup(EnemyWingRole role) => Role = role;
+        public EnemyWingGroup(EnemyWingRole role, ReinforcementZonePresenter homeZone = null)
+        {
+            Role = role;
+            HomeZone = homeZone;
+            Zone = homeZone;
+        }
     }
 }

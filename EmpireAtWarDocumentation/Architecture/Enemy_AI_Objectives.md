@@ -20,7 +20,18 @@ verification: Reviewed affected source and regression fixtures. Unity 6000.4.7f1
 
 ## Implementation
 
-### Opening and wing groups (2026-11-19, A1–A7) — current
+### Wing capture round 2 (2026-11-19, B1–B6) — current
+
+- Supersedes in the next section: one group B, in-zone pad choice, bait at the edge, 400 move order, uncapped wings while ships are locked.
+- Capture radii: mine 60 (10 s / net ship), satellite pad 500 (6 s). A wing on a mine spot takes the mine and every pad within 500.
+- Groups land on mining spots (`AssignInZone`): base-side first; ≥ 6 wings split over two spots; contested only when advantage ≥ 1; no spot → nearest-home site; never idle. Uncontested spot → `MoveTo` within 2 × spot radius.
+- One outer group per outer zone: 1 wing each, the nearer zone up to 2 (cheap wings); bombers → nearest outer group. Zone kept until taken or below half of peak.
+- Opening wing cap before the first ship: 6 cheap / 4 otherwise (`EnemyWingPricing`); bombers ≤ 3 per known hostile mine; pending satellites/mines block extra wings.
+- Held zone (relay allied or own satellite) with hostiles → tier −1; with own satellites → free ships sent below an even fight. Own wings in the zone count as support.
+- New ships arrive at the held relay/station nearest `EnemyZoneAllocator.DeployZone` (gather zone → best served zone → weak target).
+- Open (owner plan): satellite threat still flat 60 DPS; no route waypoint; no satellite-first ship order.
+
+### Opening and wing groups (2026-11-19, A1–A7)
 
 - Supersedes in the allocator section below: retain-line release (`0.85 ×`), idle reserve / waiting fleet, `hostileZoneOnRoute`, pause on any station pressure, wing raid counts (surplus beyond 3 / behind → all but 1).
 - Allocator: sent force keeps its zone until its own local fight is lost; no idle ship (leftovers join the nearest force; none out → all attack `WeakTarget`); centre force led by the most durable ship. New forces pause only while the station is critical.

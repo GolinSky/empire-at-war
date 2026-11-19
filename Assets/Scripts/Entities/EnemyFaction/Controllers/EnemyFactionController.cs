@@ -48,8 +48,6 @@ namespace EmpireAtWar.Entities.EnemyFaction.Controllers
         private const int MINIMUM_DEFENSE_WAVE = 2;
         private const int MINIMUM_REINFORCEMENT_WAVE = 3;
         private const float ASSAULT_WAVE_INTERVAL = 30f;
-        /// <summary>A fighter wing at or below this price is cheap: two wings open on the outer zone, otherwise one.</summary>
-        private const float CHEAP_WING_PRICE = 300f;
 
         private readonly IEconomyProvider _economyProvider;
         private readonly IWallet _wallet;
@@ -159,17 +157,6 @@ namespace EmpireAtWar.Entities.EnemyFaction.Controllers
             _isInitialized = true;
         }
 
-        private bool HasCheapFighterWing()
-        {
-            foreach (KeyValuePair<SquadronType, FactionData> option in Model.SquadronFactionData)
-            {
-                ShipClass wingClass = _profiles.Get(UnitTypeId.Squadron(option.Key)).ShipClass;
-                if (wingClass is ShipClass.Fighter or ShipClass.Interceptor && option.Value.Price <= CHEAP_WING_PRICE)
-                    return true;
-            }
-            return false;
-        }
-
         public void LateDispose()
         {
             CancelPendingBuilds();
@@ -249,7 +236,8 @@ namespace EmpireAtWar.Entities.EnemyFaction.Controllers
         {
             if (!_outerWingCountSent)
             {
-                _squadronCommander.SetOuterWingCount(HasCheapFighterWing() ? 2 : 1);
+                _squadronCommander.SetOuterWingCount(
+                    EnemyWingPricing.HasCheapFighterWing(Model.SquadronFactionData, _profiles) ? 2 : 1);
                 _outerWingCountSent = true;
             }
             bool hasRally = _aiState.TryGetReinforcementRally(out Vector3 rally, out bool defendHome);

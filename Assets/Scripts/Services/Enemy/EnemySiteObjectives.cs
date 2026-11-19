@@ -88,13 +88,17 @@ namespace EmpireAtWar.Services.Enemy
         {
             foreach (ICaptureSite site in _sites.Sites)
             {
+                Vector3 centre = ToVector(ToPoint(site.Center));
+                float radius = _data.GetSettings(site.Kind).Radius;
+                // Wings land on mining spots whoever owns the mine: the satellite pads in reach flip from there.
+                if (site.Kind == CaptureSiteKind.Mining) assignments.AddMiningSpot(centre, radius);
                 var strength = _presence.GetTeamStrengths(site, _owner.Id);
                 bool threatened = site.Owner == _owner.Id && strength.Hostile > 0f;
                 if (!threatened && !IsCapturable(site)) continue;
 
                 // Whether wings go in is decided by wing power against the defenders, not by this source.
-                assignments.AddTarget(ToVector(ToPoint(site.Center)), threatened,
-                    isSatellitePad: site.Kind == CaptureSiteKind.Satellite, isMine: site.Kind == CaptureSiteKind.Mining);
+                assignments.AddTarget(centre, threatened, isSatellitePad: site.Kind == CaptureSiteKind.Satellite,
+                    isMine: site.Kind == CaptureSiteKind.Mining, captureRadius: radius);
             }
         }
 
