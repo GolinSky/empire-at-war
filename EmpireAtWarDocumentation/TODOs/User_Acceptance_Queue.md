@@ -300,6 +300,13 @@ created: "2026-10-29\r"
 - [ ] [[Done/Bugs/Enemy_AI_Active_Play_And_Ship_Combat]] — Confirm viable squadron groups contest occupied circles, spare wings raid distinct mines, and outnumbered combat groups avoid hostile routes. Direct Attack holds when killed targets have no replacement within reach.
 - [ ] [[Done/Bugs/Enemy_AI_Active_Play_And_Ship_Combat]] — Run affected EditMode fixtures when explicitly authorized (EnemyAi, Capture, Ships, Navigation, BattleInput, Economy, GameFlow and dependent fixture bindings).
 
+## Enemy AI Economy Strategy
+
+- [ ] [[Done/Bugs/Enemy_AI_Economy_Strategy]] — Replay the uncontested Small-map opening. Check home, centre and both safe outer mining zones by about 4 min, with detachments retaining their assignment through light opposition.
+- [ ] [[Done/Bugs/Enemy_AI_Economy_Strategy]] — Verify centre consolidation, mine and satellite rebuilding, mixed staggered platforms, station income research, purchases and rear launches. Check the backup station's emergency and late-surplus placement.
+- [ ] [[Done/Bugs/Enemy_AI_Economy_Strategy]] — Verify the level-4 capital assault gate, sustained reinforcement waves, and cancellation when zone control or the reinforcement plan is lost.
+- [ ] [[Done/Bugs/Enemy_AI_Economy_Strategy]] — Run affected EnemyAi, Capture, Economy, Ships and Core composition fixtures when authorized.
+
 ## Enemy AI Endgame Defense and Capture
 
 - [ ] [[Done/Bugs/Enemy_AI_Endgame_Defense_And_Capture_Fix]] — Siege: no defense gap > 5 s while the station loses durability; defenders have targets in range within 15 s of latch; single superweapon hit does not recall the fleet.

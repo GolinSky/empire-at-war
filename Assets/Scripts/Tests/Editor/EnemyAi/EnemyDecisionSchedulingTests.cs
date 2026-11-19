@@ -441,7 +441,7 @@ namespace EmpireAtWar.Tests.Editor
                 Array.Empty<IEnemyCaptureObjectiveSource>(), entities, game, roster,
                 new ForceCompositionBuilder(entities, catalog, snapshot), intelRegistry,
                 new VisionService(roster, fogEnabled: false), owner, production, new TestHazards(), zones,
-                navigation, pressure, recovery, snapshot, new TeamAiPictureRegistry(intelRegistry, roster, zones, catalog, snapshot));
+                navigation, pressure, recovery, snapshot, new TeamAiPictureRegistry(intelRegistry, roster, zones, catalog, snapshot), new EnemyFactionModel(null, null));
             var commander = new EnemyUnitCommander(shipService, zoneSystem, entities, game, orders,
                 new EnemyStrategicDecisionModel(), builder, new EnemyTaskForceExecutor(orders),
                 owner, patrol, patrolShips, battleState, scheduler);
@@ -517,7 +517,7 @@ namespace EmpireAtWar.Tests.Editor
             var pictures = new TeamAiPictureRegistry(intelRegistry, roster, new TestZoneSource(), catalog, snapshot);
             var builder = new EnemyStrategicContextBuilder(null, null, Array.Empty<IEnemyCaptureObjectiveSource>(),
                 entities, null, roster, null, intelRegistry, null, owner, null, null, null, null, null, null,
-                snapshot, pictures);
+                snapshot, pictures, new EnemyFactionModel(null, null));
             var commander = new EnemyUnitCommander(null, null, entities, null, null, null, builder, null,
                 owner, null, null, null, scheduler);
             handle = scheduler.Register(owner.Id, 4f, 4f, () => { });

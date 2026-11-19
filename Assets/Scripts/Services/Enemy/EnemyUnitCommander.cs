@@ -42,6 +42,7 @@ namespace EmpireAtWar.Services.Enemy
         bool HoldFinishedReinforcements => false;
         bool IsStationCritical => false;
         bool TryGetReinforcementRally(out Vector3 rally, out bool defendHome);
+        bool TryGetRearDeploymentThreats(Vector3 station, PlacementThreatSnapshot threats) => false;
         void FillDefenseDeploymentThreats(PlacementThreatSnapshot threats) =>
             throw new InvalidOperationException("This AI does not provide station-defense deployment threats.");
     }
@@ -114,6 +115,9 @@ namespace EmpireAtWar.Services.Enemy
         public bool HoldFinishedReinforcements => true;
         public bool IsStationCritical => _contextBuilder.StationCritical;
 
+        public bool TryGetRearDeploymentThreats(Vector3 station, PlacementThreatSnapshot threats) =>
+            _contextBuilder.TryGetRearDeploymentThreats(station, threats);
+
         public void FillDefenseDeploymentThreats(PlacementThreatSnapshot threats) =>
             _contextBuilder.FillDefenseDeploymentThreats(threats);
 
@@ -153,7 +157,7 @@ namespace EmpireAtWar.Services.Enemy
                 rally = context.CaptureTarget;
                 return true;
             }
-            if (group.Decision.State == EnemyStrategicState.GuardSite && context.GuardPosition is Vector3 guard)
+            if (group.Decision.State is (EnemyStrategicState.GuardSite or EnemyStrategicState.Consolidate) && context.GuardPosition is Vector3 guard)
             {
                 rally = guard;
                 return true;
@@ -403,7 +407,8 @@ namespace EmpireAtWar.Services.Enemy
                 snapshot.LocalAdvantage, snapshot.HasLocalThreat, snapshot.HasRaidTarget,
                 snapshot.IsRegrouped, snapshot.HasStationPressure, snapshot.HasSafeRetreat,
                 snapshot.HasEconomyRaidTarget, snapshot.LocalRaw, snapshot.FleetRaw,
-                snapshot.RecoveryMode, snapshot.IsStationCritical, snapshot.HasGuardSite, snapshot.IsCentreGuardGoal);
+                snapshot.RecoveryMode, snapshot.IsStationCritical, snapshot.HasGuardSite, snapshot.IsCentreGuardGoal,
+                snapshot.CanAssaultBase, snapshot.CanHuntFleet, snapshot.HasSecuredCentre);
             _recoveryStartedAt = _cyclePrimary.RecoveryStartedAt;
             _actionReason = _cyclePrimary.Executor.ActionReason + _cycleGroupSummary;
 #if UNITY_EDITOR || DEVELOPMENT_BUILD

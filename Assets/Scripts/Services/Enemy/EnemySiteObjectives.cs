@@ -6,6 +6,7 @@ using EmpireAtWar.Models.Players;
 using EmpireAtWar.Services.CaptureSites;
 using EmpireAtWar.Utils;
 using UnityEngine;
+using EmpireAtWar.Presenters.ReinforcementZones;
 using static EmpireAtWar.Utils.FormationConversion;
 
 namespace EmpireAtWar.Services.Enemy
@@ -41,6 +42,14 @@ namespace EmpireAtWar.Services.Enemy
             _owner = owner;
         }
 
+        public bool HasMiningSite(ReinforcementZonePresenter zone)
+        {
+            foreach (ICaptureSite site in _sites.Sites)
+                if (site.Kind == CaptureSiteKind.Mining &&
+                    EnemyShipTaskGroupPlanner.IsInZone(zone, site.Center)) return true;
+            return false;
+        }
+
         public void AddStrategicObjectives(List<EnemyCaptureObjective> objectives, HostileIntelModel intel)
         {
             for (int i = 0; i < _sites.Sites.Count; i++)
@@ -52,7 +61,6 @@ namespace EmpireAtWar.Services.Enemy
                 float progress = site.CaptureProgress;
                 bool isMine = site.Kind == CaptureSiteKind.Mining;
                 var strength = _presence.GetTeamStrengths(site, _owner.Id);
-                if (isMine && !threatened && IsCapturable(site) && IsMiningThreatened(site, intel)) continue;
                 if (!threatened && !IsCapturable(site))
                 {
                     if (!isMine || site.FacilityType != SiteFacilityType.Mining ||

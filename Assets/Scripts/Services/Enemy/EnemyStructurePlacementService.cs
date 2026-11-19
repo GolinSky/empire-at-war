@@ -10,6 +10,10 @@ using EmpireAtWar.Services.Vision;
 using EmpireAtWar.Services.Stations;
 using Unity.Profiling;
 using UnityEngine;
+using EmpireAtWar.Entities.BaseEntity.EntityFacades;
+using EmpireAtWar.Presenters.ReinforcementZones;
+using EmpireAtWar.Services.Saves;
+using static EmpireAtWar.Utils.FormationConversion;
 
 namespace EmpireAtWar.Services.Enemy
 {
@@ -40,6 +44,9 @@ namespace EmpireAtWar.Services.Enemy
         private static readonly ProfilerMarker _snapshotMarker = new ProfilerMarker("EnemyAI.Placement.ThreatSnapshot");
 
         private readonly IReinforcementZonesSystem _zones;
+        private readonly IReinforcementZoneSource _zoneSource;
+        private readonly AiWorldSnapshot _world;
+        private readonly EnemyPatrolService _patrol;
         private readonly IReinforcementSpawnRule _spawnRule;
         private readonly IStructureSpawnClearance _structureClearance;
         private readonly IVisionService _vision;
@@ -81,13 +88,19 @@ namespace EmpireAtWar.Services.Enemy
             PlayerSlot owner,
             BoxCollider stationPrefab,
             IProductionAccess productionAccess,
-            IEnemyRecoveryPolicy recovery)
+            IEnemyRecoveryPolicy recovery,
+            IReinforcementZoneSource zoneSource,
+            AiWorldSnapshot world,
+            EnemyPatrolService patrol)
         {
             _owner = owner;
             _productionAccess = productionAccess;
             _recovery = recovery;
             _mapModel = mapModel;
             _zones = zones;
+            _zoneSource = zoneSource;
+            _world = world;
+            _patrol = patrol;
             _spawnRule = spawnRule;
             _structureClearance = structureClearance;
             _vision = vision;
@@ -117,6 +130,72 @@ namespace EmpireAtWar.Services.Enemy
             _placement = position;
             _placementFrame = frame;
             return _hasPlacement;
+        }
+
+        public bool TryGetDefensePosition(out Vector3 position)
+        {
+            PrepareSearch();
+            _world.EnsureCurrent();
+            _placementSource = "heldZone";
+            ReinforcementZonePresenter centre = EnemyShipTaskGroupPlanner.GetCentre(_zoneSource.Zones);
+            if (centre != null && TryGetUndefendedZonePosition(centre, out position)) return true;
+            foreach (ReinforcementZonePresenter zone in _zoneSource.Zones)
+                if (zone != centre && zone.IsCapturable && TryGetUndefendedZonePosition(zone, out position)) return true;
+            foreach (ReinforcementZonePresenter zone in _zoneSource.Zones)
+                if (!zone.IsCapturable && TryGetUndefendedZonePosition(zone, out position)) return true;
+            position = default;
+            return false;
+        }
+
+        private bool TryGetUndefendedZonePosition(ReinforcementZonePresenter zone, out Vector3 position)
+        {
+            position = default;
+            if (zone.Owner != _owner.Id || zone.IsContested) return false;
+            foreach (AiWorldSnapshot.Entry structure in _world.Structures)
+                if (structure.Owner == _owner.Id &&
+                    EnemyShipTaskGroupPlanner.IsInZone(zone, structure.Position) &&
+                    structure.Entity.TryGetFacade(out IStructureKindFacade type) &&
+                    type.Kind == StructureKind.DefendPlatform) return false;
+
+            // Place around the relay so the platform covers it without blocking the capture sites.
+            return TryGetPositionNear(zone.Center, zone.Radius, out position);
+        }
+
+        public bool TryGetSecondStationPosition(out Vector3 position)
+        {
+            const float MINIMUM_HOME_DISTANCE = 1400f;
+            const float MAX_SCOUT_AGE = 45f;
+            PrepareSearch();
+            Vector3 home = GetStationCenter();
+            bool found = false;
+            float bestScore = float.NegativeInfinity;
+            position = default;
+            bool hasHomeZone = _zones.TryGetDefaultZoneCenter(_owner.Id, out Vector3 homeZone);
+            foreach (EnemyPatrolPoint point in _patrol.Memory.Entries)
+            {
+                if (point.LastSeenTime < 0f || point.Staleness(Time.time) > MAX_SCOUT_AGE) continue;
+                Vector3 candidate = ToVector(point.Position);
+                float distance = Vector3.Distance(home, candidate);
+                if (distance < MINIMUM_HOME_DISTANCE || !IsPlaceable(candidate)) continue;
+                if (hasHomeZone && Vector3.Distance(homeZone, candidate) < MINIMUM_HOME_DISTANCE) continue;
+                bool ownedZone = false;
+                foreach (ReinforcementZonePresenter zone in _zoneSource.Zones)
+                    if (zone.Owner == _owner.Id && !zone.IsContested &&
+                        EnemyShipTaskGroupPlanner.IsInZone(zone, candidate))
+                    {
+                        ownedZone = true;
+                        break;
+                    }
+                float score = (ownedZone ? MINIMUM_HOME_DISTANCE : 0f) +
+                    Mathf.Min(MINIMUM_HOME_DISTANCE, _recovery.GetNearestHostileDistance(candidate)) -
+                    point.Staleness(Time.time);
+                if (score <= bestScore) continue;
+                position = candidate;
+                bestScore = score;
+                found = true;
+            }
+            if (found) _placementSource = "patrol";
+            return found;
         }
 
         private bool SearchPlacement(out Vector3 position)

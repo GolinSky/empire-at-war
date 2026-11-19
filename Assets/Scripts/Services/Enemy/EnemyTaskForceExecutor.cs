@@ -98,7 +98,11 @@ namespace EmpireAtWar.Services.Enemy
                 case EnemyStrategicState.RaidStructures: target = context.RaidTarget; break;
                 default: return true;
             }
-            return target == null || _attackForce.Assemble(context, target, decision.CommittedShipCount);
+            IReadOnlyList<IShipEntity> capitals = decision.State == EnemyStrategicState.AssaultBase
+                ? context.AssaultCapitals : null;
+            if (target == null) return true;
+            return _attackForce.Assemble(context, target, decision.CommittedShipCount, capitals) &&
+                (capitals == null || _attackForce.Ships.Count >= EnemyFactionModel.MINIMUM_ASSAULT_CAPITALS);
         }
 
         public void Execute(EnemyStrategicDecision decision, EnemyStrategicContext context, float? now = null)
@@ -144,12 +148,14 @@ namespace EmpireAtWar.Services.Enemy
                     IssueAttackOrHunt(context, decision.CommittedShipCount, context.EnemyFleetTarget);
                     return;
                 case EnemyStrategicState.AssaultBase:
-                    IssueAttackOrHunt(context, decision.CommittedShipCount, context.EnemyBaseTarget, allowHunt: false);
+                    IssueAttackOrHunt(context, decision.CommittedShipCount, context.EnemyBaseTarget, allowHunt: false,
+                        eligibleShips: context.AssaultCapitals);
                     return;
                 case EnemyStrategicState.EngageLocal:
                     ExecuteLocalEngagement(decision, context);
                     return;
                 case EnemyStrategicState.GuardSite:
+                case EnemyStrategicState.Consolidate:
                     ExecuteSiteGuard(context);
                     return;
                 case EnemyStrategicState.RaidStructures:
@@ -186,16 +192,17 @@ namespace EmpireAtWar.Services.Enemy
             IssueStrikeAttack(context, target);
         }
 
-        private void ExecuteSiteGuard(EnemyStrategicContext context)
+        private void ExecuteSiteGuard(EnemyStrategicContext context, List<IShipEntity> excluded = null)
         {
             Vector3 point = context.GuardPosition.Value;
             bool samePoint = _guardPosition == point;
             _guardPosition = point;
             context.OrderDestination = point;
-            _body.AddRange(context.Ships);
             var receivers = new List<GameEntity>();
             foreach (IShipEntity ship in context.Ships)
             {
+                if (excluded != null && excluded.Contains(ship)) continue;
+                _body.Add(ship);
                 bool insideGuardArea = PlanarDistance(ship.WorldPosition, point) <= FleetCohesion.RADIUS;
                 bool alreadyGuarding = _assignedShips.Contains(ship) && samePoint &&
                     (ship.CurrentOrder == UnitOrderType.AttackMove ||
@@ -584,7 +591,8 @@ namespace EmpireAtWar.Services.Enemy
         }
 
         private void IssueAttackOrHunt(EnemyStrategicContext context,
-            int committed, GameEntity target, bool allowHunt = true, bool assemble = true)
+            int committed, GameEntity target, bool allowHunt = true, bool assemble = true,
+            IReadOnlyList<IShipEntity> eligibleShips = null)
         {
             int count = Math.Min(committed, context.Ships.Count);
             if (target == null && !allowHunt)
@@ -597,7 +605,7 @@ namespace EmpireAtWar.Services.Enemy
             bool targeted = assemble && target != null;
             if (targeted)
             {
-                _attackForce.Assemble(context, target, count);
+                _attackForce.Assemble(context, target, count, eligibleShips);
                 attackers = _attackForce.Ships;
                 count = attackers.Count;
                 if (count == 0)
@@ -670,9 +678,16 @@ namespace EmpireAtWar.Services.Enemy
             {
                 int screeningCount = ready ? _supportShips.Count : 0;
                 _supportShips.Clear();
-                foreach (IShipEntity ship in context.Ships)
-                    if (!_attackForce.Ships.Contains(ship)) _supportShips.Add(ship);
-                GuardSupport(context, _supportShips, anchor);
+                if (context.Snapshot.HasSecuredCentre && context.GuardPosition.HasValue &&
+                    _lastState is (EnemyStrategicState.AssaultBase or EnemyStrategicState.RaidStructures))
+                    ExecuteSiteGuard(context, _attackForce.Ships);
+                else
+                {
+                    foreach (IShipEntity ship in context.Ships)
+                        if (!_attackForce.Ships.Contains(ship) &&
+                            (eligibleShips == null || ContainsShip(eligibleShips, ship))) _supportShips.Add(ship);
+                    GuardSupport(context, _supportShips, anchor);
+                }
                 ActionReason = ready
                     ? $"Target-specific force: {_strikeShips.Count} strike ships; {screeningCount} active screens; {_stragglers.Count} rallying; {_supportShips.Count} reserve."
                     : $"Assembling target counters: {_body.Count}/{count} ships in the body; {_supportShips.Count} reserve.";
@@ -860,6 +875,13 @@ namespace EmpireAtWar.Services.Enemy
         }
 
 
+
+        private static bool ContainsShip(IReadOnlyList<IShipEntity> ships, IShipEntity ship)
+        {
+            foreach (IShipEntity candidate in ships)
+                if (candidate == ship) return true;
+            return false;
+        }
 
         private void StopRemaining(EnemyStrategicContext context,
             IReadOnlyList<IShipEntity> ships, int start)

@@ -30,7 +30,9 @@ namespace EmpireAtWar.Services.Enemy
         private const int SHIPS_PER_SQUADRON = 2;
         private const int MINIMUM_CAPTURE_WINGS = 3;
         private const float COMBAT_RESEARCH_INTERVAL = 30f;
-        private const int DEFENSE_PLATFORM_TARGET = 1;
+        private const float DEFENSE_BUILD_INTERVAL = 20f;
+        private const float SECOND_STATION_LATE_SECONDS = 480f;
+        private const float STATION_PLACEMENT_RETRY_SECONDS = 10f;
 
         private readonly IEnemyPurchaseProcessor _purchaseProcessor;
         private readonly IUnitRequestFactory _requestFactory;
@@ -63,6 +65,8 @@ namespace EmpireAtWar.Services.Enemy
 
         private int _observedReleaseVersion;
         private float _nextCombatResearchTime;
+        private float _nextDefenseBuildTime;
+        private float _nextStationPlacementCheck;
 
         public float DefenseReserve { get; private set; }
         public bool PriorityConstructionPending
@@ -180,7 +184,9 @@ namespace EmpireAtWar.Services.Enemy
             bool canBuildMining = hasMiningOption && IsAffordable(mining.Value);
             bool hasDefenseSelection = TrySelectDefense(
                 out KeyValuePair<DefendPlatformType, FactionData> defense);
-            bool canBuildDefense = canPlaceStructure && hasDefenseSelection && IsAffordable(defense.Value);
+            bool canBuildDefense = BattleClock.CurrentElapsed >= _nextDefenseBuildTime &&
+                hasDefenseSelection && IsAffordable(defense.Value) &&
+                _enemyStructurePlacementService.TryGetDefensePosition(out _);
 
             KeyValuePair<SquadronType, FactionData> squadron = default;
             KeyValuePair<ShipType, FactionData> ship = default;
@@ -204,6 +210,17 @@ namespace EmpireAtWar.Services.Enemy
             FactionData shipChoice = hasCounter ? counterData : hasShip ? ship.Value : squadron.Value;
             DefenseReserve = hasShipOption ? shipChoice.Price : 0f;
             bool canBuildShip = hasShipOption && IsAffordable(shipChoice) && FitsRemainingCapacity(shipChoice);
+            if (!canBuildShip && !critical && (!hasShipOption || !IsAffordable(shipChoice)) &&
+                TrySelectShip(shipCount, out var affordableShip, requireAffordable: true))
+            {
+                ship = affordableShip;
+                hasShip = true;
+                hasShipOption = true;
+                shipChoice = ship.Value;
+                hasCounter = false;
+                hasSquadronFallback = false;
+                canBuildShip = true;
+            }
             UnitTypeId combatChoice = hasCounter ? counterId : hasShip
                 ? UnitTypeId.Ship(ship.Key) : UnitTypeId.Squadron(squadron.Key);
             if (_stationPressure.IsStationCritical && !hasShipOption)
@@ -228,14 +245,28 @@ namespace EmpireAtWar.Services.Enemy
             bool canResearchIncome = TrySelectResearch(true, out ResearchType incomeResearch,
                                          out ResearchTierData incomeTier) &&
                                      IsAffordable(incomeTier.FactionData);
-            bool canResearchMining = canResearchIncome && incomeResearch == ResearchType.IncreasedProduction;
+            bool canResearchPriorityIncome = canResearchIncome &&
+                incomeResearch is ResearchType.IncreasedProduction or ResearchType.IncreasedStationIncome;
             bool canResearchCombat = TrySelectResearch(false, out ResearchType combatResearch,
                                          out ResearchTierData combatTier) &&
                                      IsAffordable(combatTier.FactionData) &&
                                      BattleClock.CurrentElapsed >= _nextCombatResearchTime;
             int miningFacilityTarget = GetMiningFacilityTarget();
 
-            if (!_stationPressure.IsStationCritical && TryBuyScout(shipCount,
+            float cheapestCapital = float.PositiveInfinity;
+            if (_factionModel.CurrentLevel >= 4)
+                foreach (var option in _factionModel.ShipFactionData)
+                    if (_factionModel.IsAssaultCapital(option.Key, _profileCatalog.Get(UnitTypeId.Ship(option.Key)).ShipClass) &&
+                        IsAvailable(option.Value))
+                        cheapestCapital = Mathf.Min(cheapestCapital, option.Value.Price);
+            _factionModel.HasAssaultSurplus = _economyModel.Money >=
+                EnemyFactionModel.MINIMUM_ASSAULT_CAPITALS * cheapestCapital + (levelData?.Price ?? 0f) + (incomeTier?.FactionData.Price ?? 0f);
+
+            if (TryBuySecondStation(critical, hasLevelUpOption || _purchaseProcessor.IsUpgradingStation,
+                    canResearchIncome || canResearchCombat || combatTier != null, canBuildMining || canBuildDefense))
+                return;
+
+            if (!canResearchPriorityIncome && !_stationPressure.IsStationCritical && TryBuyScout(shipCount,
                     hasMiningSelection && miningFacilityCount < miningFacilityTarget,
                     canPlaceStructure))
             {
@@ -250,7 +281,7 @@ namespace EmpireAtWar.Services.Enemy
                 defensePlatformCount,
                 _factionModel.CurrentLevel,
                 miningFacilityTarget,
-                DEFENSE_PLATFORM_TARGET,
+                canBuildDefense ? defensePlatformCount + 1 : defensePlatformCount,
                 hasMiningOption,
                 hasShipOption,
                 canBuildShip,
@@ -262,21 +293,32 @@ namespace EmpireAtWar.Services.Enemy
                 canResearchCombat,
                 canOrderShips,
                 _stationPressure.IsStationCritical,
-                canResearchMining);
+                canResearchPriorityIncome);
             EnemyProductionCategory category = _decisionModel.Evaluate(snapshot);
-            if (PriorityConstructionPending && !_stationPressure.IsStationCritical &&
-                category is not (EnemyProductionCategory.Mining or EnemyProductionCategory.Level or EnemyProductionCategory.Research) &&
-                !(category == EnemyProductionCategory.Ship && _purchaseProcessor.IsUpgradingStation))
-            {
+            if (!_purchaseProcessor.IsUpgradingStation && _purchaseProcessor.HasActiveProduction &&
+                !critical && category is (EnemyProductionCategory.Ship or EnemyProductionCategory.Defense) &&
+                (PriorityConstructionPending || _decisionModel.IsLevelDue(snapshot) ||
+                 incomeTier != null && !canResearchIncome))
                 return;
-            }
             if (category == EnemyProductionCategory.None && _decisionModel.IsLevelDue(snapshot))
                 DefenseReserve = levelData.Price;
+            if (category == EnemyProductionCategory.Ship && _factionModel.CurrentLevel >= 4 &&
+                _stateProvider.CurrentState is (EnemyStrategicState.Consolidate or EnemyStrategicState.AssaultBase or
+                    EnemyStrategicState.RaidStructures) &&
+                TrySelectShip(shipCount, out var capital, requireAffordable: true, capitalOnly: true))
+            {
+                ship = capital;
+                hasCounter = false;
+                hasSquadronFallback = false;
+                combatChoice = UnitTypeId.Ship(ship.Key);
+            }
 
             bool buildSquadron = !_stationPressure.IsStationCritical && !hasCounter &&
                                  category == EnemyProductionCategory.Ship &&
                                  (hasSquadronFallback ||
                                   !_decisionModel.NeedsMinimumFleet(shipCount) &&
+                                  (_factionModel.CurrentLevel < 4 || !combatChoice.IsShip ||
+                                   !_factionModel.IsAssaultCapital(combatChoice.ShipType, _profileCatalog.Get(combatChoice).ShipClass)) &&
                                   TrySelectSquadron(shipCount, false, out squadron) &&
                                   IsAffordable(squadron.Value));
             UnitRequest request = category switch
@@ -314,7 +356,7 @@ namespace EmpireAtWar.Services.Enemy
                 $"[EnemyAI:Production] BattleTime={BattleClock.CurrentElapsed:F1}, Player={_owner.Id}:{_owner.Faction}, State={_stateProvider.CurrentState}, " +
                 $"FactionLevel={_factionModel.CurrentLevel}, Category={category}, Counter={hasCounter}, " +
                 $"Unit={request.Id}, Mining={miningFacilityCount}/{miningFacilityTarget}, " +
-                $"Defense={defensePlatformCount}/{DEFENSE_PLATFORM_TARGET}, " +
+                $"Defense={defensePlatformCount}/{snapshot.DefensePlatformTarget}, " +
                 $"Cost={request.FactionData.Price}, " +
                 $"Money={_economyModel.Money}");
             EnemyAiTelemetry.RecordPurchase(_owner.Id, _owner.Faction, _stateProvider.CurrentState, category,
@@ -325,8 +367,32 @@ namespace EmpireAtWar.Services.Enemy
                     request.FactionData) : 0f,
                 _stationPressure.EstimatedTimeToLossSeconds);
             _purchaseProcessor.Purchase(request);
+            if (category == EnemyProductionCategory.Defense)
+                _nextDefenseBuildTime = BattleClock.CurrentElapsed + DEFENSE_BUILD_INTERVAL;
             if (category == EnemyProductionCategory.Research && !canResearchIncome)
                 _nextCombatResearchTime = BattleClock.CurrentElapsed + COMBAT_RESEARCH_INTERVAL;
+        }
+
+        private bool TryBuySecondStation(bool critical, bool needsLevel, bool needsResearch, bool needsConstruction)
+        {
+            float now = BattleClock.CurrentElapsed;
+            if (now < _nextStationPlacementCheck || _factionModel.CurrentLevel < 2 ||
+                _factionModel.AdditionalStationsBuilt != 0 || _productionAccess.ProductionHost != _owner.Id ||
+                !_productionAccess.HasHostBase ||
+                !critical && (now < SECOND_STATION_LATE_SECONDS || needsLevel || needsResearch || needsConstruction))
+                return false;
+            FactionData data = _factionModel.SecondStationData;
+            if (_economyModel.Money < data.Price * (critical ? 1f : 2f) ||
+                !CanReserve<SecondStationUnitRequest>(SecondStationUnitRequest.REQUEST_ID, data)) return false;
+            _nextStationPlacementCheck = now + STATION_PLACEMENT_RETRY_SECONDS;
+            if (!_enemyStructurePlacementService.TryGetSecondStationPosition(out _)) return false;
+
+            UnitRequest request = _requestFactory.ConstructSecondStationRequest(data);
+            _purchaseProcessor.Purchase(request);
+            EnemyAiTelemetry.RecordPurchase(_owner.Id, _owner.Faction, _stateProvider.CurrentState,
+                EnemyProductionCategory.SecondStation, false, request.Id, data.Price, _economyModel.Money,
+                critical, 0f, _stationPressure.EstimatedTimeToLossSeconds);
+            return true;
         }
 
         private int GetMiningFacilityTarget()
@@ -431,7 +497,7 @@ namespace EmpireAtWar.Services.Enemy
                 UnitTypeId unitId = UnitTypeId.Ship(option.Key);
                 AddCounterOption<ShipUnitRequest>(unitId, option.Key.ToString(), option.Value,
                     IsAvailable(option.Value) && IsShipClassAllowed(unitId) &&
-                    IsAllowedUnderPressure(option.Value, unitId), hasSquadronRoom);
+                    IsShipTierAllowed(option.Value, unitId), hasSquadronRoom);
             }
 
             foreach (KeyValuePair<SquadronType, FactionData> option in _factionModel.SquadronFactionData)
@@ -497,7 +563,7 @@ namespace EmpireAtWar.Services.Enemy
 
         private bool TrySelectShip(
             int shipCount,
-            out KeyValuePair<ShipType, FactionData> selected)
+            out KeyValuePair<ShipType, FactionData> selected, bool requireAffordable = false, bool capitalOnly = false)
         {
             selected = default;
             bool found = false;
@@ -508,7 +574,7 @@ namespace EmpireAtWar.Services.Enemy
                 // Affordability is checked after selection so the AI saves for higher-tier ships.
                 UnitTypeId unitType = UnitTypeId.Ship(option.Key);
                 if (!IsAvailable(option.Value) || !IsShipClassAllowed(unitType) ||
-                    !IsAllowedUnderPressure(option.Value, unitType) ||
+                    !IsShipTierAllowed(option.Value, unitType) ||
                     !CanReserve<ShipUnitRequest>(
                         option.Key.ToString(),
                         option.Value, true))
@@ -516,8 +582,10 @@ namespace EmpireAtWar.Services.Enemy
                     continue;
                 }
 
-                if (_stationPressure.IsStationCritical && (!IsAffordable(option.Value) ||
-                    _unitLimitModel.CurrentUnitCapacity + option.Value.UnitCapacity > _reinforcementData.MaxUnitCapacity)) continue;
+                if ((_stationPressure.IsStationCritical || requireAffordable) &&
+                    (!IsAffordable(option.Value) || !FitsRemainingCapacity(option.Value))) continue;
+                if (capitalOnly && !_factionModel.IsAssaultCapital(option.Key, _profileCatalog.Get(unitType).ShipClass))
+                    continue;
 
                 int reservedCount = _unitLimitModel.GetReservedCount<ShipUnitRequest>(
                     option.Key.ToString());
@@ -577,8 +645,8 @@ namespace EmpireAtWar.Services.Enemy
             return CountReservedSquadrons() + CountHangarSquadrons() < cap;
         }
 
-        private bool IsAllowedUnderPressure(FactionData data, UnitTypeId id) =>
-            !_stationPressure.IsStationCritical || _factionModel.CurrentLevel < 3 ||
+        private bool IsShipTierAllowed(FactionData data, UnitTypeId id) =>
+            _factionModel.CurrentLevel < 3 ||
             data.AvailableLevel > 1 || _profileCatalog.Get(id).ShipClass != ShipClass.Corvette;
 
         /// <summary>Live wings, usable carrier reserves and initial wings of ships still awaiting deployment.</summary>
@@ -687,8 +755,7 @@ namespace EmpireAtWar.Services.Enemy
         }
 
         /// <summary>
-        /// Picks the strongest (most expensive) platform the AI can pay for now, so Golan III and Empress are built once
-        /// affordable; with none affordable, the cheapest one is the one to save for.
+        /// Prefers an affordable type with fewer existing copies, then the strongest platform within budget.
         /// </summary>
         private bool TrySelectDefense(
             out KeyValuePair<DefendPlatformType, FactionData> selected)
@@ -708,8 +775,12 @@ namespace EmpireAtWar.Services.Enemy
 
                 bool isAffordable = IsAffordable(option.Value);
                 bool isSelectedAffordable = found && IsAffordable(selected.Value);
+                int copies = _unitLimitModel.GetReservedCount<DefendPlatformUnitRequest>(option.Key.ToString());
+                int selectedCopies = found
+                    ? _unitLimitModel.GetReservedCount<DefendPlatformUnitRequest>(selected.Key.ToString()) : int.MaxValue;
                 bool isBetter = !found || (isAffordable
-                    ? !isSelectedAffordable || option.Value.Price > selected.Value.Price
+                    ? !isSelectedAffordable || copies < selectedCopies ||
+                      copies == selectedCopies && option.Value.Price > selected.Value.Price
                     : !isSelectedAffordable && option.Value.Price < selected.Value.Price);
                 if (isBetter)
                 {
@@ -742,9 +813,10 @@ namespace EmpireAtWar.Services.Enemy
                     continue;
                 }
 
-                if (selectedType == ResearchType.IncreasedProduction && selectedTier != null) continue;
-                if (researchType == ResearchType.IncreasedProduction || selectedTier == null ||
-                    tier.FactionData.Price < selectedTier.FactionData.Price)
+                int priority = IncomePriority(researchType);
+                int selectedPriority = IncomePriority(selectedType);
+                if (selectedTier == null || priority > selectedPriority ||
+                    priority == selectedPriority && tier.FactionData.Price < selectedTier.FactionData.Price)
                 {
                     selectedType = researchType;
                     selectedTier = tier;
@@ -753,6 +825,13 @@ namespace EmpireAtWar.Services.Enemy
 
             return selectedTier != null;
         }
+
+        private static int IncomePriority(ResearchType type) => type switch
+        {
+            ResearchType.IncreasedStationIncome => 2,
+            ResearchType.IncreasedProduction => 1,
+            _ => 0
+        };
 
         private static bool RaisesIncome(ResearchTierData tier)
         {

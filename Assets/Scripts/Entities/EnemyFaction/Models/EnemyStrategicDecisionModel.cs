@@ -17,7 +17,8 @@ namespace EmpireAtWar.Entities.EnemyFaction.Models
         EngageLocal = 7,
         /// <summary>Attacks a known, undefended hostile structure when nothing better is available.</summary>
         RaidStructures = 8,
-        GuardSite = 9
+        GuardSite = 9,
+        Consolidate = 10
     }
 
     public readonly struct EnemyStrategicSnapshot
@@ -56,6 +57,9 @@ namespace EmpireAtWar.Entities.EnemyFaction.Models
         public bool RecoveryMode { get; }
         public bool HasGuardSite { get; }
         public bool IsCentreGuardGoal { get; }
+        public bool CanAssaultBase { get; }
+        public bool CanHuntFleet { get; }
+        public bool HasSecuredCentre { get; }
 
         /// <summary>The station is losing hull fast enough that the whole fleet must defend it.</summary>
         public bool IsStationCritical { get; }
@@ -80,7 +84,8 @@ namespace EmpireAtWar.Entities.EnemyFaction.Models
             bool hasSafeRetreat = true,
             bool hasEconomyRaidTarget = false,
             float localRaw = float.NaN, float fleetRaw = float.NaN, bool recoveryMode = false,
-            bool isStationCritical = false, bool hasGuardSite = false, bool isCentreGuardGoal = false)
+            bool isStationCritical = false, bool hasGuardSite = false, bool isCentreGuardGoal = false,
+            bool canAssaultBase = false, bool canHuntFleet = false, bool hasSecuredCentre = false)
         {
             IsStationCritical = isStationCritical;
             VictoryCondition = victoryCondition;
@@ -99,6 +104,9 @@ namespace EmpireAtWar.Entities.EnemyFaction.Models
             RecoveryMode = recoveryMode;
             HasGuardSite = hasGuardSite;
             IsCentreGuardGoal = isCentreGuardGoal;
+            CanAssaultBase = canAssaultBase;
+            CanHuntFleet = canHuntFleet;
+            HasSecuredCentre = hasSecuredCentre;
             HasThreatenedSite = hasThreatenedSite;
             HasLocalThreat = hasLocalThreat;
             HasRaidTarget = hasRaidTarget;
@@ -150,6 +158,11 @@ namespace EmpireAtWar.Entities.EnemyFaction.Models
                 (s, p) => ResponseCurve.When(s.HasOwnBase) *
                           (s.HasStationPressure ? 1f :
                               ResponseCurve.AtLeast(s.BaseThreatRatio, p.DefenseThreatRatio))),
+            new EnemyStrategicRule(EnemyStrategicState.AssaultBase, 0.76f,
+                "Capital strike group has zone control, fleet strength and reinforcement waves.",
+                (s, p) => ResponseCurve.When(s.HasSecuredCentre && s.HasEnemyBaseTarget &&
+                    s.VictoryCondition != BattleVictoryCondition.DestroyEnemyFleet) *
+                    ResponseCurve.AtLeast(s.FleetAdvantage, p.RequiredAttackRatio)),
             // A clearly stronger fleet ends the game instead of trading ships over capture sites.
             new EnemyStrategicRule(EnemyStrategicState.AssaultBase, 0.75f,
                 "The fleet clearly outmatches the enemy, so it presses the advantage against the base.",
@@ -200,7 +213,8 @@ namespace EmpireAtWar.Entities.EnemyFaction.Models
             // Too weak to hunt and nothing to capture: hit structures the enemy left undefended.
             new EnemyStrategicRule(EnemyStrategicState.RaidStructures, 0.1f,
                 "The enemy fleet is too strong, so the fleet raids an undefended structure.",
-                (s, p) => ResponseCurve.When(s.HasRaidTarget && !s.IsCentreGuardGoal)),
+                (s, p) => ResponseCurve.When(s.HasRaidTarget && (!s.IsCentreGuardGoal ||
+                    s.HasSecuredCentre && s.HasEconomyRaidTarget && s.OwnShipCount >= 6))),
             new EnemyStrategicRule(EnemyStrategicState.GuardSite, 0.08f,
                 "Guard the centre or nearby allied mining site.",
                 (s, p) => ResponseCurve.When(s.HasGuardSite)),
@@ -247,6 +261,10 @@ namespace EmpireAtWar.Entities.EnemyFaction.Models
                 _hasLastState && _hadBase && !snapshot.HasOwnBase ? "stationLost" : "none";
             foreach (EnemyStrategicRule rule in _rules)
             {
+                if (rule.State == EnemyStrategicState.AssaultBase && !snapshot.CanAssaultBase ||
+                    rule.State == EnemyStrategicState.HuntFleet && !snapshot.CanHuntFleet) continue;
+                if (snapshot.HasSecuredCentre && snapshot.HasCaptureTarget &&
+                    rule.State == EnemyStrategicState.RaidStructures) continue;
                 if (!allowOffense && (rule.State == EnemyStrategicState.HuntFleet ||
                     rule.State == EnemyStrategicState.AssaultBase || rule.State == EnemyStrategicState.RaidStructures)) continue;
                 if (captureDetachment &&
@@ -269,6 +287,11 @@ namespace EmpireAtWar.Entities.EnemyFaction.Models
 
             EnemyStrategicState state = best.State;
             string reason = best.Reason;
+            if (state == EnemyStrategicState.GuardSite && snapshot.HasSecuredCentre)
+            {
+                state = EnemyStrategicState.Consolidate;
+                reason = "Hold the centre while developing owned zones.";
+            }
             bool standAndFight = snapshot.OwnShipCount > 0 && snapshot.HasLocalThreat &&
                 snapshot.LocalAdvantage <= profile.RetreatAdvantage;
             if (standAndFight)
@@ -335,7 +358,10 @@ namespace EmpireAtWar.Entities.EnemyFaction.Models
                 return 0;
             }
 
-            if (state == EnemyStrategicState.GuardSite) return ownShipCount;
+            if (state is EnemyStrategicState.GuardSite or EnemyStrategicState.Consolidate) return ownShipCount;
+            if (state == EnemyStrategicState.RaidStructures && snapshot.HasSecuredCentre) return 2;
+            if (state == EnemyStrategicState.AssaultBase && snapshot.HasSecuredCentre)
+                return Math.Min(ownShipCount, Math.Max(EnemyFactionModel.MINIMUM_ASSAULT_CAPITALS, ownShipCount - 1));
 
             int maxCommitment = ownShipCount;
             if (ownShipCount >= 3 && state is EnemyStrategicState.AssaultBase or EnemyStrategicState.HuntFleet)

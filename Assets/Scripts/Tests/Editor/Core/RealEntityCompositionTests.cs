@@ -292,7 +292,7 @@ namespace EmpireAtWar.Tests.Editor
         [TestCase(true)]
         [TestCase(false)]
         [Category("EnemyAi")]
-        public void AiPlayer_NeverBuysASecondStation(bool legacyBackup)
+        public void AiPlayer_RejectsSecondStationInOpeningAndAfterProductionLoss(bool legacyBackup)
         {
             BuildSaveProject();
             MapLayout layout;

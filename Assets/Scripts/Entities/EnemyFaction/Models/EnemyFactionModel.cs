@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using EmpireAtWar.Components.Ship.Health;
 using EmpireAtWar.Entities.DefendPlatform;
 using EmpireAtWar.Entities.MiningFacility;
 using EmpireAtWar.Entities.Squadrons;
@@ -11,6 +12,8 @@ namespace EmpireAtWar.Entities.EnemyFaction.Models
 {
     public class EnemyFactionModel : IModel, IFactionLevelObserver
     {
+        public const int MINIMUM_ASSAULT_CAPITALS = 3;
+
         private readonly StationLevelData _stationLevels;
         private readonly FactionRoster _roster;
 
@@ -20,6 +23,14 @@ namespace EmpireAtWar.Entities.EnemyFaction.Models
         public event Action<int> LevelUpgradeCompleted;
 
         public int AdditionalStationsBuilt { get; set; }
+        public bool HasAssaultSurplus { get; set; }
+        public bool HasAssaultReinforcementPlan { get; set; }
+
+        public FactionData SecondStationData => _stationLevels.GetSecondStationFactionData(_roster.FactionType);
+
+        public bool IsAssaultCapital(ShipType type, ShipClass shipClass) =>
+            (shipClass is ShipClass.Capital or ShipClass.BattleCruiser or ShipClass.Dreadnought) &&
+            ShipFactionData.TryGetValue(type, out FactionData data) && data.AvailableLevel >= 4;
 
         public void CompleteLevelUpgrade()
         {

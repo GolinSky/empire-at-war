@@ -41,8 +41,8 @@ namespace EmpireAtWar.Tests.Editor
 
         [TestCase(0, true, false, EnemyProductionCategory.Mining)]
         [TestCase(4, true, true, EnemyProductionCategory.Mining)]
-        [TestCase(4, false, false, EnemyProductionCategory.None)]
-        public void BelowMiningTarget_ReservesCreditsForMinersBeforeFleetAndTechnology(int mines, bool affordable,
+        [TestCase(4, false, false, EnemyProductionCategory.Level)]
+        public void BelowMiningTarget_BuysAffordableMinersBeforeOtherWork(int mines, bool affordable,
             bool critical, EnemyProductionCategory expected)
         {
             EnemyProductionSnapshot snapshot = Snapshot(mines: mines, level: 1, ships: 0, shipsOrdered: 0,
@@ -52,8 +52,8 @@ namespace EmpireAtWar.Tests.Editor
         }
 
         [TestCase(true, EnemyProductionCategory.Level)]
-        [TestCase(false, EnemyProductionCategory.None)]
-        public void OpeningLevel_ReservesForEarliestLevelUp(bool upgradeAffordable, EnemyProductionCategory expected)
+        [TestCase(false, EnemyProductionCategory.Ship)]
+        public void OpeningLevel_BuysUpgradeOrKeepsProducingShips(bool upgradeAffordable, EnemyProductionCategory expected)
         {
             EnemyProductionSnapshot snapshot = Snapshot(level: 1, ships: 0, shipsOrdered: 0,
                 canLevelUp: upgradeAffordable);
@@ -95,29 +95,29 @@ namespace EmpireAtWar.Tests.Editor
         }
 
         [Test]
-        public void DepletedFleet_RebuildsWhenEconomicFloorIsMetAndNoUpgradeDue()
+        public void DepletedFleet_BuysIncomeResearchWhenStationIsStable()
         {
             EnemyProductionSnapshot snapshot = Snapshot(ships: 2, shipsOrdered: 2,
                 state: EnemyStrategicState.DefendBase, incomeResearch: true, platforms: 0);
 
-            Assert.That(new EnemyProductionDecisionModel().Evaluate(snapshot), Is.EqualTo(EnemyProductionCategory.Ship));
+            Assert.That(new EnemyProductionDecisionModel().Evaluate(snapshot), Is.EqualTo(EnemyProductionCategory.Research));
         }
 
         [Test]
-        public void DepletedFleet_SavesForSelectedShip()
+        public void UnaffordableShip_DoesNotBlockIncomeResearch()
         {
             EnemyProductionSnapshot snapshot = Snapshot(ships: 1, canBuildShip: false, platforms: 0,
                 incomeResearch: true);
 
-            Assert.That(new EnemyProductionDecisionModel().Evaluate(snapshot), Is.EqualTo(EnemyProductionCategory.None));
+            Assert.That(new EnemyProductionDecisionModel().Evaluate(snapshot), Is.EqualTo(EnemyProductionCategory.Research));
         }
 
         [TestCase(true, EnemyProductionCategory.Level)]
-        [TestCase(false, EnemyProductionCategory.None)]
-        public void DueLevel_IsBoughtOrSavedForBeforeOptionalUnits(bool canLevelUp, EnemyProductionCategory expected)
+        [TestCase(false, EnemyProductionCategory.Defense)]
+        public void DueLevel_IsBoughtBeforeOptionalWorkWhenAffordable(bool canLevelUp, EnemyProductionCategory expected)
         {
             EnemyProductionSnapshot snapshot = Snapshot(shipsOrdered: 2, canLevelUp: canLevelUp,
-                incomeResearch: true, combatResearch: true, platforms: 0);
+                combatResearch: true, platforms: 0);
 
             Assert.That(new EnemyProductionDecisionModel().Evaluate(snapshot), Is.EqualTo(expected));
         }
@@ -218,7 +218,7 @@ namespace EmpireAtWar.Tests.Editor
                 hasMiningOption: true, hasShipOption: hasShipOption, canBuildShip: canBuildShip,
                 canBuildMining: canBuildMining, canBuildDefense: canBuildDefense, hasLevelUpOption: hasLevelOption,
                 canLevelUp: canLevelUp, canResearchIncome: incomeResearch, canResearchCombat: combatResearch,
-                canOrderShips: canOrderShips, isStationCritical: critical, canResearchMining: miningResearch);
+                canOrderShips: canOrderShips, isStationCritical: critical, canResearchPriorityIncome: miningResearch);
     }
 
     [Category("EnemyAi")]
@@ -549,7 +549,7 @@ namespace EmpireAtWar.Tests.Editor
         }
 
         [Test]
-        public void EconomicFloorReached_BuysAffordableIncomeResearchOncePerLine()
+        public void StationIncomeResearch_WinsOverAvailableMiningResearch_AndQueuesOnce()
         {
             ReinforcementData reinforcementData = ScriptableObject.CreateInstance<ReinforcementData>();
             FactionDefinition definition = CopyDefinition(FactionType.Empire);
@@ -564,7 +564,7 @@ namespace EmpireAtWar.Tests.Editor
                 EnemyUnitLimitModel unitLimitModel = new EnemyUnitLimitModel();
                 ReserveEconomicFloor(factionModel, unitLimitModel, factionModel.MiningFactions.First().Value.MaxCount);
                 ReserveDefensePlatform(factionModel, unitLimitModel);
-                Assert.That(research.TryGetNextTier(ResearchType.IncreasedProduction, out ResearchTierData tier),
+                Assert.That(research.TryGetNextTier(ResearchType.IncreasedStationIncome, out ResearchTierData tier),
                     Is.True);
 
                 // No ships are listed, so the minimum-fleet rule cannot claim the purchase.
@@ -598,7 +598,7 @@ namespace EmpireAtWar.Tests.Editor
 
                 Assert.That(purchaseProcessor.LastRequest, Is.TypeOf<ResearchUnitRequest>());
                 ResearchUnitRequest request = (ResearchUnitRequest)purchaseProcessor.LastRequest;
-                Assert.That(request.Key, Is.EqualTo(ResearchType.IncreasedProduction));
+                Assert.That(request.Key, Is.EqualTo(ResearchType.IncreasedStationIncome));
                 Assert.That(request.Tier, Is.EqualTo(1));
 
                 // While the tier is in progress its reservation keeps the AI from buying the line again.
@@ -905,6 +905,13 @@ namespace EmpireAtWar.Tests.Editor
             IEnemyStructurePlacementService
         {
             public bool IsRecovering => false;
+
+            public bool TryGetDefensePosition(out Vector3 position)
+            {
+                position = default;
+                return false;
+            }
+
             public void RecordPlacement(string request, Vector3 position) { }
             public void RecordDeferred(string request, float refund) { }
             public void RecordStationBuilt(Vector3 position) { }

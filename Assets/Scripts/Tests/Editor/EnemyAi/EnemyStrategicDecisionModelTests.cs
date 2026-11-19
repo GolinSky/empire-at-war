@@ -245,7 +245,7 @@ namespace EmpireAtWar.Tests.Editor
         {
             var snapshot = new EnemyStrategicSnapshot(BattleVictoryCondition.DestroyOpponentBase,
                 EnemyAiDifficulty.UltraHard, 8, 5, 2, fleetAdvantage, 0f, false, true, true,
-                hasRaidTarget: true, hasEconomyRaidTarget: true, hasGuardSite: true, isCentreGuardGoal: true);
+                hasRaidTarget: true, hasEconomyRaidTarget: true, hasGuardSite: true, isCentreGuardGoal: true, canAssaultBase: true);
 
             Assert.That(new EnemyStrategicDecisionModel().Evaluate(snapshot).State, Is.EqualTo(expected));
         }
@@ -600,6 +600,22 @@ namespace EmpireAtWar.Tests.Editor
             Assert.That(model.Evaluate(snapshot, allowOffense: false).State, Is.EqualTo(expected));
         }
 
+        [Test]
+        public void SecuredCentre_ConsolidatesUntilTheAssaultGateOpens_AndReturnsWhenItCloses()
+        {
+            var model = new EnemyStrategicDecisionModel();
+            EnemyStrategicSnapshot held = CreateSnapshot(BattleVictoryCondition.DestroyOpponentBase,
+                EnemyAiDifficulty.UltraHard, 8, 0, 3, 10f, hasCaptureTarget: false,
+                canAssaultBase: false, canHuntFleet: false, hasSecuredCentre: true);
+            Assert.That(model.Evaluate(held).State, Is.EqualTo(EnemyStrategicState.Consolidate));
+
+            EnemyStrategicSnapshot attack = CreateSnapshot(BattleVictoryCondition.DestroyOpponentBase,
+                EnemyAiDifficulty.UltraHard, 8, 0, 3, 10f, hasCaptureTarget: false,
+                canAssaultBase: true, canHuntFleet: false, hasSecuredCentre: true);
+            Assert.That(model.Evaluate(attack).State, Is.EqualTo(EnemyStrategicState.AssaultBase));
+            Assert.That(model.Evaluate(held).State, Is.EqualTo(EnemyStrategicState.Consolidate));
+        }
+
         private static EnemyStrategicSnapshot CreateSnapshot(
             BattleVictoryCondition victoryCondition,
             EnemyAiDifficulty difficulty,
@@ -618,7 +634,8 @@ namespace EmpireAtWar.Tests.Editor
             bool hasStationPressure = false,
             bool hasSafeRetreat = true,
             bool hasEconomyRaidTarget = false,
-            bool isStationCritical = false)
+            bool isStationCritical = false, bool canAssaultBase = true, bool canHuntFleet = true,
+            bool hasSecuredCentre = false)
         {
             return new EnemyStrategicSnapshot(
                 victoryCondition: victoryCondition,
@@ -639,7 +656,10 @@ namespace EmpireAtWar.Tests.Editor
                 isRegrouped: isRegrouped,
                 hasStationPressure: hasStationPressure,
                 hasSafeRetreat: hasSafeRetreat,
-                hasEconomyRaidTarget: hasEconomyRaidTarget);
+                hasEconomyRaidTarget: hasEconomyRaidTarget,
+                canAssaultBase: canAssaultBase, canHuntFleet: canHuntFleet,
+                hasSecuredCentre: hasSecuredCentre, hasGuardSite: hasSecuredCentre,
+                isCentreGuardGoal: hasSecuredCentre && !canAssaultBase);
         }
     }
 }

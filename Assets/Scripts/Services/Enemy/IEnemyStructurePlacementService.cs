@@ -8,6 +8,14 @@ namespace EmpireAtWar.Services.Enemy
 
         bool TryGetPosition(out Vector3 position);
 
+        bool TryGetDefensePosition(out Vector3 position) => TryGetPosition(out position);
+
+        bool TryGetSecondStationPosition(out Vector3 position)
+        {
+            position = default;
+            return false;
+        }
+
         /// <summary>Nearest spot hidden by fog and free of blockers; a scout sent there can reveal build space.</summary>
         bool TryGetScoutTarget(out Vector3 position);
 

@@ -193,7 +193,7 @@ namespace EmpireAtWar.Tests.Editor
                     enemyStructurePlacementService: new UnavailableStructurePlacement(),
                     productionAccess: new OperationalProductionAccess(), squadronLauncher: null,
                     squadronCommander: null, owner: TestPlayers.CreateDuel().Get(TestPlayers.Enemy),
-                    playerRegistry: new PlayerRegistry());
+                    playerRegistry: new PlayerRegistry(), stationFactory: null, profiles: null);
                 var request = new ShipUnitRequest(faction, ShipType.Venator);
                 var escort = new ShipUnitRequest(faction, ShipType.Recusant);
                 controller.Purchase(request);
@@ -277,7 +277,7 @@ namespace EmpireAtWar.Tests.Editor
                     squadronLauncher: null,
                     squadronCommander: null,
                     owner: TestPlayers.CreateDuel().Get(TestPlayers.Enemy),
-                    playerRegistry: new PlayerRegistry());
+                    playerRegistry: new PlayerRegistry(), stationFactory: null, profiles: null);
 
                 controller.Initialize();
                 controller.Purchase(
@@ -331,7 +331,7 @@ namespace EmpireAtWar.Tests.Editor
                     squadronLauncher: null,
                     squadronCommander: null,
                     owner: TestPlayers.CreateDuel().Get(TestPlayers.Enemy),
-                    playerRegistry: new PlayerRegistry());
+                    playerRegistry: new PlayerRegistry(), stationFactory: null, profiles: null);
                 ShipType[] types = (ShipType[])Enum.GetValues(typeof(ShipType));
                 for (int i = 0; i < PlayerFactionModel.MAX_ACTIVE_PIPELINES; i++)
                     controller.Purchase(new ShipUnitRequest(data, types[i]));
@@ -391,7 +391,7 @@ namespace EmpireAtWar.Tests.Editor
                     squadronLauncher: null,
                     squadronCommander: null,
                     owner: TestPlayers.CreateDuel().Get(TestPlayers.Enemy),
-                    playerRegistry: new PlayerRegistry());
+                    playerRegistry: new PlayerRegistry(), stationFactory: null, profiles: null);
                 ShipUnitRequest request =
                     new ShipUnitRequest(factionData, ShipType.Venator);
                 Regex failure = new Regex(
@@ -445,7 +445,7 @@ namespace EmpireAtWar.Tests.Editor
                     enemyStructurePlacementService: new UnavailableStructurePlacement(),
                     productionAccess: new OperationalProductionAccess(), squadronLauncher: null,
                     squadronCommander: null, owner: TestPlayers.CreateDuel().Get(TestPlayers.Enemy),
-                    playerRegistry: new PlayerRegistry());
+                    playerRegistry: new PlayerRegistry(), stationFactory: null, profiles: null);
                 var blocked = new ShipUnitRequest(faction, ShipType.Venator);
                 controller.Purchase(blocked);
                 controller.Purchase(new ShipUnitRequest(faction, ShipType.Recusant));
@@ -509,7 +509,7 @@ namespace EmpireAtWar.Tests.Editor
                     shipSpawnPoints: new BlockedShipSpawnPoints(), unitLimitModel: limits, reinforcementData: data,
                     enemyStructurePlacementService: new UnavailableStructurePlacement(),
                     productionAccess: access, squadronLauncher: null, squadronCommander: null,
-                    owner: TestPlayers.CreateDuel().Get(TestPlayers.Enemy), playerRegistry: new PlayerRegistry());
+                    owner: TestPlayers.CreateDuel().Get(TestPlayers.Enemy), playerRegistry: new PlayerRegistry(), stationFactory: null, profiles: null);
                 controller.Purchase(new ShipUnitRequest(faction, ShipType.Venator));
                 controller.Advance(10f);
                 Assert.That(controller.HasPendingReinforcement, Is.True);
@@ -560,7 +560,7 @@ namespace EmpireAtWar.Tests.Editor
                     squadronLauncher: null,
                     squadronCommander: null,
                     owner: TestPlayers.CreateDuel().Get(TestPlayers.Enemy),
-                    playerRegistry: new PlayerRegistry());
+                    playerRegistry: new PlayerRegistry(), stationFactory: null, profiles: null);
                 ResearchUnitRequest request =
                     new ResearchUnitRequest(tier.FactionData, ResearchType.IncreasedProduction, 1);
 
@@ -605,7 +605,7 @@ namespace EmpireAtWar.Tests.Editor
                 squadronLauncher: null,
                 squadronCommander: null,
                 owner: TestPlayers.CreateDuel().Get(TestPlayers.Enemy),
-                playerRegistry: new PlayerRegistry());
+                playerRegistry: new PlayerRegistry(), stationFactory: null, profiles: null);
 
             controller.Initialize();
             controller.Initialize();
@@ -636,7 +636,7 @@ namespace EmpireAtWar.Tests.Editor
                     enemyStructurePlacementService: new UnavailableStructurePlacement(),
                     productionAccess: new OperationalProductionAccess(), squadronLauncher: null,
                     squadronCommander: null, owner: TestPlayers.CreateDuel().Get(TestPlayers.Enemy),
-                    playerRegistry: new PlayerRegistry());
+                    playerRegistry: new PlayerRegistry(), stationFactory: null, profiles: null);
                 UnitRequest request = platform
                     ? new DefendPlatformUnitRequest(faction, DefendPlatformType.Xq6)
                     : new MiningFacilityUnitRequest(faction, MiningFacilityType.CommonMiner);
@@ -680,7 +680,7 @@ namespace EmpireAtWar.Tests.Editor
                     economyProvider: new TrackingEconomyProvider(), wallet: wallet, shipSpawnPoints: null,
                     unitLimitModel: limits, reinforcementData: data, enemyStructurePlacementService: new UnavailableStructurePlacement(),
                     productionAccess: access, squadronLauncher: null, squadronCommander: null,
-                    owner: TestPlayers.CreateDuel().Get(TestPlayers.Enemy), playerRegistry: new PlayerRegistry());
+                    owner: TestPlayers.CreateDuel().Get(TestPlayers.Enemy), playerRegistry: new PlayerRegistry(), stationFactory: null, profiles: null);
                 controller.Purchase(new LevelUnitRequest(faction, 1));
                 Assert.That(wallet.SpendCount, Is.Zero);
                 Assert.That(controller.ForceUpgradeStation(), Is.False);
@@ -698,7 +698,7 @@ namespace EmpireAtWar.Tests.Editor
 
         [TestCase(true)]
         [TestCase(false)]
-        public void SecondStation_RejectsNewPurchaseAndRefundsLegacyQueueEntry(bool upgrade)
+        public void SecondStation_RejectsOpeningPurchaseAndRefundsUnsupportedOrUnplaceableBuild(bool upgrade)
         {
             var data = ScriptableObject.CreateInstance<ReinforcementData>();
             try
@@ -716,7 +716,7 @@ namespace EmpireAtWar.Tests.Editor
                     enemyStructurePlacementService: new UnavailableStructurePlacement { IsRecovering = true },
                     productionAccess: new OperationalProductionAccess(),
                     squadronLauncher: null, squadronCommander: null,
-                    owner: TestPlayers.CreateDuel().Get(TestPlayers.Enemy), playerRegistry: new PlayerRegistry());
+                    owner: TestPlayers.CreateDuel().Get(TestPlayers.Enemy), playerRegistry: new PlayerRegistry(), stationFactory: null, profiles: null);
                 UnitRequest request = upgrade ? new SecondStationLevelUnitRequest(faction, 1) : new SecondStationUnitRequest(faction);
 
                 controller.Purchase(request);
@@ -725,7 +725,7 @@ namespace EmpireAtWar.Tests.Editor
 
                 controller.RestorePendingBuild(request, 30f);
                 Assert.That(limits.CurrentUnitCapacity, Is.EqualTo(1));
-                controller.Advance(0f);
+                controller.Advance(upgrade ? 0f : 30f);
                 Assert.That(wallet.RefundCount, Is.EqualTo(1));
                 Assert.That(controller.PendingBuilds, Is.Empty);
                 Assert.That(limits.CurrentUnitCapacity, Is.Zero);
@@ -753,7 +753,7 @@ namespace EmpireAtWar.Tests.Editor
                     enemyStructurePlacementService: new UnavailableStructurePlacement(),
                     productionAccess: new OperationalProductionAccess(), squadronLauncher: null,
                     squadronCommander: null, owner: TestPlayers.CreateDuel().Get(TestPlayers.Enemy),
-                    playerRegistry: new PlayerRegistry());
+                    playerRegistry: new PlayerRegistry(), stationFactory: null, profiles: null);
 
                 controller.Purchase(new LevelUnitRequest(upgrade, 1));
                 controller.Purchase(new LevelUnitRequest(upgrade, 1));

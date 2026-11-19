@@ -32,7 +32,8 @@ namespace EmpireAtWar.Services.Enemy
             Ships.Clear();
         }
 
-        public bool Assemble(EnemyStrategicContext context, IEntity target, int maximumCount)
+        public bool Assemble(EnemyStrategicContext context, IEntity target, int maximumCount,
+            IReadOnlyList<IShipEntity> eligibleShips = null)
         {
             if (_target != target)
             {
@@ -42,9 +43,10 @@ namespace EmpireAtWar.Services.Enemy
             }
             _candidates.Clear();
             _retained.Clear();
-            for (int i = 0; i < context.Ships.Count; i++)
+            IReadOnlyList<IShipEntity> ships = eligibleShips ?? context.Ships;
+            for (int i = 0; i < ships.Count; i++)
             {
-                IShipEntity ship = context.Ships[i];
+                IShipEntity ship = ships[i];
                 _candidates.Add(context.ShipForces[ship]);
                 if (Ships.Contains(ship)) _retained.Add(i);
             }
@@ -53,7 +55,7 @@ namespace EmpireAtWar.Services.Enemy
                 health.Hull, health.Shields, EnemyAiDifficultyProfile.Get(context.Snapshot.Difficulty).RequiredAttackRatio,
                 _retained, maximumCount, _selected, _targetKind);
             Ships.Clear();
-            foreach (int index in _selected) Ships.Add(context.Ships[index]);
+            foreach (int index in _selected) Ships.Add(ships[index]);
             return ready;
         }
 

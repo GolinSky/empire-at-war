@@ -6,6 +6,7 @@ namespace EmpireAtWar.Services.Enemy
     {
         /// <summary>A station upgrade is building; another cannot be bought until it completes.</summary>
         bool IsUpgradingStation { get; }
+        bool HasActiveProduction => false;
         bool PriorityConstructionPending { get; set; }
 
         bool CanQueue(string requestId, int maxCount);

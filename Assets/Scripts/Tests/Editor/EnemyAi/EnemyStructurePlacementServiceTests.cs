@@ -66,7 +66,7 @@ namespace EmpireAtWar.Tests.Editor
                 vision: vision, areas: _areas,
                 owner: roster.Get(TestPlayers.Enemy), stationPrefab: _stationPrefab,
                 productionAccess: new SelfProductionAccess(TestPlayers.Enemy, new StationRegistry(new EntityLocator()),
-                    roster), recovery: _recovery);
+                    roster), recovery: _recovery, zoneSource: null, world: null, patrol: null);
         }
 
         [Test]

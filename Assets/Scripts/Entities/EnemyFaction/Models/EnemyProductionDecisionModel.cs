@@ -10,7 +10,8 @@ namespace EmpireAtWar.Entities.EnemyFaction.Models
         Mining = 2,
         Defense = 3,
         Level = 4,
-        Research = 5
+        Research = 5,
+        SecondStation = 6
     }
 
     public readonly struct EnemyProductionSnapshot
@@ -41,7 +42,7 @@ namespace EmpireAtWar.Entities.EnemyFaction.Models
         public bool CanOrderShips { get; }
         public bool IsStationCritical { get; }
 
-        public bool CanResearchMining { get; }
+        public bool CanResearchPriorityIncome { get; }
 
         public EnemyProductionSnapshot(
             EnemyStrategicState strategicState,
@@ -63,7 +64,7 @@ namespace EmpireAtWar.Entities.EnemyFaction.Models
             bool canResearchCombat = false,
             bool canOrderShips = true,
             bool isStationCritical = false,
-            bool canResearchMining = false)
+            bool canResearchPriorityIncome = false)
         {
             StrategicState = strategicState;
             MiningFacilityCount = miningFacilityCount;
@@ -84,7 +85,7 @@ namespace EmpireAtWar.Entities.EnemyFaction.Models
             CanResearchCombat = canResearchCombat;
             CanOrderShips = canOrderShips;
             IsStationCritical = isStationCritical;
-            CanResearchMining = canResearchMining;
+            CanResearchPriorityIncome = canResearchPriorityIncome;
         }
     }
 
@@ -134,23 +135,23 @@ namespace EmpireAtWar.Entities.EnemyFaction.Models
                 throw new ArgumentOutOfRangeException(nameof(snapshot.MiningFacilityCount));
 
             bool needsMining = snapshot.MiningFacilityCount < snapshot.MiningFacilityTarget && snapshot.HasMiningOption;
-            if (snapshot.CanResearchMining && !snapshot.IsStationCritical)
+            if (snapshot.CanResearchPriorityIncome && !snapshot.IsStationCritical)
                 return EnemyProductionCategory.Research;
 
-            if (needsMining && (snapshot.CanBuildMining || !snapshot.IsStationCritical))
-                return snapshot.CanBuildMining ? EnemyProductionCategory.Mining : EnemyProductionCategory.None;
+            if (snapshot.CanBuildMining && needsMining)
+                return EnemyProductionCategory.Mining;
 
             if (snapshot.IsStationCritical)
                 return snapshot.CanBuildShip ? EnemyProductionCategory.Ship : EnemyProductionCategory.None;
 
-            if (IsLevelDue(snapshot))
-                return snapshot.CanLevelUp ? EnemyProductionCategory.Level : EnemyProductionCategory.None;
-
-            if (NeedsMinimumFleet(snapshot.ShipCount) && snapshot.CanOrderShips && snapshot.HasShipOption)
-                return snapshot.CanBuildShip ? EnemyProductionCategory.Ship : EnemyProductionCategory.None;
-
             if (snapshot.CanResearchIncome)
                 return EnemyProductionCategory.Research;
+
+            if (IsLevelDue(snapshot) && snapshot.CanLevelUp)
+                return EnemyProductionCategory.Level;
+
+            if (NeedsMinimumFleet(snapshot.ShipCount) && snapshot.CanOrderShips && snapshot.CanBuildShip)
+                return EnemyProductionCategory.Ship;
 
             if (snapshot.DefensePlatformCount < snapshot.DefensePlatformTarget && snapshot.CanBuildDefense)
                 return EnemyProductionCategory.Defense;
@@ -158,8 +159,8 @@ namespace EmpireAtWar.Entities.EnemyFaction.Models
             if (snapshot.CanResearchCombat)
                 return EnemyProductionCategory.Research;
 
-            if (snapshot.HasShipOption)
-                return snapshot.CanBuildShip ? EnemyProductionCategory.Ship : EnemyProductionCategory.None;
+            if (snapshot.CanBuildShip)
+                return EnemyProductionCategory.Ship;
 
             if (snapshot.CanBuildDefense)
                 return EnemyProductionCategory.Defense;

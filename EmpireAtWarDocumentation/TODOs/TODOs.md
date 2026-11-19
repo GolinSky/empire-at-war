@@ -317,8 +317,12 @@
 
 ### Bugs
 
+- [x] **Enemy AI economy strategy** → [[Done/Bugs/Enemy_AI_Economy_Strategy]]; follows [[Done/Bugs/Enemy_AI_Active_Play_And_Ship_Combat]]
+  - Completed 2026-11-19. E1–E7 implemented and runtime/Editor C# compilation passed. Battle and EditMode acceptance pending.
+
 - [x] **Enemy AI active play + ship combat** → [[Done/Bugs/Enemy_AI_Active_Play_And_Ship_Combat]]
   - Completed 2026-11-19. Reopened R1–R7 and R9–R11 implemented. Standalone C# compilation passed. Battle and EditMode acceptance pending.
+  - 12:39 battle (2026-11-19): user — huge improvement; sabotage and centre retake pass. Remaining strategy issues → [[Done/Bugs/Enemy_AI_Economy_Strategy]]. EditMode gate still pending.
 
 - [x] **Ship ability event throws for destroyed caster (online host, 9× per session)** → [[Done/Bugs/Ship_Ability_Event_Destroyed_Caster]]
   - Completed 2026-11-18: events use stable `EntityId`; regression test added, not run.

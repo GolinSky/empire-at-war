@@ -21,6 +21,7 @@ namespace EmpireAtWar.Services.Enemy
         private readonly List<IShipEntity> _unassigned = new List<IShipEntity>();
         private readonly HashSet<IShipEntity> _members = new HashSet<IShipEntity>();
         private readonly List<EnemyShipTaskGroup> _captureGroups = new List<EnemyShipTaskGroup>();
+        private readonly HashSet<ReinforcementZonePresenter> _assignedExpansionZones = new HashSet<ReinforcementZonePresenter>();
         private EnemyShipTaskGroup _mainGroup;
         private readonly EnemyShipTaskGroup _idleGroup;
         private readonly EnemyStrategicContextBuilder _captureProbe;
@@ -32,6 +33,7 @@ namespace EmpireAtWar.Services.Enemy
             IUnitOrderService orders)
         {
             _contextBuilder = contextBuilder;
+            _contextBuilder.AssignedExpansionZones = _assignedExpansionZones;
             _orders = orders;
             _idleGroup = new EnemyShipTaskGroup(contextBuilder, decisionModel, executor);
             _captureProbe = contextBuilder.CreateGroupBuilder();
@@ -44,10 +46,16 @@ namespace EmpireAtWar.Services.Enemy
             foreach (IShipEntity ship in ships) _members.Add(ship);
             foreach (EnemyShipTaskGroup group in _groups)
                 group.Ships.RemoveAll(ship => !_members.Contains(ship));
+            _captureProbe.BeginCaptureProbe(null);
             for (int i = _captureGroups.Count - 1; i >= 0; i--)
             {
                 EnemyShipTaskGroup captureGroup = _captureGroups[i];
-                if (!stationPressure && captureGroup.Ships.Count != 0 &&
+                if (captureGroup.ContextBuilder.ExpansionZone is ReinforcementZonePresenter zone)
+                {
+                    if (_captureProbe.HasExpansionObjective(zone)) continue;
+                    _assignedExpansionZones.Remove(zone);
+                }
+                else if (!stationPressure && captureGroup.Ships.Count != 0 &&
                     !(captureGroup.NoViableCaptureSince >= 0f &&
                       Time.time - captureGroup.NoViableCaptureSince >= DETACHMENT_GRACE_SECONDS)) continue;
                 _groups.Remove(captureGroup);
@@ -62,7 +70,7 @@ namespace EmpireAtWar.Services.Enemy
                 // Keep travel companions stable until they are clearly outside the cohesion envelope.
                 Vector3 anchor = group.Ships[0].WorldPosition;
                 for (int i = group.Ships.Count - 1; i > 0; i--)
-                    if (group != _mainGroup && DistanceSquared(anchor, group.Ships[i].WorldPosition) >
+                    if (!group.IsCaptureDetachment && group != _mainGroup && DistanceSquared(anchor, group.Ships[i].WorldPosition) >
                         4f * FleetCohesion.RADIUS * FleetCohesion.RADIUS)
                         group.Ships.RemoveAt(i);
                 foreach (IShipEntity ship in group.Ships) _members.Add(ship);
@@ -130,20 +138,69 @@ namespace EmpireAtWar.Services.Enemy
             ISet<string> reservedObjectives, bool stationPressure)
         {
             if (stationPressure || ships.Count == 0) return;
-            if (_mainGroup != null && _captureGroups.Count >= OPENING_FOCUSES.Length) return;
             _unassigned.Clear();
             foreach (IShipEntity ship in ships)
-                if (ship.CurrentOrder != UnitOrderType.Retreat && !IsInCaptureGroup(ship))
+                if (ship.CurrentOrder != UnitOrderType.Retreat && !IsInCaptureGroup(ship) &&
+                    !IsInAssaultGroup(ship))
                     _unassigned.Add(ship);
             _unassigned.Sort((a, b) => b.NavigationSpeed.CompareTo(a.NavigationSpeed));
             _captureProbe.BeginCaptureProbe(reservedObjectives);
+            if (_assignedExpansionZones.Count > 0 &&
+                !_captureGroups.Exists(group => group.ContextBuilder.OpeningFocus == EnemyOpeningFocus.Centre) &&
+                TryDetachForCapture(EnemyOpeningFocus.Centre, ships.Count)) return;
+            if (TryAssignExpansionShip()) return;
+            if (_mainGroup != null && _captureGroups.Count >= OPENING_FOCUSES.Length) return;
             foreach (EnemyOpeningFocus focus in OPENING_FOCUSES)
             {
+
                 if (_captureGroups.Exists(group => group.ContextBuilder.OpeningFocus == focus)) continue;
                 if (TryDetachForCapture(focus, ships.Count)) return;
             }
             if (_captureGroups.Count == 0) TryDetachForCapture(EnemyOpeningFocus.None, ships.Count);
         }
+
+        private bool TryAssignExpansionShip()
+        {
+            ReinforcementZonePresenter bestZone = null;
+            EnemyShipTaskGroup bestGroup = null;
+            IShipEntity bestShip = null;
+            float bestEta = float.PositiveInfinity;
+            foreach (ReinforcementZonePresenter zone in _captureProbe.ExpansionZones)
+            {
+                if (zone.IsMain || !zone.IsCapturable || !_captureProbe.HasMiningSites(zone) ||
+                    !_captureProbe.HasExpansionObjective(zone)) continue;
+                EnemyShipTaskGroup group = _captureGroups.Find(candidate => candidate.ContextBuilder.ExpansionZone == zone);
+                foreach (IShipEntity ship in _unassigned)
+                {
+                    int required = _captureProbe.GetRequiredExpansionShips(zone, ship, out float eta);
+                    if (required == 0 || (group != null && group.Ships.Count >= required &&
+                        (group.NoViableCaptureSince < 0f || group.Ships.Count >= required + 1)) ||
+                        eta >= bestEta) continue;
+                    if (_mainGroup != null && _mainGroup.Ships.Contains(ship) && _mainGroup.Ships.Count <= 3)
+                        continue;
+                    bestZone = zone;
+                    bestGroup = group;
+                    bestShip = ship;
+                    bestEta = eta;
+                }
+            }
+            if (bestShip == null) return false;
+            if (bestGroup == null)
+            {
+                bestGroup = CreateGroup(true);
+                bestGroup.ContextBuilder.ExpansionZone = bestZone;
+                _assignedExpansionZones.Add(bestZone);
+                _captureGroups.Add(bestGroup);
+                _groups.Add(bestGroup);
+            }
+            foreach (EnemyShipTaskGroup group in _groups) group.Ships.Remove(bestShip);
+            bestGroup.Ships.Add(bestShip);
+            return true;
+        }
+
+        private bool IsInAssaultGroup(IShipEntity ship) =>
+            _mainGroup != null && _mainGroup.Decision.State == EnemyStrategicState.AssaultBase &&
+            _mainGroup.Ships.Contains(ship);
 
         private bool TryDetachForCapture(EnemyOpeningFocus focus, int shipCount)
         {

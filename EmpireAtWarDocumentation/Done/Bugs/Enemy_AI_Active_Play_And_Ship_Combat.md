@@ -171,6 +171,11 @@ Files: `BattleTelemetry/Loading_20261119_115746_ai.csv`, `_ai_orders.csv`, `_squ
 - [x] Higher hostile economy → expect a bigger hostile fleet than seen; raise the force needed to attack/capture.
 - [x] No attack/capture with 1–5 ships into a known 10-ship enemy (11:57, 291–317 s).
 
+## Acceptance 2026-11-19 12:39 (UltraHard, `529094e87`)
+- Passed (user): huge improvement; sabotage works; centre capture/retake works; mining research I at 0 s / II at 86 s; ship production during the level-2 upgrade; combat research from 40 s.
+- Failed → [[Done/Bugs/Enemy_AI_Economy_Strategy]]: outer mining zones not taken (zone 3 never, zone 4 late); base push after the centre lost ≈ 27 ships; level-1 corvette counter picks at level 5; normal spawns still on the home-zone side.
+- EditMode gate remains in [[TODOs/User_Acceptance_Queue#Enemy AI Active Play and Ship Combat]].
+
 ## Reopened scope outcome
 
 - R1/R2/R5: mining income I with the opening miners and II once level 2 unlocks. Normal combat production continues through upgrades. Critical spending replaces affordable miners, prefers timely ships, caps squadron purchases, and excludes starting-tier corvette panic buys at level 3+.

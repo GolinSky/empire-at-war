@@ -7,7 +7,15 @@ namespace EmpireAtWar.Services.Enemy
     {
         private readonly List<(float X, float Z, float Radius)> _threats = new List<(float X, float Z, float Radius)>();
 
-        public void Clear() => _threats.Clear();
+        private (float X, float Z)? _approach;
+
+        public void Clear()
+        {
+            _threats.Clear();
+            _approach = null;
+        }
+
+        public void SetApproach(float x, float z) => _approach = (x, z);
 
         public void Add(float x, float z, float radius) => _threats.Add((x, z, radius));
 
@@ -27,7 +35,7 @@ namespace EmpireAtWar.Services.Enemy
                 count++;
             }
 
-            return count > 0 ? (sumX / count, sumZ / count) : (x, z);
+            return count > 0 ? (sumX / count, sumZ / count) : _approach ?? (x, z);
         }
 
         public bool IsSafe(float x, float z, float clearance)

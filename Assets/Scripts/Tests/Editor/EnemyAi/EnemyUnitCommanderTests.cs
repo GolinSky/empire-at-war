@@ -2711,7 +2711,7 @@ namespace EmpireAtWar.Tests.Editor
             zones ??= new ZoneSource(roster);
             return new EnemyStrategicContextBuilder(ships, reinforcementZones, captureSources, entities, game, roster,
                 new ForceCompositionBuilder(entities, catalog, snapshot), intel, vision, owner, production, hazards, zones,
-                navigation, pressure, recovery, snapshot, new TeamAiPictureRegistry(intel, roster, zones, catalog, snapshot));
+                navigation, pressure, recovery, snapshot, new TeamAiPictureRegistry(intel, roster, zones, catalog, snapshot), new EnemyFactionModel(null, null));
         }
 
         private static EnemyRecoveryAnchor CreateRecovery(PlayerRoster roster, ZoneSource zones = null)
