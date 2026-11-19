@@ -57,7 +57,6 @@ namespace EmpireAtWar.Views.MiniMap
             });
             if (marker.WorldDiameter > 0f)
             {
-                rectTransform.SetAsFirstSibling();
                 // Preserve zone translucency while minimap hover fades animate the image color.
                 iconImage.canvasRenderer.SetAlpha(ZONE_ALPHA);
             }

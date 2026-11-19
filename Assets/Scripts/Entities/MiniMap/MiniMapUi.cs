@@ -120,6 +120,11 @@ namespace EmpireAtWar.Entities.MiniMap
         {
             MarkView view = Instantiate(_model.MarkViewPrefab);
             view.SetData(this, _playerColors, iconParent, marker, _model.GetIcon(marker.MarkType));
+            if (marker.WorldDiameter > 0f)
+            {
+                // Zones are known terrain: draw them over the fog layer, but under every other marker.
+                view.transform.SetSiblingIndex(fogImage.transform.parent.GetSiblingIndex() + 1);
+            }
             tooltipHover.Register(view.TooltipTrigger);
             _markerViews.Add(marker, view);
             _mapMarkers.Add(view.IconImage);

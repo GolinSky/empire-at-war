@@ -2,6 +2,7 @@ using System.Collections.Generic;
 using EmpireAtWar.Controllers.Game;
 using EmpireAtWar.Entities.CaptureSites;
 using EmpireAtWar.Models.MiniMap;
+using EmpireAtWar.Models.Players;
 using EmpireAtWar.Services.CaptureSites;
 using VContainer;
 using EmpireAtWar.Lifecycle;
@@ -19,15 +20,18 @@ namespace EmpireAtWar.Presenters.MiniMap
 
         private readonly MiniMapMarkerCollection<ICaptureSite> _markers;
         private readonly INotifier<BattleState> _battleState;
+        private readonly ILocalPlayer _localPlayer;
 
         private bool _running;
 
         public CaptureSiteMiniMapPresenter(
             ICaptureSiteDirectory captureSitesSystem,
             MiniMapData miniMapData,
-            INotifier<BattleState> battleState)
+            INotifier<BattleState> battleState,
+            ILocalPlayer localPlayer)
         {
             _battleState = battleState;
+            _localPlayer = localPlayer;
             _markers = new MiniMapMarkerCollection<ICaptureSite>(miniMapData);
             _captureSitesSystem = captureSitesSystem;
         }
@@ -79,12 +83,18 @@ namespace EmpireAtWar.Presenters.MiniMap
             }
         }
 
-        private static void RefreshMarker(ICaptureSite site, MiniMapMarker marker)
+        private void RefreshMarker(ICaptureSite site, MiniMapMarker marker)
         {
             if (site.IsRevealed)
             {
                 marker.SetOwner(site.Owner);
                 marker.SetVisible(!site.IsOperational);
+            }
+            else if (_localPlayer.IsFriendly(marker.Owner))
+            {
+                // Our facility's own marker hides the site; losing it also loses the site's vision,
+                // so the site marker must come back even while the site is out of sight.
+                marker.SetVisible(!(site.IsOperational && _localPlayer.IsFriendly(site.Owner)));
             }
         }
     }
