@@ -18,11 +18,7 @@
       ]
     },
     "empire-vault": {
-      "command": "node",
-      "args": [
-        "Tools/McpVault/node_modules/@bitbonsai/mcpvault/dist/server.js",
-        "EmpireAtWarDocumentation"
-      ]
+      "serverUrl": "http://127.0.0.1:9123/mcp"
     },
     "graphify": {
       "command": "uvx",
