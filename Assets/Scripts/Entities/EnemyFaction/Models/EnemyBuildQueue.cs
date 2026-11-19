@@ -8,9 +8,6 @@ namespace EmpireAtWar.Entities.EnemyFaction.Models
     /// <summary>The AI's paid builds, using the player's per-ID production pipelines.</summary>
     public sealed class EnemyBuildQueue
     {
-        internal const float MAX_DEPLOYMENT_WAIT_SECONDS = 6f;
-
-        private EnemyPendingBuild _lastShipInGroup;
         private readonly List<EnemyPendingBuild> _builds = new List<EnemyPendingBuild>();
         private readonly List<UnitRequest> _finished = new List<UnitRequest>();
         private readonly HashSet<string> _pipelineIds = new HashSet<string>();
@@ -41,8 +38,6 @@ namespace EmpireAtWar.Entities.EnemyFaction.Models
         public void RetryShipDeployment(ShipUnitRequest request, float retryDelay)
         {
             var build = new EnemyPendingBuild(request, 0f) { DeploymentRetryIn = retryDelay };
-            // Once the area opens, the already-held ship can depart with any other ships ready to deploy.
-            build.WaitForDeployment(float.PositiveInfinity);
             _builds.Add(build);
             _blockedSeconds.TryGetValue(request, out float blocked);
             _blockedSeconds[request] = blocked + retryDelay;
@@ -67,21 +62,23 @@ namespace EmpireAtWar.Entities.EnemyFaction.Models
         public void ReleaseExternalPipeline(string requestId) => _externalPipelines.Remove(requestId);
 
         /// <summary>Builds each ID in FIFO order; different IDs advance in parallel.</summary>
-        public void Advance(float deltaTime, Action<UnitRequest> complete, bool gatherShips = false,
-            float deploymentWaitLimit = MAX_DEPLOYMENT_WAIT_SECONDS)
+        public void Advance(float deltaTime, Action<UnitRequest> complete, int minimumReadyCombatUnits = 0,
+            float deploymentWaitLimit = float.PositiveInfinity)
         {
             if (deltaTime < 0f) throw new ArgumentOutOfRangeException(nameof(deltaTime));
 
             _finished.Clear();
             _remainingTime.Clear();
+            int readyCombatUnits = 0;
+            bool releaseReadyCombat = false;
             foreach (string id in _externalPipelines) _remainingTime.Add(id, 0f);
             for (int i = 0; i < _builds.Count;)
             {
                 EnemyPendingBuild build = _builds[i];
-                bool isShip = build.Request is ShipUnitRequest;
+                bool isCombatUnit = IsCombatUnit(build.Request);
                 float remaining = deltaTime;
-                // Completed ships wait for deployment without occupying a production lane.
-                if (!isShip || build.TimeLeft > 0f)
+                // A completed reinforcement stays paid and reserved without occupying a production lane.
+                if (!isCombatUnit || build.TimeLeft > 0f)
                 {
                     string id = build.Request.Id;
                     if (_remainingTime.TryGetValue(id, out float pipelineTime))
@@ -119,9 +116,12 @@ namespace EmpireAtWar.Entities.EnemyFaction.Models
                     i++;
                     continue;
                 }
-                if (gatherShips && isShip)
+                if (minimumReadyCombatUnits > 0 && isCombatUnit &&
+                    !(build.Request is ShipUnitRequest ship && _blockedSeconds.ContainsKey(ship)))
                 {
                     build.WaitForDeployment(remaining);
+                    readyCombatUnits++;
+                    releaseReadyCombat |= build.DeploymentWait >= deploymentWaitLimit;
                     i++;
                     continue;
                 }
@@ -130,57 +130,25 @@ namespace EmpireAtWar.Entities.EnemyFaction.Models
                 _builds.RemoveAt(i);
             }
 
-            if (gatherShips)
-                CollectReadyGroup(deploymentWaitLimit);
-            else
-                _lastShipInGroup = null;
+            if (readyCombatUnits > 0 && (readyCombatUnits >= minimumReadyCombatUnits || releaseReadyCombat))
+            {
+                for (int i = 0; i < _builds.Count;)
+                {
+                    EnemyPendingBuild build = _builds[i];
+                    if (IsCombatUnit(build.Request) && build.IsReadyForDeployment)
+                    {
+                        _finished.Add(build.Request);
+                        _builds.RemoveAt(i);
+                    }
+                    else i++;
+                }
+            }
 
             for (int i = 0; i < _finished.Count; i++) complete(_finished[i]);
         }
 
-        private void CollectReadyGroup(float deploymentWaitLimit)
-        {
-            // Include the ships already ordered when the first ship finishes. Later orders form the next group.
-            if (_lastShipInGroup == null || !_builds.Contains(_lastShipInGroup))
-            {
-                int ordered = 0;
-                bool hasReadyShip = false;
-                EnemyPendingBuild last = null;
-                foreach (EnemyPendingBuild build in _builds)
-                {
-                    if (!(build.Request is ShipUnitRequest)) continue;
-                    ordered++;
-                    hasReadyShip |= build.IsReadyForDeployment;
-                    last = build;
-                }
-                if (!hasReadyShip || ordered == 1 && last.DeploymentWait < deploymentWaitLimit) return;
-                _lastShipInGroup = last;
-            }
-
-            int end = _builds.IndexOf(_lastShipInGroup);
-            bool allReady = true;
-            bool waitExpired = false;
-            for (int i = 0; i <= end; i++)
-            {
-                EnemyPendingBuild build = _builds[i];
-                if (!(build.Request is ShipUnitRequest)) continue;
-                allReady &= build.IsReadyForDeployment;
-                waitExpired |= build.IsReadyForDeployment && build.DeploymentWait >= deploymentWaitLimit;
-            }
-            if (!allReady && !waitExpired) return;
-
-            for (int i = 0; i <= end;)
-            {
-                if (_builds[i].Request is ShipUnitRequest && _builds[i].IsReadyForDeployment)
-                {
-                    _finished.Add(_builds[i].Request);
-                    _builds.RemoveAt(i);
-                    end--;
-                }
-                else i++;
-            }
-            _lastShipInGroup = null;
-        }
+        private static bool IsCombatUnit(UnitRequest request) =>
+            request is ShipUnitRequest or SquadronUnitRequest;
 
         public void RemoveAll(Predicate<UnitRequest> match) => _builds.RemoveAll(build => match(build.Request));
 
@@ -188,7 +156,6 @@ namespace EmpireAtWar.Entities.EnemyFaction.Models
         {
             _builds.Clear();
             _blockedSeconds.Clear();
-            _lastShipInGroup = null;
             _externalPipelines.Clear();
         }
     }

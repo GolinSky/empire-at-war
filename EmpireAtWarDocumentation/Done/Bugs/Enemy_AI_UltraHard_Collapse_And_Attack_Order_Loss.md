@@ -4,7 +4,8 @@ status: done
 created: 2026-11-18
 parent: "[[TODOs/Bugs/Enemy_AI_And_Faction_Balance]]"
 completed: 2026-11-18
-acceptance: pending-user
+acceptance: failed
+followup: "[[TODOs/Bugs/Enemy_AI_UltraHard_Followup_And_Ship_Idle]]"
 ---
 # Enemy AI UltraHard Collapse And Attack Order Loss
 
@@ -90,3 +91,8 @@ acceptance: pending-user
 - Unity script compilation completed with zero errors. Reviewed and updated regressions in EnemyAi, Abilities, Ships, BattleInput and Combat. Reviewed related Capture, Economy, GameFlow, Networking and Core fixtures.
 - Unity tests were not run under the local execution override. In-game acceptance remains with the user.
 - Reusable rules → [[Architecture/Enemy_AI_Objectives]] and [[GameDesign/Abilities_And_Superweapons#Automatic player ship powers]].
+
+## Acceptance (2026-11-18 22:12 UltraHard battle)
+- Fix 1 (auto-power keeps Attack orders) held: no station attack replaced by an ability.
+- Failed: defense-spawn hold never times out (447 `deploymentBlocked`); capture stall → `Move` locks ships out of combat; AI still loses map control.
+- Follow-up → [[TODOs/Bugs/Enemy_AI_UltraHard_Followup_And_Ship_Idle]].

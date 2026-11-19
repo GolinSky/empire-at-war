@@ -290,7 +290,15 @@ created: "2026-10-29\r"
 
 ## Enemy AI UltraHard Collapse and Attack Order Loss
 
-- [ ] [[Done/Bugs/Enemy_AI_UltraHard_Collapse_And_Attack_Order_Loss]] — In-game acceptance for the UltraHard AI and player Attack-order fixes. Unity compilation passed. Regressions authored and reviewed without a local test run.
+
+## Enemy AI Active Play and Ship Combat
+
+- [ ] [[Done/Bugs/Enemy_AI_Active_Play_And_Ship_Combat]] — Compare Medium and UltraHard openings. Verify the saved difficulty, five spawnable miners before routine combat spending, one level-1 corvette maximum, squadrons and early level 2.
+- [ ] [[Done/Bugs/Enemy_AI_Active_Play_And_Ship_Combat]] — Verify independent neighbour, centre and outer captures, two outer mining zones by about 4 min, three centre satellites before centre mines, and grouped reserve releases to hold or retake the centre.
+- [ ] [[Done/Bugs/Enemy_AI_Active_Play_And_Ship_Combat]] — Verify repeated raids hit home mines, spawned miners and outer mining sites while the main fleet holds centre. Compare mining-structure damage with the 01:11 evidence.
+- [ ] [[Done/Bugs/Enemy_AI_Active_Play_And_Ship_Combat]] — Verify AI stays in local fights without retreat/engage oscillation, autonomous withdrawals or new second stations. Review idle-order samples and anchor distances.
+- [ ] [[Done/Bugs/Enemy_AI_Active_Play_And_Ship_Combat]] — Verify in-range Attack and AttackMove stop and keep the target ahead, including Victory close contact. Use `battle_audit.py combat-facing` on the new order telemetry and check damage alone leaves idle orders unchanged.
+- [ ] [[Done/Bugs/Enemy_AI_Active_Play_And_Ship_Combat]] — Run the affected EditMode categories, including EnemyAi, Ships, BattleInput, Navigation, Capture and Ui from F9, plus Map, Combat, Abilities, Economy, Squadrons, GameFlow and Core for the additional affected contracts.
 
 ## Enemy AI Endgame Defense and Capture
 

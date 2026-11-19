@@ -56,6 +56,33 @@ namespace EmpireAtWar.Tests.Editor
             Assert.That(solver.FindTurn(), Is.Zero);
         }
 
+        [TestCase(1)]
+        [TestCase(9)]
+        public void CombatFacingTurnsIntoForwardFireInsteadOfChoosingAnAftBattery(int copies)
+        {
+            var solver = new WeaponFacingSolver();
+            for (int i = 0; i < copies; i++) solver.AddTarget(Vector3.back * 100f);
+            for (int i = 0; i < copies; i++)
+                solver.AddMount(Vector3.back * 80f, Quaternion.identity, 30f, -180f, 180f, 100, mainBattery: true);
+            solver.AddMount(Vector3.zero, Quaternion.identity, 150f, -20f, 20f, 1, mainBattery: false);
+
+            float turn = solver.FindTurn(out int score, targetBearing: 180f);
+
+            Assert.That(score, Is.EqualTo(1));
+            Assert.That(Mathf.Abs(Mathf.DeltaAngle(turn, 180f)), Is.LessThanOrEqualTo(20f));
+        }
+
+        [Test]
+        public void CombatFacingPointsBowAtTheTargetWhenNoForwardMountCanFire()
+        {
+            var solver = new WeaponFacingSolver();
+            solver.AddTarget(Vector3.back * 100f);
+            solver.AddMount(Vector3.back * 80f, Quaternion.identity, 30f, -180f, 180f, 1, mainBattery: true);
+
+            Assert.That(solver.FindTurn(out int score, targetBearing: 180f), Is.EqualTo(180f));
+            Assert.That(score, Is.Zero);
+        }
+
         [TestCase(257)]
         [TestCase(1031)]
         public void SeededLayoutsPreserveReferenceTurnAndScore(int seed)

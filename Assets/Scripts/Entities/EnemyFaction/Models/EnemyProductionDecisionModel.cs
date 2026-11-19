@@ -16,7 +16,6 @@ namespace EmpireAtWar.Entities.EnemyFaction.Models
     public readonly struct EnemyProductionSnapshot
     {
         public EnemyStrategicState StrategicState { get; }
-        public EnemyAiDifficulty Difficulty { get; }
         public int MiningFacilityCount { get; }
         public int ShipCount { get; }
         public int ShipsOrdered { get; }
@@ -28,7 +27,6 @@ namespace EmpireAtWar.Entities.EnemyFaction.Models
         public bool HasShipOption { get; }
         public bool CanBuildShip { get; }
         public bool CanBuildMining { get; }
-        public bool HasDefenseOption { get; }
         public bool CanBuildDefense { get; }
         public bool HasLevelUpOption { get; }
         public bool CanLevelUp { get; }
@@ -43,12 +41,11 @@ namespace EmpireAtWar.Entities.EnemyFaction.Models
         public bool CanOrderShips { get; }
         public bool IsStationCritical { get; }
 
-        /// <summary>Fleet is small or outmatched: ships are saved for ahead of levels, combat research and defense.</summary>
-        public bool NeedsFleet { get; }
+        public bool CanBuyOpeningShip { get; }
+        public bool IsOpening { get; }
 
         public EnemyProductionSnapshot(
             EnemyStrategicState strategicState,
-            EnemyAiDifficulty difficulty,
             int miningFacilityCount,
             int shipCount,
             int shipsOrdered,
@@ -60,7 +57,6 @@ namespace EmpireAtWar.Entities.EnemyFaction.Models
             bool hasShipOption,
             bool canBuildShip,
             bool canBuildMining,
-            bool hasDefenseOption,
             bool canBuildDefense,
             bool hasLevelUpOption,
             bool canLevelUp,
@@ -68,10 +64,10 @@ namespace EmpireAtWar.Entities.EnemyFaction.Models
             bool canResearchCombat = false,
             bool canOrderShips = true,
             bool isStationCritical = false,
-            bool needsFleet = false)
+            bool canBuyOpeningShip = false,
+            bool isOpening = false)
         {
             StrategicState = strategicState;
-            Difficulty = difficulty;
             MiningFacilityCount = miningFacilityCount;
             ShipCount = shipCount;
             ShipsOrdered = shipsOrdered;
@@ -83,7 +79,6 @@ namespace EmpireAtWar.Entities.EnemyFaction.Models
             HasShipOption = hasShipOption;
             CanBuildShip = canBuildShip;
             CanBuildMining = canBuildMining;
-            HasDefenseOption = hasDefenseOption;
             CanBuildDefense = canBuildDefense;
             HasLevelUpOption = hasLevelUpOption;
             CanLevelUp = canLevelUp;
@@ -91,13 +86,15 @@ namespace EmpireAtWar.Entities.EnemyFaction.Models
             CanResearchCombat = canResearchCombat;
             CanOrderShips = canOrderShips;
             IsStationCritical = isStationCritical;
-            NeedsFleet = needsFleet;
+            CanBuyOpeningShip = canBuyOpeningShip;
+            IsOpening = isOpening;
         }
     }
 
     public sealed class EnemyProductionDecisionModel : Model
     {
         private const int MINIMUM_FLEET_SIZE = 3;
+        private const int SHIP_ORDERS_PER_LEVEL = 1;
         private const int FLAGSHIP_MAX_COUNT = 3;
         private const int FLAGSHIP_MIN_CAPACITY = 5;
         private const float FLAGSHIP_PRIORITY = 0f;
@@ -137,211 +134,54 @@ namespace EmpireAtWar.Entities.EnemyFaction.Models
         public EnemyProductionCategory Evaluate(EnemyProductionSnapshot snapshot)
         {
             if (snapshot.MiningFacilityCount < 0)
-            {
                 throw new ArgumentOutOfRangeException(nameof(snapshot.MiningFacilityCount));
-            }
+
+            bool needsMining = snapshot.MiningFacilityCount < snapshot.MiningFacilityTarget && snapshot.HasMiningOption;
+            if (needsMining && (snapshot.IsOpening || !snapshot.IsStationCritical))
+                return snapshot.CanBuildMining ? EnemyProductionCategory.Mining : EnemyProductionCategory.None;
 
             if (snapshot.IsStationCritical)
-            {
                 return snapshot.CanBuildShip ? EnemyProductionCategory.Ship : EnemyProductionCategory.None;
-            }
 
-            // No ship type is unlocked (Empire at level 1): levelling up is the only way to a fleet.
-            if (!snapshot.CanOrderShips && IsLevelDue(snapshot, EnemyAiDifficultyProfile.Get(snapshot.Difficulty)) &&
-                snapshot.CanLevelUp)
-            {
-                return EnemyProductionCategory.Level;
-            }
-
-            // Mining is the economy: UltraHard fills its mining target before any ship, level or research.
-            if (snapshot.Difficulty == EnemyAiDifficulty.UltraHard &&
-                snapshot.MiningFacilityCount < snapshot.MiningFacilityTarget && snapshot.HasMiningOption)
-            {
-                return snapshot.CanBuildMining ? EnemyProductionCategory.Mining : EnemyProductionCategory.None;
-            }
-
-            if (NeedsMinimumFleet(snapshot.ShipCount) && snapshot.CanOrderShips && snapshot.CanBuildShip)
-            {
+            if (snapshot.CanBuyOpeningShip)
                 return EnemyProductionCategory.Ship;
-            }
 
-            if (snapshot.Difficulty == EnemyAiDifficulty.UltraHard)
-            {
-                return EvaluateUltraHard(snapshot);
-            }
+            if (IsLevelDue(snapshot))
+                return snapshot.CanLevelUp ? EnemyProductionCategory.Level : EnemyProductionCategory.None;
 
-            EnemyAiDifficultyProfile profile = EnemyAiDifficultyProfile.Get(snapshot.Difficulty);
-            bool needsEconomicFoundation =
-                snapshot.MiningFacilityCount < profile.MinimumMiningFacilities &&
-                snapshot.HasMiningOption;
-            if (needsEconomicFoundation)
-            {
-                return snapshot.CanBuildMining
-                    ? EnemyProductionCategory.Mining
-                    : EnemyProductionCategory.None;
-            }
+            // Once the first corvette is ordered (or the roster has none), level one builds squadrons.
+            if (snapshot.CurrentFactionLevel == 1)
+                return snapshot.CanBuildShip ? EnemyProductionCategory.Ship : EnemyProductionCategory.None;
 
-            // Income research is cheap and pays for itself, so it follows the economic floor.
+            if (NeedsMinimumFleet(snapshot.ShipCount) && snapshot.CanOrderShips && snapshot.HasShipOption)
+                return snapshot.CanBuildShip ? EnemyProductionCategory.Ship : EnemyProductionCategory.None;
+
             if (snapshot.CanResearchIncome)
-            {
                 return EnemyProductionCategory.Research;
-            }
 
-            if (snapshot.DefensePlatformCount < snapshot.DefensePlatformTarget &&
-                snapshot.CanBuildDefense)
-            {
+            if (snapshot.DefensePlatformCount < snapshot.DefensePlatformTarget && snapshot.CanBuildDefense)
                 return EnemyProductionCategory.Defense;
-            }
 
-            // Cheap units are always affordable, so a due level must be saved for or it is never reached.
-            // Without any ship type the AI buys squadrons while it saves instead of idling.
-            if (IsLevelDue(snapshot, profile))
-            {
-                if (snapshot.CanLevelUp)
-                {
-                    return EnemyProductionCategory.Level;
-                }
+            if (snapshot.StrategicState == EnemyStrategicState.Hold && snapshot.CanResearchCombat)
+                return EnemyProductionCategory.Research;
 
-                if (snapshot.CanOrderShips)
-                {
-                    return EnemyProductionCategory.None;
-                }
-            }
-
-            if (snapshot.StrategicState == EnemyStrategicState.Hold)
-            {
-                if (snapshot.Difficulty >= EnemyAiDifficulty.Hard && snapshot.CanLevelUp)
-                {
-                    return EnemyProductionCategory.Level;
-                }
-
-                if (snapshot.Difficulty >= EnemyAiDifficulty.Medium && snapshot.CanResearchCombat)
-                {
-                    return EnemyProductionCategory.Research;
-                }
-            }
-
-            // Mining past the floor grows with the fleet; it pays for itself quickly, so it is bought whenever affordable
-            // but never saved for.
-            if (snapshot.MiningFacilityCount < snapshot.MiningFacilityTarget && snapshot.CanBuildMining)
-            {
-                return EnemyProductionCategory.Mining;
-            }
-
-            // The chosen ship is saved for; spending on cheaper categories would keep it out of reach.
             if (snapshot.HasShipOption)
-            {
-                return snapshot.CanBuildShip
-                    ? EnemyProductionCategory.Ship
-                    : EnemyProductionCategory.None;
-            }
+                return snapshot.CanBuildShip ? EnemyProductionCategory.Ship : EnemyProductionCategory.None;
 
             if (snapshot.CanBuildDefense)
-            {
                 return EnemyProductionCategory.Defense;
-            }
 
             if (snapshot.CanLevelUp)
-            {
                 return EnemyProductionCategory.Level;
-            }
 
-            return snapshot.CanResearchCombat
-                ? EnemyProductionCategory.Research
-                : EnemyProductionCategory.None;
+            return snapshot.CanResearchCombat ? EnemyProductionCategory.Research : EnemyProductionCategory.None;
         }
 
-        private static EnemyProductionCategory EvaluateUltraHard(
-            EnemyProductionSnapshot snapshot)
-        {
-            // Without any ship type at this level the rebuild cannot succeed, so the AI moves on to economy,
-            // levelling and squadrons instead of waiting forever.
-            if (snapshot.ShipCount == 0 && snapshot.CanOrderShips)
-            {
-                if (snapshot.CanBuildShip)
-                {
-                    return EnemyProductionCategory.Ship;
-                }
-
-                return snapshot.MiningFacilityCount == 0 && snapshot.CanBuildMining
-                    ? EnemyProductionCategory.Mining
-                    : EnemyProductionCategory.None;
-            }
-
-            if (snapshot.MiningFacilityCount < snapshot.MiningFacilityTarget &&
-                snapshot.HasMiningOption)
-            {
-                return snapshot.CanBuildMining
-                    ? EnemyProductionCategory.Mining
-                    : EnemyProductionCategory.None;
-            }
-
-            if (snapshot.NeedsFleet && snapshot.HasShipOption)
-            {
-                return snapshot.CanBuildShip
-                    ? EnemyProductionCategory.Ship
-                    : EnemyProductionCategory.None;
-            }
-
-            if (snapshot.CanResearchIncome)
-            {
-                return EnemyProductionCategory.Research;
-            }
-
-            if (IsLevelDue(snapshot, EnemyAiDifficultyProfile.Get(snapshot.Difficulty)) &&
-                snapshot.CanLevelUp)
-            {
-                return EnemyProductionCategory.Level;
-            }
-
-            if (snapshot.ShipsOrdered >= snapshot.CurrentFactionLevel && snapshot.CanResearchCombat &&
-                !ShouldSaveForLevel(snapshot, EnemyAiDifficultyProfile.Get(snapshot.Difficulty)))
-            {
-                return EnemyProductionCategory.Research;
-            }
-
-            if (snapshot.DefensePlatformCount < snapshot.DefensePlatformTarget &&
-                snapshot.HasDefenseOption)
-            {
-                return snapshot.CanBuildDefense
-                    ? EnemyProductionCategory.Defense
-                    : EnemyProductionCategory.None;
-            }
-
-            if (ShouldSaveForLevel(snapshot, EnemyAiDifficultyProfile.Get(snapshot.Difficulty)))
-            {
-                return EnemyProductionCategory.None;
-            }
-
-            if (snapshot.HasShipOption)
-            {
-                return snapshot.CanBuildShip
-                    ? EnemyProductionCategory.Ship
-                    : EnemyProductionCategory.None;
-            }
-
-            return EnemyProductionCategory.None;
-        }
-
-        /// <summary>
-        /// A level is due once <see cref="EnemyAiDifficultyProfile.ShipOrdersPerLevel"/> ships per current level
-        /// were ordered, or at once when no ship type can be ordered at the current level; a base under attack
-        /// keeps buying units instead.
-        /// </summary>
-        private static bool IsLevelDue(
-            EnemyProductionSnapshot snapshot,
-            EnemyAiDifficultyProfile profile)
-        {
-            return snapshot.HasLevelUpOption &&
-                   snapshot.StrategicState != EnemyStrategicState.DefendBase &&
-                   (!snapshot.CanOrderShips ||
-                    snapshot.ShipsOrdered >= snapshot.CurrentFactionLevel * profile.ShipOrdersPerLevel);
-        }
-
-        /// <summary>A due level is saved for while ships can still be ordered; without ships, squadrons are bought.</summary>
-        private static bool ShouldSaveForLevel(
-            EnemyProductionSnapshot snapshot,
-            EnemyAiDifficultyProfile profile) =>
-            snapshot.CanOrderShips && IsLevelDue(snapshot, profile);
+        public bool IsLevelDue(EnemyProductionSnapshot snapshot) =>
+            snapshot.HasLevelUpOption &&
+            (snapshot.CurrentFactionLevel == 1 ||
+             snapshot.StrategicState != EnemyStrategicState.DefendBase &&
+             (!snapshot.CanOrderShips ||
+              snapshot.ShipsOrdered >= snapshot.CurrentFactionLevel * SHIP_ORDERS_PER_LEVEL));
     }
 }

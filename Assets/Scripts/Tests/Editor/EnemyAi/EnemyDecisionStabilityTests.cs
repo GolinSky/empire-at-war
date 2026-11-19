@@ -69,47 +69,40 @@ namespace EmpireAtWar.Tests.Editor
         }
 
         [Test]
-        public void Retreat_ReentryIsImmediateAndExitRequiresRecoveryThreshold()
+        public void StandAndFight_DoesNotFlipBetweenRetreatAndLocalEngagement()
         {
             var model = new EnemyStrategicDecisionModel();
             float cutoff = EnemyAiDifficultyProfile.Get(EnemyAiDifficulty.Medium).RetreatAdvantage;
             Assert.That(model.Evaluate(Snapshot(cutoff - 0.05f), now: 0f).State,
-                Is.EqualTo(EnemyStrategicState.RetreatValue));
-            Assert.That(model.Evaluate(Snapshot(cutoff * 1.1f), now: 20f).State,
-                Is.EqualTo(EnemyStrategicState.RetreatValue));
-            Assert.That(model.SwitchHeld, Is.True);
-            Assert.That(model.Evaluate(Snapshot(cutoff * 1.25f), now: 21f).State,
                 Is.EqualTo(EnemyStrategicState.EngageLocal));
-            Assert.That(model.Evaluate(Snapshot(cutoff - 0.05f), now: 22f).State,
-                Is.EqualTo(EnemyStrategicState.RetreatValue));
-            Assert.That(model.SwitchHeld, Is.False);
+            Assert.That(model.Evaluate(Snapshot(cutoff + 0.05f), now: 1f).State,
+                Is.EqualTo(EnemyStrategicState.EngageLocal));
+            Assert.That(model.Evaluate(Snapshot(cutoff - 0.05f), now: 2f).State,
+                Is.EqualTo(EnemyStrategicState.EngageLocal));
         }
 
         [Test]
-        public void CorneredAndNoShips_BypassHoldImmediately()
+        public void Engagement_RemainsCommittedWhileTheThreatPersists()
         {
             var model = new EnemyStrategicDecisionModel();
-            model.Evaluate(Snapshot(0.1f), now: 0f);
-            Assert.That(model.Evaluate(Snapshot(0.1f, safe: false), now: 1f).State,
+            Assert.That(model.Evaluate(Snapshot(0.1f), now: 0f).State,
                 Is.EqualTo(EnemyStrategicState.EngageLocal));
-            Assert.That(model.Bypass, Is.EqualTo("cornered"));
-            Assert.That(model.Evaluate(Snapshot(0.1f, ships: 0), now: 2f).State,
-                Is.EqualTo(EnemyStrategicState.RebuildFleet));
-            Assert.That(model.Bypass, Is.EqualTo("noShips"));
-        }
-
-        [Test]
-        public void CorneredFleetBrieflyCommitsToAnAvailableTacticalObjective()
-        {
-            var model = new EnemyStrategicDecisionModel();
-            Assert.That(model.Evaluate(Snapshot(0.1f, safe: false), now: 0f).State,
-                Is.EqualTo(EnemyStrategicState.EngageLocal));
-            EnemyStrategicSnapshot hasCapture = Snapshot(0.1f, safe: false, hasCapture: true);
+            EnemyStrategicSnapshot hasCapture = Snapshot(1.5f, hasCapture: true);
             Assert.That(model.Evaluate(hasCapture, now: 0.5f).State,
                 Is.EqualTo(EnemyStrategicState.EngageLocal));
             Assert.That(model.SwitchHeld, Is.True);
-            Assert.That(model.Evaluate(hasCapture, now: 3f).State,
+            Assert.That(model.Evaluate(hasCapture, now: EnemyStrategicDecisionModel.MIN_STATE_SECONDS).State,
                 Is.EqualTo(EnemyStrategicState.CaptureZone));
+        }
+
+        [Test]
+        public void LossOfAllShips_EndsEngagementImmediately()
+        {
+            var model = new EnemyStrategicDecisionModel();
+            model.Evaluate(Snapshot(0.1f), now: 0f);
+            Assert.That(model.Evaluate(Snapshot(0.1f, ships: 0), now: 1f).State,
+                Is.EqualTo(EnemyStrategicState.RebuildFleet));
+            Assert.That(model.Bypass, Is.EqualTo("noShips"));
         }
 
         [Test]
@@ -117,69 +110,36 @@ namespace EmpireAtWar.Tests.Editor
         {
             var model = new EnemyStrategicDecisionModel();
             model.Evaluate(Snapshot(0.1f), now: 0f, commit: false);
-            Assert.That(model.Evaluate(Snapshot(1f), now: 1f).State,
-                Is.EqualTo(EnemyStrategicState.EngageLocal));
-            Assert.That(model.IsRecovering, Is.False);
-        }
-
-        [TestCase(false, EnemyStrategicState.RetreatValue)]
-        [TestCase(true, EnemyStrategicState.CaptureZone)]
-        public void Recovery_OutmatchedFleetWithdrawsToAnchorOrRelay(bool relay, EnemyStrategicState expected)
-        {
-            var snapshot = new EnemyStrategicSnapshot(BattleVictoryCondition.DestroyEnemyFleet,
-                EnemyAiDifficulty.Medium, 2, 4, 0, 0.5f, 5f, relay, false, true,
-                localAdvantage: 0.5f, hasLocalThreat: true, hasStationPressure: true,
-                hasSafeRetreat: !relay, recoveryMode: true, recoveryCapturePending: relay);
-            Assert.That(new EnemyStrategicDecisionModel().Evaluate(snapshot, now: 0f).State, Is.EqualTo(expected));
-        }
-
-        [TestCase(false)]
-        [TestCase(true)]
-        public void Recovery_ParityFleetKeepsDefendingLivingStation(bool relay)
-        {
-            var snapshot = new EnemyStrategicSnapshot(BattleVictoryCondition.DestroyEnemyFleet,
-                EnemyAiDifficulty.Medium, 2, 4, 0, 0.5f, 5f, relay, false, true,
-                localAdvantage: 1f, hasLocalThreat: true, hasStationPressure: true,
-                hasSafeRetreat: true, recoveryMode: true, recoveryCapturePending: relay);
-            Assert.That(new EnemyStrategicDecisionModel().Evaluate(snapshot, now: 0f).State,
-                Is.EqualTo(EnemyStrategicState.DefendBase));
-        }
-
-        [Test]
-        public void Recovery_WithdrawalKeepsExitThresholdBeforeReturningToDefense()
-        {
-            var model = new EnemyStrategicDecisionModel();
-            EnemyStrategicSnapshot UnderSiege(float local) => new EnemyStrategicSnapshot(
-                BattleVictoryCondition.DestroyEnemyFleet, EnemyAiDifficulty.Medium,
-                2, 4, 0, 0.5f, 5f, false, false, true, localAdvantage: local,
-                hasLocalThreat: true, hasStationPressure: true, hasSafeRetreat: true, recoveryMode: true);
-            float enter = EnemyAiDifficultyProfile.Get(EnemyAiDifficulty.Medium).RetreatAdvantage;
-            float exit = enter * EnemyStrategicDecisionModel.RETREAT_EXIT_SCALE;
-            Assert.That(model.Evaluate(UnderSiege(enter - 0.1f), now: 0f).State, Is.EqualTo(EnemyStrategicState.RetreatValue));
-            Assert.That(model.Evaluate(UnderSiege((enter + exit) * 0.5f), now: 10f).State, Is.EqualTo(EnemyStrategicState.RetreatValue));
-            Assert.That(model.Evaluate(UnderSiege(exit), now: 11f).State, Is.EqualTo(EnemyStrategicState.DefendBase));
-            Assert.That(model.Bypass, Is.EqualTo("defend"));
-        }
-
-        [Test]
-        public void PressureWithoutDefenseTransition_DoesNotDelayCaptureDetachmentRetreat()
-        {
-            var model = new EnemyStrategicDecisionModel();
-            EnemyStrategicSnapshot UnderPressure(float local) => new EnemyStrategicSnapshot(
-                BattleVictoryCondition.DestroyEnemyFleet, EnemyAiDifficulty.Medium,
-                2, 4, 0, 0.5f, 5f, true, false, true, localAdvantage: local,
-                hasLocalThreat: true, hasStationPressure: true, hasSafeRetreat: true);
-            Assert.That(model.Evaluate(UnderPressure(1f), captureDetachment: true, now: 0f).State,
+            Assert.That(model.Evaluate(Snapshot(1.5f, hasCapture: true), now: 1f).State,
                 Is.EqualTo(EnemyStrategicState.CaptureZone));
-            Assert.That(model.Evaluate(UnderPressure(0.5f), captureDetachment: true, now: 1f).State,
-                Is.EqualTo(EnemyStrategicState.RetreatValue));
             Assert.That(model.SwitchHeld, Is.False);
         }
 
-        private static EnemyStrategicSnapshot Snapshot(float local, bool safe = true, int ships = 2,
-            bool hasCapture = false) =>
+        [TestCase(false, EnemyStrategicState.EngageLocal)]
+        [TestCase(true, EnemyStrategicState.DefendBase)]
+        public void Recovery_DoesNotWithdrawOrParkShips(bool localParity, EnemyStrategicState expected)
+        {
+            var snapshot = new EnemyStrategicSnapshot(BattleVictoryCondition.DestroyEnemyFleet,
+                EnemyAiDifficulty.Medium, 2, 4, 0, 0.5f, 5f, true, false, true,
+                localAdvantage: localParity ? 1f : 0.5f, hasLocalThreat: true, hasStationPressure: true,
+                hasSafeRetreat: true, recoveryMode: true);
+            Assert.That(new EnemyStrategicDecisionModel().Evaluate(snapshot, now: 0f).State, Is.EqualTo(expected));
+        }
+
+        [Test]
+        public void CaptureDetachment_RespondsImmediatelyToSuddenLocalWeakness()
+        {
+            var model = new EnemyStrategicDecisionModel();
+            Assert.That(model.Evaluate(Snapshot(1.5f, hasCapture: true), captureDetachment: true, now: 0f).State,
+                Is.EqualTo(EnemyStrategicState.CaptureZone));
+            Assert.That(model.Evaluate(Snapshot(0.5f, hasCapture: true), captureDetachment: true, now: 1f).State,
+                Is.EqualTo(EnemyStrategicState.EngageLocal));
+            Assert.That(model.SwitchHeld, Is.False);
+        }
+
+        private static EnemyStrategicSnapshot Snapshot(float local, int ships = 2, bool hasCapture = false) =>
             new EnemyStrategicSnapshot(BattleVictoryCondition.DestroyEnemyFleet, EnemyAiDifficulty.Medium,
                 ships, 4, 0, 0.5f, 0f, hasCapture, false, true,
-                localAdvantage: local, hasLocalThreat: true, hasSafeRetreat: safe);
+                localAdvantage: local, hasLocalThreat: true, hasSafeRetreat: true);
     }
 }

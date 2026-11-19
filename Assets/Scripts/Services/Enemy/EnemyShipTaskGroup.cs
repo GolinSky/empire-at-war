@@ -48,12 +48,12 @@ namespace EmpireAtWar.Services.Enemy
             next = DecisionModel.Evaluate(Context.Snapshot, IsCaptureDetachment, allowOffense: canAssemble, now: now);
             if (IsMainForce && next.State != EnemyStrategicState.DefendBase)
                 next = new EnemyStrategicDecision(next.Reason, next.State, Ships.Count);
-            TacticalMarker request = Context.Snapshot.WithdrawFromForwardStation || ContextBuilder.AlliedMarkers == null ? null :
-                ContextBuilder.AlliedMarkers.SelectRequest(Context, DecisionModel.IsRecovering);
+            TacticalMarker request = ContextBuilder.AlliedMarkers == null ? null :
+                ContextBuilder.AlliedMarkers.SelectRequest(Context, Context.Snapshot.RecoveryMode);
             if (request != null && request.Type != TacticalMarkerType.Retreat &&
                 !ContextBuilder.IsMarkerApproachSafe(request.Point)) request = null;
-            if (request == null && IsMainForce && !Context.Snapshot.WithdrawFromForwardStation)
-                request = ContextBuilder.SelectAllyDefenseRequest(DecisionModel.IsRecovering);
+            if (request == null && IsMainForce)
+                request = ContextBuilder.SelectAllyDefenseRequest(Context.Snapshot.RecoveryMode);
             if (request != null)
             {
                 next = new EnemyStrategicDecision($"Accepted allied {request.Type} request.",
@@ -73,8 +73,8 @@ namespace EmpireAtWar.Services.Enemy
                     $"group={group}; current={Decision.State}; blocked={DecisionModel.BlockedState}; scoreGap={DecisionModel.BestScore - DecisionModel.RunnerUpScore:F3}; heldSeconds={DecisionModel.StateHeldSeconds:F1}"));
             Decision = next;
             _hasDecision = true;
-            if (DecisionModel.IsRecovering && RecoveryStartedAt < 0f) RecoveryStartedAt = now;
-            if (!DecisionModel.IsRecovering) RecoveryStartedAt = -1f;
+            if (Context.Snapshot.RecoveryMode && RecoveryStartedAt < 0f) RecoveryStartedAt = now;
+            if (!Context.Snapshot.RecoveryMode) RecoveryStartedAt = -1f;
             if (request != null)
                 Executor.ExecuteMarker(request,
                     ContextBuilder.AlliedMarkers != null &&

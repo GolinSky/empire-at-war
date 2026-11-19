@@ -503,54 +503,22 @@ namespace EmpireAtWar.Tests.Movement
         }
 
         [Test]
-        public void IdlePursuit_ReturnsToTheStartingPostWhenTheAttackerDies()
-        {
-            AbilityCaster caster = new AbilityCaster(_target, _movement, ShipAbilityId.BoostEnginePower);
-            var abilityRelations = TestPlayers.CreateDuel();
-            ShipAbilityService abilities = new ShipAbilityService(new AbilityFactory(new RecordingAbility()),
-                abilityRelations, new VisionService(abilityRelations, fogEnabled: false));
-            Radar radar = new Radar();
-            radar.Enemies.Add(_target);
-            UnitOrderModel orders = new UnitOrderModel();
-            ShipStateMachine machine = new ShipStateMachine();
-            ShipOrderRunner runner = new ShipOrderRunner(_movement, _weapon, null, orders, machine,
-                new IdleState(_movement, _weapon, radar), new NavigateState(_movement),
-                new AttackTargetState(null, _weapon, _movement), null, null, null, null, abilities, caster, radar, null,
-                new NoTeamContacts(), TestPlayers.Human);
-            Vector3 post = new Vector3(40f, 0f, 60f);
-            _movement.CurrentPosition = post;
-            runner.Start();
-
-            runner.ObserveHealth(100f);
-            runner.ObserveHealth(60f);
-            runner.Tick(0.1f);
-            Assert.That(orders.Current, Is.EqualTo(UnitOrderType.Attack));
-
-            _target.Health.IsDestroyed = true;
-            runner.Tick(0.1f);
-
-            Assert.That(orders.Current, Is.EqualTo(UnitOrderType.Move));
-            Assert.That(orders.Destination.X, Is.EqualTo(post.x).Within(0.01f));
-            Assert.That(orders.Destination.Z, Is.EqualTo(post.z).Within(0.01f));
-            abilities.Clear();
-        }
-
-        [Test]
         public void Attack_TargetClosesRange_StopsWithoutAnotherPlan()
         {
             AttackTargetState state = new AttackTargetState(null, _weapon, _movement);
             state.SetData(_target);
             state.Tick(0.1f);
-            _target.Transform.position = new Vector3(40f, 0f, 0f);
+            _target.Transform.position = new Vector3(95f, 0f, 0f);
             state.Tick(0.1f);
 
             Assert.That(_movement.IsMoving, Is.False);
             Assert.That(_movement.MoveCount, Is.EqualTo(1));
+            Assert.That(_movement.LookTarget, Is.SameAs(_target));
         }
 
         [TestCase(false)]
         [TestCase(true)]
-        public void Attack_ArtilleryUsesLauncherRingForApproachAndRetreat(bool formation)
+        public void Attack_ArtilleryUsesLauncherRingOnlyForApproach(bool formation)
         {
             ArtilleryCapability artillery = new ArtilleryCapability(200f);
             AttackTargetState state = new AttackTargetState(null, _weapon, _movement, artillery);
@@ -561,12 +529,12 @@ namespace EmpireAtWar.Tests.Movement
 
             Vector3 bearing = formation ? Vector3.forward : Vector3.left;
             Assert.That(_movement.Destination, Is.EqualTo(_target.Transform.position + bearing * 180f));
-            _movement.FinishLeg();
-            _target.Transform.position -= bearing * 8f;
+            _movement.CurrentPosition = _movement.Destination;
+            _target.Transform.position -= bearing * 18f;
             for (int i = 0; i < 10; i++) state.Tick(0.1f);
             Assert.That(_movement.MoveCount, Is.EqualTo(1));
+            Assert.That(_movement.IsMoving, Is.False);
 
-            // Closing inside the launcher band never backs the ship off; only hull contact does.
             _target.Transform.position += bearing * 40f;
             state.Tick(0.1f);
             Assert.That(_movement.MoveCount, Is.EqualTo(1));
@@ -635,13 +603,10 @@ namespace EmpireAtWar.Tests.Movement
         }
 
         [Test]
-        public void Attack_ArtilleryBlockedRetreatRetriesAtIntervalsAndWaitsForTargetToMove()
+        public void Attack_ArtilleryBlockedApproachRetriesAtIntervalsAndWaitsForTargetToMove()
         {
             ArtilleryCapability artillery = new ArtilleryCapability(200f);
             AttackTargetState state = new AttackTargetState(null, _weapon, _movement, artillery);
-            _target.Transform.position = Vector3.right * 100f;
-            // Hull contact (5 + 150 + 1) is the only retreat trigger.
-            _target.HullRadius = 150f;
             _movement.FailMoves = true;
             state.SetData(_target);
             state.Tick(0.1f);
@@ -655,24 +620,28 @@ namespace EmpireAtWar.Tests.Movement
             for (int i = 0; i < 20; i++) state.Tick(0.5f);
             Assert.That(_movement.MoveCount, Is.EqualTo(7));
 
-            _target.Transform.position += Vector3.right * 20f;
+            _target.Transform.position += Vector3.right * 25f;
             state.Tick(0.5f);
 
             Assert.That(_movement.MoveCount, Is.EqualTo(8));
-            Assert.That(_movement.Destination.x, Is.EqualTo(-60f).Within(0.001f));
+            Assert.That(_movement.Destination.x, Is.EqualTo(345f).Within(0.001f));
         }
 
-        [Test]
-        public void Attack_ArtilleryHoldsInsideLauncherBandInsteadOfBackingOff()
+        [TestCase(100f, 150f, 200f)]
+        [TestCase(199f, 0f, 200f)]
+        [TestCase(95f, 0f, 60f)]
+        public void Attack_ArtilleryHoldsAtAnyFiringReach(float distance, float hullRadius, float launcherRange)
         {
-            ArtilleryCapability artillery = new ArtilleryCapability(200f);
+            ArtilleryCapability artillery = new ArtilleryCapability(launcherRange);
             AttackTargetState state = new AttackTargetState(null, _weapon, _movement, artillery);
-            _target.Transform.position = Vector3.right * 100f;
+            _target.Transform.position = Vector3.right * distance;
+            _target.HullRadius = hullRadius;
             state.SetData(_target);
 
             state.Tick(0.1f);
 
             Assert.That(_movement.MoveCount, Is.EqualTo(0));
+            Assert.That(_movement.LookTarget, Is.SameAs(_target));
         }
 
         [TestCase(185f, 190f)]
@@ -1163,6 +1132,7 @@ namespace EmpireAtWar.Tests.Movement
             IBaseState state;
             if (branch == "attack-move")
             {
+                _target.Transform.position = Vector3.right * 95f;
                 var attackMove = new AttackMoveState(_movement, _weapon, radar, null);
                 attackMove.SetData(Vector3.forward * 100f, new AttackMoveEngagement());
                 attackMove.Enter();
@@ -1207,6 +1177,7 @@ namespace EmpireAtWar.Tests.Movement
 
             state.Tick(0.1f);
             Assert.That(_movement.HeldTarget, Is.SameAs(_target));
+            Assert.That(_movement.LookTarget, Is.SameAs(_target));
             _movement.BeginSettling(Vector3.forward * 3f);
             int plans = _movement.MoveCount;
             for (int i = 0; i < 5; i++) state.Tick(0.1f);
@@ -1293,6 +1264,7 @@ namespace EmpireAtWar.Tests.Movement
             private IEntity _heldTarget;
             private bool _isSettling;
             public IEntity HeldTarget => _heldTarget;
+            public IEntity LookTarget { get; private set; }
             public Vector3 CurrentPosition { get; set; }
             public Vector3 Destination { get; private set; }
             public bool IsMoving { get; private set; }
@@ -1312,7 +1284,7 @@ namespace EmpireAtWar.Tests.Movement
             public void BeginSettling(Vector3 destination)
             { _isSettling = true; Destination = destination; IsMoving = true; MoveCount++; }
             public void FinishLeg() { CurrentPosition = Destination; IsMoving = false; }
-            public void LookAtTarget(IEntity target) { }
+            public void LookAtTarget(IEntity target) => LookTarget = target;
             public void LookInDirection(Vector3 direction) { }
             public float GetRange(Vector3 position) => Vector3.Distance(CurrentPosition, position);
             public void Stop() { CancelCombatHold(); IsMoving = false; }

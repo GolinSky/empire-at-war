@@ -66,6 +66,7 @@ namespace EmpireAtWar.Services.Enemy
             new Dictionary<IShipEntity, (float, float)>();
         private readonly Dictionary<IShipEntity, Vector3> _captureEscortPoints = new Dictionary<IShipEntity, Vector3>();
         private Vector3? _retreatAnchor;
+        private Vector3? _guardPosition;
         public string ActionReason { get; private set; } = "";
         private EnemyStrategicState _lastState;
         private readonly HashSet<IShipEntity> _assignedShips = new HashSet<IShipEntity>();
@@ -146,7 +147,10 @@ namespace EmpireAtWar.Services.Enemy
                     IssueAttackOrHunt(context, decision.CommittedShipCount, context.EnemyBaseTarget, allowHunt: false);
                     return;
                 case EnemyStrategicState.EngageLocal:
-                    IssueAttackOrHunt(context, decision.CommittedShipCount, context.LocalThreatTarget, allowHunt: false, assemble: false);
+                    ExecuteLocalEngagement(decision, context);
+                    return;
+                case EnemyStrategicState.GuardSite:
+                    ExecuteSiteGuard(context);
                     return;
                 case EnemyStrategicState.RaidStructures:
                     IssueAttackOrHunt(context, decision.CommittedShipCount, context.RaidTarget, allowHunt: false);
@@ -164,6 +168,42 @@ namespace EmpireAtWar.Services.Enemy
                 default:
                     throw new ArgumentOutOfRangeException(nameof(decision.State));
             }
+        }
+
+        private void ExecuteLocalEngagement(EnemyStrategicDecision decision, EnemyStrategicContext context)
+        {
+            GameEntity target = context.LocalThreatTarget;
+            if (target == null || context.Snapshot.LocalAdvantage >
+                EnemyAiDifficultyProfile.Get(context.Snapshot.Difficulty).RetreatAdvantage)
+            {
+                IssueAttackOrHunt(context, decision.CommittedShipCount, target, allowHunt: false, assemble: false);
+                return;
+            }
+
+            _body.AddRange(context.Ships);
+            _strikeShips.Clear();
+            _strikeShips.AddRange(context.Ships);
+            IssueStrikeAttack(context, target);
+        }
+
+        private void ExecuteSiteGuard(EnemyStrategicContext context)
+        {
+            Vector3 point = context.GuardPosition.Value;
+            bool samePoint = _guardPosition == point;
+            _guardPosition = point;
+            context.OrderDestination = point;
+            _body.AddRange(context.Ships);
+            var receivers = new List<GameEntity>();
+            foreach (IShipEntity ship in context.Ships)
+            {
+                bool insideGuardArea = PlanarDistance(ship.WorldPosition, point) <= FleetCohesion.RADIUS;
+                bool alreadyGuarding = _assignedShips.Contains(ship) && samePoint &&
+                    (ship.CurrentOrder == UnitOrderType.AttackMove ||
+                     insideGuardArea && ship.CurrentOrder is UnitOrderType.None or UnitOrderType.Attack);
+                if (!alreadyGuarding) receivers.Add(context.Receivers[ship]);
+                _assignedShips.Add(ship);
+            }
+            if (receivers.Count > 0) _unitOrderService.IssueAttackMove(receivers, point);
         }
 
         private void ExecuteDefense(EnemyStrategicDecision decision, EnemyStrategicContext context)

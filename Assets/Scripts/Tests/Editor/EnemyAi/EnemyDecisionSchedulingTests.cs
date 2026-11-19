@@ -435,8 +435,7 @@ namespace EmpireAtWar.Tests.Editor
             var pressure = new EnemyStationPressureTracker();
             var production = new TestProductionAccess(owner.Id);
             var recovery = new EnemyRecoveryAnchor(zoneSystem, zones, roster, entities, new BattleAreaService(roster),
-                new MapModel(), intelRegistry, owner, production, pressure, new SecondStationLevelModel(),
-                new EnemyFactionModel(null, null), snapshot);
+                new MapModel(), intelRegistry, owner, production, pressure, snapshot);
             var game = new TestGameModel();
             var builder = new EnemyStrategicContextBuilder(shipService, zoneSystem,
                 Array.Empty<IEnemyCaptureObjectiveSource>(), entities, game, roster,
@@ -552,7 +551,7 @@ namespace EmpireAtWar.Tests.Editor
             AiWorldSnapshot snapshot,
             EnemyAiScheduler scheduler) =>
             new EnemySquadronCommander(Array.Empty<IEnemyCaptureObjectiveSource>(), null, null, null,
-                null, null, null, new TeamIntelRegistry(), owner, null, null, state, snapshot, scheduler);
+                null, null, null, new TeamIntelRegistry(), owner, null, null, state, snapshot, scheduler, null);
 
         private sealed class TestEntity : IEntity, IEntityTransformFacade, ICombatModifiersFacade, IUnitTypeFacade,
             IMiningFacilityFacade, IPlayerBaseFacade

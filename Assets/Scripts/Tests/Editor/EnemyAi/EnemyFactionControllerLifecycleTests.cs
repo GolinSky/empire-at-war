@@ -11,6 +11,7 @@ using EmpireAtWar.Entities.DefendPlatform;
 using EmpireAtWar.Entities.EnemyFaction.Models;
 using EmpireAtWar.Entities.MiningFacility;
 using EmpireAtWar.Entities.SuperWeapons;
+using EmpireAtWar.Entities.Squadrons;
 using EmpireAtWar.Models.Factions;
 using EmpireAtWar.Models.Reinforcement;
 using EmpireAtWar.Services.Enemy;
@@ -34,29 +35,29 @@ namespace EmpireAtWar.Tests.Editor
 
         [TestCase(false)]
         [TestCase(true)]
-        public void GatherShips_HoldsFinishedShipUntilSupportOrImmediateDefense(bool immediateDefense)
+        public void Reserve_HoldsMixedWaveUntilSupportOrImmediateDefense(bool immediateDefense)
         {
             EnemyBuildQueue queue = new EnemyBuildQueue();
             FactionData data = new FactionData();
             var flagship = new ShipUnitRequest(data, ShipType.Tector);
-            var escort = new ShipUnitRequest(data, ShipType.Venator);
+            var escort = new SquadronUnitRequest(data, SquadronType.V19Torrent);
             List<UnitRequest> arrived = new List<UnitRequest>();
             queue.Add(flagship, 2f);
-            queue.Advance(2f, arrived.Add, gatherShips: true);
+            queue.Advance(2f, arrived.Add, minimumReadyCombatUnits: 2);
             Assert.That(arrived, Is.Empty);
             Assert.That(queue.Builds[0].TimeLeft, Is.Zero);
 
             queue.Add(escort, 5f);
-            float waitLimit = immediateDefense ? 0f : EnemyBuildQueue.MAX_DEPLOYMENT_WAIT_SECONDS;
-            queue.Advance(1f, arrived.Add, gatherShips: true, deploymentWaitLimit: waitLimit);
+            int minimumReady = immediateDefense ? 0 : 2;
+            queue.Advance(1f, arrived.Add, minimumReady);
             Assert.That(arrived.Count, Is.EqualTo(immediateDefense ? 1 : 0));
-            queue.Advance(4f, arrived.Add, gatherShips: true, deploymentWaitLimit: waitLimit);
+            queue.Advance(4f, arrived.Add, minimumReady);
             Assert.That(arrived, Is.EqualTo(new UnitRequest[] { flagship, escort }));
             Assert.That(queue.Builds, Is.Empty);
         }
 
         [Test]
-        public void GatherShips_ReleasesReadyShipBeforeSlowBatchFinishes()
+        public void Reserve_HomeDefenseCanReleaseLoneReadyShipBeforeSlowBatchFinishes()
         {
             EnemyBuildQueue queue = new EnemyBuildQueue();
             FactionData data = new FactionData();
@@ -66,11 +67,38 @@ namespace EmpireAtWar.Tests.Editor
             queue.Add(flagship, 2f);
             queue.Add(escort, 30f);
 
-            queue.Advance(7f, arrived.Add, gatherShips: true);
+            queue.Advance(7f, arrived.Add, minimumReadyCombatUnits: 2, deploymentWaitLimit: 6f);
             Assert.That(arrived, Is.Empty);
-            queue.Advance(1f, arrived.Add, gatherShips: true);
+            queue.Advance(1f, arrived.Add, minimumReadyCombatUnits: 2, deploymentWaitLimit: 6f);
             Assert.That(arrived, Is.EqualTo(new UnitRequest[] { flagship }));
             Assert.That(queue.Builds[0].TimeLeft, Is.EqualTo(22f));
+        }
+
+        [Test]
+        public void Reserve_WaitsWithoutTaskAndReleasesAllReadyUnitsForDefense()
+        {
+            var queue = new EnemyBuildQueue();
+            var data = new FactionData();
+            UnitRequest[] reserve =
+            {
+                new ShipUnitRequest(data, ShipType.Tector),
+                new SquadronUnitRequest(data, SquadronType.V19Torrent),
+                new ShipUnitRequest(data, ShipType.Venator),
+                new SquadronUnitRequest(data, SquadronType.YWing)
+            };
+            foreach (UnitRequest request in reserve)
+                queue.Add(request, 5f);
+
+            var arrived = new List<UnitRequest>();
+            queue.Advance(60f, arrived.Add, minimumReadyCombatUnits: int.MaxValue);
+            Assert.That(arrived, Is.Empty);
+            Assert.That(queue.GetRemainingTime(reserve[0].Id), Is.Zero);
+            Assert.That(queue.GetRemainingTime(reserve[1].Id), Is.Zero);
+            Assert.That(queue.Builds, Has.Count.EqualTo(reserve.Length));
+
+            queue.Advance(0f, arrived.Add, minimumReadyCombatUnits: 2);
+            Assert.That(arrived, Is.EqualTo(reserve));
+            Assert.That(queue.Builds, Is.Empty);
         }
 
         [Test]
@@ -80,7 +108,7 @@ namespace EmpireAtWar.Tests.Editor
             var ship = new ShipUnitRequest(new FactionData(), ShipType.Venator);
             List<UnitRequest> arrived = new List<UnitRequest>();
             queue.Add(ship, 1f);
-            queue.Advance(1f, arrived.Add, gatherShips: true);
+            queue.Advance(1f, arrived.Add, minimumReadyCombatUnits: 2);
             for (int i = 0; i < PlayerFactionModel.MAX_ACTIVE_PIPELINES; i++)
                 queue.ReserveExternalPipeline(i.ToString());
 
@@ -142,7 +170,7 @@ namespace EmpireAtWar.Tests.Editor
                 var factory = new TrackingShipFactory(shipObject.AddComponent<ShipEntity>());
                 var controller = new EnemyFactionController(aiState: ai, model: new EnemyFactionModel(null, null),
                     shipFactory: factory, miningFacilityFactory: null, defendPlatformFactory: null,
-                    stationFactory: null, secondStation: new SecondStationLevelModel(), research: null,
+                    research: null,
                     economyProvider: new TrackingEconomyProvider(), wallet: wallet, shipSpawnPoints: spawnPoints,
                     unitLimitModel: limits, reinforcementData: data,
                     enemyStructurePlacementService: new UnavailableStructurePlacement(),
@@ -220,7 +248,7 @@ namespace EmpireAtWar.Tests.Editor
                     model: model,
                     shipFactory: null,
                     miningFacilityFactory: null,
-                    defendPlatformFactory: null, stationFactory: null, secondStation: new SecondStationLevelModel(),
+                    defendPlatformFactory: null,
                     research: null,
                     economyProvider: economyProvider,
                     wallet: new TrackingWallet(),
@@ -274,7 +302,7 @@ namespace EmpireAtWar.Tests.Editor
                     model: new EnemyFactionModel(null, null),
                     shipFactory: null,
                     miningFacilityFactory: null,
-                    defendPlatformFactory: null, stationFactory: null, secondStation: new SecondStationLevelModel(),
+                    defendPlatformFactory: null,
                     research: null,
                     economyProvider: new TrackingEconomyProvider(),
                     wallet: wallet,
@@ -334,7 +362,7 @@ namespace EmpireAtWar.Tests.Editor
                     model: model,
                     shipFactory: null,
                     miningFacilityFactory: null,
-                    defendPlatformFactory: null, stationFactory: null, secondStation: new SecondStationLevelModel(),
+                    defendPlatformFactory: null,
                     research: null,
                     economyProvider: new TrackingEconomyProvider(),
                     wallet: wallet,
@@ -394,7 +422,7 @@ namespace EmpireAtWar.Tests.Editor
                 var spawnPoints = new BlockedShipSpawnPoints();
                 var factory = new TrackingShipFactory(shipObject.AddComponent<ShipEntity>());
                 var controller = new EnemyFactionController(aiState: new IdleAiState(), model: new EnemyFactionModel(null, null),
-                    shipFactory: factory, miningFacilityFactory: null, defendPlatformFactory: null, stationFactory: null, secondStation: new SecondStationLevelModel(), research: null,
+                    shipFactory: factory, miningFacilityFactory: null, defendPlatformFactory: null, research: null,
                     economyProvider: new TrackingEconomyProvider(), wallet: wallet, shipSpawnPoints: spawnPoints,
                     unitLimitModel: limits, reinforcementData: data,
                     enemyStructurePlacementService: new UnavailableStructurePlacement(),
@@ -459,7 +487,7 @@ namespace EmpireAtWar.Tests.Editor
                     ProductionHost = hosted ? TestPlayers.Human : TestPlayers.Enemy
                 };
                 var controller = new EnemyFactionController(aiState: new IdleAiState(), model: new EnemyFactionModel(null, null),
-                    shipFactory: null, miningFacilityFactory: null, defendPlatformFactory: null, stationFactory: null, secondStation: new SecondStationLevelModel(), research: null,
+                    shipFactory: null, miningFacilityFactory: null, defendPlatformFactory: null, research: null,
                     economyProvider: new TrackingEconomyProvider(), wallet: wallet,
                     shipSpawnPoints: new BlockedShipSpawnPoints(), unitLimitModel: limits, reinforcementData: data,
                     enemyStructurePlacementService: new UnavailableStructurePlacement(),
@@ -503,7 +531,7 @@ namespace EmpireAtWar.Tests.Editor
                     model: new EnemyFactionModel(null, null),
                     shipFactory: null,
                     miningFacilityFactory: null,
-                    defendPlatformFactory: null, stationFactory: null, secondStation: new SecondStationLevelModel(),
+                    defendPlatformFactory: null,
                     research: research,
                     economyProvider: new TrackingEconomyProvider(),
                     wallet: new TrackingWallet(),
@@ -548,7 +576,7 @@ namespace EmpireAtWar.Tests.Editor
                 model: model,
                 shipFactory: null,
                 miningFacilityFactory: null,
-                defendPlatformFactory: null, stationFactory: null, secondStation: new SecondStationLevelModel(),
+                defendPlatformFactory: null,
                 research: null,
                 economyProvider: new TrackingEconomyProvider(),
                 wallet: null,
@@ -585,7 +613,7 @@ namespace EmpireAtWar.Tests.Editor
                 var wallet = new TrackingWallet();
                 var limits = new EnemyUnitLimitModel();
                 var controller = new EnemyFactionController(aiState: new IdleAiState(), model: new EnemyFactionModel(null, null),
-                    shipFactory: null, miningFacilityFactory: null, defendPlatformFactory: null, stationFactory: null, secondStation: new SecondStationLevelModel(), research: null,
+                    shipFactory: null, miningFacilityFactory: null, defendPlatformFactory: null, research: null,
                     economyProvider: new TrackingEconomyProvider(), wallet: wallet, shipSpawnPoints: null,
                     unitLimitModel: limits, reinforcementData: data,
                     enemyStructurePlacementService: new UnavailableStructurePlacement(),
@@ -631,7 +659,7 @@ namespace EmpireAtWar.Tests.Editor
                 var wallet = new TrackingWallet();
                 var limits = new EnemyUnitLimitModel(); var model = new EnemyFactionModel(null, null);
                 var controller = new EnemyFactionController(aiState: new IdleAiState(), model: model, shipFactory: null,
-                    miningFacilityFactory: null, defendPlatformFactory: null, stationFactory: null, secondStation: new SecondStationLevelModel(), research: null,
+                    miningFacilityFactory: null, defendPlatformFactory: null, research: null,
                     economyProvider: new TrackingEconomyProvider(), wallet: wallet, shipSpawnPoints: null,
                     unitLimitModel: limits, reinforcementData: data, enemyStructurePlacementService: new UnavailableStructurePlacement(),
                     productionAccess: access, squadronLauncher: null, squadronCommander: null,
@@ -651,76 +679,41 @@ namespace EmpireAtWar.Tests.Editor
             finally { UnityEngine.Object.DestroyImmediate(data); }
         }
 
-        [TestCase(false, 0, 0)]
-        [TestCase(true, 0, 1)]
-        [TestCase(true, 1, 0)]
-        public void HostedSecondStation_RequiresRecoveryAndAnUnusedStationSlot(
-            bool recovering, int stationsBuilt, int expectedPurchases)
+        [TestCase(true)]
+        [TestCase(false)]
+        public void SecondStation_RejectsNewPurchaseAndRefundsLegacyQueueEntry(bool upgrade)
         {
             var data = ScriptableObject.CreateInstance<ReinforcementData>();
             try
             {
                 var faction = new FactionData();
                 SetBackingField(faction, nameof(FactionData.MaxCount), 1);
-                SetBackingField(faction, nameof(FactionData.BuildTime), 10);
+                SetBackingField(faction, nameof(FactionData.UnitCapacity), 1);
                 var wallet = new TrackingWallet();
+                var limits = new EnemyUnitLimitModel();
                 var controller = new EnemyFactionController(aiState: new IdleAiState(),
-                    model: new EnemyFactionModel(null, null) { AdditionalStationsBuilt = stationsBuilt }, shipFactory: null,
-                    miningFacilityFactory: null, defendPlatformFactory: null, stationFactory: null,
-                    secondStation: new SecondStationLevelModel(), research: null,
+                    model: new EnemyFactionModel(null, null), shipFactory: null,
+                    miningFacilityFactory: null, defendPlatformFactory: null, research: null,
                     economyProvider: new TrackingEconomyProvider(), wallet: wallet, shipSpawnPoints: null,
-                    unitLimitModel: new EnemyUnitLimitModel(), reinforcementData: data,
-                    enemyStructurePlacementService: new UnavailableStructurePlacement { IsRecovering = recovering },
-                    productionAccess: new OperationalProductionAccess { ProductionHost = TestPlayers.Human },
+                    unitLimitModel: limits, reinforcementData: data,
+                    enemyStructurePlacementService: new UnavailableStructurePlacement { IsRecovering = true },
+                    productionAccess: new OperationalProductionAccess(),
                     squadronLauncher: null, squadronCommander: null,
                     owner: TestPlayers.CreateDuel().Get(TestPlayers.Enemy), playerRegistry: new PlayerRegistry());
-                controller.Purchase(new SecondStationUnitRequest(faction));
-                Assert.That(wallet.SpendCount, Is.EqualTo(expectedPurchases));
-                Assert.That(controller.PendingBuilds.Count, Is.EqualTo(expectedPurchases));
-                controller.LateDispose();
-            }
-            finally { UnityEngine.Object.DestroyImmediate(data); }
-        }
+                UnitRequest request = upgrade ? new SecondStationLevelUnitRequest(faction, 1) : new SecondStationUnitRequest(faction);
 
-        [Test]
-        public void SecondStation_RequiresLivingPrimaryAndAnUnusedStationSlot()
-        {
-            var data = ScriptableObject.CreateInstance<ReinforcementData>();
-            try
-            {
-                var faction = new FactionData();
-                SetBackingField(faction, nameof(FactionData.MaxCount), 1);
-                SetBackingField(faction, nameof(FactionData.BuildTime), 10);
-                var request = new SecondStationUnitRequest(faction);
-                var wallet = new TrackingWallet();
-                var model = new EnemyFactionModel(null, null);
-                var access = new OperationalProductionAccess();
-                var placement = new UnavailableStructurePlacement();
-                var secondStation = new SecondStationLevelModel();
-                var controller = new EnemyFactionController(aiState: new IdleAiState(), model: model,
-                    shipFactory: null, miningFacilityFactory: null, defendPlatformFactory: null, stationFactory: null,
-                    secondStation: secondStation, research: null, economyProvider: new TrackingEconomyProvider(),
-                    wallet: wallet, shipSpawnPoints: null, unitLimitModel: new EnemyUnitLimitModel(),
-                    reinforcementData: data, enemyStructurePlacementService: placement, productionAccess: access,
-                    squadronLauncher: null, squadronCommander: null, owner: TestPlayers.CreateDuel().Get(TestPlayers.Enemy),
-                    playerRegistry: new PlayerRegistry());
-
-                Assert.That(controller.CanQueue(request.Id, 1), Is.True, "The initial backup is available.");
-                model.AdditionalStationsBuilt = 1;
-                Assert.That(controller.CanQueue(request.Id, 1), Is.False, "The backup slot has been used.");
-                access.HasHostBaseOverride = false;
-                secondStation.IsBuilt = true;
-                Assert.That(controller.CanQueue(request.Id, 1), Is.False, "The backup still stands.");
-                secondStation.IsBuilt = false;
-                placement.IsRecovering = true;
-                controller.Purchase(request);
-                Assert.That(wallet.SpendCount, Is.Zero, "A destroyed backup cannot be rebuilt.");
-                model.AdditionalStationsBuilt = 0;
-                Assert.That(controller.CanQueue(request.Id, 1), Is.False, "An allied base cannot replace the primary.");
                 controller.Purchase(request);
                 Assert.That(wallet.SpendCount, Is.Zero);
                 Assert.That(controller.PendingBuilds, Is.Empty);
-                controller.LateDispose();
+
+                controller.RestorePendingBuild(request, 30f);
+                Assert.That(limits.CurrentUnitCapacity, Is.EqualTo(1));
+                controller.Advance(0f);
+                Assert.That(wallet.RefundCount, Is.EqualTo(1));
+                Assert.That(controller.PendingBuilds, Is.Empty);
+                Assert.That(limits.CurrentUnitCapacity, Is.Zero);
+                controller.Advance(1f);
+                Assert.That(wallet.RefundCount, Is.EqualTo(1));
             }
             finally { UnityEngine.Object.DestroyImmediate(data); }
         }
@@ -737,7 +730,7 @@ namespace EmpireAtWar.Tests.Editor
                 var wallet = new TrackingWallet();
                 var model = new EnemyFactionModel(null, null);
                 var controller = new EnemyFactionController(aiState: new IdleAiState(), model: model, shipFactory: null,
-                    miningFacilityFactory: null, defendPlatformFactory: null, stationFactory: null, secondStation: new SecondStationLevelModel(), research: null,
+                    miningFacilityFactory: null, defendPlatformFactory: null, research: null,
                     economyProvider: new TrackingEconomyProvider(), wallet: wallet, shipSpawnPoints: null,
                     unitLimitModel: new EnemyUnitLimitModel(), reinforcementData: data,
                     enemyStructurePlacementService: new UnavailableStructurePlacement(),

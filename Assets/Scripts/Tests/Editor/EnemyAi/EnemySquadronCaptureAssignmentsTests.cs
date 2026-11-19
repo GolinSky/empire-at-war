@@ -127,6 +127,46 @@ namespace EmpireAtWar.Tests.Editor
             Assert.That(assignments.TryGetTarget(squadron, out _), Is.False);
         }
 
+        [TestCase(1)]
+        [TestCase(2)]
+        [TestCase(3)]
+        public void Assign_OpeningWingsFillNeighbourThenCentreThenOuter(int count)
+        {
+            var assignments = new EnemySquadronCaptureAssignments();
+            Vector3[] lanes = { Vector3.right * 100f, Vector3.forward * 200f, Vector3.left * 300f };
+            assignments.AddTarget(Vector3.right);
+            for (int i = lanes.Length - 1; i >= 0; i--) assignments.AddTarget(lanes[i]);
+            foreach (Vector3 lane in lanes) assignments.PrioritizeArea(lane, 20f);
+            var wings = new Squadron[count];
+            for (int i = 0; i < wings.Length; i++) wings[i] = new Squadron(Vector3.zero);
+
+            assignments.Assign(wings);
+
+            for (int i = 0; i < wings.Length; i++)
+            {
+                Assert.That(assignments.TryGetTarget(wings[i], out Vector3 target), Is.True);
+                Assert.That(target, Is.EqualTo(lanes[i]));
+            }
+        }
+
+        [Test]
+        public void Assign_AfterTheRelayIsHeld_CapturesTheClosestSatellitePadBeforeMines()
+        {
+            var assignments = new EnemySquadronCaptureAssignments();
+            var squadron = new Squadron(Vector3.zero);
+            Vector3 centre = Vector3.right * 100f;
+            Vector3 nearestPad = centre + Vector3.right * 10f;
+            assignments.AddTarget(centre + Vector3.up);
+            assignments.AddTarget(centre + Vector3.forward * 15f, isSatellitePad: true);
+            assignments.AddTarget(nearestPad, isSatellitePad: true);
+            assignments.PrioritizeArea(centre, 20f);
+
+            assignments.Assign(new[] { squadron });
+
+            Assert.That(assignments.TryGetTarget(squadron, out Vector3 target), Is.True);
+            Assert.That(target, Is.EqualTo(nearestPad));
+        }
+
         private sealed class Squadron : ISquadron
         {
             public event Action Released { add { } remove { } }

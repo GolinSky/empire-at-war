@@ -17,6 +17,7 @@ namespace EmpireAtWar.Presenters.ReinforcementZones
         public float CaptureProgress => _model.CaptureProgress;
         public bool IsContested => _model.IsContested;
         public bool IsCapturable => _view.IsCapturable;
+        public bool IsMain { get; }
         public bool IsRevealed { get; private set; }
         public UnityEngine.Vector3 Center => _view.Center;
         public float Radius => _view.Radius;
@@ -24,11 +25,12 @@ namespace EmpireAtWar.Presenters.ReinforcementZones
         public ReinforcementZonePresenter(
             IReinforcementZoneView view,
             ILocalPlayer localPlayer,
-            ReinforcementZoneModel model)
+            ReinforcementZoneModel model, bool isMain = false)
         {
             _localPlayer = localPlayer;
             _model = model;
             _view = view;
+            IsMain = isMain;
             Render();
             SetVisibility(false, false);
         }

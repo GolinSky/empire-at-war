@@ -9,7 +9,7 @@ namespace EmpireAtWar.Entities.EnemyFaction.Models
     public sealed class EnemyDefenseStrategy
     {
         private const float HORIZON = 30f;
-        private const int ZONE_SATELLITES = 3;
+        public const int ZONE_SATELLITES = 3;
         private const int MINING_POINT_SATELLITES = 1;
         private const float SQUADRON_HEAVY_SHARE = 0.4f;
         private const float RICH_MONEY_FACTOR = 1.5f;
@@ -31,8 +31,7 @@ namespace EmpireAtWar.Entities.EnemyFaction.Models
             bool found = false;
             foreach (EnemyDefensePad pad in snapshot.Pads)
             {
-                if (pad.HasHostiles || pad.Existing.Count >= 3 ||
-                    snapshot.Strategic.Difficulty == EnemyAiDifficulty.Easy && pad.Existing.Count >= 1)
+                if (pad.HasHostiles || pad.Existing.Count >= ZONE_SATELLITES)
                     continue;
                 float bestFit = 0f;
                 foreach (EnemyDefenseOption option in snapshot.Options)
@@ -41,8 +40,6 @@ namespace EmpireAtWar.Entities.EnemyFaction.Models
 
                 bool urgent = pad.IsThreatened || snapshot.Strategic.BaseThreatRatio >= 1f;
                 float spendable = snapshot.Money - (urgent ? 0f : snapshot.ProductionReserve);
-                float threshold = snapshot.Strategic.Difficulty == EnemyAiDifficulty.Easy ? 1f : 0.35f;
-                if (snapshot.Strategic.Difficulty == EnemyAiDifficulty.UltraHard && urgent) threshold *= 0.5f;
                 foreach (EnemyDefenseOption option in snapshot.Options)
                 {
                     if (option.Cost > spendable) continue;
@@ -55,7 +52,7 @@ namespace EmpireAtWar.Entities.EnemyFaction.Models
                     string reason = urgent ? "Threatened point" : pad.ProtectedMineShare > 0f ? "Protect mining income" : "Secure exposed point";
                     EnemyDefenseChoice candidate = new EnemyDefenseChoice(pad.SiteIndex, option.Type, score, option.Cost, reason);
                     RecordTop(candidate);
-                    if (score < threshold || found && score <= choice.Score) continue;
+                    if (score < 0.35f || found && score <= choice.Score) continue;
                     choice = candidate;
                     found = true;
                 }
@@ -71,23 +68,28 @@ namespace EmpireAtWar.Entities.EnemyFaction.Models
         {
             choice = default;
             bool found = false;
-            bool foundZone = false;
             foreach (EnemyDefensePad pad in snapshot.Pads)
             {
-                int required = pad.IsZonePad ? ZONE_SATELLITES : MINING_POINT_SATELLITES;
-                if (pad.HasHostiles || pad.Existing.Count >= required) continue;
+                if (!NeedsMandatorySatellite(pad)) continue;
                 if (!TryPickType(snapshot, pad, out EnemyDefenseOption option)) continue;
-                // Zones first, then the point with the most mines at stake.
-                float score = (pad.IsZonePad ? 10f : 0f) + pad.ProtectedMineShare;
-                if (found && (foundZone && !pad.IsZonePad || foundZone == pad.IsZonePad && score <= choice.Score))
-                    continue;
+                float score = (pad.IsCentrePad ? 20f : pad.IsZonePad ? 10f : 0f) + pad.ProtectedMineShare;
+                if (found && score <= choice.Score) continue;
                 choice = new EnemyDefenseChoice(pad.SiteIndex, option.Type, score, option.Cost,
                     pad.IsZonePad ? "Hold the zone with satellites" : "Mandatory mining-point satellite");
                 found = true;
-                foundZone = pad.IsZonePad;
             }
             return found;
         }
+
+        public bool HasMandatoryPad(EnemyDefenseSnapshot snapshot)
+        {
+            foreach (EnemyDefensePad pad in snapshot.Pads)
+                if (NeedsMandatorySatellite(pad)) return true;
+            return false;
+        }
+
+        private static bool NeedsMandatorySatellite(EnemyDefensePad pad) => !pad.HasHostiles &&
+            pad.Existing.Count < (pad.IsZonePad ? ZONE_SATELLITES : MINING_POINT_SATELLITES);
 
         // Turbolaser by default; quad laser when squadrons dominate; missile or mass driver once money is plentiful.
         private static bool TryPickType(EnemyDefenseSnapshot snapshot, EnemyDefensePad pad, out EnemyDefenseOption picked)
@@ -172,8 +174,7 @@ namespace EmpireAtWar.Entities.EnemyFaction.Models
                 float ownDps = ownTime >= CombatMatchup.MAX_TIME ? 0f : durability / Math.Max(0.001f, ownTime);
                 float combinedDps = combinedTime >= CombatMatchup.MAX_TIME ? 0f : durability / Math.Max(0.001f, combinedTime);
                 float dps = Math.Max(0f, combinedDps - ownDps);
-                float gap = snapshot.Strategic.Difficulty == EnemyAiDifficulty.Easy ? 0f :
-                    Math.Max(0f, 1f - ownDps * HORIZON / durability);
+                float gap = Math.Max(0f, 1f - ownDps * HORIZON / durability);
                 effect += durability / Math.Max(1f, total) * dps * (1f + gap);
             }
             // Under siege, reach adds time to fire before the attacking fleet closes on the defended point.

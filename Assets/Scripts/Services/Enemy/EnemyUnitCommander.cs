@@ -39,7 +39,7 @@ namespace EmpireAtWar.Services.Enemy
     {
         EnemyStrategicState CurrentState { get; }
         int ActiveShipCount { get; }
-        bool GatherReinforcements => false;
+        bool HoldFinishedReinforcements => false;
         bool IsStationCritical => false;
         bool TryGetReinforcementRally(out Vector3 rally, out bool defendHome);
         void FillDefenseDeploymentThreats(PlacementThreatSnapshot threats) =>
@@ -111,7 +111,7 @@ namespace EmpireAtWar.Services.Enemy
         public EnemyStrategicState CurrentState =>
             _hasDecision ? LastDecision.State : EnemyStrategicState.RebuildFleet;
         public int ActiveShipCount => _ships.Count;
-        public bool GatherReinforcements { get; private set; }
+        public bool HoldFinishedReinforcements => true;
         public bool IsStationCritical => _contextBuilder.StationCritical;
 
         public void FillDefenseDeploymentThreats(PlacementThreatSnapshot threats) =>
@@ -121,41 +121,61 @@ namespace EmpireAtWar.Services.Enemy
         {
             rally = default;
             defendHome = false;
-            if (_contextBuilder.ForwardStationFallback is Vector3 fallback)
-            {
-                rally = fallback;
-                defendHome = true;
-                return true;
-            }
             if (!_hasDecision) return false;
             foreach (EnemyShipTaskGroup group in _taskGroups.Groups)
             {
-                if (group.Context == null || !group.Context.Snapshot.HasStationPressure ||
-                    group.Context.Snapshot.RecoveryMode && group.Decision.State != EnemyStrategicState.DefendBase) continue;
-                // Cached decisions can outlive entities while world-change reevaluation is deferred.
-                if (group.Context.OwnBase == null ||
-                    !_entityLocator.TryGetEntity(group.Context.OwnBase.Id, out GameEntity ownBase)) continue;
+                GameEntity station = group.Context?.OwnBase;
+                if (station == null || !group.Context.Snapshot.HasStationPressure ||
+                    !_entityLocator.TryGetEntity(station.Id, out GameEntity liveStation) ||
+                    liveStation.HealthModel.IsDestroyed) continue;
                 defendHome = true;
-                rally = ownBase.GetFacade<IEntityTransformFacade>()
-                    .Transform.position;
+                rally = liveStation.GetFacade<IEntityTransformFacade>().Transform.position;
                 return true;
             }
-            // Deploy with the assembled fleet, not at an isolated relay beside its distant objective.
             foreach (EnemyShipTaskGroup group in _taskGroups.Groups)
             {
-                if (group.IsCaptureDetachment || group.Ships.Count == 0) continue;
-                int shipCount = 0;
-                foreach (IShipEntity ship in group.Ships)
+                if (!group.IsMainForce || group.Context == null) continue;
+                if (group.ContextBuilder.CentrePosition is Vector3 centre &&
+                    group.Decision.State is EnemyStrategicState.CaptureZone or EnemyStrategicState.GuardSite or
+                        EnemyStrategicState.EngageLocal)
                 {
-                    if (!_entityLocator.TryGetEntity(ship.EntityId, out GameEntity _)) continue;
-                    rally += ship.WorldPosition;
-                    shipCount++;
+                    rally = centre;
+                    return true;
                 }
-                if (shipCount == 0) continue;
-                rally /= shipCount;
+                if (TryGetTaskRally(group, out rally)) return true;
+            }
+            foreach (EnemyShipTaskGroup group in _taskGroups.Groups)
+                if (TryGetTaskRally(group, out rally)) return true;
+            return false;
+        }
+
+        private bool TryGetTaskRally(EnemyShipTaskGroup group, out Vector3 rally)
+        {
+            rally = default;
+            EnemyStrategicContext context = group.Context;
+            if (context == null) return false;
+            if (group.Decision.State == EnemyStrategicState.CaptureZone && context.CaptureObjective != null)
+            {
+                rally = context.CaptureTarget;
                 return true;
             }
-            return false;
+            if (group.Decision.State == EnemyStrategicState.GuardSite && context.GuardPosition is Vector3 guard)
+            {
+                rally = guard;
+                return true;
+            }
+            GameEntity target = group.Decision.State switch
+            {
+                EnemyStrategicState.RaidStructures => context.RaidTarget,
+                EnemyStrategicState.EngageLocal => context.LocalThreatTarget,
+                EnemyStrategicState.AssaultBase => context.EnemyBaseTarget,
+                EnemyStrategicState.HuntFleet => context.EnemyFleetTarget,
+                _ => null
+            };
+            if (target == null || !_entityLocator.TryGetEntity(target.Id, out GameEntity liveTarget) ||
+                liveTarget.HealthModel.IsDestroyed) return false;
+            rally = liveTarget.GetFacade<IEntityTransformFacade>().Transform.position;
+            return true;
         }
 
         public EnemyUnitCommander(
@@ -308,18 +328,15 @@ namespace EmpireAtWar.Services.Enemy
                     _entityLocator.TryGetEntity(ship.EntityId, out GameEntity entity) &&
                     !entity.HealthModel.IsDestroyed)
                     _ships.Add(ship);
-            (bool HasPressure, bool GatherReinforcements) station;
 #if UNITY_EDITOR || DEVELOPMENT_BUILD
             using (ASSESS_STATION_MARKER.Auto())
 #endif
-                station = _contextBuilder.AssessStation(_ships);
-            _cycleHasPressure = station.HasPressure;
-            GatherReinforcements = station.GatherReinforcements;
+                _cycleHasPressure = _contextBuilder.AssessStation(_ships);
 #if UNITY_EDITOR || DEVELOPMENT_BUILD
             using (PATROL_SELECT_MARKER.Auto())
 #endif
                 _cyclePatrolShip = _patrolShips.Select(_ships,
-                    _contextBuilder.StationCritical || _contextBuilder.ForwardStationFallback.HasValue);
+                    _contextBuilder.StationCritical);
             if (_cyclePatrolShip != null) _ships.Remove(_cyclePatrolShip);
 #if UNITY_EDITOR || DEVELOPMENT_BUILD
             using (RECONCILE_MARKER.Auto())
@@ -392,7 +409,7 @@ namespace EmpireAtWar.Services.Enemy
                 snapshot.LocalAdvantage, snapshot.HasLocalThreat, snapshot.HasRaidTarget,
                 snapshot.IsRegrouped, snapshot.HasStationPressure, snapshot.HasSafeRetreat,
                 snapshot.HasEconomyRaidTarget, snapshot.LocalRaw, snapshot.FleetRaw,
-                snapshot.RecoveryMode, snapshot.RecoveryCapturePending, snapshot.WithdrawFromForwardStation);
+                snapshot.RecoveryMode, snapshot.IsStationCritical, snapshot.HasGuardSite, snapshot.IsCentreGuardGoal);
             _recoveryStartedAt = _cyclePrimary.RecoveryStartedAt;
             _actionReason = _cyclePrimary.Executor.ActionReason + _cycleGroupSummary;
 #if UNITY_EDITOR || DEVELOPMENT_BUILD

@@ -5,6 +5,7 @@ using EmpireAtWar.Entities.BaseEntity.EntityFacades;
 using EmpireAtWar.Entities.EnemyFaction.Models;
 using EmpireAtWar.Entities.EnemyFaction.Models.Intel;
 using EmpireAtWar.Entities.Map;
+using EmpireAtWar.Entities.SpaceStation;
 using EmpireAtWar.Entities.Units;
 using EmpireAtWar.Models.Factions;
 using EmpireAtWar.Models.Players;
@@ -21,7 +22,7 @@ namespace EmpireAtWar.Services.Enemy
     {
         private const float HOSTILE_MARGIN = 100f;
         private const float UNKNOWN_WEAPON_RANGE = 500f;
-        private const float SECTOR_MAX_AGE = 60f;
+        internal const float LOCAL_ANCHOR_RANGE = 1000f;
         private const float MINIMUM_LOST_HOME_RADIUS = 64f;
         private const string PRESSURED_STATION_KIND = "pressuredStation";
         private const float PRESSURED_STATION_SCORE = 2f;
@@ -36,8 +37,6 @@ namespace EmpireAtWar.Services.Enemy
         private readonly PlayerSlot _owner;
         private readonly IProductionAccess _production;
         private readonly EnemyStationPressureTracker _pressure;
-        private readonly SecondStationLevelModel _secondStation;
-        private readonly EnemyFactionModel _faction;
         private readonly AiWorldSnapshot _worldSnapshot;
         private readonly EnemyAdvantageSmoother _smoother = new EnemyAdvantageSmoother();
         private readonly EnemyRecoveryLatch _latch = new EnemyRecoveryLatch();
@@ -46,26 +45,17 @@ namespace EmpireAtWar.Services.Enemy
         private Candidate _anchor;
         private Vector3 _origin;
         private float _advantage = 1f;
-                private bool _stationLost;
-        private bool _canCapture;
-        private string _rejectedRelay;
-        private float _relayRetryAt;
-        private float _sampleTime;
+        private bool _stationLost;
         private Func<Vector3, float, bool> _routeSafe;
 
         public bool IsActive => _latch.IsActive;
-        public string DeferredReason => PendingCaptureObjective != null ? "anchorNotOwned" :
-            _anchor == null ? "noAnchor" : "noSafeCandidate";
-        public EnemyCaptureObjective PendingCaptureObjective => _anchor == null ? null : _anchor.Capture;
+        public string DeferredReason => _anchor == null ? "noAnchor" : "noSafeCandidate";
 
         public EnemyRecoveryAnchor(IReinforcementZonesSystem reinforcementZones, IReinforcementZoneSource zones,
             IPlayerRoster roster, IEntityLocator entities, IBattleAreaService areas, IMapModelObserver map,
             TeamIntelRegistry registry, PlayerSlot owner, IProductionAccess production,
-            EnemyStationPressureTracker pressure, SecondStationLevelModel secondStation, EnemyFactionModel faction,
-            AiWorldSnapshot worldSnapshot)
+            EnemyStationPressureTracker pressure, AiWorldSnapshot worldSnapshot)
         {
-            _secondStation = secondStation;
-            _faction = faction;
             _worldSnapshot = worldSnapshot;
             _reinforcementZones = reinforcementZones;
             _zones = zones;
@@ -81,19 +71,16 @@ namespace EmpireAtWar.Services.Enemy
         }
 
         public void Update(Vector3 origin, float fleetAdvantage, bool underAttack, bool hasOwnStation,
-            float now, Func<Vector3, float, bool> routeSafe, bool canCapture = true, bool hasFleetThreat = true)
+            float now, Func<Vector3, float, bool> routeSafe, bool hasFleetThreat = true)
         {
             _origin = origin;
-            _sampleTime = now;
             _routeSafe = routeSafe;
             _stationLost = !hasOwnStation;
-            _canCapture = canCapture;
             _smoother.Sample(fleetAdvantage, fleetAdvantage, now, hasFleetThreat, hasFleetThreat);
             _advantage = _smoother.Fleet;
             if (_latch.Update(now, _advantage, EnemyAiDifficultyProfile.Get(_owner.Difficulty).RetreatAdvantage,
-                    underAttack || _pressure.HasPressure, !hasOwnStation, _pressure.IsStationCritical,
-                    !_secondStation.IsBuilt && _faction.CanBuildAdditionalStation(hasOwnStation,
-                        _production.ProductionHost != _owner.Id)))
+                    underAttack, !hasOwnStation, _pressure.IsStationCritical,
+                    hasOwnStation || _production.ProductionHost != _owner.Id))
                 RecordMode();
             if (!IsActive) { _anchor = null; return; }
             SelectAnchor(now, hasOwnStation);
@@ -102,32 +89,32 @@ namespace EmpireAtWar.Services.Enemy
         public bool TryGetBuildAnchor(out Vector3 position)
         {
             position = _anchor == null ? default : _anchor.Position;
-            return IsActive && _anchor != null && _anchor.Capture == null &&
-                   IsCurrentAnchorValid() && IsPlacementSafe(position, 0f) &&
+            return IsActive && _anchor != null && IsCurrentAnchorValid() && IsPlacementSafe(position, 0f) &&
                    SafeCurrentRoute(position, 0f) && !_areas.IsBlocked(_owner.Id, position);
         }
 
         public Vector3? FindRetreatAnchor(Vector3 origin, bool hasStation,
             Func<Vector3, float, bool> routeSafe)
         {
-            // Falling back to the besieged station is the retreat: the fleet fights under its guns, not at a far relay.
-            if (IsActive && _anchor != null && _anchor.Kind == PRESSURED_STATION_KIND) return _anchor.Position;
-            if (IsActive) return _anchor == null || !routeSafe(_anchor.Position, 0f) ||
-                !IsPlacementSafe(_anchor.Position, 0f) ? null : _anchor.Position;
+            Vector3? closest = null;
+            float bestDistance = LOCAL_ANCHOR_RANGE;
             if (hasStation && !_pressure.HasPressure &&
-                _reinforcementZones.TryGetDefaultZoneCenter(_production.ProductionHost, out Vector3 home) &&
-                routeSafe(home, 0f) && IsPlacementSafe(home, 0f)) return home;
-            Vector3? best = null;
-            float bestScore = float.NegativeInfinity;
+                _reinforcementZones.TryGetDefaultZoneCenter(_production.ProductionHost, out Vector3 home))
+                Consider(home, 0f);
             foreach (ReinforcementZonePresenter zone in _zones.Zones)
             {
-                Vector3 position = ToVector(ToPoint(zone.Center));
-                if (!zone.IsCapturable || zone.IsContested || !_roster.IsAllied(_owner.Id, zone.Owner) ||
-                    !routeSafe(position, zone.Radius) || !IsPlacementSafe(position, zone.Radius)) continue;
-                float score = 1f / (1f + Distance(origin, position));
-                if (score > bestScore) { best = position; bestScore = score; }
+                if (zone.IsCapturable && !zone.IsContested && _roster.IsAllied(_owner.Id, zone.Owner))
+                    Consider(ToVector(ToPoint(zone.Center)), zone.Radius);
             }
-            return best;
+            return closest;
+
+            void Consider(Vector3 position, float radius)
+            {
+                float distance = Distance(origin, position);
+                if (distance > bestDistance || !routeSafe(position, radius) || !IsPlacementSafe(position, radius)) return;
+                closest = position;
+                bestDistance = distance;
+            }
         }
 
         public bool IsPlacementSafe(Vector3 position, float clearance) =>
@@ -223,53 +210,39 @@ namespace EmpireAtWar.Services.Enemy
             RecordMode();
         }
 
-        public void RejectCaptureObjective(string id, float retryAt)
-        {
-            _rejectedRelay = id;
-            _relayRetryAt = retryAt;
-        }
-
         private void SelectAnchor(float now, bool hasStation)
         {
             _candidates.Clear();
             int rejectedUnsafe = 0;
             if (hasStation && !_pressure.HasPressure &&
                 _reinforcementZones.TryGetDefaultZoneCenter(_production.ProductionHost, out Vector3 home))
-                Add("home", "home", home, 0f, null, ref rejectedUnsafe);
+                Add("home", "home", home, 0f, ref rejectedUnsafe);
             for (int i = 0; i < _zones.Zones.Count; i++)
             {
                 ReinforcementZonePresenter zone = _zones.Zones[i];
                 if (!zone.IsCapturable || zone.IsContested || !_roster.IsAllied(_owner.Id, zone.Owner)) continue;
                 string kind = zone.Owner == _owner.Id ? "ownZone" : _roster.Get(zone.Owner).IsAi ? "allyZoneAi" : "allyZoneHuman";
-                Add($"zone:{i}", kind, ToVector(ToPoint(zone.Center)), zone.Radius, null, ref rejectedUnsafe);
+                Add($"zone:{i}", kind, ToVector(ToPoint(zone.Center)), zone.Radius, ref rejectedUnsafe);
             }
             IReadOnlyList<AiWorldSnapshot.Entry> bases = _worldSnapshot.Bases;
             for (int i = 0; i < bases.Count; i++)
             {
                 AiWorldSnapshot.Entry entry = bases[i];
-                if (_roster.IsAllied(_owner.Id, entry.Owner) && !entry.Entity.HealthModel.IsDestroyed)
-                    Add($"station:{entry.Id}", "allyStation", entry.Position, 0f, null, ref rejectedUnsafe);
+                if (_roster.IsAllied(_owner.Id, entry.Owner) && !entry.Entity.HealthModel.IsDestroyed &&
+                    !entry.Entity.TryGetFacade(out ISecondStationFacade _))
+                    Add($"station:{entry.Id}", "allyStation", entry.Position, 0f, ref rejectedUnsafe);
             }
-            if (_candidates.Count == 0)
-                foreach (var point in _registry.GetPatrol(_owner.Team).Entries)
-                    if (point.IsSector && point.LastSeenTime >= 0f && now - point.LastSeenTime <= SECTOR_MAX_AGE)
-                        Add(point.Id, "emptySector", ToVector(point.Position), 0f, null, ref rejectedUnsafe);
-            if (_candidates.Count == 0 && _canCapture)
-                for (int i = 0; i < _zones.Zones.Count; i++)
-                {
-                    ReinforcementZonePresenter zone = _zones.Zones[i];
-                    if (!zone.IsCapturable || zone.IsContested || zone.Owner != PlayerId.None) continue;
-                    Vector3 position = ToVector(ToPoint(zone.Center));
-                    var capture = new EnemyCaptureObjective($"zone:{i}", EnemyCaptureObjectiveType.ReinforcementZone,
-                        zone.Owner, position, zone.Radius, zone.CaptureProgress);
-                    Add(capture.Id, "neutralRelay", position, zone.Radius, capture, ref rejectedUnsafe);
-                }
-            // A living station under pressure outranks every relay; safety filters do not apply to the place being defended.
+            // Placement still checks safety on each candidate built around a pressured station.
             if (_pressure.HasPressure && _pressure.StationId != 0 &&
                 _entities.TryGetEntity(_pressure.StationId, out IEntity pressured) &&
-                !pressured.HealthModel.IsDestroyed && _roster.IsAllied(_owner.Id, pressured.Owner))
-                _candidates.Add(new Candidate($"station:{pressured.Id}", PRESSURED_STATION_KIND,
-                    pressured.GetFacade<IEntityTransformFacade>().Transform.position, PRESSURED_STATION_SCORE, null));
+                !pressured.HealthModel.IsDestroyed && _roster.IsAllied(_owner.Id, pressured.Owner) &&
+                !pressured.TryGetFacade(out ISecondStationFacade _))
+            {
+                Vector3 station = pressured.GetFacade<IEntityTransformFacade>().Transform.position;
+                if (Distance(_origin, station) <= LOCAL_ANCHOR_RANGE)
+                    _candidates.Add(new Candidate($"station:{pressured.Id}", PRESSURED_STATION_KIND,
+                        station, PRESSURED_STATION_SCORE));
+            }
             Candidate best = null;
             Candidate current = null;
             foreach (Candidate candidate in _candidates)
@@ -288,12 +261,15 @@ namespace EmpireAtWar.Services.Enemy
                     FormattableString.Invariant($"kind={_anchor.Kind};id={_anchor.Id};pos=({_anchor.Position.x:F1} {_anchor.Position.z:F1});w={Weight():F2};threatDistance={GetNearestHostileDistance(_anchor.Position):F1};oldStationDistance={Distance(_anchor.Position, _map.GetStationPosition(_owner.Id)):F1};candidates={_candidates.Count};rejectedUnsafe={rejectedUnsafe}"));
         }
 
-        private void Add(string id, string kind, Vector3 position, float radius, EnemyCaptureObjective capture, ref int rejected)
+        private void Add(string id, string kind, Vector3 position, float radius, ref int rejected)
         {
-            if (capture != null && id == _rejectedRelay && _sampleTime < _relayRetryAt ||
-                !IsPlacementSafe(position, radius) || !_routeSafe(position, radius) ||
-                capture == null && _areas.IsBlocked(_owner.Id, position)) { rejected++; return; }
-            _candidates.Add(new Candidate(id, kind, position, Score(_origin, position, Weight()), capture));
+            if (Distance(_origin, position) > LOCAL_ANCHOR_RANGE || !_routeSafe(position, radius) ||
+                !IsPlacementSafe(position, radius) || _areas.IsBlocked(_owner.Id, position))
+            {
+                rejected++;
+                return;
+            }
+            _candidates.Add(new Candidate(id, kind, position, Score(_origin, position, Weight())));
         }
 
         private float Weight() => Mathf.Clamp01(_advantage);
@@ -316,12 +292,6 @@ namespace EmpireAtWar.Services.Enemy
         private static float Distance(Vector3 a, Vector3 b) => Vector2.Distance(new Vector2(a.x, a.z), new Vector2(b.x, b.z));
         private bool IsCurrentAnchorValid()
         {
-            if (_anchor.Kind == "emptySector")
-            {
-                foreach (var point in _registry.GetPatrol(_owner.Team).Entries)
-                    if (point.Id == _anchor.Id) return point.LastSeenTime >= 0f && Time.time - point.LastSeenTime <= SECTOR_MAX_AGE;
-                return false;
-            }
             if (_anchor.Id.StartsWith("zone:", StringComparison.Ordinal))
             {
                 int index = int.Parse(_anchor.Id.Substring(5));
@@ -343,9 +313,8 @@ namespace EmpireAtWar.Services.Enemy
             public string Kind { get; }
             public Vector3 Position { get; }
             public float Score { get; }
-            public EnemyCaptureObjective Capture { get; }
-            public Candidate(string id, string kind, Vector3 position, float score, EnemyCaptureObjective capture)
-            { Id = id; Kind = kind; Position = position; Score = score; Capture = capture; }
+            public Candidate(string id, string kind, Vector3 position, float score)
+            { Id = id; Kind = kind; Position = position; Score = score; }
         }
     }
 }

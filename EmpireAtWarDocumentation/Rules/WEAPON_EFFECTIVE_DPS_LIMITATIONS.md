@@ -5,11 +5,9 @@ system:
   - weapons
   - ships
   - balance
-verified: 2026-11-14
-verification: "Source, serialized mount arcs, Unity compilation, and loaded
-  prefab geometry checked after the siege/facing changes. Legacy telemetry
-  predates the cadence and siege changes. Tests and controlled gameplay not
-  run."
+verified: 2026-11-19
+verification: Reviewed affected source and regression fixtures. Unity 6000.4.7f1
+  compiled with zero errors. Test execution and battle acceptance pending.
 ---
 # Weapon Effective DPS Limitations
 
@@ -45,8 +43,8 @@ verification: "Source, serialized mount arcs, Unity compilation, and loaded
 - `ArtilleryCapability` caches the maximum eligible surviving missile/torpedo reach per target class. Reach = range after Fleet Command − distance from mount to hull root; the offset bounds the planar separation even while banking.
 - Band reach = min(launcher reach, longest surviving eligible main-battery reach, same offset formula). No live main battery → launcher reach. Main destruction invalidates the cache. Live values: Republic Victory 501.9, Victory I 484.4 (was ≈689 launcher-only).
 - Launcher destruction/restoration, Fleet Command range changes and respawn invalidate the cache. Reload, salvo timing and ion disable do not change distance.
-- Route changes use hysteresis: 90% intended radius, 95% outer gate, 80% retreat trigger, with hull clearance. Failed routes retry every 0.5 s, up to six alternate bearings per stable target and reach.
-- Facing and auto-power still use actual per-hardpoint reach. Scope and gameplay/CPU acceptance → [[Done/Features/Artillery_Ship_Standoff_Plan]].
+- Outside effective reach, artillery approaches to 90% of its planned reach. It stops as soon as ordinary or artillery reach is available and turns to fire. Failed approach routes retry every 0.5 s, up to six alternate bearings per stable target and reach.
+- Combat facing ranks actual per-hardpoint solutions in the forward half-plane and falls back to pointing the bow at the target. Audit actual in-range holding samples with `battle_audit.py combat-facing`. Battle acceptance → [[Done/Bugs/Enemy_AI_Active_Play_And_Ship_Combat]].
 
 ### Projectile-flight delays
 

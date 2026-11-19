@@ -292,7 +292,7 @@ namespace EmpireAtWar.Tests.Editor
         [TestCase(true)]
         [TestCase(false)]
         [Category("EnemyAi")]
-        public void AiPlayer_CannotBuildAStationAfterItsLastStationIsDestroyed(bool backupCompleted)
+        public void AiPlayer_NeverBuysASecondStation(bool legacyBackup)
         {
             BuildSaveProject();
             MapLayout layout;
@@ -307,8 +307,8 @@ namespace EmpireAtWar.Tests.Editor
             PlayerSlot owner = ai.Container.Resolve<PlayerSlot>();
             var stations = _battle.Container.Resolve<IStationRegistry>();
             var production = ai.Container.Resolve<EnemyFactionController>();
-            var model = ai.Container.Resolve<EnemyFactionModel>();
-            var request = new SecondStationUnitRequest(model.SecondStationFactionData);
+            var levels = ai.Container.Resolve<StationLevelData>();
+            var request = new SecondStationUnitRequest(levels.GetSecondStationFactionData(owner.Faction));
             Vector3 home = layout.GetStationPosition(owner.Id);
             ai.Container.Resolve<SpaceStationFactory>().Create(owner.Id, owner.Faction, home);
             ai.Container.Resolve<EconomyModel>().Restore(100000f, 0f);
@@ -316,24 +316,22 @@ namespace EmpireAtWar.Tests.Editor
 
             Assert.That(stations.TryGetLivingStation(owner.Id, out IEntity primary), Is.True);
             production.Purchase(request);
-            Assert.That(production.PendingBuilds.Single().Request, Is.TypeOf<SecondStationUnitRequest>());
-            if (backupCompleted)
+            Assert.That(production.PendingBuilds, Is.Empty);
+            Assert.That(production.CanQueue(request.Id, request.FactionData.MaxCount), Is.False);
+            if (legacyBackup)
             {
-                production.Advance(request.FactionData.BuildTime);
-                Assert.That(model.AdditionalStationsBuilt, Is.EqualTo(1));
+                Vector3 backupPosition = home + Vector3.right * 200f;
+                ai.Container.Resolve<SpaceStationFactory>().CreateSecond(owner.Id, owner.Faction, backupPosition);
                 IEntity backup = _battle.Container.Resolve<IEntityLocator>().Entities.Single(entity =>
                     entity.Owner == owner.Id && entity.TryGetFacade(out ISecondStationFacade _));
+                production.Purchase(new SecondStationLevelUnitRequest(levels.GetSecondStationLevelFactionData(1), 1));
+                Assert.That(production.PendingBuilds, Is.Empty);
                 KillStation(backup);
-                production.Purchase(request);
-                Assert.That(production.PendingBuilds, Is.Empty, "The destroyed backup cannot be rebuilt.");
             }
             KillStation(primary);
-            production.Advance(request.FactionData.BuildTime);
-            Assert.That(production.PendingBuilds, Is.Empty, "A queued backup cannot spawn after losing the primary.");
-            Assert.That(model.AdditionalStationsBuilt, Is.EqualTo(backupCompleted ? 1 : 0));
 
             var recovery = ai.Container.Resolve<EnemyRecoveryAnchor>();
-            recovery.Update(Vector3.zero, 1f, false, false, Time.time, (_, _) => true, canCapture: false);
+            recovery.Update(Vector3.zero, 1f, false, false, Time.time, (_, _) => true);
             Assert.That(recovery.IsActive, Is.False);
             var strategy = ai.Container.Resolve<EnemyProductionStrategy>();
             strategy.Start();

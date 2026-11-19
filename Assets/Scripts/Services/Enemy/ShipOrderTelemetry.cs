@@ -24,7 +24,7 @@ namespace EmpireAtWar.Services.Enemy
         private const string HEADER = "timeScaledSinceStartup,timeUnscaledSinceStartup,kind,player,entityId," +
             "order,state,targetId,destinationX,destinationZ,x,z,moving,contacts,preferredContactId," +
             "preferredDistance,preferredInRange,trackedContactId,radarRange,weaponRange,visionMultiplier," +
-            "ionDisabled,cloaked,facingDot,hull,shields,reason,movement,attack";
+            "ionDisabled,cloaked,facingDot,hull,shields,reason,movement,attack,shipType,attackTargetInReach";
         private static readonly Dictionary<UnitOrderModel, float> _nextSample = new Dictionary<UnitOrderModel, float>();
         private static readonly StringBuilder _lines = new StringBuilder();
         private static string _path;
@@ -70,18 +70,21 @@ namespace EmpireAtWar.Services.Enemy
 
         [Conditional("UNITY_EDITOR"), Conditional("DEVELOPMENT_BUILD")]
         public static void Sample(ShipOrderTelemetrySource source, IShipAbilityFacade caster, UnitOrderModel orders, IShipMovement movement,
-            IWeaponComponent weapon, IRadarComponent radar, string state, string attack = "")
+            IWeaponComponent weapon, IRadarComponent radar, string state, string attack = "",
+            IEntity attackMoveTarget = null, bool? heldInReach = null)
         {
 #if UNITY_EDITOR || DEVELOPMENT_BUILD
             if (!Application.isPlaying) return;
             if (_nextSample.TryGetValue(orders, out float next) && Time.time < next) return;
-            Record(source, caster, orders, movement, weapon, radar, "sample", "Periodic order/contact state.", state, attack);
+            Record(source, caster, orders, movement, weapon, radar, "sample", "Periodic order/contact state.",
+                state, attack, attackMoveTarget, heldInReach);
 #endif
         }
 
         [Conditional("UNITY_EDITOR"), Conditional("DEVELOPMENT_BUILD")]
         public static void Record(ShipOrderTelemetrySource source, IShipAbilityFacade caster, UnitOrderModel orders, IShipMovement movement,
-            IWeaponComponent weapon, IRadarComponent radar, string kind, string reason, string state, string attack = "")
+            IWeaponComponent weapon, IRadarComponent radar, string kind, string reason, string state, string attack = "",
+            IEntity attackMoveTarget = null, bool? heldInReach = null)
         {
 #if UNITY_EDITOR || DEVELOPMENT_BUILD
             if (!Application.isPlaying) return;
@@ -100,7 +103,10 @@ namespace EmpireAtWar.Services.Enemy
             }
             Vector3 position = movement.CurrentPosition;
             Vector3 destination = ToVector(orders.Destination);
-            IEntity facingTarget = tracked ?? preferred;
+            IEntity attackTarget = state == nameof(AttackTargetState) ? orders.Target : attackMoveTarget;
+            bool attackTargetInReach = attackTarget != null &&
+                (heldInReach ?? ShipEngagement.CanEngage(attackTarget, movement, weapon));
+            IEntity facingTarget = attackTarget ?? tracked ?? preferred;
             float facingDot = 0f;
             if (facingTarget != null)
             {
@@ -112,17 +118,18 @@ namespace EmpireAtWar.Services.Enemy
                 movement.GetRange(preferred.GetFacade<IEntityTransformFacade>().Transform.position);
             _lines.AppendLine(string.Format(CultureInfo.InvariantCulture,
                 "{0:F2},{1:F2},{2},{3},{4},{5},{6},{7},{8:F1},{9:F1},{10:F1},{11:F1},{12},{13},{14}," +
-                "{15:F1},{16},{17},{18:F1},{19:F1},{20:F2},{21},{22},{23:F3},{24:F1},{25:F1},\"{26}\",{27},\"{28}\"",
+                "{15:F1},{16},{17},{18:F1},{19:F1},{20:F2},{21},{22},{23:F3},{24:F1},{25:F1},\"{26}\",{27},\"{28}\",{29},{30}",
                 Time.time, Time.unscaledTime, kind, source.Owner, source.EntityId, orders.Current, state,
-                orders.Target == null ? 0L : orders.Target.Id, destination.x, destination.z, position.x, position.z,
+                (attackTarget ?? orders.Target)?.Id ?? 0L, destination.x, destination.z, position.x, position.z,
                 movement.IsMoving ? 1 : 0, radar.Enemies.Count, preferred == null ? 0L : preferred.Id,
-                distance, preferred != null && ShipEngagement.CanEngage(preferred, movement, weapon) ? 1 : 0,
+                distance, preferred != null && ShipEngagement.IsInRange(movement, weapon, preferred,
+                    preferred.GetFacade<IEntityTransformFacade>().Transform.position) ? 1 : 0,
                 tracked == null ? 0L : tracked.Id, source.RadarRange, weapon.AttackDistance,
                 caster.Modifiers.VisionMultiplier, caster.Modifiers.IsIonDisabled ? 1 : 0,
                 caster.Modifiers.IsCloaked ? 1 : 0, facingDot, caster.Health.Hull, caster.Health.Shields,
                 reason.Replace("\"", "\"\""),
                 movement is IShipMovementDiagnostics diagnostics ? diagnostics.MovementDiagnostics : "",
-                attack));
+                attack, source.ShipType, attackTargetInReach ? 1 : 0));
             if (kind == "release") _nextSample.Remove(orders);
             if (Time.unscaledTime >= _nextFlush) Flush();
 #endif

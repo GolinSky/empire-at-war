@@ -12,8 +12,7 @@ namespace EmpireAtWar.Components.Weapon
     // Samples actual firing solutions, including how each mount moves around the hull pivot.
     internal sealed class WeaponFacingSolver
     {
-        private const int TURN_STEP = 2;
-        private const int HEADING_COUNT = 360 / TURN_STEP;
+        private const int HEADING_COUNT = 360 / WeaponFacingSweepJob.TURN_STEP;
         private const int BURST_PAIR_THRESHOLD = 64;
         private static readonly Vector2[] _headingRotations = BuildHeadingRotations();
 #if UNITY_EDITOR || DEVELOPMENT_BUILD
@@ -65,13 +64,13 @@ namespace EmpireAtWar.Components.Weapon
 
         public float FindTurn() => FindTurn(out _);
 
-        internal float FindTurn(out int score)
+        internal float FindTurn(out int score, float? targetBearing = null)
         {
             _preparedHeadings = 0;
             if (_mainBatteries.Count == 0 && _secondaryBatteries.Count == 0)
             {
                 score = 0;
-                return 0f;
+                return targetBearing.GetValueOrDefault();
             }
             int required = HEADING_COUNT * _targets.Count;
             if (_turnedTargets.Length < required)
@@ -81,16 +80,17 @@ namespace EmpireAtWar.Components.Weapon
 #if UNITY_EDITOR || DEVELOPMENT_BUILD
             using (_mainMarker.Auto(_mainBatteries.Count, _targets.Count))
 #endif
-                turn = FindTurn(_mainBatteries, out score);
+                turn = FindTurn(_mainBatteries, targetBearing, out score);
             if (score > 0) return turn;
 
 #if UNITY_EDITOR || DEVELOPMENT_BUILD
             using (_secondaryMarker.Auto(_secondaryBatteries.Count, _targets.Count))
 #endif
-                return FindTurn(_secondaryBatteries, out score);
+                turn = FindTurn(_secondaryBatteries, targetBearing, out score);
+            return score > 0 ? turn : targetBearing.GetValueOrDefault();
         }
 
-        private float FindTurn(List<Mount> mounts, out int bestScore)
+        private float FindTurn(List<Mount> mounts, float? targetBearing, out int bestScore)
         {
             bestScore = 0;
             if (mounts.Count == 0) return 0f;
@@ -100,7 +100,7 @@ namespace EmpireAtWar.Components.Weapon
 
             float bestTurn = 0f;
             if (_reachableTargets.Count >= BURST_PAIR_THRESHOLD)
-                return FindTurnBurst(mounts, maximumScore, out bestScore);
+                return FindTurnBurst(mounts, maximumScore, targetBearing, out bestScore);
 #if UNITY_EDITOR || DEVELOPMENT_BUILD
             _aimChecks = 0;
 #endif
@@ -108,11 +108,13 @@ namespace EmpireAtWar.Components.Weapon
             int step = 0;
             for (; step < HEADING_COUNT; step++)
             {
+                if (targetBearing.HasValue && !WeaponFacingSweepJob.KeepsTargetAhead(step, targetBearing.Value))
+                    continue;
                 int score = Score(mounts, step);
                 if (score > bestScore)
                 {
                     bestScore = score;
-                    bestTurn = GetTurn(step);
+                    bestTurn = WeaponFacingSweepJob.GetTurn(step);
                 }
 
                 if (score == maximumScore) break;
@@ -125,7 +127,7 @@ namespace EmpireAtWar.Components.Weapon
             return bestTurn;
         }
 
-        private float FindTurnBurst(List<Mount> mounts, int maximumScore, out int bestScore)
+        private float FindTurnBurst(List<Mount> mounts, int maximumScore, float? targetBearing, out int bestScore)
         {
             using var targets = new NativeArray<Vector2>(_targets.Count, Allocator.TempJob,
                 NativeArrayOptions.UninitializedMemory);
@@ -138,7 +140,8 @@ namespace EmpireAtWar.Components.Weapon
             var job = new WeaponFacingSweepJob
             {
                 Offsets = offsets, Rotations = rotations, Heights = heights, Targets = targets,
-                Indices = indices, Mounts = input, Scores = bounds, MaximumScore = maximumScore
+                Indices = indices, Mounts = input, Scores = bounds, MaximumScore = maximumScore,
+                LimitToForwardSector = targetBearing.HasValue, TargetBearing = targetBearing.GetValueOrDefault()
             };
             for (int i = 0; i < offsets.Length; i++)
             {
@@ -169,7 +172,7 @@ namespace EmpireAtWar.Components.Weapon
                     if (score > bestScore)
                     {
                         bestScore = score;
-                        bestTurn = GetTurn(step);
+                        bestTurn = WeaponFacingSweepJob.GetTurn(step);
                     }
                 }
                 if (bestScore == maximumScore) break;
@@ -195,7 +198,7 @@ namespace EmpireAtWar.Components.Weapon
                         rotation.x * target.x + rotation.y * target.z,
                         -rotation.y * target.x + rotation.x * target.z);
                 }
-                if (reuseRotation) _preparedHeadings++;
+                if (reuseRotation) _preparedHeadings = step + 1;
             }
 
             int score = 0;
@@ -226,15 +229,12 @@ namespace EmpireAtWar.Components.Weapon
             return score;
         }
 
-        private static int GetTurn(int step) =>
-            (step + 1) / 2 * TURN_STEP * (step % 2 == 0 ? -1 : 1);
-
         private static Vector2[] BuildHeadingRotations()
         {
             var rotations = new Vector2[HEADING_COUNT];
             for (int i = 0; i < rotations.Length; i++)
             {
-                Quaternion rotation = Quaternion.AngleAxis(-GetTurn(i), Vector3.up);
+                Quaternion rotation = Quaternion.AngleAxis(-WeaponFacingSweepJob.GetTurn(i), Vector3.up);
                 // Use Unity's quaternion coefficients to preserve rounding at range boundaries.
                 float doubleY = rotation.y * 2f;
                 rotations[i] = new Vector2(1f - rotation.y * doubleY, rotation.w * doubleY);

@@ -5,8 +5,9 @@ system:
   - weapons
   - health
 design_state: implemented
-verified: 2026-11-17
-verification: source-and-assets
+verified: 2026-11-19
+verification: Reviewed affected source and regression fixtures. Unity 6000.4.7f1
+  compiled with zero errors. Test execution and battle acceptance pending.
 ---
 # Combat
 
@@ -45,15 +46,15 @@ verification: source-and-assets
 ### Artillery standoff
 
 - Explicit Attack, including formation Attack: Victory I, Republic Victory, MC30c, Recalcitrant and Peleset use the longest surviving launcher reach. Profundity, AttackMove, Guard and Hunt retain ordinary engagement.
-- Approach to 90% of effective launcher reach, hold through 95%, and reopen distance below 80%. Hull clearance can raise the band; no reachable band → ordinary pursuit.
+- Approach to 90% of effective launcher reach from outside range. Stop and fire at the first ordinary or artillery reach, including at close range. Hull clearance can raise the approach radius.
 - The longest surviving missile or torpedo determines distance, capped at the longest surviving main-battery reach (2026-11-16). Shorter launchers and secondary guns may be out of range. All usable launchers gone → ordinary pursuit; all main batteries gone → launcher reach only.
-- Why the cap: beyond main reach the facing solver falls back to secondaries and can turn the stern to the target (Victory I: stern mains, rear-quarter missile arcs).
+- The cap keeps the approach goal within main-battery reach. In-range holds keep the attack target in the ship's forward half-plane.
 
 ### Capital siege and hull facing
 
 - `Dreadnought` mounted weapons deal ×1.5 damage and `BattleCruiser` mounted weapons deal ×1.2 damage against the main station, second station and every defense platform (`SiegeDamage.GetMultiplier`). `Capital`, `HeavyCruiser` and smaller classes deal ×1.0. Mining facilities, other targets and direct-damage abilities retain their existing damage rules.
 - Apply the factor before the shield/hull calculation and the damage tick split. Caliber, research, mitigation, shield piercing and hardpoint overflow still apply.
-- Stationary ships favor the nearest sampled heading with the most usable main-battery DPS, using real mount and target hardpoint positions. When no main battery has a solution, they use eligible surviving secondaries. Navigation controls heading during travel.
+- Stationary attacking ships favor the smallest sampled turn with the most usable main-battery mounts, using live mount and hardpoint positions. Eligible headings keep the attack target ahead. When no main battery has a solution, score surviving secondaries, then point the bow at the target if no mount can fire. Navigation controls heading during travel.
 - Contact-limited `BattleCruiser` and `Dreadnought` ships approach eligible structures to navigation hull contact plus 1 unit. The station uses its live hull envelope and the hold gate adds a further 1-unit tolerance.
 
 ### Target selection

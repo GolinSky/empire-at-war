@@ -21,7 +21,7 @@ namespace EmpireAtWar.Entities.Ship.StateMachine
             IWeaponComponent weapon)
         {
             return !enemy.HealthModel.IsDestroyed && enemy.HealthModel.HasUnits &&
-                   IsInRange(movement, weapon, enemy, enemy.GetFacade<IEntityTransformFacade>().Transform.position);
+                   IsInReach(movement, weapon, enemy, enemy.GetFacade<IEntityTransformFacade>().Transform.position);
         }
 
         public static bool IsInRange(IShipMovement movement, IWeaponComponent weapon, IEntity target,
@@ -41,6 +41,12 @@ namespace EmpireAtWar.Entities.Ship.StateMachine
             float distance = movement.GetRange(targetPosition);
             if (UsesCloseSiegeApproach(movement, weapon, target))
                 return distance <= SiegeStandoffDistance(movement, target, targetPosition) + SIEGE_CLEARANCE_MARGIN;
+
+            if (weapon is IArtilleryCapability artillery)
+            {
+                float artilleryRange = artillery.GetArtilleryRange(target.HealthModel.ShipClass);
+                if (artilleryRange > 0f && distance <= artilleryRange) return true;
+            }
 
             return weapon.IsWithinReach(distance, ContactDistance(movement, target), target.HealthModel.ShipClass);
         }

@@ -1,6 +1,8 @@
 using System.Collections.Generic;
 using EmpireAtWar.Entities.BaseEntity.Orders;
 using EmpireAtWar.Entities.EnemyFaction.Models;
+using EmpireAtWar.Presenters.ReinforcementZones;
+using EmpireAtWar.Models.Players;
 using EmpireAtWar.Services.UnitOrders;
 using EmpireAtWar.Ship;
 using UnityEngine;
@@ -11,8 +13,8 @@ namespace EmpireAtWar.Services.Enemy
     {
         private const int MAIN_FORCE_SHIP_COUNT = 6;
         private const float DETACHMENT_GRACE_SECONDS = 10f;
-        // Before a main force exists, two detachments capture in parallel (neighbour zone, centre) while the rest patrol or capture.
-        private const int OPENING_CAPTURE_GROUPS = 2;
+        private static readonly EnemyOpeningFocus[] OPENING_FOCUSES =
+            { EnemyOpeningFocus.Neighbour, EnemyOpeningFocus.Centre, EnemyOpeningFocus.Outer };
         private readonly EnemyStrategicContextBuilder _contextBuilder;
         private readonly IUnitOrderService _orders;
         private readonly List<EnemyShipTaskGroup> _groups = new List<EnemyShipTaskGroup>();
@@ -47,8 +49,7 @@ namespace EmpireAtWar.Services.Enemy
                 EnemyShipTaskGroup captureGroup = _captureGroups[i];
                 if (!stationPressure && captureGroup.Ships.Count != 0 &&
                     !(captureGroup.NoViableCaptureSince >= 0f &&
-                      Time.time - captureGroup.NoViableCaptureSince >= DETACHMENT_GRACE_SECONDS &&
-                      !captureGroup.DecisionModel.IsRecovering)) continue;
+                      Time.time - captureGroup.NoViableCaptureSince >= DETACHMENT_GRACE_SECONDS)) continue;
                 _groups.Remove(captureGroup);
                 captureGroup.Ships.Clear();
                 _captureGroups.RemoveAt(i);
@@ -73,7 +74,7 @@ namespace EmpireAtWar.Services.Enemy
                 float bestDistance = FleetCohesion.RADIUS * FleetCohesion.RADIUS;
                 foreach (EnemyShipTaskGroup group in _groups)
                 {
-                    if (group.IsCaptureDetachment || group.DecisionModel.IsRecovering) continue;
+                    if (group.IsCaptureDetachment) continue;
                     float distance = group.Ships.Count == 0 ? bestDistance :
                         DistanceSquared(group.Ships[0].WorldPosition, ship.WorldPosition);
                     if (distance > bestDistance) continue;
@@ -102,22 +103,21 @@ namespace EmpireAtWar.Services.Enemy
         {
             int available = 0;
             foreach (EnemyShipTaskGroup group in _groups)
-                if (!group.IsCaptureDetachment && (stationPressure || !group.DecisionModel.IsRecovering))
+                if (!group.IsCaptureDetachment)
                     available += group.Ships.Count;
             if (_mainGroup == null && (stationPressure || available >= MAIN_FORCE_SHIP_COUNT))
             {
                 foreach (EnemyShipTaskGroup group in _groups)
-                    if (!group.IsCaptureDetachment && (stationPressure || !group.DecisionModel.IsRecovering) &&
+                    if (!group.IsCaptureDetachment &&
                         (_mainGroup == null || group.Ships.Count > _mainGroup.Ships.Count))
                         _mainGroup = group;
                 if (_mainGroup != null) _mainGroup.IsMainForce = true;
             }
-            if (_mainGroup == null || !stationPressure && _mainGroup.DecisionModel.IsRecovering) return;
+            if (_mainGroup == null) return;
             for (int i = _groups.Count - 1; i >= 0; i--)
             {
                 EnemyShipTaskGroup group = _groups[i];
-                if (group == _mainGroup || group.IsCaptureDetachment ||
-                    !stationPressure && group.DecisionModel.IsRecovering) continue;
+                if (group == _mainGroup || group.IsCaptureDetachment) continue;
                 _mainGroup.Ships.AddRange(group.Ships);
                 group.Ships.Clear();
                 _groups.RemoveAt(i);
@@ -130,40 +130,71 @@ namespace EmpireAtWar.Services.Enemy
             ISet<string> reservedObjectives, bool stationPressure)
         {
             if (stationPressure || ships.Count == 0) return;
-            bool opening = _mainGroup == null;
-            int limit = opening ? OPENING_CAPTURE_GROUPS : 1;
-            if (_captureGroups.Count >= limit) return;
+            if (_mainGroup != null && _captureGroups.Count >= OPENING_FOCUSES.Length) return;
             _unassigned.Clear();
-            EnemyOpeningFocus focus = opening ? NextOpeningFocus() : EnemyOpeningFocus.None;
-            _captureProbe.OpeningFocus = focus;
             foreach (IShipEntity ship in ships)
                 if (ship.CurrentOrder != UnitOrderType.Retreat && !IsInCaptureGroup(ship))
                     _unassigned.Add(ship);
             _unassigned.Sort((a, b) => b.NavigationSpeed.CompareTo(a.NavigationSpeed));
             _captureProbe.BeginCaptureProbe(reservedObjectives);
+            foreach (EnemyOpeningFocus focus in OPENING_FOCUSES)
+            {
+                if (_captureGroups.Exists(group => group.ContextBuilder.OpeningFocus == focus)) continue;
+                if (TryDetachForCapture(focus, ships.Count)) return;
+            }
+            if (_captureGroups.Count == 0) TryDetachForCapture(EnemyOpeningFocus.None, ships.Count);
+        }
+
+        private bool TryDetachForCapture(EnemyOpeningFocus focus, int shipCount)
+        {
             foreach (IShipEntity ship in _unassigned)
             {
-                // The opening aims at zones, so a lone ship is not restricted to mines then.
-                bool mineOnly = ships.Count == 1 && !opening;
+                bool mineOnly = shipCount == 1 && focus == EnemyOpeningFocus.None;
+                if (!_captureProbe.SetOpeningFocus(focus, ship.WorldPosition)) continue;
                 if (!_captureProbe.CanDetachForCapture(ship, mineOnly)) continue;
                 EnemyShipTaskGroup candidate = CreateGroup(true, unbuiltMinesOnly: mineOnly);
-                candidate.ContextBuilder.OpeningFocus = focus;
+                candidate.ContextBuilder.SetOpeningFocus(focus, ship.WorldPosition);
                 candidate.Ships.Add(ship);
                 foreach (EnemyShipTaskGroup group in _groups) group.Ships.Remove(ship);
                 candidate.NoViableCaptureSince = -1f;
                 _captureGroups.Add(candidate);
                 _groups.Add(candidate);
-                return;
+                return true;
             }
+            return false;
         }
 
-        // The first detachment goes to the nearest neighbour zone, the second to the centre; a lost one is replaced in kind.
-        private EnemyOpeningFocus NextOpeningFocus()
+        internal static ReinforcementZonePresenter GetCentre(IReadOnlyList<ReinforcementZonePresenter> zones)
         {
-            bool hasNeighbour = false;
-            foreach (EnemyShipTaskGroup group in _captureGroups)
-                hasNeighbour |= group.ContextBuilder.OpeningFocus == EnemyOpeningFocus.Neighbour;
-            return hasNeighbour ? EnemyOpeningFocus.Centre : EnemyOpeningFocus.Neighbour;
+            foreach (ReinforcementZonePresenter zone in zones)
+                if (zone.IsMain) return zone;
+            return null;
+        }
+
+        internal static ReinforcementZonePresenter GetNeighbour(IReadOnlyList<ReinforcementZonePresenter> zones,
+            Vector3 home, ReinforcementZonePresenter exclude = null)
+        {
+            ReinforcementZonePresenter closest = null;
+            float distance = float.PositiveInfinity;
+            foreach (ReinforcementZonePresenter zone in zones)
+            {
+                if (!zone.IsCapturable || zone.IsMain || zone == exclude) continue;
+                float candidate = DistanceSquared(home, zone.Center);
+                if (candidate >= distance) continue;
+                closest = zone;
+                distance = candidate;
+            }
+            return closest;
+        }
+
+        internal static bool IsInZone(ReinforcementZonePresenter zone, Vector3 position) =>
+            DistanceSquared(zone.Center, position) <= 4f * zone.Radius * zone.Radius;
+
+        internal static Vector3 GetOpeningHome(AiWorldSnapshot world, PlayerId owner, Vector3 fallback)
+        {
+            foreach (AiWorldSnapshot.Entry station in world.Bases)
+                if (station.Owner == owner) return station.Position;
+            return fallback;
         }
 
         private bool IsInCaptureGroup(IShipEntity ship)
@@ -184,7 +215,6 @@ namespace EmpireAtWar.Services.Enemy
                     EnemyShipTaskGroup second = _groups[j];
                     if (second == _mainGroup) continue;
                     if (second.IsCaptureDetachment || second.Ships.Count == 0 ||
-                        first.DecisionModel.IsRecovering != second.DecisionModel.IsRecovering ||
                         first.Decision.State != second.Decision.State) continue;
                     bool fits = true;
                     foreach (IShipEntity ship in second.Ships)

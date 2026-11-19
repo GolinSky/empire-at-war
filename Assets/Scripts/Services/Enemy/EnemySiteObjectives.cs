@@ -77,7 +77,8 @@ namespace EmpireAtWar.Services.Enemy
             {
                 bool threatened = site.Owner == _owner.Id && _presence.HasHostileUnits(site, _owner.Id);
                 if (threatened || IsCapturable(site))
-                    assignments.AddTarget(ToVector(ToPoint(site.Center)), threatened);
+                    assignments.AddTarget(ToVector(ToPoint(site.Center)), threatened,
+                        isSatellitePad: site.Kind == CaptureSiteKind.Satellite);
             }
         }
 

@@ -16,6 +16,8 @@ using EmpireAtWar.Mvc;
 using EmpireAtWar.Services.CaptureSites;
 using EmpireAtWar.Services.Economy;
 using EmpireAtWar.Services.Stations;
+using EmpireAtWar.Services.ReinforcementZones;
+using EmpireAtWar.Presenters.ReinforcementZones;
 using UnityEngine;
 using static EmpireAtWar.Utils.FormationConversion;
 
@@ -42,6 +44,7 @@ namespace EmpireAtWar.Services.Enemy
         private readonly DamageMatrixData _damage;
         private readonly IProductionAccess _productionAccess;
         private readonly AiWorldSnapshot _worldSnapshot;
+        private readonly IReinforcementZoneSource _zones;
         private readonly ForceComposition _own = new ForceComposition();
         private readonly ForceComposition _hostile = new ForceComposition();
         private readonly List<EnemyDefenseOption> _options = new List<EnemyDefenseOption>();
@@ -57,7 +60,7 @@ namespace EmpireAtWar.Services.Enemy
             IEconomyModelObserver money, EconomyService economy, EconomyData economyData,
             EnemyProductionStrategy production, IEnemyAiDebugInfo strategy,
             IAssetService assets, CaptureSiteData siteData, WeaponsData weapons, DamageMatrixData damage,
-            IProductionAccess productionAccess, AiWorldSnapshot worldSnapshot)
+            IProductionAccess productionAccess, AiWorldSnapshot worldSnapshot, IReinforcementZoneSource zones)
         {
             _sites = sites;
             _presence = presence;
@@ -77,6 +80,7 @@ namespace EmpireAtWar.Services.Enemy
             _damage = damage;
             _productionAccess = productionAccess;
             _worldSnapshot = worldSnapshot;
+            _zones = zones;
         }
 
         public bool IsReady => _strategy.HasDecision;
@@ -91,6 +95,7 @@ namespace EmpireAtWar.Services.Enemy
             IReadOnlyList<ICaptureSite> sites = _sites.Sites;
             CapturePadPoints(sites);
             CaptureBases();
+            ReinforcementZonePresenter centre = EnemyShipTaskGroupPlanner.GetCentre(_zones.Zones);
             foreach (int index in _padIndices)
             {
                 ICaptureSite site = sites[index];
@@ -114,7 +119,8 @@ namespace EmpireAtWar.Services.Enemy
                     ownDistance / Mathf.Max(1f, ownDistance + enemyDistance);
                 _pads.Add(new EnemyDefensePad(index, (float)point.ProtectedMines / PointOfInterestPlacer.SITES_PER_MINING_POINT,
                     exposure, lastSeen, _presence.HasHostileUnits(site, _owner.Id), point.Threatened || lastSeen <= 5f,
-                    point.Existing, IsZonePoint(point.MineSites)));
+                    point.Existing, IsZonePoint(point.MineSites),
+                    centre != null && EnemyShipTaskGroupPlanner.IsInZone(centre, site.Center)));
             }
             return new EnemyDefenseSnapshot(_money.Money, _economy.TotalIncome / _economyData.IncomeDelay,
                 _production.DefenseReserve, _strategy.LastSnapshot, _own, _hostile, _pads, _options);

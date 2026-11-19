@@ -16,6 +16,12 @@ How to measure a running battle, find what costs CPU or allocates, and where res
 - `Assets/Scripts/Services/Timing/BattlePerformanceCapture.cs` — opt-in, per-frame battle CSV recorder (10 s or 60 s).
 - `Assets/Scripts/Services/Analytics/BattleFpsHistory.cs` — local full-match FPS history from the existing running-battle sampler, independent of cloud analytics.
 - `Assets/Scripts/Entities/Map/BattleMapTelemetry.cs` — per-battle `BattleTelemetry/<scene>_<time>_map.csv`: map seed, size, type, planet, source revision, station/zone/site positions, fields and hazards. Regenerate a reported map from its seed.
+
+Compare stern-facing shares for attacks within firing reach using the order capture. The report groups periodic samples by ship type and uses the current attack target's bearing. Ion-disabled and cloaked samples are excluded.
+
+```bash
+python Tools/BattleAudit/battle_audit.py combat-facing BattleTelemetry/<scene>_<time>_ai_orders.csv Victory VictoryI VictoryII
+```
 - `Assets/Scripts/Services/Timing/BattleProfilerMarkers.cs` — `Battle.*` markers used in captures.
 - Unity MCP tools: `eval`, `eval_file`, `render_audit_profiler`, `get_console_logs`, `editor_status`.
 

@@ -2,9 +2,10 @@ using EmpireAtWar.Entities.CaptureSites;
 using EmpireAtWar.Models.Players;
 using EmpireAtWar.Services.CaptureSites;
 using Utilities.ScriptUtils.Time;
-using VContainer;
 using EmpireAtWar.Lifecycle;
 using EmpireAtWar.Entities.EnemyFaction.Models;
+using EmpireAtWar.Presenters.ReinforcementZones;
+using EmpireAtWar.Services.ReinforcementZones;
 
 namespace EmpireAtWar.Services.Enemy
 {
@@ -22,12 +23,15 @@ namespace EmpireAtWar.Services.Enemy
         private readonly EnemyDefenseSnapshotBuilder _snapshotBuilder;
         private readonly EnemyStationPressureTracker _stationPressure;
         private readonly EnemyDefenseStrategy _defense;
+        private readonly EnemyProductionStrategy _production;
+        private readonly IReinforcementZoneSource _zones;
 
         public EnemySiteConstructionController(ICaptureSiteDirectory sites, ICaptureSitePresence presence,
             ICaptureSiteConstruction construction,
             PlayerSlot owner, EnemyDefenseSnapshotBuilder snapshotBuilder,
             EnemyDefenseStrategy defense,
-            EnemyStationPressureTracker stationPressure)
+            EnemyStationPressureTracker stationPressure, EnemyProductionStrategy production,
+            IReinforcementZoneSource zones)
         {
             _owner = owner;
             _sites = sites;
@@ -36,28 +40,39 @@ namespace EmpireAtWar.Services.Enemy
             _snapshotBuilder = snapshotBuilder;
             _defense = defense;
             _stationPressure = stationPressure;
+            _production = production;
+            _zones = zones;
         }
 
         public void Tick()
         {
-            if (_stationPressure.IsStationCritical) return;
+            if (_stationPressure.IsStationCritical || _production.OpeningMiningPending || _production.OpeningLevelReserve > 0f)
+            {
+                _production.PriorityConstructionPending = false;
+                return;
+            }
             if (!_decisionTimer.IsComplete) return;
             _decisionTimer.StartTimer();
-            // At a captured point: required satellites first, then mining, then optional scored defense. All three
-            // outrank ships. Satellite scores read the strategic snapshot, empty until the first strategic decision.
-            bool ready = _snapshotBuilder.IsReady;
-            EnemyDefenseSnapshot snapshot = ready ? _snapshotBuilder.Build() : default;
-            // A required satellite that cannot start must not block the mines behind it, so only a started one ends the tick.
-            if (ready && _defense.TrySelectMandatory(snapshot, out var required) && StartSatellite(snapshot, required))
+            if (!_snapshotBuilder.IsReady) return;
+            EnemyDefenseSnapshot snapshot = _snapshotBuilder.Build();
+            ReinforcementZonePresenter centre = EnemyShipTaskGroupPlanner.GetCentre(_zones.Zones);
+            int mineSite = FindMineSite(centre);
+            bool mandatorySatellite = _defense.HasMandatoryPad(snapshot);
+            _production.PriorityConstructionPending = mandatorySatellite || mineSite >= 0;
+            BuildNext(snapshot, mineSite, mandatorySatellite);
+        }
+
+        internal void BuildNext(EnemyDefenseSnapshot snapshot, int mineSite, bool mandatorySatellite)
+        {
+            if (_defense.TrySelectMandatory(snapshot, out var required) && StartSatellite(snapshot, required))
                 return;
-            // Mines fund everything else, so an empty owned mine keeps the credits until it is built.
-            if (HasEmptyOwnedMine())
+            if (mineSite >= 0)
             {
-                bool built = _construction.TryBuildOnOwnedSite(_owner.Id);
+                bool built = _construction.TryStartConstruction(mineSite, _owner.Id, SiteFacilityType.Mining);
                 EnemyAiTelemetry.RecordEvent(_owner.Id, _owner.Faction, "siteBuild", $"kind=mine;started={built}");
-                if (built) return;
+                return;
             }
-            if (ready && _defense.TrySelectScored(snapshot, out var optional)) StartSatellite(snapshot, optional);
+            if (!mandatorySatellite && _defense.TrySelectScored(snapshot, out var optional)) StartSatellite(snapshot, optional);
         }
 
         private bool StartSatellite(EnemyDefenseSnapshot snapshot, EnemyDefenseChoice choice)
@@ -73,13 +88,25 @@ namespace EmpireAtWar.Services.Enemy
             return false;
         }
 
-        private bool HasEmptyOwnedMine()
+        private int FindMineSite(ReinforcementZonePresenter centre)
         {
-            foreach (ICaptureSite site in _sites.Sites)
-                if (site.Kind != CaptureSiteKind.Satellite && site.Owner == _owner.Id &&
-                    site.State == CaptureSiteState.Owned && !_presence.HasHostileUnits(site, _owner.Id))
-                    return true;
-            return false;
+            int centreSatellites = 0;
+            if (centre != null)
+                foreach (ICaptureSite site in _sites.Sites)
+                    if (site.Kind == CaptureSiteKind.Satellite && site.Owner == _owner.Id && site.IsOperational &&
+                        EnemyShipTaskGroupPlanner.IsInZone(centre, site.Center))
+                        centreSatellites++;
+
+            for (int i = 0; i < _sites.Sites.Count; i++)
+            {
+                ICaptureSite site = _sites.Sites[i];
+                if (site.Kind != CaptureSiteKind.Mining || site.Owner != _owner.Id ||
+                    site.State != CaptureSiteState.Owned || _presence.HasHostileUnits(site, _owner.Id)) continue;
+                if (centre == null || centreSatellites >= EnemyDefenseStrategy.ZONE_SATELLITES ||
+                    !EnemyShipTaskGroupPlanner.IsInZone(centre, site.Center))
+                    return i;
+            }
+            return -1;
         }
 
     }

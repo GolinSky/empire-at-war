@@ -10,6 +10,8 @@ namespace EmpireAtWar.Components.Weapon
     [BurstCompile]
     internal struct WeaponFacingSweepJob : IJob
     {
+        internal const int TURN_STEP = 2;
+
         [ReadOnly] public NativeArray<Vector2> Offsets;
         [ReadOnly] public NativeArray<float> Heights;
         [ReadOnly] public NativeArray<Vector2> Rotations;
@@ -18,11 +20,23 @@ namespace EmpireAtWar.Components.Weapon
         public NativeArray<Vector2> Targets;
         [WriteOnly] public NativeArray<Bounds> Scores;
         public int MaximumScore;
+        public bool LimitToForwardSector;
+        public float TargetBearing;
+
+        internal static int GetTurn(int step) =>
+            (step + 1) / 2 * TURN_STEP * (step % 2 == 0 ? -1 : 1);
+
+        internal static bool KeepsTargetAhead(int step, float targetBearing)
+        {
+            float difference = math.abs(targetBearing - GetTurn(step));
+            return difference <= 90f || difference >= 270f;
+        }
 
         public void Execute()
         {
             for (int step = 0; step < Scores.Length; step++)
             {
+                if (LimitToForwardSector && !KeepsTargetAhead(step, TargetBearing)) continue;
                 Vector2 rotation = Rotations[step];
                 for (int i = 0; i < Offsets.Length; i++)
                 {

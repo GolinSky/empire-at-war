@@ -42,12 +42,14 @@ namespace EmpireAtWar.Views.ReinforcementZones
         public float Radius => radius;
         public PlayerId StartingOwner => _startingOwner;
         public bool IsCapturable => isCapturable;
+        public bool IsMain { get; private set; }
         public float CaptureDuration => captureDuration;
 
-        public void Configure(PlayerId startingOwner, bool isCapturable)
+        public void Configure(PlayerId startingOwner, bool isCapturable, bool isMain = false)
         {
             _startingOwner = startingOwner;
             this.isCapturable = isCapturable;
+            IsMain = isMain;
         }
 
         private void Awake()

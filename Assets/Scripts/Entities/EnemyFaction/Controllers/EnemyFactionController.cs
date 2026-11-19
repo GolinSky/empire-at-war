@@ -27,7 +27,6 @@ using DefendPlatformEntity = EmpireAtWar.Entities.DefendPlatform.DefendPlatform;
 using MiningFacilityEntity = EmpireAtWar.Entities.MiningFacility.MiningFacility;
 using ShipEntity = EmpireAtWar.Ship.Ship;
 using SpaceStationEntity = EmpireAtWar.Entities.SpaceStation.SpaceStation;
-using EmpireAtWar.Entities.SpaceStation;
 
 namespace EmpireAtWar.Entities.EnemyFaction.Controllers
 {
@@ -38,7 +37,8 @@ namespace EmpireAtWar.Entities.EnemyFaction.Controllers
         private const float DEFAULT_INCOME = 15f;
         private const float DEPLOYMENT_RETRY_INTERVAL = 1f;
         private const float MAX_DEPLOYMENT_HOLD_SECONDS = 8f;
-        private const float DEFENSE_DEPLOYMENT_WAIT_SECONDS = 20f;
+        private const float LONE_REINFORCEMENT_WAIT_SECONDS = 12f;
+        private const int MINIMUM_REINFORCEMENT_GROUP = 2;
 
         private readonly IEconomyProvider _economyProvider;
         private readonly IWallet _wallet;
@@ -61,8 +61,6 @@ namespace EmpireAtWar.Entities.EnemyFaction.Controllers
         private readonly HashSet<long> _builtSquadrons = new HashSet<long>();
         private readonly MiningFacilityFactory _miningFacilityFactory;
         private readonly DefendPlatformFactory _defendPlatformFactory;
-        private readonly SpaceStationFactory _stationFactory;
-        private readonly SecondStationLevelModel _secondStation;
         private readonly FactionResearchModel _research;
 
         private bool _isInitialized;
@@ -70,16 +68,12 @@ namespace EmpireAtWar.Entities.EnemyFaction.Controllers
         private PlayerId Owner => _owner.Id;
         public float Income => DEFAULT_INCOME * Model.CurrentLevel * _research.StationIncomeMultiplier;
         public bool HasPendingReinforcement => _builds.Count > 0;
+        public bool PriorityConstructionPending { get; set; }
         public bool IsUpgradingStation => _builds.Builds.Any(build => build.Request is LevelUnitRequest);
-        public bool IsUpgradingSecondStation => _builds.Builds.Any(build => build.Request is SecondStationLevelUnitRequest);
         public IReadOnlyList<EnemyPendingBuild> PendingBuilds => _builds.Builds;
 
-        private bool CanBuildSecondStation => !_secondStation.IsBuilt &&
-            Model.CanBuildAdditionalStation(_productionAccess.HasHostBase, _productionAccess.ProductionHost != Owner);
-
         public bool CanQueue(string requestId, int maxCount) =>
-            (requestId != SecondStationUnitRequest.REQUEST_ID || CanBuildSecondStation) &&
-            _builds.CanAdd(requestId, maxCount);
+            requestId != SecondStationUnitRequest.REQUEST_ID && _builds.CanAdd(requestId, maxCount);
         public float GetQueueRemainingTime(string requestId) => _builds.GetRemainingTime(requestId);
 
         public void ReserveExternalPipeline(string requestId) => _builds.ReserveExternalPipeline(requestId);
@@ -101,8 +95,6 @@ namespace EmpireAtWar.Entities.EnemyFaction.Controllers
             ShipFactory shipFactory,
             MiningFacilityFactory miningFacilityFactory,
             DefendPlatformFactory defendPlatformFactory,
-            SpaceStationFactory stationFactory,
-            SecondStationLevelModel secondStation,
             FactionResearchModel research,
             EnemyUnitLimitModel unitLimitModel,
             ReinforcementData reinforcementData,
@@ -115,8 +107,6 @@ namespace EmpireAtWar.Entities.EnemyFaction.Controllers
             _shipFactory = shipFactory;
             _miningFacilityFactory = miningFacilityFactory;
             _defendPlatformFactory = defendPlatformFactory;
-            _stationFactory = stationFactory;
-            _secondStation = secondStation;
             _research = research;
             _economyProvider = economyProvider;
             _wallet = wallet;
@@ -174,33 +164,21 @@ namespace EmpireAtWar.Entities.EnemyFaction.Controllers
 
         public void Purchase(UnitRequest unitRequest)
         {
-            bool canPurchase = _productionAccess.CanProduce;
-            if (unitRequest is SecondStationUnitRequest && _productionAccess.ProductionHost != Owner)
-                canPurchase = canPurchase && _enemyStructurePlacementService.IsRecovering;
-            if (!CanQueue(unitRequest.Id, unitRequest.FactionData.MaxCount) ||
-                !canPurchase ||
+            if (unitRequest is SecondStationUnitRequest or SecondStationLevelUnitRequest ||
+                !CanQueue(unitRequest.Id, unitRequest.FactionData.MaxCount) ||
+                !_productionAccess.CanProduce ||
                 unitRequest is LevelUnitRequest &&
-                (_productionAccess.ProductionHost != Owner || !_productionAccess.HasHostBase) ||
-                unitRequest is SecondStationLevelUnitRequest secondLevel &&
-                (!_secondStation.IsBuilt || secondLevel.Level != _secondStation.CurrentLevel))
+                (_productionAccess.ProductionHost != Owner || !_productionAccess.HasHostBase))
             {
                 EnemyAiTelemetry.RecordEvent(_owner.Id, _owner.Faction, "purchaseRejected",
                     $"unit={unitRequest.Id};reason=queue or production unavailable");
                 return;
             }
 
-            //todo: store reinforcement - not spawn them here
             switch (unitRequest)
             {
                 case LevelUnitRequest levelUnitRequest:
                     if (IsUpgradingStation || !_wallet.TrySpend(levelUnitRequest))
-                    {
-                        return;
-                    }
-
-                    break;
-                case SecondStationLevelUnitRequest secondLevelUnitRequest:
-                    if (IsUpgradingSecondStation || !_wallet.TrySpend(secondLevelUnitRequest))
                     {
                         return;
                     }
@@ -215,7 +193,6 @@ namespace EmpireAtWar.Entities.EnemyFaction.Controllers
                 case SquadronUnitRequest:
                 case MiningFacilityUnitRequest:
                 case DefendPlatformUnitRequest:
-                case SecondStationUnitRequest:
                     if (!TryReserveAndSpend(unitRequest)) return;
                     break;
                 default:
@@ -242,23 +219,38 @@ namespace EmpireAtWar.Entities.EnemyFaction.Controllers
                 _stationTelemetryAt = Time.time + 15f;
                 _hadStation = hasStation;
             }
-            AdvanceBuilds(Time.deltaTime, hasRally && defendHome);
+            AdvanceBuilds(Time.deltaTime, hasRally, defendHome);
         }
 
-        public void Advance(float deltaTime) => AdvanceBuilds(deltaTime,
-            _aiState.TryGetReinforcementRally(out _, out bool defendHome) && defendHome);
+        public void Advance(float deltaTime)
+        {
+            bool hasRally = _aiState.TryGetReinforcementRally(out _, out bool defendHome);
+            AdvanceBuilds(deltaTime, hasRally, defendHome);
+        }
 
-        private void AdvanceBuilds(float deltaTime, bool defendHome) =>
-            _builds.Advance(deltaTime, ExecuteBuild,
-                _productionAccess.CanProduce && (defendHome || _aiState.GatherReinforcements),
-                defendHome ? (_aiState.IsStationCritical ? 0f : DEFENSE_DEPLOYMENT_WAIT_SECONDS) :
-                    EnemyBuildQueue.MAX_DEPLOYMENT_WAIT_SECONDS);
+        private void AdvanceBuilds(float deltaTime, bool hasRally, bool defendHome)
+        {
+            bool canProduce = _productionAccess.CanProduce;
+            bool holdReserve = canProduce && (defendHome || _aiState.HoldFinishedReinforcements) &&
+                               !_aiState.IsStationCritical;
+            // The first group can launch for capture before the commander has live units to assess.
+            bool needsFirstGroup = _aiState.ActiveShipCount == 0 && _builtSquadrons.Count == 0;
+            int minimumGroup = !holdReserve ? 0 : hasRally || needsFirstGroup
+                ? MINIMUM_REINFORCEMENT_GROUP : int.MaxValue;
+            // Opening, defense and a full population can leave no second unit able to join the group.
+            bool allowLoneUnit = defendHome || needsFirstGroup || hasRally &&
+                                 _unitLimitModel.CurrentUnitCapacity >= _reinforcementData.MaxUnitCapacity;
+            _builds.Advance(deltaTime, ExecuteBuild, minimumGroup,
+                allowLoneUnit ? LONE_REINFORCEMENT_WAIT_SECONDS : float.PositiveInfinity);
+        }
 
         /// <summary>Puts back a saved build: its reservation is taken again and it keeps its time left.</summary>
         public void RestorePendingBuild(UnitRequest unitRequest, float timeLeft)
         {
             AdoptReservation(unitRequest);
-            _builds.Add(unitRequest, timeLeft);
+            // Refund retired pending construction on first advance, after the economy has loaded.
+            _builds.Add(unitRequest, unitRequest is SecondStationUnitRequest or SecondStationLevelUnitRequest
+                ? 0f : timeLeft);
         }
 
         /// <summary>Counts a restored unit against the limits again and frees its slot when it is gone.</summary>
@@ -380,6 +372,8 @@ namespace EmpireAtWar.Entities.EnemyFaction.Controllers
                         return;
                     }
 
+                    EnemyAiTelemetry.RecordEvent(_owner.Id, _owner.Faction, "deployment",
+                        $"unit={squadronUnitRequest.Id};source=station");
                     Track(squadron, squadronUnitRequest);
                     break;
                 case MiningFacilityUnitRequest miningFacilityUnitRequest:
@@ -389,17 +383,6 @@ namespace EmpireAtWar.Entities.EnemyFaction.Controllers
                 case DefendPlatformUnitRequest defendPlatformUnitRequest:
                     Track(_defendPlatformFactory.Create(Owner, defendPlatformUnitRequest.Key, GenerateMapCoordinates(unitRequest)),
                         defendPlatformUnitRequest);
-                    break;
-                case SecondStationUnitRequest secondStationUnitRequest:
-                    Vector3 stationPosition = GenerateMapCoordinates(unitRequest);
-                    Track(_stationFactory.CreateSecond(Owner, _owner.Faction, stationPosition),
-                        secondStationUnitRequest);
-                    Model.AdditionalStationsBuilt++;
-                    _enemyStructurePlacementService.RecordStationBuilt(stationPosition);
-                    break;
-                case SecondStationLevelUnitRequest secondStationLevelUnitRequest:
-                    _secondStation.CompleteLevelUpgrade();
-                    ReleaseUnit(secondStationLevelUnitRequest);
                     break;
             }
             EnemyAiTelemetry.RecordEvent(_owner.Id, _owner.Faction, "buildCompleted", $"unit={unitRequest.Id}");
@@ -489,12 +472,10 @@ namespace EmpireAtWar.Entities.EnemyFaction.Controllers
 
         private void ExecuteBuild(UnitRequest unitRequest)
         {
-            if (unitRequest is SecondStationUnitRequest && !CanBuildSecondStation ||
+            if (unitRequest is SecondStationUnitRequest or SecondStationLevelUnitRequest ||
                 (unitRequest is LevelUnitRequest
                     ? !_productionAccess.HasHostBase
-                    : unitRequest is SecondStationLevelUnitRequest
-                        ? !_secondStation.IsBuilt
-                        : !_productionAccess.CanProduce && _productionAccess.ProductionHost != Owner))
+                    : !_productionAccess.CanProduce && _productionAccess.ProductionHost != Owner))
             {
                 if (unitRequest is ShipUnitRequest) _unitLimitModel.CancelShipOrder();
                 ReleaseUnit(unitRequest);

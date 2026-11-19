@@ -43,6 +43,10 @@ namespace EmpireAtWar.Entities.Ship.StateMachine
 
         public bool IsComplete => _engagementTarget == null && _hasSearched && !_movement.IsMoving;
 
+#if UNITY_EDITOR || DEVELOPMENT_BUILD
+        internal IEntity EngagementTarget => _engagementTarget;
+#endif
+
         public AttackMoveState(IShipMovement movement, IWeaponComponent weapon,
             IRadarComponent radar, IAttackDataFactory attackDataFactory)
         {

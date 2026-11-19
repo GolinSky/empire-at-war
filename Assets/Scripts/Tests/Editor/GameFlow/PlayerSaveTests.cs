@@ -334,8 +334,9 @@ namespace EmpireAtWar.Tests.Editor
             Assert.That(purchase.Invoke(controller, new object[] { option.Key, option.Value }), Is.True);
         }
 
-        [Test]
-        public void AiSuperWeapon_CriticalStationDefersNewChargeButCompletesPaidCharge()
+        [TestCase(true)]
+        [TestCase(false)]
+        public void AiSuperWeapon_DefersPurchaseForPriorityConstructionOrCriticalStation(bool priorityConstruction)
         {
             FactionRoster roster = CreateRoster(FactionType.Empire);
             var option = roster.SuperWeapons.First();
@@ -344,10 +345,11 @@ namespace EmpireAtWar.Tests.Editor
             EconomyModel economy = new EconomyModel(null, startingMoney);
             SuperWeaponModel model = new SuperWeaponModel();
             var pressure = new EnemyStationPressureTracker();
-            pressure.Update(1, 400f, 1000f, 0f, 2);
+            if (!priorityConstruction) pressure.Update(1, 400f, 1000f, 0f, 2);
+            var purchases = new QueuePurchaseProcessor { PriorityConstructionPending = priorityConstruction };
             EnemySuperWeaponController controller = new EnemySuperWeaponController(
                 null, null, null, new ProductionAccess { CanProduce = true }, model, faction, economy,
-                TestPlayers.CreateDuel().Get(TestPlayers.Enemy), new QueuePurchaseProcessor(), null, null, pressure);
+                TestPlayers.CreateDuel().Get(TestPlayers.Enemy), purchases, null, null, pressure);
             MethodInfo purchase = typeof(EnemySuperWeaponController).GetMethod(
                 "TryPurchase", BindingFlags.Instance | BindingFlags.NonPublic);
 
@@ -356,6 +358,7 @@ namespace EmpireAtWar.Tests.Editor
             Assert.That(model.GetState(option.Key), Is.EqualTo(SuperWeaponState.Unavailable));
 
             pressure.Reset();
+            purchases.PriorityConstructionPending = false;
             Assert.That(purchase.Invoke(controller, new object[] { option.Key, option.Value }), Is.True);
             pressure.Update(1, 400f, 1000f, 1f, 2);
             controller.AdvanceCharging(option.Value.BuildTime);
@@ -421,6 +424,7 @@ namespace EmpireAtWar.Tests.Editor
         {
             public EnemyBuildQueue Queue { get; } = new EnemyBuildQueue();
             public bool IsUpgradingStation => false;
+            public bool PriorityConstructionPending { get; set; }
             public bool CanQueue(string requestId, int maxCount) => Queue.CanAdd(requestId, maxCount);
             public float GetQueueRemainingTime(string requestId) => Queue.GetRemainingTime(requestId);
             public void ReserveExternalPipeline(string requestId) => Queue.ReserveExternalPipeline(requestId);

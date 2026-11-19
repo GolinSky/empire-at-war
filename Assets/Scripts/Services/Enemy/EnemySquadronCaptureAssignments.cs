@@ -8,6 +8,8 @@ namespace EmpireAtWar.Services.Enemy
     {
         private readonly Dictionary<Vector3, int> _targets = new Dictionary<Vector3, int>();
         private readonly HashSet<Vector3> _threatened = new HashSet<Vector3>();
+        private readonly HashSet<Vector3> _satellitePads = new HashSet<Vector3>();
+        private readonly List<Vector3> _openingTargets = new List<Vector3>();
         private readonly Dictionary<ISquadron, Vector3> _assignments = new Dictionary<ISquadron, Vector3>();
         private readonly Dictionary<ISquadron, Vector3> _previous = new Dictionary<ISquadron, Vector3>();
 
@@ -17,12 +19,38 @@ namespace EmpireAtWar.Services.Enemy
         {
             _targets.Clear();
             _threatened.Clear();
+            _satellitePads.Clear();
+            _openingTargets.Clear();
         }
 
-        public void AddTarget(Vector3 target, bool threatened = false)
+        public void AddTarget(Vector3 target, bool threatened = false, bool isSatellitePad = false)
         {
             _targets[target] = 0;
             if (threatened) _threatened.Add(target);
+            if (isSatellitePad) _satellitePads.Add(target);
+        }
+
+        public void PrioritizeArea(Vector3 centre, float radius)
+        {
+            Vector3 bestPoint = default;
+            float bestDistance = float.PositiveInfinity;
+            bool bestIsPad = false;
+            foreach (Vector3 target in _targets.Keys)
+            {
+                float distance = (target - centre).sqrMagnitude;
+                if (distance > radius * radius || _openingTargets.Contains(target)) continue;
+                if (distance < 0.01f)
+                {
+                    _openingTargets.Add(target);
+                    return;
+                }
+                bool isPad = _satellitePads.Contains(target);
+                if (bestIsPad && !isPad || bestIsPad == isPad && distance >= bestDistance) continue;
+                bestPoint = target;
+                bestDistance = distance;
+                bestIsPad = isPad;
+            }
+            if (!float.IsPositiveInfinity(bestDistance)) _openingTargets.Add(bestPoint);
         }
 
         public void Assign(IReadOnlyList<ISquadron> squadrons)
@@ -33,19 +61,24 @@ namespace EmpireAtWar.Services.Enemy
             _assignments.Clear();
 
             foreach (Vector3 target in _threatened)
+                if (!AssignClosest(squadrons, target)) break;
+            foreach (Vector3 target in _openingTargets)
             {
-                ISquadron closestSquadron = null;
-                float closestDistance = float.MaxValue;
+                if (_targets[target] > 0) continue;
+                ISquadron previous = null;
                 foreach (ISquadron squadron in squadrons)
                 {
-                    float distance = (target - squadron.WorldPosition).sqrMagnitude;
-                    if (_assignments.ContainsKey(squadron) || distance >= closestDistance) continue;
-                    closestSquadron = squadron;
-                    closestDistance = distance;
+                    if (_assignments.ContainsKey(squadron) || !_previous.TryGetValue(squadron, out Vector3 point) ||
+                        point != target) continue;
+                    previous = squadron;
+                    break;
                 }
-                if (closestSquadron == null) break;
-                _assignments.Add(closestSquadron, target);
-                _targets[target] = 1;
+                if (previous != null)
+                {
+                    _assignments.Add(previous, target);
+                    _targets[target] = 1;
+                }
+                else if (!AssignClosest(squadrons, target)) break;
             }
 
             // Keep one squadron on each still-valid objective before filling uncovered objectives.
@@ -82,6 +115,23 @@ namespace EmpireAtWar.Services.Enemy
                 _assignments.Add(squadron, best);
                 _targets[best]++;
             }
+        }
+
+        private bool AssignClosest(IReadOnlyList<ISquadron> squadrons, Vector3 target)
+        {
+            ISquadron closest = null;
+            float closestDistance = float.MaxValue;
+            foreach (ISquadron squadron in squadrons)
+            {
+                float distance = (target - squadron.WorldPosition).sqrMagnitude;
+                if (_assignments.ContainsKey(squadron) || distance >= closestDistance) continue;
+                closest = squadron;
+                closestDistance = distance;
+            }
+            if (closest == null) return false;
+            _assignments.Add(closest, target);
+            _targets[target] = 1;
+            return true;
         }
 
         public bool TryGetTarget(ISquadron squadron, out Vector3 target) =>

@@ -4,6 +4,7 @@ Commands:
   csv <capture.csv> [<baseline.csv> ...]       Compare battle CSV captures and list spike frames of the first.
   history <capture-directory> [<dir> ...]      Export saved FPS windows and detailed captures to stdout as CSV.
   hitches <hitch.csv>                          Inspect the ten slowest triggers, counters and custom marker times.
+  combat-facing <orders.csv> [<ship-type> ...] Report stern-facing shares for in-range Attack and AttackMove samples.
   profiler <profiler-summary.json>             Frame range, CPU/GPU medians and top main-thread self markers.
   decoder allocations <first> <last> <out.cs> <result.json>
                                                Write a Unity eval script: GC.Alloc bytes per frame and by first
@@ -23,6 +24,7 @@ import gzip
 import json
 import statistics
 import sys
+from collections import Counter
 from battle_attribution import BUILTIN_PHASES, hitch_period, merge_allocations, memory_diff, compare_runs, write_report, archive_run
 from battle_history import nearest_rank, write_history
 
@@ -45,6 +47,31 @@ SPIKES = [
 def read_csv(path):
     with open(path, encoding='utf-8-sig') as handle:
         return list(csv.DictReader(handle))
+
+
+def summarize_combat_facing(path, ship_types):
+    samples = Counter()
+    stern_on = Counter()
+    with open(path, encoding='utf-8-sig') as handle:
+        rows = csv.DictReader(handle)
+        if not {'shipType', 'attackTargetInReach'}.issubset(rows.fieldnames or []):
+            raise SystemExit('The order capture predates attack-target facing telemetry.')
+        for row in rows:
+            ship_type = row['shipType']
+            if ship_types and ship_type not in ship_types:
+                continue
+            if (row['kind'] != 'sample' or row['order'] not in ('Attack', 'AttackMove') or
+                    row['attackTargetInReach'] != '1' or row['ionDisabled'] == '1' or row['cloaked'] == '1'):
+                continue
+            samples[ship_type] += 1
+            if float(row['facingDot']) < 0:
+                stern_on[ship_type] += 1
+
+    print('shipType,inReachSamples,sternFacingSamples,sternFacingPercent')
+    for ship_type in sorted(set(samples) | set(ship_types)):
+        total = samples[ship_type]
+        share = f'{100 * stern_on[ship_type] / total:.2f}' if total else 'n/a'
+        print(f'{ship_type},{total},{stern_on[ship_type]},{share}')
 
 
 def value(row, column):
@@ -275,6 +302,8 @@ def main():
         write_history(arguments, sys.stdout)
     elif command == 'hitches':
         summarize_hitches(arguments[0])
+    elif command == 'combat-facing':
+        summarize_combat_facing(arguments[0], arguments[1:])
     elif command == 'profiler':
         summarize_profiler(arguments[0])
     elif command == 'decoder':

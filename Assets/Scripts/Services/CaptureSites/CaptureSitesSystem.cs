@@ -271,21 +271,6 @@ namespace EmpireAtWar.Services.CaptureSites
         private void HandleConstructionCompleted(PlayerId owner, SiteFacilityType type) =>
             ConstructionCompleted?.Invoke(owner, type);
 
-        public bool TryBuildOnOwnedSite(PlayerId owner)
-        {
-            foreach (CaptureSitePresenter site in _sites)
-            {
-                // Paying for a site that hostile units are about to take would waste the credits.
-                if (site.Kind != CaptureSiteKind.Satellite && site.Owner == owner && site.CanStartConstruction && !HasHostileUnits(site, owner))
-                {
-                    // A mine pays for itself in seconds; a Battle Asteroid costs more and gives up most of the income.
-                    return TryStartConstruction(site, SiteFacilityType.Mining, owner);
-                }
-            }
-
-            return false;
-        }
-
         public bool TryCancel()
         {
             if (_selectedSite == null)

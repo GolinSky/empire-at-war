@@ -2,6 +2,7 @@ using System;
 using EmpireAtWar.Models.Players;
 using System.Collections.Generic;
 using EmpireAtWar.Controllers.Factions;
+using EmpireAtWar.Components.Ship.Health;
 using EmpireAtWar.Entities.BaseEntity.EntityFacades;
 using EmpireAtWar.Services.Stations;
 using EmpireAtWar.Entities.DefendPlatform;
@@ -28,16 +29,8 @@ namespace EmpireAtWar.Services.Enemy
 
         private const int SHIPS_PER_SQUADRON = 2;
         private const int CRITICAL_EXTRA_SQUADRONS = 2;
-        private const int FLEET_RESERVATION_SHIP_COUNT = 6;
-
-        /// <summary>Active ships per mining facility above the difficulty's minimum.</summary>
-        private const int SHIPS_PER_MINING_FACILITY = 3;
-        private const int ULTRA_HARD_SHIPS_PER_MINING_FACILITY = 2;
-
-        /// <summary>Main station level from which a backup second station is worth its price.</summary>
-        private const int SECOND_STATION_MIN_LEVEL = 3;
-        /// <summary>A backup station waits until the AI holds this multiple of its price.</summary>
-        private const float SECOND_STATION_MONEY_MULTIPLIER = 2f;
+        private const int OPENING_SQUADRON_TARGET = 6;
+        private const int DEFENSE_PLATFORM_TARGET = 1;
 
         private readonly IEnemyPurchaseProcessor _purchaseProcessor;
         private readonly IUnitRequestFactory _requestFactory;
@@ -45,7 +38,6 @@ namespace EmpireAtWar.Services.Enemy
         private readonly IEnemyAiStateProvider _stateProvider;
         private readonly IEnemyStructurePlacementService _enemyStructurePlacementService;
         private readonly IProductionAccess _productionAccess;
-        private readonly IEnemyRecoveryPolicy _recovery;
 
         private readonly EnemyFactionModel _factionModel;
         private readonly IFactionResearchModelObserver _research;
@@ -58,7 +50,6 @@ namespace EmpireAtWar.Services.Enemy
         private readonly EnemyCounterProductionModel _counterModel;
         private readonly HostileIntelModel _intel;
         private readonly EnemyStationPressureTracker _stationPressure;
-        private readonly SecondStationLevelModel _secondStation;
         private readonly EnemyAiScheduler _scheduler;
 
         private EnemyAiScheduler.WorkHandle _workHandle;
@@ -73,6 +64,23 @@ namespace EmpireAtWar.Services.Enemy
         private int _observedReleaseVersion;
 
         public float DefenseReserve { get; private set; }
+        public bool PriorityConstructionPending
+        {
+            get => _purchaseProcessor.PriorityConstructionPending;
+            set => _purchaseProcessor.PriorityConstructionPending = value;
+        }
+
+        public float OpeningLevelReserve => _factionModel.CurrentLevel == 1 && CanUpgradeStation
+            ? _factionModel.GetCurrentLevelFactionData().Price : 0f;
+
+        public bool OpeningMiningPending => IsOpening && CountReservedMiningFacilities() < GetMiningFacilityTarget();
+
+        private bool IsOpening => _factionModel.CurrentLevel == 1 && _unitLimitModel.ShipOrdersCount == 0 &&
+                                  !_purchaseProcessor.IsUpgradingStation;
+
+        private bool CanUpgradeStation => _productionAccess.ProductionHost == _owner.Id &&
+                                          _productionAccess.HasHostBase &&
+                                          !_purchaseProcessor.IsUpgradingStation;
 
         public EnemyProductionStrategy(
             IEnemyPurchaseProcessor purchaseProcessor,
@@ -92,12 +100,8 @@ namespace EmpireAtWar.Services.Enemy
             TeamIntelRegistry intelRegistry,
             PlayerSlot owner,
             EnemyStationPressureTracker stationPressure,
-            SecondStationLevelModel secondStation,
-            IEnemyRecoveryPolicy recovery,
             EnemyAiScheduler scheduler)
         {
-            _secondStation = secondStation;
-            _recovery = recovery;
             _scheduler = scheduler;
             _owner = owner;
             _stationPressure = stationPressure;
@@ -161,10 +165,10 @@ namespace EmpireAtWar.Services.Enemy
                 return;
             }
 
-            EvaluateProduction(EnemyAiDifficultyProfile.Get(_owner.Difficulty));
+            EvaluateProduction();
         }
 
-        private void EvaluateProduction(EnemyAiDifficultyProfile profile)
+        private void EvaluateProduction()
         {
             using var sample = _evaluateMarker.Auto();
             int shipCount = CountReservedShips();
@@ -177,33 +181,36 @@ namespace EmpireAtWar.Services.Enemy
             bool canBuildMining = hasMiningOption && IsAffordable(mining.Value);
             bool hasDefenseSelection = TrySelectDefense(
                 out KeyValuePair<DefendPlatformType, FactionData> defense);
-            bool hasDefenseOption = canPlaceStructure && hasDefenseSelection;
-            bool canBuildDefense = hasDefenseOption && IsAffordable(defense.Value);
+            bool canBuildDefense = canPlaceStructure && hasDefenseSelection && IsAffordable(defense.Value);
 
             KeyValuePair<SquadronType, FactionData> squadron = default;
             KeyValuePair<ShipType, FactionData> ship = default;
-            bool isUltraHard = _owner.Difficulty == EnemyAiDifficulty.UltraHard;
-            // A counter to the hostile composition replaces the size-based pick whenever one improves the matchup.
-            // Squadrons support ships, at most one per SHIPS_PER_SQUADRON ships. Cheap squadrons always win on
-            // gain per credit and never grow the fleet, so without the cap they would crowd out ships, mining
-            // and station upgrades.
-            // With no ship type unlocked or the station critical, lift the cap for immediate reinforcements.
-            bool canOrderShips = CanOrderAnyShip();
-            bool hasSquadronRoom = HasSquadronRoom(shipCount);
-            bool hasCounter = TrySelectCounterUnit(
+            bool atOpeningLevel = _factionModel.CurrentLevel == 1;
+            bool allowShips = !atOpeningLevel || _unitLimitModel.ShipOrdersCount == 0 && shipCount == 0;
+            bool canOrderShips = allowShips && CanOrderAnyShip();
+            bool hasSquadronRoom = atOpeningLevel
+                ? CountReservedSquadrons() < OPENING_SQUADRON_TARGET
+                : HasSquadronRoom(shipCount);
+            UnitTypeId counterId = default;
+            FactionData counterData = null;
+            bool hasCounter = (!atOpeningLevel || _stationPressure.IsStationCritical) && TrySelectCounterUnit(
                 !_stationPressure.IsStationCritical &&
                 canOrderShips && (_decisionModel.NeedsMinimumFleet(shipCount) || !hasSquadronRoom),
-                hasSquadronRoom,
-                out UnitTypeId counterId,
-                out FactionData counterData);
-            bool hasShip = !hasCounter && TrySelectShip(shipCount, out ship);
-            bool hasSquadronFallback = !_stationPressure.IsStationCritical && !hasCounter && !hasShip && !canOrderShips &&
+                hasSquadronRoom, allowShips, out counterId, out counterData);
+            bool hasShip = !hasCounter && canOrderShips && TrySelectShip(shipCount, out ship);
+            bool canBuyOpeningShip = atOpeningLevel && hasShip && !_purchaseProcessor.IsUpgradingStation &&
+                                     IsAffordable(ship.Value) && FitsRemainingCapacity(ship.Value);
+            if (atOpeningLevel && !_stationPressure.IsStationCritical)
+                hasShip = canBuyOpeningShip;
+            bool hasSquadronFallback = !_stationPressure.IsStationCritical && !hasCounter && !hasShip &&
+                                       (atOpeningLevel ? hasSquadronRoom : !canOrderShips) &&
                                        TrySelectSquadron(shipCount, true, out squadron);
             bool hasShipOption = hasCounter || hasShip || hasSquadronFallback;
             FactionData shipChoice = hasCounter ? counterData : hasShip ? ship.Value : squadron.Value;
             DefenseReserve = hasShipOption ? shipChoice.Price : 0f;
-            bool canBuildShip = hasShipOption && IsAffordable(shipChoice) &&
-                _unitLimitModel.CurrentUnitCapacity + shipChoice.UnitCapacity <= _reinforcementData.MaxUnitCapacity;
+            bool canBuildShip = hasShipOption && IsAffordable(shipChoice) && FitsRemainingCapacity(shipChoice);
+            UnitTypeId combatChoice = hasCounter ? counterId : hasShip
+                ? UnitTypeId.Ship(ship.Key) : UnitTypeId.Squadron(squadron.Key);
             if (_stationPressure.IsStationCritical && !hasShipOption)
             {
                 EnemyAiTelemetry.RecordEvent(_owner.Id, _owner.Faction, "production-wait",
@@ -213,29 +220,13 @@ namespace EmpireAtWar.Services.Enemy
             if (hasShipOption && !canBuildShip)
             {
                 EnemyAiTelemetry.RecordEvent(_owner.Id, _owner.Faction, "production-wait",
-                    FormattableString.Invariant($"unit={(hasCounter ? counterId.ToString() : hasShip ? ship.Key.ToString() : squadron.Key.ToString())};capacity={_unitLimitModel.CurrentUnitCapacity}/{_reinforcementData.MaxUnitCapacity};required={shipChoice.UnitCapacity};cost={shipChoice.Price};money={_economyModel.Money:F1};critical={_stationPressure.IsStationCritical};etaSeconds={GetArrivalSeconds(hasCounter ? counterId : UnitTypeId.Ship(ship.Key), shipChoice):F1};timeToLoss={_stationPressure.EstimatedTimeToLossSeconds:F1}"));
+                    FormattableString.Invariant($"unit={combatChoice};capacity={_unitLimitModel.CurrentUnitCapacity}/{_reinforcementData.MaxUnitCapacity};required={shipChoice.UnitCapacity};cost={shipChoice.Price};money={_economyModel.Money:F1};critical={_stationPressure.IsStationCritical};etaSeconds={GetArrivalSeconds(combatChoice, shipChoice):F1};timeToLoss={_stationPressure.EstimatedTimeToLossSeconds:F1}"));
             }
-            FactionData levelData = _productionAccess.ProductionHost == _owner.Id &&
-                                    _productionAccess.HasHostBase &&
-                                    !_purchaseProcessor.IsUpgradingStation
-                ? _factionModel.GetCurrentLevelFactionData() : null;
+            FactionData levelData = CanUpgradeStation ? _factionModel.GetCurrentLevelFactionData() : null;
             if (levelData != null &&
                 !_purchaseProcessor.CanQueue(_factionModel.CurrentLevel.ToString(), levelData.MaxCount))
             {
                 levelData = null;
-            }
-            // Both stations level up; the second takes the upgrade whenever the main one cannot.
-            bool upgradesSecondStation = false;
-            if (levelData == null && _productionAccess.ProductionHost == _owner.Id && _secondStation.IsBuilt)
-            {
-                FactionData secondLevelData = _factionModel.GetSecondStationLevelFactionData(_secondStation.CurrentLevel);
-                if (secondLevelData != null && _purchaseProcessor.CanQueue(
-                        _requestFactory.ConstructSecondStationLevelRequest(secondLevelData, _secondStation.CurrentLevel).Id,
-                        secondLevelData.MaxCount))
-                {
-                    levelData = secondLevelData;
-                    upgradesSecondStation = true;
-                }
             }
             bool hasLevelUpOption = levelData != null;
             bool canLevelUp = levelData != null && levelData.Price <= _economyModel.Money;
@@ -245,19 +236,7 @@ namespace EmpireAtWar.Services.Enemy
             bool canResearchCombat = TrySelectResearch(false, out ResearchType combatResearch,
                                          out ResearchTierData combatTier) &&
                                      IsAffordable(combatTier.FactionData);
-            // UltraHard fills every spawnable mining facility from the start; the others grow with the fleet.
-            int miningFacilityTarget = isUltraHard && hasMiningSelection
-                ? Math.Max(mining.Value.MaxCount, profile.MinimumMiningFacilities)
-                : profile.MinimumMiningFacilities + _stateProvider.ActiveShipCount /
-                  (isUltraHard ? ULTRA_HARD_SHIPS_PER_MINING_FACILITY : SHIPS_PER_MINING_FACILITY);
-            int defensePlatformTarget = isUltraHard
-                ? 1 + _stateProvider.ActiveShipCount / 3
-                : 1;
-
-            if (TryBuySecondStation(canPlaceStructure))
-            {
-                return;
-            }
+            int miningFacilityTarget = GetMiningFacilityTarget();
 
             if (!_stationPressure.IsStationCritical && TryBuyScout(shipCount,
                     hasMiningSelection && miningFacilityCount < miningFacilityTarget,
@@ -266,35 +245,41 @@ namespace EmpireAtWar.Services.Enemy
                 return;
             }
 
-            EnemyProductionCategory category = _decisionModel.Evaluate(
-                new EnemyProductionSnapshot(
-                    _stateProvider.CurrentState,
-                    _owner.Difficulty,
-                    miningFacilityCount,
-                    shipCount,
-                    _unitLimitModel.ShipOrdersCount,
-                    defensePlatformCount,
-                    _factionModel.CurrentLevel,
-                    miningFacilityTarget,
-                    defensePlatformTarget,
-                    hasMiningOption,
-                    hasShipOption,
-                    canBuildShip,
-                    canBuildMining,
-                    hasDefenseOption,
-                    canBuildDefense,
-                    hasLevelUpOption,
-                    canLevelUp,
-                    canResearchIncome,
-                    canResearchCombat,
-                    canOrderShips,
-                    _stationPressure.IsStationCritical,
-                    NeedsFleet(shipCount)));
+            var snapshot = new EnemyProductionSnapshot(
+                _stateProvider.CurrentState,
+                miningFacilityCount,
+                shipCount,
+                _unitLimitModel.ShipOrdersCount,
+                defensePlatformCount,
+                _factionModel.CurrentLevel,
+                miningFacilityTarget,
+                DEFENSE_PLATFORM_TARGET,
+                hasMiningOption,
+                hasShipOption,
+                canBuildShip,
+                canBuildMining,
+                canBuildDefense,
+                hasLevelUpOption,
+                canLevelUp,
+                canResearchIncome,
+                canResearchCombat,
+                canOrderShips,
+                _stationPressure.IsStationCritical,
+                canBuyOpeningShip,
+                IsOpening);
+            EnemyProductionCategory category = _decisionModel.Evaluate(snapshot);
+            if (PriorityConstructionPending && !_stationPressure.IsStationCritical &&
+                category is not (EnemyProductionCategory.Mining or EnemyProductionCategory.Level))
+            {
+                return;
+            }
+            if (category == EnemyProductionCategory.None && _decisionModel.IsLevelDue(snapshot))
+                DefenseReserve = levelData.Price;
 
             bool buildSquadron = !_stationPressure.IsStationCritical && !hasCounter &&
                                  category == EnemyProductionCategory.Ship &&
                                  (hasSquadronFallback ||
-                                  TrySelectSquadron(shipCount, false, out squadron) &&
+                                  !atOpeningLevel && TrySelectSquadron(shipCount, false, out squadron) &&
                                   IsAffordable(squadron.Value));
             UnitRequest request = category switch
             {
@@ -310,8 +295,6 @@ namespace EmpireAtWar.Services.Enemy
                     _requestFactory.ConstructUnitRequest(mining.Value, mining.Key),
                 EnemyProductionCategory.Defense =>
                     _requestFactory.ConstructUnitRequest(defense.Value, defense.Key),
-                EnemyProductionCategory.Level when upgradesSecondStation =>
-                    _requestFactory.ConstructSecondStationLevelRequest(levelData, _secondStation.CurrentLevel),
                 EnemyProductionCategory.Level =>
                     _requestFactory.ConstructUnitRequest(levelData, _factionModel.CurrentLevel),
                 EnemyProductionCategory.Research when canResearchIncome =>
@@ -333,34 +316,29 @@ namespace EmpireAtWar.Services.Enemy
                 $"[EnemyAI:Production] BattleTime={BattleClock.CurrentElapsed:F1}, Player={_owner.Id}:{_owner.Faction}, State={_stateProvider.CurrentState}, " +
                 $"FactionLevel={_factionModel.CurrentLevel}, Category={category}, Counter={hasCounter}, " +
                 $"Unit={request.Id}, Mining={miningFacilityCount}/{miningFacilityTarget}, " +
-                $"Defense={defensePlatformCount}/{defensePlatformTarget}, " +
+                $"Defense={defensePlatformCount}/{DEFENSE_PLATFORM_TARGET}, " +
                 $"Cost={request.FactionData.Price}, " +
                 $"Money={_economyModel.Money}");
             EnemyAiTelemetry.RecordPurchase(_owner.Id, _owner.Faction, _stateProvider.CurrentState, category,
                 hasCounter, request.Id, request.FactionData.Price, _economyModel.Money,
                 _stationPressure.IsStationCritical,
                 category == EnemyProductionCategory.Ship ? GetArrivalSeconds(
-                    hasCounter ? counterId : UnitTypeId.Ship(ship.Key), request.FactionData) : 0f,
+                    buildSquadron ? UnitTypeId.Squadron(squadron.Key) : combatChoice,
+                    request.FactionData) : 0f,
                 _stationPressure.EstimatedTimeToLossSeconds);
             _purchaseProcessor.Purchase(request);
         }
 
-        // A backup station once the economy can spare it, or a hosted ally's first station during recovery.
-        private bool TryBuySecondStation(bool canPlaceStructure)
+        private int GetMiningFacilityTarget()
         {
-            FactionData data = _factionModel.SecondStationFactionData;
-            bool isBackup = _productionAccess.HasHostBase;
-            if (_productionAccess.ProductionHost != _owner.Id && !_recovery.IsActive ||
-                _stationPressure.IsStationCritical ||
-                !canPlaceStructure || _secondStation.IsBuilt || !IsAffordable(data) ||
-                !CanReserve<SecondStationUnitRequest>(SecondStationUnitRequest.REQUEST_ID, data) ||
-                isBackup && !_recovery.IsActive && (_factionModel.CurrentLevel < SECOND_STATION_MIN_LEVEL ||
-                             _economyModel.Money < data.Price * SECOND_STATION_MONEY_MULTIPLIER))
-                return false;
-
-            _purchaseProcessor.Purchase(_requestFactory.ConstructSecondStationRequest(data));
-            return true;
+            int target = 0;
+            foreach (FactionData mining in _factionModel.MiningFactions.Values)
+                if (IsAvailable(mining)) target += mining.MaxCount;
+            return target;
         }
+
+        private bool FitsRemainingCapacity(FactionData data) =>
+            data.UnitCapacity <= _reinforcementData.MaxUnitCapacity - _unitLimitModel.CurrentUnitCapacity;
 
         private int CountReservedShips()
         {
@@ -434,6 +412,7 @@ namespace EmpireAtWar.Services.Enemy
         private bool TrySelectCounterUnit(
             bool shipsOnly,
             bool hasSquadronRoom,
+            bool allowShips,
             out UnitTypeId selectedId,
             out FactionData selectedData)
         {
@@ -443,18 +422,16 @@ namespace EmpireAtWar.Services.Enemy
             // Counters answer what the team has seen of the enemy, not the whole hidden map.
             _forceBuilder.BuildKnown(_hostileForce, _intel, Time.time, sighting => true);
             if (_hostileForce.IsEmpty && !_stationPressure.IsStationCritical)
-            {
                 return false;
-            }
-
             _forceBuilder.Build(_ownForce, entity => entity.Owner == self, _liveUnitCounts);
             _candidates.Clear();
             _candidateIds.Clear();
             _candidateData.Clear();
             foreach (KeyValuePair<ShipType, FactionData> option in _factionModel.ShipFactionData)
             {
-                AddCounterOption<ShipUnitRequest>(UnitTypeId.Ship(option.Key), option.Key.ToString(), option.Value,
-                    true, hasSquadronRoom);
+                UnitTypeId unitId = UnitTypeId.Ship(option.Key);
+                AddCounterOption<ShipUnitRequest>(unitId, option.Key.ToString(), option.Value,
+                    allowShips && IsAvailable(option.Value) && IsShipClassAllowed(unitId), hasSquadronRoom);
             }
 
             foreach (KeyValuePair<SquadronType, FactionData> option in _factionModel.SquadronFactionData)
@@ -529,7 +506,8 @@ namespace EmpireAtWar.Services.Enemy
                      in _factionModel.ShipFactionData)
             {
                 // Affordability is checked after selection so the AI saves for higher-tier ships.
-                if (!IsAvailable(option.Value) ||
+                UnitTypeId unitType = UnitTypeId.Ship(option.Key);
+                if (!IsAvailable(option.Value) || !IsShipClassAllowed(unitType) ||
                     !CanReserve<ShipUnitRequest>(
                         option.Key.ToString(),
                         option.Value, true))
@@ -542,7 +520,6 @@ namespace EmpireAtWar.Services.Enemy
 
                 int reservedCount = _unitLimitModel.GetReservedCount<ShipUnitRequest>(
                     option.Key.ToString());
-                UnitTypeId unitType = UnitTypeId.Ship(option.Key);
                 float combatValuePerCredit = _profileCatalog.Get(unitType).GetCombatValue() /
                     Math.Max(1, option.Value.Price);
                 float priority = _decisionModel.CalculateShipPriority(
@@ -592,10 +569,6 @@ namespace EmpireAtWar.Services.Enemy
 
         /// <summary>True while bought squadrons number fewer than one per <see cref="SHIPS_PER_SQUADRON"/> ships.</summary>
         /// <remarks>Carrier hangars count toward the cap so carriers are no way around it.</remarks>
-        /// <summary>The fleet is below main-force size or outmatched by what the team has seen.</summary>
-        private bool NeedsFleet(int shipCount) => shipCount < FLEET_RESERVATION_SHIP_COUNT ||
-            !_hostileForce.IsEmpty && CombatMatchup.Advantage(_ownForce, _hostileForce) < 1f;
-
         private bool HasSquadronRoom(int shipCount)
         {
             int cap = shipCount / SHIPS_PER_SQUADRON;
@@ -641,7 +614,8 @@ namespace EmpireAtWar.Services.Enemy
         {
             foreach (KeyValuePair<ShipType, FactionData> option in _factionModel.ShipFactionData)
             {
-                if (IsAvailable(option.Value) && CanReserve<ShipUnitRequest>(option.Key.ToString(), option.Value, true))
+                if (IsAvailable(option.Value) && IsShipClassAllowed(UnitTypeId.Ship(option.Key)) &&
+                    CanReserve<ShipUnitRequest>(option.Key.ToString(), option.Value, true))
                 {
                     return true;
                 }
@@ -802,6 +776,9 @@ namespace EmpireAtWar.Services.Enemy
                 data.UnitCapacity <= _reinforcementData.MaxUnitCapacity -
                     (ignoreUsedCapacity ? 0 : _unitLimitModel.CurrentUnitCapacity);
         }
+
+        private bool IsShipClassAllowed(UnitTypeId shipId) =>
+            _factionModel.CurrentLevel != 1 || _profileCatalog.Get(shipId).ShipClass == ShipClass.Corvette;
 
         private bool IsAvailable(FactionData data)
         {

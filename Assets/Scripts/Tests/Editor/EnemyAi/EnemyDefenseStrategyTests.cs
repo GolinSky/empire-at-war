@@ -1,10 +1,13 @@
 using System;
+using System.Collections.Generic;
 using EmpireAtWar.Components.AttackComponent;
 using EmpireAtWar.Components.Ship.Health;
 using EmpireAtWar.Entities.CaptureSites;
 using EmpireAtWar.Entities.EnemyFaction.Models;
 using EmpireAtWar.Entities.EnemyFaction.Models.Combat;
 using EmpireAtWar.Entities.Game;
+using EmpireAtWar.Models.Players;
+using EmpireAtWar.Services.CaptureSites;
 using EmpireAtWar.Services.Enemy;
 using NUnit.Framework;
 using UnityEditor;
@@ -84,11 +87,14 @@ namespace EmpireAtWar.Tests.Editor
             Assert.That(new EnemyDefenseStrategy().TrySelectScored(Snapshot(new ForceComposition(), 2000f, 2200f, Pad(threatened: true)), out _), Is.True);
         }
 
-        [Test]
-        public void Easy_StopsAtOneSatellitePerPoint()
+        [TestCase(EnemyAiDifficulty.Easy)]
+        [TestCase(EnemyAiDifficulty.Medium)]
+        [TestCase(EnemyAiDifficulty.Hard)]
+        [TestCase(EnemyAiDifficulty.UltraHard)]
+        public void OptionalDefense_UsesTheSameSatelliteBudgetAtEveryDifficulty(EnemyAiDifficulty difficulty)
         {
             Assert.That(new EnemyDefenseStrategy().TrySelectScored(Snapshot(new ForceComposition(), 5000f, 0f,
-                Pad(existing: new[] { SiteFacilityType.IonSatellite }), difficulty: EnemyAiDifficulty.Easy), out _), Is.False);
+                Pad(existing: new[] { SiteFacilityType.IonSatellite }), difficulty: difficulty), out _), Is.True);
         }
 
         [Test]
@@ -142,6 +148,57 @@ namespace EmpireAtWar.Tests.Editor
 
             Assert.That(strategy.TrySelect(snapshot, out var choice), Is.True);
             Assert.That(choice.Type, Is.EqualTo(SiteFacilityType.MissileSatellite).Or.EqualTo(SiteFacilityType.MassDriverSatellite));
+        }
+
+        [TestCase(true)]
+        [TestCase(false)]
+        public void Construction_AttemptsCentreSatelliteBeforeMiningThenLeavesOptionalForLater(bool satelliteCanStart)
+        {
+            var strategy = new EnemyDefenseStrategy();
+            var construction = new ConstructionStub(satelliteCanStart);
+            var roster = TestPlayers.CreateDuel();
+            var controller = new EnemySiteConstructionController(null, null, construction,
+                roster.Get(TestPlayers.Enemy), null, strategy, null, null, null);
+            var centre = new EnemyDefensePad(2, 0f, 0.5f, float.PositiveInfinity, false, false,
+                Array.Empty<SiteFacilityType>(), isCentrePad: true);
+            var snapshot = new EnemyDefenseSnapshot(2000f, 5f, 0f, default, new ForceComposition(),
+                new ForceComposition(), new[] { Pad(), centre }, _options);
+
+            controller.BuildNext(snapshot, mineSite: 3, mandatorySatellite: true);
+
+            Assert.That(construction.Started, Is.EqualTo(satelliteCanStart ? new[] { 2 } : new[] { 2, 3 }));
+        }
+
+        [Test]
+        public void Construction_FillsAnUnbuiltMineBeforeOptionalDefense()
+        {
+            var strategy = new EnemyDefenseStrategy();
+            var construction = new ConstructionStub(true);
+            var roster = TestPlayers.CreateDuel();
+            var controller = new EnemySiteConstructionController(null, null, construction,
+                roster.Get(TestPlayers.Enemy), null, strategy, null, null, null);
+            var snapshot = Snapshot(Force(ShipClass.Cruiser, 5000f, 15000f), 2000f, 0f,
+                Pad(threatened: true, existing: new[] { SiteFacilityType.TurbolaserSatellite }));
+            Assert.That(strategy.TrySelectScored(snapshot, out var optional), Is.True);
+
+            controller.BuildNext(snapshot, mineSite: 3, mandatorySatellite: false);
+            controller.BuildNext(snapshot, mineSite: -1, mandatorySatellite: false);
+
+            Assert.That(construction.Started, Is.EqualTo(new[] { 3, optional.SiteIndex }));
+        }
+
+        private sealed class ConstructionStub : ICaptureSiteConstruction
+        {
+            private readonly bool _startSatellite;
+            public List<int> Started { get; } = new List<int>();
+
+            public ConstructionStub(bool startSatellite) => _startSatellite = startSatellite;
+
+            public bool TryStartConstruction(int siteIndex, PlayerId owner, SiteFacilityType type)
+            {
+                Started.Add(siteIndex);
+                return type == SiteFacilityType.Mining || _startSatellite;
+            }
         }
 
         private EnemyDefenseSnapshot Snapshot(ForceComposition hostile, float money, float reserve, EnemyDefensePad pad,

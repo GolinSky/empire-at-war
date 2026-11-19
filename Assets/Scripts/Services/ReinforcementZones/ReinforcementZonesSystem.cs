@@ -123,7 +123,8 @@ namespace EmpireAtWar.Services.ReinforcementZones
                     captureDuration: view.CaptureDuration,
                     captureSpeedPerNetShip: _data.CaptureSpeedPerNetShip,
                     relations: _playerRoster);
-                ReinforcementZonePresenter zone = new ReinforcementZonePresenter(model: model, view: view, localPlayer: _localPlayer);
+                ReinforcementZonePresenter zone = new ReinforcementZonePresenter(model: model, view: view,
+                    localPlayer: _localPlayer, isMain: view.IsMain);
                 _zones.Add(zone);
                 _strengthSampler.Add(zone.Contains);
                 RegisterRelay(view, view.StartingOwner);

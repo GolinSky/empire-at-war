@@ -204,7 +204,6 @@ namespace EmpireAtWar.Ship
         {
             IHealthModelObserver health = _healthComponent.HealthModelObserver;
             _audioShipComponent.HandleHealthChanged(health);
-            _orders.ObserveHealth(health.Hull + health.Shields);
         }
 
         private void Release(bool playDeathEffects)

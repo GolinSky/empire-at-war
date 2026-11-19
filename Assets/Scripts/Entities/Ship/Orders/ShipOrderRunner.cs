@@ -50,19 +50,9 @@ namespace EmpireAtWar.Entities.Ship.Orders
         private ShipAbilityId _pendingAbilityId;
         private IEntity _pendingAbilityTarget;
 
-        private const float PURSUIT_DAMAGE_WINDOW = 3f;
-        private const float PURSUIT_CHECK_INTERVAL = 0.5f;
-        private const float PURSUIT_LEASH = 1500f;
         // Team-vision replacement search around the dead target; ships do not cross the map for one.
         private const float REPLACEMENT_RADIUS = 1500f;
         private const float SHARED_REPLACEMENT_RANGE = 3000f;
-
-        // An idle ship hit by something it cannot yet reach chases it, within a leash of where it stood.
-        private float _lastHealth = float.PositiveInfinity;
-        private float _lastDamagedAt = float.NegativeInfinity;
-        private float _nextPursuitCheck;
-        private bool _isPursuing;
-        private Vector3 _pursuitOrigin;
 
         private UnitOrderType? _replicaOrder;
         // Host-only and not saved: a loaded attack resumes at the ship's own speed.
@@ -162,51 +152,15 @@ namespace EmpireAtWar.Entities.Ship.Orders
                     nameof(AttackTargetState), _attackTargetState.AttackDiagnostics);
 #endif
             if (_stateMachine.CurrentState.IsComplete) CompleteOrder();
-            UpdatePursuit();
             UpdatePace();
 #if UNITY_EDITOR || DEVELOPMENT_BUILD
+            attacking = _stateMachine.CurrentState == _attackTargetState;
             ShipOrderTelemetry.Sample(_telemetrySource, _abilityCaster, _orders, _movement, _weapon, _radar,
                 _stateMachine.CurrentState.GetType().Name,
-                _stateMachine.CurrentState == _attackTargetState ? _attackTargetState.AttackDiagnostics : "");
+                attacking ? _attackTargetState.AttackDiagnostics : "",
+                _stateMachine.CurrentState == _attackMoveState ? _attackMoveState.EngagementTarget : null,
+                attacking ? _attackTargetState.IsHoldingAtRange : null);
 #endif
-        }
-
-        /// <summary>Called on every health change; a drop marks the ship as recently attacked.</summary>
-        public void ObserveHealth(float totalHealth)
-        {
-            if (totalHealth < _lastHealth) _lastDamagedAt = Time.time;
-            _lastHealth = totalHealth;
-        }
-
-        private void UpdatePursuit()
-        {
-            if (_isPursuing)
-            {
-                if (_orders.Current != UnitOrderType.Attack)
-                {
-                    // The chase ended on its own (target lost or killed): back to the post. A new order from outside wins.
-                    _isPursuing = false;
-                    if (_orders.Current == UnitOrderType.None) MoveTo(_pursuitOrigin);
-                }
-                else if ((_movement.CurrentPosition - _pursuitOrigin).sqrMagnitude > PURSUIT_LEASH * PURSUIT_LEASH)
-                {
-                    _isPursuing = false;
-                    MoveTo(_pursuitOrigin);
-                }
-                return;
-            }
-
-            float now = Time.time;
-            if (_orders.Current != UnitOrderType.None || _pendingAbilityTarget != null ||
-                _stateMachine.CurrentState != _idleState || now - _lastDamagedAt > PURSUIT_DAMAGE_WINDOW ||
-                now < _nextPursuitCheck) return;
-            _nextPursuitCheck = now + PURSUIT_CHECK_INTERVAL;
-            IEntity attacker = ShipEngagement.FindNearestEnemy(_radar, _movement, _weapon, inRangeOnly: false);
-            if (attacker == null) return;
-            _pursuitOrigin = _movement.CurrentPosition;
-            RecordOrder("pursuit", $"Attacked while idle; pursuing {attacker.Id}.");
-            Issue(UnitOrderType.Attack, target: attacker);
-            _isPursuing = true;
         }
 
         public void Release()
@@ -501,14 +455,6 @@ namespace EmpireAtWar.Entities.Ship.Orders
                     Issue(UnitOrderType.Attack, target: nextTarget, offset: slot);
                     _group = group;
                     if (group != null) group.SharedReplacement = nextTarget;
-                    return;
-                }
-
-                if (_isPursuing)
-                {
-                    _isPursuing = false;
-                    RecordOrder("complete", "Pursuit target destroyed; returning to the post.");
-                    MoveTo(_pursuitOrigin);
                     return;
                 }
 

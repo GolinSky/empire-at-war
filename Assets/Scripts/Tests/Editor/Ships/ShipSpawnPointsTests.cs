@@ -1,9 +1,14 @@
 using System.Collections.Generic;
 using System.Reflection;
+using EmpireAtWar.Components.Hangar;
 using EmpireAtWar.Components.Obstacles;
+using EmpireAtWar.Components.Ship.Health;
+using EmpireAtWar.Entities.BaseEntity;
 using EmpireAtWar.Entities.Capture;
 using EmpireAtWar.Entities.CaptureSites;
 using EmpireAtWar.Entities.Map;
+using EmpireAtWar.Entities.SpaceStation;
+using EmpireAtWar.Models.Health;
 using EmpireAtWar.Models.Factions;
 using EmpireAtWar.Models.Players;
 using EmpireAtWar.Models.ReinforcementZones;
@@ -108,6 +113,32 @@ namespace EmpireAtWar.Tests.Editor
         }
 
         [Test]
+        public void TargetedSpawn_UsesCloserLivingStationBeforeRemoteHomeOrRelay()
+        {
+            var entities = new EntityLocator();
+            Vector3 stationPosition = new Vector3(0f, 0f, 3000f);
+            var stationObject = new GameObject("Task station");
+            stationObject.transform.SetParent(_root.transform);
+            stationObject.transform.position = stationPosition;
+            var health = new StationHealth();
+            var station = new Entity(health, entities, new IEntityFacade[]
+            {
+                new PlayerBaseFacade(), new EntityTransformFacade(stationObject.transform)
+            }, TestPlayers.Human, 1, System.Array.Empty<IPooledEntityEvents>(),
+                System.Array.Empty<IHangarLaunchEvents>());
+            entities.AddEntity(station);
+            ShipSpawnPoints spawnPoints = CreateSpawnPoints(TestPlayers.Ally, new OpenEverywhere(), entities);
+            Assert.That(spawnPoints.TryGetSpawnPositionNear(TestPlayers.Human, ShipType.Arquitens,
+                stationPosition, out Vector3 nearStation), Is.True);
+            Assert.That(PlanarDistance(nearStation, stationPosition), Is.LessThanOrEqualTo(_data.HomeAreaRadius));
+
+            health.IsDestroyed = true;
+            Assert.That(spawnPoints.TryGetSpawnPositionNear(TestPlayers.Human, ShipType.Arquitens,
+                stationPosition, out Vector3 awayFromStation), Is.True);
+            Assert.That(PlanarDistance(awayFromStation, stationPosition), Is.GreaterThan(_data.HomeAreaRadius));
+        }
+
+        [Test]
         public void TargetedSpawn_ClosestAnchorBlocked_TriesNextHeldAnchor()
         {
             ShipSpawnPoints spawnPoints = CreateSpawnPoints(TestPlayers.Ally, new OpenNear(HOME, _data.HomeAreaRadius));
@@ -162,7 +193,8 @@ namespace EmpireAtWar.Tests.Editor
                 HOME + Vector3.forward * (_data.HomeAreaRadius + 1f)), Is.False);
         }
 
-        private ShipSpawnPoints CreateSpawnPoints(PlayerId relayOwner, IReinforcementSpawnRule rule)
+        private ShipSpawnPoints CreateSpawnPoints(PlayerId relayOwner, IReinforcementSpawnRule rule,
+            IEntityLocator entities = null)
         {
             ReinforcementZoneView relay = CreateRelay(relayOwner, RELAY);
             ReinforcementZonesSystem system = _root.AddComponent<ReinforcementZonesSystem>();
@@ -179,7 +211,7 @@ namespace EmpireAtWar.Tests.Editor
                 siteViews: System.Array.Empty<CaptureSiteView>(),
                 obstacles: System.Array.Empty<MapObstacle>(),
                 stationObstacles: System.Array.Empty<StationObstacle>()));
-            return new ShipSpawnPoints(system, system, rule, _roster, _data, null);
+            return new ShipSpawnPoints(system, system, rule, _roster, _data, entities ?? new EntityLocator());
         }
 
         private static MapLayout CreateLayout(params ZoneSpot[] zones)
@@ -219,6 +251,27 @@ namespace EmpireAtWar.Tests.Editor
             FieldInfo field = target.GetType().GetField(fieldName, PRIVATE_INSTANCE);
             Assert.That(field, Is.Not.Null, $"Expected field '{fieldName}' to exist.");
             field.SetValue(target, value);
+        }
+
+        private sealed class StationHealth : IHealthModelObserver
+        {
+            public event System.Action OnDestroy { add { } remove { } }
+            public event System.Action OnValueChanged { add { } remove { } }
+
+            public ShipClass ShipClass => ShipClass.Structure;
+            public IReadOnlyList<IReadOnlyHardPointModel> HardPointModels => System.Array.Empty<IReadOnlyHardPointModel>();
+            public float Hull => IsDestroyed ? 0f : 100f;
+            public float HullPercentage => IsDestroyed ? 0f : 1f;
+            public float Shields => 0f;
+            public float ShieldPercentage => 0f;
+            public bool IsDestroyed { get; set; }
+            public bool IsLostShieldGenerator => false;
+            public bool HasUnits => !IsDestroyed;
+            public bool HasLiveHardPoints => false;
+            public bool HasShields => false;
+            public PlayerId Owner => TestPlayers.Human;
+
+            public IHardPointModel[] GetShipUnits(HardPointType hardPointType) => System.Array.Empty<IHardPointModel>();
         }
 
         private sealed class OpenEverywhere : IReinforcementSpawnRule

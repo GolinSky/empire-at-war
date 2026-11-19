@@ -90,7 +90,7 @@ namespace EmpireAtWar.Entities.Map
                 if (!zone.IsCapturable) continue;
                 ReinforcementZoneView relay = Instantiate(zone.IsMain ? mainZonePrefab : zonePrefab,
                     zone.Center, Quaternion.identity, zoneRoot);
-                relay.Configure(zone.Owner, zone.IsCapturable);
+                relay.Configure(zone.Owner, zone.IsCapturable, zone.IsMain);
                 _zoneViews.Add(relay);
                 sliceStart = await YieldWhenSliceSpent(sliceStart, cancellationToken);
             }

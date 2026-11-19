@@ -17,6 +17,8 @@ using VContainer;
 using EmpireAtWar.Lifecycle;
 using static EmpireAtWar.Utils.FormationConversion;
 using EmpireAtWar.Services.TacticalMarkers;
+using EmpireAtWar.Services.Vision;
+using EmpireAtWar.Presenters.ReinforcementZones;
 
 namespace EmpireAtWar.Services.Enemy
 {
@@ -36,6 +38,7 @@ namespace EmpireAtWar.Services.Enemy
 
         /// <summary>Hostile strikecraft within this planar distance of an own ship count toward its escort need.</summary>
         private const float ESCORT_THREAT_RADIUS = 2000f;
+        private const int OPENING_CAPTURE_WINGS = 3;
 
         private readonly IReadOnlyList<IEnemyCaptureObjectiveSource> _captureSources;
         private readonly IReinforcementZoneSource _zones;
@@ -71,6 +74,7 @@ namespace EmpireAtWar.Services.Enemy
         private readonly INotifier<BattleState> _battleState;
         private readonly AiWorldSnapshot _worldSnapshot;
         private readonly EnemyAiScheduler _scheduler;
+        private readonly IVisionService _vision;
 
         private EnemyAiScheduler.WorkHandle _workHandle;
         private bool _isRunning;
@@ -85,6 +89,9 @@ namespace EmpireAtWar.Services.Enemy
         private ISquadron _scout;
 
         private Vector3 _scoutTarget;
+        private ISquadron _raider;
+        private IEntity _raidTarget;
+        private Vector3 _raidDestination;
 
         public EnemySquadronCommander(
             IReadOnlyList<IEnemyCaptureObjectiveSource> captureSources,
@@ -97,7 +104,7 @@ namespace EmpireAtWar.Services.Enemy
             TeamIntelRegistry intelRegistry,
             PlayerSlot owner, EnemyPatrolService patrol, EnemyPatrolSafety patrolSafety,
             INotifier<BattleState> battleState, AiWorldSnapshot worldSnapshot,
-            EnemyAiScheduler scheduler)
+            EnemyAiScheduler scheduler, IVisionService vision)
         {
             _owner = owner;
 #if UNITY_EDITOR || DEVELOPMENT_BUILD
@@ -109,6 +116,7 @@ namespace EmpireAtWar.Services.Enemy
             _battleState = battleState;
             _worldSnapshot = worldSnapshot;
             _scheduler = scheduler;
+            _vision = vision;
             _intel = intelRegistry.Get(owner.Team);
             _structurePlacement = structurePlacement;
             _captureSources = captureSources;
@@ -238,13 +246,13 @@ namespace EmpireAtWar.Services.Enemy
         /// One non-escort squadron scouts: first for build space when none is visible, otherwise to refresh the
         /// team's most valuable stale intel, or to find the enemy at its nearest base when nothing is known.
         /// </summary>
-        private void AssignScout()
+        private void AssignScout(int captureWings)
         {
             ISquadron previous = _scout;
             _scout = null;
             // Keep one available squadron capturing; only surplus squadrons scout while objectives remain.
             if (_captureSquadrons.Count == 0 ||
-                _captureAssignments.HasTargets && _captureSquadrons.Count == 1 || _stationDefense.HasValue)
+                _captureAssignments.HasTargets && _captureSquadrons.Count <= captureWings || _stationDefense.HasValue)
             {
                 if (previous != null) _patrol.Release($"squadron:{previous.EntityId}");
                 return;
@@ -333,6 +341,16 @@ namespace EmpireAtWar.Services.Enemy
             if (squadron == _scout)
             {
                 squadron.AttackMoveTo(_scoutTarget);
+                return;
+            }
+
+            if (squadron == _raider)
+            {
+                if (_vision.IsVisible(_owner.Id, _raidTarget))
+                    _entityLocator.GetEntity(squadron.EntityId).GetFacade<IAttackFacade>()
+                        .Attack(_raidTarget, Vector3.zero, null);
+                else
+                    squadron.AttackMoveTo(_raidDestination);
                 return;
             }
 
@@ -508,9 +526,67 @@ namespace EmpireAtWar.Services.Enemy
                     pair.Value.IsHangarLaunched && pair.Value.Orders.CurrentOrder == UnitOrderType.Guard) continue;
                 _captureSquadrons.Add(pair.Key);
             }
-            AssignScout();
+            ReinforcementZonePresenter centre = EnemyShipTaskGroupPlanner.GetCentre(_zones.Zones);
+            if (_captureSquadrons.Count > 0)
+            {
+                Vector3 home = EnemyShipTaskGroupPlanner.GetOpeningHome(_worldSnapshot, _owner.Id,
+                    _captureSquadrons[0].WorldPosition);
+                ReinforcementZonePresenter neighbour = EnemyShipTaskGroupPlanner.GetNeighbour(_zones.Zones, home);
+                PrioritizeZone(neighbour);
+                PrioritizeZone(centre);
+                if (neighbour != null) PrioritizeZone(EnemyShipTaskGroupPlanner.GetNeighbour(_zones.Zones, home, neighbour));
+            }
+            AssignRaider(centre);
+            if (_raider != null) _captureSquadrons.Remove(_raider);
+            AssignScout(centre != null ? OPENING_CAPTURE_WINGS : 1);
             if (_scout != null) _captureSquadrons.Remove(_scout);
             _captureAssignments.Assign(_captureSquadrons);
+        }
+
+        private void PrioritizeZone(ReinforcementZonePresenter zone)
+        {
+            if (zone != null) _captureAssignments.PrioritizeArea(ToVector(ToPoint(zone.Center)), 2f * zone.Radius);
+        }
+
+        private void AssignRaider(ReinforcementZonePresenter centre)
+        {
+            ISquadron previousRaider = _raider;
+            IEntity previousTarget = _raidTarget;
+            _raider = null;
+            _raidTarget = null;
+            if (_stationDefense.HasValue || _captureSquadrons.Count <= OPENING_CAPTURE_WINGS || _intel.Mines.Count == 0)
+                return;
+
+            float bestFirepower = 0f;
+            foreach (ISquadron candidate in _captureSquadrons)
+            {
+                CommandedSquadron commanded = _squadrons[candidate];
+                if (commanded.IsHangarLaunched) continue;
+                float firepower = commanded.Profile.HullDps(ShipClass.Structure) +
+                    commanded.Profile.PiercingDps(ShipClass.Structure);
+                if (firepower <= bestFirepower) continue;
+                bestFirepower = firepower;
+                _raider = candidate;
+            }
+            if (_raider == null) return;
+            float bestDistance = float.PositiveInfinity;
+            foreach (HostileSighting mine in _intel.Mines)
+            {
+                Vector3 position = ToVector(mine.Position);
+                if (centre != null && EnemyShipTaskGroupPlanner.IsInZone(centre, position) ||
+                    !_entityLocator.TryGetEntity(mine.EntityId, out IEntity target) ||
+                    !_playerRoster.IsHostile(_owner.Id, target.Owner) || target.HealthModel.IsDestroyed) continue;
+                float distance = PlanarDistanceSquared(_raider.WorldPosition, position);
+                if (_raider == previousRaider && target == previousTarget) distance = -1f;
+                if (distance >= bestDistance) continue;
+                bestDistance = distance;
+                _raidTarget = target;
+                _raidDestination = position;
+            }
+            if (_raidTarget == null) _raider = null;
+            else if (_raidTarget != previousTarget || _raider != previousRaider)
+                EnemyAiTelemetry.RecordEvent(_owner.Id, _owner.Faction, "squadronRaid",
+                    $"squadron={_raider.EntityId};target={_raidTarget.Id};position={_raidDestination}");
         }
 
         private void Release(ISquadron squadron)
@@ -519,6 +595,11 @@ namespace EmpireAtWar.Services.Enemy
             _squadrons.Remove(squadron);
             _escorts.Remove(squadron);
             _captureAssignments.Release(squadron);
+            if (_raider == squadron)
+            {
+                _raider = null;
+                _raidTarget = null;
+            }
             if (_scout == squadron)
             {
                 _patrol.Release($"squadron:{squadron.EntityId}");

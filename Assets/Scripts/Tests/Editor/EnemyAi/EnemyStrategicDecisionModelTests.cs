@@ -68,7 +68,7 @@ namespace EmpireAtWar.Tests.Editor
         }
 
         [Test]
-        public void AfterRetreat_RegroupedFleetCapturesWithoutGlobalParity()
+        public void AfterLocalFight_ScatteredFleetCanCaptureWithoutGlobalParity()
         {
             EnemyStrategicDecisionModel model = new EnemyStrategicDecisionModel();
             model.Evaluate(CreateSnapshot(BattleVictoryCondition.DestroyOpponentBase, EnemyAiDifficulty.UltraHard,
@@ -79,7 +79,7 @@ namespace EmpireAtWar.Tests.Editor
                 BattleVictoryCondition.DestroyOpponentBase, EnemyAiDifficulty.UltraHard,
                 ownShipCount: 10, enemyShipCount: 12, ownedCapturableZoneCount: 0,
                 fleetAdvantage: 0.16f, hasLocalThreat: true, localAdvantage: 14.39f, isRegrouped: false));
-            Assert.That(scattered.State, Is.EqualTo(EnemyStrategicState.RetreatValue));
+            Assert.That(scattered.State, Is.EqualTo(EnemyStrategicState.CaptureZone));
 
             EnemyStrategicDecision regrouped = model.Evaluate(CreateSnapshot(
                 BattleVictoryCondition.DestroyOpponentBase, EnemyAiDifficulty.UltraHard,
@@ -89,7 +89,7 @@ namespace EmpireAtWar.Tests.Editor
         }
 
         [Test]
-        public void AfterRetreat_RegroupedFleetEngagesSafeLocalThreatWithoutGlobalParity()
+        public void Engagement_ContinuesWithoutGlobalParity()
         {
             EnemyStrategicDecisionModel model = new EnemyStrategicDecisionModel();
             model.Evaluate(CreateSnapshot(BattleVictoryCondition.DestroyEnemyFleet, EnemyAiDifficulty.UltraHard,
@@ -105,9 +105,9 @@ namespace EmpireAtWar.Tests.Editor
             Assert.That(decision.State, Is.EqualTo(EnemyStrategicState.EngageLocal));
         }
 
-[TestCase(true, EnemyStrategicState.CaptureZone)]
+        [TestCase(true, EnemyStrategicState.CaptureZone)]
         [TestCase(false, EnemyStrategicState.EngageLocal)]
-        public void RecoveryWithoutSafeAnchor_ScatteredFleetRalliesAtViableLocalObjective(
+        public void AfterStationLoss_ScatteredFleetCanTakeAViableLocalObjective(
             bool hasCaptureTarget, EnemyStrategicState expected)
         {
             EnemyStrategicDecisionModel model = new EnemyStrategicDecisionModel();
@@ -126,7 +126,7 @@ namespace EmpireAtWar.Tests.Editor
         }
 
         [Test]
-        public void RecoveryWithoutSafeAnchor_HoldsInsteadOfRetreatingToLostHome()
+        public void AfterStationLoss_NoTargetOrSiteToGuardHolds()
         {
             EnemyStrategicDecisionModel model = new EnemyStrategicDecisionModel();
             model.Evaluate(CreateSnapshot(BattleVictoryCondition.DestroyEnemyFleet, EnemyAiDifficulty.UltraHard,
@@ -227,7 +227,7 @@ namespace EmpireAtWar.Tests.Editor
         }
 
         [Test]
-        public void OutmatchedNearFleet_RetreatsInsteadOfEngaging()
+        public void OutmatchedNearFleet_CommitsEveryoneToTheFight()
         {
             EnemyStrategicDecision decision = new EnemyStrategicDecisionModel().Evaluate(
                 CreateSnapshot(BattleVictoryCondition.DestroyEnemyFleet, EnemyAiDifficulty.UltraHard,
@@ -235,23 +235,19 @@ namespace EmpireAtWar.Tests.Editor
                     fleetAdvantage: 0.52f, hasCaptureTarget: false,
                     hasLocalThreat: true, localAdvantage: 0.3f));
 
-            Assert.That(decision.State, Is.EqualTo(EnemyStrategicState.RetreatValue));
+            Assert.That(decision.State, Is.EqualTo(EnemyStrategicState.EngageLocal));
+            Assert.That(decision.CommittedShipCount, Is.EqualTo(20));
         }
 
-        [Test]
-        public void OutmatchedForwardDefense_WithdrawsImmediatelyAndStaysAtFallbackUnderPressure()
+        [TestCase(1.2f, EnemyStrategicState.GuardSite)]
+        [TestCase(3f, EnemyStrategicState.AssaultBase)]
+        public void CentreGuard_YieldsOnlyToDecisiveAssault(float fleetAdvantage, EnemyStrategicState expected)
         {
-            var model = new EnemyStrategicDecisionModel();
-            EnemyStrategicSnapshot defending = CreateSnapshot(BattleVictoryCondition.DestroyEnemyFleet,
-                EnemyAiDifficulty.UltraHard, 8, 10, 0, 0.7f, hasStationPressure: true);
-            EnemyStrategicSnapshot withdrawing = CreateSnapshot(BattleVictoryCondition.DestroyEnemyFleet,
-                EnemyAiDifficulty.UltraHard, 8, 10, 0, 0.7f, hasStationPressure: true,
-                withdrawFromForwardStation: true);
+            var snapshot = new EnemyStrategicSnapshot(BattleVictoryCondition.DestroyOpponentBase,
+                EnemyAiDifficulty.UltraHard, 8, 5, 2, fleetAdvantage, 0f, false, true, true,
+                hasRaidTarget: true, hasEconomyRaidTarget: true, hasGuardSite: true, isCentreGuardGoal: true);
 
-            Assert.That(model.Evaluate(defending, now: 100f).State, Is.EqualTo(EnemyStrategicState.DefendBase));
-            Assert.That(model.Evaluate(withdrawing, now: 100.5f).State, Is.EqualTo(EnemyStrategicState.RetreatValue));
-            Assert.That(model.Bypass, Is.EqualTo("forwardStationFallback"));
-            Assert.That(model.Evaluate(withdrawing, now: 120f).State, Is.EqualTo(EnemyStrategicState.RetreatValue));
+            Assert.That(new EnemyStrategicDecisionModel().Evaluate(snapshot).State, Is.EqualTo(expected));
         }
 
         [Test]
@@ -358,15 +354,15 @@ namespace EmpireAtWar.Tests.Editor
         }
 
         [Test]
-        public void OutmatchedFleet_RetreatsToOwnBase()
+        public void OutmatchedFleet_FightsEvenWithSafeHome()
         {
             EnemyAiDifficultyProfile profile = EnemyAiDifficultyProfile.Get(EnemyAiDifficulty.Medium);
             EnemyStrategicDecision decision = new EnemyStrategicDecisionModel().Evaluate(
                 CreateSnapshot(BattleVictoryCondition.DestroyEnemyFleet, EnemyAiDifficulty.Medium,
                     ownShipCount: 6, enemyShipCount: 2, ownedCapturableZoneCount: 2,
-                    fleetAdvantage: 1f, localAdvantage: profile.RetreatAdvantage));
+                    fleetAdvantage: 1f, hasLocalThreat: true, localAdvantage: profile.RetreatAdvantage));
 
-            Assert.That(decision.State, Is.EqualTo(EnemyStrategicState.RetreatValue));
+            Assert.That(decision.State, Is.EqualTo(EnemyStrategicState.EngageLocal));
             Assert.That(decision.CommittedShipCount, Is.EqualTo(6));
         }
 
@@ -460,22 +456,20 @@ namespace EmpireAtWar.Tests.Editor
             Assert.That(decision.State, Is.EqualTo(EnemyStrategicState.HuntFleet));
         }
 
-        [TestCase(EnemyAiDifficulty.Easy, 4f, 0.5f, 1, 1.5f)]
-        [TestCase(EnemyAiDifficulty.Medium, 2.5f, 0.65f, 1, 1.25f)]
-        [TestCase(EnemyAiDifficulty.Hard, 1.25f, 0.8f, 2, 1f)]
-        [TestCase(EnemyAiDifficulty.UltraHard, 0.5f, 1f, 3, 0.75f)]
+        [TestCase(EnemyAiDifficulty.Easy, 4f, 0.5f, 1.5f)]
+        [TestCase(EnemyAiDifficulty.Medium, 2.5f, 0.65f, 1.25f)]
+        [TestCase(EnemyAiDifficulty.Hard, 1.25f, 0.8f, 1f)]
+        [TestCase(EnemyAiDifficulty.UltraHard, 0.5f, 1f, 0.75f)]
         public void DifficultyProfile_UsesExpectedStrategicConfiguration(
             EnemyAiDifficulty difficulty,
             float decisionInterval,
             float committedFleetRatio,
-            int minimumMiningFacilities,
             float defenseThreatRatio)
         {
             EnemyAiDifficultyProfile profile = EnemyAiDifficultyProfile.Get(difficulty);
 
             Assert.That(profile.DecisionInterval, Is.EqualTo(decisionInterval));
             Assert.That(profile.CommittedFleetRatio, Is.EqualTo(committedFleetRatio));
-            Assert.That(profile.MinimumMiningFacilities, Is.EqualTo(minimumMiningFacilities));
             Assert.That(profile.DefenseThreatRatio, Is.EqualTo(defenseThreatRatio));
             Assert.That(profile.RetreatAdvantage, Is.LessThan(profile.HuntAdvantage));
             Assert.That(EnemyAiDifficultyProfile.Get(difficulty), Is.SameAs(profile));
@@ -540,15 +534,15 @@ namespace EmpireAtWar.Tests.Editor
         }
 
         [Test]
-        public void CaptureDetachment_RetreatsFromItsOwnThreatWithoutCaptureTarget()
+        public void CaptureDetachment_FightsItsOwnThreatWithoutCaptureTarget()
         {
             EnemyStrategicSnapshot snapshot = CreateSnapshot(BattleVictoryCondition.DestroyOpponentBase,
                 EnemyAiDifficulty.UltraHard, ownShipCount: 1, enemyShipCount: 3,
                 ownedCapturableZoneCount: 0, fleetAdvantage: 0.2f, localAdvantage: 0.2f,
-                hasCaptureTarget: false, hasStationPressure: true);
+                hasCaptureTarget: false, hasLocalThreat: true, hasStationPressure: true);
 
             Assert.That(new EnemyStrategicDecisionModel().Evaluate(snapshot, captureDetachment: true).State,
-                Is.EqualTo(EnemyStrategicState.RetreatValue));
+                Is.EqualTo(EnemyStrategicState.EngageLocal));
         }
 
         [Test]
@@ -567,7 +561,7 @@ namespace EmpireAtWar.Tests.Editor
 
         [TestCase(true, false, 100f, 1f, EnemyStrategicState.DefendBase)]
         [TestCase(false, true, 100f, 1f, EnemyStrategicState.CaptureZone)]
-        [TestCase(false, false, 0.5f, 1f, EnemyStrategicState.RetreatValue)]
+        [TestCase(false, false, 0.5f, 1f, EnemyStrategicState.EngageLocal)]
         [TestCase(false, false, 100f, 3f, EnemyStrategicState.AssaultBase)]
         public void MiningRaid_DoesNotOverrideEmergencyOrDecisiveAttack(bool stationPressure,
             bool threatenedSite, float localAdvantage, float fleetAdvantage, EnemyStrategicState expected)
@@ -624,7 +618,6 @@ namespace EmpireAtWar.Tests.Editor
             bool hasStationPressure = false,
             bool hasSafeRetreat = true,
             bool hasEconomyRaidTarget = false,
-            bool withdrawFromForwardStation = false,
             bool isStationCritical = false)
         {
             return new EnemyStrategicSnapshot(
@@ -646,8 +639,7 @@ namespace EmpireAtWar.Tests.Editor
                 isRegrouped: isRegrouped,
                 hasStationPressure: hasStationPressure,
                 hasSafeRetreat: hasSafeRetreat,
-                hasEconomyRaidTarget: hasEconomyRaidTarget,
-                withdrawFromForwardStation: withdrawFromForwardStation);
+                hasEconomyRaidTarget: hasEconomyRaidTarget);
         }
     }
 }

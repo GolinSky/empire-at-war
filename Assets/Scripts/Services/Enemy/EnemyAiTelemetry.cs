@@ -104,7 +104,7 @@ namespace EmpireAtWar.Services.Enemy
                     decision.State == EnemyStrategicState.AssaultBase ? context.EnemyBaseTarget :
                     decision.State == EnemyStrategicState.RaidStructures ? context.RaidTarget :
                     decision.State == EnemyStrategicState.HuntFleet ? context.EnemyFleetTarget : null;
-                Vector3 destination = decision.State == EnemyStrategicState.DefendBase && context.OrderDestination.HasValue
+                Vector3 destination = context.OrderDestination.HasValue
                     ? context.OrderDestination.Value : decision.State == EnemyStrategicState.RetreatValue && context.RetreatAnchor.HasValue
                     ? context.RetreatAnchor.Value : decision.State == EnemyStrategicState.CaptureZone
                         ? context.CaptureTarget : target == null ? Vector3.zero :

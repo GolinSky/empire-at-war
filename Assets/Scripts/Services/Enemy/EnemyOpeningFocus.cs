@@ -1,10 +1,11 @@
 namespace EmpireAtWar.Services.Enemy
 {
-    /// <summary>Where an opening capture detachment is aimed: the nearest zone away from the centre, or the centre.</summary>
+    /// <summary>The three distinct opening lanes in assignment order.</summary>
     public enum EnemyOpeningFocus
     {
         None = 0,
         Neighbour = 1,
-        Centre = 2
+        Centre = 2,
+        Outer = 3
     }
 }

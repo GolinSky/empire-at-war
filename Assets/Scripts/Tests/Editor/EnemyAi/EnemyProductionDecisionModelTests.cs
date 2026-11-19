@@ -29,65 +29,57 @@ namespace EmpireAtWar.Tests.Editor
     [Category("EnemyAi")]
     public sealed class EnemyProductionDecisionModelTests
     {
-        [TestCase(EnemyAiDifficulty.Easy, true)]
-        [TestCase(EnemyAiDifficulty.Hard, true)]
-        [TestCase(EnemyAiDifficulty.UltraHard, true)]
-        [TestCase(EnemyAiDifficulty.UltraHard, false)]
-        public void CriticalStation_OnlyBuysCombatShips(EnemyAiDifficulty difficulty, bool canBuildShip)
-        {
-            var snapshot = new EnemyProductionSnapshot(EnemyStrategicState.Hold, difficulty,
-                0, 10, 100, 0, 5, 10, 5, true, true, canBuildShip, true, true, true, true, true,
-                canResearchIncome: true, canResearchCombat: true, isStationCritical: true);
-
-            Assert.That(new EnemyProductionDecisionModel().Evaluate(snapshot), Is.EqualTo(canBuildShip
-                ? EnemyProductionCategory.Ship : EnemyProductionCategory.None));
-        }
-
-        [TestCase(EnemyAiDifficulty.Easy, 0)]
-        [TestCase(EnemyAiDifficulty.Medium, 1)]
-        [TestCase(EnemyAiDifficulty.Hard, 2)]
-        public void DepletedFleet_RebuildsBeforeInfrastructureAndTechnology(
-            EnemyAiDifficulty difficulty,
-            int shipCount)
-        {
-            EnemyProductionCategory result = new EnemyProductionDecisionModel().Evaluate(
-                new EnemyProductionSnapshot(
-                    EnemyStrategicState.DefendBase, difficulty,
-                    0, shipCount, 100, 0, 5, 5, 5,
-                    true, true, true, true, true, true, true, true));
-
-            Assert.That(result, Is.EqualTo(EnemyProductionCategory.Ship));
-        }
-
-        [TestCase(true, EnemyProductionCategory.Mining)]
+        [TestCase(true, EnemyProductionCategory.Ship)]
         [TestCase(false, EnemyProductionCategory.None)]
-        public void UltraHardBelowMiningTarget_BuysOrSavesForMiningBeforeAnyShip(bool canBuildMining,
+        public void CriticalStation_OnlyBuysCombatUnitsThatCanArrive(bool canBuildShip, EnemyProductionCategory expected)
+        {
+            EnemyProductionSnapshot snapshot = Snapshot(
+                mines: 0, ships: 10, shipsOrdered: 100, level: 5, critical: true, canBuildShip: canBuildShip);
+
+            Assert.That(new EnemyProductionDecisionModel().Evaluate(snapshot), Is.EqualTo(expected));
+        }
+
+        [TestCase(0, true, false, EnemyProductionCategory.Mining)]
+        [TestCase(4, true, true, EnemyProductionCategory.Mining)]
+        [TestCase(4, false, false, EnemyProductionCategory.None)]
+        public void BelowMiningTarget_ReservesCreditsForMinersBeforeFleetAndTechnology(int mines, bool affordable,
+            bool critical, EnemyProductionCategory expected)
+        {
+            EnemyProductionSnapshot snapshot = Snapshot(mines: mines, level: 1, ships: 0, shipsOrdered: 0,
+                canBuildMining: affordable, openingShip: true, critical: critical, opening: true);
+
+            Assert.That(new EnemyProductionDecisionModel().Evaluate(snapshot), Is.EqualTo(expected));
+        }
+
+        [TestCase(true, true, EnemyProductionCategory.Ship)]
+        [TestCase(false, true, EnemyProductionCategory.Level)]
+        [TestCase(false, false, EnemyProductionCategory.None)]
+        public void OpeningLevel_OneAvailableCorvetteThenEarliestLevelUp(bool openingShip, bool upgradeAffordable,
             EnemyProductionCategory expected)
         {
-            EnemyProductionCategory result = new EnemyProductionDecisionModel().Evaluate(
-                new EnemyProductionSnapshot(
-                    EnemyStrategicState.Hold, EnemyAiDifficulty.UltraHard,
-                    2, 0, 0, 0, 1, 5, 1,
-                    true, true, true, canBuildMining, true, true, true, true,
-                    canResearchIncome: true, canResearchCombat: true));
+            EnemyProductionSnapshot snapshot = Snapshot(level: 1, ships: 0, shipsOrdered: openingShip ? 0 : 1,
+                canLevelUp: upgradeAffordable, openingShip: openingShip);
 
-            Assert.That(result, Is.EqualTo(expected));
+            Assert.That(new EnemyProductionDecisionModel().Evaluate(snapshot), Is.EqualTo(expected));
         }
 
         [Test]
-        public void UltraHardAtMiningTarget_BuysMinimumFleetBeforeResearch()
+        public void OpeningWithoutCorvette_TakesLevelTwoAsSoonAsAffordable()
         {
-            EnemyProductionCategory result = new EnemyProductionDecisionModel().Evaluate(
-                new EnemyProductionSnapshot(
-                    EnemyStrategicState.Hold, EnemyAiDifficulty.UltraHard,
-                    5, 0, 0, 0, 1, 5, 1,
-                    true, true, true, true, true, true, true, true,
-                    canResearchIncome: true, canResearchCombat: true));
+            EnemyProductionSnapshot snapshot = Snapshot(level: 1, ships: 0, shipsOrdered: 0, canOrderShips: false);
 
-            Assert.That(result, Is.EqualTo(EnemyProductionCategory.Ship));
+            Assert.That(new EnemyProductionDecisionModel().Evaluate(snapshot), Is.EqualTo(EnemyProductionCategory.Level));
         }
 
-        // The strategy restricts counters to ships below this size; squadrons cannot end the rebuild.
+        [Test]
+        public void OpeningUpgradeInProgress_BuysSquadrons()
+        {
+            EnemyProductionSnapshot snapshot = Snapshot(level: 1, ships: 1, shipsOrdered: 1,
+                hasLevelOption: false, canOrderShips: false);
+
+            Assert.That(new EnemyProductionDecisionModel().Evaluate(snapshot), Is.EqualTo(EnemyProductionCategory.Ship));
+        }
+
         [TestCase(0, true)]
         [TestCase(2, true)]
         [TestCase(3, false)]
@@ -96,195 +88,54 @@ namespace EmpireAtWar.Tests.Editor
             Assert.That(new EnemyProductionDecisionModel().NeedsMinimumFleet(shipCount), Is.EqualTo(expected));
         }
 
-        [TestCase(EnemyAiDifficulty.Easy)]
-        [TestCase(EnemyAiDifficulty.Medium)]
-        [TestCase(EnemyAiDifficulty.Hard)]
-        public void AtEconomicFloor_ResearchesIncomeBeforeShips(EnemyAiDifficulty difficulty)
+        [Test]
+        public void DepletedFleet_RebuildsWhenEconomicFloorIsMetAndNoUpgradeDue()
         {
-            EnemyProductionCategory result = EvaluateResearch(
-                EnemyStrategicState.CaptureZone, difficulty, canResearchIncome: true, canResearchCombat: true);
+            EnemyProductionSnapshot snapshot = Snapshot(ships: 2, shipsOrdered: 2,
+                state: EnemyStrategicState.DefendBase, incomeResearch: true, platforms: 0);
 
-            Assert.That(result, Is.EqualTo(EnemyProductionCategory.Research));
+            Assert.That(new EnemyProductionDecisionModel().Evaluate(snapshot), Is.EqualTo(EnemyProductionCategory.Ship));
         }
 
         [Test]
-        public void BelowMinimumFleet_BuildsShipBeforeIncomeResearch()
+        public void DepletedFleet_SavesForSelectedShip()
         {
-            EnemyProductionCategory result = new EnemyProductionDecisionModel().Evaluate(
-                new EnemyProductionSnapshot(
-                    EnemyStrategicState.CaptureZone, EnemyAiDifficulty.Medium,
-                    1, 0, 0, 1, 1, 1, 1,
-                    true, true, true, true, true, true, true, false, true, true));
+            EnemyProductionSnapshot snapshot = Snapshot(ships: 1, canBuildShip: false, platforms: 0,
+                incomeResearch: true);
 
-            Assert.That(result, Is.EqualTo(EnemyProductionCategory.Ship));
+            Assert.That(new EnemyProductionDecisionModel().Evaluate(snapshot), Is.EqualTo(EnemyProductionCategory.None));
         }
 
-        [TestCase(EnemyAiDifficulty.Easy, EnemyProductionCategory.Ship)]
-        [TestCase(EnemyAiDifficulty.Medium, EnemyProductionCategory.Research)]
-        public void HoldState_ResearchesCombatFromMediumDifficulty(
-            EnemyAiDifficulty difficulty,
-            EnemyProductionCategory expected)
+        [TestCase(true, EnemyProductionCategory.Level)]
+        [TestCase(false, EnemyProductionCategory.None)]
+        public void DueLevel_IsBoughtOrSavedForBeforeOptionalUnits(bool canLevelUp, EnemyProductionCategory expected)
         {
-            EnemyProductionCategory result = EvaluateResearch(
-                EnemyStrategicState.Hold, difficulty, canResearchIncome: false, canResearchCombat: true);
+            EnemyProductionSnapshot snapshot = Snapshot(shipsOrdered: 2, canLevelUp: canLevelUp,
+                incomeResearch: true, combatResearch: true, platforms: 0);
 
-            Assert.That(result, Is.EqualTo(expected));
+            Assert.That(new EnemyProductionDecisionModel().Evaluate(snapshot), Is.EqualTo(expected));
+        }
+
+        [TestCase(true, false, false, EnemyProductionCategory.Research)]
+        [TestCase(false, true, false, EnemyProductionCategory.Defense)]
+        [TestCase(false, false, true, EnemyProductionCategory.Research)]
+        [TestCase(false, false, false, EnemyProductionCategory.Ship)]
+        public void StableFleet_UsesSharedTechnologyAndDefensePriorities(bool incomeResearch, bool missingDefense,
+            bool combatResearch, EnemyProductionCategory expected)
+        {
+            EnemyProductionSnapshot snapshot = Snapshot(state: EnemyStrategicState.Hold, incomeResearch: incomeResearch,
+                combatResearch: combatResearch, platforms: missingDefense ? 0 : 1);
+
+            Assert.That(new EnemyProductionDecisionModel().Evaluate(snapshot), Is.EqualTo(expected));
         }
 
         [Test]
         public void NoShipOptionAndNothingElseAffordable_ResearchesCombat()
         {
-            EnemyProductionCategory result = new EnemyProductionDecisionModel().Evaluate(
-                new EnemyProductionSnapshot(
-                    EnemyStrategicState.CaptureZone, EnemyAiDifficulty.Easy,
-                    1, 3, 2, 1, 1, 1, 1,
-                    true, false, false, false, true, false, true, false, false, true));
+            EnemyProductionSnapshot snapshot = Snapshot(hasShipOption: false, canBuildShip: false,
+                hasLevelOption: false, canLevelUp: false, canBuildDefense: false, combatResearch: true);
 
-            Assert.That(result, Is.EqualTo(EnemyProductionCategory.Research));
-        }
-
-        // Buying platforms or research whenever the chosen ship was unaffordable kept it out of reach for good.
-        [TestCase(EnemyAiDifficulty.Easy)]
-        [TestCase(EnemyAiDifficulty.Medium)]
-        [TestCase(EnemyAiDifficulty.Hard)]
-        public void PreferredShipUnaffordable_SavesInsteadOfBuyingDefenseOrResearch(EnemyAiDifficulty difficulty)
-        {
-            int miningFloor = EnemyAiDifficultyProfile.Get(difficulty).MinimumMiningFacilities;
-            EnemyProductionCategory result = new EnemyProductionDecisionModel().Evaluate(
-                new EnemyProductionSnapshot(
-                    EnemyStrategicState.CaptureZone, difficulty,
-                    miningFloor, 3, 1, 1, 1, miningFloor, 1,
-                    true, true, false, false, true, true, true, true, false, true));
-
-            Assert.That(result, Is.EqualTo(EnemyProductionCategory.None));
-        }
-
-        [TestCase(EnemyAiDifficulty.Easy, true, EnemyProductionCategory.Mining)]
-        [TestCase(EnemyAiDifficulty.Medium, true, EnemyProductionCategory.Mining)]
-        [TestCase(EnemyAiDifficulty.Hard, true, EnemyProductionCategory.Mining)]
-        [TestCase(EnemyAiDifficulty.Medium, false, EnemyProductionCategory.Ship)]
-        public void AboveFloorBelowTarget_BuildsMiningOnlyWhenAffordable(
-            EnemyAiDifficulty difficulty,
-            bool canBuildMining,
-            EnemyProductionCategory expected)
-        {
-            int miningFloor = EnemyAiDifficultyProfile.Get(difficulty).MinimumMiningFacilities;
-            EnemyProductionCategory result = new EnemyProductionDecisionModel().Evaluate(
-                new EnemyProductionSnapshot(
-                    EnemyStrategicState.CaptureZone, difficulty,
-                    miningFloor, 6, 1, 1, 1, miningFloor + 2, 1,
-                    true, true, true, canBuildMining, true, true, true, false));
-
-            Assert.That(result, Is.EqualTo(expected));
-        }
-
-        // An unaffordable due level is saved for; spending on research would keep the AI at its level.
-        [TestCase(false, EnemyProductionCategory.None)]
-        [TestCase(true, EnemyProductionCategory.Level)]
-        public void UltraHardDueTechnology_LevelsBeforeCombatResearch(
-            bool canLevelUp,
-            EnemyProductionCategory expected)
-        {
-            EnemyProductionCategory result = new EnemyProductionDecisionModel().Evaluate(
-                new EnemyProductionSnapshot(
-                    EnemyStrategicState.HuntFleet, EnemyAiDifficulty.UltraHard,
-                    3, 3, 5, 1, 2, 3, 1,
-                    true, true, true, true, true, true, true, canLevelUp, false, true));
-
-            Assert.That(result, Is.EqualTo(expected));
-        }
-
-        [TestCase(EnemyAiDifficulty.Easy, 3)]
-        [TestCase(EnemyAiDifficulty.Medium, 2)]
-        [TestCase(EnemyAiDifficulty.Hard, 2)]
-        public void DueLevel_IsBoughtOrSavedForInsteadOfCheapUnits(EnemyAiDifficulty difficulty, int shipsOrdered)
-        {
-            EnemyProductionDecisionModel model = new EnemyProductionDecisionModel();
-            int miningFloor = EnemyAiDifficultyProfile.Get(difficulty).MinimumMiningFacilities;
-
-            EnemyProductionCategory affordable = model.Evaluate(new EnemyProductionSnapshot(
-                EnemyStrategicState.HuntFleet, difficulty,
-                miningFloor, 3, shipsOrdered, 1, 1, miningFloor, 1,
-                true, true, true, true, true, true, true, true));
-            EnemyProductionCategory unaffordable = model.Evaluate(new EnemyProductionSnapshot(
-                EnemyStrategicState.HuntFleet, difficulty,
-                miningFloor, 3, shipsOrdered, 1, 1, miningFloor, 1,
-                true, true, true, true, true, true, true, false));
-            EnemyProductionCategory notDue = model.Evaluate(new EnemyProductionSnapshot(
-                EnemyStrategicState.HuntFleet, difficulty,
-                miningFloor, 3, shipsOrdered - 1, 1, 1, miningFloor, 1,
-                true, true, true, true, true, true, true, false));
-
-            Assert.That(affordable, Is.EqualTo(EnemyProductionCategory.Level));
-            Assert.That(unaffordable, Is.EqualTo(EnemyProductionCategory.None));
-            Assert.That(notDue, Is.EqualTo(EnemyProductionCategory.Ship));
-        }
-
-        // Empire has no level-1 ship; with relays blocking structures the AI used to wait forever at level 1.
-        [TestCase(EnemyAiDifficulty.Medium)]
-        [TestCase(EnemyAiDifficulty.UltraHard)]
-        public void NoShipAtCurrentLevel_LevelsUpInsteadOfWaiting(EnemyAiDifficulty difficulty)
-        {
-            EnemyProductionCategory result = new EnemyProductionDecisionModel().Evaluate(
-                new EnemyProductionSnapshot(
-                    EnemyStrategicState.RebuildFleet, difficulty,
-                    0, 0, 0, 0, 1, 3, 1,
-                    false, false, false, false, false, false, true, true, canOrderShips: false));
-
-            Assert.That(result, Is.EqualTo(EnemyProductionCategory.Level));
-        }
-
-        // Ship category here is the squadron the strategy picked because no ship type is unlocked.
-        [TestCase(EnemyAiDifficulty.Medium)]
-        [TestCase(EnemyAiDifficulty.UltraHard)]
-        public void NoShipAtCurrentLevel_BuysSquadronsWhileLevelIsUnaffordable(EnemyAiDifficulty difficulty)
-        {
-            EnemyProductionCategory result = new EnemyProductionDecisionModel().Evaluate(
-                new EnemyProductionSnapshot(
-                    EnemyStrategicState.RebuildFleet, difficulty,
-                    0, 0, 0, 0, 1, 3, 1,
-                    false, true, true, false, false, false, true, false, canOrderShips: false));
-
-            Assert.That(result, Is.EqualTo(EnemyProductionCategory.Ship));
-        }
-
-        [Test]
-        public void BaseUnderAttack_KeepsBuyingShipsWhileLevelIsDue()
-        {
-            EnemyProductionCategory result = new EnemyProductionDecisionModel().Evaluate(
-                new EnemyProductionSnapshot(
-                    EnemyStrategicState.DefendBase, EnemyAiDifficulty.Medium,
-                    1, 3, 10, 1, 1, 1, 1,
-                    true, true, true, true, true, true, true, false));
-
-            Assert.That(result, Is.EqualTo(EnemyProductionCategory.Ship));
-        }
-
-        [TestCase(true, true, EnemyProductionCategory.Ship)]
-        [TestCase(true, false, EnemyProductionCategory.None)]
-        [TestCase(false, true, EnemyProductionCategory.Level)]
-        public void UltraHardOutmatchedFleet_SavesForShipBeforeLevel(bool needsFleet, bool canBuildShip,
-            EnemyProductionCategory expected)
-        {
-            EnemyProductionCategory result = new EnemyProductionDecisionModel().Evaluate(
-                new EnemyProductionSnapshot(
-                    EnemyStrategicState.HuntFleet, EnemyAiDifficulty.UltraHard,
-                    3, 8, 5, 1, 2, 3, 1,
-                    true, true, canBuildShip, true, true, true, true, true, false, false, needsFleet: needsFleet));
-
-            Assert.That(result, Is.EqualTo(expected));
-        }
-
-        [Test]
-        public void UltraHardAtMiningTarget_ResearchesIncomeBeforeLevel()
-        {
-            EnemyProductionCategory result = new EnemyProductionDecisionModel().Evaluate(
-                new EnemyProductionSnapshot(
-                    EnemyStrategicState.HuntFleet, EnemyAiDifficulty.UltraHard,
-                    3, 3, 5, 1, 2, 3, 1,
-                    true, true, true, true, true, true, true, true, true, true));
-
-            Assert.That(result, Is.EqualTo(EnemyProductionCategory.Research));
+            Assert.That(new EnemyProductionDecisionModel().Evaluate(snapshot), Is.EqualTo(EnemyProductionCategory.Research));
         }
 
         [Test]
@@ -350,311 +201,19 @@ namespace EmpireAtWar.Tests.Editor
             Assert.That(corvette, Is.GreaterThan(0f));
         }
 
-        [TestCase(EnemyAiDifficulty.Easy, 1)]
-        [TestCase(EnemyAiDifficulty.Medium, 1)]
-        [TestCase(EnemyAiDifficulty.Hard, 2)]
-        [TestCase(EnemyAiDifficulty.UltraHard, 3)]
-        public void BelowEconomicFloor_BuildsMiningBeforeMoreShips(
-            EnemyAiDifficulty difficulty,
-            int minimumMiningFacilities)
-        {
-            EnemyProductionCategory result = Evaluate(
-                EnemyStrategicState.HuntFleet,
-                difficulty,
-                minimumMiningFacilities - 1,
-                true,
-                true,
-                true,
-                true,
-                true);
-
-            Assert.That(result, Is.EqualTo(EnemyProductionCategory.Mining));
-        }
-
-        [TestCase(EnemyAiDifficulty.Easy, 1)]
-        [TestCase(EnemyAiDifficulty.Medium, 1)]
-        [TestCase(EnemyAiDifficulty.Hard, 2)]
-        [TestCase(EnemyAiDifficulty.UltraHard, 3)]
-        public void BelowEconomicFloor_SavesForMiningInsteadOfBuyingAffordableShip(
-            EnemyAiDifficulty difficulty,
-            int minimumMiningFacilities)
-        {
-            EnemyProductionCategory result = Evaluate(
-                EnemyStrategicState.HuntFleet,
-                difficulty,
-                minimumMiningFacilities - 1,
-                true,
-                true,
-                false,
-                true,
-                false);
-
-            Assert.That(result, Is.EqualTo(EnemyProductionCategory.None));
-        }
-
-        [TestCase(EnemyAiDifficulty.Easy, 1)]
-        [TestCase(EnemyAiDifficulty.Medium, 1)]
-        [TestCase(EnemyAiDifficulty.Hard, 2)]
-        [TestCase(EnemyAiDifficulty.UltraHard, 3)]
-        public void AtEconomicFloor_DoesNotBuildAdditionalMiningFacility(
-            EnemyAiDifficulty difficulty,
-            int minimumMiningFacilities)
-        {
-            EnemyProductionCategory result = Evaluate(
-                EnemyStrategicState.Hold,
-                difficulty,
-                minimumMiningFacilities,
-                true,
-                false,
-                true,
-                false,
-                false);
-
-            Assert.That(result, Is.EqualTo(EnemyProductionCategory.None));
-        }
-
-        [Test]
-        public void HardDefenseState_PrioritizesDefenseAfterEconomicFloor()
-        {
-            EnemyProductionCategory result = Evaluate(
-                EnemyStrategicState.DefendBase,
-                EnemyAiDifficulty.Hard,
-                2,
-                true,
-                true,
-                true,
-                true,
-                true);
-
-            Assert.That(result, Is.EqualTo(EnemyProductionCategory.Defense));
-        }
-
-        [Test]
-        public void EasyDefenseState_ReplacesMissingPlatformAfterEconomicFloor()
-        {
-            EnemyProductionCategory result = Evaluate(
-                EnemyStrategicState.DefendBase,
-                EnemyAiDifficulty.Easy,
-                1,
-                true,
-                true,
-                true,
-                true,
-                true);
-
-            Assert.That(result, Is.EqualTo(EnemyProductionCategory.Defense));
-        }
-
-        [Test]
-        public void HardHoldState_PrioritizesTechnologyAfterEconomicFloor()
-        {
-            EnemyProductionCategory result = Evaluate(
-                EnemyStrategicState.Hold,
-                EnemyAiDifficulty.UltraHard,
-                3,
-                true,
-                true,
-                true,
-                false,
-                true);
-
-            Assert.That(result, Is.EqualTo(EnemyProductionCategory.Level));
-        }
-
-        [Test]
-        public void UltraHardZeroFleet_BuildsAffordableRecoveryShip()
-        {
-            // The mining target is already met: with no fleet the next purchase is the recovery ship.
-            EnemyProductionCategory result = EvaluateUltraHard(
-                shipCount: 0,
-                shipsOrdered: 0,
-                miningFacilityCount: 3,
-                miningFacilityTarget: 3,
-                hasShipOption: true,
-                canBuildShip: true,
-                hasMiningOption: true,
-                canBuildMining: true,
-                hasLevelUpOption: true,
-                canLevelUp: true,
-                defensePlatformCount: 0,
-                defensePlatformTarget: 1,
-                hasDefenseOption: true,
-                canBuildDefense: true);
-
-            Assert.That(result, Is.EqualTo(EnemyProductionCategory.Ship));
-        }
-
-        [Test]
-        public void UltraHardZeroFleet_SeedsMiningWhenRecoveryShipIsUnaffordable()
-        {
-            EnemyProductionCategory result = EvaluateUltraHard(
-                shipCount: 0,
-                shipsOrdered: 0,
-                miningFacilityCount: 0,
-                miningFacilityTarget: 3,
-                hasShipOption: true,
-                canBuildShip: false,
-                hasMiningOption: true,
-                canBuildMining: true,
-                hasLevelUpOption: true,
-                canLevelUp: true,
-                defensePlatformCount: 0,
-                defensePlatformTarget: 1,
-                hasDefenseOption: true,
-                canBuildDefense: true);
-
-            Assert.That(result, Is.EqualTo(EnemyProductionCategory.Mining));
-        }
-
-        [Test]
-        public void UltraHardExpandsMiningBeforeDueTechnology()
-        {
-            EnemyProductionCategory result = EvaluateUltraHard(
-                shipCount: 3,
-                shipsOrdered: 2,
-                miningFacilityCount: 3,
-                miningFacilityTarget: 4,
-                hasShipOption: true,
-                canBuildShip: true,
-                hasMiningOption: true,
-                canBuildMining: true,
-                hasLevelUpOption: true,
-                canLevelUp: true,
-                defensePlatformCount: 0,
-                defensePlatformTarget: 1,
-                hasDefenseOption: true,
-                canBuildDefense: true);
-
-            Assert.That(result, Is.EqualTo(EnemyProductionCategory.Mining));
-        }
-
-        [Test]
-        public void UltraHardDueTechnology_ReplacesDefenseWhenUpgradeIsUnaffordable()
-        {
-            EnemyProductionCategory result = EvaluateUltraHard(
-                shipCount: 3,
-                shipsOrdered: 2,
-                miningFacilityCount: 3,
-                miningFacilityTarget: 3,
-                hasShipOption: true,
-                canBuildShip: true,
-                hasMiningOption: true,
-                canBuildMining: true,
-                hasLevelUpOption: true,
-                canLevelUp: false,
-                defensePlatformCount: 0,
-                defensePlatformTarget: 1,
-                hasDefenseOption: true,
-                canBuildDefense: true);
-
-            Assert.That(result, Is.EqualTo(EnemyProductionCategory.Defense));
-        }
-
-        [Test]
-        public void UltraHardPreferredShipUnaffordable_DoesNotBuyFallbackCategory()
-        {
-            EnemyProductionCategory result = EvaluateUltraHard(
-                shipCount: 1,
-                shipsOrdered: 0,
-                miningFacilityCount: 3,
-                miningFacilityTarget: 3,
-                hasShipOption: true,
-                canBuildShip: false,
-                hasMiningOption: true,
-                canBuildMining: true,
-                hasLevelUpOption: true,
-                canLevelUp: true,
-                defensePlatformCount: 1,
-                defensePlatformTarget: 1,
-                hasDefenseOption: true,
-                canBuildDefense: true);
-
-            Assert.That(result, Is.EqualTo(EnemyProductionCategory.None));
-        }
-
-        private static EnemyProductionCategory Evaluate(
-            EnemyStrategicState state,
-            EnemyAiDifficulty difficulty,
-            int miningFacilityCount,
-            bool hasMiningOption,
-            bool canBuildShip,
-            bool canBuildMining,
-            bool canBuildDefense,
-            bool canLevelUp)
-        {
-            return new EnemyProductionDecisionModel().Evaluate(
-                new EnemyProductionSnapshot(
-                    state,
-                    difficulty,
-                    miningFacilityCount,
-                    3,
-                    1,
-                    0,
-                    1,
-                    EnemyAiDifficultyProfile.Get(difficulty).MinimumMiningFacilities,
-                    1,
-                    hasMiningOption,
-                    canBuildShip,
-                    canBuildShip,
-                    canBuildMining,
-                    canBuildDefense,
-                    canBuildDefense,
-                    canLevelUp,
-                    canLevelUp));
-        }
-
-        /// <summary>Established fleet at the economic floor and defense target; ships and defense are affordable, level is not.</summary>
-        private static EnemyProductionCategory EvaluateResearch(
-            EnemyStrategicState state,
-            EnemyAiDifficulty difficulty,
-            bool canResearchIncome,
-            bool canResearchCombat)
-        {
-            int miningFloor = EnemyAiDifficultyProfile.Get(difficulty).MinimumMiningFacilities;
-            return new EnemyProductionDecisionModel().Evaluate(
-                new EnemyProductionSnapshot(
-                    state, difficulty,
-                    miningFloor, 3, 3, 1, 1, miningFloor, 1,
-                    true, true, true, true, true, true, false, false,
-                    canResearchIncome, canResearchCombat));
-        }
-
-        private static EnemyProductionCategory EvaluateUltraHard(
-            int shipCount,
-            int shipsOrdered,
-            int miningFacilityCount,
-            int miningFacilityTarget,
-            bool hasShipOption,
-            bool canBuildShip,
-            bool hasMiningOption,
-            bool canBuildMining,
-            bool hasLevelUpOption,
-            bool canLevelUp,
-            int defensePlatformCount,
-            int defensePlatformTarget,
-            bool hasDefenseOption,
-            bool canBuildDefense)
-        {
-            return new EnemyProductionDecisionModel().Evaluate(
-                new EnemyProductionSnapshot(
-                    EnemyStrategicState.HuntFleet,
-                    EnemyAiDifficulty.UltraHard,
-                    miningFacilityCount,
-                    shipCount,
-                    shipsOrdered,
-                    defensePlatformCount,
-                    2,
-                    miningFacilityTarget,
-                    defensePlatformTarget,
-                    hasMiningOption,
-                    hasShipOption,
-                    canBuildShip,
-                    canBuildMining,
-                    hasDefenseOption,
-                    canBuildDefense,
-                    hasLevelUpOption,
-                    canLevelUp));
-        }
+        private static EnemyProductionSnapshot Snapshot(
+            EnemyStrategicState state = EnemyStrategicState.CaptureZone,
+            int mines = 5, int ships = 3, int shipsOrdered = 1, int platforms = 1, int level = 2,
+            bool hasShipOption = true, bool canBuildShip = true, bool canBuildMining = true,
+            bool hasLevelOption = true, bool canLevelUp = true, bool canBuildDefense = true,
+            bool incomeResearch = false, bool combatResearch = false, bool canOrderShips = true,
+            bool critical = false, bool openingShip = false, bool opening = false) =>
+            new EnemyProductionSnapshot(state, mines, ships, shipsOrdered, platforms, level, 5, 1,
+                hasMiningOption: true, hasShipOption: hasShipOption, canBuildShip: canBuildShip,
+                canBuildMining: canBuildMining, canBuildDefense: canBuildDefense, hasLevelUpOption: hasLevelOption,
+                canLevelUp: canLevelUp, canResearchIncome: incomeResearch, canResearchCombat: combatResearch,
+                canOrderShips: canOrderShips, isStationCritical: critical, canBuyOpeningShip: openingShip,
+                isOpening: opening);
     }
 
     [Category("EnemyAi")]
@@ -666,6 +225,79 @@ namespace EmpireAtWar.Tests.Editor
             BindingFlags.Instance | BindingFlags.NonPublic;
 
         private const int MAX_UNIT_CAPACITY = 60;
+
+        [TestCase(EnemyAiDifficulty.Easy)]
+        [TestCase(EnemyAiDifficulty.Medium)]
+        [TestCase(EnemyAiDifficulty.Hard)]
+        [TestCase(EnemyAiDifficulty.UltraHard)]
+        public void Opening_BuysAllMinersThenAtMostOneCorvetteAndStartsLevelTwo(EnemyAiDifficulty difficulty)
+        {
+            var reinforcementData = ScriptableObject.CreateInstance<ReinforcementData>();
+            FactionDefinition definition = CopyDefinition(FactionType.Separatist, ShipType.PatrolFrigate, ShipType.C9979);
+            try
+            {
+                EnemyFactionModel factionModel = CreateFactionModel(definition);
+                var unitLimits = new EnemyUnitLimitModel();
+                var purchases = new RecordingPurchaseProcessor();
+                SetBackingField(reinforcementData, nameof(ReinforcementData.MaxUnitCapacity), MAX_UNIT_CAPACITY);
+                var scheduler = new EnemyAiScheduler(new ReplayNotifier<BattleState>(BattleState.Running));
+                scheduler.Initialize();
+                var strategy = new EnemyProductionStrategy(
+                    factionModel: factionModel,
+                    research: CreateCompletedResearch(definition),
+                    purchaseProcessor: purchases,
+                    requestFactory: new UnitRequestFactory(),
+                    economyModel: new EconomyModelStub(10000f),
+                    stateProvider: new StateProviderStub(),
+                    decisionModel: new EnemyProductionDecisionModel(),
+                    unitLimitModel: unitLimits,
+                    reinforcementData: reinforcementData,
+                    enemyStructurePlacementService: new StructurePlacementServiceStub(),
+                    productionAccess: new OperationalProductionAccess(),
+                    forceBuilder: null,
+                    profileCatalog: UniformValueCatalog(definition, ShipClass.Corvette),
+                    counterModel: null,
+                    intelRegistry: new TeamIntelRegistry(),
+                    owner: TestPlayers.CreateDuel(difficulty).Get(TestPlayers.Enemy),
+                    stationPressure: new EnemyStationPressureTracker(),
+                    scheduler: scheduler);
+
+                strategy.Start();
+                Assert.That(strategy.OpeningMiningPending, Is.True);
+                int miningLimit = factionModel.MiningFactions.First().Value.MaxCount;
+                for (int i = 0; i < miningLimit; i++)
+                {
+                    scheduler.Step(10f);
+                    Assert.That(purchases.LastRequest, Is.TypeOf<MiningFacilityUnitRequest>());
+                    UnitRequest request = purchases.LastRequest;
+                    unitLimits.Adopt(UnitLimitKey.From(request), request.FactionData.UnitCapacity);
+                }
+                Assert.That(strategy.OpeningMiningPending, Is.False);
+
+                scheduler.Step(10f);
+                Assert.That(purchases.LastRequest, Is.TypeOf<ShipUnitRequest>());
+                // A destroyed first corvette still counts as bought for the level-one cap.
+                unitLimits.RecordShipOrder();
+                scheduler.Step(10f);
+                Assert.That(purchases.LastRequest, Is.TypeOf<LevelUnitRequest>());
+                Assert.That(((LevelUnitRequest)purchases.LastRequest).Key, Is.EqualTo(1));
+
+                purchases.IsUpgradingStation = true;
+                strategy.PriorityConstructionPending = true;
+                int purchaseCount = purchases.RequestCount;
+                scheduler.Step(10f);
+                Assert.That(purchases.RequestCount, Is.EqualTo(purchaseCount));
+
+                strategy.PriorityConstructionPending = false;
+                scheduler.Step(10f);
+                Assert.That(purchases.LastRequest, Is.TypeOf<SquadronUnitRequest>());
+            }
+            finally
+            {
+                UnityEngine.Object.DestroyImmediate(reinforcementData);
+                UnityEngine.Object.DestroyImmediate(definition);
+            }
+        }
 
         [TestCase(
             EnemyAiDifficulty.Easy,
@@ -704,26 +336,8 @@ namespace EmpireAtWar.Tests.Editor
                 PlayerSlot owner = TestPlayers.CreateDuel(difficulty).Get(TestPlayers.Enemy);
 
                 EnemyUnitLimitModel unitLimitModel = new EnemyUnitLimitModel();
-                // UltraHard targets every spawnable mining facility, the others their floor.
-                ReserveEconomicFloor(
-                    factionModel,
-                    unitLimitModel,
-                    difficulty == EnemyAiDifficulty.UltraHard
-                        ? factionModel.MiningFactions.First().Value.MaxCount
-                        : EnemyAiDifficultyProfile.Get(difficulty).MinimumMiningFacilities);
-                if (difficulty == EnemyAiDifficulty.UltraHard)
-                {
-                    ReserveDefensePlatform(factionModel, unitLimitModel);
-                }
-
-                FactionData secondStationData = factionModel.SecondStationFactionData;
-                Assert.That(
-                    unitLimitModel.TryReserve(
-                        GetUnitId<SecondStationUnitRequest>(SecondStationUnitRequest.REQUEST_ID),
-                        secondStationData.MaxCount,
-                        secondStationData.UnitCapacity,
-                        MAX_UNIT_CAPACITY),
-                    Is.True);
+                ReserveEconomicFloor(factionModel, unitLimitModel, factionModel.MiningFactions.First().Value.MaxCount);
+                ReserveDefensePlatform(factionModel, unitLimitModel);
 
                 FactionData preferredData =
                     factionModel.ShipFactionData[preferredShip];
@@ -763,8 +377,6 @@ namespace EmpireAtWar.Tests.Editor
                     counterModel: new EnemyCounterProductionModel(new NeutralShipClassMatchups()),
                     intelRegistry: new TeamIntelRegistry(),
                     owner: owner, stationPressure: new EnemyStationPressureTracker(),
-                    secondStation: new SecondStationLevelModel(),
-                    recovery: new EnemyRecoveryPolicyStub(),
                     scheduler: scheduler);
 
                 strategy.Start();
@@ -849,8 +461,6 @@ namespace EmpireAtWar.Tests.Editor
                     counterModel: new EnemyCounterProductionModel(new NeutralShipClassMatchups()),
                     intelRegistry: new TeamIntelRegistry(),
                     owner: owner, stationPressure: new EnemyStationPressureTracker(),
-                    secondStation: new SecondStationLevelModel(),
-                    recovery: new EnemyRecoveryPolicyStub(),
                     scheduler: scheduler);
 
                 UnitLimitKey capacityHolder = GetUnitId<ShipUnitRequest>("capacity-holder");
@@ -921,12 +531,12 @@ namespace EmpireAtWar.Tests.Editor
             try
             {
                 EnemyFactionModel factionModel = CreateFactionModel(definition);
+                factionModel.CurrentLevel = 5;
                 FactionResearchModel research = new FactionResearchModel(CreateRoster(definition));
                 SetBackingField(reinforcementData, nameof(ReinforcementData.MaxUnitCapacity), MAX_UNIT_CAPACITY);
                 PlayerSlot owner = TestPlayers.CreateDuel(EnemyAiDifficulty.Medium).Get(TestPlayers.Enemy);
                 EnemyUnitLimitModel unitLimitModel = new EnemyUnitLimitModel();
-                ReserveEconomicFloor(factionModel, unitLimitModel,
-                    EnemyAiDifficultyProfile.Get(EnemyAiDifficulty.Medium).MinimumMiningFacilities);
+                ReserveEconomicFloor(factionModel, unitLimitModel, factionModel.MiningFactions.First().Value.MaxCount);
                 ReserveDefensePlatform(factionModel, unitLimitModel);
                 Assert.That(research.TryGetNextTier(ResearchType.IncreasedProduction, out ResearchTierData tier),
                     Is.True);
@@ -954,8 +564,6 @@ namespace EmpireAtWar.Tests.Editor
                     counterModel: new EnemyCounterProductionModel(new NeutralShipClassMatchups()),
                     intelRegistry: new TeamIntelRegistry(),
                     owner: owner, stationPressure: new EnemyStationPressureTracker(),
-                    secondStation: new SecondStationLevelModel(),
-                    recovery: new EnemyRecoveryPolicyStub(),
                     scheduler: scheduler);
 
                 strategy.Start();
@@ -973,7 +581,8 @@ namespace EmpireAtWar.Tests.Editor
                 strategy.Tick(10f);
                 scheduler.Step(10f);
 
-                Assert.That(purchaseProcessor.RequestCount, Is.EqualTo(1));
+                Assert.That(purchaseProcessor.Purchases.OfType<ResearchUnitRequest>().Count(bought => bought.Key == request.Key),
+                    Is.EqualTo(1));
             }
             finally
             {
@@ -1041,8 +650,6 @@ namespace EmpireAtWar.Tests.Editor
                     intelRegistry: new TeamIntelRegistry(),
                     owner: TestPlayers.CreateDuel(EnemyAiDifficulty.UltraHard).Get(TestPlayers.Enemy),
                     stationPressure: pressure,
-                    secondStation: new SecondStationLevelModel(),
-                    recovery: new EnemyRecoveryPolicyStub(),
                     scheduler: scheduler);
 
                 strategy.Start();
@@ -1080,7 +687,6 @@ namespace EmpireAtWar.Tests.Editor
                     productionAccess: new OperationalProductionAccess { CanProduce = false },
                     forceBuilder: null, profileCatalog: null, counterModel: null, intelRegistry: new TeamIntelRegistry(),
                     owner: TestPlayers.CreateDuel().Get(TestPlayers.Enemy), stationPressure: new EnemyStationPressureTracker(),
-                    secondStation: new SecondStationLevelModel(), recovery: new EnemyRecoveryPolicyStub { IsActive = true },
                     scheduler: scheduler);
 
                 strategy.Start();
@@ -1197,7 +803,8 @@ namespace EmpireAtWar.Tests.Editor
         }
 
         /// <summary>A catalog where every ship of <paramref name="definition"/> is worth exactly its price.</summary>
-        private static UnitCombatProfileCatalog UniformValueCatalog(FactionDefinition definition)
+        private static UnitCombatProfileCatalog UniformValueCatalog(FactionDefinition definition,
+            ShipClass shipClass = ShipClass.Frigate)
         {
             UnitCombatProfileCatalog catalog = new UnitCombatProfileCatalog(null, null, null, null);
             var profiles = (Dictionary<UnitTypeId, UnitCombatProfile>)typeof(UnitCombatProfileCatalog)
@@ -1209,7 +816,7 @@ namespace EmpireAtWar.Tests.Editor
                 foreach (ShipClass target in new[] { ShipClass.Corvette, ShipClass.Frigate, ShipClass.Cruiser,
                              ShipClass.HeavyCruiser, ShipClass.Capital, ShipClass.BattleCruiser, ShipClass.Dreadnought })
                     rates[(int)target] = ship.Value.Price;
-                profiles.Add(UnitTypeId.Ship(ship.Key), new UnitCombatProfile(ShipClass.Frigate, ship.Value.Price, 0f,
+                profiles.Add(UnitTypeId.Ship(ship.Key), new UnitCombatProfile(shipClass, ship.Value.Price, 0f,
                     rates, new float[ForceComposition.ClassSlots], new float[ForceComposition.ClassSlots],
                     Array.Empty<UnitCombatProfile>()));
             }
@@ -1301,9 +908,11 @@ namespace EmpireAtWar.Tests.Editor
 
         private sealed class RecordingPurchaseProcessor : IEnemyPurchaseProcessor
         {
-            public UnitRequest LastRequest { get; private set; }
-            public int RequestCount { get; private set; }
-            public bool IsUpgradingStation => false;
+            public List<UnitRequest> Purchases { get; } = new List<UnitRequest>();
+            public UnitRequest LastRequest => Purchases.LastOrDefault();
+            public int RequestCount => Purchases.Count;
+            public bool IsUpgradingStation { get; set; }
+            public bool PriorityConstructionPending { get; set; }
 
             public bool CanQueue(string requestId, int maxCount) => true;
             public float GetQueueRemainingTime(string requestId) => 0f;
@@ -1311,11 +920,7 @@ namespace EmpireAtWar.Tests.Editor
             public void ReserveExternalPipeline(string requestId) { }
             public void ReleaseExternalPipeline(string requestId) { }
 
-            public void Purchase(UnitRequest request)
-            {
-                LastRequest = request;
-                RequestCount++;
-            }
+            public void Purchase(UnitRequest request) => Purchases.Add(request);
         }
     }
 }

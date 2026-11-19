@@ -255,6 +255,11 @@
 - [ ] Ensure all feature data container classes (`<Feature>Data`) inherit from `Data` ScriptableObject.
   - Ownership/acceptance gate remains unassigned; retained as an open backlog item.
 
+## Superseded Plans
+
+- **UltraHard AI follow-up (22:12 battle) + end-game crash + player ships idle after kill** → [[TODOs/Bugs/Enemy_AI_UltraHard_Followup_And_Ship_Idle]]; follows [[Done/Bugs/Enemy_AI_UltraHard_Collapse_And_Attack_Order_Loss]] (acceptance failed)
+  - Status: blocked (2026-11-19). Superseded by [[Done/Bugs/Enemy_AI_Active_Play_And_Ship_Combat]] after the 00:49 battle (AI Medium, idle, no top-left capture, second station, stern-first firing).
+
 ## Done
 
 ### Optimization
@@ -317,6 +322,9 @@
   - Closed 2026-10-29 by backlog triage; user gates → [[TODOs/User_Acceptance_Queue]].
 
 ### Bugs
+
+- [x] **Enemy AI active play + ship combat (00:49 battle)** → [[Done/Bugs/Enemy_AI_Active_Play_And_Ship_Combat]]; replaces the blocked UltraHard follow-up
+  - Completed 2026-11-19. Unity compilation passed. Source implements mining-first openings, grouped deployments, centre defense, mining raids and in-range firing. Battle and test gates → [[TODOs/User_Acceptance_Queue#Enemy AI Active Play and Ship Combat]].
 
 - [x] **UltraHard AI collapse (2026-11-18 battle) + player Attack order lost to auto-power** → [[Done/Bugs/Enemy_AI_UltraHard_Collapse_And_Attack_Order_Loss]]
   - Completed 2026-11-18. Six fixes implemented, Unity compilation passed and related fixtures updated. In-game acceptance → [[TODOs/User_Acceptance_Queue]]. Parent → [[TODOs/Bugs/Enemy_AI_And_Faction_Balance]].

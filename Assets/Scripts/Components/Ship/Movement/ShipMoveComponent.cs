@@ -248,6 +248,8 @@ namespace EmpireAtWar.Components.Ship.Movement
         {
             if (_combatHoldTarget == target) return;
             Stop();
+            _hasSolvedFacing = false;
+            _pendingFacingTarget = null;
             _combatHoldTarget = target;
             _combatHoldTransform = target.GetFacade<IEntityTransformFacade>().Transform;
         }
@@ -368,7 +370,8 @@ namespace EmpireAtWar.Components.Ship.Movement
                     }
                 }
 
-                _motion.PlayLookAt(_solvedFacing, Model.RotationSpeed,
+                Vector3 facing = Vector3.Dot(_solvedFacing, bearing) < 0f ? bearing : _solvedFacing;
+                _motion.PlayLookAt(facing, Model.RotationSpeed,
                     Model.TurnAcceleration, Model.BodyRotationMaxAngle);
             }
             else _hasSolvedFacing = false;
@@ -395,7 +398,9 @@ namespace EmpireAtWar.Components.Ship.Movement
             using (BattleProfilerMarkers.ShipFacingSolve.Auto())
             using (_facingTrigger.Auto((int)_shipType, (int)target.HealthModel.ShipClass, reason))
 #endif
-                turn = _weaponFacing.GetFiringTurnAngle(target, transform.position);
+                turn = _weaponFacing.GetFiringTurnAngle(target, transform.position,
+                    bearing.sqrMagnitude > Mathf.Epsilon
+                        ? Vector3.SignedAngle(transform.forward, bearing, Vector3.up) : (float?)null);
             _solvedFacing = Quaternion.AngleAxis(turn, Vector3.up) * transform.forward;
             _solvedBearing = bearing;
             _solvedTargetId = target.Id;

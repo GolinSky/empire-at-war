@@ -25,6 +25,8 @@ namespace EmpireAtWar.Services.ShipSpawning
         private readonly ReinforcementZoneData _data;
         private readonly IEntityLocator _entities;
         private readonly List<Vector3> _stationPositions = new List<Vector3>();
+        private readonly List<(Vector3 Position, float Radius, bool Station)> _targetedAnchors =
+            new List<(Vector3, float, bool)>();
 
         private readonly List<Vector3> _anchors = new List<Vector3>();
 
@@ -59,18 +61,26 @@ namespace EmpireAtWar.Services.ShipSpawning
 
         public bool TryGetSpawnPositionNear(PlayerId owner, ShipType shipType, Vector3 target, out Vector3 position)
         {
-            var candidates = new List<Vector3>();
+            _targetedAnchors.Clear();
+            CollectStationPositions(owner);
+            foreach (Vector3 station in _stationPositions)
+                _targetedAnchors.Add((station, _data.HomeAreaRadius, true));
             foreach (ReinforcementZonePresenter relay in _zoneSource.Zones)
-                if (_relations.IsAllied(relay.Owner, owner)) candidates.Add(relay.Center);
-            bool hasHome = _zones.TryGetDefaultZoneCenter(owner, out Vector3 home);
-            if (hasHome) candidates.Add(home);
-            candidates.Sort((a, b) => (a - target).sqrMagnitude.CompareTo((b - target).sqrMagnitude));
-            foreach (Vector3 anchor in candidates)
+                if (_relations.IsAllied(relay.Owner, owner))
+                    _targetedAnchors.Add((relay.Center, _data.RelaySpawnBlockRadius, false));
+            if (_zones.TryGetDefaultZoneCenter(owner, out Vector3 home))
+                _targetedAnchors.Add((home, _data.HomeAreaRadius, false));
+
+            _targetedAnchors.Sort((a, b) =>
+            {
+                int byDistance = (a.Position - target).sqrMagnitude.CompareTo((b.Position - target).sqrMagnitude);
+                return byDistance != 0 ? byDistance : b.Station.CompareTo(a.Station);
+            });
+            foreach (var anchor in _targetedAnchors)
             {
                 _anchors.Clear();
-                _anchors.Add(anchor);
-                float radius = hasHome && anchor == home ? _data.HomeAreaRadius : _data.RelaySpawnBlockRadius;
-                if (TryFindOpenPosition(owner, shipType, radius, out position)) return true;
+                _anchors.Add(anchor.Position);
+                if (TryFindOpenPosition(owner, shipType, anchor.Radius, out position)) return true;
             }
             position = default;
             return false;
@@ -106,10 +116,7 @@ namespace EmpireAtWar.Services.ShipSpawning
 
         public bool TryGetStationSpawnPosition(PlayerId owner, ShipType shipType, out Vector3 position)
         {
-            _stationPositions.Clear();
-            foreach (IEntity entity in _entities.Entities)
-                if (entity.Owner == owner && entity.IsPlayerBase() && !entity.HealthModel.IsDestroyed)
-                    _stationPositions.Add(entity.GetFacade<IEntityTransformFacade>().Transform.position);
+            CollectStationPositions(owner);
             // The station nearest the home zone is the usual arrival point; later ones take over when it is lost or blocked.
             Vector3 reference = _zones.TryGetDefaultZoneCenter(owner, out Vector3 home) ? home : Vector3.zero;
             _stationPositions.Sort((a, b) => (a - reference).sqrMagnitude.CompareTo((b - reference).sqrMagnitude));
@@ -146,6 +153,14 @@ namespace EmpireAtWar.Services.ShipSpawning
             }
 
             return found;
+        }
+
+        private void CollectStationPositions(PlayerId owner)
+        {
+            _stationPositions.Clear();
+            foreach (IEntity entity in _entities.Entities)
+                if (entity.Owner == owner && entity.IsPlayerBase() && !entity.HealthModel.IsDestroyed)
+                    _stationPositions.Add(entity.GetFacade<IEntityTransformFacade>().Transform.position);
         }
 
         private bool TryFindOpenPosition(PlayerId owner, ShipType shipType, float searchRadius, out Vector3 position)

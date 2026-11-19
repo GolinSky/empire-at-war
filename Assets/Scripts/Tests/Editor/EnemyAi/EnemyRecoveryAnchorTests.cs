@@ -29,7 +29,6 @@ namespace EmpireAtWar.Tests.Editor
         private TeamIntelRegistry _intel;
         private ZoneSource _zones;
         private EnemyRecoveryAnchor _recovery;
-        private EnemyFactionModel _faction;
 
         [SetUp]
         public void SetUp()
@@ -43,24 +42,19 @@ namespace EmpireAtWar.Tests.Editor
             _owner = _roster.Get(TestPlayers.Ally);
             _intel = new TeamIntelRegistry();
             _zones = new ZoneSource();
-            _faction = new EnemyFactionModel(null, null);
             var entities = new EntityLocator();
             _recovery = new EnemyRecoveryAnchor(null, _zones, _roster, entities,
                 new BattleAreaService(_roster), new Map(), _intel, _owner,
                 new SelfProductionAccess(productionHost, new StationRegistry(entities), _roster),
-                new EnemyStationPressureTracker(), new SecondStationLevelModel(), _faction,
-                new AiWorldSnapshot(entities));
+                new EnemyStationPressureTracker(), new AiWorldSnapshot(entities));
         }
 
-        [TestCase(0)]
-        [TestCase(1)]
-        [TestCase(2)]
-        public void LostFinalStation_DoesNotEnterRecovery(int stationsBuilt)
+        [Test]
+        public void LostMainStation_NoLongerAttemptsSecondStationRecovery()
         {
             CreateRecovery(TestPlayers.Ally);
-            _faction.AdditionalStationsBuilt = stationsBuilt;
-            AddZone(TestPlayers.Human, new Vector3(1000f, 0f, 0f));
-            Update(canCapture: false);
+            AddZone(TestPlayers.Human, new Vector3(900f, 0f, 0f));
+            Update();
             Assert.That(_recovery.IsActive, Is.False);
             Assert.That(_recovery.TryGetBuildAnchor(out _), Is.False);
         }
@@ -79,58 +73,46 @@ namespace EmpireAtWar.Tests.Editor
                     opponent.Difficulty, opponent.ColorIndex);
                 _roster.Replace(players);
             }
-            AddZone(TestPlayers.Human, new Vector3(1000f, 0f, 0f));
-            Update(canCapture: false);
+            AddZone(TestPlayers.Human, new Vector3(900f, 0f, 0f));
+            Update();
             Assert.That(_recovery.TryGetBuildAnchor(out Vector3 anchor), Is.True);
-            Assert.That(anchor.x, Is.EqualTo(1000f));
+            Assert.That(anchor.x, Is.EqualTo(900f));
         }
 
         [Test]
-        public void ContestedAllyUsesRecentlySeenSector()
+        public void RecoveryIgnoresContestedNeutralAndUnownedSectors()
         {
-            ReinforcementZonePresenter zone = AddZone(TestPlayers.Human, new Vector3(1000f, 0f, 0f));
+            ReinforcementZonePresenter zone = AddZone(TestPlayers.Human, Vector3.right * 200f);
             zone.Restore(TestPlayers.Human, PlayerId.None, 0f, true);
+            AddZone(PlayerId.None, Vector3.right * 400f);
             EnemyPatrolMemory memory = _intel.GetPatrol(_owner.Team);
-            memory.Register("sector:1,1", new FormationPoint(1500f, 500f), "sector", 1f);
+            memory.Register("sector:1,1", new FormationPoint(500f, 0f), "sector", 1f);
             memory.Observe("sector:1,1", Time.time);
-            Update();
-            Assert.That(_recovery.TryGetBuildAnchor(out Vector3 anchor), Is.True);
-            Assert.That(anchor, Is.EqualTo(new Vector3(1500f, 0f, 500f)));
-        }
 
-        [Test]
-        public void NeutralRelayRequiresCaptureBeforePlacement()
-        {
-            ReinforcementZonePresenter zone = AddZone(PlayerId.None, new Vector3(1000f, 0f, 0f));
             Update();
-            Assert.That(_recovery.PendingCaptureObjective.Id, Is.EqualTo("zone:0"));
-            Assert.That(_recovery.TryGetBuildAnchor(out _), Is.False);
-            Assert.That(_recovery.DeferredReason, Is.EqualTo("anchorNotOwned"));
-            zone.Restore(_owner.Id, PlayerId.None, 0f, false);
-            Update();
-            Assert.That(_recovery.TryGetBuildAnchor(out _), Is.True);
-        }
 
-        [Test]
-        public void NoShipsCannotChooseNeutralRelay()
-        {
-            AddZone(PlayerId.None, new Vector3(1000f, 0f, 0f));
-            Update(canCapture: false);
-            Assert.That(_recovery.PendingCaptureObjective, Is.Null);
             Assert.That(_recovery.TryGetBuildAnchor(out _), Is.False);
         }
 
         [Test]
-        public void StalledRelayIsExcludedUntilRetryTime()
+        public void FleetWeaknessWithoutLocalPressure_DoesNotStartRecovery()
         {
-            AddZone(PlayerId.None, Vector3.right * 1000f);
-            Update();
-            Assert.That(_recovery.PendingCaptureObjective.Id, Is.EqualTo("zone:0"));
-            _recovery.RejectCaptureObjective("zone:0", Time.time + 20f);
-            Update();
-            Assert.That(_recovery.PendingCaptureObjective, Is.Null);
-            _recovery.Update(Vector3.zero, 0.5f, false, false, Time.time + 21f, (position, radius) => true);
-            Assert.That(_recovery.PendingCaptureObjective.Id, Is.EqualTo("zone:0"));
+            _recovery.Update(Vector3.zero, 0.4f, false, true, 1f, (position, radius) => true);
+            _recovery.Update(Vector3.zero, 0.4f, false, true, 10f, (position, radius) => true);
+
+            Assert.That(_recovery.IsActive, Is.False);
+        }
+
+        [Test]
+        public void RetreatAnchor_RequiresBothLocalDistanceAndASafeRoute()
+        {
+            AddZone(TestPlayers.Human, Vector3.right * 2500f);
+            AddZone(TestPlayers.Human, Vector3.right * 700f);
+
+            Assert.That(_recovery.FindRetreatAnchor(Vector3.zero, false, (position, radius) => false), Is.Null);
+            Assert.That(_recovery.FindRetreatAnchor(Vector3.zero, false, (position, radius) => position.x > 1000f), Is.Null);
+            Assert.That(_recovery.FindRetreatAnchor(Vector3.zero, false, (position, radius) => true),
+                Is.EqualTo(Vector3.right * 700f));
         }
 
         [Test]
@@ -144,7 +126,7 @@ namespace EmpireAtWar.Tests.Editor
         }
 
         [Test]
-        public void LostHomeAndStaleEmptySectorsCannotBecomeBuildAnchors()
+        public void LostHomeCannotBecomeBuildAnchor()
         {
             AddZone(_owner.Id, new Vector3(-2000f, 0f, 0f));
             EnemyPatrolMemory memory = _intel.GetPatrol(_owner.Team);
@@ -154,16 +136,16 @@ namespace EmpireAtWar.Tests.Editor
             Assert.That(_recovery.IsPlacementSafe(new Vector3(-2000f, 0f, 0f), 10f), Is.False);
         }
 
-        [TestCase(1f, 0f)]
-        [TestCase(0.1f, 2000f)]
-        public void ParityPrefersFleetCoverWhileWeakFleetPrefersThreatDistance(float advantage, float expectedX)
+        [TestCase(1f)]
+        [TestCase(0.1f)]
+        public void RecoveryDoesNotRelocateToDistantHeldZone(float advantage)
         {
             AddZone(TestPlayers.Human, Vector3.zero);
             AddZone(TestPlayers.Human, Vector3.right * 2000f);
             ReportHostile(new FormationPoint(-1000f, 0f));
             _recovery.Update(Vector3.zero, advantage, false, false, Time.time, (position, radius) => true);
             Assert.That(_recovery.TryGetBuildAnchor(out Vector3 anchor), Is.True);
-            Assert.That(anchor.x, Is.EqualTo(expectedX));
+            Assert.That(anchor.x, Is.Zero);
         }
 
         [Test]
@@ -196,7 +178,7 @@ namespace EmpireAtWar.Tests.Editor
             ReportHostile(new FormationPoint(1000f, 0f));
             _intel.GetPatrol(_owner.Team).Register("structure:456", new FormationPoint(1000f, 2000f),
                 "hostileStructure", 2f);
-            Update(canCapture: false);
+            Update();
             var snapshot = new PlacementThreatSnapshot();
             _recovery.FillPlacementThreats(snapshot);
 
@@ -222,8 +204,8 @@ namespace EmpireAtWar.Tests.Editor
             _intel.Get(_owner.Team).Report(new HostileSighting(123, UnitTypeId.Ship(ShipType.Venator),
                 TestPlayers.Enemy, position, 100f, 0f, 1f, Time.time));
 
-        private void Update(bool canCapture = true) =>
-            _recovery.Update(Vector3.zero, 0.5f, false, false, Time.time, (position, radius) => true, canCapture);
+        private void Update() =>
+            _recovery.Update(Vector3.zero, 0.5f, false, false, Time.time, (position, radius) => true);
 
         private ReinforcementZonePresenter AddZone(PlayerId owner, Vector3 center)
         {

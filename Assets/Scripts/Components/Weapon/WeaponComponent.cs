@@ -461,7 +461,7 @@ namespace EmpireAtWar.Components.Weapon
             return false;
         }
 
-        public float GetFiringTurnAngle(IEntity target, Vector3 pivot)
+        public float GetFiringTurnAngle(IEntity target, Vector3 pivot, float? targetBearing = null)
         {
             if (_modifiers.IsIonDisabled || _modifiers.IsCloaked || target.IsCloaked()) return 0f;
 
@@ -483,7 +483,7 @@ namespace EmpireAtWar.Components.Weapon
                     mount.MaxAttackDistance, mount.MinYaw, mount.MaxYaw, _facingWeights[i], mount.IsMainBattery);
             }
 
-            return _facingSolver.FindTurn();
+            return _facingSolver.FindTurn(out _, targetBearing);
         }
 
         internal static void CollectFacingTargets(IEntity target, List<Vector3> positions,

@@ -13,10 +13,11 @@ namespace EmpireAtWar.Entities.EnemyFaction.Models
         DefendBase = 4,
         Hold = 5,
         RetreatValue = 6,
-        /// <summary>Attacks hostiles near the fleet that it is not outmatched by.</summary>
+        /// <summary>Attacks hostiles near the fleet.</summary>
         EngageLocal = 7,
         /// <summary>Attacks a known, undefended hostile structure when nothing better is available.</summary>
-        RaidStructures = 8
+        RaidStructures = 8,
+        GuardSite = 9
     }
 
     public readonly struct EnemyStrategicSnapshot
@@ -53,8 +54,8 @@ namespace EmpireAtWar.Entities.EnemyFaction.Models
         public float LocalRaw { get; }
         public float FleetRaw { get; }
         public bool RecoveryMode { get; }
-        public bool RecoveryCapturePending { get; }
-        public bool WithdrawFromForwardStation { get; }
+        public bool HasGuardSite { get; }
+        public bool IsCentreGuardGoal { get; }
 
         /// <summary>The station is losing hull fast enough that the whole fleet must defend it.</summary>
         public bool IsStationCritical { get; }
@@ -79,8 +80,7 @@ namespace EmpireAtWar.Entities.EnemyFaction.Models
             bool hasSafeRetreat = true,
             bool hasEconomyRaidTarget = false,
             float localRaw = float.NaN, float fleetRaw = float.NaN, bool recoveryMode = false,
-            bool recoveryCapturePending = false, bool withdrawFromForwardStation = false,
-            bool isStationCritical = false)
+            bool isStationCritical = false, bool hasGuardSite = false, bool isCentreGuardGoal = false)
         {
             IsStationCritical = isStationCritical;
             VictoryCondition = victoryCondition;
@@ -97,8 +97,8 @@ namespace EmpireAtWar.Entities.EnemyFaction.Models
             LocalRaw = float.IsNaN(localRaw) ? localAdvantage : localRaw;
             FleetRaw = float.IsNaN(fleetRaw) ? fleetAdvantage : fleetRaw;
             RecoveryMode = recoveryMode;
-            RecoveryCapturePending = recoveryCapturePending;
-            WithdrawFromForwardStation = withdrawFromForwardStation;
+            HasGuardSite = hasGuardSite;
+            IsCentreGuardGoal = isCentreGuardGoal;
             HasThreatenedSite = hasThreatenedSite;
             HasLocalThreat = hasLocalThreat;
             HasRaidTarget = hasRaidTarget;
@@ -132,16 +132,13 @@ namespace EmpireAtWar.Entities.EnemyFaction.Models
         /// <summary>Bonus for the current state so near-equal options do not flip every decision.</summary>
         private const float HYSTERESIS = 0.05f;
         public const float MIN_STATE_SECONDS = 8f;
-        private const float CORNERED_STATE_SECONDS = 2.5f;
-        public const float RETREAT_EXIT_SCALE = 1.25f;
+        private const float URGENT_LOCAL_DISADVANTAGE_SCALE = 0.8f;
         /// <summary>Fleet advantage, as a multiple of the attack ratio, at which attacking outranks capturing.</summary>
         public const float PRESS_ADVANTAGE_SCALE = 2f;
         /// <summary>Smallest fleet share sent to defend a base that is not yet critical.</summary>
         public const float MIN_DEFENSE_SHARE = 0.34f;
         /// <summary>Defenders sent per unit of attacker strength, so the detachment outmatches the raid.</summary>
         public const float DEFENSE_MARGIN = 1.5f;
-        private const string RECOVERING_REASON =
-            "Regrouping at a safe anchor before selecting a viable local objective.";
 
         private static readonly EnemyStrategicRule[] _rules =
         {
@@ -153,27 +150,27 @@ namespace EmpireAtWar.Entities.EnemyFaction.Models
                 (s, p) => ResponseCurve.When(s.HasOwnBase) *
                           (s.HasStationPressure ? 1f :
                               ResponseCurve.AtLeast(s.BaseThreatRatio, p.DefenseThreatRatio))),
-            new EnemyStrategicRule(EnemyStrategicState.RetreatValue, 0.8f,
-                "Hostiles near the fleet outmatch it, so the fleet withdraws to its base.",
-                (s, p) => ResponseCurve.When(s.HasSafeRetreat) *
-                          ResponseCurve.AtMost(s.LocalAdvantage, p.RetreatAdvantage)),
             // A clearly stronger fleet ends the game instead of trading ships over capture sites.
             new EnemyStrategicRule(EnemyStrategicState.AssaultBase, 0.75f,
                 "The fleet clearly outmatches the enemy, so it presses the advantage against the base.",
                 (s, p) => ResponseCurve.When(s.VictoryCondition == BattleVictoryCondition.DestroyOpponentBase &&
                                              s.HasEnemyBaseTarget) *
+                          ResponseCurve.When(!s.IsCentreGuardGoal ||
+                              s.FleetAdvantage >= p.RequiredAttackRatio * PRESS_ADVANTAGE_SCALE) *
                           ResponseCurve.AtLeast(s.FleetAdvantage, p.RequiredAttackRatio * PRESS_ADVANTAGE_SCALE)),
             new EnemyStrategicRule(EnemyStrategicState.HuntFleet, 0.75f,
                 "The fleet clearly outmatches the enemy fleet, so it presses the advantage and hunts it.",
                 (s, p) => ResponseCurve.When(s.VictoryCondition != BattleVictoryCondition.DestroyOpponentBase &&
                                              s.EnemyShipCount > 0) *
+                          ResponseCurve.When(!s.IsCentreGuardGoal ||
+                              s.FleetAdvantage >= p.RequiredAttackRatio * PRESS_ADVANTAGE_SCALE) *
                           ResponseCurve.AtLeast(s.FleetAdvantage, p.RequiredAttackRatio * PRESS_ADVANTAGE_SCALE)),
             new EnemyStrategicRule(EnemyStrategicState.CaptureZone, 0.7f,
                 "Enemy ships are contesting an owned capture site.",
                 (s, p) => ResponseCurve.When(s.HasThreatenedSite)),
             new EnemyStrategicRule(EnemyStrategicState.RaidStructures, 0.66f,
                 "Destroy exposed hostile income before expanding to another objective.",
-                (s, p) => ResponseCurve.When(s.HasRaidTarget && s.HasEconomyRaidTarget && !s.HasThreatenedSite)),
+                (s, p) => ResponseCurve.When(s.HasRaidTarget && s.HasEconomyRaidTarget && !s.HasThreatenedSite && !s.IsCentreGuardGoal)),
             new EnemyStrategicRule(EnemyStrategicState.CaptureZone, 0.6f,
                 "Expanding map control to the next closest relay or site.",
                 (s, p) => ResponseCurve.When(s.HasCaptureTarget)),
@@ -184,30 +181,29 @@ namespace EmpireAtWar.Entities.EnemyFaction.Models
                           ResponseCurve.AtLeast(s.LocalAdvantage, p.RetreatAdvantage)),
             new EnemyStrategicRule(EnemyStrategicState.AssaultBase, 0.5f,
                 "The objective is base destruction and the fleet outmatches the defenders.",
-                (s, p) => ResponseCurve.When(s.VictoryCondition == BattleVictoryCondition.DestroyOpponentBase &&
+                (s, p) => ResponseCurve.When(!s.IsCentreGuardGoal && s.VictoryCondition == BattleVictoryCondition.DestroyOpponentBase &&
                                              s.HasEnemyBaseTarget) *
                           ResponseCurve.AtLeast(s.FleetAdvantage, p.RequiredAttackRatio)),
             new EnemyStrategicRule(EnemyStrategicState.HuntFleet, 0.5f,
                 "The objective is the enemy fleet and our team clearly outmatches it.",
-                (s, p) => ResponseCurve.When(s.VictoryCondition != BattleVictoryCondition.DestroyOpponentBase &&
+                (s, p) => ResponseCurve.When(!s.IsCentreGuardGoal && s.VictoryCondition != BattleVictoryCondition.DestroyOpponentBase &&
                                              s.EnemyShipCount > 0) *
                           ResponseCurve.AtLeast(s.FleetAdvantage, p.RequiredAttackRatio)),
             new EnemyStrategicRule(EnemyStrategicState.HuntFleet, 0.3f,
                 "Nothing is left to capture, so the fleet hunts the enemy.",
-                (s, p) => ResponseCurve.When(s.EnemyShipCount > 0) *
+                (s, p) => ResponseCurve.When(!s.IsCentreGuardGoal && s.EnemyShipCount > 0) *
                           ResponseCurve.AtLeast(s.FleetAdvantage, p.HuntAdvantage)),
             // Both objectives need the base destroyed: destroy-all also waits for every station and building.
             new EnemyStrategicRule(EnemyStrategicState.AssaultBase, 0.2f,
                 "No other target remains before the base objective.",
-                (s, p) => ResponseCurve.When(s.HasEnemyBaseTarget && s.EnemyShipCount == 0)),
-            // Cornered: no anchor accepts the retreat, so fight what is in reach instead of stopping under fire.
-            new EnemyStrategicRule(EnemyStrategicState.EngageLocal, 0.15f,
-                "No safe retreat anchor exists and hostiles are in reach, so the fleet fights back instead of stopping.",
-                (s, p) => ResponseCurve.When(s.HasLocalThreat && !s.HasSafeRetreat)),
+                (s, p) => ResponseCurve.When(!s.IsCentreGuardGoal && s.HasEnemyBaseTarget && s.EnemyShipCount == 0)),
             // Too weak to hunt and nothing to capture: hit structures the enemy left undefended.
             new EnemyStrategicRule(EnemyStrategicState.RaidStructures, 0.1f,
                 "The enemy fleet is too strong, so the fleet raids an undefended structure.",
-                (s, p) => ResponseCurve.When(s.HasRaidTarget)),
+                (s, p) => ResponseCurve.When(s.HasRaidTarget && !s.IsCentreGuardGoal)),
+            new EnemyStrategicRule(EnemyStrategicState.GuardSite, 0.08f,
+                "Guard the centre or nearby allied mining site.",
+                (s, p) => ResponseCurve.When(s.HasGuardSite)),
             new EnemyStrategicRule(EnemyStrategicState.Hold, 0.05f,
                 "No valid strategic target is currently available.",
                 (s, p) => 1f)
@@ -218,7 +214,6 @@ namespace EmpireAtWar.Entities.EnemyFaction.Models
         private bool _hasLastState;
         private bool _hadBase;
         private float _stateStartedAt;
-        private bool _startedWhileCornered;
         private bool _holdEpisode;
         public float StateHeldSeconds { get; private set; }
         public bool SwitchHeld { get; private set; }
@@ -226,12 +221,6 @@ namespace EmpireAtWar.Entities.EnemyFaction.Models
         public EnemyStrategicState BlockedState { get; private set; }
         public float BestScore { get; private set; }
         public float RunnerUpScore { get; private set; }
-
-        /// <summary>
-        /// Regrouping gates local action; the ordinary offensive rules still require global readiness.
-        /// </summary>
-        private bool _isRecovering;
-        public bool IsRecovering => _isRecovering;
 
         public EnemyStrategicDecision Evaluate(EnemyStrategicSnapshot snapshot, bool captureDetachment = false,
             bool allowOffense = true, float now = float.NaN, bool commit = true)
@@ -246,7 +235,6 @@ namespace EmpireAtWar.Entities.EnemyFaction.Models
             EnemyStrategicState previousState = _lastState;
             bool hadState = _hasLastState;
             bool hadBase = _hadBase;
-            bool recovering = _isRecovering;
             bool holdEpisode = _holdEpisode;
             float startedAt = _stateStartedAt;
             EnemyAiDifficultyProfile profile = EnemyAiDifficultyProfile.Get(snapshot.Difficulty);
@@ -256,27 +244,18 @@ namespace EmpireAtWar.Entities.EnemyFaction.Models
             SwitchHeld = false;
             StateHeldSeconds = _hasLastState && !float.IsNaN(now) ? Math.Max(0f, now - _stateStartedAt) : 0f;
             Bypass = snapshot.OwnShipCount == 0 ? "noShips" :
-                _hasLastState && _hadBase && !snapshot.HasOwnBase ? "stationLost" :
-                snapshot.HasLocalThreat && !snapshot.HasSafeRetreat ? "cornered" : "none";
+                _hasLastState && _hadBase && !snapshot.HasOwnBase ? "stationLost" : "none";
             foreach (EnemyStrategicRule rule in _rules)
             {
                 if (!allowOffense && (rule.State == EnemyStrategicState.HuntFleet ||
                     rule.State == EnemyStrategicState.AssaultBase || rule.State == EnemyStrategicState.RaidStructures)) continue;
                 if (captureDetachment &&
                     rule.State != EnemyStrategicState.CaptureZone &&
-                    rule.State != EnemyStrategicState.RetreatValue &&
+                    rule.State != EnemyStrategicState.EngageLocal &&
+                    rule.State != EnemyStrategicState.GuardSite &&
                     rule.State != EnemyStrategicState.RebuildFleet &&
                     rule.State != EnemyStrategicState.Hold) continue;
                 float score = rule.Score(snapshot, profile);
-                if (rule.State == EnemyStrategicState.RetreatValue)
-                    score = snapshot.HasSafeRetreat &&
-                        (_hasLastState && _lastState == EnemyStrategicState.RetreatValue
-                            ? snapshot.LocalAdvantage < profile.RetreatAdvantage * RETREAT_EXIT_SCALE
-                            : snapshot.LocalAdvantage <= profile.RetreatAdvantage)
-                        ? 0.8f : 0f;
-                if (rule.State == EnemyStrategicState.EngageLocal && _hasLastState &&
-                    _lastState == EnemyStrategicState.RetreatValue && snapshot.HasSafeRetreat &&
-                    snapshot.LocalAdvantage < profile.RetreatAdvantage * RETREAT_EXIT_SCALE) score = 0f;
                 if (score > 0f && _hasLastState && rule.State == _lastState)
                     score += HYSTERESIS;
                 if (score > bestScore)
@@ -290,41 +269,25 @@ namespace EmpireAtWar.Entities.EnemyFaction.Models
 
             EnemyStrategicState state = best.State;
             string reason = best.Reason;
-            bool withdrawForRecovery = !snapshot.HasOwnBase ||
-                snapshot.LocalAdvantage < profile.RetreatAdvantage ||
-                _hasLastState && _lastState == EnemyStrategicState.RetreatValue &&
-                snapshot.LocalAdvantage < profile.RetreatAdvantage * RETREAT_EXIT_SCALE;
-            if (snapshot.OwnShipCount > 0 && snapshot.WithdrawFromForwardStation && snapshot.HasSafeRetreat)
+            bool standAndFight = snapshot.OwnShipCount > 0 && snapshot.HasLocalThreat &&
+                snapshot.LocalAdvantage <= profile.RetreatAdvantage;
+            if (standAndFight)
             {
-                state = EnemyStrategicState.RetreatValue;
-                reason = "Withdraw from the outmatched forward station and regroup at the primary station.";
-                Bypass = "forwardStationFallback";
-            }
-            else if (snapshot.OwnShipCount > 0 && snapshot.RecoveryMode && withdrawForRecovery)
-            {
-                if (snapshot.RecoveryCapturePending && snapshot.HasCaptureTarget)
-                {
-                    state = EnemyStrategicState.CaptureZone;
-                    reason = "Capture the safe recovery relay before rebuilding.";
-                }
-                else if (snapshot.HasSafeRetreat)
-                {
-                    state = EnemyStrategicState.RetreatValue;
-                    reason = "Cover the safe recovery anchor while rebuilding.";
-                }
+                state = EnemyStrategicState.EngageLocal;
+                reason = "Hostiles near the fleet outmatch it; focus fire and fight in place.";
+                if (snapshot.LocalAdvantage <= profile.RetreatAdvantage * URGENT_LOCAL_DISADVANTAGE_SCALE)
+                    Bypass = "standAndFight";
             }
             if (Bypass == "none" && state == EnemyStrategicState.DefendBase &&
                 snapshot.HasStationPressure && (!_hasLastState || _lastState != EnemyStrategicState.DefendBase))
                 Bypass = "defend";
             BestScore = bestScore;
             RunnerUpScore = runnerUp;
-            bool cornered = Bypass == "cornered";
-            bool shortCommitment = cornered || _startedWhileCornered;
-            bool held = _hasLastState && state != _lastState && (Bypass == "none" || cornered) &&
-                !float.IsNaN(now) && StateHeldSeconds < (shortCommitment ? CORNERED_STATE_SECONDS : MIN_STATE_SECONDS) &&
-                (_lastState != EnemyStrategicState.CaptureZone || snapshot.HasCaptureTarget) &&
-                (_lastState != EnemyStrategicState.EngageLocal || snapshot.HasLocalThreat) &&
-                IsCommittedState(state, shortCommitment) && IsCommittedState(_lastState, shortCommitment);
+            bool held = _hasLastState && state != _lastState && Bypass == "none" &&
+                !float.IsNaN(now) && StateHeldSeconds < MIN_STATE_SECONDS &&
+                (_lastState == EnemyStrategicState.EngageLocal && snapshot.HasLocalThreat ||
+                 _lastState == EnemyStrategicState.CaptureZone && snapshot.HasCaptureTarget &&
+                 state == EnemyStrategicState.EngageLocal);
             if (held)
             {
                 BlockedState = state;
@@ -332,39 +295,9 @@ namespace EmpireAtWar.Entities.EnemyFaction.Models
                 state = _lastState;
                 reason = "Minimum strategic state commitment.";
             }
-            bool exitHeld = !held && _hasLastState && _lastState == EnemyStrategicState.RetreatValue &&
-                state == EnemyStrategicState.RetreatValue && snapshot.HasLocalThreat && snapshot.HasSafeRetreat &&
-                snapshot.LocalAdvantage > profile.RetreatAdvantage &&
-                snapshot.LocalAdvantage < profile.RetreatAdvantage * RETREAT_EXIT_SCALE;
-            if (exitHeld)
-            {
-                BlockedState = EnemyStrategicState.EngageLocal;
-                SwitchHeld = !_holdEpisode;
-            }
-            _holdEpisode = held || exitHeld;
-            if (state == EnemyStrategicState.RetreatValue)
-                _isRecovering = true;
-            else if (_isRecovering && !snapshot.RecoveryCapturePending && state != EnemyStrategicState.DefendBase &&
-                     state != EnemyStrategicState.RebuildFleet)
-            {
-                if (snapshot.IsRegrouped)
-                    _isRecovering = false;
-                else if (!snapshot.HasSafeRetreat &&
-                         (state == EnemyStrategicState.CaptureZone || state == EnemyStrategicState.EngageLocal))
-                    reason = "Home access is lost; rally through the viable local objective.";
-                else
-                {
-                    state = snapshot.HasSafeRetreat ? EnemyStrategicState.RetreatValue : EnemyStrategicState.Hold;
-                    reason = snapshot.HasSafeRetreat ? RECOVERING_REASON :
-                        "No safe retreat anchor or cohesive local action is available; hold and rebuild.";
-                }
-            }
-
+            _holdEpisode = held;
             if (!_hasLastState || _lastState != state)
-            {
                 _stateStartedAt = float.IsNaN(now) ? 0f : now;
-                if (commit) _startedWhileCornered = cornered;
-            }
             _hadBase = snapshot.HasOwnBase;
             _lastState = state;
             _hasLastState = true;
@@ -373,19 +306,15 @@ namespace EmpireAtWar.Entities.EnemyFaction.Models
                 _lastState = previousState;
                 _hasLastState = hadState;
                 _hadBase = hadBase;
-                _isRecovering = recovering;
                 _holdEpisode = holdEpisode;
                 _stateStartedAt = startedAt;
             }
             return new EnemyStrategicDecision(
                 state: state,
-                committedShipCount: CalculateCommittedShipCount(state, snapshot, profile),
+                committedShipCount: standAndFight && state == EnemyStrategicState.EngageLocal
+                    ? snapshot.OwnShipCount : CalculateCommittedShipCount(state, snapshot, profile),
                 reason: reason);
         }
-
-        private static bool IsCommittedState(EnemyStrategicState state, bool cornered) =>
-            state == EnemyStrategicState.EngageLocal || state == EnemyStrategicState.CaptureZone ||
-            cornered && state == EnemyStrategicState.Hold;
 
         private static int CalculateCommittedShipCount(
             EnemyStrategicState state,
@@ -405,10 +334,7 @@ namespace EmpireAtWar.Entities.EnemyFaction.Models
                 return 0;
             }
 
-            if (state == EnemyStrategicState.RetreatValue)
-            {
-                return ownShipCount;
-            }
+            if (state == EnemyStrategicState.GuardSite) return ownShipCount;
 
             return Math.Max(1, Math.Min(ownShipCount,
                 (int)Math.Ceiling(ownShipCount * (decimal)profile.CommittedFleetRatio)));

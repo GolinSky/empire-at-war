@@ -21,9 +21,6 @@ namespace EmpireAtWar.Entities.EnemyFaction.Models
 
         public int AdditionalStationsBuilt { get; set; }
 
-        public bool CanBuildAdditionalStation(bool hasStation, bool isHosted) =>
-            AdditionalStationsBuilt == 0 && (hasStation || isHosted);
-
         public void CompleteLevelUpgrade()
         {
             CurrentLevel++;
@@ -56,11 +53,5 @@ namespace EmpireAtWar.Entities.EnemyFaction.Models
         {
             return _stationLevels.GetLevelFactionData(CurrentLevel);
         }
-
-        public FactionData SecondStationFactionData =>
-            _stationLevels.GetSecondStationFactionData(_roster.FactionType);
-
-        public FactionData GetSecondStationLevelFactionData(int level) =>
-            _stationLevels.GetSecondStationLevelFactionData(level);
     }
 }

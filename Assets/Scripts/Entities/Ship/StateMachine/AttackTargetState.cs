@@ -23,7 +23,7 @@ namespace EmpireAtWar.Entities.Ship.StateMachine
         private const float HARD_POINT_SCAN_INTERVAL = 0.1f;
         private const float STALL_BEARING_STEP_DEGREES = 20f;
         private const float ARTILLERY_APPROACH_FACTOR = 0.9f;
-        private const float ARTILLERY_HOLD_FACTOR = 0.95f;
+        private const float ARTILLERY_REPLAN_RANGE_FACTOR = 0.05f;
         private const int ARTILLERY_STALL_RETRIES = 6;
 
 #if UNITY_EDITOR || DEVELOPMENT_BUILD
@@ -58,7 +58,6 @@ namespace EmpireAtWar.Entities.Ship.StateMachine
         private ShipClass _artilleryTargetClass;
         private float _artilleryReach;
         private bool _usesArtillery;
-        private bool _isArtilleryRetreat;
         private Vector3 _artilleryPlanTargetPosition;
 
 #if UNITY_EDITOR || DEVELOPMENT_BUILD
@@ -79,9 +78,6 @@ namespace EmpireAtWar.Entities.Ship.StateMachine
             _mainTargetEntity, TargetPosition);
         private bool IsInReach => ShipEngagement.IsInReach(_shipMoveComponent, _weaponComponent,
             _mainTargetEntity, TargetPosition);
-        // Hysteresis: a ship that is not mid-pursuit holds anywhere its guns reach; a pursuing ship stops
-        // at the nearer pursuit distance so a receding target does not cause stop/start at the edge.
-        private bool ShouldHold => _hasPursuitDestination && _shipMoveComponent.IsMoving ? IsInRange : IsInReach;
         private float PursuitDestinationUpdateDistance => Mathf.Max(
             _shipMoveComponent.NavigationRadius,
             EngagementRange * 0.1f);
@@ -141,6 +137,8 @@ namespace EmpireAtWar.Entities.Ship.StateMachine
         }
 
 #if UNITY_EDITOR || DEVELOPMENT_BUILD
+        internal bool IsHoldingAtRange => _hasHeldPosition && !_hasPursuitDestination;
+
         /// <summary>Telemetry only: key=value pairs describing why this ship holds or moves on an Attack order.</summary>
         public string AttackDiagnostics
         {
@@ -255,24 +253,19 @@ namespace EmpireAtWar.Entities.Ship.StateMachine
                 TryUpdateHardPointApproach(deltaTime)) return;
 
             if (_artilleryCapability != null && TryUpdateArtilleryMove(deltaTime)) return;
+            if (IsInReach)
+            {
+                HoldAndLookAtTarget("inReach");
+                return;
+            }
             if (RetryStalledMove(deltaTime)) return;
 
-            // A ship holds while its guns reach the target and resumes only once it leaves that reach.
             if (_wasMoving && !_shipMoveComponent.IsMoving)
             {
                 _hasPursuitDestination = false;
             }
 
             _wasMoving = _shipMoveComponent.IsMoving;
-            if (ShouldHold)
-            {
-                NoteHold(_hasPursuitDestination && _shipMoveComponent.IsMoving ? "pursuitStop" : "inReach");
-                HoldAndLookAtTarget();
-                _hasHeldPosition = true;
-                _hasPursuitDestination = false;
-                return;
-            }
-
             // Keep the chosen endpoint even when our own detour changes the target bearing.
             if (_hasPursuitDestination && _shipMoveComponent.IsMoving) return;
 
@@ -305,12 +298,16 @@ namespace EmpireAtWar.Entities.Ship.StateMachine
             return true;
         }
 
-        private void HoldAndLookAtTarget()
+        private void HoldAndLookAtTarget(string reason)
         {
 #if UNITY_EDITOR || DEVELOPMENT_BUILD
             using var scope = _holdLookAtMarker.Auto();
 #endif
-            HasReachedRange = true;
+            NoteHold(reason);
+            _hasHeldPosition = HasReachedRange = true;
+            _hasPursuitDestination = false;
+            _wasMoving = false;
+            _stallAttempt = 0;
             _shipMoveComponent.HoldPosition(_mainTargetEntity);
             _shipMoveComponent.LookAtTarget(_mainTargetEntity);
         }
@@ -319,9 +316,7 @@ namespace EmpireAtWar.Entities.Ship.StateMachine
         {
             if (offset == Vector3.zero)
             {
-                NoteHold("hardPointInReach");
-                HoldAndLookAtTarget();
-                ResetPursuit();
+                HoldAndLookAtTarget("hardPointInReach");
                 return;
             }
 
@@ -366,39 +361,31 @@ namespace EmpireAtWar.Entities.Ship.StateMachine
             }
             bool useArtillery = _artilleryReach > contact;
             if (useArtillery != _usesArtillery || (useArtillery && previousReach != _artilleryReach))
+            {
+                bool held = _hasHeldPosition;
                 ResetPursuit();
+                _hasHeldPosition = held;
+            }
             _usesArtillery = useArtillery;
             if (!useArtillery) return false;
 
             float distanceSquared = PlanarGeometry.DistanceSquared(_shipMoveComponent.CurrentPosition, targetPosition);
-            float holdDistance = Mathf.Max(_artilleryReach * ARTILLERY_HOLD_FACTOR, Mathf.Min(_artilleryReach, contact + 1f));
-            // Backing off turns the stern to the target, so it only happens when the hulls touch.
-            float retreatDistance = contact + 1f;
-            bool retreat = distanceSquared < retreatDistance * retreatDistance;
-            bool hold = !retreat && distanceSquared <= holdDistance * holdDistance;
-            bool moving = _shipMoveComponent.IsMoving;
-            _stallRetryTimer -= deltaTime;
-
-            // Finish the committed leg unless the target crosses the opposite edge of the band.
-            if (_hasPursuitDestination && moving && (hold || retreat == _isArtilleryRetreat)) return true;
-            if (hold)
+            if (IsInReach || distanceSquared <= _artilleryReach * _artilleryReach)
             {
-                NoteHold("artilleryBand");
-                HoldAndLookAtTarget();
-                ResetPursuit();
-                _hasHeldPosition = true;
+                HoldAndLookAtTarget("artilleryInReach");
                 return true;
             }
 
             if (_hasPursuitDestination)
             {
-                if (!moving) _shipMoveComponent.LookAtTarget(_mainTargetEntity);
+                if (_shipMoveComponent.IsMoving) return true;
+                _stallRetryTimer -= deltaTime;
                 if (_stallRetryTimer > 0f) return true;
                 float replanDistance = Mathf.Max(_shipMoveComponent.NavigationRadius,
-                    _artilleryReach * (ARTILLERY_HOLD_FACTOR - ARTILLERY_APPROACH_FACTOR));
+                    _artilleryReach * ARTILLERY_REPLAN_RANGE_FACTOR);
                 bool targetMoved = PlanarGeometry.DistanceSquared(_artilleryPlanTargetPosition, targetPosition) >=
                                    replanDistance * replanDistance;
-                if (retreat != _isArtilleryRetreat || targetMoved)
+                if (targetMoved)
                     _stallAttempt = 0;
                 else if (_stallAttempt >= ARTILLERY_STALL_RETRIES)
                     return true;
@@ -409,7 +396,7 @@ namespace EmpireAtWar.Entities.Ship.StateMachine
             float approachDistance = Mathf.Max(_artilleryReach * ARTILLERY_APPROACH_FACTOR, contact);
             Vector3 fromTarget = _shipMoveComponent.CurrentPosition - targetPosition;
             Vector3 bearing = PlanarGeometry.NormalizeDirection(
-                retreat || _hasHeldPosition ? fromTarget : _formationOffset, fromTarget);
+                _hasHeldPosition ? fromTarget : _formationOffset, fromTarget);
             if (_stallAttempt > 0)
             {
                 float angle = STALL_BEARING_STEP_DEGREES * ((_stallAttempt + 1) / 2) *
@@ -418,9 +405,8 @@ namespace EmpireAtWar.Entities.Ship.StateMachine
             }
 
             if (_stallAttempt == 0) _artilleryPlanTargetPosition = targetPosition;
-            _isArtilleryRetreat = retreat;
             MoveToPursuitDestination(targetPosition + bearing * approachDistance, preserveCourse: _stallAttempt == 0,
-                retreat ? "contactRetreat" : _stallAttempt == 0 ? "artilleryApproach" : "artilleryStallRetry");
+                _stallAttempt == 0 ? "artilleryApproach" : "artilleryStallRetry");
             return true;
         }
 
@@ -433,7 +419,7 @@ namespace EmpireAtWar.Entities.Ship.StateMachine
                 return false;
             }
 
-            if (_shipMoveComponent.IsMoving || IsInReach) return false;
+            if (_shipMoveComponent.IsMoving) return false;
 
             _stallRetryTimer -= deltaTime;
             if (_stallRetryTimer > 0f) return true;

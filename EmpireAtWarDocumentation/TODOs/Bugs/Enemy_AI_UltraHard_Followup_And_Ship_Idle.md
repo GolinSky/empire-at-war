@@ -1,11 +1,15 @@
 ---
 category: Bugs
-status: in-progress
+status: blocked
 created: 2026-11-18
 parent: "[[TODOs/Bugs/Enemy_AI_And_Faction_Balance]]"
 follows: "[[Done/Bugs/Enemy_AI_UltraHard_Collapse_And_Attack_Order_Loss]]"
 ---
 # Enemy AI UltraHard Follow-up And Ship Idle
+
+## Blocked 2026-11-19
+- Battle 2026-11-19 00:49 (`c43df90dc`): human won in ~9 min; AI idle/retreating, never took the top-left mining zone, built a second station near home, ships fire stern-first, aggro-when-shot added. AI ran on **Medium**, so UltraHard-only fixes never applied.
+- User verdict: good direction, poor execution. Work continues in [[Done/Bugs/Enemy_AI_Active_Play_And_Ship_Combat]]. Do not continue this plan.
 
 ## Goal
 - Fix defects confirmed in the 2026-11-18 22:12 UltraHard battle (code `d245b2d59`), including two regressions from [[Done/Bugs/Enemy_AI_UltraHard_Collapse_And_Attack_Order_Loss]].
