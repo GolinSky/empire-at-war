@@ -66,7 +66,7 @@ namespace EmpireAtWar.Tests.Editor
             MiniMapData data = AssetDatabase.LoadAssetAtPath<MiniMapData>(
                 "Assets/Settings/Data/Models/MiniMap/MiniMapData.asset");
             _controller = new MiniMapUiController(null, cameraService, null, null, null, null,
-                null, null, Array.Empty<IMiniMapOverlaySource>(), data, null, null, null);
+                null, null, Array.Empty<IMiniMapOverlaySource>(), data, null, null, null, playerNames: null);
             SetField(_controller, "_miniMapView", _map);
             _events = new SiteEvents();
             _sources = new StructureStatusIconSources(new[] { _events }, new RelayEvents(),

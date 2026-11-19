@@ -18,9 +18,9 @@ MonoBehaviour:
       value:
         icon: {fileID: 21300000, guid: f167f742e71945ff938dd7e6408a5c0a, type: 3}
         displayName: Ion Pulse
-        description: Turn the nearest ion cannon broadside to the target, then fire
-          a slow ion wave. Enemy ships hit are disabled for 10 s. No hull damage.
-          Move/Stop cancels turning; 60 s recovery.
+        description: Turn the ion cannon that needs the smallest turn toward the
+          target and fire a slow ion wave. The wave disables enemy ships and structures
+          without dealing hull damage. Move or Stop cancels the turn.
         duration: 80
         recoveryDelay: 60
         canCancel: 0
@@ -165,8 +165,7 @@ MonoBehaviour:
         icon: {fileID: 21300000, guid: a6278cd137e6426468225b59d670b5f3, type: 3}
         displayName: Lock S-Foils
         description: 'Toggle closed wings: speed x1.3, weapon delay x3 and shield
-          regeneration x3 (9/s per fighter). Reopen to return to normal combat configuration.
-          No cooldown.'
+          regeneration x3. Reopen to return to normal combat configuration. No cooldown.'
         duration: 0
         recoveryDelay: 0
         canCancel: 1
@@ -263,8 +262,8 @@ MonoBehaviour:
       value:
         icon: {fileID: 21300000, guid: a4e2bc47fe148694ca2314ad9ae2f3d6, type: 3}
         displayName: Concentrate Fire
-        description: Friendly ships and squadrons within 400 focus the selected enemy
-          for 15 s. Recovers in 20 s.
+        description: Order your nearby ships and squadrons to attack the selected
+          enemy.
         duration: 15
         recoveryDelay: 20
         canCancel: 0
@@ -279,8 +278,9 @@ MonoBehaviour:
       value:
         icon: {fileID: 21300000, guid: a4e2bc47fe148694ca2314ad9ae2f3d6, type: 3}
         displayName: Concentrate Fire
-        description: Nearby allies within 400 units focus the target and halve weapon
-          reload and time between shots. Does not stack with other Concentrate Fire.
+        description: Order your nearby ships and squadrons to attack the selected
+          enemy. Halves their weapon reload and time between shots. The bonuses do
+          not stack.
         duration: 8
         recoveryDelay: 60
         canCancel: 0
@@ -296,7 +296,7 @@ MonoBehaviour:
         icon: {fileID: 21300000, guid: f167f742e71945ff938dd7e6408a5c0a, type: 3}
         displayName: Ion Shot
         description: Surviving craft fire white ion projectiles that disable the
-          target for 3 s on arrival. No hull damage. 20 s recovery.
+          target on impact without dealing hull damage.
         duration: 10
         recoveryDelay: 20
         canCancel: 0
@@ -361,10 +361,9 @@ MonoBehaviour:
       value:
         icon: {fileID: 21300000, guid: 44e885e262d0a944db799fce4dd7a43b, type: 3}
         displayName: Tractor Beam
-        description: Restrict a targeted enemy corvette or frigate to 25% speed for
-          up to 20 s within 500 units. Ends when the beam hardpoint, caster or target
-          is destroyed, the caster is ion-disabled, or the target leaves range. 25
-          s recovery.
+        description: Reduce a targeted enemy corvette or frigate to 25% speed. The
+          beam ends if the caster, target, or beam hardpoint is destroyed, the caster's
+          abilities are disabled, or the target cloaks or leaves range.
         duration: 20
         recoveryDelay: 25
         canCancel: 1
@@ -428,8 +427,9 @@ MonoBehaviour:
       value:
         icon: {fileID: 21300000, guid: 3bd948ebdb28cda44b1a0ab08cd80910, type: 3}
         displayName: Fighter Coordination
-        description: 'Nearby allied squadrons gain +20% accuracy and +15% movement
-          speed for 10 seconds. Command radius: 750. Recovery: 45 seconds.'
+        description: Nearby allied squadrons gain 20% accuracy and 15% movement speed.
+          The effect ends if the command array is destroyed or the caster's abilities
+          are disabled.
         duration: 10
         recoveryDelay: 45
         canCancel: 0
@@ -477,9 +477,10 @@ MonoBehaviour:
       value:
         icon: {fileID: 21300000, guid: ee7b79f13d927674cb535bcd3d3a2042, type: 3}
         displayName: Lucky Shot
-        description: Luke makes a 1.25 s attack run, then fires a precision proton
-          strike for 8,000 base hull damage, bypassing shields. Targets any enemy
-          ship or structure. Move/Stop cancels preparation. 60 s cooldown.
+        description: Luke makes an attack run, then fires a precision proton strike
+          for 8,000 base hull damage, bypassing shields. Targets enemy corvettes,
+          larger warships, and structures. Requires Luke to be alive. Move or Stop
+          cancels preparation.
         duration: 0
         recoveryDelay: 60
         canCancel: 0
@@ -494,8 +495,8 @@ MonoBehaviour:
       value:
         icon: {fileID: 21300000, guid: 917c0ed2f47f71f42b24d04e609f4908, type: 3}
         displayName: Activate Gravity Well
-        description: Blocks enemy reinforcement drop-ins within the field around
-          the ship, forcing the enemy to spawn ships outside the bubble.
+        description: Stops the ship from moving and blocks enemy reinforcement drop-ins
+          inside the field. The ship can still turn and fire.
         duration: 30
         recoveryDelay: 60
         canCancel: 1

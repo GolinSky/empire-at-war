@@ -142,7 +142,7 @@ namespace EmpireAtWar.Tests.Editor
         [Test]
         public void SteamInviteOverPicker_EscapeRestoresSelectionAndDuplicateOpenReusesPicker()
         {
-            var steam = new SteamPopupService(_ui, _popups, _confirm, new OnlineMatchService(null, new OnlineRecoveryProgress(), new SteamPlatform(apiEnabled: false)));
+            var steam = new SteamPopupService(_ui, _popups, _confirm, new OnlineMatchService(null, new OnlineRecoveryProgress(), new SteamPlatform(apiEnabled: false)), new TooltipServiceStub());
             PopupHandle picker = steam.OpenInvitePicker();
             Assert.That(steam.OpenInvitePicker(), Is.SameAs(picker));
             Assert.That(_root.GetComponentsInChildren<SteamInvitePopupUi>(true).Length, Is.EqualTo(1));
@@ -173,7 +173,7 @@ namespace EmpireAtWar.Tests.Editor
         public void RepeatedPickerOpenClose_BalancesAvatarSubscriptions()
         {
             var online = new OnlineMatchService(null, new OnlineRecoveryProgress(), new SteamPlatform(apiEnabled: false));
-            var steam = new SteamPopupService(_ui, _popups, _confirm, online);
+            var steam = new SteamPopupService(_ui, _popups, _confirm, online, new TooltipServiceStub());
             FieldInfo avatarLoaded = typeof(SteamPlatform).GetField("AvatarLoaded",
                 BindingFlags.Instance | BindingFlags.NonPublic);
             Assert.That(avatarLoaded, Is.Not.Null);
@@ -206,7 +206,7 @@ namespace EmpireAtWar.Tests.Editor
                 typeof(SteamPlatform).GetField("_lobby", BindingFlags.Instance | BindingFlags.NonPublic)
                     .SetValue(platform, new CSteamID(10));
 
-            var steam = new SteamPopupService(_ui, _popups, _confirm, online);
+            var steam = new SteamPopupService(_ui, _popups, _confirm, online, new TooltipServiceStub());
             IOnlineLobbyScreen lobby = CreateLobby(mode, online, steam);
             try
             {
@@ -223,7 +223,7 @@ namespace EmpireAtWar.Tests.Editor
         public void LobbyLeave_ClosesCoveredPickerAndKeepsTopInvite(LobbyMode mode)
         {
             var online = new OnlineMatchService(null, new OnlineRecoveryProgress(), new SteamPlatform(apiEnabled: false));
-            var steam = new SteamPopupService(_ui, _popups, _confirm, online);
+            var steam = new SteamPopupService(_ui, _popups, _confirm, online, new TooltipServiceStub());
             IOnlineLobbyScreen lobby = CreateLobby(mode, online, steam);
             try
             {
@@ -260,7 +260,7 @@ namespace EmpireAtWar.Tests.Editor
                     AssetDatabase.LoadAssetAtPath<TeamColorPalette>(
                         "Assets/Settings/Data/Models/Players/TeamColorPalette.asset"), null, new TooltipServiceStub(),
                     steam, _popups, _confirm, new FakeSettingsService())
-                : new OnlineSurvivalLobbyUiController(_ui, _router, online, steam, _confirm);
+                : new OnlineSurvivalLobbyUiController(_ui, _router, online, steam, _confirm, new TooltipServiceStub());
             ((IInitializable)lobby).Initialize();
             return lobby;
         }

@@ -72,7 +72,7 @@ MonoBehaviour:
         matchups: {fileID: 11400000, guid: ed499ffc17084c847a836b55cd20c147, type: 2}
         displayName: Lucrehulk
         description: Heavy and medium turbolasers defend a large carrier hull. Deploys
-          2 fighter squadrons, 2 interceptor squadrons, 2 bomber squadrons at once.
+          1 fighter squadron, 1 interceptor squadron and 1 bomber squadron at once.
           Carries 24 total squadron launches, including the initial deployment.
         role: "Heavy capital \xB7 Carrier / heavy gunship"
         iconKey: 8128fcc8b8e454e47ab592309d37208e:21300000
@@ -181,7 +181,7 @@ MonoBehaviour:
       value:
         matchups: {fileID: 11400000, guid: 4a1771d5cec7be245892510aeae56eba, type: 2}
         displayName: Invincible
-        description: A larger Providence-class hull with 25,875 hull, 26,400 shields
+        description: A larger Providence-class hull with 45,000 hull, 40,000 shields
           and 28 weapon hardpoints. Retains Providence's abilities. Deploys 2 fighter
           squadrons, 2 interceptor squadrons, 2 bomber squadrons at once. Carries
           24 total squadron launches, including the initial deployment.
@@ -200,7 +200,7 @@ MonoBehaviour:
       value:
         matchups: {fileID: 11400000, guid: 4caf5be368a29b847ad73b04abb8aec1, type: 2}
         displayName: Peleset
-        description: 5,000 hull and 4,500 shields. Six dual turbolaser batteries,
+        description: 6,500 hull and 5,850 shields. Six dual turbolaser batteries,
           two ion cannons, two point-defense cannons, two concussion missile launchers
           and one proton torpedo launcher. All weapons use medium caliber. Engines,
           shields and every weapon mount can be targeted separately. No hangar.
@@ -219,7 +219,7 @@ MonoBehaviour:
       value:
         matchups: {fileID: 11400000, guid: 4868432cc9a1c1943bac947eb30cc8c1, type: 2}
         displayName: Bulwark I
-        description: 14,662.5 hull and 8,800 shields. Three quad turbolaser batteries,
+        description: 10,000 hull and 10,000 shields. Three quad turbolaser batteries,
           eight turbolaser batteries and two proton torpedo launchers use medium
           caliber. Sixteen targetable hardpoints include engines, shields and hangar.
           Deploys 2 fighter squadrons, 1 interceptor squadron, 1 bomber squadron
@@ -239,7 +239,7 @@ MonoBehaviour:
       value:
         matchups: {fileID: 11400000, guid: fffdc6b3b73ba8642bdf475bf120e869, type: 2}
         displayName: Wavecrest
-        description: 3,100 hull and 1,500 shields. Eight turbolaser batteries, four
+        description: 4,030 hull and 4,000 shields. Eight turbolaser batteries, four
           laser cannon batteries, two ion cannon batteries and one proton torpedo
           launcher, all medium caliber. All 17 mounts are targetable, including engines
           and hangar. Deploys 1 fighter squadron, 1 interceptor squadron, 1 bomber
@@ -260,7 +260,7 @@ MonoBehaviour:
       value:
         matchups: {fileID: 11400000, guid: 097392c440411f24986bc3e16be0db4e, type: 2}
         displayName: Recalcitrant
-        description: 2,800 hull and 2,500 shields with cruiser shield regeneration.
+        description: 3,640 hull and 3,250 shields with cruiser shield regeneration.
           Eight dual turbolaser batteries, six concussion missile launchers and one
           dual ion cannon battery, all medium caliber. All 17 mounts are targetable,
           including engines and shield generator. Boost Weapon Power halves weapon
@@ -317,7 +317,7 @@ MonoBehaviour:
       value:
         matchups: {fileID: 11400000, guid: 00cf8508d4c6fd84ab8a4c8ed631dc4c, type: 2}
         displayName: Bulwark Mk II
-        description: 10,000 hull and 9,000 shields. Engages capital ships with twelve
+        description: 11,000 hull and 12,000 shields. Engages capital ships with twelve
           heavy dual turbolaser batteries and six heavy dual ion cannon batteries.
           Power to Weapons boosts its salvos.
         role: Capital / Battle line carrier
@@ -393,7 +393,7 @@ MonoBehaviour:
         description: 'Ten autonomous Trade Federation droid bombers, each with 58
           hull, no shields, 2 laser cannons and 1 proton torpedo launcher. Effective
           against capital ships, frigates and stations; slow and vulnerable to fighters.
-          No hyperdrive. Full squadron torpedo volley: 333 damage; 12 s reload.'
+          No hyperdrive. Full squadron torpedo volley: 222.0 damage, 4 s reload.'
         role: "Bomber squadron \xB7 Anti-capital"
         iconKey: 0148d1e047b1c024494b31fb02e655ed:21300000
         isHero: 0

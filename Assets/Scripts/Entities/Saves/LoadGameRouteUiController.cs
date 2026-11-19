@@ -1,4 +1,6 @@
 using System;
+using EmpireAtWar.Entities.Tooltip;
+using EmpireAtWar.Services.Tooltip;
 using System.Collections.Generic;
 using EmpireAtWar.Commands.Game;
 using EmpireAtWar.Entities.Game;
@@ -13,17 +15,20 @@ namespace EmpireAtWar.Entities.Saves
         private readonly IBattleSaveRepository _saves;
         private readonly IGameCommand _game;
         private readonly GameData _gameData;
+        private readonly TooltipRequests _tooltips;
+        private TooltipHoverSubscription _tooltipHover;
         private SaveBrowserUi _ui;
         private IReadOnlyList<BattleSaveHeader> _slots = Array.Empty<BattleSaveHeader>();
         private int _modeIndex;
         private int _selectedIndex = -1;
 
         public LoadGameRouteUiController(IUiService uiService, IUiCancelRouter cancelRouter,
-            IBattleSaveRepository saves, IGameCommand game, GameData gameData = null) : base(uiService, cancelRouter)
+            IBattleSaveRepository saves, IGameCommand game, ITooltipService tooltipService, GameData gameData = null) : base(uiService, cancelRouter)
         {
             _saves = saves;
             _game = game;
             _gameData = gameData;
+            _tooltips = new TooltipRequests(tooltipService);
         }
 
         public void Open()
@@ -36,6 +41,7 @@ namespace EmpireAtWar.Entities.Saves
                 _ui.LoadRequested += LoadSelected;
                 _ui.DeleteRequested += DeleteSelected;
                 _ui.Initialize();
+                _tooltipHover = new TooltipHoverSubscription(_ui.TooltipHover, HandleTooltipHover, _tooltips);
             }
             _ui.SetTitle("LOAD GAME");
             _ui.SetSaveAsNewVisible(false);
@@ -57,9 +63,14 @@ namespace EmpireAtWar.Entities.Saves
 
         public void Close()
         {
+            _tooltips.HideAll();
             _ui.Hide();
             Unfocus();
         }
+
+        private void HandleTooltipHover(object key, TooltipAnchor anchor, object source) =>
+            _tooltips.Show(source, key, anchor, () => _ui.IsVisible,
+                () => new TooltipContent(title: (string)key, description: "Close the load game browser."));
 
         private void SelectMode(int index)
         {
@@ -131,6 +142,7 @@ namespace EmpireAtWar.Entities.Saves
         {
             if (_ui != null)
             {
+                _tooltipHover.Dispose();
                 _ui.ModeSelected -= SelectMode;
                 _ui.LoadRequested -= LoadSelected;
                 _ui.DeleteRequested -= DeleteSelected;

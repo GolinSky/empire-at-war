@@ -95,7 +95,7 @@ namespace EmpireAtWar.Entities.Tooltip
                         if (!obstacle.WorldBounds.Contains(hit.point)) continue;
                         _handle = _tooltipService.Show(new TooltipContentProvider(this, obstacle,
                             () => CanHover && _visionService.IsVisible(_local.Id, hit.point),
-                            () => new TooltipContent(title: "Obstacle", description: "Blocks movement and prevents move orders into its occupied area.")), anchor);
+                            () => new TooltipContent(title: "Obstacle", description: "Blocks move targets and can force ships to detour.")), anchor);
                         return;
                     }
                 _tooltipService.Hide(_handle);
@@ -112,8 +112,8 @@ namespace EmpireAtWar.Entities.Tooltip
             if (!hardPoint.TryGetWeaponProfile(out WeaponProfile weapon))
                 return new TooltipContent(title: entry.DisplayName, description: entry.Description, stats: stats, status: status);
 
-            stats.Add(new TooltipStat(label: "Salvo damage", current: weapon.Damage * weapon.ShotsPerSalvo));
-            stats.Add(new TooltipStat(label: "Range", current: weapon.Range, format: "0"));
+            stats.Add(new TooltipStat(label: "Base salvo damage", current: weapon.Damage * weapon.ShotsPerSalvo));
+            stats.Add(new TooltipStat(label: "Base range", current: weapon.Range, format: "0"));
             return new TooltipContent(title: weapon.DisplayName, subtitle: entry.DisplayName, description: entry.Description,
                 stats: stats, status: status);
         }

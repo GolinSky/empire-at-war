@@ -45,7 +45,7 @@ namespace EmpireAtWar.Tests.Editor
                 null, repository, null, Array.Empty<IBattleSaveSource>());
             _saveActions = new BattleSaveActions(service, repository, null, battle);
             _save = new SaveGameRouteUiController(_ui, _cancelRouter, battle, repository,
-                _saveActions, _inputLock);
+                _saveActions, _inputLock, null);
             _save.Initialize();
             InitializePauseMenu(battle);
         }

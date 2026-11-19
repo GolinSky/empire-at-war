@@ -299,9 +299,13 @@ namespace EmpireAtWar.Entities.MainMenu.Online
         public bool TryGetAvatar(ulong steamId, out Texture2D avatar) => _online.Steam.TryGetAvatar(steamId, out avatar);
 
         private void HandleTooltipHover(object key, TooltipAnchor anchor, object source) =>
-            _tooltips.Show(source, key, anchor, () => _isOpen, () => new TooltipContent(title: (string)key,
+            _tooltips.Show(source, key, anchor, () => _isOpen, () => new TooltipContent(
+                title: (string)key == "Start battle" && !IsHost ? "Ready" : (string)key,
                 description: (string)key switch
                 {
+                    "Start battle" when IsHost && !_model.CanStart => _model.ActiveTeamCount < 2
+                        ? "Choose at least two opposing teams to start a battle."
+                        : "Choose a larger map or close player slots to fit this map.",
                     "Start battle" => IsHost
                         ? _model.AllHumansReady ? "Start the battle for every player."
                             : "Start now, even though not every player is ready."

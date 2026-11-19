@@ -1,4 +1,6 @@
 using System;
+using EmpireAtWar.Entities.Tooltip;
+using EmpireAtWar.Services.Tooltip;
 using System.Collections.Generic;
 using System.Linq;
 using EmpireAtWar.Entities.EnemyFaction.Models;
@@ -32,6 +34,8 @@ namespace EmpireAtWar.Entities.MainMenu.Online
         private readonly IConfirmPopupService _confirmPopups;
         // The lobby keeps its own setup so the offline Survival screen is untouched.
         private readonly SurvivalModel _model = new SurvivalModel();
+        private readonly TooltipRequests _tooltips;
+        private TooltipHoverSubscription _tooltipHover;
         private SurvivalUi _ui;
         private PopupHandle _invitePicker;
         private PopupHandle _leavePopup;
@@ -39,12 +43,13 @@ namespace EmpireAtWar.Entities.MainMenu.Online
         private string _appliedSetup = string.Empty;
 
         public OnlineSurvivalLobbyUiController(IUiService uiService, IUiCancelRouter cancelRouter,
-            OnlineMatchService online, ISteamPopupService steamPopups, IConfirmPopupService confirmPopups)
+            OnlineMatchService online, ISteamPopupService steamPopups, IConfirmPopupService confirmPopups, ITooltipService tooltipService)
             : base(uiService, cancelRouter)
         {
             _confirmPopups = confirmPopups;
             _online = online;
             _steamPopups = steamPopups;
+            _tooltips = new TooltipRequests(tooltipService);
         }
 
         private bool IsHost => _online.Role == OnlineRole.Host;
@@ -58,6 +63,7 @@ namespace EmpireAtWar.Entities.MainMenu.Online
 
         public void LateDispose()
         {
+            if (_tooltipHover != null) _tooltipHover.Dispose();
             _online.Changed -= Sync;
             _model.Changed -= OnModelChanged;
             CloseInvitePicker();
@@ -81,6 +87,7 @@ namespace EmpireAtWar.Entities.MainMenu.Online
                 _ui.SetMapSizes(COOP_MAP_SIZES);
                 _ui.AssignPresenter(this);
                 _ui.Initialize();
+                _tooltipHover = new TooltipHoverSubscription(_ui.TooltipHover, HandleTooltipHover, _tooltips);
                 _ui.InviteRequested += InviteFriends;
                 _ui.LobbyModeSwitch.ModeSelected += SwitchMode;
             }
@@ -96,6 +103,7 @@ namespace EmpireAtWar.Entities.MainMenu.Online
         public void Hide()
         {
             _isOpen = false;
+            _tooltips.HideAll();
             if (_leavePopup != null) _confirmPopups.Close(_leavePopup);
             CloseInvitePicker();
             _ui.Hide();
@@ -106,6 +114,7 @@ namespace EmpireAtWar.Entities.MainMenu.Online
         public void Close()
         {
             if (_leavePopup != null) return;
+            _tooltips.HideAll();
             _leavePopup = _confirmPopups.ShowAccept(
                 new AcceptPopupContent("Leave lobby?", "Leave the lobby and return to the Online screen?", "Leave", "Stay"),
                 result =>
@@ -143,6 +152,24 @@ namespace EmpireAtWar.Entities.MainMenu.Online
         public void SelectMapSize(MapSize size) => _model.SelectMapSize(size);
         public void SelectDifficulty(int index) => _model.SelectDifficulty((EnemyAiDifficulty)index);
         public void SelectSuperWeapons(bool enabled) => _model.SelectSuperWeapons(enabled);
+
+        private void HandleTooltipHover(object key, TooltipAnchor anchor, object source) =>
+            _tooltips.Show(source, key, anchor, () => _isOpen && _leavePopup == null, () => new TooltipContent(
+                title: (string)key == "Start battle" && !IsHost ? "Ready" : (string)key,
+                description: (string)key switch
+                {
+                    "Start battle" when !IsHost => IsLocalReady()
+                        ? "Mark yourself as not ready." : "Tell the host you are ready.",
+                    "Start battle" => _online.AllReady
+                        ? "Start Survival for every commander." : "Start Survival before every commander is ready.",
+                    "Close" => "Confirm that you want to leave the lobby.",
+                    "Player faction" => "The host chooses the faction every commander uses.",
+                    "Ally faction" => "The host can add an AI ally to help defend.",
+                    "Enemy faction" => "The host chooses which faction sends the enemy waves.",
+                    "Map size" => $"The host chooses the battlefield size. Current size is {_model.MapSize}.",
+                    "Difficulty" => "The host sets how challenging the enemy waves are.",
+                    _ => throw new ArgumentOutOfRangeException(nameof(key))
+                }));
 
         private void Sync()
         {

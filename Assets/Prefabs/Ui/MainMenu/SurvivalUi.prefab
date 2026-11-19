@@ -5498,7 +5498,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::EmpireAtWar.Components.Ui.Tooltip.TooltipTrigger
   anchorRect: {fileID: 3299072419076803892}
-  key: Map size
+  key: Difficulty
 --- !u!1 &4213057811834629653
 GameObject:
   m_ObjectHideFlags: 0
@@ -7151,7 +7151,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::EmpireAtWar.Components.Ui.Tooltip.TooltipTrigger
   anchorRect: {fileID: 8184610519256042556}
-  key: Map size
+  key: Enemy faction
 --- !u!1 &5258547721133941624
 GameObject:
   m_ObjectHideFlags: 0
@@ -7706,6 +7706,7 @@ GameObject:
   - component: {fileID: 4575495041658118111}
   - component: {fileID: 8395435259332040641}
   - component: {fileID: 7754665032140212553}
+  - component: {fileID: 6634980019730451171}
   m_Layer: 5
   m_Name: SurvivalUi
   m_TagString: Untagged
@@ -7778,6 +7779,7 @@ MonoBehaviour:
   - {fileID: 4716302014899042276}
   - {fileID: 262353744360251970}
   - {fileID: 3739669596111238021}
+  tooltipHover: {fileID: 6634980019730451171}
 --- !u!1 &5631932934187781867
 GameObject:
   m_ObjectHideFlags: 0
@@ -10353,7 +10355,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::EmpireAtWar.Components.Ui.Tooltip.TooltipTrigger
   anchorRect: {fileID: 3245667418976735239}
-  key: Map size
+  key: Player faction
 --- !u!1 &6876565513940636945
 GameObject:
   m_ObjectHideFlags: 0
@@ -13834,7 +13836,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::EmpireAtWar.Components.Ui.Tooltip.TooltipTrigger
   anchorRect: {fileID: 4720812965656117316}
-  key: Map size
+  key: Ally faction
 --- !u!1 &8638350038639426229
 GameObject:
   m_ObjectHideFlags: 0
@@ -15428,3 +15430,23 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 4e29b1a8efbd4b44bb3f3716e73f07ff, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+--- !u!114 &6634980019730451171
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 5595030003310308647}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 6f15b60cceedcfd4787c5736b5813dab, type: 3}
+  m_Name:
+  m_EditorClassIdentifier: Assembly-CSharp::EmpireAtWar.Components.Ui.Tooltip.TooltipHoverView
+  triggers:
+  - {fileID: 7316212632526498491}
+  - {fileID: 4731584985569055206}
+  - {fileID: 2975379119022579902}
+  - {fileID: 6952412982730602116}
+  - {fileID: 1128721904497898918}
+  - {fileID: 7222479795999548045}
+  - {fileID: 599804274895202094}

@@ -2,6 +2,7 @@ using System;
 using EmpireAtWar.Entities.Popups;
 using EmpireAtWar.Services.Networking.Online;
 using EmpireAtWar.Services.Popups;
+using EmpireAtWar.Services.Tooltip;
 using EmpireAtWar.Ui.Base;
 
 namespace EmpireAtWar.Entities.MainMenu.Online
@@ -12,21 +13,23 @@ namespace EmpireAtWar.Entities.MainMenu.Online
         private readonly IPopupService _popups;
         private readonly IConfirmPopupService _confirmPopups;
         private readonly SteamPlatform _steam;
+        private readonly ITooltipService _tooltips;
         private PopupHandle _invitePicker;
 
         public SteamPopupService(IUiService uiService, IPopupService popupService,
-            IConfirmPopupService confirmPopups, OnlineMatchService online)
+            IConfirmPopupService confirmPopups, OnlineMatchService online, ITooltipService tooltips)
         {
             _uiService = uiService;
             _popups = popupService;
             _confirmPopups = confirmPopups;
             _steam = online.Steam;
+            _tooltips = tooltips;
         }
 
         public PopupHandle OpenInvitePicker()
         {
             if (!_popups.IsOpen(_invitePicker))
-                _invitePicker = _popups.Open(new SteamInvitePopupUiController(_uiService, _steam));
+                _invitePicker = _popups.Open(new SteamInvitePopupUiController(_uiService, _steam, _tooltips));
 
             return _invitePicker;
         }

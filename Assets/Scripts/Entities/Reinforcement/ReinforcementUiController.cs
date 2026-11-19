@@ -156,9 +156,9 @@ namespace EmpireAtWar.Entities.Reinforcement
                     }, status: $"Uses {request.FactionData.UnitCapacity} fleet capacity.\n" +
                         (request.FactionData.UnitCapacity > _model.CapacityLeft
                         ? "Fleet capacity limit reached" : ReinforcementModel.UsesCapacity(request)
-                            ? "Drag into an allied reinforcement zone. Ships need clear space. Release to deploy immediately." +
+                            ? "Drag to a visible, unblocked location. Ships need clear, reachable space. Release to deploy." +
                               DeployAllHint(request)
-                            : "Drag to visible terrain outside reinforcement zones and capture sites. Release to deploy." +
+                            : "Drag to a visible, unblocked location clear of reinforcement zones and capture sites. Release to deploy." +
                               DeployAllHint(request))));
             else
                 _tooltips.Show(source, key, anchor, () => _isTooltipActive,

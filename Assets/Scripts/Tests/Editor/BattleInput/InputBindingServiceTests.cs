@@ -1,5 +1,6 @@
 using System.Linq;
 using System.Threading;
+using EmpireAtWar.Entities.Tooltip;
 using EmpireAtWar.Services.Input;
 using NUnit.Framework;
 using UnityEngine.InputSystem;
@@ -59,6 +60,13 @@ namespace EmpireAtWar.Tests.Editor
             Assert.That(_service.RebindableSlots.Count(slot => slot.Action.name == "ZoomIn"), Is.EqualTo(1));
             Assert.That(_service.RebindableSlots.Count(slot => slot.Action.name == "ZoomOut"), Is.EqualTo(1));
             Assert.That(_service.RebindableSlots.Count(slot => slot.Action.name == "SelectAll"), Is.EqualTo(1));
+        }
+
+        [Test]
+        public void TooltipDisplaysFixedCancelBinding()
+        {
+            Assert.That(_service.RebindableSlots.Any(slot => slot.Action == _provider.Actions.Ui.Cancel), Is.False);
+            Assert.That(TooltipBindings.Get(_service, "Ui", "Cancel"), Is.EqualTo("Escape"));
         }
 
         [Test]

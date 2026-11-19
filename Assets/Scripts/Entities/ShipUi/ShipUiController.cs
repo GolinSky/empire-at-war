@@ -419,14 +419,14 @@ namespace EmpireAtWar.Entities.ShipUi
             if (key is ShipAutoPowerUiState autoPower)
                 return new TooltipContent(title: "Automatic power abilities", description: autoPower.Description);
             if (key is string action && action == "Focus")
-                return new TooltipContent(title: "Focus selected ship", description: "Double-click to move the camera to the selected ship.");
+                return new TooltipContent(title: "Focus selected ship", description: "Double-click to focus the selected ship if it is off-screen.");
             if (key is string selection && selection == "Selection")
                 return new TooltipContent(title: "Clear selection", description: "Click to deselect the current ship.");
             if (key is IReadOnlyList<ShipAbilitySlot> slots)
                 return ShipAbilityTooltipContent.Build(slots, _bindings, _tooltipIcons);
             if (key is ShipUiEntry entry)
                 return EntityTooltipContent.Build(entry.Entity, OWN_OWNER_LABEL,
-                    "Click to select this ship. Double-click to focus.");
+                    "Click to select this unit. Double-click to focus it if it is off-screen.");
             if (key is ShipType || key is SquadronType)
             {
                 UnitTypeId unitTypeId = key is ShipType shipType

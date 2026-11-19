@@ -504,7 +504,7 @@ namespace EmpireAtWar.Tests.Editor
                     inputLock: new UnlockedInput(), uiService: null, cancelRouter: null,
                     routeNavigation: null, orderInput: orderInput, tooltipService: null,
                     overlaySources: Array.Empty<IMiniMapOverlaySource>(), model: model, playerColors: null, timerPoolService: null,
-                    battleAreas: _areas);
+                    battleAreas: _areas, playerNames: null);
 
                 controller.OrderMove(new Vector3(11f, 0f, 21f));
 

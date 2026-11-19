@@ -1,4 +1,6 @@
 using System;
+using EmpireAtWar.Entities.Tooltip;
+using EmpireAtWar.Services.Tooltip;
 using System.Collections.Generic;
 using EmpireAtWar.Entities.Game;
 using EmpireAtWar.Lifecycle;
@@ -15,6 +17,8 @@ namespace EmpireAtWar.Entities.Saves
         private readonly IBattleSaveRepository _repository;
         private readonly BattleSaveActions _saves;
         private IReadOnlyList<BattleSaveHeader> _headers = Array.Empty<BattleSaveHeader>();
+        private readonly TooltipRequests _tooltips;
+        private TooltipHoverSubscription _tooltipHover;
         private SaveBrowserUi _ui;
         private bool _enteringName;
         private bool _saving;
@@ -22,13 +26,15 @@ namespace EmpireAtWar.Entities.Saves
         private IDisposable _menuInputLock;
 
         public SaveGameRouteUiController(IUiService uiService, IUiCancelRouter cancelRouter,
-            BattleDefinition battle, IBattleSaveRepository repository, BattleSaveActions saves, IInputLock inputLock)
+            BattleDefinition battle, IBattleSaveRepository repository, BattleSaveActions saves, IInputLock inputLock,
+            ITooltipService tooltipService)
             : base(uiService, cancelRouter)
         {
             _battle = battle;
             _repository = repository;
             _saves = saves;
             _inputLock = inputLock;
+            _tooltips = new TooltipRequests(tooltipService);
         }
 
         public void Initialize()
@@ -37,6 +43,7 @@ namespace EmpireAtWar.Entities.Saves
             _ui.AssignPresenter(this);
             _ui.AssignCreationPresenter(this);
             _ui.Initialize();
+            _tooltipHover = new TooltipHoverSubscription(_ui.TooltipHover, HandleTooltipHover, _tooltips);
             _ui.Hide();
             _saves.StatusChanged += OnSaveStatus;
         }
@@ -57,11 +64,16 @@ namespace EmpireAtWar.Entities.Saves
 
         public void Close()
         {
+            _tooltips.HideAll();
             ReleaseInputLock();
             CancelName();
             _ui.Hide();
             Unfocus();
         }
+
+        private void HandleTooltipHover(object key, TooltipAnchor anchor, object source) =>
+            _tooltips.Show(source, key, anchor, () => _ui.IsVisible,
+                () => new TooltipContent(title: (string)key, description: "Close the save game browser."));
 
         public void SelectSave(int index)
         {
@@ -132,7 +144,11 @@ namespace EmpireAtWar.Entities.Saves
         {
             ReleaseInputLock();
             _saves.StatusChanged -= OnSaveStatus;
-            if (_ui != null) _ui.Dispose();
+            if (_ui != null)
+            {
+                _tooltipHover.Dispose();
+                _ui.Dispose();
+            }
             Unfocus();
         }
 

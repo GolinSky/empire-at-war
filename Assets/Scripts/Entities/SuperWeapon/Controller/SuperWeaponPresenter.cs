@@ -205,19 +205,41 @@ namespace EmpireAtWar.Entities.SuperWeapons.Controller
                 string detail = GetRowDetail(type, state, queue, out bool canAct, out _);
                 if (canAct && queue != null) detail += " · Click the row to cancel construction";
                 else if (canAct && state == SuperWeaponState.Ready) detail += " · Click the row to aim";
-                return new TooltipContent(title: type.ToString(),
-                    description: $"Fire at a hostile ship or station; fighters are not valid targets. Choose with {TooltipBindings.Get(_bindings, "Battle", "Command")}; cancel with {TooltipBindings.Get(_bindings, "Ui", "Cancel")}.",
-                    stats: new[]
-                    {
-                        new TooltipStat(label: "Damage per shot", current: profile.Weapon.Damage),
-                        new TooltipStat(label: "Shots", current: profile.Weapon.ShotsPerSalvo),
-                        new TooltipStat(label: "Range", current: profile.Weapon.Range),
-                        new TooltipStat(label: "Firing delay (s)", current: profile.FiringDelay),
-                        new TooltipStat(label: "Area damage", current: profile.AreaDamage),
-                        new TooltipStat(label: "Area radius", current: profile.AreaRadius),
-                        new TooltipStat(label: "Stun duration (s)", current: profile.StunDuration)
-                    }, status: detail);
+                return BuildTooltip(type, profile, detail);
             });
+        }
+
+        private TooltipContent BuildTooltip(SuperWeaponType type, SuperWeaponProfile profile, string status)
+        {
+            (string title, string effect) = type switch
+            {
+                SuperWeaponType.IonCannon => ("Ion Cannon", "Deals shield damage and disables the target on each hit."),
+                SuperWeaponType.HypervelocityGun => ("Hypervelocity Gun", "Deals extra damage to shields and reduced hull damage to structures."),
+                SuperWeaponType.PlasmaCannon => ("Plasma Cannon", "Bypasses shields. The blast also hits nearby units on the target's team."),
+                _ => throw new ArgumentOutOfRangeException(nameof(type), type, null)
+            };
+            string damageLabel = type == SuperWeaponType.IonCannon ? "Shield damage per shot" : "Base damage per shot";
+            var stats = new List<TooltipStat>
+            {
+                new TooltipStat(damageLabel, profile.Weapon.Damage),
+                new TooltipStat("Shots", profile.Weapon.ShotsPerSalvo)
+            };
+            if (profile.FiringDelay > 0f)
+                stats.Add(new TooltipStat("Firing delay (s)", profile.FiringDelay, format: "0.##"));
+            if (profile.Weapon.ShotsPerSalvo > 1 && profile.Weapon.ShotInterval > 0f)
+                stats.Add(new TooltipStat("Shot interval (s)", profile.Weapon.ShotInterval, format: "0.##"));
+            if (profile.AreaDamage > 0f)
+            {
+                stats.Add(new TooltipStat("Base area damage", profile.AreaDamage));
+                stats.Add(new TooltipStat("Area radius", profile.AreaRadius));
+            }
+            if (profile.StunDuration > 0f)
+                stats.Add(new TooltipStat("Disable duration (s)", profile.StunDuration));
+
+            return new TooltipContent(title: title, stats: stats, status: status,
+                description: $"{effect} Targets hostile ships and structures at any range. Strikecraft are excluded. " +
+                    $"Choose with {TooltipBindings.Get(_bindings, "Battle", "Command")}. " +
+                    $"Cancel with {TooltipBindings.Get(_bindings, "Ui", "Cancel")}.");
         }
 
         private void HandlePressed(SuperWeaponType type)

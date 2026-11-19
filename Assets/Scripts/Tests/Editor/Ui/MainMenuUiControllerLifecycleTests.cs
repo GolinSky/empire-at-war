@@ -233,7 +233,7 @@ namespace EmpireAtWar.Tests.Editor
                         "\"version\":" + BattleSaveHeader.CURRENT_VERSION, "\"version\":0"));
                 saves.Headers = new[] { header, old };
                 controller = new LoadGameRouteUiController(
-                    new UiServiceStub(view), new CancelRouterStub(), saves, null);
+                    new UiServiceStub(view), new CancelRouterStub(), saves, null, new TooltipServiceStub());
                 controller.Open();
                 var fields = new SerializedObject(view);
                 var status = (TMPro.TMP_Text)fields.FindProperty("status").objectReferenceValue;
@@ -286,7 +286,7 @@ namespace EmpireAtWar.Tests.Editor
                     playRoute, new RouteStub(), CreateSettings(), new PopupServiceStub(), new TooltipServiceStub());
                 var saves = new EmptySaves();
                 loadRoute = new LoadGameRouteUiController(new UiServiceStub(saveView), new CancelRouterStub(),
-                    saves, null, gameData);
+                    saves, null, new TooltipServiceStub(), gameData);
                 var orchestrator = new MainMenuOrchestrator(mainMenu, playRoute, singlePlayerRoute, loadRoute, gameData);
 
                 orchestrator.Initialize();
@@ -324,7 +324,7 @@ namespace EmpireAtWar.Tests.Editor
                 var remaining = BattleSaveHeader.Create(GameMode.Skirmish, BattleSaveSlot.Autosave,
                     DateTime.UtcNow, 200f, GameSpeed.Normal);
                 var saves = new EmptySaves { Headers = new[] { old, remaining } };
-                controller = new LoadGameRouteUiController(new UiServiceStub(view), new CancelRouterStub(), saves, null);
+                controller = new LoadGameRouteUiController(new UiServiceStub(view), new CancelRouterStub(), saves, null, new TooltipServiceStub());
                 controller.Open();
                 controller.Open();
                 var fields = new SerializedObject(view);

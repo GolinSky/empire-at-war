@@ -2534,7 +2534,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::EmpireAtWar.Components.Ui.Tooltip.TooltipTrigger
   anchorRect: {fileID: 1077142399778476455}
-  key: Map size
+  key: Steam friends
 --- !u!1 &7510231780426643245
 GameObject:
   m_ObjectHideFlags: 0
@@ -2759,6 +2759,7 @@ GameObject:
   - component: {fileID: 5809130852336843093}
   - component: {fileID: 1641989934541669591}
   - component: {fileID: 8416533063366152679}
+  - component: {fileID: 6634980019730451173}
   m_Layer: 5
   m_Name: SteamInvitePopupUi
   m_TagString: Untagged
@@ -2812,6 +2813,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::EmpireAtWar.Entities.Popups.SteamInvitePopupUi
   canvasGroup: {fileID: 1641989934541669591}
   inviteView: {fileID: 1828447487566107647}
+  tooltipHover: {fileID: 6634980019730451173}
 --- !u!1 &7920674492343773524
 GameObject:
   m_ObjectHideFlags: 0
@@ -3214,3 +3216,17 @@ MonoBehaviour:
   m_hasFontAssetChanged: 0
   m_baseMaterial: {fileID: 0}
   m_maskOffset: {x: 0, y: 0, z: 0, w: 0}
+--- !u!114 &6634980019730451173
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 7724457660093066797}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 6f15b60cceedcfd4787c5736b5813dab, type: 3}
+  m_Name:
+  m_EditorClassIdentifier: Assembly-CSharp::EmpireAtWar.Components.Ui.Tooltip.TooltipHoverView
+  triggers:
+  - {fileID: 8261233483131438671}

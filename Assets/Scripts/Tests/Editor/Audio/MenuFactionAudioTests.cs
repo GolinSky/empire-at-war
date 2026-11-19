@@ -100,7 +100,7 @@ namespace EmpireAtWar.Tests.Editor
         {
             var model = new SurvivalModel();
             var audio = new SelectionAudio();
-            var controller = new SurvivalRouteUiController(null, null, model, null, audio);
+            var controller = new SurvivalRouteUiController(null, null, model, null, audio, null);
             controller.SelectPlayer((int)FactionType.Republic);
             controller.SelectEnemy((int)FactionType.Empire);
             controller.SelectAlly((int)FactionType.Empire + 1);

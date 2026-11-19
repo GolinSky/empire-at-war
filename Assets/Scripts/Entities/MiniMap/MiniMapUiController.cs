@@ -53,6 +53,7 @@ namespace EmpireAtWar.Entities.MiniMap
         private MiniMapUi _miniMapView;
         public MiniMapUi View => _miniMapView;
         private readonly IPlayerColors _playerColors;
+        private readonly PlayerDisplayNames _playerNames;
 
         private readonly MiniMapData _model;
         private readonly TimerPoolService _timerPoolService;
@@ -74,7 +75,7 @@ namespace EmpireAtWar.Entities.MiniMap
             IReadOnlyList<IMiniMapOverlaySource> overlaySources,
             MiniMapData model,
             IPlayerColors playerColors,
-            TimerPoolService timerPoolService, IBattleAreaService battleAreas) : base(uiService, cancelRouter)
+            TimerPoolService timerPoolService, IBattleAreaService battleAreas, PlayerDisplayNames playerNames) : base(uiService, cancelRouter)
         {
             _battleMap = battleMap;
             _overlaySources = overlaySources;
@@ -82,6 +83,7 @@ namespace EmpireAtWar.Entities.MiniMap
             _tooltips = new TooltipRequests(tooltipService);
             _model = model;
             _playerColors = playerColors;
+            _playerNames = playerNames;
             _inputLock = inputLock;
             _timerPoolService = timerPoolService;
             _routeNavigation = routeNavigation;
@@ -187,16 +189,29 @@ namespace EmpireAtWar.Entities.MiniMap
             if (key is MiniMapMarker marker)
             {
                 _tooltips.Show(source, key, anchor, () => !_model.IsInputBlocked && marker.Visible,
-                    () => new TooltipContent(title: marker.MarkType == MarkType.TibannaGasStation
-                            ? "Tibanna Gas Station"
-                            : marker.MarkType.ToString().Replace("Tactical", "") +
-                              (marker.MarkType >= MarkType.TacticalLook && marker.MarkType <= MarkType.TacticalRetreat ? " marker" : ""),
-                        description: marker.MarkType == MarkType.ReinforcementZone
-                            ? "Deploy reinforcements inside a friendly zone."
-                            : marker.MarkType == MarkType.CaptureSite
-                                ? "Move units into the ring to capture this construction site."
-                                : "Click to move the camera here.",
-                        status: $"Owner: {marker.Owner}"));
+                    () => new TooltipContent(title: marker.MarkType switch
+                        {
+                            MarkType.PlayerBase => "Friendly base",
+                            MarkType.EnemyBase => "Enemy base",
+                            MarkType.PlayerMining => "Friendly mine",
+                            MarkType.EnemyMining => "Enemy mine",
+                            MarkType.DefendPlatform => "Defense platform",
+                            MarkType.MiningFacility => "Mining facility",
+                            MarkType.ReinforcementZone => "Reinforcement zone",
+                            MarkType.CaptureSite => "Capture site",
+                            MarkType.SatelliteSite => "Satellite site",
+                            MarkType.TibannaGasStation => "Tibanna Gas Station",
+                            _ => marker.MarkType >= MarkType.TacticalLook && marker.MarkType <= MarkType.TacticalRetreat
+                                ? $"{marker.MarkType.ToString().Replace("Tactical", "")} marker"
+                                : marker.MarkType.ToString()
+                        },
+                        description: marker.MarkType switch
+                        {
+                            MarkType.ReinforcementZone => "Friendly reinforcement zone. Check visibility and clearance before deploying.",
+                            MarkType.CaptureSite or MarkType.SatelliteSite => "Bring ships or squadrons within capture range.",
+                            _ => "Click to move the camera here."
+                        },
+                        status: $"Owner: {(marker.Owner.IsNone ? "Neutral" : _playerNames.Get(marker.Owner))}"));
                 return;
             }
             _tooltips.Show(source, key, anchor, () => !_model.IsInputBlocked,

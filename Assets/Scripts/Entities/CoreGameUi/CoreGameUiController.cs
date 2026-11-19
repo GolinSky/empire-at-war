@@ -413,9 +413,9 @@ namespace EmpireAtWar.Entities.CoreGameUi
                     "Speed" => "Switch the battle speed.",
                     "Clear fleet" => "Deselect all currently selected units.",
                     "Orbital" => "Open orbital weapons. Construct a charge at the station, then choose a ready weapon and a target.",
-                    "Research" => "Open research. Select a mining facility to see its production upgrade.",
+                    "Research" => "Open research for fleet and economy upgrades.",
                     "Structures" => "Open construction for mining facilities, defense platforms, and the second station.",
-                    "Reinforcements" => "Open or close available reinforcements. Drag a card into a friendly deployment zone.",
+                    "Reinforcements" => "Open or close reinforcements. Drag a card to a valid deployment location.",
                     "Cinematic" => $"Enter cinematic camera mode. Exit with {TooltipBindings.Get(_bindings, "Ui", "Cancel")}.",
                     _ => throw new ArgumentOutOfRangeException(nameof(key))
                 }));

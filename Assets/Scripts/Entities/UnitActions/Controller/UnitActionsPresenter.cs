@@ -101,13 +101,13 @@ namespace EmpireAtWar.Entities.UnitActions.Controller
             string description = action switch
             {
                 UnitActionId.Attack => $"Attack an enemy unit or hardpoint. Choose a target with {command}. Cancel with {cancel}.",
-                UnitActionId.AttackMove => $"Move to a point and engage threats on the way. Choose empty space with {command}. Cancel with {cancel}.",
+                UnitActionId.AttackMove => $"Move to a point and engage threats on the way. Choose a valid destination with {command}. Cancel with {cancel}.",
                 UnitActionId.Stop => "Stop movement and clear the current order.",
                 UnitActionId.Guard => $"Follow and protect a friendly or allied unit. Engage threats, then return. Choose with {command}; cancel with {cancel}.",
                 UnitActionId.WaypointMove => $"Choose successive points with {command}. Click this command again to finish. Cancel with {cancel}.",
                 UnitActionId.Hunt => "Seek and engage enemy units automatically.",
                 UnitActionId.Retreat => "Withdraw from the battlefield.",
-                UnitActionId.Move => $"Choose empty space with {command} to move the selected units.",
+                UnitActionId.Move => $"Choose a valid destination with {command} to move the selected units.",
                 _ => throw new ArgumentOutOfRangeException(nameof(action))
             };
             string shortcut = action == UnitActionId.WaypointMove

@@ -277,6 +277,11 @@ namespace EmpireAtWar.Entities.Faction.Ui
                 requirements.Add(new TooltipRequirement("Purchase limit reached", false));
                 status = $"{data.Name} has reached its purchase limit.";
             }
+            else if (!_model.CanQueueUnit(request))
+            {
+                requirements.Add(new TooltipRequirement("All production queues are occupied", false));
+                status = "Wait for a production queue to free up.";
+            }
             var stats = new System.Collections.Generic.List<TooltipStat>
             {
                 new TooltipStat(label: "Cost (credits)", current: data.Price),

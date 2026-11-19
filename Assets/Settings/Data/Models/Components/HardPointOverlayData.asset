@@ -29,7 +29,7 @@ MonoBehaviour:
     hardPointType: 1
   - icon: {fileID: 21300000, guid: 33e58938768151045937fd04102c2bd5, type: 3}
     displayName: Shield Generator
-    description: Destroying it collapses the ship's shields for good.
+    description: Shields fail permanently when the last shield generator is destroyed.
     hardPointType: 2
   - icon: {fileID: 21300000, guid: cfc80631588c45b9b7b51f528752336c, type: 3}
     displayName: Supply Dock
@@ -37,11 +37,11 @@ MonoBehaviour:
     hardPointType: 5
   - icon: {fileID: 21300000, guid: 5ad1f04dcc37ae540aee98855aadce92, type: 3}
     displayName: Hangar
-    description: Destroying it stops fighter launches.
+    description: Destroying hangars can limit or stop squadron launches.
     hardPointType: 4
   - icon: {fileID: 21300000, guid: 185a86f448284d48ad561e5cb7619717, type: 3}
     displayName: Tractor Beam Mount
-    description: Destroyable tractor-beam mount. Tractor Beam is not yet operational.
+    description: Tractor Beam requires an operational mount.
     hardPointType: 7
   - icon: {fileID: 21300000, guid: e8a5df89602a9cd458a9a619ba30ab56, type: 3}
     displayName: Hull Section
@@ -49,11 +49,11 @@ MonoBehaviour:
     hardPointType: 3
   - icon: {fileID: 21300000, guid: e200639896af4c818e577a1ebfdf0666, type: 3}
     displayName: Point Defense
-    description: Destroying it removes the ship's anti-fighter screen.
+    description: This mount protects against strikecraft until destroyed.
     hardPointType: 8
   - icon: {fileID: 21300000, guid: 98bf53c5af9d478d9940b6563204bc6e, type: 3}
     displayName: Missile Defense
-    description: Destroying it stops missiles and torpedoes from being shot down.
+    description: This mount can intercept missiles and torpedoes until destroyed.
     hardPointType: 9
   - icon: {fileID: 21300000, guid: d1de263d3aba4ee6b7dfb76b8707f6e9, type: 3}
     displayName: Sensor Array

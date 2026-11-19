@@ -21,7 +21,7 @@ MonoBehaviour:
         displayName: Nebulon-B
         description: Rebel general-purpose cruiser effective against corvettes and
           light cruisers. Four turbolaser batteries, four laser cannon batteries
-          and targetable engines. Boost Shield Power doubles shield regeneration,
+          and targetable engines. Boost Shield Power quadruples shield regeneration,
           reduces speed by 45% and reduces weapon damage by 5% for 15 s. Recovers
           in 40 s.
         role: General-purpose cruiser / Anti-corvette
@@ -59,13 +59,13 @@ MonoBehaviour:
       value:
         matchups: {fileID: 11400000, guid: 061d31c86b87ab34ca40a0d06290c8a5, type: 2}
         displayName: MC80
-        description: Heavy Rebel capital ship with 14,662.5 hull, 13,200 shields
-          and 238/s shield regeneration. Eight heavy turbolaser, four heavy quad
-          turbolaser, four dual heavy turbolaser, two dual medium turbolaser and
-          two heavy ion cannon batteries, four point-defense guns and targetable
-          engines. No targetable shield generator. Boost Shield Power doubles shield
-          regeneration, reduces speed by 45% and reduces weapon damage by 5% for
-          15 s. Recovers in 40 s. Strong against frigates; vulnerable to bombers.
+        description: Heavy Rebel capital ship with 14,000 hull, 13,000 shields and
+          238/s shield regeneration. Eight heavy turbolaser, four heavy quad turbolaser,
+          four dual heavy turbolaser, two dual medium turbolaser and two heavy ion
+          cannon batteries, four point-defense guns and targetable engines. No targetable
+          shield generator. Boost Shield Power quadruples shield regeneration, reduces
+          speed by 45% and reduces weapon damage by 5% for 15 s. Recovers in 40 s.
+          Strong against frigates; vulnerable to bombers.
         role: Capital ship / Anti-frigate
         iconKey: b95f55f2e2f204f42a94f0c44c5baa85:21300000
         isHero: 0
@@ -81,17 +81,16 @@ MonoBehaviour:
       value:
         matchups: {fileID: 11400000, guid: 6f751ab5214d08f468a4ba44b5cf1107, type: 2}
         displayName: Home One
-        description: 'Admiral Ackbar''s hero command cruiser: 28,750 hull, 22,000
+        description: 'Admiral Ackbar''s hero command cruiser: 50,000 hull, 50,000
           shields, four turbolaser, four dual heavy turbolaser, four dual medium
           turbolaser and four ion cannon batteries. Shield generator, engines and
-          fighter bay can be destroyed. Concentrate Fire grants Home One +50% damage
-          against one selected enemy and directs nearby fleet units to attack it
-          for 15 s; 20 s recovery. Boost Shield Power doubles shield regeneration,
-          reduces speed by 45% and reduces weapon damage by 5% for 15 s. Recovers
-          in 40 s. Fleet Commander supports allied Rebel ships and squadrons throughout
-          the battle. Deploys 2 fighter squadrons, 2 interceptor squadrons, 1 bomber
-          squadron at once. Carries 20 total squadron launches, including the initial
-          deployment.'
+          fighter bay can be destroyed. Concentrate Fire directs friendly ships and
+          squadrons within 400 units to attack the selected enemy for 15 s. Recovers
+          in 20 s. Boost Shield Power quadruples shield regeneration, reduces speed
+          by 45% and reduces weapon damage by 5% for 15 s. Recovers in 40 s. Fleet
+          Commander supports allied Rebel ships and squadrons throughout the battle.
+          Deploys 1 fighter squadron, 1 interceptor squadron and 1 bomber squadron
+          at once. Carries 20 total squadron launches, including the initial deployment.'
         role: Hero capital ship / Fleet command cruiser
         iconKey: f71730a251297854b97875858cdb2249:21300000
         isHero: 1
@@ -132,7 +131,7 @@ MonoBehaviour:
           are targetable. Eight medium turbolasers, six medium ion cannons and eight
           heavy lasers remain operational until hull destruction. Boost Shield Power
           accelerates shield regeneration while reducing speed and weapon damage.
-          Deploys 2 fighter squadrons, 1 interceptor squadron, 2 bomber squadrons
+          Deploys 1 fighter squadron, 1 interceptor squadron and 1 bomber squadron
           at once. Carries 20 total squadron launches, including the initial deployment.
         role: Dreadnought / Fleet anchor
         iconKey: d1df96d57bfbbb049952971439112bf5:21300000
@@ -151,7 +150,7 @@ MonoBehaviour:
         displayName: Corellian BC
         description: Corellian Battlecruiser armed with four heavy two-burst barrage
           rocket launchers, eight medium turbolasers and five laser cannons. Boost
-          Shield Power doubles shield regeneration for 15 seconds. Deploys 1 fighter
+          Shield Power quadruples shield regeneration for 15 seconds. Deploys 1 fighter
           squadron, 1 interceptor squadron, 1 bomber squadron at once. Carries 6
           total squadron launches, including the initial deployment.
         role: Fleet reinforcement / Squadron support
@@ -229,7 +228,7 @@ MonoBehaviour:
         displayName: Assault Frigate II
         description: General-purpose combat frigate for fleet escort and medium-range
           combat. Four medium turbolasers, two light quad turbolasers, four heavy
-          laser cannons and two point-defense lasers. Boost Shield Power doubles
+          laser cannons and two point-defense lasers. Boost Shield Power quadruples
           shield regeneration, reduces speed by 45% and reduces weapon damage by
           5% for 15 s. Recovers in 40 s. Strong against corvettes and frigates; limited
           against heavy capitals.
@@ -268,7 +267,7 @@ MonoBehaviour:
       value:
         matchups: {fileID: 11400000, guid: 30f4f94da51a19c43af1cb27ccdc0a47, type: 2}
         displayName: Liberator
-        description: Battlecarrier with 7,500 hull and 8,400 shields. Four heavy
+        description: Battlecarrier with 9,750 hull and 10,920 shields. Four heavy
           turbolasers, two medium dual turbolasers, four medium ion cannons and two
           point defense lasers. Boost Weapon Power halves weapon reload and time
           between shots and halves speed and shield regeneration for 7 s. Recovers
@@ -335,7 +334,7 @@ MonoBehaviour:
         matchups: {fileID: 11400000, guid: 7eb5d1258f2de8349b775004d6a5899b, type: 2}
         displayName: Endurance
         description: Fleet carrier with four heavy octuple turbolasers, two heavy
-          ion cannons and six heavy point-defense mounts. Boost Shield Power doubles
+          ion cannons and six heavy point-defense mounts. Boost Shield Power quadruples
           shield regeneration, reduces speed by 45% and reduces weapon damage by
           5% for 15 s. Recovers in 40 s. Deploys 2 fighter squadrons, 2 interceptor
           squadrons, 2 bomber squadrons at once. Carries 24 total squadron launches,
@@ -357,7 +356,7 @@ MonoBehaviour:
         displayName: Justice
         description: Mon Calamari capital carrier with 13,800 hull and 15,400 shields.
           Four medium dual turbolasers, four light dual ion cannons, six medium turbolasers
-          and eight medium lasers. Boost Shield Power doubles shield regeneration,
+          and eight medium lasers. Boost Shield Power quadruples shield regeneration,
           reduces speed by 45% and reduces weapon damage by 5% for 15 s. Recovers
           in 40 s. Deploys 2 fighter squadrons, 1 interceptor squadron, 2 bomber
           squadrons at once. Carries 15 total squadron launches, including the initial
@@ -396,7 +395,7 @@ MonoBehaviour:
       value:
         matchups: {fileID: 0}
         displayName: Mediator
-        description: Mon Calamari battlecruiser with 40,250 hull and 44,000 shields.
+        description: Mon Calamari battlecruiser with 40,000 hull and 45,000 shields.
           Eight heavy dual turbolasers, six heavy dual ion cannons, eight medium
           dual turbolasers, six medium dual laser cannons and six heavy laser cannons.
           Boost Weapon Power halves weapon reload and time between shots and halves
@@ -418,9 +417,9 @@ MonoBehaviour:
       value:
         matchups: {fileID: 0}
         displayName: Remonda
-        description: Mon Calamari battleship with 18,400 hull and 17,600 shields.
-          Boost Shield Power doubles shield regeneration, reduces speed by 45% and
-          reduces weapon damage by 5% for 15 s. Recovers in 40 s. Deploys 1 fighter
+        description: Mon Calamari battleship with 19,000 hull and 18,000 shields.
+          Boost Shield Power quadruples shield regeneration, reduces speed by 45%
+          and reduces weapon damage by 5% for 15 s. Recovers in 40 s. Deploys 1 fighter
           squadron, 1 bomber squadron at once. Carries 4 total squadron launches,
           including the initial deployment.
         role: Battleship
@@ -442,7 +441,7 @@ MonoBehaviour:
         displayName: A-Wing
         description: Four fast A-Wing interceptors with 142 hull and 30 shields each.
           Their interceptor lasers are most effective against bombers. Each surviving
-          craft regenerates 0.66 shield HP/s.
+          craft regenerates 0.33 shield HP/s.
         role: Interceptor / Anti-bomber
         iconKey: 524d65b06058f0a428ee3d2a9b9b78e9:21300000
         isHero: 0
@@ -460,7 +459,7 @@ MonoBehaviour:
         displayName: X-Wing
         description: 'Five Rebel multirole fighters, each with 182 hull, 48 shields,
           0.33/s shield regeneration, four laser cannons and one proton torpedo launcher.
-          Torpedoes deal 32 damage per fighter with a 10-second reload. Intercept
+          Torpedoes deal 32 damage per fighter with a 5-second reload. Intercept
           bombers, dogfight fighters, escort bombers and scout. Lock S-Foils closes
           the wings: speed x1.3, weapon delays x3 and shield regeneration x3. Toggle
           again to reopen the wings and return to combat configuration.'
@@ -480,11 +479,11 @@ MonoBehaviour:
         matchups: {fileID: 11400000, guid: b9ce6e1dd47fb3c43a95e0feda9a7bee, type: 2}
         displayName: Y-Wing BTL-A4
         description: 'Three BTL-A4 Y-Wing bombers. Each bomber has 180 hull, 10 anti-laser
-          shields and tactical speed 44. One light dual laser, one heavy dual ion
-          stunner and two medium proton-torpedo launchers per craft. Ion Shot disables
-          the target for 3 s on arrival; 20 s recovery. Weapons are not separately
-          targetable. Each surviving craft regenerates 0.22 shield HP/s. Full squadron
-          torpedo volley: 943.5 damage; 12 s reload.'
+          shields and cruise speed 39.52 and combat speed 45.76. One light dual laser,
+          one heavy dual ion stunner and two medium proton-torpedo launchers per
+          craft. Ion Shot disables the target for 1.5 s on arrival; 20 s recovery.
+          Weapons are not separately targetable. Each surviving craft regenerates
+          0.22 shield HP/s. Full squadron torpedo volley: 629.0 damage, 4 s reload.'
         role: Bomber / Anti-ship
         iconKey: 793233063a2c3d241ab5dbc0af1a35d4:21300000
         isHero: 0
@@ -520,9 +519,10 @@ MonoBehaviour:
         matchups: {fileID: 0}
         displayName: Luke Skywalker
         description: Luke leads five elite Red Squadron X-wings. Superior lasers
-          dominate squadron duels. Lucky Shot launches a precision proton strike
-          for 8,000 base hull damage through shields against any enemy ship or structure.
-          60 s cooldown.
+          dominate squadron duels. Lucky Shot requires Luke to survive. A 1.25 s
+          attack run precedes a precision proton strike for 8,000 base hull damage
+          through shields. Targets enemy ships from corvettes through dreadnoughts
+          and enemy structures. 60 s cooldown.
         role: Hero / Elite fighter squadron
         iconKey: 94df6c4c4e8a4cc47b956c7e85b516f4:21300000
         isHero: 1

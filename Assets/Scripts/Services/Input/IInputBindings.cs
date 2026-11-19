@@ -19,6 +19,9 @@ namespace EmpireAtWar.Services.Input
 
         string GetBindingDisplayString(BindingSlot slot);
 
+        /// <summary>Returns the current binding text even for actions that the player cannot rebind.</summary>
+        string GetActionBindingDisplayString(string map, string action);
+
         /// <summary>Waits for the next key or button with all input suspended; Escape cancels.</summary>
         void StartRebind(BindingSlot slot, Action<RebindResult> completed);
 

@@ -1,6 +1,8 @@
 using EmpireAtWar.Utils;
 using EmpireAtWar.Components.Ui.Tooltip;
 using EmpireAtWar.Entities.Tooltip;
+using EmpireAtWar.Services.CaptureSites;
+using EmpireAtWar.Services.Player;
 using EmpireAtWar.Services.Tooltip;
 using System;
 using EmpireAtWar.Models.Players;
@@ -16,6 +18,7 @@ namespace EmpireAtWar.Entities.CaptureSites
         private readonly ILocalPlayer _localPlayer;
         private readonly CaptureSiteModel _model;
         private readonly CaptureSiteData _data;
+        private readonly PlayerDisplayNames _playerNames;
         private readonly TooltipRequests _tooltips;
         private readonly TooltipHoverSubscription _tooltipHover;
         private SiteFacilityType? _renderedFacilityType;
@@ -61,7 +64,7 @@ namespace EmpireAtWar.Entities.CaptureSites
             ILocalPlayer localPlayer,
             ITooltipService tooltipService,
             CaptureSiteModel model,
-            CaptureSiteData data, CaptureSiteKind kind = CaptureSiteKind.Mining, int pointId = -1)
+            CaptureSiteData data, PlayerDisplayNames playerNames, CaptureSiteKind kind = CaptureSiteKind.Mining, int pointId = -1)
         {
             Kind = kind;
             PointId = pointId;
@@ -69,6 +72,7 @@ namespace EmpireAtWar.Entities.CaptureSites
             _model = model;
             _view = view;
             _data = data;
+            _playerNames = playerNames;
             _tooltips = new TooltipRequests(tooltipService);
             _tooltipHover = new TooltipHoverSubscription(
                 view.TooltipHover, HandleTooltipHover, _tooltips);
@@ -165,15 +169,7 @@ namespace EmpireAtWar.Entities.CaptureSites
         }
 
         private void HandleTooltipHover(object key, TooltipAnchor anchor, object source)
-        {
-            _tooltips.Show(source, key, anchor, () => IsRevealed, () =>
-            {
-                return new TooltipContent(title: "Capture site",
-                    description: "Move units into the ring to capture it. Select a friendly empty site to choose a facility.",
-                    stats: new[] { new TooltipStat(label: "Capture (%)", current: CaptureProgress * 100f, format: "0"),
-                        new TooltipStat(label: "Construction (%)", current: ConstructionProgress * 100f, format: "0") },
-                    status: $"Owner: {Owner} · {State} · {FacilityType}");
-            });
-        }
+            => _tooltips.Show(source, key, anchor, () => IsRevealed,
+                () => CaptureSiteTooltipSource.BuildContent(this, _data, _playerNames));
     }
 }

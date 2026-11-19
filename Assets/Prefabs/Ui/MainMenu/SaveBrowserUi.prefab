@@ -1267,6 +1267,7 @@ GameObject:
   - component: {fileID: 143454285759765661}
   - component: {fileID: 5009704809815893404}
   - component: {fileID: 1009454817952639910}
+  - component: {fileID: 6634980019730451172}
   m_Layer: 0
   m_Name: SaveBrowserUi
   m_TagString: Untagged
@@ -1347,6 +1348,7 @@ MonoBehaviour:
   selectedBattleTime: {fileID: 5882882641889346152}
   selectedMode: {fileID: 4225280597308336917}
   selectedCompatibility: {fileID: 5690944692925405774}
+  tooltipHover: {fileID: 6634980019730451172}
 --- !u!1 &2980092658233431983
 GameObject:
   m_ObjectHideFlags: 0
@@ -7125,3 +7127,17 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 4e29b1a8efbd4b44bb3f3716e73f07ff, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+--- !u!114 &6634980019730451172
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2894598388351288244}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 6f15b60cceedcfd4787c5736b5813dab, type: 3}
+  m_Name:
+  m_EditorClassIdentifier: Assembly-CSharp::EmpireAtWar.Components.Ui.Tooltip.TooltipHoverView
+  triggers:
+  - {fileID: 7806434902973310114}

@@ -48,6 +48,7 @@ namespace EmpireAtWar.Services.CaptureSites
         private IPlayerRegistry _playerRegistry;
         private IPlayerRoster _playerRoster;
         private ILocalPlayer _localPlayer;
+        private PlayerDisplayNames _playerNames;
         private ITooltipService _tooltipService;
         private INotifier<BattleMap> _battleMap;
         private IPlayerCommandSink _commands;
@@ -88,6 +89,7 @@ namespace EmpireAtWar.Services.CaptureSites
             IPlayerRegistry playerRegistry,
             IPlayerRoster playerRoster,
             ILocalPlayer localPlayer,
+            PlayerDisplayNames playerNames,
             ITooltipService tooltipService,
             INotifier<BattleMap> battleMap,
             CaptureSiteData data,
@@ -112,6 +114,7 @@ namespace EmpireAtWar.Services.CaptureSites
             _playerRegistry = playerRegistry;
             _playerRoster = playerRoster;
             _localPlayer = localPlayer;
+            _playerNames = playerNames;
             _strengthSampler = new CaptureStrengthSampler(shipService, squadronRegistry, playerRoster, data.SquadronCaptureWeight);
         }
 
@@ -132,7 +135,7 @@ namespace EmpireAtWar.Services.CaptureSites
                     captureDuration: view.CaptureDuration, captureSpeedPerNetShip: _data.CaptureSpeedPerNetShip, relations: _playerRoster, startingOwner: view.StartingOwner,
                     facilityType: _data.GetAllowedFacilities(view.Kind)[0]);
                 CaptureSitePresenter site = new CaptureSitePresenter(model: model, view: view, data: _data, localPlayer: _localPlayer,
-                    tooltipService: _tooltipService, kind: view.Kind, pointId: view.PointId);
+                    tooltipService: _tooltipService, playerNames: _playerNames, kind: view.Kind, pointId: view.PointId);
                 _sites.Add(site);
                 site.Captured += HandleSiteCaptured;
                 site.Lost += HandleSiteLost;

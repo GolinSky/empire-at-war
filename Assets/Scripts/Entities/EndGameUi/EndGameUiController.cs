@@ -68,9 +68,9 @@ namespace EmpireAtWar.Entities.EndGameUi
             _tooltips.Show(source, key, anchor, () => _isShown && !_isLeaving, () =>
                 new TooltipContent(title: (string)key, description: (string)key == "Objective"
                     ? _result.Mode == GameMode.Survival
-                        ? "Keep your station alive and defeat all five waves."
+                        ? $"Keep at least one human station standing and defeat all {SurvivalModel.WAVE_COUNT} waves."
                         : _result.VictoryCondition == BattleVictoryCondition.DestroyEnemyFleet
-                        ? "Destroy the opposing fleet to win the battle." : "Destroy the opposing station to win the battle."
+                        ? "Destroy the opposing bases and fleets. The enemy must also run out of reserves." : "Destroy the opposing bases to win the battle."
                     : "Return to the main menu to set up another battle."));
     }
 }

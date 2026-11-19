@@ -1,4 +1,5 @@
 using System.Linq;
+using EmpireAtWar.Components.Ui.Tooltip;
 using EmpireAtWar.Entities.Tooltip;
 using EmpireAtWar.Models.Factions;
 using EmpireAtWar.Services.Tooltip;
@@ -16,6 +17,23 @@ namespace EmpireAtWar.Tests.Editor
         private const string PREFAB_PATH = "Assets/Prefabs/Ui/Tooltip/TooltipUi.prefab";
         private const string MATCHUP_ROW_PATH = "Assets/Prefabs/Ui/Tooltip/TooltipMatchupRow.prefab";
         private const string ICON_DATA_PATH = "Assets/Settings/Data/Tooltip/TooltipIconData.asset";
+
+        [TestCase("MainMenu/SkirmishUi", 14)]
+        [TestCase("MainMenu/SurvivalUi", 7)]
+        [TestCase("MainMenu/SaveBrowserUi", 1)]
+        [TestCase("Popups/SteamInvitePopupUi", 1)]
+        public void MenuTooltipTriggersAreRegistered(string path, int expectedCount)
+        {
+            GameObject prefab = AssetDatabase.LoadAssetAtPath<GameObject>($"Assets/Prefabs/Ui/{path}.prefab");
+            TooltipHoverView view = prefab.GetComponentInChildren<TooltipHoverView>(true);
+            Assert.That(view, Is.Not.Null);
+            SerializedProperty triggers = new SerializedObject(view).FindProperty("triggers");
+            Assert.That(triggers.arraySize, Is.EqualTo(expectedCount));
+            var registered = Enumerable.Range(0, triggers.arraySize)
+                .Select(index => triggers.GetArrayElementAtIndex(index).objectReferenceValue)
+                .ToArray();
+            Assert.That(registered, Is.EquivalentTo(prefab.GetComponentsInChildren<TooltipTrigger>(true)));
+        }
 
         [Test]
         public void PrefabHasConcreteTooltipViewAndCanvasGroup()

@@ -85,6 +85,10 @@ namespace EmpireAtWar.Services.Input
             BindingsChanged?.Invoke();
         }
 
+        public string GetActionBindingDisplayString(string map, string action) =>
+            _asset.FindAction($"{map}/{action}", throwIfNotFound: true)
+                .GetBindingDisplayString(InputBinding.DisplayStringOptions.DontUseShortDisplayNames);
+
         public string GetBindingDisplayString(BindingSlot slot)
         {
             for (int i = slot.FirstPartIndex; i < slot.FirstPartIndex + slot.PartCount; i++)

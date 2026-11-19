@@ -1,4 +1,5 @@
 using System;
+using EmpireAtWar.Components.Ui.Tooltip;
 using System.Collections.Generic;
 using System.Globalization;
 using EmpireAtWar.Services.Saves;
@@ -13,6 +14,7 @@ namespace EmpireAtWar.Entities.Saves
     {
         [SerializeField] private TMP_Text title;
         [SerializeField] private Button closeButton;
+        [SerializeField] private TooltipHoverView tooltipHover;
         [SerializeField] private GameObject modeTabs;
         [SerializeField] private Toggle skirmishToggle;
         [SerializeField] private Toggle survivalToggle;
@@ -47,6 +49,8 @@ namespace EmpireAtWar.Entities.Saves
         public event Action<int> ModeSelected;
         public event Action LoadRequested;
         public event Action DeleteRequested;
+
+        public TooltipHoverView TooltipHover => tooltipHover;
 
         public void AssignPresenter(ISaveBrowserPresenter presenter) => _presenter = presenter;
 

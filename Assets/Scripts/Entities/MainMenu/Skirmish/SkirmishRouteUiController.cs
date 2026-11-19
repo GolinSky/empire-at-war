@@ -180,7 +180,9 @@ namespace EmpireAtWar.Entities.MainMenu.Skirmish
             _tooltips.Show(source, key, anchor, () => _isOpen, () => new TooltipContent(title: (string)key,
                 description: (string)key switch
                 {
-                    "Start battle" => _model.CanStart ? "Start the battle with the current setup." : "Choose at least two opposing teams to start a battle.",
+                    "Start battle" when _model.CanStart => "Start the battle with the current setup.",
+                    "Start battle" when _model.ActiveTeamCount < 2 => "Choose at least two opposing teams to start a battle.",
+                    "Start battle" => "Choose a larger map or close player slots to fit this map.",
                     "Close" => "Return to mode selection.",
                     "Planet" => $"Choose the battlefield. Current: {_model.Planet}.",
                     "Map size" => $"Choose the generated battlefield size. Current: {_model.MapSize}.",

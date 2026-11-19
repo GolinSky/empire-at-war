@@ -4,6 +4,7 @@ using EmpireAtWar.Models.Players;
 using EmpireAtWar.Services.Tooltip;
 using EmpireAtWar.Services.CaptureSites;
 using EmpireAtWar.Services.Player;
+using EmpireAtWar.Services.Networking.Online;
 using EmpireAtWar.Services.Networking.States;
 using EmpireAtWar.Services.Saves;
 using System.Collections.Generic;
@@ -20,6 +21,8 @@ namespace EmpireAtWar.Tests.Editor
         private GameObject _tooltipObject;
         private FakeView _view;
         private PlayerRoster _roster;
+        private PlayerDisplayNames _playerNames;
+        private CaptureSiteData _data;
         private CaptureSitePresenter _presenter;
 
         [SetUp]
@@ -29,13 +32,15 @@ namespace EmpireAtWar.Tests.Editor
             _tooltipObject.SetActive(false);
             _view = new FakeView(_tooltipObject.AddComponent<TooltipHoverView>());
             _roster = TestPlayers.CreateDuel();
-            CaptureSiteData data = AssetDatabase.LoadAssetAtPath<CaptureSiteData>(
+            _playerNames = new PlayerDisplayNames(
+                new OnlineMatchService(null, new OnlineRecoveryProgress(), new SteamPlatform(apiEnabled: false)), _roster);
+            _data = AssetDatabase.LoadAssetAtPath<CaptureSiteData>(
                 "Assets/Settings/Data/Models/CaptureSites/CaptureSiteData.asset");
-            Assert.That(data, Is.Not.Null);
+            Assert.That(_data, Is.Not.Null);
             TooltipService tooltips = new TooltipService(new FixedClock(), new TooltipModel(),
                 new TooltipTiming(0.35f, 0.1f));
             _presenter = new CaptureSitePresenter(_view, TestPlayers.CreateLocalPlayer(_roster),
-                tooltips, new CaptureSiteModel(_roster, 10f, 1f), data);
+                tooltips, new CaptureSiteModel(_roster, 10f, 1f), _data, _playerNames);
         }
 
         [TearDown]
@@ -43,6 +48,20 @@ namespace EmpireAtWar.Tests.Editor
         {
             _presenter.Dispose();
             Object.DestroyImmediate(_tooltipObject);
+        }
+
+        [TestCase(CaptureSiteState.Neutral, "Owner: Neutral · Empty")]
+        [TestCase(CaptureSiteState.Owned, "Owner: Player 1 · Empty")]
+        [TestCase(CaptureSiteState.Constructing, "Owner: Player 1 · Constructing · Battle Asteroid")]
+        [TestCase(CaptureSiteState.Operational, "Owner: Player 1 · Operational · Battle Asteroid")]
+        public void TooltipShowsFacilityOnlyAfterConstructionStarts(CaptureSiteState state, string expectedStatus)
+        {
+            PlayerId owner = state == CaptureSiteState.Neutral ? PlayerId.None : TestPlayers.Human;
+            _presenter.Restore(owner, state, PlayerId.None, 0f, SiteFacilityType.BattleAsteroid, 0f);
+
+            TooltipContent tooltip = CaptureSiteTooltipSource.BuildContent(_presenter, _data, _playerNames);
+
+            Assert.That(tooltip.Status, Is.EqualTo(expectedStatus));
         }
 
         [Test]
@@ -268,7 +287,7 @@ namespace EmpireAtWar.Tests.Editor
                 var data = AssetDatabase.LoadAssetAtPath<CaptureSiteData>(
                     "Assets/Settings/Data/Models/CaptureSites/CaptureSiteData.asset");
                 _presenter = new CaptureSitePresenter(_view, TestPlayers.CreateLocalPlayer(_roster),
-                    tooltips, new CaptureSiteModel(_roster, 10f, 1f), data, CaptureSiteKind.Satellite);
+                    tooltips, new CaptureSiteModel(_roster, 10f, 1f), data, _playerNames, CaptureSiteKind.Satellite);
             }
             CaptureSitesSystem system = CreateSystem();
             var registry = new PlayerRegistry();

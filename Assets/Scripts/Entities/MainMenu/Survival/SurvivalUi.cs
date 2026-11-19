@@ -1,4 +1,5 @@
 using System;
+using EmpireAtWar.Components.Ui.Tooltip;
 using System.Collections.Generic;
 using EmpireAtWar.Entities.EnemyFaction.Models;
 using EmpireAtWar.Entities.MainMenu.Online;
@@ -28,6 +29,7 @@ namespace EmpireAtWar.Entities.MainMenu.Survival
         [SerializeField] private Button inviteButton;
         [SerializeField] private LobbyModeSwitchView lobbyModeSwitch;
         [SerializeField] private SurvivalLobbyMemberView[] memberViews;
+        [SerializeField] private TooltipHoverView tooltipHover;
         private SurvivalModel _model;
         private ISurvivalPresenter _presenter;
         private MapSize[] _mapSizes = (MapSize[])Enum.GetValues(typeof(MapSize));
@@ -39,6 +41,8 @@ namespace EmpireAtWar.Entities.MainMenu.Survival
         /// <summary>Online lobby route only.</summary>
         public LobbyModeSwitchView LobbyModeSwitch => lobbyModeSwitch;
 
+
+        public TooltipHoverView TooltipHover => tooltipHover;
 
         public void SetModel(SurvivalModel model) => _model = model;
         public void AssignPresenter(ISurvivalPresenter presenter) => _presenter = presenter;
