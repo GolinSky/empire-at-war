@@ -85,6 +85,32 @@ Builds on [[Architecture/Map_Archetypes]] and [[Done/Features/Map_Archetypes_Pla
 - After the report: add the gates to [[TODOs/User_Acceptance_Queue]], set `acceptance: pending-user`, state tests as not run.
 - User returns with results → failures reopen this plan; all green + in-game OK → `acceptance: passed`.
 
+## Review 2026-11-19 (source only)
+- Details and Enemy AI impact → [[TODOs/Bugs/Enemy_AI_Economy_Strategy - Review]]. Ring/Orbital/Open Field 2v2 geometry confirmed against source.
+- M2: `WeightTeamGaps` divides by zero for a one-team roster on an open arc (`boundaryGaps = 0`).
+- M4: uneven rosters lose mirror symmetry on Medium/Large and the second attempt bank no longer changes layout type → confirm with the `MapGeneration` sweep.
+
+## Validation 2026-11-19 (editor generation sweep, not a test run)
+- Method: full `MapLayoutGenerator.Generate` via editor eval; one planet per archetype (Coruscant, Kamino, Abregado-rae, Aeten II, Alderaan, Atzerri, Bonadan); Medium 10 rosters + Large 15 rosters × 3 seeds = 525 generations. Old behaviour baseline = private `GenerateLayout` invoked with `MapSize.Small` on Large settings.
+- Balanced rosters (2v2, 3v3, 4v4, 2v2v2, 2v2v2v2), all archetypes except Twin Pass: 0 failures; ratios 1.52–1.96 → goal met.
+- Regression found in commit `4ebf74ff4`: Large 7–8 player uneven rosters threw `layout failed after 120 attempts` (fairness=120).
+  - Asteroid Belt: 5v3 6/6, 4v2v2 6/6, 6v2 4/6, 7v1 3/6, 5v2 2/6, 3v3v2 1/6 seeds. Old behaviour: 0/48.
+  - Twin Pass 4v2v2: 4/6 (lost swap fallback). Old behaviour: 0/6.
+- Fix (uncommitted, `MapLayoutGenerator.GenerateLayout`):
+  - `HasUnevenTeams` → attempts 60–119 drop grouping (equal spacing) for uneven rosters.
+  - Uneven Twin Pass → attempts 60–119 use the boundary swap again (flanks ignore grouping, so equal spacing is a no-op there).
+- After fix, same 96-generation subset: 1 failure = Large Twin Pass 7v1 seed 2 (`enemyTeams=2.47`), identical to old behaviour → pre-existing.
+- Cost: rosters that needed the fallback generate with ratio 1.00 (Large Asteroid Belt 5v3, 6v2, 3v3v2, 7v1, 5v2, 4v2v2). Balanced rosters never enter the fallback.
+- Also uncommitted: one-team roster skips `WeightTeamGaps` (M2); pull loop capped by step count (M5, output bit-identical).
+- Tests reviewed: `MapStationSlotTests`, `MapLayoutGeneratorTests` baselines (2v2 → unaffected by the fallback), `MapArchetypeGenerationTests` uneven sweeps (now expected to pass; they would have caught the regression). No test edits needed. Not run.
+
+## Open After Validation
+- Open Field 3v1 (≤4 players): 0.92–0.96, unpulled.
+- Twin Pass: 2v2/2v1/3v2 1.43; 3v1/4v1 0.70; 4v2/2v2v2/5v2 0.37; 5v3/3v3v2 0.25. Needs team-aware flank split → separate plan if wanted.
+- Large uneven 7–8 players on Asteroid Belt fall back to ratio 1.00. Root cause: `MapLayoutFairness` team-mean enemy distance exceeds ratio 2 when uneven teams are grouped.
+- Pre-existing generation failure: Large Twin Pass 7v1 seed 2.
+- Sweep covered 3 seeds (6 on the failing subset); `MapGeneration` run by the user is still the gate.
+
 ## Edge Cases
 - Uneven teams (3v1, 2v1v1): weights apply per boundary; lone players get boundary gaps on both sides.
 - 3+ teams with allies (2v2v2, Large): three boundaries → gaps shrink (2v2v2: ally 40°, enemy 80°); still ratio > 1.5.

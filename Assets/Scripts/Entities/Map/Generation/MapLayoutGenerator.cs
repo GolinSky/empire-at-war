@@ -64,6 +64,23 @@ namespace EmpireAtWar.Entities.Map.Generation
             return GenerateLayout(mapSize, size, players, random, hazardSeed, profile.Decorations, profile.GetSeed());
         }
 
+        private static bool HasUnevenTeams(IReadOnlyList<PlayerSlot> players)
+        {
+            var sizes = new Dictionary<TeamId, int>();
+            foreach (PlayerSlot player in players)
+            {
+                sizes.TryGetValue(player.Team, out int count);
+                sizes[player.Team] = count + 1;
+            }
+            int first = -1;
+            foreach (int count in sizes.Values)
+            {
+                if (first < 0) first = count;
+                else if (count != first) return true;
+            }
+            return false;
+        }
+
         private MapLayout GenerateLayout(MapSize mapSize, MapSizeSettings size,
             IReadOnlyList<PlayerSlot> players, Random random, int hazardSeed,
             PlanetDecorationSet decorations = null, int planetSeed = 0)
@@ -78,12 +95,17 @@ namespace EmpireAtWar.Entities.Map.Generation
             int attempts = MAX_LAYOUT_ATTEMPTS * (size.IsArchetypeLayout && hasAllies ? 2 : 1);
             // Small maps keep equal spacing and the team-swap fallback; larger maps group allies on every attempt.
             bool groupTeams = mapSize != MapSize.Small;
+            bool unevenTeams = HasUnevenTeams(players);
             for (int attempt = 0; attempt < attempts; attempt++)
             {
+                // Uneven rosters (2v1, 3v1, 2v1v1) fall back to equal spacing once grouped layouts kept failing.
+                bool groupThisAttempt = groupTeams && !(unevenTeams && attempt >= MAX_LAYOUT_ATTEMPTS);
+                // Twin Pass flanks ignore grouping, so its uneven fallback is the boundary swap instead.
+                bool swapTeams = attempt >= MAX_LAYOUT_ATTEMPTS &&
+                    (!groupTeams || unevenTeams && size.Archetype == MapArchetypeKind.TwinPass);
                 MapStation[] stations = size.IsArchetypeLayout
-                    ? _stationPlacer.PlaceSlots(size, players, random, size.PlanetSeed, groupTeams,
-                        !groupTeams && attempt >= MAX_LAYOUT_ATTEMPTS)
-                    : _stationPlacer.Place(size, players, random, groupTeams);
+                    ? _stationPlacer.PlaceSlots(size, players, random, size.PlanetSeed, groupThisAttempt, swapTeams)
+                    : _stationPlacer.Place(size, players, random, groupThisAttempt);
                 if (size.IsArchetypeLayout && !_stationPlacer.HasStationClearance(size, stations, players))
                 {
                     stationFailures++;

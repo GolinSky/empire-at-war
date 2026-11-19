@@ -55,7 +55,8 @@ namespace EmpireAtWar.Entities.Map.Generation
             float step = span / (closed ? count : count - 1);
             float[] angles = new float[count];
             for (int i = 0; i < count; i++) angles[i] = step * i;
-            if (teamSizes.Count < count) WeightTeamGaps(teamSizes, count, span, closed, angles);
+            // One team has no boundary gap to widen (and would divide by zero): equal spacing.
+            if (teamSizes.Count > 1 && teamSizes.Count < count) WeightTeamGaps(teamSizes, count, span, closed, angles);
             Vector2[] offsets = new Vector2[count];
             for (int i = 0; i < count; i++)
                 offsets[i] = new Vector2(Mathf.Cos(phase + angles[i]), Mathf.Sin(phase + angles[i]));

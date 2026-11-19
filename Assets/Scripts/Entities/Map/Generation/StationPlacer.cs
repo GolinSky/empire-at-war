@@ -115,7 +115,11 @@ namespace EmpireAtWar.Entities.Map.Generation
             if (!hasPull) return;
 
             Vector2[] original = (Vector2[])positions.Clone();
-            for (float pull = 1f; pull > MIN_PULL && !IsTeamSeparated(positions, teamOrder); )
+            // A step count caps the loop at MIN_PULL; float accumulation alone could step past it to 0.25.
+            // The pull keeps the accumulated value so existing layouts stay bit-identical.
+            int maxSteps = Mathf.RoundToInt((1f - MIN_PULL) / PULL_STEP);
+            float pull = 1f;
+            for (int step = 1; step <= maxSteps && !IsTeamSeparated(positions, teamOrder); step++)
             {
                 pull -= PULL_STEP;
                 for (int i = 0; i < positions.Length; i++)
