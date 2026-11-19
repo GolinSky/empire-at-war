@@ -15,10 +15,10 @@ MonoBehaviour:
   active: 1
   temperature:
     m_OverrideState: 1
-    m_Value: 17
+    m_Value: 10.2
   tint:
     m_OverrideState: 1
-    m_Value: 3.4
+    m_Value: 2
 --- !u!114 &11400000
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -55,7 +55,7 @@ MonoBehaviour:
     m_Value: 0
   colorFilter:
     m_OverrideState: 1
-    m_Value: {r: 1, g: 0.92333335, b: 0.84000003, a: 1}
+    m_Value: {r: 1, g: 0.954, b: 0.90400004, a: 1}
   hueShift:
     m_OverrideState: 0
     m_Value: 0
