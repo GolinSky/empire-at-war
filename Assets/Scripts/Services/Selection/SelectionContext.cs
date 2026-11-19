@@ -97,6 +97,20 @@ namespace EmpireAtWar.Services.Battle
             UpdateSelectionType();
         }
 
+        public bool Add(SelectionEntry entry)
+        {
+            if (!Accepts(entry.Entity) || !_selectedIds.Add(entry.Entity.Id))
+            {
+                return false;
+            }
+
+            entry.Command.Select(true);
+            _entries.Add(entry);
+            _entities.Add(entry.Entity);
+            UpdateSelectionType();
+            return true;
+        }
+
         public bool Remove(IEntity entity)
         {
             int index = IndexOf(entity);

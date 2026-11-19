@@ -176,6 +176,12 @@ namespace EmpireAtWar.Services.Battle
 
         private void HandleWorldClicked(Vector2 screenPosition)
         {
+            if (_selectionInput.IsAddToSelectionHeld && IsUnitOnlySelection(_playerSelectionContext))
+            {
+                ToggleInSelection(screenPosition);
+                return;
+            }
+
             ResetAllSelections();
             SelectionEntry selection = _pressedMarker;
             _pressedMarker = default;
@@ -213,6 +219,56 @@ namespace EmpireAtWar.Services.Battle
             _selectionBuffer.Clear();
             _selectionBuffer.Add(selection);
             SetSelection(GetScope(selection.Entity), _selectionBuffer);
+        }
+
+        private void ToggleInSelection(Vector2 screenPosition)
+        {
+            SelectionEntry selection = _pressedMarker;
+            _pressedMarker = default;
+            _lastTappedEntityId = null;
+            if (!selection.IsBattleMarker || !_selectionQuery.IsMarkerAvailable(selection))
+            {
+                _pointBuffer.Clear();
+                _selectionQuery.CollectAt(screenPosition, _pointBuffer);
+                int index = _pointBuffer.FindIndex(entry =>
+                    _localPlayer.IsLocal(entry.Entity.Owner) && entry.Entity.IsUnit());
+                if (index < 0)
+                    return;
+                selection = _pointBuffer[index];
+            }
+            else if (!_localPlayer.IsLocal(selection.Entity.Owner) || !selection.Entity.IsUnit())
+            {
+                return;
+            }
+
+            if (_playerSelectionContext.Contains(selection.Entity))
+            {
+                UnsubscribeDeath(selection.Entity);
+                _playerSelectionContext.Remove(selection.Entity);
+                NotifyObservers(SelectionScope.Local);
+                return;
+            }
+
+            if (_otherSelectionContext.HasSelectable)
+                ClearSelection(SelectionScope.Other);
+            _playerSelectionContext.Add(selection);
+            _deathSubscriptions.Add(selection.Entity);
+            selection.Entity.HealthModel.OnDestroy += _selectedEntityDestroyed;
+            NotifyObservers(SelectionScope.Local);
+        }
+
+        private static bool IsUnitOnlySelection(ISelectionContext context)
+        {
+            if (!context.HasSelectable)
+                return false;
+
+            for (int i = 0; i < context.Entities.Count; i++)
+            {
+                if (!context.Entities[i].IsUnit())
+                    return false;
+            }
+
+            return true;
         }
 
         private int GetPointSelectionIndex(Vector2 screenPosition)

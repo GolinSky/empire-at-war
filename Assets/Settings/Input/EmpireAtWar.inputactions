@@ -522,6 +522,15 @@
                     "initialStateCheck": false
                 },
                 {
+                    "name": "AddToSelection",
+                    "type": "Button",
+                    "id": "3c7e2a91-5d4b-4f8e-9a16-2b0d7c4e8f53",
+                    "expectedControlType": "Button",
+                    "processors": "",
+                    "interactions": "",
+                    "initialStateCheck": false
+                },
+                {
                     "name": "QuickSave",
                     "type": "Button",
                     "id": "bf05c706-aa76-4780-b614-6b08eb31ed23",
@@ -919,6 +928,17 @@
                     "processors": "",
                     "groups": "Keyboard&Mouse",
                     "action": "QueueWaypoint",
+                    "isComposite": false,
+                    "isPartOfComposite": false
+                },
+                {
+                    "name": "",
+                    "id": "8e1f4b27-9c63-4d0a-b5e2-71a9d3c6f048",
+                    "path": "<Keyboard>/shift",
+                    "interactions": "",
+                    "processors": "",
+                    "groups": "Keyboard&Mouse",
+                    "action": "AddToSelection",
                     "isComposite": false,
                     "isPartOfComposite": false
                 },

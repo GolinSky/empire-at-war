@@ -27,6 +27,7 @@ verification: source-and-assets
 - Double-click a local unit → select matching unit type on screen, for the same owner. This covers ships and squadrons.
 - Slow repeated clicks in the same spot cycle overlapping entities. Battle marker hits precede hull hits in the query. Fixed ship markers take priority over overlapping squadron cells.
 - Point selection, hover and marquee use the displayed marker hit rectangle. A pressed marker retains its entity through release while its slot moves; release drops a concealed, destroyed or replaced marker.
+- Shift + left-click a local unit → adds it to the selection; Shift + click on a selected unit → removes it. Key is rebindable (`Add To Selection`, `Battle/AddToSelection`). Shift + click on empty space, enemies or structures keeps the selection; with no unit selection (nothing or a structure selected) it acts as a plain click. No overlap cycling or double-click type select while held; box drag still replaces.
 - Ctrl+A selects local units on screen; Ctrl+Shift+A selects all living local units. Neither shortcut selects structures.
 - Selection replacement removes prior entries; removed entities are removed from selection.
 - Enemy selection/raycast hits hidden by fog are excluded; visibility rules are in [[GameDesign/Visibility]].
@@ -65,6 +66,7 @@ verification: source-and-assets
 | Right mouse release | Context order / submit command target |
 | Ctrl+A | Select on-screen local units |
 | Ctrl+Shift+A | Select all local units |
+| Shift + left-click | Add / remove unit in selection (rebindable: `Add To Selection`) |
 | Alt + right-click; release Alt | Queue then submit waypoints |
 | W/A/S/D or arrow keys | Camera pan |
 | Q / E | Camera pan left / right |

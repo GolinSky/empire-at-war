@@ -503,3 +503,9 @@ created: "2026-10-29\r"
 - [ ] [[TODOs/Tooling/Battle_Hitch_And_GC_Attribution_Instruments]] — Capture 5/30 min memory pair, inspect type/direct-owner growth and retained references; decide leak/cache/pool from evidence.
 - [ ] [[TODOs/Tooling/Battle_Hitch_And_GC_Attribution_Instruments]] — Matched Editor/Development Player 3 min replays for mid/late saves; verify cleanup, complete output folder/report and record a new baseline in Live Battle CPU Sweep.
 - [ ] [[TODOs/Features/Squadron_Icon_Clustering_Rebuild]] — In-game: icons never stack, matrix grids, smooth peel/merge, no drag while panning/fighting, grids stay off ships (ships clickable), leader lines, zoom. Then Development Player capture (150 squadrons + 80 ships): `Battle.Markers.*`, `Canvas.BuildBatch`, GC. Run `Squadrons`, `BattleInput`, `Ships` tests on request.
+
+## Selection
+
+- [ ] [[Done/Features/Shift_Click_Add_To_Selection]] — In battle: select ship A, Shift + click ship B → both selected, group UI, one move order moves both; Shift + click B again → only A; Shift + click empty space / enemy keeps selection; plain click replaces. Note whether the select cue on toggle-off feels wrong.
+- [ ] [[Done/Features/Shift_Click_Add_To_Selection]] — Settings: `Add To Selection` slot shows `Shift`; rebind → new key + click adds, Shift + click replaces; Reset restores Shift; override persists after restart.
+- [ ] [[Done/Features/Shift_Click_Add_To_Selection]] — Run `BattleInput` EditMode category when explicitly authorized; Unity compile passed, tests not run under local override.

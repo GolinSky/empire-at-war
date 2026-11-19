@@ -11,5 +11,7 @@ namespace EmpireAtWar.Services.Battle
         event Action<bool> SelectSquadronsRequested;
 
         event Action<bool> SelectShipsRequested;
+
+        bool IsAddToSelectionHeld { get; }
     }
 }

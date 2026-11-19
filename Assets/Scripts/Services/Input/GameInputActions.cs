@@ -610,6 +610,15 @@ namespace EmpireAtWar.Services.Input
                     ""initialStateCheck"": false
                 },
                 {
+                    ""name"": ""AddToSelection"",
+                    ""type"": ""Button"",
+                    ""id"": ""3c7e2a91-5d4b-4f8e-9a16-2b0d7c4e8f53"",
+                    ""expectedControlType"": ""Button"",
+                    ""processors"": """",
+                    ""interactions"": """",
+                    ""initialStateCheck"": false
+                },
+                {
                     ""name"": ""QuickSave"",
                     ""type"": ""Button"",
                     ""id"": ""bf05c706-aa76-4780-b614-6b08eb31ed23"",
@@ -1012,6 +1021,17 @@ namespace EmpireAtWar.Services.Input
                 },
                 {
                     ""name"": """",
+                    ""id"": ""8e1f4b27-9c63-4d0a-b5e2-71a9d3c6f048"",
+                    ""path"": ""<Keyboard>/shift"",
+                    ""interactions"": """",
+                    ""processors"": """",
+                    ""groups"": ""Keyboard&Mouse"",
+                    ""action"": ""AddToSelection"",
+                    ""isComposite"": false,
+                    ""isPartOfComposite"": false
+                },
+                {
+                    ""name"": """",
                     ""id"": ""b8d81df4-3f4a-432a-8f5f-ed9534a695ab"",
                     ""path"": ""<Keyboard>/f5"",
                     ""interactions"": """",
@@ -1262,6 +1282,7 @@ namespace EmpireAtWar.Services.Input
             m_Battle_SelectVisibleShips = m_Battle.FindAction("SelectVisibleShips", throwIfNotFound: true);
             m_Battle_SelectAllShips = m_Battle.FindAction("SelectAllShips", throwIfNotFound: true);
             m_Battle_QueueWaypoint = m_Battle.FindAction("QueueWaypoint", throwIfNotFound: true);
+            m_Battle_AddToSelection = m_Battle.FindAction("AddToSelection", throwIfNotFound: true);
             m_Battle_QuickSave = m_Battle.FindAction("QuickSave", throwIfNotFound: true);
             m_Battle_QuickLoad = m_Battle.FindAction("QuickLoad", throwIfNotFound: true);
             m_Battle_PlaceMarker = m_Battle.FindAction("PlaceMarker", throwIfNotFound: true);
@@ -1663,6 +1684,7 @@ namespace EmpireAtWar.Services.Input
         private readonly InputAction m_Battle_SelectVisibleShips;
         private readonly InputAction m_Battle_SelectAllShips;
         private readonly InputAction m_Battle_QueueWaypoint;
+        private readonly InputAction m_Battle_AddToSelection;
         private readonly InputAction m_Battle_QuickSave;
         private readonly InputAction m_Battle_QuickLoad;
         private readonly InputAction m_Battle_PlaceMarker;
@@ -1725,6 +1747,10 @@ namespace EmpireAtWar.Services.Input
             /// Provides access to the underlying input action "Battle/QueueWaypoint".
             /// </summary>
             public InputAction @QueueWaypoint => m_Wrapper.m_Battle_QueueWaypoint;
+            /// <summary>
+            /// Provides access to the underlying input action "Battle/AddToSelection".
+            /// </summary>
+            public InputAction @AddToSelection => m_Wrapper.m_Battle_AddToSelection;
             /// <summary>
             /// Provides access to the underlying input action "Battle/QuickSave".
             /// </summary>
@@ -1838,6 +1864,9 @@ namespace EmpireAtWar.Services.Input
                 @QueueWaypoint.started += instance.OnQueueWaypoint;
                 @QueueWaypoint.performed += instance.OnQueueWaypoint;
                 @QueueWaypoint.canceled += instance.OnQueueWaypoint;
+                @AddToSelection.started += instance.OnAddToSelection;
+                @AddToSelection.performed += instance.OnAddToSelection;
+                @AddToSelection.canceled += instance.OnAddToSelection;
                 @QuickSave.started += instance.OnQuickSave;
                 @QuickSave.performed += instance.OnQuickSave;
                 @QuickSave.canceled += instance.OnQuickSave;
@@ -1921,6 +1950,9 @@ namespace EmpireAtWar.Services.Input
                 @QueueWaypoint.started -= instance.OnQueueWaypoint;
                 @QueueWaypoint.performed -= instance.OnQueueWaypoint;
                 @QueueWaypoint.canceled -= instance.OnQueueWaypoint;
+                @AddToSelection.started -= instance.OnAddToSelection;
+                @AddToSelection.performed -= instance.OnAddToSelection;
+                @AddToSelection.canceled -= instance.OnAddToSelection;
                 @QuickSave.started -= instance.OnQuickSave;
                 @QuickSave.performed -= instance.OnQuickSave;
                 @QuickSave.canceled -= instance.OnQuickSave;
@@ -2271,6 +2303,13 @@ namespace EmpireAtWar.Services.Input
             /// <seealso cref="UnityEngine.InputSystem.InputAction.performed" />
             /// <seealso cref="UnityEngine.InputSystem.InputAction.canceled" />
             void OnQueueWaypoint(InputAction.CallbackContext context);
+            /// <summary>
+            /// Method invoked when associated input action "AddToSelection" is either <see cref="UnityEngine.InputSystem.InputAction.started" />, <see cref="UnityEngine.InputSystem.InputAction.performed" /> or <see cref="UnityEngine.InputSystem.InputAction.canceled" />.
+            /// </summary>
+            /// <seealso cref="UnityEngine.InputSystem.InputAction.started" />
+            /// <seealso cref="UnityEngine.InputSystem.InputAction.performed" />
+            /// <seealso cref="UnityEngine.InputSystem.InputAction.canceled" />
+            void OnAddToSelection(InputAction.CallbackContext context);
             /// <summary>
             /// Method invoked when associated input action "QuickSave" is either <see cref="UnityEngine.InputSystem.InputAction.started" />, <see cref="UnityEngine.InputSystem.InputAction.performed" /> or <see cref="UnityEngine.InputSystem.InputAction.canceled" />.
             /// </summary>

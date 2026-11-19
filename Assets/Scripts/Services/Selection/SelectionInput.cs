@@ -17,6 +17,8 @@ namespace EmpireAtWar.Services.Battle
 
         public event Action<bool> SelectShipsRequested;
 
+        public bool IsAddToSelectionHeld => _battle.AddToSelection.IsPressed();
+
         public SelectionInput(InputActionsProvider provider)
         {
             _battle = provider.Actions.Battle;

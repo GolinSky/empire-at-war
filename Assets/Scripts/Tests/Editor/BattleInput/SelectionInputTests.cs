@@ -509,6 +509,229 @@ namespace EmpireAtWar.Tests.Selection
         }
 
         [Test]
+        public void AddToSelectionClick_AddsAndTogglesLocalUnits()
+        {
+            var local = TestPlayers.CreateLocalPlayer(TestPlayers.CreateDuel());
+            var input = new FakeInputService();
+            var query = new FakeSelectionQuery();
+            var service = new SelectionService(input, input, input, new EntityLocator(), query,
+                new FakeMarqueeSelectionPresenter(), local);
+            var observer = new CountingSelectionObserver();
+            FakeEntity first = AddUnitAt(query, new Vector2(1f, 0f), local.Id, 1);
+            FakeEntity second = AddUnitAt(query, new Vector2(2f, 0f), local.Id, 2);
+            var secondCommand = second.GetFacade<IEntitySelectionFacade>();
+            service.AddObserver(observer);
+            service.Initialize();
+            try
+            {
+                input.RaiseWorldClick(new Vector2(1f, 0f));
+                input.IsAddToSelectionHeld = true;
+                input.RaiseWorldClick(new Vector2(2f, 0f));
+
+                CollectionAssert.AreEqual(new[] { first, second }, service.PlayerSelectionContext.Entities);
+                Assert.That(second.Health.DeathSubscribers, Is.EqualTo(1));
+
+                input.RaiseWorldClick(new Vector2(2f, 0f));
+
+                CollectionAssert.AreEqual(new[] { first }, service.PlayerSelectionContext.Entities);
+                Assert.That(((FakeSelectionCommand)secondCommand).IsSelected, Is.False);
+                Assert.That(second.Health.DeathSubscribers, Is.Zero);
+
+                int notifications = observer.Count;
+                second.Health.Destroy();
+                Assert.That(observer.Count, Is.EqualTo(notifications));
+
+                input.IsAddToSelectionHeld = false;
+                input.RaiseWorldClick(new Vector2(1f, 0f));
+                CollectionAssert.AreEqual(new[] { first }, service.PlayerSelectionContext.Entities);
+            }
+            finally
+            {
+                service.LateDispose();
+            }
+        }
+
+        [Test]
+        public void AddToSelectionClick_AddedUnitDeath_PrunesIt()
+        {
+            var local = TestPlayers.CreateLocalPlayer(TestPlayers.CreateDuel());
+            var input = new FakeInputService();
+            var query = new FakeSelectionQuery();
+            var service = new SelectionService(input, input, input, new EntityLocator(), query,
+                new FakeMarqueeSelectionPresenter(), local);
+            FakeEntity first = AddUnitAt(query, new Vector2(1f, 0f), local.Id, 1);
+            FakeEntity second = AddUnitAt(query, new Vector2(2f, 0f), local.Id, 2, isSquadron: true);
+            service.Initialize();
+            try
+            {
+                input.RaiseWorldClick(new Vector2(1f, 0f));
+                input.IsAddToSelectionHeld = true;
+                input.RaiseWorldClick(new Vector2(2f, 0f));
+                Assert.That(service.PlayerSelectionContext.Count, Is.EqualTo(2));
+
+                second.Health.Destroy();
+
+                CollectionAssert.AreEqual(new[] { first }, service.PlayerSelectionContext.Entities);
+                Assert.That(second.Health.DeathSubscribers, Is.Zero);
+            }
+            finally
+            {
+                service.LateDispose();
+            }
+        }
+
+        [TestCase("empty")]
+        [TestCase("enemy")]
+        [TestCase("structure")]
+        public void AddToSelectionClick_OnNonUnitTarget_KeepsSelection(string target)
+        {
+            var local = TestPlayers.CreateLocalPlayer(TestPlayers.CreateDuel());
+            var input = new FakeInputService();
+            var query = new FakeSelectionQuery();
+            var service = new SelectionService(input, input, input, new EntityLocator(), query,
+                new FakeMarqueeSelectionPresenter(), local);
+            var observer = new CountingSelectionObserver();
+            FakeEntity first = AddUnitAt(query, new Vector2(1f, 0f), local.Id, 1);
+            AddUnitAt(query, new Vector2(2f, 0f), TestPlayers.Enemy, 2);
+            var structureCommand = new FakeSelectionCommand(SelectionType.Base);
+            query.Add(new Vector2(3f, 0f),
+                new SelectionEntry(new FakeEntity(structureCommand, local.Id, 3), structureCommand));
+            Vector2 click = target == "empty" ? new Vector2(9f, 0f)
+                : target == "enemy" ? new Vector2(2f, 0f) : new Vector2(3f, 0f);
+            service.AddObserver(observer);
+            service.Initialize();
+            try
+            {
+                input.RaiseWorldClick(new Vector2(1f, 0f));
+                int notifications = observer.Count;
+                input.IsAddToSelectionHeld = true;
+                input.RaiseWorldClick(click);
+
+                CollectionAssert.AreEqual(new[] { first }, service.PlayerSelectionContext.Entities);
+                Assert.That(service.OtherSelectionContext.HasSelectable, Is.False);
+                Assert.That(observer.Count, Is.EqualTo(notifications));
+            }
+            finally
+            {
+                service.LateDispose();
+            }
+        }
+
+        [TestCase("nothing")]
+        [TestCase("other")]
+        [TestCase("structure")]
+        public void AddToSelectionClick_WithoutUnitSelection_SelectsOnlyClickedUnit(string current)
+        {
+            var local = TestPlayers.CreateLocalPlayer(TestPlayers.CreateDuel());
+            var input = new FakeInputService();
+            var query = new FakeSelectionQuery();
+            var service = new SelectionService(input, input, input, new EntityLocator(), query,
+                new FakeMarqueeSelectionPresenter(), local);
+            FakeEntity unit = AddUnitAt(query, new Vector2(1f, 0f), local.Id, 1);
+            AddUnitAt(query, new Vector2(2f, 0f), TestPlayers.Enemy, 2);
+            var structureCommand = new FakeSelectionCommand(SelectionType.Base);
+            query.Add(new Vector2(3f, 0f),
+                new SelectionEntry(new FakeEntity(structureCommand, local.Id, 3), structureCommand));
+            service.Initialize();
+            try
+            {
+                if (current == "other") input.RaiseWorldClick(new Vector2(2f, 0f));
+                if (current == "structure") input.RaiseWorldClick(new Vector2(3f, 0f));
+                input.IsAddToSelectionHeld = true;
+                input.RaiseWorldClick(new Vector2(1f, 0f));
+
+                CollectionAssert.AreEqual(new[] { unit }, service.PlayerSelectionContext.Entities);
+                Assert.That(service.OtherSelectionContext.HasSelectable, Is.False);
+                Assert.That(structureCommand.IsSelected, Is.False);
+            }
+            finally
+            {
+                service.LateDispose();
+            }
+        }
+
+        [Test]
+        public void SelectionContextAdd_RejectsDuplicatesAndOtherScope()
+        {
+            var local = TestPlayers.CreateLocalPlayer(TestPlayers.CreateDuel());
+            var context = new SelectionContext(local, SelectionScope.Local);
+            var command = new FakeSelectionCommand(SelectionType.Ship);
+            var entry = new SelectionEntry(new FakeEntity(command, local.Id, 1), command);
+            var enemyCommand = new FakeSelectionCommand(SelectionType.Ship);
+
+            Assert.That(context.Add(entry), Is.True);
+            Assert.That(command.IsSelected, Is.True);
+            Assert.That(context.Add(entry), Is.False);
+            Assert.That(context.Add(new SelectionEntry(new FakeEntity(enemyCommand, TestPlayers.Enemy, 2),
+                enemyCommand)), Is.False);
+            Assert.That(enemyCommand.IsSelected, Is.False);
+            Assert.That(context.Count, Is.EqualTo(1));
+        }
+
+        [Test]
+        public void AddToSelectionHeld_FollowsBattleAction()
+        {
+            using var provider = new InputActionsProvider();
+            Keyboard keyboard = InputSystem.AddDevice<Keyboard>();
+            var input = new SelectionInput(provider);
+            provider.Actions.asset.devices = new InputDevice[] { keyboard };
+            InputSettings originalSettings = InputSystem.settings;
+            InputSettings testSettings = UnityEngine.Object.Instantiate(originalSettings);
+            try
+            {
+                testSettings.updateMode = InputSettings.UpdateMode.ProcessEventsManually;
+                testSettings.SetInternalFeatureFlag(RUN_PLAYER_UPDATES_IN_EDIT_MODE, true);
+                InputSystem.settings = testSettings;
+                provider.Actions.Battle.Enable();
+
+                InputSystem.QueueStateEvent(keyboard, new KeyboardState(Key.LeftShift));
+                InputSystem.Update();
+                Assert.That(input.IsAddToSelectionHeld, Is.True);
+
+                InputSystem.QueueStateEvent(keyboard, new KeyboardState());
+                InputSystem.Update();
+                Assert.That(input.IsAddToSelectionHeld, Is.False);
+
+                provider.Actions.Battle.AddToSelection.ApplyBindingOverride("<Keyboard>/z");
+                InputSystem.QueueStateEvent(keyboard, new KeyboardState(Key.LeftShift));
+                InputSystem.Update();
+                Assert.That(input.IsAddToSelectionHeld, Is.False);
+
+                InputSystem.QueueStateEvent(keyboard, new KeyboardState(Key.Z));
+                InputSystem.Update();
+                Assert.That(input.IsAddToSelectionHeld, Is.True);
+            }
+            finally
+            {
+                provider.Actions.Battle.Disable();
+                InputSystem.RemoveDevice(keyboard);
+                // The Input System caches feature flags even when the restored settings have none.
+                testSettings.SetInternalFeatureFlag(RUN_PLAYER_UPDATES_IN_EDIT_MODE, false);
+                InputSystem.settings = originalSettings;
+                UnityEngine.Object.DestroyImmediate(testSettings);
+            }
+        }
+
+        private static FakeEntity AddUnitAt(
+            FakeSelectionQuery query, Vector2 position, PlayerId owner, long id, bool isSquadron = false)
+        {
+            var command = new FakeSelectionCommand(SelectionType.Ship);
+            UnitTypeId unitType = isSquadron
+                ? UnitTypeId.Squadron(SquadronType.XWing)
+                : UnitTypeId.Ship(ShipType.Venator);
+            var entity = new FakeEntity(command, owner, id, new UnitTypeFacade(unitType));
+            query.Add(position, new SelectionEntry(entity, command));
+            return entity;
+        }
+
+        private sealed class CountingSelectionObserver : IObserver<ISelectionSubject>
+        {
+            public int Count { get; private set; }
+
+            public void UpdateState(ISelectionSubject subject) => Count++;
+        }
+
+        [Test]
         public void MiniMapPointerExit_KeepsMapVisible()
         {
             GameObject gameObject = new GameObject(
@@ -588,6 +811,8 @@ namespace EmpireAtWar.Tests.Selection
             public event Action<bool> SelectSquadronsRequested { add { } remove { } }
 
             public event Action<bool> SelectShipsRequested { add { } remove { } }
+
+            public bool IsAddToSelectionHeld { get; set; }
 
             public Vector2 Position => Vector2.zero;
             public int ClickCount => 1;

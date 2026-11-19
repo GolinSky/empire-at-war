@@ -97,6 +97,9 @@ namespace EmpireAtWar.Tests.Camera
                 _inputActions.FindAction("Battle/QueueWaypoint", true),
                 "<Keyboard>/alt");
             AssertBindings(
+                _inputActions.FindAction("Battle/AddToSelection", true),
+                "<Keyboard>/shift");
+            AssertBindings(
                 _inputActions.FindAction("Ui/Cancel", true),
                 "<Keyboard>/escape");
         }
