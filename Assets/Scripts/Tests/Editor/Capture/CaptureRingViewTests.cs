@@ -42,34 +42,38 @@ namespace EmpireAtWar.Tests.Editor
             finally { Object.DestroyImmediate(root); }
         }
 
-        [Test]
-        public void CaptureColor_CyclesInOneSecond_AndRepeatedRenderDoesNotRestart()
+        [TestCase("CaptureSite", SiteFacilityType.Mining)]
+        [TestCase("SatelliteCaptureSite", SiteFacilityType.QuadLaserSatellite)]
+        public void SiteCaptureColor_CyclesInTwoSeconds_AndRepeatedRenderDoesNotRestart(string prefabName,
+            SiteFacilityType facilityType)
         {
-            GameObject prefab = AssetDatabase.LoadAssetAtPath<GameObject>("Assets/Prefabs/View/CaptureSites/CaptureSite.prefab");
+            GameObject prefab = AssetDatabase.LoadAssetAtPath<GameObject>($"Assets/Prefabs/View/CaptureSites/{prefabName}.prefab");
             GameObject root = Object.Instantiate(prefab);
             try
             {
                 CaptureSiteView view = root.GetComponent<CaptureSiteView>();
                 var ring = (CaptureRingView)new SerializedObject(view).FindProperty("captureRing").objectReferenceValue;
                 var renderer = (MeshRenderer)new SerializedObject(ring).FindProperty("ringRenderer").objectReferenceValue;
-                ring.Render(OwnerRelation.Neutral, false, false, false, OwnerRelation.Own);
-                ring.SetVisibility(true);
+                view.Render(OwnerRelation.Neutral, CaptureSiteState.Neutral, facilityType, "", OwnerRelation.Own,
+                    0.2f, 0f, false);
+                view.SetVisibility(true, false);
                 var tween = (Tween)typeof(CaptureRingView).GetField("_blinkTween", BindingFlags.Instance | BindingFlags.NonPublic)
                     .GetValue(ring);
                 var block = new MaterialPropertyBlock();
                 Color neutral = ring.GetColor(OwnerRelation.Neutral, false);
                 Color player = ring.GetColor(OwnerRelation.Own, false);
 
-                tween.Goto(0.25f);
-                ring.Render(OwnerRelation.Neutral, false, false, false, OwnerRelation.Own);
+                tween.Goto(0.5f);
+                view.Render(OwnerRelation.Neutral, CaptureSiteState.Neutral, facilityType, "", OwnerRelation.Own,
+                    0.4f, 0f, false);
                 renderer.GetPropertyBlock(block);
                 Color halfway = block.GetColor("_BaseColor");
                 Assert.That(halfway.r, Is.EqualTo((neutral.r + player.r) * 0.5f).Within(0.001f));
                 Assert.That(halfway.g, Is.EqualTo((neutral.g + player.g) * 0.5f).Within(0.001f));
-                tween.Goto(0.5f);
+                tween.Goto(1f);
                 renderer.GetPropertyBlock(block);
                 AssertColorEqual(block.GetColor("_BaseColor"), player);
-                tween.Goto(1f);
+                tween.Goto(2f);
                 renderer.GetPropertyBlock(block);
                 AssertColorEqual(block.GetColor("_BaseColor"), neutral);
 
@@ -103,7 +107,7 @@ namespace EmpireAtWar.Tests.Editor
                 AssertColorEqual(block.GetColor("_BaseColor"), ring.GetColor(OwnerRelation.Own, false));
                 var tween = (Tween)typeof(CaptureRingView).GetField("_blinkTween", BindingFlags.Instance | BindingFlags.NonPublic)
                     .GetValue(ring);
-                tween.Goto(0.5f);
+                tween.Goto(1f);
                 renderer.GetPropertyBlock(block);
                 AssertColorEqual(block.GetColor("_BaseColor"), ring.GetColor(OwnerRelation.Enemy, false));
                 ring.SetVisibility(false);
@@ -129,6 +133,9 @@ namespace EmpireAtWar.Tests.Editor
                 Assert.That(canvas.gameObject.activeSelf, Is.False);
                 Assert.That(typeof(CaptureRingView).GetField("_captureBlink", BindingFlags.Instance | BindingFlags.NonPublic)
                     .GetValue(ring), Is.True);
+                var tween = (Tween)typeof(CaptureRingView).GetField("_blinkTween", BindingFlags.Instance | BindingFlags.NonPublic)
+                    .GetValue(ring);
+                Assert.That(tween.Duration(false), Is.EqualTo(1f));
             }
             finally { Object.DestroyImmediate(root); }
         }

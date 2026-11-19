@@ -7,8 +7,7 @@ namespace EmpireAtWar.Entities.Capture
     public sealed class CaptureRingView : MonoBehaviour
     {
         private const float MIN_BLINK_OPACITY = 0.6f;
-        private const float BLINK_FADE_DURATION = 0.4f;
-        private const float CAPTURE_COLOR_FADE_DURATION = 0.5f;
+        private const float BLINK_FADE_DURATION = 1f;
 
         [SerializeField] private MeshRenderer ringRenderer;
         [SerializeField] private Color neutralColor;
@@ -91,7 +90,7 @@ namespace EmpireAtWar.Entities.Capture
                 {
                     _blend = blend;
                     Apply();
-                }, 1f, _captureBlink ? CAPTURE_COLOR_FADE_DURATION : BLINK_FADE_DURATION)
+                }, 1f, BLINK_FADE_DURATION)
                 .SetEase(Ease.InOutSine)
                 .SetLoops(-1, LoopType.Yoyo)
                 .SetUpdate(true);
