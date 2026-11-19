@@ -61,6 +61,7 @@ namespace EmpireAtWar.Services.Enemy
                 {
                     if (_captureProbe.HasExpansionObjective(zone)) continue;
                     _assignedExpansionZones.Remove(zone);
+                    _captureProbe.RecordExpansionReleased(zone, captureGroup.Ships.Count);
                 }
                 else if (captureGroup.ContextBuilder.OpeningFocus == EnemyOpeningFocus.Centre &&
                     !stationPressure && captureGroup.Ships.Count != 0 &&
@@ -206,6 +207,7 @@ namespace EmpireAtWar.Services.Enemy
             EnemyShipTaskGroup bestGroup = null;
             IShipEntity bestShip = null;
             float bestEta = float.PositiveInfinity;
+            int bestRequired = 0;
             int expansionGroups = 0;
             foreach (EnemyShipTaskGroup group in _captureGroups)
                 if (group.ContextBuilder.ExpansionZone != null) expansionGroups++;
@@ -233,6 +235,7 @@ namespace EmpireAtWar.Services.Enemy
                     bestGroup = group;
                     bestShip = ship;
                     bestEta = eta;
+                    bestRequired = required;
                 }
             }
             if (bestShip == null) return false;
@@ -246,7 +249,7 @@ namespace EmpireAtWar.Services.Enemy
             }
             foreach (EnemyShipTaskGroup group in _groups) group.Ships.Remove(bestShip);
             bestGroup.Ships.Add(bestShip);
-            _captureProbe.RecordExpansionAssigned(bestZone, bestShip, bestEta);
+            _captureProbe.RecordExpansionAssigned(bestZone, bestShip, bestEta, bestRequired, bestGroup.Ships.Count);
             return true;
         }
 

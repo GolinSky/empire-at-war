@@ -8,7 +8,8 @@ namespace EmpireAtWar.Services.Enemy
 
         bool TryGetPosition(out Vector3 position);
 
-        bool TryGetDefensePosition(out Vector3 position) => TryGetPosition(out position);
+        /// <summary>A held zone without a defend platform; <paramref name="allowExtra"/> also accepts a defended zone below its platform limit.</summary>
+        bool TryGetDefensePosition(bool allowExtra, out Vector3 position) => TryGetPosition(out position);
 
         bool TryGetSecondStationPosition(out Vector3 position)
         {

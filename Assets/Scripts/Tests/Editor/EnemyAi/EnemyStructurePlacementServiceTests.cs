@@ -15,6 +15,13 @@ using EmpireAtWar.Services.SpawnBlocking;
 using EmpireAtWar.Services.Vision;
 using EmpireAtWar.Services.Stations;
 using EmpireAtWar.Entities.BaseEntity;
+using EmpireAtWar.Entities.BaseEntity.EntityFacades;
+using EmpireAtWar.Components.Ship.Health;
+using EmpireAtWar.Models.Health;
+using EmpireAtWar.Models.ReinforcementZones;
+using EmpireAtWar.Presenters.ReinforcementZones;
+using EmpireAtWar.Services.Saves;
+using EmpireAtWar.Views.ReinforcementZones;
 using NUnit.Framework;
 using UnityEngine;
 
@@ -34,6 +41,11 @@ namespace EmpireAtWar.Tests.Editor
         private BoxCollider _stationPrefab;
         private BoxCollider _structurePrefab;
         private readonly RecoveryPolicyStub _recovery = new RecoveryPolicyStub();
+        private const float HELD_ZONE_RADIUS = 10f;
+        private ZoneSourceStub _zoneSource;
+        private EntityLocator _entities;
+        private PlayerRoster _zoneRoster;
+        private long _nextEntityId;
 
         [SetUp]
         public void SetUp()
@@ -44,6 +56,10 @@ namespace EmpireAtWar.Tests.Editor
             _root = new GameObject(nameof(EnemyStructurePlacementServiceTests));
             _map = new MapStub();
             _zones = new ZonesStub();
+            _zoneSource = new ZoneSourceStub();
+            _entities = new EntityLocator();
+            _zoneRoster = TestPlayers.CreateDuel();
+            _nextEntityId = 1;
             _stationPrefab = CreatePrefab(Vector3.one * 10f);
             _structurePrefab = CreatePrefab(Vector3.one * (32f / Mathf.Sqrt(3f)));
             _enemyStructurePlacementService = CreateService();
@@ -66,7 +82,7 @@ namespace EmpireAtWar.Tests.Editor
                 vision: vision, areas: _areas,
                 owner: roster.Get(TestPlayers.Enemy), stationPrefab: _stationPrefab,
                 productionAccess: new SelfProductionAccess(TestPlayers.Enemy, new StationRegistry(new EntityLocator()),
-                    roster), recovery: _recovery, zoneSource: null, world: null, patrol: null);
+                    roster), recovery: _recovery, zoneSource: _zoneSource, world: new AiWorldSnapshot(_entities), patrol: null);
         }
 
         [Test]
@@ -273,6 +289,153 @@ namespace EmpireAtWar.Tests.Editor
 
             Assert.That(position.magnitude, Is.GreaterThan(270f + 16f));
             Assert.That(position.magnitude, Is.LessThanOrEqualTo(270f + 16f + 36f));
+        }
+
+        [Test]
+        public void DefensePosition_ZoneWithAPlatformOnItsRingIsSkippedForTheNextHeldZone()
+        {
+            _map.SetBounds(-1000f, 1000f);
+            AddZone(TestPlayers.Enemy, Vector3.zero, isMain: true);
+            Vector3 relay = new Vector3(400f, 0f, 0f);
+            AddZone(TestPlayers.Enemy, relay);
+
+            Assert.That(_enemyStructurePlacementService.TryGetDefensePosition(false, out Vector3 first), Is.True);
+            // The platform ring lies outside the doubled zone radius, where the zone itself ends.
+            Assert.That(first.magnitude, Is.GreaterThan(2f * HELD_ZONE_RADIUS));
+            AddPlatform(first);
+
+            Assert.That(_enemyStructurePlacementService.TryGetDefensePosition(false, out Vector3 next), Is.True);
+            Assert.That(Vector3.Distance(next, relay), Is.LessThan(next.magnitude));
+        }
+
+        [Test]
+        public void DefensePosition_EveryHeldZoneDefended_OnlyAnExtraRequestFindsAPosition()
+        {
+            _map.SetBounds(-1000f, 1000f);
+            AddZone(TestPlayers.Enemy, Vector3.zero, isMain: true);
+            Vector3 relay = new Vector3(400f, 0f, 0f);
+            AddZone(TestPlayers.Enemy, relay);
+            AddPlatform(new Vector3(70f, 0f, 0f));
+            AddPlatform(relay + new Vector3(70f, 0f, 0f));
+
+            Assert.That(_enemyStructurePlacementService.TryGetDefensePosition(false, out _), Is.False);
+            Assert.That(_enemyStructurePlacementService.TryGetDefensePosition(true, out Vector3 extra), Is.True);
+            // Zones with equal platform counts keep the centre-first order.
+            Assert.That(extra.magnitude, Is.LessThan(Vector3.Distance(extra, relay)));
+        }
+
+        [Test]
+        public void DefensePosition_ExtraPlatformsSpreadEvenlyAndStopAtTheZoneLimit()
+        {
+            _map.SetBounds(-1000f, 1000f);
+            AddZone(TestPlayers.Enemy, Vector3.zero, isMain: true);
+            Vector3 relay = new Vector3(400f, 0f, 0f);
+            AddZone(TestPlayers.Enemy, relay);
+            int atCentre = 0;
+            int atRelay = 0;
+            while (_enemyStructurePlacementService.TryGetDefensePosition(true, out Vector3 position))
+            {
+                AddPlatform(position);
+                if (position.magnitude < Vector3.Distance(position, relay)) atCentre++;
+                else atRelay++;
+                // No zone runs ahead of the other by more than one platform.
+                Assert.That(Mathf.Abs(atCentre - atRelay), Is.LessThanOrEqualTo(1));
+                Assert.That(atCentre + atRelay, Is.LessThanOrEqualTo(20), "Platform placement never stopped.");
+            }
+
+            Assert.That(atCentre, Is.EqualTo(atRelay));
+            Assert.That(atCentre, Is.GreaterThan(1));
+        }
+
+        [Test]
+        public void DefensePosition_IgnoresZonesHeldByAnotherPlayer()
+        {
+            _map.SetBounds(-1000f, 1000f);
+            AddZone(TestPlayers.Human, Vector3.zero, isMain: true);
+
+            Assert.That(_enemyStructurePlacementService.TryGetDefensePosition(true, out _), Is.False);
+        }
+
+        private void AddZone(PlayerId owner, Vector3 center, bool isMain = false) =>
+            _zoneSource.Items.Add(new ReinforcementZonePresenter(new HeldZoneView(center),
+                TestPlayers.CreateLocalPlayer(_zoneRoster),
+                new ReinforcementZoneModel(_zoneRoster, owner, 10f, 1f, true), isMain));
+
+        private void AddPlatform(Vector3 position)
+        {
+            Transform platform = new GameObject("Defend platform").transform;
+            platform.SetParent(_root.transform);
+            platform.position = position;
+            _entities.AddEntity(new PlatformEntity(_nextEntityId++, platform));
+        }
+
+        private sealed class ZoneSourceStub : IReinforcementZoneSource
+        {
+            public List<ReinforcementZonePresenter> Items { get; } = new List<ReinforcementZonePresenter>();
+            public IReadOnlyList<ReinforcementZonePresenter> Zones => Items;
+            public float SquadronCaptureWeight => 0.5f;
+            public (float Friendly, float Hostile) GetTeamStrengths(ReinforcementZonePresenter zone, PlayerId owner) => default;
+        }
+
+        private sealed class HeldZoneView : IReinforcementZoneView
+        {
+            public Vector3 Center { get; }
+            public float Radius => HELD_ZONE_RADIUS;
+            public PlayerId StartingOwner => PlayerId.None;
+            public bool IsCapturable => true;
+            public float CaptureDuration => 10f;
+            public HeldZoneView(Vector3 center) { Center = center; }
+            public void SetVisibility(bool isVisible, bool showCaptureUi) { }
+            public void Render(OwnerRelation owner, OwnerRelation capturer, float captureProgress, bool isContested,
+                OwnerRelation contestingFirst = OwnerRelation.Neutral, OwnerRelation contestingSecond = OwnerRelation.Neutral) { }
+        }
+
+        private sealed class PlatformEntity : IEntity, IHealthModelObserver, IEntityTransformFacade, IStructureKindFacade
+        {
+            public event Action OnDestroy { add { } remove { } }
+            public event Action OnValueChanged { add { } remove { } }
+
+            public long Id { get; }
+            public Transform Transform { get; }
+            public IHealthModelObserver HealthModel => this;
+            public PlayerId Owner => TestPlayers.Enemy;
+            public StructureKind Kind => StructureKind.DefendPlatform;
+            public ShipClass ShipClass => ShipClass.Structure;
+            public IReadOnlyList<IReadOnlyHardPointModel> HardPointModels => Array.Empty<IReadOnlyHardPointModel>();
+            public float Hull => 1f;
+            public float HullPercentage => 1f;
+            public float Shields => 0f;
+            public float ShieldPercentage => 0f;
+            public bool IsDestroyed => false;
+            public bool IsLostShieldGenerator => false;
+            public bool HasUnits => true;
+            public bool HasLiveHardPoints => true;
+            public bool HasShields => false;
+
+            public PlatformEntity(long id, Transform transform)
+            {
+                Id = id;
+                Transform = transform;
+            }
+
+            public IHardPointModel[] GetShipUnits(HardPointType hardPointType) => Array.Empty<IHardPointModel>();
+
+            public bool TryGetFacade<TFacade>(out TFacade entityFacade) where TFacade : IEntityFacade
+            {
+                if (this is TFacade facade)
+                {
+                    entityFacade = facade;
+                    return true;
+                }
+                entityFacade = default;
+                return false;
+            }
+
+            public TFacade GetFacade<TFacade>() where TFacade : IEntityFacade
+            {
+                if (TryGetFacade(out TFacade facade)) return facade;
+                throw new InvalidOperationException($"Entity {Id} has no {typeof(TFacade).Name}.");
+            }
         }
 
         private void AddCapturedZone(Vector3 center)

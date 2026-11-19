@@ -35,6 +35,13 @@ namespace EmpireAtWar.Services.Enemy
 
         private const float DESTROYED_POSITION_EXCLUSION_RADIUS = 32f;
 
+        private const int MAX_ZONE_PLATFORMS = 3;
+
+#if UNITY_EDITOR || DEVELOPMENT_BUILD
+        private const float DEFENSE_BLOCKED_REPORT_INTERVAL = 30f;
+        private float _nextDefenseBlockedReport;
+#endif
+
         private static readonly ProfilerMarker _placementMarker = new ProfilerMarker("EnemyAI.Placement.TryGetPosition");
         private static readonly ProfilerMarker _nearMarker = new ProfilerMarker("EnemyAI.Placement.Near");
         private static readonly ProfilerMarker _zonesMarker = new ProfilerMarker("EnemyAI.Placement.Zones");
@@ -132,33 +139,88 @@ namespace EmpireAtWar.Services.Enemy
             return _hasPlacement;
         }
 
-        public bool TryGetDefensePosition(out Vector3 position)
+        public bool TryGetDefensePosition(bool allowExtra, out Vector3 position)
         {
             PrepareSearch();
             _world.EnsureCurrent();
             _placementSource = "heldZone";
-            ReinforcementZonePresenter centre = EnemyShipTaskGroupPlanner.GetCentre(_zoneSource.Zones);
-            if (centre != null && TryGetUndefendedZonePosition(centre, out position)) return true;
-            foreach (ReinforcementZonePresenter zone in _zoneSource.Zones)
-                if (zone != centre && zone.IsCapturable && TryGetUndefendedZonePosition(zone, out position)) return true;
-            foreach (ReinforcementZonePresenter zone in _zoneSource.Zones)
-                if (!zone.IsCapturable && TryGetUndefendedZonePosition(zone, out position)) return true;
+            // Every held zone gets its first platform before any zone gets another.
+            int limit = allowExtra ? MAX_ZONE_PLATFORMS : 1;
+            for (int platforms = 0; platforms < limit; platforms++)
+                if (TryGetZonePosition(platforms, out position)) return true;
+            RecordDefenseBlocked(limit);
             position = default;
             return false;
         }
 
-        private bool TryGetUndefendedZonePosition(ReinforcementZonePresenter zone, out Vector3 position)
+        /// <summary>Centre first, then captured relays, then home zones, among held zones with exactly <paramref name="platforms"/> platforms.</summary>
+        private bool TryGetZonePosition(int platforms, out Vector3 position)
+        {
+            ReinforcementZonePresenter centre = EnemyShipTaskGroupPlanner.GetCentre(_zoneSource.Zones);
+            if (centre != null && TryGetHeldZonePosition(centre, platforms, out position)) return true;
+            foreach (ReinforcementZonePresenter zone in _zoneSource.Zones)
+                if (zone != centre && zone.IsCapturable && TryGetHeldZonePosition(zone, platforms, out position)) return true;
+            foreach (ReinforcementZonePresenter zone in _zoneSource.Zones)
+                if (!zone.IsCapturable && TryGetHeldZonePosition(zone, platforms, out position)) return true;
+            position = default;
+            return false;
+        }
+
+        private bool TryGetHeldZonePosition(ReinforcementZonePresenter zone, int platforms, out Vector3 position)
         {
             position = default;
-            if (zone.Owner != _owner.Id || zone.IsContested) return false;
-            foreach (AiWorldSnapshot.Entry structure in _world.Structures)
-                if (structure.Owner == _owner.Id &&
-                    EnemyShipTaskGroupPlanner.IsInZone(zone, structure.Position) &&
-                    structure.Entity.TryGetFacade(out IStructureKindFacade type) &&
-                    type.Kind == StructureKind.DefendPlatform) return false;
+            if (zone.Owner != _owner.Id || zone.IsContested || CountZonePlatforms(zone) != platforms) return false;
 
             // Place around the relay so the platform covers it without blocking the capture sites.
             return TryGetPositionNear(zone.Center, zone.Radius, out position);
+        }
+
+        private int CountZonePlatforms(ReinforcementZonePresenter zone)
+        {
+            // The placement rings start outside the zone, so the platforms of this zone are found within their reach.
+            float reach = Mathf.Max(2f * zone.Radius, GetFirstRingRadius(zone.Radius) + RING_COUNT * RING_SPACING);
+            Vector2 centre = new Vector2(zone.Center.x, zone.Center.z);
+            int count = 0;
+            foreach (AiWorldSnapshot.Entry structure in _world.Structures)
+                if (structure.Owner == _owner.Id &&
+                    Vector2.Distance(centre, new Vector2(structure.Position.x, structure.Position.z)) <= reach &&
+                    structure.Entity.TryGetFacade(out IStructureKindFacade type) &&
+                    type.Kind == StructureKind.DefendPlatform) count++;
+            return count;
+        }
+
+        /// <summary>Why each held zone below its platform limit offered no position; at most one report per interval.</summary>
+        private void RecordDefenseBlocked(int limit)
+        {
+#if UNITY_EDITOR || DEVELOPMENT_BUILD
+            if (!Application.isPlaying || Time.time < _nextDefenseBlockedReport) return;
+            foreach (ReinforcementZonePresenter zone in _zoneSource.Zones)
+            {
+                if (zone.Owner != _owner.Id || zone.IsContested) continue;
+                int platforms = CountZonePlatforms(zone);
+                if (platforms >= limit) continue;
+                int outOfBounds = 0, notVisible = 0, blocked = 0, excluded = 0, unsafePositions = 0, occupied = 0;
+                float firstRadius = GetFirstRingRadius(zone.Radius);
+                for (int ring = 0; ring < RING_COUNT; ring++)
+                for (int index = 0; index < POSITIONS_PER_RING; index++)
+                {
+                    float angle = index * (2f * Mathf.PI / POSITIONS_PER_RING);
+                    float radius = firstRadius + ring * RING_SPACING;
+                    Vector3 candidate = new Vector3(zone.Center.x + Mathf.Cos(angle) * radius, 0f,
+                        zone.Center.z + Mathf.Sin(angle) * radius);
+                    if (!InBounds(candidate, _mapModel.SizeRange)) outOfBounds++;
+                    else if (!_vision.IsVisible(_owner.Id, candidate)) notVisible++;
+                    else if (_areas.IsBlocked(_owner.Id, candidate)) blocked++;
+                    else if (IsNearRecentDestroyedPosition(candidate) ||
+                             !_spawnRule.IsOpenForStructure(_owner.Id, candidate)) excluded++;
+                    else if (!IsPlacementSafe(candidate)) unsafePositions++;
+                    else if (!IsClear(candidate)) occupied++;
+                }
+                EnemyAiTelemetry.RecordEvent(_owner.Id, _owner.Faction, "defensePlacementBlocked",
+                    FormattableString.Invariant($"zone=({zone.Center.x:F1} {zone.Center.z:F1});main={zone.IsMain};capturable={zone.IsCapturable};platforms={platforms};limit={limit};firstRing={firstRadius:F1};candidates={RING_COUNT * POSITIONS_PER_RING};outOfBounds={outOfBounds};notVisible={notVisible};blocked={blocked};excluded={excluded};unsafe={unsafePositions};occupied={occupied}"));
+                _nextDefenseBlockedReport = Time.time + DEFENSE_BLOCKED_REPORT_INTERVAL;
+            }
+#endif
         }
 
         public bool TryGetSecondStationPosition(out Vector3 position)

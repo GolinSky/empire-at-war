@@ -409,10 +409,17 @@ namespace EmpireAtWar.Services.Enemy
             return allied <= hostile;
         }
 
-        public void RecordExpansionAssigned(ReinforcementZonePresenter zone, IShipEntity ship, float eta) =>
+        public void RecordExpansionAssigned(ReinforcementZonePresenter zone, IShipEntity ship, float eta,
+            int requiredShips, int groupShips) =>
             EnemyAiTelemetry.RecordEvent(_owner.Id, _owner.Faction, "expansionAssigned",
                 FormattableString.Invariant(
-                    $"zone={GetExpansionReservationId(zone)};ship={ship.EntityId};eta={eta:F1};battleTime={BattleClock.CurrentElapsed:F1}"));
+                    $"zone={GetExpansionReservationId(zone)};ship={ship.EntityId};eta={eta:F1};required={requiredShips};groupShips={groupShips};battleTime={BattleClock.CurrentElapsed:F1}"));
+
+        /// <summary>The detachment of a zone is dissolved because the zone no longer offers a capture objective.</summary>
+        public void RecordExpansionReleased(ReinforcementZonePresenter zone, int groupShips) =>
+            EnemyAiTelemetry.RecordEvent(_owner.Id, _owner.Faction, "expansionReleased",
+                FormattableString.Invariant(
+                    $"zone={GetExpansionReservationId(zone)};pos=({zone.Center.x:F1} {zone.Center.z:F1});owner={zone.Owner};groupShips={groupShips};battleTime={BattleClock.CurrentElapsed:F1}"));
 
         public bool SetOpeningFocus(EnemyOpeningFocus focus, Vector3 origin)
         {

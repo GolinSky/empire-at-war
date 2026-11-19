@@ -188,9 +188,6 @@ namespace EmpireAtWar.Services.Enemy
             bool canBuildMining = hasMiningOption && IsAffordable(mining.Value);
             bool hasDefenseSelection = TrySelectDefense(
                 out KeyValuePair<DefendPlatformType, FactionData> defense);
-            bool canBuildDefense = BattleClock.CurrentElapsed >= _nextDefenseBuildTime &&
-                hasDefenseSelection && IsAffordable(defense.Value) &&
-                _enemyStructurePlacementService.TryGetDefensePosition(out _);
 
             KeyValuePair<SquadronType, FactionData> squadron = default;
             KeyValuePair<ShipType, FactionData> ship = default;
@@ -216,6 +213,11 @@ namespace EmpireAtWar.Services.Enemy
             FactionData shipChoice = hasCounter ? counterData : hasShip ? ship.Value : squadron.Value;
             DefenseReserve = hasShipOption ? shipChoice.Price : 0f;
             bool canBuildShip = hasShipOption && IsAffordable(shipChoice) && FitsRemainingCapacity(shipChoice);
+            // A fleet at the unit limit cannot spend on ships, so held zones take further platforms.
+            bool shipBlockedByCapacity = hasShipOption && IsAffordable(shipChoice) && !canBuildShip;
+            bool canBuildDefense = BattleClock.CurrentElapsed >= _nextDefenseBuildTime &&
+                hasDefenseSelection && IsAffordable(defense.Value) &&
+                _enemyStructurePlacementService.TryGetDefensePosition(shipBlockedByCapacity, out _);
             UnitTypeId combatChoice = hasCounter ? counterId : hasShip
                 ? UnitTypeId.Ship(ship.Key) : UnitTypeId.Squadron(squadron.Key);
             if (_stationPressure.IsStationCritical && !hasShipOption)

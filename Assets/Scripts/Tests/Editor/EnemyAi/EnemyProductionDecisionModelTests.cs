@@ -994,7 +994,7 @@ namespace EmpireAtWar.Tests.Editor
         {
             public bool IsRecovering => false;
 
-            public bool TryGetDefensePosition(out Vector3 position)
+            public bool TryGetDefensePosition(bool allowExtra, out Vector3 position)
             {
                 position = default;
                 return false;

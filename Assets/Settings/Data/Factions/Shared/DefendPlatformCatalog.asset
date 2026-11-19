@@ -30,7 +30,7 @@ MonoBehaviour:
         <AvailableLevel>k__BackingField: 1
         <Price>k__BackingField: 12000
         <BuildTime>k__BackingField: 50
-        <UnitCapacity>k__BackingField: 3
+        <UnitCapacity>k__BackingField: 0
         <Icon>k__BackingField: {fileID: 21300000, guid: 988c54fd851290641a5fe8c93eff1927,
           type: 3}
     - key: 3
@@ -50,7 +50,7 @@ MonoBehaviour:
         <AvailableLevel>k__BackingField: 1
         <Price>k__BackingField: 10000
         <BuildTime>k__BackingField: 50
-        <UnitCapacity>k__BackingField: 3
+        <UnitCapacity>k__BackingField: 0
         <Icon>k__BackingField: {fileID: 21300000, guid: 653b257a6a126934d96618b6c8874dae,
           type: 3}
     - key: 4

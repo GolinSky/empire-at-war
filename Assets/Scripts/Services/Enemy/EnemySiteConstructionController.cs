@@ -11,6 +11,7 @@ namespace EmpireAtWar.Services.Enemy
 {
     /// <summary>
     /// Builds mines on safe owned sites as soon as affordable, and the required satellites (three per zone, one per mining point) without waiting for a fleet.
+    /// Money beyond the production reserve then fills every remaining empty owned pad.
     /// </summary>
     public sealed class EnemySiteConstructionController : ITickable
     {
@@ -72,7 +73,9 @@ namespace EmpireAtWar.Services.Enemy
                 EnemyAiTelemetry.RecordEvent(_owner.Id, _owner.Faction, "siteBuild", $"kind=mine;started={built}");
                 return;
             }
-            if (!mandatorySatellite && _defense.TrySelectScored(snapshot, out var optional)) StartSatellite(snapshot, optional);
+            if (!mandatorySatellite && (_defense.TrySelectScored(snapshot, out var optional) ||
+                                        _defense.TrySelectFill(snapshot, out optional)))
+                StartSatellite(snapshot, optional);
         }
 
         private bool StartSatellite(EnemyDefenseSnapshot snapshot, EnemyDefenseChoice choice)

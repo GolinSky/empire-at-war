@@ -719,7 +719,7 @@ namespace EmpireAtWar.Entities.EnemyFaction.Controllers
         private Vector3 GenerateMapCoordinates(UnitRequest request)
         {
             bool found = request is DefendPlatformUnitRequest
-                ? _enemyStructurePlacementService.TryGetDefensePosition(out Vector3 position)
+                ? _enemyStructurePlacementService.TryGetDefensePosition(true, out Vector3 position)
                 : _enemyStructurePlacementService.TryGetPosition(out position);
             if (found)
             {

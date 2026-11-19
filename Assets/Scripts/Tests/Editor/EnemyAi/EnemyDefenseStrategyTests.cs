@@ -150,6 +150,38 @@ namespace EmpireAtWar.Tests.Editor
             Assert.That(choice.Type, Is.EqualTo(SiteFacilityType.MissileSatellite).Or.EqualTo(SiteFacilityType.MassDriverSatellite));
         }
 
+        [Test]
+        public void Fill_EmptyPadOfAZoneWithItsRequiredSatellitesIsBuiltFromSpareMoney()
+        {
+            var strategy = new EnemyDefenseStrategy();
+            var construction = new ConstructionStub(true);
+            var controller = new EnemySiteConstructionController(null, null, construction,
+                TestPlayers.CreateDuel().Get(TestPlayers.Enemy), null, strategy, null, null, null);
+            var snapshot = Snapshot(new ForceComposition(), 5000f, 2000f, HeldCentrePad(5));
+
+            Assert.That(strategy.TrySelect(snapshot, out _), Is.False);
+            controller.BuildNext(snapshot, mineSite: -1, mandatorySatellite: false);
+
+            Assert.That(construction.Started, Is.EqualTo(new[] { 5 }));
+        }
+
+        [Test]
+        public void Fill_WaitsWhileMoneyIsReservedForProduction()
+        {
+            Assert.That(new EnemyDefenseStrategy().TrySelectFill(
+                Snapshot(new ForceComposition(), 2000f, 2200f, HeldCentrePad(5)), out _), Is.False);
+        }
+
+        [Test]
+        public void Fill_SkipsAPadWithHostiles()
+        {
+            var contested = new EnemyDefensePad(5, 0f, 0.5f, 0f, true, true,
+                Array.Empty<SiteFacilityType>(), isCentrePad: true);
+
+            Assert.That(new EnemyDefenseStrategy().TrySelectFill(
+                Snapshot(new ForceComposition(), 5000f, 0f, contested), out _), Is.False);
+        }
+
         [TestCase(true)]
         [TestCase(false)]
         public void Construction_AttemptsCentreSatelliteBeforeMiningThenLeavesOptionalForLater(bool satelliteCanStart)
@@ -210,6 +242,14 @@ namespace EmpireAtWar.Tests.Editor
         private static EnemyDefensePad Pad(float exposure = 0.5f, bool hostiles = false, bool threatened = false,
             SiteFacilityType[] existing = null) => new EnemyDefensePad(0, 1f, exposure, float.PositiveInfinity,
             hostiles, threatened, existing ?? Array.Empty<SiteFacilityType>());
+
+        // An empty owned centre pad whose zone already holds its three required satellites.
+        private static EnemyDefensePad HeldCentrePad(int siteIndex) => new EnemyDefensePad(siteIndex, 0f, 0.5f,
+            float.PositiveInfinity, false, false, new[]
+            {
+                SiteFacilityType.TurbolaserSatellite, SiteFacilityType.TurbolaserSatellite,
+                SiteFacilityType.TurbolaserSatellite
+            }, isCentrePad: true);
 
         private static ForceComposition Force(ShipClass shipClass, float hull, float shields)
         {

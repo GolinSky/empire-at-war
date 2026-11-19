@@ -72,7 +72,7 @@ namespace EmpireAtWar.Entities.EnemyFaction.Models
             {
                 if (!NeedsMandatorySatellite(pad)) continue;
                 if (!TryPickType(snapshot, pad, out EnemyDefenseOption option)) continue;
-                float score = (pad.IsCentrePad ? 20f : pad.IsZonePad ? 10f : 0f) + pad.ProtectedMineShare;
+                float score = GetPointPriority(pad);
                 if (found && score <= choice.Score) continue;
                 choice = new EnemyDefenseChoice(pad.SiteIndex, option.Type, score, option.Cost,
                     pad.IsZonePad ? "Hold the zone with satellites" : "Mandatory mining-point satellite");
@@ -80,6 +80,30 @@ namespace EmpireAtWar.Entities.EnemyFaction.Models
             }
             return found;
         }
+
+        /// <summary>
+        /// Money beyond the production reserve fills every remaining empty owned pad, centre first, so no captured
+        /// pad stays empty while credits pile up.
+        /// </summary>
+        public bool TrySelectFill(EnemyDefenseSnapshot snapshot, out EnemyDefenseChoice choice)
+        {
+            choice = default;
+            bool found = false;
+            float spendable = snapshot.Money - snapshot.ProductionReserve;
+            foreach (EnemyDefensePad pad in snapshot.Pads)
+            {
+                if (pad.HasHostiles || !TryPickType(snapshot, pad, out EnemyDefenseOption option) ||
+                    option.Cost > spendable) continue;
+                float score = GetPointPriority(pad);
+                if (found && score <= choice.Score) continue;
+                choice = new EnemyDefenseChoice(pad.SiteIndex, option.Type, score, option.Cost, "Fill owned pad");
+                found = true;
+            }
+            return found;
+        }
+
+        private static float GetPointPriority(EnemyDefensePad pad) =>
+            (pad.IsCentrePad ? 20f : pad.IsZonePad ? 10f : 0f) + pad.ProtectedMineShare;
 
         public bool HasMandatoryPad(EnemyDefenseSnapshot snapshot)
         {
