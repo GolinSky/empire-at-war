@@ -9,6 +9,7 @@ namespace EmpireAtWar.Entities.Map
     {
         [field: SerializeField] public PlanetType Planet { get; private set; }
         [field: SerializeField] public MapArchetype Archetype { get; private set; }
+        [field: SerializeField] public PlanetBiome Biome { get; private set; }
         [field: SerializeField] public Texture2D Preview { get; private set; }
         [field: SerializeField] public PlanetDecorationSet Decorations { get; private set; }
         [field: SerializeField] public bool OverrideSeed { get; private set; }

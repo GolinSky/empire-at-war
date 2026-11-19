@@ -20,6 +20,10 @@ created: "2026-10-29\r"
 - [ ] [[Done/Features/Group_Attack_Speed_Matching_Plan]] — In battle, attack with a Venator + its squadrons: confirm the fighters stay with the ships until the attack zone, then fly their own passes.
 - [ ] [[Done/Features/Group_Attack_Speed_Matching_Plan]] — Run `BattleInput` and `Squadrons` EditMode categories (`UnitOrderServiceTests`, `FighterFlightTests`) when authorized; compile passed.
 
+## Planet Atmosphere
+
+- [ ] [[Done/Features/Planet_Biome_Atmosphere_Plan]] — In battle, check light/tint on Tatooine, Coruscant, Hoth, Mustafar, Kamino, Dagobah; confirm team colours stay readable and the menu has no tint after leaving.
+
 ## Map Generation
 
 - [ ] [[Done/Bugs/Map_Enemy_Station_Near_Allies_Fix]] — Run `Map` (quick) then `MapGeneration` (explicit, 3 seeds) EditMode when authorized; Unity compile passed, tests not run. Run on the build that includes the uneven-roster fallback follow-up (`ac7ff075c`), not bare `4ebf74ff4`.

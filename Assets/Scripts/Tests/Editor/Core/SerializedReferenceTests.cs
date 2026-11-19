@@ -4,6 +4,7 @@ using EmpireAtWar.Entities.Economy.Ui;
 using EmpireAtWar.Entities.EndGameUi;
 using EmpireAtWar.Entities.CoreGameUi;
 using System;
+using EmpireAtWar.Components.Environment;
 using EmpireAtWar.Components.Obstacles;
 using EmpireAtWar.Components.Radar;
 using EmpireAtWar.Components.Ship.Selection;
@@ -60,6 +61,9 @@ namespace EmpireAtWar.Tests.Editor
             new SerializedReference(typeof(SkirmishScope), "mapLayoutView"),
             new SerializedReference(typeof(SkirmishScope), "reinforcementZonesSystem"),
             new SerializedReference(typeof(SkirmishScope), "captureSitesSystem"),
+            new SerializedReference(typeof(SkirmishScope), "atmosphereView"),
+            new SerializedReference(typeof(BattleAtmosphereView), "sun"),
+            new SerializedReference(typeof(BattleAtmosphereView), "gradeVolume"),
             new SerializedReference(typeof(SkirmishUi), "closeButton"),
             new SerializedReference(typeof(SettingsUi), "closeButton"),
             new SerializedReference(typeof(SettingsUi), "qualityRow"),

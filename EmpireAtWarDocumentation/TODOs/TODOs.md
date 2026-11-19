@@ -427,6 +427,8 @@
 - [x] **Implement Game Design Balance Editor** → [[Done/Tooling/GameDesign_Balance_Editor|Game Design Balance Editor]]; [[Done/Tooling/GameDesign_Balance_Editor - Research|Data ownership and feasibility]]
 
 ### Features
+- [x] **Planet biome atmosphere: per-biome sun, ambient and colour grade (Tatooine orange, Coruscant warm, Hoth cold)** → [[Done/Features/Planet_Biome_Atmosphere_Plan|Planet Biome Atmosphere Plan]]
+  - Completed 2026-11-19, `acceptance: pending-user`. 10 biomes from surface albedo, 57 planets assigned; `PlanetAtmosphereSettings` + sparse grade Volume (priority 50) + `BattleAtmosphereView` in `SceneContext.prefab`; tints softened ×0.85 after user feedback. Unity compile clean; `PlanetAtmosphereTests` and `Core` 166/166 passed. Gates → [[TODOs/User_Acceptance_Queue]].
 
 - [x] **Spatial pace clusters: per-cluster formation speed, double right-click loose move (green wave)** → [[Done/Features/Spatial_Pace_Clusters_Plan|Spatial Pace Clusters Plan]]
   - Completed 2026-11-19, `acceptance: pending-user`. Replaced `GroupPace` with `PaceCluster` + `PaceClusterBuilder` + `PaceClusterMergeService` for `Move` (formation), `Attack`, hard-point attack, and `AttackMove`; lag correction, straggler/stuck detach, double right-click `MovePace.Loose` + green wave feedback (incl. network). Unity compile clean (`0` errors); tests not run (local override). Gates → [[TODOs/User_Acceptance_Queue]].

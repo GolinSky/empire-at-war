@@ -922,6 +922,8 @@ Transform:
   - {fileID: 1369556255246066554}
   - {fileID: 4655082402915932404}
   - {fileID: 7583294571638639192}
+  - {fileID: 945159334965399985}
+  - {fileID: 8962005783758833865}
   m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!114 &8744064952395461264
@@ -974,6 +976,7 @@ MonoBehaviour:
   hazardEffectsView: {fileID: 2752712332648071711}
   reinforcementZonesSystem: {fileID: 1561019271551565166}
   captureSitesSystem: {fileID: 5697144160693895753}
+  atmosphereView: {fileID: 8029625669407083620}
 --- !u!114 &2752712332648071711
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -988,6 +991,211 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::EmpireAtWar.Components.Environment.HazardEffectsView
   hazardEntryPrefab: {fileID: 365258895351162789, guid: 9b6645cafdb3f0b4998da2663a5e5bd7,
     type: 3}
+--- !u!1 &8331518080837610133
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 8962005783758833865}
+  - component: {fileID: 547888490557241993}
+  - component: {fileID: 8029625669407083620}
+  m_Layer: 0
+  m_Name: Planet Atmosphere
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &8962005783758833865
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 8331518080837610133}
+  serializedVersion: 2
+  m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
+  m_LocalPosition: {x: 320.70673, y: 0, z: 60.96233}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 5922927045858997487}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &547888490557241993
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 8331518080837610133}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 172515602e62fb746b5d573b38a5fe58, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Unity.RenderPipelines.Core.Runtime::UnityEngine.Rendering.Volume
+  m_IsGlobal: 1
+  priority: 50
+  blendDistance: 0
+  weight: 1
+  sharedProfile: {fileID: 11400000, guid: 7c4b0efcc7a19a447bc326e9935ec3ff, type: 2}
+--- !u!114 &8029625669407083620
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 8331518080837610133}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 0fc1899180e7a3445984fdad07ab09c1, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::EmpireAtWar.Components.Environment.BattleAtmosphereView
+  sun: {fileID: 5148086223573607964}
+  gradeVolume: {fileID: 547888490557241993}
+--- !u!1001 &3420031554209763887
+PrefabInstance:
+  m_ObjectHideFlags: 0
+  serializedVersion: 2
+  m_Modification:
+    serializedVersion: 3
+    m_TransformParent: {fileID: 5922927045858997487}
+    m_Modifications:
+    - target: {fileID: 2480223338342712222, guid: f9b88e1558e005345ab0924c13d05e8f,
+        type: 3}
+      propertyPath: m_LocalPosition.x
+      value: 133.60672
+      objectReference: {fileID: 0}
+    - target: {fileID: 2480223338342712222, guid: f9b88e1558e005345ab0924c13d05e8f,
+        type: 3}
+      propertyPath: m_LocalPosition.y
+      value: 3
+      objectReference: {fileID: 0}
+    - target: {fileID: 2480223338342712222, guid: f9b88e1558e005345ab0924c13d05e8f,
+        type: 3}
+      propertyPath: m_LocalPosition.z
+      value: -63.53767
+      objectReference: {fileID: 0}
+    - target: {fileID: 2480223338342712222, guid: f9b88e1558e005345ab0924c13d05e8f,
+        type: 3}
+      propertyPath: m_LocalRotation.w
+      value: 0.7912401
+      objectReference: {fileID: 0}
+    - target: {fileID: 2480223338342712222, guid: f9b88e1558e005345ab0924c13d05e8f,
+        type: 3}
+      propertyPath: m_LocalRotation.x
+      value: 0.21201216
+      objectReference: {fileID: 0}
+    - target: {fileID: 2480223338342712222, guid: f9b88e1558e005345ab0924c13d05e8f,
+        type: 3}
+      propertyPath: m_LocalRotation.y
+      value: -0.5540323
+      objectReference: {fileID: 0}
+    - target: {fileID: 2480223338342712222, guid: f9b88e1558e005345ab0924c13d05e8f,
+        type: 3}
+      propertyPath: m_LocalRotation.z
+      value: 0.1484525
+      objectReference: {fileID: 0}
+    - target: {fileID: 2480223338342712222, guid: f9b88e1558e005345ab0924c13d05e8f,
+        type: 3}
+      propertyPath: m_LocalEulerAnglesHint.x
+      value: 20
+      objectReference: {fileID: 0}
+    - target: {fileID: 2480223338342712222, guid: f9b88e1558e005345ab0924c13d05e8f,
+        type: 3}
+      propertyPath: m_LocalEulerAnglesHint.y
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 2480223338342712222, guid: f9b88e1558e005345ab0924c13d05e8f,
+        type: 3}
+      propertyPath: m_LocalEulerAnglesHint.z
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 7496181867102811187, guid: f9b88e1558e005345ab0924c13d05e8f,
+        type: 3}
+      propertyPath: m_Color.b
+      value: 0.8392157
+      objectReference: {fileID: 0}
+    - target: {fileID: 7496181867102811187, guid: f9b88e1558e005345ab0924c13d05e8f,
+        type: 3}
+      propertyPath: m_Color.g
+      value: 0.95686275
+      objectReference: {fileID: 0}
+    - target: {fileID: 7496181867102811187, guid: f9b88e1558e005345ab0924c13d05e8f,
+        type: 3}
+      propertyPath: m_Color.r
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 7496181867102811187, guid: f9b88e1558e005345ab0924c13d05e8f,
+        type: 3}
+      propertyPath: m_Enabled
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 7496181867102811187, guid: f9b88e1558e005345ab0924c13d05e8f,
+        type: 3}
+      propertyPath: m_Intensity
+      value: 0.96
+      objectReference: {fileID: 0}
+    - target: {fileID: 7496181867102811187, guid: f9b88e1558e005345ab0924c13d05e8f,
+        type: 3}
+      propertyPath: m_Shadows.m_Bias
+      value: 0.03
+      objectReference: {fileID: 0}
+    - target: {fileID: 7496181867102811187, guid: f9b88e1558e005345ab0924c13d05e8f,
+        type: 3}
+      propertyPath: m_BounceIntensity
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 7496181867102811187, guid: f9b88e1558e005345ab0924c13d05e8f,
+        type: 3}
+      propertyPath: m_ColorTemperature
+      value: 20000
+      objectReference: {fileID: 0}
+    - target: {fileID: 7496181867102811187, guid: f9b88e1558e005345ab0924c13d05e8f,
+        type: 3}
+      propertyPath: m_CullingMask.m_Bits
+      value: 2807
+      objectReference: {fileID: 0}
+    - target: {fileID: 7496181867102811187, guid: f9b88e1558e005345ab0924c13d05e8f,
+        type: 3}
+      propertyPath: m_Shadows.m_Strength
+      value: 0.88
+      objectReference: {fileID: 0}
+    - target: {fileID: 7496181867102811187, guid: f9b88e1558e005345ab0924c13d05e8f,
+        type: 3}
+      propertyPath: m_UseColorTemperature
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 7496181867102811187, guid: f9b88e1558e005345ab0924c13d05e8f,
+        type: 3}
+      propertyPath: m_Shadows.m_NormalBias
+      value: 0.2
+      objectReference: {fileID: 0}
+    - target: {fileID: 7514464866233457774, guid: f9b88e1558e005345ab0924c13d05e8f,
+        type: 3}
+      propertyPath: m_Name
+      value: Directional Light
+      objectReference: {fileID: 0}
+    m_RemovedComponents:
+    - {fileID: 1547403790833027004, guid: f9b88e1558e005345ab0924c13d05e8f, type: 3}
+    m_RemovedGameObjects: []
+    m_AddedGameObjects: []
+    m_AddedComponents: []
+  m_SourcePrefab: {fileID: 100100000, guid: f9b88e1558e005345ab0924c13d05e8f, type: 3}
+--- !u!4 &945159334965399985 stripped
+Transform:
+  m_CorrespondingSourceObject: {fileID: 2480223338342712222, guid: f9b88e1558e005345ab0924c13d05e8f,
+    type: 3}
+  m_PrefabInstance: {fileID: 3420031554209763887}
+  m_PrefabAsset: {fileID: 0}
+--- !u!108 &5148086223573607964 stripped
+Light:
+  m_CorrespondingSourceObject: {fileID: 7496181867102811187, guid: f9b88e1558e005345ab0924c13d05e8f,
+    type: 3}
+  m_PrefabInstance: {fileID: 3420031554209763887}
+  m_PrefabAsset: {fileID: 0}
 --- !u!1001 &4715110672876300141
 PrefabInstance:
   m_ObjectHideFlags: 0

@@ -69,6 +69,7 @@ tags:
 - Quality names in current project: 0 Performant, 1 Low, 2 Balanced, 3 High Fidelity, 4 Ultra, 5 Cinematic.
 - `PerformantPostProcessing` enables its serialized Volume only at index 0; other quality levels and component disable turn it off.
 - `SceneContext` binds a global priority-100 sparse `PerformantVolumeProfile`: bloom Quarter / max 3 iterations / HQ false; motion-blur intensity override 0.
+- Planet atmosphere (2026-11-19): `Battle.unity` `Planet Atmosphere` global Volume, priority 50, swaps a sparse per-biome grade (WhiteBalance + ColorAdjustments filter/saturation only). URP bakes both into the existing grading LUT → no extra pass. Never override exposure/contrast/bloom there; base profile (priority 0) and Performant (100) own them → [[Done/Features/Planet_Biome_Atmosphere_Plan]].
 - Check the effective camera volume stack after quality switching. A pipeline profile can be overridden by a scene volume; saved profile values alone do not establish runtime behavior.
 
 ### Particles and fog

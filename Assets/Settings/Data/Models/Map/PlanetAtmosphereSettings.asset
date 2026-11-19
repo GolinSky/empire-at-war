@@ -1,0 +1,108 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 2c6d45e54833ca644bd1ef3add713d56, type: 3}
+  m_Name: PlanetAtmosphereSettings
+  m_EditorClassIdentifier: Assembly-CSharp::EmpireAtWar.Entities.Map.PlanetAtmosphereSettings
+  entries:
+  - <Biome>k__BackingField: 0
+    <SunColor>k__BackingField: {r: 1, g: 0.95686275, b: 0.8392157, a: 1}
+    <SunIntensity>k__BackingField: 0.96
+    <AmbientSky>k__BackingField: {r: 0.78039217, g: 0.80784315, b: 0.8784314, a: 1}
+    <AmbientEquator>k__BackingField: {r: 0.5411765, g: 0.5803922, b: 0.6509804, a: 1}
+    <AmbientGround>k__BackingField: {r: 0.32156864, g: 0.3529412, b: 0.41960785, a: 1}
+    <Grade>k__BackingField: {fileID: 11400000, guid: 7c4b0efcc7a19a447bc326e9935ec3ff,
+      type: 2}
+  - <Biome>k__BackingField: 1
+    <SunColor>k__BackingField: {r: 1, g: 0.8101961, b: 0.60588235, a: 1}
+    <SunIntensity>k__BackingField: 1.0365
+    <AmbientSky>k__BackingField: {r: 0.81705886, g: 0.66784316, b: 0.545098, a: 1}
+    <AmbientEquator>k__BackingField: {r: 0.55784315, g: 0.44705883, b: 0.37098038,
+      a: 1}
+    <AmbientGround>k__BackingField: {r: 0.29490197, g: 0.23627451, b: 0.20294118,
+      a: 1}
+    <Grade>k__BackingField: {fileID: 11400000, guid: 60d290233ed52a64d9c9da654dfc09e1,
+      type: 2}
+  - <Biome>k__BackingField: 2
+    <SunColor>k__BackingField: {r: 1, g: 0.86352944, b: 0.6858824, a: 1}
+    <SunIntensity>k__BackingField: 0.994
+    <AmbientSky>k__BackingField: {r: 0.78705883, g: 0.6811765, b: 0.5984314, a: 1}
+    <AmbientEquator>k__BackingField: {r: 0.5278432, g: 0.46039215, b: 0.41431373,
+      a: 1}
+    <AmbientGround>k__BackingField: {r: 0.28156865, g: 0.24627452, b: 0.23294118,
+      a: 1}
+    <Grade>k__BackingField: {fileID: 11400000, guid: eda146ea6661e6f49b6a9e4720c5f91e,
+      type: 2}
+  - <Biome>k__BackingField: 3
+    <SunColor>k__BackingField: {r: 0.87, g: 0.9168627, b: 0.97588235, a: 1}
+    <SunIntensity>k__BackingField: 0.994
+    <AmbientSky>k__BackingField: {r: 0.68039215, g: 0.7678431, b: 0.89843136, a: 1}
+    <AmbientEquator>k__BackingField: {r: 0.44784313, g: 0.5337255, b: 0.6576471, a: 1}
+    <AmbientGround>k__BackingField: {r: 0.24156862, g: 0.29960784, b: 0.39294118,
+      a: 1}
+    <Grade>k__BackingField: {fileID: 11400000, guid: aa338e5da227ab64f9b50c4e24a5138d,
+      type: 2}
+  - <Biome>k__BackingField: 4
+    <SunColor>k__BackingField: {r: 0.91, g: 0.9501961, b: 0.97588235, a: 1}
+    <SunIntensity>k__BackingField: 0.977
+    <AmbientSky>k__BackingField: {r: 0.61039215, g: 0.7678431, b: 0.8784314, a: 1}
+    <AmbientEquator>k__BackingField: {r: 0.39450982, g: 0.5503922, b: 0.6509804, a: 1}
+    <AmbientGround>k__BackingField: {r: 0.20490196, g: 0.30960786, b: 0.39294118,
+      a: 1}
+    <Grade>k__BackingField: {fileID: 11400000, guid: 0a9749c6e99e71b4bbfb36e9b8787a1b,
+      type: 2}
+  - <Biome>k__BackingField: 5
+    <SunColor>k__BackingField: {r: 0.9633333, g: 0.99352944, b: 0.8792157, a: 1}
+    <SunIntensity>k__BackingField: 0.9515
+    <AmbientSky>k__BackingField: {r: 0.67039216, g: 0.7911765, b: 0.6650981, a: 1}
+    <AmbientEquator>k__BackingField: {r: 0.44117647, g: 0.56372553, b: 0.46431372,
+      a: 1}
+    <AmbientGround>k__BackingField: {r: 0.22823529, g: 0.31960785, b: 0.25627452,
+      a: 1}
+    <Grade>k__BackingField: {fileID: 11400000, guid: b0083fcfb546a6b40b014132e7b44662,
+      type: 2}
+  - <Biome>k__BackingField: 6
+    <SunColor>k__BackingField: {r: 0.8833333, g: 0.9001961, b: 0.72588235, a: 1}
+    <SunIntensity>k__BackingField: 0.892
+    <AmbientSky>k__BackingField: {r: 0.6170588, g: 0.66450983, b: 0.5517647, a: 1}
+    <AmbientEquator>k__BackingField: {r: 0.4145098, g: 0.4537255, b: 0.37098038, a: 1}
+    <AmbientGround>k__BackingField: {r: 0.2182353, g: 0.24294117, b: 0.20294118, a: 1}
+    <Grade>k__BackingField: {fileID: 11400000, guid: 3b84ca1907499d443bc92497694a6f9d,
+      type: 2}
+  - <Biome>k__BackingField: 7
+    <SunColor>k__BackingField: {r: 1, g: 0.7035294, b: 0.52588236, a: 1}
+    <SunIntensity>k__BackingField: 0.994
+    <AmbientSky>k__BackingField: {r: 0.7337255, g: 0.5178431, b: 0.43843138, a: 1}
+    <AmbientEquator>k__BackingField: {r: 0.48784313, g: 0.29705882, b: 0.24431372,
+      a: 1}
+    <AmbientGround>k__BackingField: {r: 0.29490197, g: 0.15294117, b: 0.12960784,
+      a: 1}
+    <Grade>k__BackingField: {fileID: 11400000, guid: 4868e8bbf5ec75242ade806188a13bb8,
+      type: 2}
+  - <Biome>k__BackingField: 8
+    <SunColor>k__BackingField: {r: 1, g: 0.8335294, b: 0.6858824, a: 1}
+    <SunIntensity>k__BackingField: 0.994
+    <AmbientSky>k__BackingField: {r: 0.8403922, g: 0.66784316, b: 0.64509803, a: 1}
+    <AmbientEquator>k__BackingField: {r: 0.58450985, g: 0.43705884, b: 0.4509804,
+      a: 1}
+    <AmbientGround>k__BackingField: {r: 0.31156865, g: 0.22960785, b: 0.27627453,
+      a: 1}
+    <Grade>k__BackingField: {fileID: 11400000, guid: 7bada20ee42b9c24fbaec9b7f9c38665,
+      type: 2}
+  - <Biome>k__BackingField: 9
+    <SunColor>k__BackingField: {r: 0.9433333, g: 0.9435294, b: 0.94254905, a: 1}
+    <SunIntensity>k__BackingField: 0.9515
+    <AmbientSky>k__BackingField: {r: 0.6770588, g: 0.6945098, b: 0.73176473, a: 1}
+    <AmbientEquator>k__BackingField: {r: 0.45784315, g: 0.47705883, b: 0.5143137,
+      a: 1}
+    <AmbientGround>k__BackingField: {r: 0.25156862, g: 0.2662745, b: 0.2962745, a: 1}
+    <Grade>k__BackingField: {fileID: 11400000, guid: f97f6d77c8251a24c898690eecab5a0c,
+      type: 2}

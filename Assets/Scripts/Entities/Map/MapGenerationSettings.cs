@@ -22,6 +22,7 @@ namespace EmpireAtWar.Entities.Map
         [SerializeField] private SpaceHazardData[] hazards = System.Array.Empty<SpaceHazardData>();
 
         [field: SerializeField] public PlanetMapProfile Profiles { get; private set; }
+        [field: SerializeField] public PlanetAtmosphereSettings Atmospheres { get; private set; }
 
         public IReadOnlyList<SpaceHazardData> Hazards => hazards;
 

@@ -327,6 +327,8 @@ MonoBehaviour:
   - {fileID: 11400000, guid: 569c6d9ec01ea9646b38df6ce83de3be, type: 2}
   <Profiles>k__BackingField: {fileID: 11400000, guid: 2318b1f27ccd36842a62dd2ffc00f68d,
     type: 2}
+  <Atmospheres>k__BackingField: {fileID: 11400000, guid: ddf5e4aa28c35924980dfc34c985d30c,
+    type: 2}
   <FieldFloor>k__BackingField: -150
   <FieldCeiling>k__BackingField: 110
   <HazardFloor>k__BackingField: -651

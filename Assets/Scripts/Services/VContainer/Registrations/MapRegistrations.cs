@@ -1,3 +1,4 @@
+using EmpireAtWar.Components.Environment;
 using EmpireAtWar.Entities.Map;
 using EmpireAtWar.Entities.Planet;
 using EmpireAtWar.Services.Factory;
@@ -13,7 +14,8 @@ namespace EmpireAtWar.Services.VContainer
     public static class MapRegistrations
     {
         public static void Register(IContainerBuilder builder, MapGenerationSettings settings,
-            MapLayoutView mapLayoutView, ReinforcementZonesSystem reinforcementZonesSystem)
+            MapLayoutView mapLayoutView, ReinforcementZonesSystem reinforcementZonesSystem,
+            BattleAtmosphereView atmosphereView)
         {
             builder.RegisterInstance(settings);
             builder.RegisterComponent(mapLayoutView).AsImplementedInterfaces().AsSelf();
@@ -24,6 +26,8 @@ namespace EmpireAtWar.Services.VContainer
             builder.Register<ReinforcementZonesReplicatedState>(Lifetime.Singleton).AsImplementedInterfaces();
             builder.Register<PlanetFactory>(Lifetime.Singleton).AsImplementedInterfaces().AsSelf();
             builder.Register<PlanetSpawner>(Lifetime.Singleton).AsImplementedInterfaces().AsSelf();
+            builder.RegisterComponent(atmosphereView);
+            builder.Register<PlanetAtmosphereApplier>(Lifetime.Singleton).AsImplementedInterfaces().AsSelf();
             builder.Register<AsteroidSpawnBlockers>(Lifetime.Singleton).AsImplementedInterfaces().AsSelf();
         }
     }

@@ -105,6 +105,7 @@ namespace EmpireAtWar.Services.VContainer
         [SerializeField] private HazardEffectsView hazardEffectsView;
         [SerializeField] private ReinforcementZonesSystem reinforcementZonesSystem;
         [SerializeField] private CaptureSitesSystem captureSitesSystem;
+        [SerializeField] private BattleAtmosphereView atmosphereView;
 
         private MiniMapData _miniMapData;
 
@@ -286,7 +287,7 @@ namespace EmpireAtWar.Services.VContainer
             SkirmishServiceRegistrations.Register(builder, Assets, transform, impactEffectPrefab,
                 unitExplosionPrefab, rangeDebugLineMaterial, shipSfxData, interfaceSfxData, shipAmbienceData,
                 shipSfxSourcesPrefab, cameraService, battleMarkerIconMaterial, battleMarkerFrameMaterial);
-            MapRegistrations.Register(builder, settings, mapLayoutView, reinforcementZonesSystem);
+            MapRegistrations.Register(builder, settings, mapLayoutView, reinforcementZonesSystem, atmosphereView);
             builder.RegisterComponent(hazardEffectsView).AsImplementedInterfaces();
         }
 
