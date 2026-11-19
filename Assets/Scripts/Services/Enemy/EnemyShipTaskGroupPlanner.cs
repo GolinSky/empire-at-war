@@ -13,6 +13,8 @@ namespace EmpireAtWar.Services.Enemy
     {
         private const int MAIN_FORCE_SHIP_COUNT = 6;
         private const float DETACHMENT_GRACE_SECONDS = 10f;
+        // A zone or centre detachment that has only gathered this long hands its ships back to the main pool.
+        private const float ASSEMBLE_RELEASE_SECONDS = 45f;
         // The centre group may grow to about half the ships outside expansion detachments, never below two.
         private const float CENTRE_GROUP_SHARE = 0.5f;
         private const int MIN_CENTRE_GROUP = 2;
@@ -34,6 +36,10 @@ namespace EmpireAtWar.Services.Enemy
         public IReadOnlyList<EnemyShipTaskGroup> Groups => _groups;
         /// <summary>Mining zones ships may expand to this cycle; production sizes capture wings from it.</summary>
         public int EligibleExpansionZoneCount { get; private set; }
+#if UNITY_EDITOR || DEVELOPMENT_BUILD
+        private const float EXPANSION_IDLE_REPORT_INTERVAL = 20f;
+        private float _nextExpansionIdleReport;
+#endif
 
         public EnemyShipTaskGroupPlanner(EnemyStrategicContextBuilder contextBuilder,
             EnemyStrategicDecisionModel decisionModel, EnemyTaskForceExecutor executor,
@@ -57,14 +63,16 @@ namespace EmpireAtWar.Services.Enemy
             for (int i = _captureGroups.Count - 1; i >= 0; i--)
             {
                 EnemyShipTaskGroup captureGroup = _captureGroups[i];
+                bool assembledTooLong = captureGroup.NoViableCaptureSince >= 0f &&
+                    Time.time - captureGroup.NoViableCaptureSince >= ASSEMBLE_RELEASE_SECONDS;
                 if (captureGroup.ContextBuilder.ExpansionZone is ReinforcementZonePresenter zone)
                 {
-                    if (_captureProbe.HasExpansionObjective(zone)) continue;
+                    if (_captureProbe.HasExpansionObjective(zone) && !assembledTooLong) continue;
                     _assignedExpansionZones.Remove(zone);
                     _captureProbe.RecordExpansionReleased(zone, captureGroup.Ships.Count);
                 }
                 else if (captureGroup.ContextBuilder.OpeningFocus == EnemyOpeningFocus.Centre &&
-                    !stationPressure && captureGroup.Ships.Count != 0 &&
+                    !stationPressure && captureGroup.Ships.Count != 0 && !assembledTooLong &&
                     _captureProbe.HasCentreObjective()) continue;
                 else if (!stationPressure && captureGroup.Ships.Count != 0 &&
                     !(captureGroup.NoViableCaptureSince >= 0f &&
@@ -133,10 +141,16 @@ namespace EmpireAtWar.Services.Enemy
                 if (_mainGroup != null) _mainGroup.IsMainForce = true;
             }
             if (_mainGroup == null) return;
+            bool mainFighting = IsFighting(_mainGroup);
             for (int i = _groups.Count - 1; i >= 0; i--)
             {
                 EnemyShipTaskGroup group = _groups[i];
                 if (group == _mainGroup || group.IsCaptureDetachment) continue;
+                // No ship flies alone into a fight: far reinforcements gather on their own until the main force is
+                // free or back at the gathering point.
+                if (_mainGroup.Ships.Count > 0 && group.Ships.Count > 0 && (mainFighting || IsFighting(group)) &&
+                    DistanceSquared(_mainGroup.Ships[0].WorldPosition, group.Ships[0].WorldPosition) >
+                    4f * FleetCohesion.RADIUS * FleetCohesion.RADIUS) continue;
                 _mainGroup.Ships.AddRange(group.Ships);
                 group.Ships.Clear();
                 _groups.RemoveAt(i);
@@ -144,6 +158,9 @@ namespace EmpireAtWar.Services.Enemy
             _groups.Remove(_mainGroup);
             _groups.Insert(0, _mainGroup);
         }
+
+        private static bool IsFighting(EnemyShipTaskGroup group) =>
+            group.Context != null && group.Context.Snapshot.HasLocalThreat;
 
         public void TryCreateCaptureGroup(IReadOnlyList<IShipEntity> ships,
             ISet<string> reservedObjectives, bool stationPressure)
@@ -225,7 +242,7 @@ namespace EmpireAtWar.Services.Enemy
                 if (group == null && !canOpenGroup) continue;
                 foreach (IShipEntity ship in _unassigned)
                 {
-                    int required = _captureProbe.GetRequiredExpansionShips(zone, ship, out float eta);
+                    int required = _captureProbe.GetRequiredExpansionShips(zone, group?.Ships, ship, out float eta);
                     if (required == 0 || (group != null && group.Ships.Count >= required &&
                         (group.NoViableCaptureSince < 0f || group.Ships.Count >= required + 1)) ||
                         eta >= bestEta) continue;
@@ -238,7 +255,11 @@ namespace EmpireAtWar.Services.Enemy
                     bestRequired = required;
                 }
             }
-            if (bestShip == null) return false;
+            if (bestShip == null)
+            {
+                RecordExpansionIdle(canOpenGroup);
+                return false;
+            }
             if (bestGroup == null)
             {
                 bestGroup = CreateGroup(true);
@@ -251,6 +272,25 @@ namespace EmpireAtWar.Services.Enemy
             bestGroup.Ships.Add(bestShip);
             _captureProbe.RecordExpansionAssigned(bestZone, bestShip, bestEta, bestRequired, bestGroup.Ships.Count);
             return true;
+        }
+
+        /// <summary>Why no ship was sent to each outer zone this cycle; at most one report per interval.</summary>
+        private void RecordExpansionIdle(bool canOpenGroup)
+        {
+#if UNITY_EDITOR || DEVELOPMENT_BUILD
+            if (Time.time < _nextExpansionIdleReport) return;
+            _nextExpansionIdleReport = Time.time + EXPANSION_IDLE_REPORT_INTERVAL;
+            foreach (ReinforcementZonePresenter zone in _captureProbe.ExpansionZones)
+            {
+                if (zone.IsMain || !zone.IsCapturable) continue;
+                EnemyShipTaskGroup group = _captureGroups.Find(candidate => candidate.ContextBuilder.ExpansionZone == zone);
+                float eta = float.PositiveInfinity;
+                int required = _unassigned.Count == 0 ? -1 :
+                    _captureProbe.GetRequiredExpansionShips(zone, group?.Ships, _unassigned[0], out eta);
+                _captureProbe.RecordExpansionIdle(zone, System.FormattableString.Invariant(
+                    $"mining={_captureProbe.HasMiningSites(zone)};objective={_captureProbe.HasExpansionObjective(zone)};eligible={_captureProbe.IsShipExpansionEligible(zone)};reservedByAlly={_captureProbe.IsExpansionZoneReservedByAlly(zone)};groupShips={(group == null ? -1 : group.Ships.Count)};groupNoViableSince={(group == null ? -1f : group.NoViableCaptureSince):F1};canOpenGroup={canOpenGroup};unassigned={_unassigned.Count};mainShips={(_mainGroup == null ? -1 : _mainGroup.Ships.Count)};required={required};eta={eta:F1}"));
+            }
+#endif
         }
 
         private bool IsInAssaultGroup(IShipEntity ship) =>

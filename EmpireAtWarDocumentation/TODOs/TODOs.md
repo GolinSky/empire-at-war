@@ -65,8 +65,7 @@
 ### Bugs
 
 - [ ] **Enemy AI economy strategy** → [[TODOs/Bugs/Enemy_AI_Economy_Strategy]]; follows [[Done/Bugs/Enemy_AI_Active_Play_And_Ship_Combat]]
-  - Status: in progress (2026-11-19). Regression fixes X1–X5 done; review fixes R1–R9 implemented 2026-11-19 → [[TODOs/Bugs/Enemy_AI_Economy_Strategy - Review]] (EnemyAi 503/503, Capture/Map pass; not committed). Next: UltraHard Small 1v1 battle, then 2v2 Medium + 1v1 Large battles.
-  - Review 2026-11-19 → [[TODOs/Bugs/Enemy_AI_Economy_Strategy - Review]]: 1v1 Small matches source; team games and Medium/Large have open findings R1, R2, R6; map-fix findings M2, M4. Fix proposals recorded (not implemented); decided: mines near an allied base get lower priority (R4).
+  - Status: in progress (2026-11-19). X1–X5 (`8e2ebefe6`, `28d1a41fd`) and review fixes R1–R9 (`89810dcb2`) committed; map M2/M4/M5 in `ac7ff075c`. EditMode: EnemyAi 503/503, Capture, Map pass. 17:31 battle lost → objective-selection rebuild P1–P7 implemented 2026-11-19 (zone verdicts Go/Assemble/Deny, pull-back to gathering point; compiled, tests not run). Open: run `EnemyAi`, tests for R3/R5/R6, UltraHard 1v1 Small battle, then 2v2 Medium + 1v1 Large → [[TODOs/Bugs/Enemy_AI_Economy_Strategy#Status 2026-11-19 (current)]].
 
 - [ ] **Capital attack movement + class rework fixes** → [[TODOs/Bugs/Capital_Movement_And_Class_Rework_Fixes]]
   - Status: in progress (2026-11-17). Done: map seed/layout log (`BattleMapTelemetry` → `_map.csv`). ISD I spawn fixed and user-confirmed 2026-11-17 (a station-centred origin tied between the main region and a corner pocket; the larger region now wins). Next: Phase 1/2 movement issues and the uncommitted class-rework edits. Then the Titan/Allegiance freeze, Executor holding out of reach, Tector stern-first retreat at stations, and class-rework review defects.
@@ -227,7 +226,7 @@
   - Status: in progress; job/lock/journal infrastructure and Rothana recipe implemented; `apply` disabled. On 2026-11-16, aligned Rothana and Endurance recipe group GUIDs and prefab paths with saved assets; Editor migration gates remain open.
   - Next: production conversion + Editor acceptance; Endurance/Rebel recipes; station/derivative adapters; concurrency recovery acceptance.
 
-- [ ] **Update Unity Pipeline package 0.6.0-exp.1 → 1.0.0** → [[TODOs/Tooling/Unity_Pipeline_1_0_Update|Unity Pipeline 1.0 Update]]
+- [ ] **Update Unity Pipeline package 0.6.0-exp.1 → 1.0.0 and CLI 1.0.0 → 1.0.1** → [[TODOs/Tooling/Unity_Pipeline_1_0_Update|Unity Pipeline 1.0 Update]]
   - Status: investigated 2026-11-17; safe with command-name sweep (AGENTS.md, AloImport worker, Tool READMEs). Not started.
 
 - [ ] **Add Jenkins GitHub draft releases** → [[TODOs/Tooling/Jenkins_GitHub_Releases|Jenkins GitHub Releases]]
@@ -429,11 +428,11 @@
 - [x] **Implement Game Design Balance Editor** → [[Done/Tooling/GameDesign_Balance_Editor|Game Design Balance Editor]]; [[Done/Tooling/GameDesign_Balance_Editor - Research|Data ownership and feasibility]]
 
 ### Features
+
 - [x] **Shift + left-click a unit → add it to the current selection (toggle off on second Shift + click)** → [[Done/Features/Shift_Click_Add_To_Selection|Shift Click Add To Selection]]
   - Completed 2026-11-19, `acceptance: pending-user`. Rebindable `Battle/AddToSelection` (Shift), `SelectionContext.Add`, `SelectionService.ToggleInSelection`; Unity compile clean; `BattleInput` 433/433 passed. Gates → [[TODOs/User_Acceptance_Queue]].
 - [x] **Planet biome atmosphere: per-biome sun, ambient and colour grade (Tatooine orange, Coruscant warm, Hoth cold)** → [[Done/Features/Planet_Biome_Atmosphere_Plan|Planet Biome Atmosphere Plan]]
   - Completed 2026-11-19, `acceptance: pending-user`. 10 biomes from surface albedo, 57 planets assigned; `PlanetAtmosphereSettings` + sparse grade Volume (priority 50) + `BattleAtmosphereView` in `SceneContext.prefab`; tints softened ×0.85 after user feedback. Unity compile clean; `PlanetAtmosphereTests` and `Core` 166/166 passed. Gates → [[TODOs/User_Acceptance_Queue]].
-
 - [x] **Spatial pace clusters: per-cluster formation speed, double right-click loose move (green wave)** → [[Done/Features/Spatial_Pace_Clusters_Plan|Spatial Pace Clusters Plan]]
   - Completed 2026-11-19, `acceptance: pending-user`. Replaced `GroupPace` with `PaceCluster` + `PaceClusterBuilder` + `PaceClusterMergeService` for `Move` (formation), `Attack`, hard-point attack, and `AttackMove`; lag correction, straggler/stuck detach, double right-click `MovePace.Loose` + green wave feedback (incl. network). Unity compile clean (`0` errors); tests not run (local override). Gates → [[TODOs/User_Acceptance_Queue]].
 - [x] **Group attack speed matching (ships move at slowest selected ship's speed)** → [[Done/Features/Group_Attack_Speed_Matching_Plan|Group Attack Speed Matching Plan]]

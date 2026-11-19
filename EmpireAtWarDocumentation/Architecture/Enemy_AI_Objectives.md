@@ -20,6 +20,25 @@ verification: Reviewed affected source and regression fixtures. Unity 6000.4.7f1
 
 ## Implementation
 
+### Zone objectives (2026-11-19, rebuild P1–P7)
+
+- Supersedes the per-site yes/no safety gate. Older bullets below that mention route safety for capture/raids, the `2:1` ship-count rule or "hostile capture strength + one ship" sizing are historical.
+- Objective = zone. `EnemyZoneObjectiveCollector` groups capture candidates per reinforcement zone (`IsInZone`, 2 × radius); a site outside every zone is its own area.
+- Defenders = known hostile units within `1000` + zone radius of the centre, plus visible armed hostile structures within 2 × radius + weapon range. Structures have no catalog profile → flat `STATIC_DEFENSE_DPS = 60` per class at live hull/shields (estimate, not calibrated).
+- One strength measure: `EnemyZoneEvaluator.Assess` → `CombatMatchup.Advantage(force, defenders)` vs difficulty `RetreatAdvantage`. `Go` ≥ threshold; `Assemble` below (records `RequiredScale` = threshold / advantage); `Deny` only near a hostile base (900) without a threatened own site.
+- Score = best site score in the zone (existing `GetCaptureScore`, travel-distance units) − (`RequiredScale` − 1) × `MISSING_FORCE_COST` (1000).
+- Tier before score: not behind → Go, then Assemble. Behind on zones (an enemy team holds more uncontested zones) → own-side Go, own-side Assemble, other Go, other Assemble, centre last. Behind also lifts the main force's centre-only filter.
+- Site choice: any Go zone of the chosen tier in rank order (falls through to the next zone when sites are unreachable), threatened own sites, or the kept objective (keeps above `0.85 ×` threshold, 3 s grace below). Hard reachability only: clear point + ion cost (`IsDestinationReachable`).
+- No Go zone → group gathers: `GuardPosition` = staging point = nearest uncontested team-held zone to the target with no known hostile near, else home. Main force guards the centre only when the team holds it.
+- Hostile satellites/platforms no longer hide a zone or block routes for capture; they are defenders. Retreat routes and marker approaches still use `IsRouteSafe` + static defense.
+- Expansion sizing (`GetRequiredExpansionShips`): group alone Go → group size; else (group + ship) × `RequiredScale`. Main force no longer skips zones reserved for an expansion detachment. Zone/centre detachments gathering ≥ 45 s are released.
+- Pull-back: outmatched locally (`LocalAdvantage ≤ RetreatAdvantage`) with `CanDisengage` → `RetreatValue` to the nearest safe held zone or home. Fight in place within 1000 of any allied station, inside a held zone, under station pressure, at the point, or when the way back crosses a known force (cut off). 8 s hold against flipping back.
+- Reinforcements: a non-main group farther than 2 × `FleetCohesion.RADIUS` stays separate while either group is in a local fight.
+- Raids: no route gate; a target covered by a visible armed hostile structure is skipped; defenders vs `RequiredAttackRatio` unchanged.
+- Wings (opening): one wing per opening zone before any gets a second; contested zones are topped up afterwards.
+- Telemetry `zoneEval`: one row per zone when its verdict for a group changes (`verdict`, `required`, `advantage`, `defenders`, `statics`, `eta`, `score`, `priority`, `staging`, `behind`). `captureBlocked` now only when no Go and no Assemble.
+- Not built: unseen-fleet share for never-scouted zones (treated as empty); exact structure weapon profiles.
+
 - Capture identity: `EnemyCaptureObjective` carries ID, type, owner, position, radius, progress and emergency-defense flag.
 - Outer mining zones get persistent detachments. Rank open objectives by ship ETA versus known hostile arrival; size for hostile capture strength + one ship-equivalent. Ships retain their zone while waiting for reinforcements. The centre gets an early dedicated assignment.
 - Pads can be captured before their point mines. The authored `IsMain` relay identifies the centre, including offset layouts. A valid centre objective stays committed. Blocked approaches, stalled capture and a materially stronger hostile force allow a switch.

@@ -39,6 +39,11 @@ namespace EmpireAtWar.Services.Enemy
         /// <summary>Hostile strikecraft within this planar distance of an own ship count toward its escort need.</summary>
         private const float ESCORT_THREAT_RADIUS = 2000f;
         private const int OPENING_CAPTURE_WINGS = 3;
+#if UNITY_EDITOR || DEVELOPMENT_BUILD
+        private const float WING_ASSIGNMENT_REPORT_INTERVAL = 6f;
+        private string _lastWingAssignment;
+        private float _nextWingAssignmentReport;
+#endif
         private const int MAX_RAID_WINGS = 3;
         // Matches the ship capture rule: sites this close to an allied station are taken last.
         private const float ALLIED_BASE_SITE_RADIUS = 1000f;
@@ -560,6 +565,18 @@ namespace EmpireAtWar.Services.Enemy
             AssignScout(captureWings);
             if (_scout != null) _captureSquadrons.Remove(_scout);
             _captureAssignments.Assign(_captureSquadrons);
+#if UNITY_EDITOR || DEVELOPMENT_BUILD
+            // Which wings go where: the opening race for zones is decided here, before any ship exists.
+            string assignment = FormattableString.Invariant(
+                $"wings={_squadrons.Count};captureWings={_captureSquadrons.Count};openingBudget={captureWings};escorts={_escorts.Count};raids={_raids.Count};scout={(_scout != null)};targets=") +
+                _captureAssignments.Describe();
+            if (assignment != _lastWingAssignment && Time.time >= _nextWingAssignmentReport)
+            {
+                _lastWingAssignment = assignment;
+                _nextWingAssignmentReport = Time.time + WING_ASSIGNMENT_REPORT_INTERVAL;
+                EnemyAiTelemetry.RecordEvent(_owner.Id, _owner.Faction, "wingAssignment", assignment);
+            }
+#endif
         }
 
         private void PrioritizeZone(ReinforcementZonePresenter zone)

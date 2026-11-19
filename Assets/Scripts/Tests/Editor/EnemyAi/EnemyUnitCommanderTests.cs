@@ -1999,7 +1999,7 @@ namespace EmpireAtWar.Tests.Editor
 
         [TestCase(false)]
         [TestCase(true)]
-        public void CaptureSelection_UsesFullRouteForceWhenLocalMatchupFails(bool hasRouteFighter)
+        public void CaptureSelection_ZoneVerdictWeighsTheGroupForceAgainstEveryZoneDefender(bool hasZoneFighter)
         {
             PlayerRoster roster = TestPlayers.CreateDuel(EnemyAiDifficulty.UltraHard);
             PlayerSlot owner = roster.Get(TestPlayers.Enemy);
@@ -2023,21 +2023,26 @@ namespace EmpireAtWar.Tests.Editor
             HostileIntelModel intel = registry.Get(owner.Team);
             intel.Report(new HostileSighting(1, capital, TestPlayers.Human, new FormationPoint(3000f, 0f), 1f, 0f, 1f, 0f));
             intel.Report(new HostileSighting(2, frigate, TestPlayers.Human, new FormationPoint(3000f, 0f), 1000f, 0f, 1f, 0f));
-            if (hasRouteFighter)
-                intel.Report(new HostileSighting(3, fighter, TestPlayers.Human, new FormationPoint(1500f, 0f), 1f, 0f, 1f, 0f));
+            if (hasZoneFighter)
+                intel.Report(new HostileSighting(3, fighter, TestPlayers.Human, new FormationPoint(3000f, 0f), 1f, 0f, 1f, 0f));
 
             var builder = CreateContextBuilder(null, null, Array.Empty<IEnemyCaptureObjectiveSource>(),
                 new EntityLocator(), null, roster, catalog, registry, new VisionService(roster, fogEnabled: false),
                 owner, null, new TestHazards(), zones, null, new EnemyStationPressureTracker(), CreateRecovery(roster, zones));
             var ships = (List<IShipEntity>)typeof(EnemyStrategicContextBuilder).GetField("_ownShips", flags).GetValue(builder);
             ships.Add(new FakeShip(destination, 4));
-            var ownForce = (ForceComposition)typeof(EnemyStrategicContextBuilder).GetField("_localOwnForce", flags).GetValue(builder);
+            var ownForce = (ForceComposition)typeof(EnemyStrategicContextBuilder).GetField("_ownForce", flags).GetValue(builder);
             ownForce.Add(CombatForce(50000f, 0.01f, fighterDps: 10f));
 
-            // The route fighter increases the killable hull share, raising advantage from 0.71 to 1.00.
+            // The zone fighter increases the killable hull share, raising advantage from 0.71 to 1.00.
             EnemyCaptureObjective selected = SelectCapture(builder);
-            if (hasRouteFighter) Assert.That(selected?.Id, Is.EqualTo("zone:0"));
-            else Assert.That(selected, Is.Null);
+            if (hasZoneFighter) Assert.That(selected?.Id, Is.EqualTo("zone:0"));
+            else
+            {
+                Assert.That(selected, Is.Null);
+                Assert.That(typeof(EnemyStrategicContextBuilder).GetField("_assembleArea", flags).GetValue(builder),
+                    Is.EqualTo(0), "A zone the group cannot take yet is an assembly target, not a bare rejection.");
+            }
         }
 
         [Test]
@@ -2328,8 +2333,8 @@ namespace EmpireAtWar.Tests.Editor
         {
             var (builder, _, strong, _) = CaptureProbeBuilder(isCentre: true, hostileStrength: 3f);
             builder.BeginCaptureProbe(new HashSet<string>());
-            Assert.That(builder.CanDetachForCapture(strong), Is.False,
-                "Without the centre lane a lone ship does not detach into a stronger capture circle.");
+            Assert.That(builder.CanDetachForCapture(strong), Is.True,
+                "A capture-presence count alone no longer blocks a ship that beats the zone's known defenders.");
 
             Assert.That(builder.SetOpeningFocus(EnemyOpeningFocus.Centre, Vector3.zero), Is.True);
             Assert.That(builder.CanDetachForCapture(strong), Is.True,
@@ -2845,11 +2850,13 @@ namespace EmpireAtWar.Tests.Editor
             }
         }
 
+        // Capture-presence counts no longer gate the centre; known defenders the group cannot beat make it gather
+        // (Assemble) and call reinforcements instead of dropping the centre.
         [TestCase(2, 0, 1.0f, false)]
-        [TestCase(1, 2, 1.0f, false)]
+        [TestCase(1, 2, 1.5f, false)]
         [TestCase(1, 0, 1.5f, true)]
-        public void CentreCapture_UsesShipsAndSquadronsAndReinforcesWhenShort(
-            int ownShipsCount, int ownSquadronsCount, float hostileStrength, bool expectReinforce)
+        public void CentreCapture_ReinforcesWhenKnownDefendersOutmatchTheGroup(
+            int ownShipsCount, int ownSquadronsCount, float hostileStrength, bool knownDefender)
         {
             var objects = new List<GameObject>();
             var gameData = ScriptableObject.CreateInstance<GameData>();
@@ -2885,10 +2892,15 @@ namespace EmpireAtWar.Tests.Editor
                     entities.AddEntity(wingEntity);
                 }
 
+                var intel = new TeamIntelRegistry();
+                if (knownDefender)
+                    intel.Get(roster.Get(TestPlayers.Enemy).Team).Report(new HostileSighting(500,
+                        UnitTypeId.Ship(ShipType.Venator), TestPlayers.Human, new FormationPoint(0f, 0f), 100f, 0f, 1f,
+                        Time.time));
                 var builder = CreateContextBuilder(
                     new ShipService(), new WithdrawalZones(), Array.Empty<IEnemyCaptureObjectiveSource>(),
-                    entities, gameData, roster, null,
-                    new TeamIntelRegistry(), new VisionService(roster, fogEnabled: false),
+                    entities, gameData, roster, VenatorCatalog(),
+                    intel, new VisionService(roster, fogEnabled: false),
                     roster.Get(TestPlayers.Enemy), new WithdrawalProduction(), hazards, zones,
                     navigation, new EnemyStationPressureTracker(), CreateRecovery(roster, zones));
                 builder.SetOpeningFocus(EnemyOpeningFocus.Centre, centre);
@@ -2896,10 +2908,11 @@ namespace EmpireAtWar.Tests.Editor
                     .GetField("_ownShips", BindingFlags.Instance | BindingFlags.NonPublic).GetValue(builder);
                 ownShipsField.AddRange(ships);
 
-                EnemyCaptureObjective selected = SelectCapture(builder);
+                EnemyCaptureObjective selected = SelectCapture(builder, Time.time);
 
-                Assert.That(selected, Is.Not.Null, "Centre objective must be kept, never dropped as blockedApproach.");
-                Assert.That(builder.NeedsCentreReinforcement, Is.EqualTo(expectReinforce));
+                Assert.That(selected == null, Is.EqualTo(knownDefender),
+                    "Presence alone never blocks the centre; an outmatching defender makes the group gather.");
+                Assert.That(builder.NeedsCentreReinforcement, Is.EqualTo(knownDefender));
             }
             finally
             {

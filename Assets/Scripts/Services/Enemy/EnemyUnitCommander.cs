@@ -411,7 +411,7 @@ namespace EmpireAtWar.Services.Enemy
                 snapshot.IsRegrouped, snapshot.HasStationPressure, snapshot.HasSafeRetreat,
                 snapshot.HasEconomyRaidTarget, snapshot.LocalRaw, snapshot.FleetRaw,
                 snapshot.RecoveryMode, snapshot.IsStationCritical, snapshot.HasGuardSite, snapshot.IsCentreGuardGoal,
-                snapshot.CanAssaultBase, snapshot.CanHuntFleet, snapshot.HasSecuredCentre);
+                snapshot.CanAssaultBase, snapshot.CanHuntFleet, snapshot.HasSecuredCentre, snapshot.CanDisengage);
             _recoveryStartedAt = _cyclePrimary.RecoveryStartedAt;
             _actionReason = _cyclePrimary.Executor.ActionReason + _cycleGroupSummary;
 #if UNITY_EDITOR || DEVELOPMENT_BUILD

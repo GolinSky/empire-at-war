@@ -61,6 +61,12 @@ namespace EmpireAtWar.Entities.EnemyFaction.Models
         public bool CanHuntFleet { get; }
         public bool HasSecuredCentre { get; }
 
+        /// <summary>
+        /// The group is away from the station and every held zone, a gathering point exists and nothing blocks the
+        /// way back: an outmatched local fight is left instead of fought to the last ship.
+        /// </summary>
+        public bool CanDisengage { get; }
+
         /// <summary>The station is losing hull fast enough that the whole fleet must defend it.</summary>
         public bool IsStationCritical { get; }
 
@@ -85,8 +91,10 @@ namespace EmpireAtWar.Entities.EnemyFaction.Models
             bool hasEconomyRaidTarget = false,
             float localRaw = float.NaN, float fleetRaw = float.NaN, bool recoveryMode = false,
             bool isStationCritical = false, bool hasGuardSite = false, bool isCentreGuardGoal = false,
-            bool canAssaultBase = false, bool canHuntFleet = false, bool hasSecuredCentre = false)
+            bool canAssaultBase = false, bool canHuntFleet = false, bool hasSecuredCentre = false,
+            bool canDisengage = false)
         {
+            CanDisengage = canDisengage;
             IsStationCritical = isStationCritical;
             VictoryCondition = victoryCondition;
             Difficulty = difficulty;
@@ -294,7 +302,15 @@ namespace EmpireAtWar.Entities.EnemyFaction.Models
             }
             bool standAndFight = snapshot.OwnShipCount > 0 && snapshot.HasLocalThreat &&
                 snapshot.LocalAdvantage <= profile.RetreatAdvantage;
-            if (standAndFight)
+            bool disengage = standAndFight && snapshot.CanDisengage;
+            if (disengage)
+            {
+                // Pull back only as far as the gathering point; the state hold below stops a flip back.
+                state = EnemyStrategicState.RetreatValue;
+                reason = "Hostiles near the fleet outmatch it away from held ground; pull back to the gathering point.";
+                Bypass = "disengage";
+            }
+            else if (standAndFight)
             {
                 state = EnemyStrategicState.EngageLocal;
                 reason = "Hostiles near the fleet outmatch it; focus fire and fight in place.";
@@ -309,6 +325,7 @@ namespace EmpireAtWar.Entities.EnemyFaction.Models
             bool held = _hasLastState && state != _lastState && Bypass == "none" &&
                 !float.IsNaN(now) && StateHeldSeconds < MIN_STATE_SECONDS &&
                 (_lastState == EnemyStrategicState.EngageLocal && snapshot.HasLocalThreat ||
+                 _lastState == EnemyStrategicState.RetreatValue && snapshot.HasLocalThreat ||
                  _lastState == EnemyStrategicState.CaptureZone && snapshot.HasCaptureTarget &&
                  state == EnemyStrategicState.EngageLocal);
             if (held)
@@ -334,7 +351,7 @@ namespace EmpireAtWar.Entities.EnemyFaction.Models
             }
             return new EnemyStrategicDecision(
                 state: state,
-                committedShipCount: standAndFight && state == EnemyStrategicState.EngageLocal
+                committedShipCount: standAndFight && state is EnemyStrategicState.EngageLocal or EnemyStrategicState.RetreatValue
                     ? snapshot.OwnShipCount : CalculateCommittedShipCount(state, snapshot, profile),
                 reason: reason);
         }

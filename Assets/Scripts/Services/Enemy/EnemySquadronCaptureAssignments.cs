@@ -91,8 +91,16 @@ namespace EmpireAtWar.Services.Enemy
 
             foreach (Vector3 target in _threatened)
                 AssignGroup(squadrons, target);
+            // Opening: one wing per zone before any zone gets a second, then contested zones are topped up.
             foreach (Vector3 target in _openingTargets)
-                AssignGroup(squadrons, target);
+                if (_targets[target] == 0 && _assignments.Count < squadrons.Count)
+                    AssignClosest(squadrons, target);
+            foreach (Vector3 target in _openingTargets)
+            {
+                int missing = _requiredWings[target] - _targets[target];
+                if (missing <= 0 || squadrons.Count - _assignments.Count < missing) continue;
+                for (int i = 0; i < missing; i++) AssignClosest(squadrons, target);
+            }
 
             // Fill uncovered sites before adding extra wings to any of them.
             foreach (ISquadron squadron in squadrons)
@@ -162,6 +170,16 @@ namespace EmpireAtWar.Services.Enemy
             }
             _assignments.Add(closest, target);
             _targets[target]++;
+        }
+
+        /// <summary>Every target as position, required wings, assigned wings and its opening / threatened flags, for telemetry.</summary>
+        public string Describe()
+        {
+            var text = new System.Text.StringBuilder();
+            foreach (KeyValuePair<Vector3, int> target in _targets)
+                text.Append(System.FormattableString.Invariant(
+                    $"({target.Key.x:F0} {target.Key.z:F0}):need{_requiredWings[target.Key]}:got{target.Value}{(_openingTargets.Contains(target.Key) ? ":opening" : "")}{(_threatened.Contains(target.Key) ? ":threatened" : "")}{(_satellitePads.Contains(target.Key) ? ":pad" : "")} "));
+            return text.ToString();
         }
 
         public bool TryGetTarget(ISquadron squadron, out Vector3 target) =>

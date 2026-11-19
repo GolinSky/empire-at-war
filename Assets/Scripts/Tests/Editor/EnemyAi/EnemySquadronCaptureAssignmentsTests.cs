@@ -171,6 +171,26 @@ namespace EmpireAtWar.Tests.Editor
         }
 
         [Test]
+        public void Assign_ContestedOpeningZoneGetsOneWingUntilEveryZoneHasOne()
+        {
+            var assignments = new EnemySquadronCaptureAssignments();
+            Vector3 contested = Vector3.right * 100f;
+            Vector3 outer = Vector3.left * 100f;
+            assignments.AddTarget(contested, requiredWings: 3);
+            assignments.AddTarget(outer);
+            assignments.PrioritizeArea(contested, 20f);
+            assignments.PrioritizeArea(outer, 20f);
+            var first = new Squadron(Vector3.right * 90f);
+            var second = new Squadron(Vector3.right * 80f);
+
+            assignments.Assign(new[] { first, second });
+
+            Assert.That(assignments.TryGetTarget(first, out Vector3 firstTarget), Is.True);
+            Assert.That(assignments.TryGetTarget(second, out Vector3 secondTarget), Is.True);
+            Assert.That(new[] { firstTarget, secondTarget }, Is.EquivalentTo(new[] { contested, outer }));
+        }
+
+        [Test]
         public void Assign_AfterTheRelayIsHeld_CapturesTheClosestSatellitePadBeforeMines()
         {
             var assignments = new EnemySquadronCaptureAssignments();

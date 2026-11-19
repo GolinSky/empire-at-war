@@ -231,6 +231,43 @@ namespace EmpireAtWar.Tests.Editor
         }
 
         [Test]
+        public void OutmatchedAwayFromHeldGround_PullsBackToTheGatheringPoint()
+        {
+            EnemyStrategicDecision decision = new EnemyStrategicDecisionModel().Evaluate(
+                DisengageSnapshot(localAdvantage: 0.3f, canDisengage: true), now: 0f);
+
+            Assert.That(decision.State, Is.EqualTo(EnemyStrategicState.RetreatValue));
+            Assert.That(decision.CommittedShipCount, Is.EqualTo(5));
+        }
+
+        [Test]
+        public void OutmatchedWithoutAGatheringPoint_StillFightsInPlace()
+        {
+            EnemyStrategicDecision decision = new EnemyStrategicDecisionModel().Evaluate(
+                DisengageSnapshot(localAdvantage: 0.3f, canDisengage: false), now: 0f);
+
+            Assert.That(decision.State, Is.EqualTo(EnemyStrategicState.EngageLocal));
+        }
+
+        [Test]
+        public void PullBack_HoldsAgainstAnImmediateReturnToTheFight()
+        {
+            var model = new EnemyStrategicDecisionModel();
+            model.Evaluate(DisengageSnapshot(localAdvantage: 0.3f, canDisengage: true), now: 0f);
+
+            Assert.That(model.Evaluate(DisengageSnapshot(localAdvantage: 1.5f, canDisengage: true), now: 1f).State,
+                Is.EqualTo(EnemyStrategicState.RetreatValue));
+            Assert.That(model.Evaluate(DisengageSnapshot(localAdvantage: 1.5f, canDisengage: true),
+                now: EnemyStrategicDecisionModel.MIN_STATE_SECONDS).State, Is.EqualTo(EnemyStrategicState.EngageLocal));
+        }
+
+        private static EnemyStrategicSnapshot DisengageSnapshot(float localAdvantage, bool canDisengage) =>
+            new EnemyStrategicSnapshot(BattleVictoryCondition.DestroyOpponentBase, EnemyAiDifficulty.UltraHard,
+                ownShipCount: 5, enemyShipCount: 12, ownedCapturableZoneCount: 0, fleetAdvantage: 0.4f,
+                baseThreatRatio: 0f, hasCaptureTarget: false, hasEnemyBaseTarget: true, hasOwnBase: true,
+                localAdvantage: localAdvantage, hasLocalThreat: true, canDisengage: canDisengage);
+
+        [Test]
         public void OutmatchedNearFleet_CommitsEveryoneToTheFight()
         {
             EnemyStrategicDecision decision = new EnemyStrategicDecisionModel().Evaluate(

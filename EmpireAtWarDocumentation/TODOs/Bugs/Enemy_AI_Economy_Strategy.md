@@ -20,7 +20,8 @@ follows: "[[Done/Bugs/Enemy_AI_Active_Play_And_Ship_Combat]]"
 - Testing note: poll `test_status` sparingly (≥ 20 s) and never from two scripts at once; status polling during a run logs "Main thread operation timed out" errors that fail log-sensitive tests.
 
 ### Open
-- [ ] R2 step 4: reinforcements join the centre group only within `FleetCohesion.RADIUS` or after a regroup. Not built; the capture executor already rallies stragglers — verify in a team battle.
+- [x] R2 step 4: covered by the rebuild (far reinforcements stay separate while either group fights). Verify in a battle.
+- [ ] Rebuild P1–P7: run `EnemyAi` tests and the 1v1 battle (see "Rebuild — objective selection").
 - [ ] Tests for R2 (centre cap, expansion in the same cycle), R3 (unseen income split), R5 (zone reservation), R6 (eligibility, group cap). Planner/builder need heavy fixtures; add with the 2v2 battle evidence. R1 and R4 have tests.
 - [ ] Battle: UltraHard Small 1v1 (X1–X5 + R-fixes acceptance; telemetry: `deployment` tier/heldSeconds, `zoneOwner`, `expansionAssigned`, `sample` teamHeldZones/visibleAdvantage/unseenInvestment).
 - [ ] Battle: 2v2 Medium (AI ally + 2 AI enemies) and 1v1 Large; compare `zoneOwner`, `deployment` tier, `objectiveSwitch`, `expansionAssigned`.
@@ -62,9 +63,110 @@ Files: `BattleTelemetry/Loading_20261119_163020_ai.csv`, `_ai_orders.csv`, `_squ
   - `expansionAssigned` gains `required`, `groupShips`; new `expansionReleased` (`zone`, `pos`, `owner`, `groupShips`) when a zone detachment is dissolved → answers F4.
   - Existing: `satellite` rows with reason `Fill owned pad` → F2.
 - Tests added (`EnemyAi`, `EnemyStructurePlacementServiceTests`, not run): `DefensePosition_ZoneWithAPlatformOnItsRingIsSkippedForTheNextHeldZone`, `…EveryHeldZoneDefended_OnlyAnExtraRequestFindsAPosition`, `…ExtraPlatformsSpreadEvenlyAndStopAtTheZoneLimit`, `…IgnoresZonesHeldByAnotherPlayer`. Fixture now has a zone source, world snapshot and platform entity. `StructurePlacementServiceStub` updated for the new signature.
+- Test run 2026-11-19 17:26 (agent, user-requested; EditMode, category `EnemyAi`, explicit excluded, code `cd52ee89a`): 510/510 passed in 12.3 s, including the 7 new tests. Other categories not run.
 - Not covered by tests: `EnemyProductionStrategy` passing `shipBlockedByCapacity` (needs the heavy production fixture).
 - Tests added (`EnemyAi`, `EnemyDefenseStrategyTests`): `Fill_EmptyPadOfAZoneWithItsRequiredSatellitesIsBuiltFromSpareMoney`, `Fill_WaitsWhileMoneyIsReservedForProduction`, `Fill_SkipsAPadWithHostiles`. No test for the platform check (`EnemyStructurePlacementServiceTests` has no zone/structure fixture).
 - [ ] Battle check: centre pads 4–9 all get satellites after capture; platforms appear outside the centre; F4–F7 still open.
+
+## Evidence — battle 2026-11-19 17:31 (UltraHard Small 1v1, code `5e4bff019`, dirty) — user: "bad results, I win fast"
+Files: `BattleTelemetry/Loading_20261119_173121_ai.csv`, `_ai_orders.csv`, `_squadrons.csv`, `Battle_20261119_173124_map.csv`, `Battle_20261119_173233.csv`.
+- Human Empire (−662, 1688) vs AI Rebellion (662, −1688). Kashyyyk, seed 850465432, 45 asteroid fields. Log time 29.4 s = battle 0 s. AI station dead 820.7 s.
+- Distances match the 16:30 map: centre 1,812 (was 1,865), own-side outer zone 2,346 (was 2,433) → map geometry is not the cause. No `stalled` objective; 5 `blockedApproach`, all hostile strength.
+
+### Not caused by `cd52ee89a`
+- No `Fill owned pad` satellite, no defend platform purchase, no `defensePlacementBlocked`, capacity ≤ 56/120 → none of the new paths ran. Strategic decision code unchanged by that commit.
+
+### Cause chain
+- **O1 Opening lost to squadrons.** Human had no ship until 104 s but owned both outer zones by 65–87 s (2 wings to each) and the centre by 142–180 s. AI: 2 wings on AttackMove (centre pads 5/6/4 at 52–59 s), 2–3 wings on Guard at home, 0 wings to outer zones. 16:30 battle: 3 wings out → one per zone.
+- **O2 Own-side outer zone lost by ≈ 7 s.** `expansionAssigned` 34.5 s, eta 49.4 s → ≈ 84 s; human took pads 15/16 at 77–79 s, mine 14 at 87 s. First AI ship spawned 34 s (16:30: 25 s): 3 X-Wing wings cost 2,400 (Vulture: 600) before the first corvette.
+- **O3 Weak Rebel opening fleet.** 6 Corellian Corvettes before level 2 (110 s). `fleetAdvantage` 0.17 at 128 s (3 corvettes vs 1 Raider), 0.17–0.25 at 148–182 s (4 vs Raider + Acclamator + Quasar + Victory I).
+- **O4 No comeback behaviour.** From 180 s the AI held 1 mine + 1 pad; human held centre + both outer zones. `teamHeldZones=0` to the end.
+  - Every capture objective rejected for 640 s ("route/local force advantage ≤ 0.80", "outnumber two to one"); only centre sites listed.
+  - `RaidStructures`: 4 decisions, none after 110 s. No `expansionAssigned` after 115 s, no `expansionReleased`.
+  - `EngageLocal` 96 decisions; "Hostiles near the fleet outmatch it; fight in place" × 75. `recoveryMode=True` 272 s → end, "No safe local retreat anchor".
+  - One ship bought every ≈ 15 s and sent alone: AI lost 43 ships (13 at the centre, 12 in transit, 18 at home) vs human 17. Fleet 3–7 ships all battle.
+- Faction vs playstyle: the causes below are faction-independent code paths; Rebellion only made the opening slower (O2, O3).
+
+### Verified causes in code (2026-11-19, code `5e4bff019`)
+| # | Cause | Code | Log evidence (17:31) |
+|---|---|---|---|
+| V1 | Safety is a yes/no gate: one group vs every known hostile within 1,000 of the route or destination; fail → rejected, nothing records what force would be enough | `EnemyStrategicContextBuilder.IsObjectiveSafe` → `IsRouteSafe` → `IsThreatSafe` (`RetreatAdvantage` 0.80); `_routeHostileShipCount >= 2 × ships` | "advantage 0,18–0,50 <= safety threshold 0,80", "outnumber … two to one" on every row 142–650 s |
+| V2 | Three strength measures disagree: combat power (gate), capture strength = unit count (detachment sizing), ship count (2:1 rule) | `GetRequiredExpansionShips` (`HostileStrength + 1`) vs `IsThreatSafe` vs `IsRouteSafe` | `expansionAssigned required=1–2`; same zone dropped `invalid:unsafe` at 139.7 s |
+| V3 | A hostile site with a built satellite or mine is not an objective at all (mine only if scouted); a visible armed structure rejects any route regardless of fleet size | `EnemySiteObjectives.IsCapturable` (state must be Neutral/Owned); `IsInsideStaticDefense` returns unsafe unconditionally | rejection lists contain only centre sites 0–3, 5 and `zone:0`; outer sites 14–19 never appear after 140 s |
+| V4 | Outer zones stay reserved for their expansion detachment while the zone has any objective; the main force skips them | `_assignedExpansionZones` + `IsAssignedExpansionObjective`; `Reconcile` keeps the group while `HasExpansionObjective` | 4 `expansionAssigned` by 115 s, 0 `expansionReleased`, 0 later assignments |
+| V5 | Fallback ignores the gate: with no objective the main force "guards" the centre even when the enemy holds it | `Build`: `guardPosition = centre.Center` for the main force; `GuardSite` commits all ships | GuardSite at 359, 401, 450, 551, 612 s (ships on AttackMove 1,300–1,950 away, 12 hostile ships) → EngageLocal each time |
+| V6 | Outmatched + hostile within 1,000 → forced "fight in place" with all ships; no disengage | `EnemyStrategicDecisionModel.Evaluate` `standAndFight` override | "outmatch it; fight in place" × 75; `recoveryMode=True` 272 s → end; "No safe local retreat anchor" |
+| V7 | Each new ship joins the main group alone, wherever it fights | `Reconcile` → `AssembleMainForce` | 1 purchase / ≈ 15 s; 43 ships lost (12 in transit); fleet ≤ 7 |
+| V8 | Raids use the same gate | `FindRaidTarget`: `IsDefended` or `!IsRouteSafe` → skip | 4 `RaidStructures` decisions, none after 110 s |
+| V9 | Opening wings: only purchased wings capture (hangar wings on Guard are skipped); a contested target needs `hostile / weight + 1` wings before others get one | `AssignCaptureTargets`, `EnemySquadronCaptureAssignments.AssignGroup` | 3 X-Wing wings; first 3 captures all centre pads (52–59 s); no outer pad. Per-wing targets were not logged → `wingAssignment` added |
+
+### Telemetry added 2026-11-19 (Editor / development builds; compiled, not battle-tested)
+- `captureBlocked` (≤ 1 / 15 s per group with no objective): `ships`, `mainForce`, `expansionZone`, `focus`, `candidates`, `ranked`, then a count per removing rule (`reservedForExpansionDetachment`, `mainForceCentreOnly`, `nearHostileBase`, `reservedByOtherGroup`, `stalledRetry`, `notInFocusZone`, each safety reason).
+- `expansionIdle` (≤ 1 / 20 s, one row per outer zone when no ship is sent): `owner`, `mining`, `objective`, `eligible`, `reservedByAlly`, `groupShips`, `groupNoViableSince`, `canOpenGroup`, `unassigned`, `mainShips`, `required`, `eta`.
+- `wingAssignment` (on change, ≤ 1 / 6 s): wing counts and every target as `(x z):needN:gotM[:opening][:threatened][:pad]`.
+
+## Rebuild — objective selection (implemented 2026-11-19; compiled, tests not run, battle pending)
+### Implementation result 2026-11-19 (user: "execute", pull-back decision taken as proposed)
+- Reference sheet → [[Architecture/Enemy_AI_Objectives]] section "Zone objectives".
+- [x] P1 `Entities/EnemyFaction/Models/Objectives/`: `EnemyZoneVerdict`, `EnemyZoneObjective`, `EnemyZoneAssessment`, `EnemyZoneEvaluator`. Tests `EnemyZoneEvaluatorTests` (9).
+- [x] P2 `Services/Enemy/EnemyZoneObjectiveCollector.cs`: zones from capture candidates; defenders = intel + visible armed structures.
+- [x] P3 in place, not a new allocator class: `GetRequiredExpansionShips` by combat power; main force no longer skips expansion-reserved zones; zone/centre detachments released after 45 s of gathering; far reinforcements stay separate while either group fights (closes R2 step 4).
+- [x] P4 `SelectCaptureObjective` uses zone verdicts; route/2:1/static/capture-strength gates removed from selection; staging guard point; main force guards the centre only when held; pull-back rule (`CanDisengage` → `RetreatValue`, 8 s hold).
+- [x] P5 raids: route gate removed, static coverage skip; wings: one per opening zone first.
+- [x] P6 `zoneEval` telemetry; `captureBlocked` only when no Go/Assemble; `expansionIdle` kept.
+- [x] P7 dead code: `GetOwnCaptureStrength`, `CAPTURE_STRENGTH_MARGIN`, `_routeHostileShipCount`, `_checkingExpansion`; architecture note updated.
+- Deviations: zone score = existing best-site score − missing-force cost (keeps today's Go ranking); structure DPS is a flat estimate (60/class, no weapon profile in the catalog); unseen-fleet share for never-scouted zones not built.
+- Tests: added `EnemyZoneEvaluatorTests`, 3 pull-back tests (`EnemyStrategicDecisionModelTests`), 1 wing test. Changed contract → updated `CentreCapture_ReinforcesWhenKnownDefendersOutmatchTheGroup`, `CaptureSelection_ZoneVerdictWeighsTheGroupForceAgainstEveryZoneDefender`, `CaptureProbe_OpeningCentreFocusDetachesIntoAContestedCentre` (presence count no longer blocks). Not run (local override). Category: `EnemyAi`.
+- [ ] Run `EnemyAi` EditMode category.
+- [ ] Battle: UltraHard Small 1v1 replay of the 17:31 situation; check `zoneEval`, `captureBlocked` = 0, no `GuardSite` at hostile zones, `RetreatValue` with reason "pull back to the gathering point".
+
+### Original proposal
+### Decision
+- Replace the per-site yes/no safety gate and its fallbacks with one zone-level evaluator that always returns a plan.
+- Why: V1–V8 are one design fault — "unsafe" ends the decision instead of producing "what is needed". Patching single thresholds has failed 3 times (X3/X4, R2, this battle).
+- Avoid: new thresholds, new special cases for centre / expansion / raid, more fallback states.
+
+### Rules
+- **Objective = zone** (centre, each relay, each mining point). Sites, pads, mines and hostile structures inside it are its contents, not separate objectives.
+- **One strength measure**: `CombatMatchup.Advantage(assigned force, defenders)`. Defenders = known hostile units in the zone (intel confidence-weighted) + armed structures in range as combat profiles (satellites, platforms). No unit-count rule, no 2:1 rule, no separate capture-strength rule for safety.
+- **Verdict is never a bare reject**:
+  - `Go` — assigned force ≥ commit threshold.
+  - `Assemble` — force too small: stage at the nearest held zone (home zone if none) outside hostile reach, add ships until `Go`. Records `requiredForce`.
+  - `Deny` — hard reasons only: inside the hostile base exclusion before the assault gate, or unreachable. Denied zone with hostile mines → sabotage by wings.
+- **There is always a target** while the AI has ships: cheapest `Go`, else cheapest `Assemble`. Score = value (mines, pads, relay, centre bonus) ÷ (travel time + required force).
+- **Behind on zones** (team holds fewer zones than the enemy): own-side zones first; the centre only as `Assemble`; never guard a zone the team does not hold.
+- **Engagement**: outmatched group away from an owned station or site → disengage to its staging point and re-evaluate there. Fight in place only when defending the station or a held site, or when cut off.
+- **Reinforcements** rally at the group's staging point and join when the group is there or the batch meets the requirement; no ship travels alone into a fight (closes R2 step 4).
+- **No exclusive zone reservation**: one allocator assigns ships to zones by score until `requiredForce` is met; unused ships stay in reserve at staging. Team reservations (`TeamAiCooperation`) keep working per zone.
+- **Wings (opening)**: one wing per uncaptured zone before any zone gets a second; hangar wings on Guard stay with their carrier.
+
+### Implementation
+- [ ] **P1 Model (pure C#, no Unity types)**: `EnemyZoneObjective` (id, owner, value, defenders, statics, travel), `EnemyZoneVerdict` (`Go` / `Assemble` / `Deny`, `requiredForce`, staging point, reason), `EnemyZoneEvaluator`. Tests first: each verdict, structure counted as defender, always-a-target, behind-on-zones ordering.
+- [ ] **P2 Collection**: build zone objectives from `IReinforcementZoneSource`, `ICaptureSiteDirectory`, intel sightings and visible hostile structures; hostile-built pads and mines stay inside their zone objective (replaces `IsCapturable` filtering for planning).
+- [ ] **P3 Allocator**: replaces `TryCreateCaptureGroup`, `TryReinforceCentreGroup`, `TryAssignExpansionShip`, `TryDetachForCapture`, `_assignedExpansionZones`, `GetRequiredExpansionShips`, `CentreGroupAtCap`. Staging and reinforcement rally live here.
+- [ ] **P4 Group decision**: `SelectCaptureObjective` picks the site inside the assigned zone only (nearest capturable, then blocking structure); delete `IsObjectiveSafe` / `IsRouteSafe` / `IsThreatSafe` / `IsInsideStaticDefense` use for objective selection. `GuardSite` only for held zones. Replace `standAndFight` with the engagement rule.
+- [ ] **P5 Raids and wings**: raid targets come from `Deny` / `Assemble` zones; wing opening spread.
+- [ ] **P6 Telemetry**: one `zoneEval` row per zone on verdict change (`verdict`, `required`, `assigned`, `defenders`, `statics`, `eta`, `score`, `staging`, `reason`); remove `captureBlocked` / `expansionIdle` when superseded.
+- [ ] **P7 Cleanup**: remove dead fields and tests of the old gate; update [[Architecture/Enemy_AI_Objectives]].
+
+### Files
+- New: `Entities/EnemyFaction/Models/Objectives/` (`EnemyZoneObjective`, `EnemyZoneVerdict`, `EnemyZoneEvaluator`), `Services/Enemy/EnemyZoneObjectiveCollector.cs`, `Services/Enemy/EnemyZoneAllocator.cs`.
+- Changed: `EnemyStrategicContextBuilder.cs` (≈ 1,950 lines → selection and safety code removed), `EnemyShipTaskGroupPlanner.cs`, `EnemyStrategicDecisionModel.cs`, `EnemySquadronCommander.cs`, `EnemySquadronCaptureAssignments.cs`, `EnemySiteObjectives.cs`.
+
+### Edge Cases
+- No held zone → staging = home zone / station.
+- Station under pressure → existing `DefendBase` path keeps priority; allocator pauses.
+- Unknown defenders (never scouted zone) → treated as empty in the opening grace (180 s), then by the unseen estimate share.
+- Team games: required force may be met by allied strike strength (`AddAlliedStrikeStrength`).
+- Centre with 6 pads and 4 mines: one zone objective; the site order inside is pads → mines.
+
+### Acceptance (replay of the 17:31 situation)
+- Enemy holds centre + both outer zones, AI fleet 0.4 of the enemy: AI stages at home, takes its own-side outer zone when `requiredForce` is met, wings raid mines; no ship dies alone in transit; no `GuardSite` at a hostile zone.
+- Telemetry: every 15 s at least one zone with verdict `Go` or `Assemble`; `captureBlocked` rows = 0.
+
+### Open decisions for the user
+- Disengage when outmatched (new engagement rule) — the earlier plan removed retreat because fleets collapsed while fleeing. Proposed: disengage only to the staging point, with the existing 8 s state hold.
+- Scope order: P1–P4 first (one change set), then P5.
 
 ## Reopened 2026-11-19 — acceptance failed (user: "full failure")
 - `2fa16bea3` played 2026-11-19 13:52 on UltraHard (Separatist AI, top-right). User: lots of corvettes again, one sabotage, idle instead of acting, no early centre take/retake, unsure it captured even 2 mining spots.
