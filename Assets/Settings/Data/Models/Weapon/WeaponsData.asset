@@ -1891,7 +1891,7 @@ MonoBehaviour:
     scope: 2
     faction: 1
     unit: Vulture
-    damageMultiplier: 1.35
+    damageMultiplier: 1.4
     reloadMultiplier: 1
     rangeMultiplier: 1
     reason: 'Previous battery: Vulture squadron rebalance damage target. Consolidated
@@ -2069,7 +2069,7 @@ MonoBehaviour:
     scope: 2
     faction: 3
     unit: TIEInterceptor
-    damageMultiplier: 2.025
+    damageMultiplier: 2.1
     reloadMultiplier: 1
     rangeMultiplier: 1
     reason: 'Previous battery: TIEInterceptor squadron rebalance damage target. Consolidated
@@ -2667,7 +2667,7 @@ MonoBehaviour:
     scope: 2
     faction: 2
     unit: LukeRedSquadron
-    damageMultiplier: 3.6
+    damageMultiplier: 4.05
     reloadMultiplier: 1
     rangeMultiplier: 1
     reason: 'Previous battery: Twenty escort lasers deliver 200 raw DPS; Luke''s

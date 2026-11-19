@@ -89,9 +89,9 @@ namespace EmpireAtWar.Tests.Editor
             Assert.That(luke.MemberCount, Is.EqualTo(6));
             Assert.That(luke.LeaderHull, Is.EqualTo(3600f));
             Assert.That(luke.LeaderShields, Is.EqualTo(2600f));
-            Assert.That(luke.MemberHull, Is.EqualTo(120f));
+            Assert.That(luke.MemberHull, Is.EqualTo(180f));
             Assert.That(luke.MemberShields, Is.EqualTo(60f));
-            Assert.That(luke.TotalHull, Is.EqualTo(4200f));
+            Assert.That(luke.TotalHull, Is.EqualTo(4500f));
             Assert.That(luke.TotalShields, Is.EqualTo(2900f));
             Assert.That(luke.ShipClass, Is.EqualTo(ShipClass.HeroStrikecraft));
             Assert.That(luke.CombatSpeed, Is.EqualTo(101.4f));
@@ -103,7 +103,7 @@ namespace EmpireAtWar.Tests.Editor
             WeaponsData weapons = AssetDatabase.LoadAssetAtPath<WeaponsData>(
                 "Assets/Settings/Data/Models/Weapon/WeaponsData.asset");
             float dps = luke.WeaponLoadout.Sum(weapon => weapons.GetProfile(weapon.WeaponType).DamagePerSecond * weapon.Count);
-            Assert.That(dps, Is.EqualTo(650f).Within(0.01f));
+            Assert.That(dps, Is.EqualTo(675f).Within(0.01f));
             Assert.That(weapons.GetProfile(WeaponType.LukeSkywalkerLaser).DamagePerSecond,
                 Is.EqualTo(450f).Within(0.01f));
             Assert.That(weapons.GetProfile(WeaponType.LukeSkywalkerLaser).DamageType, Is.EqualTo(DamageType.HeroLaser),

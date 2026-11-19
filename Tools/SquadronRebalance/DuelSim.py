@@ -3,12 +3,15 @@
 Run: python Tools/SquadronRebalance/DuelSim.py [--trials N] [--seed S]
 
 Reads live WeaponsData, DamageMatrixData and Squadron/*SquadronData assets.
-Prints laser hits-to-kill breakpoints (margin = hull left before the killing hit,
-as a share of hull; also at x1.1 hull and x1.1 damage; thin = below 5% when
-any variant kills in 6 hits or fewer) and "destroyed in a row"
-tables: one squadron fights fresh enemy squadrons one after another until it dies.
-Model: random alive target per shot, continuous fire, accuracy rolls, per-craft shields
-as in SquadronHealthModel. Ignores torpedoes/ion, attack runs, arcs, speed,
+Prints laser hits-to-kill breakpoints and "destroyed in a row" tables: one squadron
+fights fresh enemy squadrons one after another until it dies.
+Breakpoint margins are shares of hull: "before" = hull left before the killing hit
+(also checked at x1.1 hull and x1.1 damage), "over" = damage beyond the hull on the
+killing hit at base stats. Thin = "before" below 5% or "over" below 2% when the kill
+takes 6 hits or fewer; an "over" near zero needs one more hit after any small hull bonus.
+Model: one random alive target per salvo (as WeaponHardPoint fires a whole salvo at
+one craft; bolts after the kill are wasted), continuous fire, accuracy rolls, per-craft
+shields as in SquadronHealthModel. Ignores torpedoes/ion, attack runs, arcs, speed,
 regeneration, abilities and research.
 """
 import argparse
@@ -34,6 +37,7 @@ PRICES = {"XWing": 800, "ARC170": 600, "V19Torrent": 500, "TIEAvenger": 550, "TI
           "TIEFighter": 300, "Vulture": 200, "AWing": 850, "VWing": 650, "TIEInterceptor": 450,
           "Belbullab22": 300}
 MIN_MARGIN = .05
+MIN_OVERKILL = .02
 # Breakpoints matter when few hits kill: one extra hit costs at most ~1/6 of the duel.
 MAX_BREAKPOINT_HITS = 6
 
@@ -57,7 +61,7 @@ class Unit:
         definitions = {entry["weaponType"]: entry for entry in weapons["weapons"]}
         families = {entry["family"]: entry for entry in weapons["families"]}
         calibers = {entry["caliber"]: entry for entry in weapons["calibers"]}
-        # Per craft: (bolt damage, damage type, seconds between shots).
+        # Per craft: (bolt damage, damage type, seconds between salvos, shots per salvo).
         self.guns = []
         for entry in data["weaponLoadout"]:
             definition = definitions[entry["weaponType"]]
@@ -70,7 +74,7 @@ class Unit:
             cycle = max(family["reload"] * definition["reloadMultiplier"],
                         (family["shotsPerSalvo"] - 1) * family["shotInterval"])
             for _ in range(round(perCraft)):
-                self.guns.append((bolt, family["damageType"], cycle / family["shotsPerSalvo"]))
+                self.guns.append((bolt, family["damageType"], cycle, family["shotsPerSalvo"]))
         self.matrix = matrix
 
     def Laser(self):
@@ -101,15 +105,17 @@ def Hit(matrix, target, craft, bolt, damageType, damageScale=1.0):
 
 
 def Breakpoint(matrix, attacker, target, hullScale=1.0, damageScale=1.0):
-    bolt, damageType, _ = attacker.Laser()
-    craft = [target.hull * hullScale, target.shields]
+    """Returns hits to kill, hull left before the killing hit and overkill, both as shares of hull."""
+    bolt, damageType = attacker.Laser()[:2]
+    hull = target.hull * hullScale
+    craft = [hull, target.shields]
     hits = 0
     while True:
         before = craft[0]
         Hit(matrix, target, craft, bolt, damageType, damageScale)
         hits += 1
         if craft[0] <= 0:
-            return hits, before / (target.hull * hullScale)
+            return hits, before / hull, -craft[0] / hull
 
 
 def Fight(matrix, a, aCraft, b, rng):
@@ -131,10 +137,12 @@ def Fight(matrix, a, aCraft, b, rng):
         alive = [craft for craft in enemyCrafts if craft[0] > 0]
         if not alive:
             break
-        bolt, damageType, interval = gun
-        if rng.random() < matrix[damageType]["accuracy"][enemy.shipClass]:
-            Hit(matrix, enemy, rng.choice(alive), bolt, damageType)
-        heapq.heappush(events, (time + interval, rng.random(), sideIndex, craftIndex, gun))
+        bolt, damageType, cycle, shots = gun
+        target = rng.choice(alive)
+        for _ in range(shots):
+            if target[0] > 0 and rng.random() < matrix[damageType]["accuracy"][enemy.shipClass]:
+                Hit(matrix, enemy, target, bolt, damageType)
+        heapq.heappush(events, (time + cycle, rng.random(), sideIndex, craftIndex, gun))
     return aCraft, bCraft
 
 
@@ -161,7 +169,7 @@ def Main(trials, seed):
     fighters = [u for u in units.values() if any(g[1] in (13, 14) for g in u.guns)
                 and u.shipClass != "bomber"]
 
-    print("Laser breakpoints (hits to kill a fresh craft / worst margin; * = thin)")
+    print("Laser breakpoints (hits to kill a fresh craft / worst margin before the kill / overkill; * = thin)")
     thin = []
     for attacker in fighters:
         cells = []
@@ -169,12 +177,14 @@ def Main(trials, seed):
             results = [Breakpoint(matrix, attacker, target),
                        Breakpoint(matrix, attacker, target, hullScale=1.1),
                        Breakpoint(matrix, attacker, target, damageScale=1.1)]
-            worst = min(margin for _, margin in results)
-            isThin = worst < MIN_MARGIN and min(h for h, _ in results) <= MAX_BREAKPOINT_HITS
+            worst = min(before for _, before, _ in results)
+            over = results[0][2]
+            isThin = (worst < MIN_MARGIN and min(h for h, _, _ in results) <= MAX_BREAKPOINT_HITS
+                      or over < MIN_OVERKILL and results[0][0] <= MAX_BREAKPOINT_HITS)
             if isThin:
                 thin.append(f"{attacker.name} -> {target.name}: "
-                            + ", ".join(f"{h} hits {m:.1%}" for h, m in results))
-            cells.append(f"{target.name}:{results[0][0]}/{worst:.0%}{'*' if isThin else ''}")
+                            + ", ".join(f"{h} hits {m:.1%}" for h, m, _ in results) + f", over {over:.1%}")
+            cells.append(f"{target.name}:{results[0][0]}/{worst:.0%}/{over:.0%}{'*' if isThin else ''}")
         print(f"  {attacker.name} bolt {attacker.Laser()[0]:.2f}: " + " ".join(cells))
     print("Thin breakpoints:" if thin else "Thin breakpoints: none")
     for line in thin:

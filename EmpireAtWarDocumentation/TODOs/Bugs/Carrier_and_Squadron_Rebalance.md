@@ -20,7 +20,8 @@ updated: 2026-11-14
 
 ## Decision
 
-- This note is the authoritative implemented squadron/carrier target sheet; supersedes earlier count-only and provisional targets. F / I / B always means fighter / interceptor / bomber.
+- **Squadron stats below are superseded (2026-11-19)** by [[Done/Bugs/Squadron_Faction_Balance]]: hull, shields, laser and torpedo values now follow price. Craft counts stay valid; carrier active/stock rows are superseded by [[TODOs/Features/Squadron_Bay_Rotation_Plan]].
+- This note was the authoritative implemented squadron/carrier target sheet; supersedes earlier count-only and provisional targets. F / I / B always means fighter / interceptor / bomber.
 - Craft per squadron: Rebel 5/4/3; Republic 8/6/4; Empire 10/8/6; CIS **13/11/10**. CIS ranges are resolved to these fixed values.
 - Role caps aggregate concrete variants. Use explicit bay assignments below; no new runtime shared-role-cap system required.
 - Dedicated carriers receive larger wings than general gunships. Four existing partial-role supports retain absent roles at zero; no new role or launch hardpoint is added to them.

@@ -389,7 +389,7 @@ MonoBehaviour:
         displayName: ARC-170
         description: 'Eight durable ARC-170 multirole starfighters, each with two
           heavy forward lasers, a rear laser turret and one proton torpedo per attack
-          run. 106 hull and 16 shields per fighter. Effective against fighters, bombers
+          run. 123 hull and 16 shields per fighter. Effective against fighters, bombers
           and light ships; can threaten capital-ship hardpoints. Dedicated bombers
           have greater torpedo output. Each surviving craft regenerates 0.2 shield
           HP/s. Full squadron torpedo volley: 192 damage, 6 s reload.'
@@ -448,7 +448,7 @@ MonoBehaviour:
       value:
         matchups: {fileID: 11400000, guid: 7b61aabb13894524ebe6a77baaaeba46, type: 2}
         displayName: V-19 Torrent
-        description: Eight V-19 Torrent fighters, each with 96 hull, 16 shields and
+        description: Eight V-19 Torrent fighters, each with 104 hull, 16 shields and
           two laser cannons. Screens Republic capital ships and bombers, intercepting
           hostile fighters and bombers. Vulnerable to corvettes and dedicated anti-fighter
           weapons. Each surviving craft regenerates 0.2 shield HP/s.

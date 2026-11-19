@@ -28,7 +28,7 @@ MonoBehaviour:
   <WarheadDamageMultiplier>k__BackingField: 1
   <WarheadReloadMultiplier>k__BackingField: 1
   <ShipClass>k__BackingField: 0
-  <MemberHull>k__BackingField: 182
+  <MemberHull>k__BackingField: 170
   <MemberShields>k__BackingField: 48
   <ShieldRegenerateValue>k__BackingField: 0.33
   <ShieldRegenerateDelay>k__BackingField: 1

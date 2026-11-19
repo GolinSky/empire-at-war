@@ -410,7 +410,7 @@ MonoBehaviour:
         matchups: {fileID: 11400000, guid: 515b7205b7913704094becf24905d815, type: 2}
         displayName: Vulture Droid
         description: Thirteen Vulture-class droid starfighters with four laser cannons
-          each. Swarm fighters with 25 hull per fighter and no shields. Effective
+          each. Swarm fighters with 23 hull per fighter and no shields. Effective
           against bombers and fighters; vulnerable to corvettes and dedicated anti-fighter
           weapons. No hyperdrive.
         role: Fighter / Swarm fighter
