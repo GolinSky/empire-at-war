@@ -137,7 +137,7 @@ acceptance: pending-user
 - Tests added (`BattleInput`): `SelectionInputTests` — `AddToSelectionClick_*` (toggle, death prune, non-unit targets, no unit selection), `SelectionContextAdd_RejectsDuplicatesAndOtherScope`, `AddToSelectionHeld_FollowsBattleAction`; `CameraInputBindingsTests` binding assert.
 - Reviewed, no change: `InputBindingServiceTests` (lone `Shift` chord ≠ `Shift+B` / `Ctrl+Shift+A`), other `ISelectionService` fakes, `ShipUiController`, `ControlGroupService`.
 - `SelectionSfx`: toggle-off of one unit from a group changes the id set → plays the select cue for the remaining units. Left as is; check in-game.
-- Verification: Unity import + compile clean (`scriptCompilationFailed = false`; new test methods present in `Assembly-CSharp-Editor`). Tests not run (local override).
+- Verification: Unity import + compile clean (`scriptCompilationFailed = false`; new test methods present in `Assembly-CSharp-Editor`). `BattleInput` EditMode 433/433 passed on 2026-11-19 (user-requested run), including all 10 new cases.
 - Reusable guidance → `GameDesign/Commands_And_Controls` (selection rule + shortcut row).
 
 ## Acceptance (user)

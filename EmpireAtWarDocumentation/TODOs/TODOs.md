@@ -428,7 +428,7 @@
 
 ### Features
 - [x] **Shift + left-click a unit → add it to the current selection (toggle off on second Shift + click)** → [[Done/Features/Shift_Click_Add_To_Selection|Shift Click Add To Selection]]
-  - Completed 2026-11-19, `acceptance: pending-user`. Rebindable `Battle/AddToSelection` (Shift), `SelectionContext.Add`, `SelectionService.ToggleInSelection`; `BattleInput` tests authored. Unity compile clean; tests not run (local override). Gates → [[TODOs/User_Acceptance_Queue]].
+  - Completed 2026-11-19, `acceptance: pending-user`. Rebindable `Battle/AddToSelection` (Shift), `SelectionContext.Add`, `SelectionService.ToggleInSelection`; Unity compile clean; `BattleInput` 433/433 passed. Gates → [[TODOs/User_Acceptance_Queue]].
 - [x] **Planet biome atmosphere: per-biome sun, ambient and colour grade (Tatooine orange, Coruscant warm, Hoth cold)** → [[Done/Features/Planet_Biome_Atmosphere_Plan|Planet Biome Atmosphere Plan]]
   - Completed 2026-11-19, `acceptance: pending-user`. 10 biomes from surface albedo, 57 planets assigned; `PlanetAtmosphereSettings` + sparse grade Volume (priority 50) + `BattleAtmosphereView` in `SceneContext.prefab`; tints softened ×0.85 after user feedback. Unity compile clean; `PlanetAtmosphereTests` and `Core` 166/166 passed. Gates → [[TODOs/User_Acceptance_Queue]].
 

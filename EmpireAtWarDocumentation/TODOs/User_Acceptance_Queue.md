@@ -508,4 +508,3 @@ created: "2026-10-29\r"
 
 - [ ] [[Done/Features/Shift_Click_Add_To_Selection]] — In battle: select ship A, Shift + click ship B → both selected, group UI, one move order moves both; Shift + click B again → only A; Shift + click empty space / enemy keeps selection; plain click replaces. Note whether the select cue on toggle-off feels wrong.
 - [ ] [[Done/Features/Shift_Click_Add_To_Selection]] — Settings: `Add To Selection` slot shows `Shift`; rebind → new key + click adds, Shift + click replaces; Reset restores Shift; override persists after restart.
-- [ ] [[Done/Features/Shift_Click_Add_To_Selection]] — Run `BattleInput` EditMode category when explicitly authorized; Unity compile passed, tests not run under local override.
