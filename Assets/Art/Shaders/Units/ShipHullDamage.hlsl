@@ -99,7 +99,9 @@ void ApplyHullDamage(inout SurfaceData surface, float3 positionDamage, half leve
     }
 
     float3 normalOS = TransformWorldToObjectDir(normalWS);
-    float markDistance = GetHullDamageMarkDistance(positionDamage * _HullDamageParams.y, normalOS, level);
+    // The material's mark scale grows marks and their spacing together, so marks stay within the 8-cell search.
+    float markDistance = GetHullDamageMarkDistance(positionDamage * (_HullDamageParams.y / _HullDamageMarkScale),
+        normalOS, level);
     // Most of an undamaged-looking hull is far from any mark: skip the texture work there.
     UNITY_BRANCH
     if (markDistance >= 1.0 + _HullDamageSurface.y)
@@ -131,7 +133,7 @@ void ApplyHullDamage(inout SurfaceData surface, float3 positionDamage, half leve
     // The detail height frays the round edge into an irregular stain.
     float frayed = markDistance + (detail.r - 0.5) * 2.0 * _HullDamageSurface.y;
     // Soft, semi-transparent soot fading out to the edge; blistered paint only in the middle.
-    half soot = (1.0h - smoothstep(0.35h, 1.0h, frayed)) * _HullDamageSurface.x;
+    half soot = (1.0h - smoothstep(0.35h, 1.0h, frayed)) * saturate(_HullDamageSurface.x * _HullDamageOpacityScale);
     half blister = (1.0h - smoothstep(0.15h, 0.45h, frayed)) * smoothstep(0.45h, 0.65h, detail.r + 0.5h * detail.g);
 
     surface.albedo = lerp(surface.albedo, _HullDamageSootColor.rgb, soot);

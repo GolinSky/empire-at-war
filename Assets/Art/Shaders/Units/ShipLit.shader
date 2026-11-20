@@ -46,6 +46,11 @@ Shader "EmpireAtWar/Ship Lit"
         _TeamLiveryMinSaturation("Livery Min Saturation", Range(0.0, 1.0)) = 0.4
         _TeamLiveryStrength("Livery Strength", Range(0.0, 1.0)) = 0.0
 
+        // Per-ship look of ShipHullDamage.hlsl on top of the shared HullDamageSettings. 1 = shared look.
+        [Header(Hull Damage)]
+        _HullDamageMarkScale("Mark Scale", Range(0.25, 4.0)) = 1.0
+        _HullDamageOpacityScale("Soot Opacity Scale", Range(0.0, 2.0)) = 1.0
+
         // URP's shared shadow/depth passes read _Cutoff; ships never clip, so it stays hidden.
         [HideInInspector] _Cutoff("Alpha Cutoff", Range(0.0, 1.0)) = 0.5
     }

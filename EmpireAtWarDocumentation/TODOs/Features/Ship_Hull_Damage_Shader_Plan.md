@@ -64,6 +64,10 @@ Current mark model (replaces the noise-threshold mask in step 2 below):
 - Removed: embers/emission glow, `_Time` flicker, normal bump from height derivatives (pixel-varying early-out made `ddx` unsafe; invisible at RTS zoom).
 - Second early-out: pixels farther than `1 + breakup` radii from any active mark skip all texture work.
 - Starting values (asset): spacing 8, size 0.3, density 0.85, breakup 0.35, soot opacity 0.7, detail size 4.
+- Per-ship override (2026-11-20): `Ship Lit`/`Ship Wreck` material properties `_HullDamageMarkScale` (multiplies spacing and radius together, keeps the 8-cell search valid; fewer, bigger marks) and `_HullDamageOpacityScale` (multiplies soot opacity, result saturated). Default 1 → the 1,461 existing materials keep the shared look. In `UnityPerMaterial` → no batching or variant cost.
+- Set a ship's source hull material and its wreck copy to the same values (`WreckMaterialSyncTests`; tool: Tools/Empire At War/Rendering/Materials/Sync Wreck Materials).
+- Victory: `Victory_Hull.mat` + `Victory_Hull_Wreck.mat` → mark scale 1.3, opacity scale 1.2. `Victory_Lights.mat` is URP Unlit → window lights never darken under soot (explains the earlier "lights stay lit" note).
+- Pitfall: `Material.SetFloat` in the same call as a forced shader reimport was lost on save; set material values after the import finishes.
 
 - [x] 1. Input accessors + outline mask
 - [x] 2. `ShipHullDamage.hlsl`

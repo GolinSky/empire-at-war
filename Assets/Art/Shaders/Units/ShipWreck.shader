@@ -34,6 +34,11 @@ Shader "EmpireAtWar/Ship Wreck"
         _TeamLiveryMinSaturation("Livery Min Saturation", Range(0.0, 1.0)) = 0.4
         _TeamLiveryStrength("Livery Strength", Range(0.0, 1.0)) = 0.0
 
+        // Per-ship look of ShipHullDamage.hlsl on top of the shared HullDamageSettings. 1 = shared look.
+        [Header(Hull Damage)]
+        _HullDamageMarkScale("Mark Scale", Range(0.25, 4.0)) = 1.0
+        _HullDamageOpacityScale("Soot Opacity Scale", Range(0.0, 2.0)) = 1.0
+
         // Written at runtime from UnitWreckData; the defaults only matter for previews.
         [Header(Wreck (set from UnitWreckData at runtime))]
         _WreckAxis("Long Axis (world space)", Vector) = (1, 0, 0, 0)

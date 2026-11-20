@@ -50,6 +50,8 @@ CBUFFER_START(UnityPerMaterial)
     half _TeamLiveryHueRange;
     half _TeamLiveryMinSaturation;
     half _TeamLiveryStrength;
+    half _HullDamageMarkScale;      // per-ship mark size (and spacing) multiplier, ShipHullDamage.hlsl
+    half _HullDamageOpacityScale;   // per-ship soot opacity multiplier
 #ifdef SHIP_WRECK
     // "EmpireAtWar/Ship Wreck" only. Ship Lit never defines SHIP_WRECK, so its buffer is unchanged.
     // Written once per wreck spawn (see UnitWreckView.cs); distances are world units, speeds per second.
