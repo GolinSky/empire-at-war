@@ -1,6 +1,6 @@
 // ShipHullDamage.hlsl
 // -----------------------------------------------------------------------------
-// Soft soot scorch marks that pile up as a unit loses hull.
+// Soot scorch marks (star-shaped when large, burnt paint in the middle) that pile up as a unit loses hull.
 //
 // How it stays cheap and batchable
 //   * The damage level (0-15) and a pattern seed live in the renderer user value
@@ -19,11 +19,13 @@
 #define SHIP_HULL_DAMAGE_INCLUDED
 
 float4 _HullDamageParams;    // x = edge noise frequency (per cell), y = 1 / mark spacing (world units), z = largest mark radius (cells), w = share of cells marked at 0 hull
-float4 _HullDamageSurface;   // x = lowest soot opacity, y = edge breakup (radii), z = smallest / largest mark radius, w = highest soot opacity
-float4 _HullDamageCore;      // x = soot opacity at a mark's centre, y = share of the radius where the centre has faded to the mark's own opacity (solid up to half of it)
+float4 _HullDamageSurface;   // x = lowest middle soot opacity, y = edge breakup (radii), z = smallest / largest mark radius, w = highest middle soot opacity
+float4 _HullDamageCore;      // x = soot opacity near the outline, y = star ray strength, z = mark size (0..1) where rays start, w = burnt paint radius (mark radii)
 half4 _HullDamageSootColor;
+half4 _HullDamageBlisterColor; // burnt paint flakes in the middle of a mark
 
 #define HULL_DAMAGE_UINT_TO_UNIT (1.0 / 4294967296.0)
+#define HULL_DAMAGE_TWO_PI 6.2831853
 
 // Object-space position in world units, shifted per renderer so ships of one class differ.
 float3 GetHullDamagePosition(float3 positionOS)
@@ -45,10 +47,34 @@ uint4 HullDamageHash(int3 cell)
     return v;
 }
 
-// The two nearest active marks: x/z = distance in mark radii (1 = edge; large when none), y/w = each mark's own
+// Distance from a mark's centre in outline units: 1 is the outline. Large marks are stars: 5-8 rays of random
+// length (0.7-1 of the radius) with the gaps between them pulled in to 0.35. Small marks stay round.
+// planar: offset from the mark's centre along the surface. size01: 0 = smallest mark, 1 = largest.
+float GetHullDamageShapeDistance(float3 planar, float3 normalOS, float radius, float size01, float4 random)
+{
+    float distance = length(planar) / radius;
+    float spikes = _HullDamageCore.y * smoothstep(_HullDamageCore.z, 1.0, size01);
+    if (spikes <= 0.0 || distance >= 1.5)
+        return distance;
+
+    // Angle around the centre, in a frame lying on the surface.
+    float3 axis = abs(normalOS.y) < 0.99 ? float3(0, 1, 0) : float3(1, 0, 0);
+    float3 tangent = normalize(cross(axis, normalOS));
+    float3 bitangent = cross(normalOS, tangent);
+    float rays = 5.0 + floor(frac(random.w * 7.31) * 4.0);
+    float turns = (atan2(dot(planar, bitangent), dot(planar, tangent)) / HULL_DAMAGE_TWO_PI + random.x) * rays;
+    float across = frac(turns + 0.5) - 0.5;                               // -0.5..0.5 across one ray
+    float rayIndex = floor(turns + 0.5);
+    float rayLength = lerp(0.7, 1.0, frac(sin(rayIndex * 12.9898 + random.y * 78.233) * 43758.5453));
+    float onRay = pow(saturate(1.0 - abs(across) * 2.0), 1.5);           // 1 on the ray, 0 halfway to the next
+    float outline = lerp(1.0, lerp(0.35, rayLength, onRay), spikes);
+    return distance / outline;
+}
+
+// The two nearest active marks: x/z = outline distance (1 = outline; large when none), y/w = each mark's own
 // random number (0..1) for its opacity. Two, so overlapping marks blend instead of meeting at a hard seam.
-// A mark is a disk on the surface: its spot must lie within one radius of the surface, and the distance is
-// measured along the surface, so a spot just under the plating still leaves a full-size mark.
+// A mark lies on the surface: its spot must be within one radius of the surface, and the distance is measured
+// along the surface, so a spot just under the plating still leaves a full-size mark.
 // A mark reaches at most one cell from its spot (clamped in HullDamageService), so the 3x3x3 cells around
 // this point are enough.
 float4 GetNearestHullDamageMarks(float3 cellPosition, float3 normalOS, half level)
@@ -66,12 +92,13 @@ float4 GetNearestHullDamageMarks(float3 cellPosition, float3 normalOS, half leve
         // random.w: the share of damage at which this cell's mark appears.
         if (random.w >= activeShare)
             continue;
-        float radius = maxRadius * lerp(_HullDamageSurface.z, 1.0, frac(random.w * 61.7));
+        float size01 = frac(random.w * 61.7);
+        float radius = maxRadius * lerp(_HullDamageSurface.z, 1.0, size01);
         float3 offset = cellPosition - (float3(cell) + random.xyz);
         float depth = dot(offset, normalOS);
         if (abs(depth) >= radius)
             continue;
-        float distance = length(offset - depth * normalOS) / radius;
+        float distance = GetHullDamageShapeDistance(offset - depth * normalOS, normalOS, radius, size01, random);
         float2 found = float2(distance, frac(random.w * 113.9));
         if (distance < nearest.x)
             nearest = float4(found, nearest.xy);
@@ -89,7 +116,7 @@ float HullDamageNoiseHash(float3 p)
     return frac(p.x * p.y * p.z * (p.x + p.y + p.z));
 }
 
-// Smooth 3D value noise, 0..1. Continuous everywhere, so mark edges wave without blocks or tiling.
+// Smooth 3D value noise, 0..1. Continuous everywhere, so outlines and flakes have no blocks or tiling.
 float HullDamageValueNoise(float3 p)
 {
     float3 cell = floor(p);
@@ -102,14 +129,15 @@ float HullDamageValueNoise(float3 p)
     return lerp(lerp(x00, x10, u.y), lerp(x01, x11, u.y), u.z);
 }
 
-// Soot of one mark at this pixel. distance is already frayed by the edge noise.
+// Soot of one mark at this pixel. distance is the outline distance, already frayed by the edge noise.
+// Fully opaque at the centre, the mark's own random opacity through the middle, light near the outline.
 half GetHullDamageSoot(float distance, float random)
 {
-    // Each mark has its own opacity; squaring the random number keeps most marks near the lowest opacity
-    // and makes fully dark ones rare. A solid centre fades slowly out to that opacity, then to the soft edge.
-    half opacity = lerp(_HullDamageSurface.x, _HullDamageSurface.w, random * random);
-    opacity = lerp(max(_HullDamageCore.x, opacity), opacity, smoothstep(0.5h * _HullDamageCore.y, _HullDamageCore.y, distance));
-    return (1.0h - smoothstep(0.6h, 1.0h, distance)) * saturate(opacity * _HullDamageOpacityScale);
+    // Squaring the random number keeps most marks near the lowest middle opacity; very dark ones are rare.
+    half middle = lerp(_HullDamageSurface.x, _HullDamageSurface.w, random * random);
+    half opacity = lerp(1.0h, middle, smoothstep(0.1h, 0.35h, distance));
+    opacity = lerp(opacity, _HullDamageCore.x, smoothstep(0.55h, 0.85h, distance));
+    return opacity * (1.0h - smoothstep(0.8h, 1.0h, distance)) * saturate(_HullDamageOpacityScale);
 }
 
 // level: 0 = intact (skipped), 1 = destroyed.
@@ -132,7 +160,7 @@ void ApplyHullDamage(inout SurfaceData surface, float3 positionDamage, half leve
         return;
     }
 
-    // Two octaves of smooth noise wave the round edge into an irregular stain.
+    // Two octaves of smooth noise wave the outline into an irregular stain.
     float3 noisePosition = cellPosition * _HullDamageParams.x;
     float noise = 0.65 * HullDamageValueNoise(noisePosition) + 0.35 * HullDamageValueNoise(noisePosition * 2.3 + 11.7);
     float fray = (noise - 0.5) * 2.0 * _HullDamageSurface.y;
@@ -140,7 +168,13 @@ void ApplyHullDamage(inout SurfaceData surface, float3 positionDamage, half leve
     half soot = 1.0h - (1.0h - GetHullDamageSoot(marks.x + fray, marks.y))
         * (1.0h - GetHullDamageSoot(marks.z + fray, marks.w));
 
+    // Burnt paint: small dull flakes, only in the middle of the nearest mark.
+    float flakes = HullDamageValueNoise(noisePosition * 4.1 + 37.3);
+    half blister = (1.0h - smoothstep(0.4h * _HullDamageCore.w, _HullDamageCore.w, marks.x))
+        * smoothstep(0.5h, 0.65h, flakes);
+
     surface.albedo = lerp(surface.albedo, _HullDamageSootColor.rgb, soot);
+    surface.albedo = lerp(surface.albedo, _HullDamageBlisterColor.rgb, blister);
     // Soot kills the metal sheen too; otherwise reflections turn a black mark grey.
     surface.metallic *= 1.0h - soot;
     surface.smoothness = lerp(surface.smoothness, 0.1h, soot);   // soot is matte

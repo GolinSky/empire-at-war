@@ -13,6 +13,7 @@ namespace EmpireAtWar.Services.Player
         private static readonly int SURFACE_ID = Shader.PropertyToID("_HullDamageSurface");
         private static readonly int CORE_ID = Shader.PropertyToID("_HullDamageCore");
         private static readonly int SOOT_COLOR_ID = Shader.PropertyToID("_HullDamageSootColor");
+        private static readonly int BLISTER_COLOR_ID = Shader.PropertyToID("_HullDamageBlisterColor");
 
         private readonly HullDamageSettings _settings;
 
@@ -35,8 +36,10 @@ namespace EmpireAtWar.Services.Player
                 settings.MarkDensity));
             Shader.SetGlobalVector(SURFACE_ID, new Vector4(settings.SootOpacityMin, settings.EdgeBreakup,
                 Mathf.Clamp01(settings.MarkRadiusMin / settings.MarkRadiusMax), settings.SootOpacityMax));
-            Shader.SetGlobalVector(CORE_ID, new Vector4(settings.SootOpacityCenter, settings.CenterFade, 0f, 0f));
+            Shader.SetGlobalVector(CORE_ID, new Vector4(settings.SootOpacityEdge, settings.StarStrength,
+                settings.StarMinSize, settings.BlisterRadius));
             Shader.SetGlobalVector(SOOT_COLOR_ID, settings.SootColor.linear);
+            Shader.SetGlobalVector(BLISTER_COLOR_ID, settings.BlisterColor.linear);
         }
     }
 }
