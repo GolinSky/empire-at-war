@@ -10,6 +10,7 @@ using UnityEngine;
 using UnityEngine.EventSystems;
 using UnityEngine.UI;
 using EmpireAtWar.Entities.Reinforcement;
+using EmpireAtWar.Entities.Squadrons;
 
 namespace EmpireAtWar.Tests.Editor
 {
@@ -51,6 +52,40 @@ namespace EmpireAtWar.Tests.Editor
             {
                 Object.DestroyImmediate(scrollObject);
                 Object.DestroyImmediate(eventSystemObject);
+                PrefabUtility.UnloadPrefabContents(root);
+            }
+        }
+
+        [TestCase(ShipType.ISDII, 255, 255, 255, true)]
+        [TestCase(ShipType.Chimaera, 99, 57, 46, false)]
+        [TestCase(SquadronType.DarthVaderTIEAdvanced, 36, 77, 78, false)]
+        public void CardBackground_RestoresUnitFillWhenDeploymentBecomesAvailable(
+            object unit, byte red, byte green, byte blue, bool gradientEnabled)
+        {
+            var faction = AssetDatabase.LoadAssetAtPath<FactionDefinition>(
+                "Assets/Settings/Data/Factions/Empire/EmpireFaction.asset");
+            UnitRequest request = unit is SquadronType squadron
+                ? new SquadronUnitRequest(faction.Squadrons[squadron], squadron)
+                : new ShipUnitRequest(faction.Ships[(ShipType)unit], (ShipType)unit);
+            var expected = new Color32(red, green, blue, 255);
+            GameObject root = PrefabUtility.LoadPrefabContents(PREFAB_PATH);
+            var scrollObject = new GameObject("Scroll", typeof(RectTransform), typeof(ScrollRect));
+            try
+            {
+                var view = (ISpawnShipUi)root.GetComponent<SpawnShipUi>();
+                MPImage background = root.GetComponent<MPImage>();
+                view.Init(new ReinforcementVisitor(), request, scrollObject.GetComponent<ScrollRect>());
+
+                Assert.That((Color32)background.color, Is.EqualTo(expected));
+                Assert.That(background.GradientEffect.Enabled, Is.EqualTo(gradientEnabled));
+                view.Activate(false);
+                Assert.That(background.color, Is.EqualTo(Color.gray));
+                view.Activate(true);
+                Assert.That((Color32)background.color, Is.EqualTo(expected));
+            }
+            finally
+            {
+                Object.DestroyImmediate(scrollObject);
                 PrefabUtility.UnloadPrefabContents(root);
             }
         }

@@ -2,6 +2,7 @@ using EmpireAtWar.Entities.Reinforcement;
 using EmpireAtWar.Components.Ui;
 using EmpireAtWar.Components.Ui.Tooltip;
 using EmpireAtWar.Controllers.Factions;
+using MPUIKIT;
 using TMPro;
 using UnityEngine;
 using UnityEngine.EventSystems;
@@ -17,7 +18,7 @@ namespace EmpireAtWar
         private IReinforcementVisitor _reinforcementVisitor;
 
         [SerializeField] private Image iconImage;
-        [SerializeField] private Image backgroundImage;
+        [SerializeField] private MPImage backgroundImage;
         [SerializeField] private UiHighlight tutorialHighlight;
         [SerializeField] private TextMeshProUGUI unitCapacityText;
         [SerializeField] private TextMeshProUGUI unitCountText;
@@ -37,15 +38,12 @@ namespace EmpireAtWar
 
         public UnitRequest Request { get; private set; }
 
-        private void Awake()
-        {
-            _originColor = backgroundImage.color;
-        }
-
         void ISpawnShipUi.Init(IReinforcementVisitor reinforcementVisitor, UnitRequest request,
             ScrollRect scrollRect)
         {
             Request = request;
+            HeroCardPalette.ApplyBackground(backgroundImage, request);
+            _originColor = backgroundImage.color;
             tooltipTrigger.SetKey(request);
             _reinforcementVisitor = reinforcementVisitor;
             _scrollRect = scrollRect;
