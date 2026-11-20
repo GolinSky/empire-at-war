@@ -54,6 +54,13 @@ acceptance: pending-user
 - `python -m py_compile Tools/AloImport/worker.py` OK.
 - Not run: Unity tests (local override); ALO import worker end-to-end; Jenkins player build.
 
+## Follow-up (2026-11-20): Official Skills
+- Stale console errors (`No command named 'editor'`, `Main thread operation timed out`) were logged 06:52:17–06:52:59 UTC by the 0.6 server (`com.unity.pipeline@9bb4172c603c`) during the domain reload; not a live fault. Clear with `unity command console clear`.
+- Installed Unity's official skills (`unity-cli` + 35 from `Unity-Technologies/skills`) via `unity skill install <client>` for `claude-code` (`~/.claude/skills`), `codex` (`~/.agents/skills`), `antigravity` (`~/.gemini/config/skills`). Status: `unity skill install --list`; update: `unity skill sync <client>`.
+- `AGENTS.md` generic command reference → replaced by a pointer to the `unity-cli` skill plus project-only rules (`global` tools, raw `--json`, exit codes).
+- Docs mismatch: docs.unity.com lists `unity list`; CLI 1.0.1 has no such command → use `unity commands --grep <term>`.
+- Unity guidance: with a shell use `unity command`, not MCP; MCP exposes all 201 commands (`mcp__unity__pipeline_list_commands`) for shell-less clients.
+
 ## Open Gates
 - Jenkins: next player build of committed `main` succeeds (Pipeline DLLs excluded from non-development player since 0.7).
 

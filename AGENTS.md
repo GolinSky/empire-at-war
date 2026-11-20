@@ -320,17 +320,14 @@ After any Unity asset mutation, verify that Unity imported the change, the asset
 - Always pass Unity CLI parameters as `--parameter value`. Never use `parameter=value` or include the parameter name inside its value.
 - For asset ObjectRef parameters, prefer explicit JSON such as `--controller '{"path":"Assets/Foo.controller"}'`.
 - For scene objects, use JSON such as `--target '{"hierarchyPath":"/Player/Visual"}'`.
-- Before using an unfamiliar Unity Pipeline command, inspect its parameters with `unity command <group> <name> --help`, or search the catalog with `unity command --query <text> --json` (`unity command pipeline list_commands --json` dumps it all). Do not guess parameter names or syntax.
+- Before using an unfamiliar Unity command, find it with `unity commands --grep <term>` and inspect its parameters with `unity command <group> <name> --help`. Do not guess parameter names or syntax.
 - If an error contains a malformed resolved path such as `Assets/controller=Assets/...`, stop and correct argument serialization. Do not search for another asset, rename it, reimport it, or modify the project.
 
-### Unity Pipeline 1.0 Commands
+### Unity CLI Skill and Project Rules
 
-Package `com.unity.pipeline` `1.0.0`, CLI `unity` `1.0.1`. Ungrouped 0.6 names are removed with no redirect.
-
-- Form: `unity command <group> <name> --kebab-case-param value`. Snake_case built-in params are refused (exit `2`).
-- Common: `editor status`, `scene list_open`, `console get` / `console clear`, `script eval --code|--file`, `script run --file --entry --args --timeout <seconds>`, `script recompile` / `script recompile_status`, `test run` / `test status` / `test cancel` / `test list`, `capture game_view` / `capture scene_view --output-path`, `pipeline list_commands`.
-- Removed → replacement: `eval_file` → `script eval --file`; `run_script --timeout_ms 120000` → `script run --timeout 120`; `get_console_logs` → `console get`; `screenshot` → `capture game_view`.
-- Project `[CliCommand]` tools live in group `global` and keep their declared names and params: `unity command render_audit_capture --timeout_seconds 15`.
-- Output: `--json` prints the raw command result with no `success`/`data.result` wrapper. `script run` → `{"result": <entry return>, "diagnostics": [...]}`. `script eval` prints the raw value.
-- Failure is reported by exit code: `6` command failure (including a throwing entry point), `2` bad parameter, `14` batch timeout, `130` cancelled `test status`. Check `$LASTEXITCODE` / `returncode`, not a `success` field.
-- Servers bind `127.0.0.1` only. MCP tool names follow the grouped names (`mcp__unity__test_run`, `mcp__unity__script_eval`, `mcp__unity__global_render_audit_capture`).
+- Generic Unity CLI usage (command names, groups, parameters, discovery) comes from Unity's official `unity-cli` skill, installed for Claude Code (`~/.claude/skills`), Codex (`~/.agents/skills`) and Antigravity (`~/.gemini/config/skills`). Load it before Unity CLI work. Update with `unity skill sync <client>`; check with `unity skill install --list`.
+- With a shell, use `unity command`, not the Unity MCP server. MCP is for clients without a shell.
+- Versions: package `com.unity.pipeline` `1.0.0`, CLI `unity` `1.0.1`. 0.6 ungrouped names (`run_script`, `eval_file`, `run_tests`, `list_open_scenes`) are removed; old Tool READMEs, evidence files and `Done/` notes may still show them.
+- Project `[CliCommand]` tools live in group `global` and keep their declared snake_case names and params: `unity command render_audit_capture --timeout_seconds 15`. MCP names: `mcp__unity__global_<name>`.
+- Scripts parse `--json` output: it is the raw result, with no `success`/`data.result` wrapper. `script run` → `{"result": <entry return>, "diagnostics": [...]}`.
+- Scripts check the exit code, never a `success` field: `6` command failure (including a throwing entry point), `2` bad parameter, `14` batch timeout, `130` cancelled `test status`.
