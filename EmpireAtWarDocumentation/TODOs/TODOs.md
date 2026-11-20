@@ -9,7 +9,7 @@
 
 ### Features
 
-- [ ] **Ship hull damage visuals (scorches, burnt plating, breaches in `Ship Lit`)** → [[TODOs/Features/Ship_Hull_Damage_Shader_Plan|Ship Hull Damage Shader Plan]] — 2026-11-20: Phase 1 implemented, then reworked after user feedback: many small soft soot marks that appear one batch per damage step at new spots, no glow; compiles, 96 shader variants clean, preview render checked; tests authored, not run. Next: user in-game judgement + tuning → decide Phase 2.
+- [ ] **Ship hull damage visuals (scorches, burnt plating, breaches in `Ship Lit`)** → [[TODOs/Features/Ship_Hull_Damage_Shader_Plan|Ship Hull Damage Shader Plan]] — 2026-11-20: Phase 1 implemented and tuned with the user (procedural soot scorches, off-centre sunken burnt patches with glowing rim, 31 steps, per-ship auto mark scale). Perf review: damaged-unit pixels ~4–9× the lit fragment (27-cell search); optimizations R1–R5 recorded, not implemented. Tests not run. Next: user in-game check, R1+R2, GPU capture.
 - [ ] **Ship UI: icon double-tap camera focus (off-screen only) + tap group entry → select that single unit** → [[TODOs/Features/Ship_Ui_Icon_Focus_And_Entry_Select|Ship UI Icon Focus & Entry Select]] — 2026-11-19: plan drafted; 3 open questions (hero guard, on-screen behavior, collapsed groups).
 - [ ] **Squadron icon clustering rebuild (screen-space matrix grid, smooth, ship-aware, cheap)** → [[TODOs/Features/Squadron_Icon_Clustering_Rebuild|Squadron Icon Clustering Rebuild]] — 2026-11-18: phases 1–6 implemented and compiled (tests not run); remaining: user capture, station hull obstacles, optional mesh batching.
 - [ ] **Squadron bay rotation: ship-wide active squadron cap (Bulwark = 1)** → [[TODOs/Features/Squadron_Bay_Rotation_Plan|Squadron Bay Rotation Plan]]

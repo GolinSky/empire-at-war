@@ -10,223 +10,179 @@ system:
 
 ## Goal
 
-- Ships show scorch marks, burnt plating and glowing breaches as hull drops; later, marks sit where hits landed.
+- Ships, stations and defence platforms show soot scorches with burnt, faintly glowing patches as hull drops.
 - Keep one `EmpireAtWar/Ship Lit` variant, SRP Batcher and GPU Resident Drawer grouping.
-- No mesh swaps, no per-ship materials, no per-ship textures.
+- No mesh swaps, no per-ship textures, no per-frame CPU work.
 
-## Decision
+## Status (2026-11-20)
 
-- Chosen: extend `Ship Lit` (`CreateSurfaceData`), damage state per renderer through `SetShaderUserValue`, shared damage textures as globals.
-- Why: team color and outline already use this path; 1,461 materials reference `ShipLit.shader` and need no edit; wrecks reuse `CreateSurfaceData` → damage carries over at death.
-- Avoid: URP Decal feature → DBuffer + forced depth-normal prepass, one draw per decal, projection bleeds onto neighbouring hulls.
-- Avoid: per-ship painted mask RT → imported hull UVs overlap/mirror, one texture per ship breaks batching.
-- Avoid: `MaterialPropertyBlock`, material keywords, new `multi_compile` → break batching or add variants (see Metal compile stalls in [[Rules/BATTLE_PERFORMANCE_GUIDELINES]]).
-- Avoid v1: parallax, vertex displacement. `Ship Lit` excludes parallax by design.
+- Phase 1 implemented and tuned with the user over many preview rounds; last commit `0c44f1fb7`.
+- Pending: in-game look (user), GPU cost measurement (user Play Mode), optimizations R1–R5 (see Performance), Phase 2 decision.
+- Tests authored/updated, not run (local override).
 
-## User decisions (2026-11-20)
+## Decisions
 
-- Repair: scorches shrink when hull is repaired (level follows `HullPercentage`).
-- Scope: ships, stations and defence platforms.
-- Phases: build Phase 1 only. Judge in-game, then decide on Phase 2. Phase 2/3 stay unapproved.
+- Chosen: extend `Ship Lit` `CreateSurfaceData` → `ApplyHullDamage`; per-unit state in `MeshRenderer.SetShaderUserValue`; shared look as globals; per-ship tweaks as `UnityPerMaterial` properties.
+  - Why: team colour/outline already use the user value; 1,461 `Ship Lit` materials need no edit; wrecks reuse `CreateSurfaceData` → marks carry over at death.
+  - GPU Resident Drawer: Unity 6000.6 docs — the user value changes shading "without using different materials or additional CPU time" and works with GRD.
+- Procedural, texture-free marks (3D cell scatter + smooth value noise).
+  - Why: the generated detail texture showed as blocky tiles up close; procedural noise is continuous and needs no UVs.
+- Avoid: URP Decals (DBuffer, depth-normal prepass, one draw per decal, bleeds onto neighbours); per-ship mask RTs (overlapping UVs, breaks batching); `MaterialPropertyBlock`/keywords/`multi_compile` (batching, variant stalls — [[Rules/BATTLE_PERFORMANCE_GUIDELINES]]); parallax/vertex displacement.
+- Dropped by user: darkening the additive window-light overlays (alignment needs unit-root space; facts in History).
 
-## User feedback on first Phase 1 build (2026-11-20)
+## User decisions
 
-- Patches far too big: at low hull the whole ship was one scorch → many small marks.
-- Too strong → soft, semi-transparent soot (reference "Variant A — Scorch Stains / Burnt Paint").
-- Marks must not grow: each damage step adds a new mark at another spot.
-- Burnt plating with embers read as lava → no glow on plating. Glow only inside real openings (reference "Variant C", critical damage) → belongs to Phase 3 breaches.
-- Consequence: repair now removes marks in reverse order instead of shrinking them.
+- Scope: ships, stations, defence platforms. Mining facilities excluded. Squadrons stay at level 0.
+- Marks appear, never grow: each damage step switches on new marks elsewhere. Repair removes the newest first.
+- 31 damage steps (was 15).
+- Look: soft soot, solid black centre → mark's own random opacity (0.7–1.0, mostly 0.7) in the middle → ~15 % near the outline → fade. Outline between circle and star. Burnt paint = irregular burnt-metal patch at a random spot inside the mark, sunken, with a glowing rim; never repeats the outline. No glow on plain plating ("lava").
+- Mark size follows hull size (auto-scale tool, Victory = reference). Per-ship override via material.
+- Phases: Phase 1 only. Phase 2/3 need user approval after the in-game check.
 
-## Verified source facts (2026-11-20)
+## Design as built
 
-- `unity_RendererUserValue`: bits 0–7 team, 8–10 hover/selected/attack. Bits 11–31 free.
-- `UnitRenderStateComponent.ApplyUserValue`: `(userValue >> HIGHLIGHT_SHIFT) != 0` decides the outline layer → must mask to 3 bits once higher bits carry data.
-- `ShipOutlinePass.hlsl:28`: `flags = unity_RendererUserValue >> HIGHLIGHT_USER_VALUE_SHIFT` → same mask needed.
-- `UnitWreckView.cs:87` writes only the team value → must copy damage bits.
-- `ShipWreckForwardPass.hlsl:111` calls `CreateSurfaceData` → shader work is shared.
-- `IHealthModelObserver`: `HullPercentage`, `OnValueChanged`. `ImpactEffectPresenter.Play` already resolves `ImpactSurface.Armor` + world position + damage.
-- Ship views hold 1–7 `MeshRenderer`s (CR70 1, Executor 7), each with its own object space.
-- GPU Resident Drawer: on for High Fidelity/Ultra/Cinematic, off for Performant/Low/Balanced.
+### Data path
 
-## Implementation
-
-### Phase 1 — hull-driven procedural damage (no hit positions)
-
-Status 2026-11-20: implemented, compiled, preview-rendered; reworked the same day after user feedback (scattered soot marks, no glow). In-game judgement pending (TODO 3).
-
-Current mark model (replaces the noise-threshold mask in step 2 below):
-
-- Hull space split into 3D cells of `markSpacing` world units; each cell: one spot (random xyz) + random appear-share `w` (PCG4D hash, 8 cells searched per pixel).
-- Mark on when `w < level × markDensity` → each of the 15 levels switches on a new batch of marks elsewhere; marks never grow.
-- Mark = disk on the surface: spot must lie within one radius of the surface (`|dot(offset, normalOS)| < r`), distance measured in the surface plane → full-size disk even for deep spots.
-- Radius = `markSize × spacing × [0.5, 1]`; clamped in `HullDamageService` to `0.5 / sqrt((1 + breakup)² + 1)` (≈ 0.3) so a mark never leaves the 8-cell search.
-- Look: soot `lerp(albedo, sootColor, opacity × (1 − smoothstep(0.35, 1, d)))`, edge frayed by detail height; blistered paint (`blisterColor`, metallic 0.6) only in the middle; smoothness → matte; running lights dim under soot.
-- Removed: embers/emission glow, `_Time` flicker, normal bump from height derivatives (pixel-varying early-out made `ddx` unsafe; invisible at RTS zoom).
-- Second early-out: pixels farther than `1 + breakup` radii from any active mark skip all texture work.
-- Starting values (asset): spacing 8, size 0.3, density 0.85, breakup 0.35, soot opacity 0.7, detail size 4.
-- Per-ship override (2026-11-20): `Ship Lit`/`Ship Wreck` material properties `_HullDamageMarkScale` (multiplies spacing and radius together, keeps the 8-cell search valid; fewer, bigger marks) and `_HullDamageOpacityScale` (multiplies soot opacity, result saturated). Default 1 → the 1,461 existing materials keep the shared look. In `UnityPerMaterial` → no batching or variant cost.
-- Set a ship's source hull material and its wreck copy to the same values (`WreckMaterialSyncTests`; tool: Tools/Empire At War/Rendering/Materials/Sync Wreck Materials).
-- Victory: `Victory_Hull.mat` + `Victory_Hull_Wreck.mat` → mark scale 1.3, opacity scale 1.2. `Victory_Lights.mat` is URP Unlit → window lights never darken under soot (explains the earlier "lights stay lit" note).
-- Pitfall: `Material.SetFloat` in the same call as a forced shader reimport was lost on save; set material values after the import finishes.
-- 2026-11-20 user: marks too small and too few → +50% both. Search widened from 2×2×2 to 3×3×3 cells (27 PCG4D hashes per damaged pixel, nested x/y/z loop: `int` `%`/`/` drew D3D slow-divide warnings); radius clamp `1 / sqrt((1 + breakup)² + 1)` ≈ 0.59 of spacing; `markSize` 0.3 → 0.45 at unchanged spacing 8 → marks 1.5× wider and 1.5× more often hit the hull (count +50%). Cost not measured.
-- 9-ship preview (Victory, Venator, Imperial Venator, Tector, both Arquitens, both Acclamators, Executor): marks read well on Victory / Imperial Venator / Tector / Acclamator Assault. World-unit size does not fit every hull: Arquitens Imperial (radius 23) gets almost none, Executor (radius 1,056) turns to dust, Tector reads as round dots. Open: per-ship size → see TODO 5.
-
-- [x] 1. Input accessors + outline mask
-- [x] 2. `ShipHullDamage.hlsl`
-- [x] 3. Globals service
-- [x] 4. `SetHullDamage` + seed
-- [x] 5. Hull → damage wiring (ships, stations, platforms)
-- [x] 6. Wreck inherits damage + seed
-- [x] 7. Editor preview
-
-As built (deviations from the steps below):
-
-- Step 3: `HullDamageSettings` asset (`Assets/Settings/Data/Models/Players/HullDamageSettings.asset`) → `HullDamageService` (`SkirmishScope`, ticks quality level). Globals: `_HullDamageMap`, `_HullDamageParams` (detail repeats/unit, 1/spacing, radius, density), `_HullDamageSurface` (soot opacity, edge breakup), `_HullDamageSootColor`, `_HullDamageBlisterColor`, `_HullDamageQuality` (quality level; `< 2` → 1 planar sample).
-- Step 5: not in the entity classes. `UnitHullDamageSync` (pure C#, `EntityFeatureBindings.RegisterHullDamage`) subscribes `OnValueChanged` → `SetHullDamage`. Why: one class instead of 3 copies; `Ship.cs` already 321 lines. Mining facilities excluded (scope decision).
-- Step 6: `IUnitWreckService.Spawn(data, unit, uint renderUserValue, delay)` replaces `PlayerId owner`; callers pass `IUnitRenderStateComponent.WreckUserValue` (team + damage + seed, no highlight). Wreck pattern uses the undeformed position.
-- Step 7: `Tools/Empire At War/Hull Damage Preview` window (`HullDamagePreviewWindow`), not `ShipLitSetupTool`.
-- Seed: `GetEntityId().GetHashCode()` hash → 5 bits; no shared random state.
-- Level: `ceil((1 − hull) × 15)` → any hull loss shows level ≥ 1.
+- Health `OnValueChanged` → `UnitHullDamageSync` (pure C#, `EntityFeatureBindings.RegisterHullDamage`; ship/station/platform installers) → `IUnitRenderStateComponent.SetHullDamage(hull%)` → level `ceil((1 − hull) × 31)` → `SetShaderUserValue` on all listed renderers.
+- Seed per unit: `GetEntityId().GetHashCode()` hash → 5 bits; no shared random state.
+- Wreck: `IUnitWreckService.Spawn(data, unit, uint renderUserValue, delay)`; callers pass `WreckUserValue` (team + damage + seed, no highlight). Wreck pattern uses the undeformed position.
+- Globals: `HullDamageSettings` asset → `HullDamageService.Upload` once per battle (`SkirmishScope`); also used by the editor preview.
 
 User-value layout:
 
 | Bits | Use |
 |---|---|
-| 0–7 | team (unchanged) |
-| 8–10 | highlight (unchanged) |
-| 11–15 | damage level 0–31 (was 11–14, 0–15 until 2026-11-20) |
+| 0–7 | team |
+| 8–10 | highlight (outline code masks to 3 bits) |
+| 11–15 | damage level 0–31 |
 | 16–20 | pattern seed 0–31 |
-| 21–30 | hit slot, 0 = none (Phase 2) |
+| 21–30 | free (Phase 2 hit slot) |
 
-1. `ShipLitInput.hlsl`: add `HIGHLIGHT_USER_VALUE_MASK 0x7u`, damage/seed accessors; mask in `ShipOutlinePass.hlsl`.
-2. New `ShipHullDamage.hlsl`: `ApplyHullDamage(inout SurfaceData, positionDamage, normalWS, level, seed)`.
-   - Coordinates: object position × object scale (world-unit pattern, anchored to the hull). New `Varyings` field.
-   - Mask: `saturate((noise − threshold(level)) / edge)` on a fixed noise field → patches only grow as hull drops; old marks stay.
-   - Height blend: mask + detail height → irregular burnt edge instead of a soft gradient.
-   - Detail: one packed global texture, triplanar (3 samples). R height, G cracks, B roughness, A ember mask.
-   - Output: albedo → char; smoothness ↓; metallic → bare metal in cores; occlusion ↓; normal from height derivatives; emission = ember colour × edge band × slow flicker.
-   - `level == 0` → skip whole block (per-draw coherent branch).
-3. Globals set once per battle: `_HullDamageMap`, `_HullDamageParams` (tiling, edge width, ember strength), `_HullDamageQuality`.
-   - Quality 0–1: tint + mask only, 1 sample, no embers. 2+: full. Global float, not a keyword.
-4. `IUnitRenderStateComponent.SetHullDamage(float hullPercentage)` → quantize to 16 levels → `ApplyUserValue`. Seed assigned in `Construct`.
-5. Entity (`Ship`, station, platform) subscribes health `OnValueChanged` → calls `SetHullDamage`. Components do not reference each other.
-6. `UnitWreckView`: copy damage + seed bits into the wreck value.
-7. `ShipLitSetupTool` / editor: preview slider that sets the user value on a selected ship.
+### Shader (`ShipHullDamage.hlsl`)
 
-### Phase 2 — localized hit scorches
+1. `level == 0` → return (per-draw uniform branch).
+2. Position: object space × object scale (+ seed offset), per vertex → interpolated `positionDamage`; ÷ (spacing × material Mark Scale) → cell space.
+3. Search 3×3×3 cells (PCG4D hash per cell): spot xyz, appear-share `w` (on when `w < level × density`), size, opacity. Spot must lie within one radius of the surface; distance measured in the surface plane. Shape distance: 6–10 soft lobes (`starStrength`). Keeps the 2 nearest marks + the nearest mark's burnt-patch offset.
+4. Pixels beyond `1 + edgeBreakup` outline radii → return (per-pixel branch).
+5. Soot: 2-octave edge noise frays the outline; 2 nearest marks blended `1 − (1 − a)(1 − b)` (no seam). Albedo → soot colour; metallic × (1 − soot); smoothness → 0.1; occlusion × (1 − 0.5 soot); emission × (1 − soot).
+6. Patch field = 2-octave patch noise + bias from distance to the patch centre (random offset ≤ `burntOffset`); field below rim → return (per-pixel branch).
+7. Patch: burnt colour (darker deeper in), inner-wall occlusion, normal tilted inward on the wall (finite differences, no `ddx` inside per-pixel branches), rim emission × `emberStrength`, 5 % fill glow.
 
-1. `HullDamageHitTable` service: one global `RGBAFloat` texture, 8 hits × 1,023 slots. Texel = hit position xyz + radius; second texel row block = intensity/age if needed.
-2. Slot lease per unit on spawn, release on wreck end. Slot index → bits 20–29.
-3. Sources: armor impacts above a damage threshold (from `ImpactEffectPresenter.Play`), every hardpoint destruction (always recorded, larger radius).
-4. Policy: 8 hits per ship; new hit replaces the weakest; nearby hits merge and grow. Upload at most once per frame, only when dirty.
-5. Shader: loop 8 `LOAD_TEXTURE2D`, sphere falloff, `max` with the Phase 1 mask; same height blend and detail.
-6. Hit space: see TODO 1.
+### Settings (current asset values)
 
-### Phase 3 — optional
+| Setting | Value | Meaning |
+|---|---|---|
+| `markRadiusMin` / `markRadiusMax` | 3.5 / 6.1 | world units at Mark Scale 1; spacing = max × √((1 + breakup)² + 1) ≈ 9.5 |
+| `markDensity` | 1 | share of spots on at 0 hull |
+| `edgeBreakup` / `edgeNoiseFrequency` | 0.2 / 3 | outline wobble |
+| `starStrength` / `starMinSize` | 0.45 / 0 | 0 = round, 1 = star |
+| `sootColor` | 0.015 | near-black |
+| `sootOpacityMin/Max/Edge` | 0.7 / 1 / 0.15 | middle band (random, t²) / outline |
+| `emberLength` / `burntOffset` / `burntDepth` | 0.45 / 0.35 / 0.6 | patch radius, centre offset, wall tilt (mark radii) |
+| `emberWidth` / `emberStrength` | 0.03 / 1 | rim width (noise units), glow |
+| `burntColor` / `emberColor` | (0.24, 0.14, 0.12) / (1, 0.4, 0.1) | |
 
-- Breach look for hits above a size threshold: dark girder albedo + strong normal + ember rim (second reference image), no parallax.
-- Sparks/smoke VFX at the largest hit, through the existing pooled hardpoint effects.
+### Per-ship (material)
 
-## Important Values
+- `_HullDamageMarkScale` (0.05–32): scales marks and spacing together. Written by `Tools/Empire At War/Rendering/Materials/Auto Scale Hull Damage Marks` (`HullDamageMarkScaleTool`, one-time; rerun after adding units, overwrites hand tweaks): `1.3 × hullRadius / 58.3`. Ran once: 876 materials + 774 wreck copies (e.g. Arquitens 0.45, Victory 1.3, Tector 2.28, Executor 23.5). Shared `SciFiLamps_*` → geometric mean.
+- `_HullDamageOpacityScale` (0–2): soot opacity multiplier. Victory 1.2.
+- Keep the wreck copy equal (`WreckMaterialSyncTests`). The tool writes only Mark Scale into existing `<name>_Wreck` copies; never use `Sync Wreck Materials` for this (it resets 15 drifted wrecks and creates 49 unreferenced ISDI/ISDII materials).
 
-- Extra cost at `level == 0`: one branch.
-- Damaged pixel, full quality: 3 texture samples + noise; Phase 2 adds 8 texel loads.
-- Hit table: 8 × 1,023 × 16 B ≈ 131 KB.
-- `SetShaderUserValue` calls: ≤15 per ship life from hull changes.
-- Per-pixel budget, tiling, char colours, ember HDR value: unset → tune in preview scene, then measure with `RenderAuditAblationCapture` (damage on/off/restored).
+### Tools
+
+- `Tools/Empire At War/Hull Damage Preview` (`HullDamagePreviewWindow`): hull slider on the selected unit, uploads settings.
+- Auto-scale tool above.
+- Dead: `HullDamageTextureBuilder` + `Assets/Art/Textures/Vfx/HullDamageDetail.png` (unreferenced since the procedural rework) → delete (R6).
+
+## Performance investigation (2026-11-20)
+
+### Method
+
+- Static D3D11 bytecode count (SHEX opcodes, declarations excluded) of `ForwardLit`, with damage vs. `ApplyHullDamage` returning at entry. Not GPU time; Metal/Vulkan/DXIL differ.
+
+### Results
+
+| Fragment variant | Without damage | With damage | Search loop body |
+|---|---|---|---|
+| Ship Lit, no keywords | 153 | 1,264 | 119 (× 27 cells) |
+| Ship Lit, shadows + additional lights + cluster + DOTS | 380 | 1,514 | 119 (× 27) |
+| Ship Wreck, no keywords | 427 | 1,537 | 119 (× 27) |
+
+- Vertex: unchanged count (51 / 84); +1 `float3` + 1 `half` interpolator.
+- Executed estimate per pixel of a damaged unit:
+  - Search: 27 hashes always; ~1,300 instr typical (most cells fail the surface test before the shape step), ~3,200 worst (every cell runs `atan2` shape).
+  - Near a mark: + 2 edge-noise octaves (~200).
+  - Near a patch: + 2 patch octaves + 4 more for the wall slope + transforms (~600).
+  - → damaged-unit pixels cost roughly 4–9× the undamaged lit fragment. Undamaged units: one uniform branch (~0).
+- Biggest cost: the 27-cell search on every pixel of every damaged unit, including far-away ships where marks are a few pixels wide.
+
+### Already optimal
+
+- CPU: event-driven; ≤ 31 `SetShaderUserValue` per unit life; one global upload per battle; no per-frame work.
+- Batching: no MPB, keywords or new variants; per-ship values in `UnityPerMaterial`. All 96 checked variants compile.
+- Memory: no textures; 7 global float4s.
+- Passes: forward only; shadow, depth, depth-normals and outline passes untouched.
+
+### Recommended optimizations (not implemented)
+
+| # | Change | Expected effect | Look change |
+|---|---|---|---|
+| R1 | Before hashing a cell, skip it when its centre is farther than `0.87 + maxRadius` cells from the pixel's surface plane | flat hull: 27 → ~9–15 hashed cells; ~40–60 % of search | none |
+| R2 | Hoist the surface frame out of the loop; skip the shape (`atan2`/`sin`) when plain distance ≥ current second-nearest | removes most worst-case shape work | none |
+| R3 | Distance LOD: `ddx/ddy(positionWS)` before the branches; when a pixel covers > ~¼ mark radius, skip patch + edge noise (soot only) | large win at normal RTS zoom | far: no patch rim/fray (sub-pixel anyway) |
+| R4 | Cheap 1-int hash for `w` first; full PCG4D only for active cells | helps at partial damage (level < 1) | none |
+| R5 | Quality tier (global float, not a keyword): Performant/Low → no wall tilt, 1 edge octave | lower floor on weak GPUs | slightly flatter patches |
+| R6 | Delete the unused texture builder + PNG | repo/import time | none |
+
+- Do R1 + R2 first (no visual change), then measure; R3 next if battle zoom is still costly.
+- Measurement needed: `RenderAuditAblationCapture` damage on/off/restored with a heavily damaged fleet on High Fidelity and Performant (user Play Mode).
 
 ## Edge Cases
 
-- Hull repair → level drops → newest marks disappear first (replaces "patches shrink" after the 2026-11-20 feedback).
-- Marks use world units: a mark is the same size on a CR70 and an Executor, so huge ships carry many more marks. Revisit if the Executor looks speckled.
-- Shields up → no armor impact → no new hit marks; hull % unchanged → nothing appears. Correct.
-- Shield-piercing damage → hull drops under shields → marks appear under the shield. Accepted.
-- Multi-renderer ships → Phase 1 pattern differs per part (fine); Phase 2 needs a shared space.
-- Turrets/rotating parts → pattern rotates with the part (object-anchored). Correct.
-- Team livery: damage applies after `ApplyTeamMask` → scorches cover team paint. Team emission stays.
-- Outline passes ignore damage bits after the mask fix.
-- Squadron fighters: tiny on screen → leave at level 0 unless requested.
-- Slot exhaustion (>1,023 units) → slot 0, Phase 1 only.
-- Save/load: level restores from saved hull; hit list is not saved (visual only).
-- Multiplayer: view-only, no network data.
+- Repair → level drops → newest marks disappear first.
+- Shields up → hull unchanged → no marks; shield-piercing damage → marks under the shield (accepted).
+- Multi-renderer units: 56/90 units have several hull transforms → each part has its own mark pattern; marks do not continue across part seams.
+- Turrets: marks rotate with the part (object space).
+- Team livery: soot covers team paint; team emission dims under soot.
+- Additive window-light overlays (`URP/Particles/Unlit`, `URP/Unlit`) are separate renderers → lights stay lit inside marks (dropped by user).
+- Save/load: level restores from saved hull. Multiplayer: view-only, no network data.
 
 ## Files
 
-- `Assets/Art/Shaders/Units/ShipLitInput.hlsl`, `ShipLitForwardPass.hlsl`, `ShipOutlinePass.hlsl`, new `ShipHullDamage.hlsl`
-- `Assets/Scripts/Components/TeamColor/UnitRenderStateComponent.cs`, `IUnitRenderStateComponent.cs`
-- `Assets/Scripts/Components/ViewComponents/Wreck/UnitWreckView.cs`
-- `Assets/Scripts/Components/Weapon/ImpactEffectPresenter.cs` (Phase 2 source)
-- `Assets/Scripts/Entities/Ship/` entity wiring
-- Tests: `Tests/Editor/Ships/UnitRenderStateComponentTests.cs` (bit layout, outline layer with damage bits set), `Tests/Editor/Health/WreckMaterialSyncTests.cs`; categories `Ships`, `Health`, `Combat`, `Ui`.
-- New art: packed damage texture (height/cracks/roughness/embers), shared by all ships.
+- Shaders: `Assets/Art/Shaders/Units/ShipHullDamage.hlsl`, `ShipLitInput.hlsl` (bits, `UnityPerMaterial` props), `ShipLitForwardPass.hlsl` (varyings, call), `ShipWreckForwardPass.hlsl`, `ShipOutlinePass.hlsl` (mask), `ShipLit.shader` / `ShipWreck.shader` (material props).
+- C#: `Components/TeamColor/UnitRenderStateComponent.cs`, `IUnitRenderStateComponent.cs`; `Entities/BaseEntity/UnitHullDamageSync.cs`, `EntityFeatureBindings.cs`; `Services/Player/HullDamageSettings.cs`, `HullDamageService.cs`; `Services/UnitWreck/*`; `Components/ViewComponents/Wreck/UnitWreckView.cs`; entity wreck callers; `SkirmishScope.cs`.
+- Editor: `Editor/Rendering/HullDamagePreviewWindow.cs`, `HullDamageMarkScaleTool.cs`, `HullDamageTextureBuilder.cs` (dead).
+- Data: `Assets/Settings/Data/Models/Players/HullDamageSettings.asset`, `SceneContext.prefab` reference, 876 unit + 774 wreck materials (Mark Scale).
+- Tests: `Ships/UnitRenderStateComponentTests` (bits, 31-step quantization, repair, outline unaffected, wreck value), `Ships/DefendPlatformTests`, `Core/SerializedReferenceTests`, `Core/RealEntityCompositionTests`, `BattleInput/UnitHighlightFacadeTests`; `Health/WreckMaterialSyncTests` relevant for material edits.
 
-## Verification (2026-11-20)
+## Verification
 
-- C# compile: 0 errors, 0 warnings. Unity console: no new errors.
-- Shader: 96 variant compiles (Ship Lit `ForwardLit`/`ShipOutline`/`ShipOutlineMask` + Ship Wreck forward; D3D, Metal, Vulkan; none / `INSTANCING_ON` / `DOTS_INSTANCING_ON` / shadows+cluster) → all succeed, no warnings. `ddx` inside the per-draw damage branch compiles cleanly.
-- First build preview (hull 1 / 0.6 / 0.3 / 0): growing patches with glowing cracks → rejected by user (see feedback).
-- Rework (2026-11-20): 96 variant compiles again clean; console clean. Preview render (`VictoryShipView`, hull 1 / 0.8 / 0.6 / 0.4 / 0.2 / 0, quality 4): no marks at 100%, a few small soot spots at 80%, more separate spots each step, no glow.
-- Shader include edits are not always picked up by `ShipLit.shader` on refresh: force `ImportAsset(..., ForceUpdate)` on `ShipLit.shader`/`ShipWreck.shader` before preview renders.
-- Tests: authored/updated, not run (local override). `Ships`: `UnitRenderStateComponentTests` (bit layout, quantization, repair, damage does not enable outline, wreck value), `DefendPlatformTests` (removed stale `_owner`). `Core`: `SerializedReferenceTests` (+`hullDamageSettings`), `RealEntityCompositionTests` stub. `BattleInput`: `UnitHighlightFacadeTests` stub.
-- Not measured: GPU cost (`RenderAuditAblationCapture`), in-game look.
-- Known: some window lights on the Victory preview stay lit inside burns → likely separate emissive renderers outside `meshRenderers`; check in-game.
+- C# compile clean; 96 shader variants (Ship Lit forward/outline/outline-mask + Wreck forward; D3D, Metal, Vulkan; none / instancing / DOTS / shadows+cluster) clean after every change.
+- Previews rendered through the real `HullDamageService` (pixel-identical to the preview path): 9 ships (Victory, Venator, Imperial Venator, Tector, both Arquitens, both Acclamators, Executor), close-ups at 0 % hull, 8-step Tector strip.
+- Not done: tests (override), in-game look, GPU timing.
 
 ## Lessons
 
-- `Mathf.SmoothStep(from, to, t)` interpolates between values; it is not GLSL `smoothstep(edge0, edge1, x)`. Misuse left cracks/embers at ~33% everywhere in the first bake.
-- A 3D-cell mark scatter must measure distance along the surface: a plain sphere test turns most marks into faint rings because the hull cuts the sphere off-centre.
-- Emissive "embers" on plating read as lava at RTS zoom; keep glow for real openings only.
+- `Mathf.SmoothStep(from, to, t)` ≠ GLSL `smoothstep(edge0, edge1, x)`.
+- `line` is a reserved HLSL word ("unexpected token 'line'").
+- Shader include edits are not always reimported with `ShipLit.shader`: force `ImportAsset(…, ForceUpdate)` on the shaders before previews.
+- `Material.SetFloat` right after a forced shader reimport can be lost; set values after the import settles.
+- A 3D-cell scatter must measure distance along the surface, or marks become faint rings.
+- No `ddx` inside per-pixel branches: compute derivatives before them or use finite differences.
+- Emissive glow across plating reads as lava at RTS zoom; glow only on small rims.
+- Unity strips the DXBC `STAT` chunk; count SHEX opcodes for static cost.
 
 ## TODO
 
-1. ~~Source of the damage texture~~ → generated: `Tools/Empire At War/Bake Hull Damage Texture` (`HullDamageTextureBuilder`) → `Assets/Art/Textures/Vfx/HullDamageDetail.png` (512², linear, repeat, BC7). Authored art can replace the PNG later.
-2. ~~GPU Resident Drawer re-batching~~ → Unity 6000.6 docs: RSUV changes per-renderer shading "without using different materials or additional CPU time" and is designed to combine with the GPU Resident Drawer.
-3. After Phase 1: user judges in-game → decide Phase 2. Tune `HullDamageSettings` with the preview window (spacing 8, size 0.45, density 0.85, breakup 0.35, soot opacity 0.7 are first guesses).
-5. ~~Mark size vs ship size~~ → user chose the auto-scale tool (2026-11-20), see below.
+1. User: judge in-game; tune with the preview window.
+2. Implement R1 + R2, then measure with `RenderAuditAblationCapture` (user Play Mode); decide R3–R5.
+3. R6: delete `HullDamageTextureBuilder` + `HullDamageDetail.png`.
+4. Phase 2 (hit-placed scorches) only if approved: needs a per-unit slot table (bits 21–30) and root-space positions; would also allow aligned window-light darkening.
 
-## Mark size range + auto scale (2026-11-20)
+## History (2026-11-20, condensed)
 
-- User: random mark size, smallest = current size, largest 2×. Settings now `markRadiusMin` 3.5 / `markRadiusMax` 7 world units (at Mark Scale 1); `markSpacing`/`markSize` removed. Spacing derived in `HullDamageService` = `max × sqrt((1 + breakup)² + 1)` ≈ 11.8 → tightest spacing that keeps the largest mark in the 3×3×3 search. `_HullDamageSurface.z` = min/max; shader `radius = max × lerp(min/max, 1, rand)`. `markDensity` 0.85 → 1.
-- Effect: per area about half as many marks as before, each ~2× wider; covered area roughly 2×.
-- Tool: `Tools/Empire At War/Rendering/Materials/Auto Scale Hull Damage Marks` (`HullDamageMarkScaleTool`, editor only, one-time; rerun after adding units — overwrites hand tweaks).
-  - Mark Scale = `1.3 × hullRadius / VictoryRadius(58.3)`, clamped 0.05–32 (material Range widened to match). Hull radius = half-diagonal of world AABB of `UnitRenderStateComponent.meshRenderers` in the prefab.
-  - Materials shared by units of different size → geometric mean + warning (only `SciFiLamps_*`, 0.76–2.3).
-  - Writes the same value into existing wreck copies `<name>_Wreck` under `Assets/Art/Materials/Wrecks`; does not call `Sync Wreck Materials`.
-  - Result: 876 Ship Lit materials + 774 wreck copies. Examples: Arquitens 0.45, Arquitens Imperial 0.53, Acclamators 1.08–1.09, Venator 1.39–1.55, Imperial Venator 1.56, Tector 2.28, Executor 23.5, Victory 1.3.
-- Do not use `Sync Wreck Materials` for this: it (a) reset 15 deliberate-or-drifted wreck values (Gladiator/HeavyDreadnought/Pelta `_TeamRimStrength` 0, Procurator metallic/smoothness, MC80bRemonda/Mediator invalid keywords, Invincible base colour) and (b) created 49 wreck materials for ISDI/ISDII that no wreck prefab references. Both reverted/deleted. The drift itself is pre-existing → `WreckMaterialSyncTests` may already flag these 15; not touched.
-- Random opacity (2026-11-20, user): per-mark opacity `lerp(sootOpacityMin 0.7, sootOpacityMax 1.0, t²)`, `t` = mark's own hash (`frac(w × 113.9)`) → most marks near 0.7, fully dark ones rare. `sootOpacity` renamed `sootOpacityMin` (`[FormerlySerializedAs]`, asset keeps 0.7); max goes to `_HullDamageSurface.w`. Mark search returns (distance, t) of the nearest mark. Material Soot Opacity Scale multiplies the result, saturated. Verified: 96 variants clean, 9-ship preview; settings + service compiled together in memory only (project compile still blocked by the unrelated spawn-point work).
-- Dark centre + more marks (2026-11-20, user): opacity = `lerp(max(sootOpacityCenter 0.95, own), own, smoothstep(0, centerFade 0.6, frayed))` → dark core fading slowly to the mark's own opacity, then the soft edge. New global `_HullDamageCore` (x centre opacity, y fade share). Mark count +30% → spacing × 1/√1.3: `markRadiusMax` 7 → 6.1 (min stays 3.5; spacing ≈ 10.3). Verified: 96 variants clean, 9-ship preview + Tector close-up; C# compiled in memory only (project compile still blocked).
-- Solid scorch, no tiles (2026-11-20, user: "ugly strange tile on edges", wants solid black centre):
-  - Detail texture removed from the marks (its fray + blister flakes showed as blocky tiles up close). Edge now waves with 2 octaves of smooth 3D value noise at `edgeNoiseFrequency` (3 per spacing) × `edgeBreakup` (0.35 radii). No texture samples, no quality branch → `_HullDamageMap`, `_HullDamageQuality`, `_HullDamageBlisterColor`, `detailMap`, `detailSize`, `blisterColor`, `HullDamageService.Tick/UploadQuality` deleted. `HullDamageDetail.png` + `HullDamageTextureBuilder` now unused (kept; A channel was meant for Phase 3 breach glow).
-  - Two nearest marks blended `1 − (1 − a)(1 − b)` → no hard seam where marks overlap (nearest-only switched opacity abruptly).
-  - Solid core: opacity = `sootOpacityCenter` (1.0) up to `0.5 × centerFade`, fades to the mark's own opacity by `centerFade` (0.8), edge fade 0.6 → 1.0 radius. Soot removes metallic fully (`metallic × (1 − soot)`), occlusion × (1 − 0.5 soot), smoothness → 0.1. `sootColor` 0.06 → 0.015.
-  - Fixed: `UNITY_BRANCH` had been separated from its `if` by an inserted declaration.
-  - Known: additive `URP/Particles/Unlit` light-grid overlays (Tector `*_MeshAdditive`, Executor ambient, Victory lights) draw on top and are not darkened by soot → window-light dots stay visible inside marks. Fix would need those overlay materials to read the damage value.
-  - Verified: 96 variants clean; project compile clean again; close-ups (Executor, Victory, Tector, Acclamator Assault at 0% hull); real `HullDamageService.Upload` render pixel-identical to the preview path. Settings asset reserialized (`sootOpacity` → `sootOpacityMin` migrated).
-- Light overlays darkening (2026-11-20): investigated, dropped by user. Facts kept for later: 236 additive (`SrcAlpha One`) light materials (159 `URP/Particles/Unlit`, 77 `URP/Unlit`) on units; 276 light renderers share a hull renderer transform, 96 non-engine ones do not (Victory_Lights, Imperator, Titan, stations…), 75 engine/glow/lens. 56/90 units have several hull transforms → marks already break at part seams. Aligning would need unit-root space (per-unit slot table, Phase 2 infra).
-- Star scorches + burnt paint + opacity profile (2026-11-20, user):
-  - Shape: marks above `starMinSize` (0.35 of size range) become stars, strength `starStrength` 0.8: 5–8 rays per mark, ray length 0.7–1.0 radius (hash per ray), gaps pulled to 0.35; angle from a surface frame (`cross(up|x, normalOS)`). Small marks stay round. Shape distance replaces plain distance in the 2-nearest search.
-  - Opacity: centre 1.0 → mark's random middle opacity (0.7–1.0, t²) by 0.35 → `sootOpacityEdge` 0.15 by 0.85 → 0 at the outline. `sootOpacityCenter`/`centerFade` removed.
-  - Burnt paint back: dull flakes (`blisterColor` 0.2/0.18/0.16) from smooth value noise ×4.1 inside `blisterRadius` 0.3 of the nearest mark; no texture.
-  - `edgeBreakup` 0.35 → 0.2 (stronger fray blurred the rays).
-  - `_HullDamageCore` = (edge opacity, star strength, star min size, blister radius); `_HullDamageBlisterColor` back.
-  - Verified: compile clean, 96 variants clean, console clean; close-ups (Executor, Victory, Tector, Acclamator Assault) + 9-ship sheet via the real `HullDamageService`.
-- Sharp stars on every mark + glowing lines (2026-11-20, user; size unchanged):
-  - `starMinSize` 0 (smoothstep(min − 0.15, min) → every mark is a star); ray mask `pow(…, 3)` (was 1.5), gaps 0.25 (was 0.35).
-  - "Burnt paint" = the user's name for the old glowing lines, wanted smaller and dimmer. Dull flakes (`blisterRadius`, `blisterColor`) replaced by thin emissive lines along the nearest mark's ray centres: `rayOffset` = arc distance to the ray centre line (returned from the 2-nearest search), bent by smooth noise (±width), width `emberWidth` 0.012 radii, from 0.03–0.1 out to `emberLength` 0.45 of the outline, fading toward the tip. Colour `emberColor` (1, 0.4, 0.1) × `emberStrength` 0.35 → `_HullDamageEmberColor` (a = width). No flicker, no texture.
-  - Pitfall: `line` is a reserved HLSL word (geometry primitive) → "unexpected token 'line'"; renamed to `crack`.
-  - First pass (width 0.035, strength 1, length 0.6) read as lava stars → toned down.
-  - Verified: compile clean, 96 variants clean, close-ups + 9-ship sheet via real service.
-- Between star and circle + organic burnt patch (2026-11-20, user ref: soft soot halo with an irregular burnt-metal patch, glowing rim, in the middle):
-  - Outline: 6–10 soft lobes (ray mask ^1.5), lobe length 0.6–1.0, dips to 0.5, `starStrength` 0.45 → closer to a circle.
-  - Glowing ray lines removed (they repeated the star pattern). Burnt patch: field = noise(×4.5, ×10.3 of the edge-noise frequency) − 0.4 + 0.45·inner − 0.6·(1 − inner), `inner` = 1 − smoothstep(0, `emberLength` 0.45, d). Inside threshold 0.42 → `burntColor` (0.24, 0.14, 0.12) + 5% glow; rim band `emberWidth` 0.03 → `emberColor` × `emberStrength` 1.0. Shape comes from noise at that hull spot → never the same twice, never along the outline. The −0.6·(1 − inner) term stops stray specks outside marks.
-  - Globals: `_HullDamageBurntColor` new; `_HullDamageEmberColor.a` = rim width; `_HullDamageCore.w` = patch radius.
-  - Verified: compile clean, 96 variants clean, close-ups + 9-ship sheet via real service.
-- 31 damage steps + off-centre sunken patches (2026-11-20, user):
-  - User-value layout changed: level bits 11–15 (0–31, `HULL_DAMAGE_MAX_LEVEL` 31), seed bits 16–20; Phase 2 hit slot would now use 21–30. C# `UnitRenderStateComponent` + `ShipLitInput.hlsl` + `UnitRenderStateComponentTests` (masks, cases 0.5 → 16, 0 → 31) updated. Each step switches on 1/31 of the mark spots.
-  - Patch centre: random shift inside the mark up to `burntOffset` 0.35 radii (projected onto the surface); patch can fall partly on the rim, so not every mark shows a full patch.
-  - Depth: `burntDepth` 0.6 tilts the normal toward the patch inside on its wall (field slope from finite differences — no ddx inside the per-pixel branch), darker metal deeper in (×0.55), occlusion shadow along the inner wall. Needs `tangentWS` → `ApplyHullDamage(…, normalWS, tangentWS)`.
-  - New global `_HullDamageBurnt` (x offset, y depth). Patch work skipped when the field is below the rim (third early-out).
-  - Verified: compile clean, 96 variants clean, close-ups + 8-step Tector strip via real service. Tests updated, not run.
-- Verification: 96 variant compiles clean; 9-ship preview shows marks at a consistent share of every hull (Executor now visible blotches; Arquitens Imperial now marked). The final tool version was compiled and run in memory (`script run`) because unrelated uncommitted work (`EnemySquadronCommander.cs`, `ShipSpawnPoints.cs`) blocks the project compile; Editor-assembly compile of the tool still pending on that.
-4. Phase 2 only, if approved: audit ship view prefabs — do hull renderers share the view-root space? Yes → store root-space hits, no per-frame work. No → store one world-to-root matrix per slot, written per frame for ships that have hits.
+- First build: noise-threshold patches with glowing cracks and a generated detail texture → rejected (too big, too strong, grew, "lava").
+- Scattered soot marks that appear per step; 3×3×3 search for bigger marks; per-material Mark/Opacity scale; auto-scale tool; random size 1–2×; random opacity; darker centre; +30 % marks.
+- Texture removed (tiles); seamless 2-mark blend; solid centre.
+- Window-light darkening investigated (236 additive materials; 96 non-engine overlays misaligned with hull transforms) → dropped.
+- Stars → sharper stars + ray lines → rounder lobes + organic burnt patch with glowing rim → off-centre sunken patch; 31 steps.
