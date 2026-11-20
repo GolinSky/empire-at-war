@@ -61,6 +61,7 @@ namespace EmpireAtWar.Services.Camera
         private CameraData _cameraData;
         private readonly CameraFrustumProjection _frustumProjection = new CameraFrustumProjection();
         private readonly CameraZoom _zoom = new CameraZoom();
+        private readonly CameraPanBoost _panBoost = new CameraPanBoost();
 
         private Plane _plane = new();
         private Vector2 _panVelocity;
@@ -71,6 +72,8 @@ namespace EmpireAtWar.Services.Camera
         public string Id => nameof(CameraService);
 
         private float PanSpeed => _cameraData.PanSpeed * _preferences.PanSpeedMultiplier;
+        // Close to the ground the same world speed crosses the screen faster, so pan slows with height.
+        private float PanZoomScale => Mathf.Min(CameraPosition.y / _cameraData.PanFullSpeedHeight, 1f);
         private static float FrameDelta => Mathf.Min(Time.unscaledDeltaTime, MAX_FRAME_DELTA);
         private float PitchSine => Mathf.Max(-CameraForward.y, MIN_PITCH_SINE);
 
@@ -100,7 +103,7 @@ namespace EmpireAtWar.Services.Camera
 
         public void Initialize()
         {
-            _panVelocity = Vector2.zero;
+            StopPan();
             _defaultZoomHeight = CameraPosition.y;
             _zoom.Reset(CameraPosition.y);
             _cameraInput.Zoomed += ZoomCamera;
@@ -116,7 +119,7 @@ namespace EmpireAtWar.Services.Camera
             _canMove = state == BattleState.Running || state == BattleState.Paused;
             if (!_canMove)
             {
-                _panVelocity = Vector2.zero;
+                StopPan();
                 _zoom.Reset(CameraPosition.y);
             }
         }
@@ -129,7 +132,7 @@ namespace EmpireAtWar.Services.Camera
             _cameraInput.Panned -= PanCamera;
             _inputLock.LockChanged -= OnLockChanged;
             _battleState.RemoveObserver(this);
-            _panVelocity = Vector2.zero;
+            StopPan();
         }
 
         public IReadOnlyList<Vector3> GetGroundFootprint(Vector2 mapMin, Vector2 mapMax)
@@ -187,7 +190,7 @@ namespace EmpireAtWar.Services.Camera
 
         public void SetPose(Vector3 position, Quaternion rotation)
         {
-            _panVelocity = Vector2.zero;
+            StopPan();
             transform.SetPositionAndRotation(position, rotation);
             _zoom.Reset(position.y);
         }
@@ -216,12 +219,21 @@ namespace EmpireAtWar.Services.Camera
 
         private void TickKeyboardPan()
         {
+            Vector2 input = _cameraInput.Move;
+            float boost = _panBoost.Step(
+                input.sqrMagnitude > Mathf.Epsilon,
+                _cameraData.PanBoostDelay,
+                _cameraData.PanBoostRampDuration,
+                _cameraData.PanBoostMultiplier,
+                FrameDelta);
+            // Acceleration scales with zoom too, so easing in and out takes the same time at any height.
+            float zoomScale = PanZoomScale;
             _panVelocity = VelocitySmoothing.MoveTowardsTarget(
                 _panVelocity,
-                _cameraInput.Move,
-                PanSpeed,
-                _cameraData.PanAcceleration,
-                _cameraData.PanDeceleration,
+                input,
+                PanSpeed * zoomScale * boost,
+                _cameraData.PanAcceleration * zoomScale,
+                _cameraData.PanDeceleration * zoomScale,
                 FrameDelta);
             if (_panVelocity.sqrMagnitude <= Mathf.Epsilon)
             {
@@ -243,15 +255,22 @@ namespace EmpireAtWar.Services.Camera
             Vector2 normalizedDirection = Vector2.ClampMagnitude(direction, 1f);
             Vector3 move = GetPlanarDirection(normalizedDirection) *
                 PanSpeed *
+                PanZoomScale *
                 FrameDelta;
             SetPosition(ClampPosition(CameraPosition + move));
+        }
+
+        private void StopPan()
+        {
+            _panVelocity = Vector2.zero;
+            _panBoost.Reset();
         }
 
         private void OnLockChanged(bool isLocked)
         {
             if (isLocked)
             {
-                _panVelocity = Vector2.zero;
+                StopPan();
                 // A lock can hand the camera to another owner; drop any unfinished zoom.
                 _zoom.Reset(CameraPosition.y);
             }

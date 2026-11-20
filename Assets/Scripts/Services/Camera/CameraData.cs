@@ -14,6 +14,18 @@ namespace EmpireAtWar.Services.Camera
         [field: SerializeField] public float PanAcceleration { get; private set; }
         [field: SerializeField] public float PanDeceleration { get; private set; }
         [field: SerializeField,
+                Tooltip("Camera height at and above which pan runs at full Pan Speed; below it pan speed shrinks in proportion to height.")]
+        public float PanFullSpeedHeight { get; private set; }
+        [field: SerializeField,
+                Tooltip("Seconds a pan must be held before it starts speeding up.")]
+        public float PanBoostDelay { get; private set; }
+        [field: SerializeField,
+                Tooltip("Seconds the held pan takes to ease from normal speed to the boosted speed.")]
+        public float PanBoostRampDuration { get; private set; }
+        [field: SerializeField,
+                Tooltip("Pan speed multiplier reached at the end of the boost ramp.")]
+        public float PanBoostMultiplier { get; private set; }
+        [field: SerializeField,
                 Tooltip("Held-key dolly speed along the view ray, in units per second.")]
         public float ZoomSpeed { get; private set; }
         [field: SerializeField,

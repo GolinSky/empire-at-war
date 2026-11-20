@@ -13,11 +13,15 @@ MonoBehaviour:
   m_Name: CameraData
   m_EditorClassIdentifier: 
   <ZoomRange>k__BackingField:
-    <Min>k__BackingField: 60
-    <Max>k__BackingField: 1175
+    <Min>k__BackingField: 48
+    <Max>k__BackingField: 1410
   <PanSpeed>k__BackingField: 500
   <PanAcceleration>k__BackingField: 1250
   <PanDeceleration>k__BackingField: 1750
+  <PanFullSpeedHeight>k__BackingField: 500
+  <PanBoostDelay>k__BackingField: 2
+  <PanBoostRampDuration>k__BackingField: 3
+  <PanBoostMultiplier>k__BackingField: 2
   <ZoomSpeed>k__BackingField: 450
   <ZoomStepDistance>k__BackingField: 150
   <ZoomSmoothTime>k__BackingField: 0.2
