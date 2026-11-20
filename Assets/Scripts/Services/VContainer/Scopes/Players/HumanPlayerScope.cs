@@ -13,6 +13,7 @@ using EmpireAtWar.Services.Player;
 using EmpireAtWar.Services.Reinforcement;
 using EmpireAtWar.Services.Saves;
 using EmpireAtWar.Services.Squadrons;
+using EmpireAtWar.Services.SuperWeapons;
 using EmpireAtWar.Services.Audio;
 using EmpireAtWar.Services.BattleNotifications;
 using EmpireAtWar.Services.Tutorial.Guided;
@@ -91,6 +92,7 @@ namespace EmpireAtWar.Services.VContainer
         {
             builder.Register<ReinforcementUiController>(Lifetime.Singleton).AsImplementedInterfaces().AsSelf();
             builder.Register<HeroUiController>(Lifetime.Singleton).AsImplementedInterfaces().AsSelf();
+            builder.Register<OrbitalConstructionCancellation>(Lifetime.Singleton).AsImplementedInterfaces().AsSelf();
             if ((features & BattleFeatures.Economy) != 0)
             {
                 builder.Register<FactionAnnouncementService>(Lifetime.Singleton).AsImplementedInterfaces().AsSelf();

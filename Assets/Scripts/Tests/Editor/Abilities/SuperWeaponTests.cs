@@ -8,9 +8,11 @@ using EmpireAtWar.Components.Combat;
 using EmpireAtWar.Components.Weapon;
 using EmpireAtWar.Components.Ship.Health;
 using EmpireAtWar.Controllers.Factions;
+using EmpireAtWar.Controllers.Game;
 using EmpireAtWar.Entities.BaseEntity;
 using EmpireAtWar.Entities.BaseEntity.EntityFacades;
 using EmpireAtWar.Entities.DefendPlatform;
+using EmpireAtWar.Entities.Faction.Ui;
 using EmpireAtWar.Entities.MiningFacility;
 using EmpireAtWar.Entities.SuperWeapons;
 using EmpireAtWar.Entities.SuperWeapons.Controller;
@@ -24,6 +26,7 @@ using EmpireAtWar.Services.Enemy;
 using EmpireAtWar.Services.Audio;
 using EmpireAtWar.Services.Input;
 using EmpireAtWar.Services.PlayerCommands;
+using EmpireAtWar.Services.Popups;
 using EmpireAtWar.Services.Saves;
 using EmpireAtWar.Services.ShipAbilities;
 using EmpireAtWar.Services.Stations;
@@ -604,7 +607,17 @@ namespace EmpireAtWar.Tests.Editor
             purchase.onClick.Invoke();
             Assert.That(menu.Production.Canceled, Is.Null);
             row.onClick.Invoke();
+            Assert.That(menu.Confirmation.Content.Message, Does.Contain("Ion Cannon"));
+            Assert.That(menu.InputLock.IsLocked, Is.True);
+            Assert.That(menu.Production.Canceled, Is.Null);
+            menu.BuildQueue.CancelBuilding(menu.Request.Id);
+            menu.Confirmation.Answer(ConfirmPopupResult.Declined);
+            Assert.That(menu.InputLock.IsLocked, Is.False);
+            Assert.That(menu.Production.Canceled, Is.Null);
+            row.onClick.Invoke();
+            menu.Confirmation.Answer(ConfirmPopupResult.Accepted);
             Assert.That(menu.Production.Canceled?.RequestId, Is.EqualTo(menu.Request.Id));
+            Assert.That(menu.InputLock.IsLocked, Is.False);
             Assert.That(menu.Economy.Money, Is.EqualTo(menu.InitialMoney + menu.Request.FactionData.Price));
 
             menu.Weapons.Restore(WEAPON, SuperWeaponState.Ready, 10f);
@@ -621,6 +634,36 @@ namespace EmpireAtWar.Tests.Editor
             Assert.That(menu.Targeting.Pending, Is.EqualTo(WEAPON));
         }
 
+        [TestCase(true)]
+        [TestCase(false)]
+        public void ProductionQueueOrbitalCancel_RequiresConfirmationWhileBuildIsPending(bool acceptWhileQueued)
+        {
+            using OrbitalMenuFixture menu = new OrbitalMenuFixture();
+            menu.Faction.QueueUnit(menu.Request);
+            int cancelNotifications = 0;
+            menu.BuildQueue.Canceled += () => cancelNotifications++;
+
+            menu.BuildQueue.CancelBuilding(menu.Request.Id);
+            Assert.That(menu.Production.Canceled, Is.Null);
+            Assert.That(cancelNotifications, Is.Zero);
+
+            if (acceptWhileQueued)
+            {
+                menu.Confirmation.Answer(ConfirmPopupResult.Accepted);
+                Assert.That(menu.Production.Canceled?.RequestId, Is.EqualTo(menu.Request.Id));
+                Assert.That(cancelNotifications, Is.EqualTo(1));
+            }
+            else
+            {
+                menu.Faction.Advance(menu.Request.FactionData.BuildTime);
+                Assert.That(menu.Confirmation.IsOpen, Is.False);
+                Assert.That(menu.Production.Canceled, Is.Null);
+                Assert.That(cancelNotifications, Is.Zero);
+            }
+
+            Assert.That(menu.InputLock.IsLocked, Is.False);
+        }
+
         private static Vector2 ScreenCenter(RectTransform rect) =>
             RectTransformUtility.WorldToScreenPoint(null, rect.TransformPoint(rect.rect.center));
 
@@ -630,6 +673,7 @@ namespace EmpireAtWar.Tests.Editor
             private readonly GameObject _root = PrefabUtility.LoadPrefabContents(
                 "Assets/Prefabs/Ui/SkirmishGame/CoreGameUi.prefab");
             private readonly InputActionsProvider _inputActions = new InputActionsProvider();
+            private readonly OrbitalConstructionCancellation _constructionCancellation;
             public int InitialMoney => 3200;
             public OrbitalPointer Pointer { get; } = new OrbitalPointer();
             public OrbitalInterfaceAudio Audio { get; } = new OrbitalInterfaceAudio();
@@ -644,6 +688,9 @@ namespace EmpireAtWar.Tests.Editor
             public Button Toggle { get; }
             public SerializedObject Row { get; }
             public SuperWeaponPresenter Presenter { get; }
+            public ShipBuildUiController BuildQueue { get; }
+            public OrbitalConfirmation Confirmation { get; } = new OrbitalConfirmation();
+            public InputLockService InputLock { get; }
 
             public OrbitalMenuFixture()
             {
@@ -666,26 +713,64 @@ namespace EmpireAtWar.Tests.Editor
                 Request = factory.ConstructUnitRequest(roster.SuperWeapons[SuperWeaponType.IonCannon], SuperWeaponType.IonCannon);
                 Production = new OrbitalProduction(this);
                 PlayerCommandHandlers handlers = new PlayerCommandHandlers();
-                ILocalPlayer local = TestPlayers.CreateLocalPlayer(TestPlayers.CreateDuel());
+                PlayerRoster players = TestPlayers.CreateDuel();
+                ILocalPlayer local = TestPlayers.CreateLocalPlayer(players);
+                PlayerSlot owner = TestPlayers.Slot(players, local.Id);
                 handlers.RegisterProduction(local.Id, Production);
+                var commands = new AuthorityCommandSink(null, null, handlers, null);
+                var battle = new SkirmishStateModel();
+                battle.SetState(BattleState.Running);
+                InputLock = new InputLockService(_inputActions);
+                _constructionCancellation = new OrbitalConstructionCancellation(Faction, owner, battle, commands,
+                    Confirmation, InputLock);
+                _constructionCancellation.Initialize();
+                BuildQueue = new ShipBuildUiController(null, null, commands, owner, Faction, null, null,
+                    _constructionCancellation);
                 Presenter = new SuperWeaponPresenter(
                     superWeaponFireService: null, viewProvider: new OrbitalViewProvider(view), routeNavigation: null,
                     abilities: new ShipAbilityService(null, null, null), localPlayer: local, uiService: null,
                     cancelRouter: new UiCancelRouter(null), tooltipService: null, faction: Faction, bindings: null,
                     battleState: null, model: Weapons, targeting: Targeting,
                     unitTargeting: new UnitActionTargetingModel(), data: null, interfaceAudio: Audio, interfaceData: null,
-                    commands: new AuthorityCommandSink(null, null, handlers, null), notifications: null, pointer: Pointer,
+                    commands: commands, notifications: null, pointer: Pointer,
                     inputActions: _inputActions, roster: roster, requestFactory: factory, economy: Economy,
-                    secondStation: SecondStation, productionAccess: new OrbitalProductionAccess());
+                    secondStation: SecondStation, productionAccess: new OrbitalProductionAccess(),
+                    constructionCancellation: _constructionCancellation);
                 Presenter.Activate(true);
             }
 
             public void Dispose()
             {
                 Presenter.Activate(false);
+                _constructionCancellation.LateDispose();
+                InputLock.Dispose();
                 DOTween.Kill(Row.FindProperty("background").objectReferenceValue);
                 _inputActions.Dispose();
                 PrefabUtility.UnloadPrefabContents(_root);
+            }
+        }
+
+        private sealed class OrbitalConfirmation : IConfirmPopupService
+        {
+            private Action<ConfirmPopupResult> _answer;
+            public AcceptPopupContent Content { get; private set; }
+            public bool IsOpen => _answer != null;
+
+            public PopupHandle ShowAccept(AcceptPopupContent content, Action<ConfirmPopupResult> answered)
+            {
+                Assert.That(IsOpen, Is.False);
+                Content = content;
+                _answer = answered;
+                return new PopupHandle();
+            }
+
+            public void Close(PopupHandle handle) => Answer(ConfirmPopupResult.Dismissed);
+
+            public void Answer(ConfirmPopupResult result)
+            {
+                Action<ConfirmPopupResult> answer = _answer;
+                _answer = null;
+                answer(result);
             }
         }
 

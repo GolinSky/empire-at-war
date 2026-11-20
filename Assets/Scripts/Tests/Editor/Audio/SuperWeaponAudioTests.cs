@@ -216,7 +216,8 @@ namespace EmpireAtWar.Tests.Editor
                     targeting: new SuperWeaponTargetingModel(), unitTargeting: null, data: null,
                     interfaceAudio: audio, interfaceData: data, commands: commands,
                     notifications: new BattleNotificationFeed(), pointer: null, inputActions: inputActions,
-                    roster: null, requestFactory: null, economy: null, secondStation: null, productionAccess: null);
+                    roster: null, requestFactory: null, economy: null, secondStation: null, productionAccess: null,
+                    constructionCancellation: null);
                 SetField(presenter, "_view", new View());
                 var states = (Dictionary<SuperWeaponType, SuperWeaponState>)typeof(SuperWeaponPresenter)
                     .GetField("_lastStates", BindingFlags.NonPublic | BindingFlags.Instance).GetValue(presenter);

@@ -62,6 +62,7 @@ namespace EmpireAtWar.Entities.SuperWeapons.Controller
 
         private readonly SuperWeaponModel _model;
         private readonly IPlayerCommandSink _commands;
+        private readonly OrbitalConstructionCancellation _constructionCancellation;
         private readonly SuperWeaponTargetingModel _targeting;
         private readonly UnitActionTargetingModel _unitTargeting;
         private readonly TooltipRequests _tooltips;
@@ -83,11 +84,13 @@ namespace EmpireAtWar.Entities.SuperWeapons.Controller
             InterfaceSfxData interfaceData, IPlayerCommandSink commands,
             IBattleNotifications notifications, IPointerInput pointer, InputActionsProvider inputActions,
             FactionRoster roster, IUnitRequestFactory requestFactory, IEconomyModelObserver economy,
-            SecondStationLevelModel secondStation, IProductionAccess productionAccess)
+            SecondStationLevelModel secondStation, IProductionAccess productionAccess,
+            OrbitalConstructionCancellation constructionCancellation)
             : base(uiService, cancelRouter)
         {
             _notifications = notifications;
             _commands = commands;
+            _constructionCancellation = constructionCancellation;
             _localPlayer = localPlayer;
             _interfaceAudio = interfaceAudio;
             _interfaceData = interfaceData;
@@ -203,7 +206,7 @@ namespace EmpireAtWar.Entities.SuperWeapons.Controller
                 SuperWeaponState state = _model.GetState(type);
                 ProductionQueueSnapshot queue = FindQueue(_faction.GetProductionQueueSnapshots(), type);
                 string detail = GetRowDetail(type, state, queue, out bool canAct, out _);
-                if (canAct && queue != null) detail += " · Click the row to cancel construction";
+                if (canAct && queue != null) detail += " · Click the row for cancellation options";
                 else if (canAct && state == SuperWeaponState.Ready) detail += " · Click the row to aim";
                 return BuildTooltip(type, profile, detail);
             });
@@ -255,7 +258,7 @@ namespace EmpireAtWar.Entities.SuperWeapons.Controller
             if (queue != null)
             {
                 if (_economy != null)
-                    _commands.Submit(new CancelPurchaseCommand(_localPlayer.Id, queue.UnitRequest.Id));
+                    _constructionCancellation.Request((SuperWeaponUnitRequest)queue.UnitRequest);
                 return;
             }
 
@@ -328,7 +331,7 @@ namespace EmpireAtWar.Entities.SuperWeapons.Controller
 
         private void HandlePointerPressed(Vector2 position)
         {
-            if (_isOpen && !_view.ContainsScreenPoint(position)) ClosePopup();
+            if (_isOpen && !_constructionCancellation.IsPending && !_view.ContainsScreenPoint(position)) ClosePopup();
         }
 
         private void HandleCommandPressed(InputAction.CallbackContext context) => HandlePointerPressed(_pointer.Position);

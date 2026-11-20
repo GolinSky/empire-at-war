@@ -3,9 +3,11 @@ using EmpireAtWar.Entities.Tooltip;
 using EmpireAtWar.Services.Tooltip;
 using System;
 using System.Collections.Generic;
+using EmpireAtWar.Controllers.Factions;
 using EmpireAtWar.Models.Factions;
 using EmpireAtWar.Models.Players;
 using EmpireAtWar.Services.PlayerCommands;
+using EmpireAtWar.Services.SuperWeapons;
 using EmpireAtWar.Services.UiRouting;
 using EmpireAtWar.Ui.Base;
 using VContainer;
@@ -17,6 +19,7 @@ namespace EmpireAtWar.Entities.Faction.Ui
         ILateDisposable, ISkirmishUiRoute, IBuildQueueCancelObserver
     {
         private readonly IPlayerCommandSink _commands;
+        private readonly OrbitalConstructionCancellation _orbitalCancellation;
         private readonly PlayerSlot _owner;
         private readonly IPlayerFactionModelObserver _model;
         private readonly ISkirmishRouteNavigation _routeNavigation;
@@ -38,9 +41,10 @@ namespace EmpireAtWar.Entities.Faction.Ui
             PlayerSlot owner,
             IPlayerFactionModelObserver model,
             ISkirmishRouteNavigation routeNavigation,
-            ITooltipService tooltipService) : base(uiService, cancelRouter)
+            ITooltipService tooltipService, OrbitalConstructionCancellation orbitalCancellation) : base(uiService, cancelRouter)
         {
             _commands = commands;
+            _orbitalCancellation = orbitalCancellation;
             _owner = owner;
             _model = model;
             _routeNavigation = routeNavigation;
@@ -99,29 +103,38 @@ namespace EmpireAtWar.Entities.Faction.Ui
             }
         }
 
-        private ProductionQueueSnapshot FindTooltipQueue(object key)
+        private ProductionQueueSnapshot FindQueue(string id)
         {
             foreach (ProductionQueueSnapshot snapshot in _model.GetProductionQueueSnapshots())
-                if (snapshot.UnitRequest.Id == (string)key) return snapshot;
+                if (snapshot.UnitRequest.Id == id) return snapshot;
             return null;
         }
 
         private void HandleTooltipHover(object key, TooltipAnchor anchor, object source) =>
-            _tooltips.Show(source, key, anchor, () => _isTooltipActive && FindTooltipQueue(key) != null, () =>
+            _tooltips.Show(source, key, anchor, () => _isTooltipActive && FindQueue((string)key) != null, () =>
             {
-                ProductionQueueSnapshot snapshot = FindTooltipQueue(key);
+                ProductionQueueSnapshot snapshot = FindQueue((string)key);
                 var data = snapshot.UnitRequest.FactionData;
+                string status = snapshot.UnitRequest is SuperWeaponUnitRequest
+                    ? "Click for cancellation options."
+                    : "Click to cancel the current item and refund its cost.";
                 return UnitTooltipContent.Build(data, new[]
                 {
                     new TooltipStat(label: "Remaining time (s)", current: snapshot.RemainingBuildTime, format: "0"),
                     new TooltipStat(label: "Progress (s)", current: data.BuildTime - snapshot.RemainingBuildTime, format: "0", max: data.BuildTime),
                     new TooltipStat(label: "Items in this queue", current: snapshot.Count),
                     new TooltipStat(label: "Cancel refund (credits)", current: data.Price)
-                }, status: "<color=#EF4444><b>Click to cancel the current item and refund its cost.</b></color>");
+                }, status: $"<color=#EF4444><b>{status}</b></color>");
             });
 
         public void CancelBuilding(string id)
         {
+            if (FindQueue(id)?.UnitRequest is SuperWeaponUnitRequest orbital)
+            {
+                _orbitalCancellation.Request(orbital, () => Canceled?.Invoke());
+                return;
+            }
+
             _commands.Submit(new CancelPurchaseCommand(_owner.Id, id));
             Canceled?.Invoke();
         }
