@@ -447,6 +447,7 @@
 
 ### Features
 
+- [x] **Ship engine plumes on all 73 ships (shared scalable prefab, replaces CR70 trail)** → [[Done/Features/Ship_Engine_Plume_Rollout_Plan|Ship Engine Plume Rollout]] — 2026-11-20: done, `acceptance: pending-user`. 73 ship views, 1–5 local-space `LineRenderer` plumes each; length follows speed. Width set by `widthMultiplier` (View alignment ignores scale). Chimaera/Devastator excluded; Chimaera fog list misses inherited plumes. Compile clean; tests not run. Guide → [[AssetPipeline/Guides/SHIP_ENGINE_TRAIL_GUIDE]].
 - [x] **Tractor Beam targets every lower ship class (caster class decides), tooltips + tests** → [[Done/Features/Tractor_Beam_Lower_Class_Targeting|Tractor Beam Lower-Class Targeting]]
   - Completed 2026-11-19, `acceptance: pending-user`. `ShipClass.HullTier()` rule in `TractorBeamSettings`, `targetClasses` removed, tooltips + design doc updated; Unity compile clean; `Abilities` 223/223 and `Core` 169/169 passed. Gates → [[TODOs/User_Acceptance_Queue]].
 - [x] **Shift + left-click a unit → add it to the current selection (toggle off on second Shift + click)** → [[Done/Features/Shift_Click_Add_To_Selection|Shift Click Add To Selection]]

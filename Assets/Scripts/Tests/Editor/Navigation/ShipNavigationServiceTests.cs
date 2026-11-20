@@ -1417,7 +1417,72 @@ namespace EmpireAtWar.Tests.Movement
                 null, new object[] { gameObject.transform, gameObject.transform,
                     gameObject.AddComponent<LineRenderer>(), DG.Tweening.Ease.Linear }, null);
             SetPrivateField(component, "_motion", motion);
+            SetPrivateField(component, "_enginePlumes", new ShipEnginePlumes(System.Array.Empty<LineRenderer>()));
             return component;
+        }
+
+        private static LineRenderer CreateEnginePlume(GameObject gameObject)
+        {
+            var plume = new GameObject("Engine plume").AddComponent<LineRenderer>();
+            plume.transform.SetParent(gameObject.transform, false);
+            plume.positionCount = 3;
+            plume.SetPositions(new[] { Vector3.zero, new Vector3(0f, 0f, -1.96f), new Vector3(0f, 0f, -14f) });
+            return plume;
+        }
+
+        [TestCase(0f, false, 0f)]
+        [TestCase(0.5f, true, -7f)]
+        [TestCase(1f, true, -14f)]
+        [TestCase(2f, true, -14f)]
+        public void EnginePlumes_LengthFollowsThrottleAndZeroTurnsThemOff(float throttle, bool isOn, float tipZ)
+        {
+            GameObject ship = new GameObject("Plume throttle");
+            try
+            {
+                LineRenderer first = CreateEnginePlume(ship);
+                LineRenderer second = CreateEnginePlume(ship);
+                var plumes = new ShipEnginePlumes(new[] { first, second });
+                plumes.SetThrottle(throttle);
+                foreach (LineRenderer plume in new[] { first, second })
+                {
+                    Assert.That(plume.enabled, Is.EqualTo(isOn));
+                    Assert.That(plume.GetPosition(0), Is.EqualTo(Vector3.zero));
+                    Assert.That(plume.GetPosition(2).z, Is.EqualTo(tipZ).Within(0.001f));
+                    Assert.That(plume.GetPosition(1).z, Is.EqualTo(tipZ * 0.14f).Within(0.001f));
+                }
+            }
+            finally { Object.DestroyImmediate(ship); }
+        }
+
+        [Test]
+        public void EnginePlumes_TurnOffWhenThrottleDropsToZero()
+        {
+            GameObject ship = new GameObject("Plume stop");
+            try
+            {
+                LineRenderer plume = CreateEnginePlume(ship);
+                var plumes = new ShipEnginePlumes(new[] { plume });
+                plumes.SetThrottle(0.005f);
+                Assert.That(plume.enabled, Is.True);
+                plumes.SetThrottle(0f);
+                Assert.That(plume.enabled, Is.False);
+            }
+            finally { Object.DestroyImmediate(ship); }
+        }
+
+        [Test]
+        public void EnginePlumes_StayOffDuringHyperspaceArrival()
+        {
+            GameObject ship = new GameObject("Plume arrival");
+            try
+            {
+                ShipMoveComponent component = CreateReadyComponent(ship, out _, isReady: false);
+                LineRenderer plume = CreateEnginePlume(ship);
+                SetPrivateField(component, "_enginePlumes", new ShipEnginePlumes(new[] { plume }));
+                component.Tick();
+                Assert.That(plume.enabled, Is.False);
+            }
+            finally { Object.DestroyImmediate(ship); }
         }
 
         private sealed class IgnoredSpawnClearance : IShipSpawnClearance

@@ -36,7 +36,7 @@ Counts are fixture source files carrying a category in the class header. A file 
 | `Navigation` | 24 |
 | `NavigationExhaustive` | 1 |
 | `Networking` | 6 |
-| `Ships` | 21 |
+| `Ships` | 22 |
 | `Simulation` | 6 |
 | `Squadrons` | 13 |
 | `Ui` | 29 |
@@ -342,7 +342,7 @@ All paths below are relative to `Assets/Scripts/Tests/Editor/`.
 - [TacticalMarkerNetworkingTests.cs](../../Assets/Scripts/Tests/Editor/Networking/TacticalMarkerNetworkingTests.cs)
 - [TacticalMarkerRepliesTests.cs](../../Assets/Scripts/Tests/Editor/Networking/TacticalMarkerRepliesTests.cs)
 
-### Ships (21)
+### Ships (22)
 
 - [AllegianceShipTests.cs](../../Assets/Scripts/Tests/Editor/Ships/AllegianceShipTests.cs)
 - [CisStationImportTests.cs](../../Assets/Scripts/Tests/Editor/Ships/CisStationImportTests.cs)
@@ -359,6 +359,7 @@ All paths below are relative to `Assets/Scripts/Tests/Editor/`.
 - [ShipAssetIntegrityTests.cs](../../Assets/Scripts/Tests/Editor/Ships/ShipAssetIntegrityTests.cs)
 - [ShipBattleMarkerAssetTests.cs](../../Assets/Scripts/Tests/Editor/Ships/ShipBattleMarkerAssetTests.cs)
 - [ShipEngineHardpointTests.cs](../../Assets/Scripts/Tests/Editor/Ships/ShipEngineHardpointTests.cs)
+- [ShipEnginePlumePrefabTests.cs](../../Assets/Scripts/Tests/Editor/Ships/ShipEnginePlumePrefabTests.cs)
 - [ShipSpawnPointsTests.cs](../../Assets/Scripts/Tests/Editor/Ships/ShipSpawnPointsTests.cs)
 - [ShipSystemHardpointTests.cs](../../Assets/Scripts/Tests/Editor/Ships/ShipSystemHardpointTests.cs)
 - [TartanTests.cs](../../Assets/Scripts/Tests/Editor/Ships/TartanTests.cs)

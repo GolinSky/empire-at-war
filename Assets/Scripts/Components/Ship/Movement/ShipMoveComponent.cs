@@ -54,8 +54,10 @@ namespace EmpireAtWar.Components.Ship.Movement
 
         [SerializeField] private LineRenderer lineRenderer;
         [SerializeField] private Transform bodyTransform;
+        [SerializeField] private LineRenderer[] enginePlumes = Array.Empty<LineRenderer>();
         private CombatModifiers _modifiers;
         private ShipMovementTweenPlayer _motion;
+        private ShipEnginePlumes _enginePlumes;
 
         [SerializeField] private Ease hyperSpaceEase;
         private Vector3 _startPosition;
@@ -181,6 +183,8 @@ namespace EmpireAtWar.Components.Ship.Movement
                 lineRenderer, hyperSpaceEase);
             _motion.RouteDisplayChanged += HandleRouteDisplayChanged;
             _modifiers.Changed += HandleModifiersChanged;
+            _enginePlumes = new ShipEnginePlumes(enginePlumes);
+            _enginePlumes.SetThrottle(0f);
             // The spawner already validated this point; the ship lands exactly where it was placed.
             Quaternion rotation = _spawnPose.IsRestored ? _spawnPose.Rotation : _stationFacingService.GetRotation(_owner);
             Model.ConfigureSpawnPose(_startPosition.ToNumerics(), rotation.ToNumerics());
@@ -211,6 +215,7 @@ namespace EmpireAtWar.Components.Ship.Movement
         public void Tick()
         {
             if (!_modifiers.IsIonDisabled) _motion.Tick(Time.deltaTime);
+            _enginePlumes.SetThrottle(GetEngineThrottle());
             if (_isAnchorBraking && !_motion.IsBraking)
             {
                 _isAnchorBraking = false;
@@ -559,6 +564,14 @@ namespace EmpireAtWar.Components.Ship.Movement
                         QueuePlan(plannedDestination, false);
                     }
                 });
+        }
+
+        // Plume length follows actual speed against the undamaged pace, so engine damage shortens it.
+        private float GetEngineThrottle()
+        {
+            if (Model.Phase == MovementPhase.Arriving || _modifiers.IsIonDisabled) return 0f;
+            float undamagedSpeed = Model.UndamagedSpeed;
+            return undamagedSpeed > 0f ? _motion.CurrentSpeed / undamagedSpeed : 0f;
         }
 
         private void HandleModifiersChanged()
