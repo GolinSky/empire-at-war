@@ -90,10 +90,10 @@ namespace EmpireAtWar.Presenters.MiniMap
                 marker.SetOwner(site.Owner);
                 marker.SetVisible(!site.IsOperational);
             }
-            else if (_localPlayer.IsFriendly(marker.Owner))
+            else
             {
-                // Our facility's own marker hides the site; losing it also loses the site's vision,
-                // so the site marker must come back even while the site is out of sight.
+                // Out of sight only a friendly facility keeps its own marker; any other site shows
+                // its last seen owner, so a lost or enemy-held site never drops off the minimap.
                 marker.SetVisible(!(site.IsOperational && _localPlayer.IsFriendly(site.Owner)));
             }
         }
