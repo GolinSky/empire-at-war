@@ -141,7 +141,7 @@ MonoBehaviour:
         isHero: 1
         <Name>k__BackingField: "Darth Vader \u2014 Devastator"
         <MaxCount>k__BackingField: 1
-        <AvailableLevel>k__BackingField: 5
+        <AvailableLevel>k__BackingField: 4
         <Price>k__BackingField: 12000
         <BuildTime>k__BackingField: 70
         <UnitCapacity>k__BackingField: 10
@@ -163,7 +163,7 @@ MonoBehaviour:
         isHero: 1
         <Name>k__BackingField: Chimaera
         <MaxCount>k__BackingField: 1
-        <AvailableLevel>k__BackingField: 5
+        <AvailableLevel>k__BackingField: 4
         <Price>k__BackingField: 12000
         <BuildTime>k__BackingField: 70
         <UnitCapacity>k__BackingField: 10
@@ -332,7 +332,7 @@ MonoBehaviour:
         isHero: 0
         <Name>k__BackingField: Allegiance-class Battlecruiser
         <MaxCount>k__BackingField: 3
-        <AvailableLevel>k__BackingField: 4
+        <AvailableLevel>k__BackingField: 5
         <Price>k__BackingField: 15000
         <BuildTime>k__BackingField: 85
         <UnitCapacity>k__BackingField: 20

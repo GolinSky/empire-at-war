@@ -767,14 +767,29 @@ namespace EmpireAtWar.Services.Enemy
         /// <see cref="OPENING_NO_CORVETTE_SECONDS"/>, at most <see cref="MAX_LEVEL1_CORVETTES"/>, and never once
         /// level 2 is reached, station emergency included. Other ships are bought only from the station's level and
         /// <see cref="SHIP_TIER_SPAN"/> below it, so a high-level station stops filling its queue with early frigates;
-        /// a station about to fall takes any ship that arrives in time.
+        /// a station about to fall takes any ship that arrives in time. An earlier ship stays on the list while it
+        /// fights better per credit than every ship of the span (a faction whose best hulls unlock early).
         /// </summary>
         private bool IsShipTierAllowed(FactionData data, UnitTypeId id)
         {
             if (IsLevel1Corvette(data, id))
                 return _factionModel.CurrentLevel == 1 && BattleClock.CurrentElapsed >= OPENING_NO_CORVETTE_SECONDS &&
                     CountReservedLevel1Corvettes() < MAX_LEVEL1_CORVETTES;
-            return _stationPressure.IsStationCritical || data.AvailableLevel >= GetShipTierFloor();
+            if (_stationPressure.IsStationCritical) return true;
+            int floor = GetShipTierFloor();
+            return data.AvailableLevel >= floor || GetValuePerCredit(id, data) > GetBestSpanValuePerCredit(floor);
+        }
+
+        private float GetValuePerCredit(UnitTypeId id, FactionData data) =>
+            _profileCatalog.Get(id).GetCombatValue() / Math.Max(1, data.Price);
+
+        private float GetBestSpanValuePerCredit(int floor)
+        {
+            float best = 0f;
+            foreach (KeyValuePair<ShipType, FactionData> option in _factionModel.ShipFactionData)
+                if (option.Value.AvailableLevel >= floor && IsAvailable(option.Value))
+                    best = Math.Max(best, GetValuePerCredit(UnitTypeId.Ship(option.Key), option.Value));
+            return best;
         }
 
         /// <summary>The highest level floor within <see cref="SHIP_TIER_SPAN"/> that still leaves a ship type to buy.</summary>
