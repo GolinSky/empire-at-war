@@ -21,7 +21,18 @@ namespace EmpireAtWar.Models.Selection
             set
             {
                 _isSelected = value;
+#if UNITY_EDITOR || DEVELOPMENT_BUILD
+                // TEMPORARY selection-cost probe: one profiler sample per handler type. Remove after the investigation.
+                if (OnSelected == null) return;
+                foreach (Delegate handler in OnSelected.GetInvocationList())
+                {
+                    UnityEngine.Profiling.Profiler.BeginSample("SelectionProbe.OnSelected." + handler.Method.DeclaringType.Name);
+                    ((Action<bool>)handler)(_isSelected);
+                    UnityEngine.Profiling.Profiler.EndSample();
+                }
+#else
                 OnSelected?.Invoke(_isSelected);
+#endif
             }
             get => _isSelected;
         }

@@ -2038,6 +2038,8 @@ MonoBehaviour:
   economySlot: {fileID: 9049088069091137755}
   factionLayout: {fileID: 2763525797512647536}
   shipLayout: {fileID: 678018683280142361}
+  shipLayoutCanvas: {fileID: 7047457183110040007}
+  shipLayoutRaycaster: {fileID: 2600150130230298393}
   contextualSlot: {fileID: 2827154307770863160}
   endGameSlot: {fileID: 2006497790717139537}
   modalSlot: {fileID: 9115050689822861379}
@@ -2752,13 +2754,15 @@ GameObject:
   m_Component:
   - component: {fileID: 6446921468941897142}
   - component: {fileID: 678018683280142361}
+  - component: {fileID: 7047457183110040007}
+  - component: {fileID: 2600150130230298393}
   m_Layer: 0
   m_Name: ShipLayout
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 0
+  m_IsActive: 1
 --- !u!224 &6446921468941897142
 RectTransform:
   m_ObjectHideFlags: 0
@@ -2795,6 +2799,47 @@ MonoBehaviour:
   scroll: {fileID: 2171293799033736656}
   grid: {fileID: 6096088911127254825}
   fitter: {fileID: 3697886396117375555}
+--- !u!223 &7047457183110040007
+Canvas:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 8408390815637506953}
+  m_Enabled: 0
+  serializedVersion: 3
+  m_RenderMode: 2
+  m_Camera: {fileID: 0}
+  m_PlaneDistance: 100
+  m_PixelPerfect: 0
+  m_ReceivesEvents: 1
+  m_OverrideSorting: 0
+  m_OverridePixelPerfect: 0
+  m_SortingBucketNormalizedSize: 0
+  m_VertexColorAlwaysGammaSpace: 0
+  m_UseReflectionProbes: 0
+  m_AdditionalShaderChannelsFlag: 0
+  m_UpdateRectTransformForStandalone: 0
+  m_SortingLayerID: 0
+  m_SortingOrder: 0
+  m_TargetDisplay: 0
+--- !u!114 &2600150130230298393
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 8408390815637506953}
+  m_Enabled: 0
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: dc42784cf147c0c48a680349fa168899, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: UnityEngine.UI::UnityEngine.UI.GraphicRaycaster
+  m_IgnoreReversedGraphics: 1
+  m_BlockingObjects: 0
+  m_BlockingMask:
+    serializedVersion: 2
+    m_Bits: 4294967295
 --- !u!1 &8595540557378237971
 GameObject:
   m_ObjectHideFlags: 0
@@ -2806,7 +2851,7 @@ GameObject:
   - component: {fileID: 1670759200544858396}
   - component: {fileID: 3580400791292859655}
   - component: {fileID: 3213791023878951078}
-  - component: {fileID: 8180485839863231473}
+  - component: {fileID: 1420495951815711842}
   m_Layer: 5
   m_Name: Viewport
   m_TagString: Untagged
@@ -2841,7 +2886,7 @@ CanvasRenderer:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 8595540557378237971}
-  m_CullTransparentMesh: 1
+  m_CullTransparentMesh: 0
 --- !u!114 &3213791023878951078
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -2855,7 +2900,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   m_Material: {fileID: 0}
-  m_Color: {r: 0, g: 0, b: 0, a: 0}
+  m_Color: {r: 0, g: 0, b: 0, a: 1}
   m_RaycastTarget: 1
   m_RaycastPadding: {x: 0, y: 0, z: 0, w: 0}
   m_Maskable: 1
@@ -2872,7 +2917,7 @@ MonoBehaviour:
   m_FillOrigin: 0
   m_UseSpriteMesh: 0
   m_PixelsPerUnitMultiplier: 1
---- !u!114 &8180485839863231473
+--- !u!114 &1420495951815711842
 MonoBehaviour:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
@@ -2881,8 +2926,7 @@ MonoBehaviour:
   m_GameObject: {fileID: 8595540557378237971}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 3312d7739989d2b4e91e6319e9a96d76, type: 3}
+  m_Script: {fileID: 11500000, guid: 31a19414c41e5ae4aae2af33fee712f6, type: 3}
   m_Name: 
-  m_EditorClassIdentifier: UnityEngine.UI::UnityEngine.UI.RectMask2D
-  m_Padding: {x: 0, y: 0, z: 0, w: 0}
-  m_Softness: {x: 0, y: 0}
+  m_EditorClassIdentifier: UnityEngine.UI::UnityEngine.UI.Mask
+  m_ShowMaskGraphic: 0

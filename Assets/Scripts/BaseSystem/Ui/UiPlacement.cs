@@ -31,6 +31,7 @@ using EmpireAtWar.Entities.Tooltip;
 using EmpireAtWar.Entities.TutorialUi;
 using EmpireAtWar.Entities.UnitOrderFeedback;
 using UnityEngine;
+using UnityEngine.UI;
 
 namespace EmpireAtWar.Ui.Base
 {
@@ -45,6 +46,8 @@ namespace EmpireAtWar.Ui.Base
         [SerializeField] private Transform economySlot;
         [SerializeField] private UiContentLayout factionLayout;
         [SerializeField] private UiContentLayout shipLayout;
+        [SerializeField] private Canvas shipLayoutCanvas;
+        [SerializeField] private GraphicRaycaster shipLayoutRaycaster;
         [SerializeField] private Transform contextualSlot;
         [SerializeField] private Transform endGameSlot;
         [SerializeField] private Transform modalSlot;
@@ -58,6 +61,8 @@ namespace EmpireAtWar.Ui.Base
         public Transform ContextualSlot => contextualSlot;
         public UiContentLayout FactionLayout => factionLayout;
         public UiContentLayout ShipLayout => shipLayout;
+        public Canvas ShipLayoutCanvas => shipLayoutCanvas;
+        public GraphicRaycaster ShipLayoutRaycaster => shipLayoutRaycaster;
 
         public Transform GetParent<TUi>() where TUi : BaseUi
         {

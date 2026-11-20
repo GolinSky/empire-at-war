@@ -21,7 +21,10 @@ namespace EmpireAtWar.Tests.Editor
             Assert.That(bars, Is.Not.Empty);
             foreach (ShipAbilityBarUi bar in bars)
             {
-                Object control = new SerializedObject(bar).FindProperty("autoPowerButton").objectReferenceValue;
+                SerializedObject serializedBar = new SerializedObject(bar);
+                Assert.That(serializedBar.FindProperty("scrollRect").objectReferenceValue, Is.InstanceOf<ScrollRect>());
+                Assert.That(serializedBar.FindProperty("viewportMask").objectReferenceValue, Is.InstanceOf<RectMask2D>());
+                Object control = serializedBar.FindProperty("autoPowerButton").objectReferenceValue;
                 Assert.That(control, Is.InstanceOf<ShipAutoPowerButtonUi>());
                 SerializedObject serializedControl = new SerializedObject(control);
                 foreach (string field in new[] { "button", "label", "activeHighlight", "tooltipTrigger" })

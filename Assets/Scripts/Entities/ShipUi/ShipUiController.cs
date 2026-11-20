@@ -143,6 +143,8 @@ namespace EmpireAtWar.Entities.ShipUi
                 _shipGroupUi.AssignPresenter(this);
                 _shipGroupUi.AssignDestroyHandler(_destroyFlow.Open);
                 _shipGroupUi.Initialize();
+                FactionDefinition faction = _factions.Get(_localPlayer.Slot.Faction);
+                _shipGroupUi.Prewarm(faction.Ships.Count + faction.Squadrons.Count);
                 _shipTooltipHover = new TooltipHoverSubscription(
                     _shipUi.TooltipHover, HandleTooltipHover, _tooltips);
                 _groupTooltipHover = new TooltipHoverSubscription(
@@ -295,7 +297,9 @@ namespace EmpireAtWar.Entities.ShipUi
                         AddToGroup(squadrons, unit.UnitTypeId.SquadronType, entity);
                 }
             }
-            _shipUi.SetAbilitySlots(_abilitySlots);
+            // The single-ship card is hidden by alpha in group mode; feeding it every selected slot keeps its
+            // ability buttons rendering and dirtying the canvas for nothing.
+            _shipUi.SetAbilitySlots(!hasGroup ? _abilitySlots : Array.Empty<ShipAbilitySlot>());
             IUnitOrderObserverFacade orders = null;
             if (_model.HasShips && !hasGroup)
                 _playerSelectionContext.Entity.TryGetFacade(out orders);
@@ -311,6 +315,7 @@ namespace EmpireAtWar.Entities.ShipUi
 
             AddSelectionGroups(groups, type => _factions.GetShipFactionData(type).DisplayName, _shipGroupUi.AddGroup);
             AddSelectionGroups(squadrons, type => _factions.GetSquadronFactionData(type).DisplayName, _shipGroupUi.AddGroup);
+            _shipGroupUi.HideUnusedGroups();
 
             if (_isRouteActive && _model.HasShips && !hasGroup)
             {

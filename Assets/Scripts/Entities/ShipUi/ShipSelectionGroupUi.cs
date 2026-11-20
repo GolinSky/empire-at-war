@@ -44,6 +44,7 @@ namespace EmpireAtWar.Entities.ShipUi
         private Action _onClicked;
 
         private int _shipCount;
+        private bool _isSummaryHealthDirty;
 
         public void SetTooltipHover(TooltipHoverView hover)
         {
@@ -64,7 +65,19 @@ namespace EmpireAtWar.Entities.ShipUi
         {
             if (_shipCount > MAX_INDIVIDUAL_SHIPS)
                 foreach (ShipUiEntry ship in _ships)
-                    ship.Health.OnValueChanged -= UpdateSummaryHealth;
+                    ship.Health.OnValueChanged -= MarkSummaryHealthDirty;
+            _isSummaryHealthDirty = false;
+        }
+
+        // Every hit on any ship in a collapsed group raises a health event; summing the whole group per event
+        // cost O(n²) per frame in combat. Sum at most once per frame instead.
+        private void MarkSummaryHealthDirty() => _isSummaryHealthDirty = true;
+
+        private void LateUpdate()
+        {
+            if (!_isSummaryHealthDirty) return;
+            _isSummaryHealthDirty = false;
+            UpdateSummaryHealth();
         }
 
         public void Clear()
@@ -73,10 +86,11 @@ namespace EmpireAtWar.Entities.ShipUi
             _ships = null;
             _shipCount = 0;
             _onClicked = null;
+            // Entries stay active: Configure reuses them, and an unused group is deactivated as a whole.
+            // Configure deactivates the entries it does not fill.
             for (int i = 0; i < _entries.Count; i++)
             {
                 _entries[i].Dispose();
-                _entries[i].gameObject.SetActive(false);
                 _entries[i].TooltipHover.ForwardTo(_tooltipHover, null);
             }
             _slots.Clear();
@@ -120,14 +134,13 @@ namespace EmpireAtWar.Entities.ShipUi
             {
                 if (collapsed)
                 {
-                    ship.Health.OnValueChanged += UpdateSummaryHealth;
+                    ship.Health.OnValueChanged += MarkSummaryHealthDirty;
                     if (ship.Entity.TryGetFacade(out IUnitOrderObserverFacade orders))
                         _orders.Add(orders);
                 }
                 else
                 {
-                    if (entryIndex == _entries.Count)
-                        _entries.Add(Instantiate(entryPrefab, entriesLayout.transform));
+                    if (entryIndex == _entries.Count) CreateEntry();
                     ShipUi entry = _entries[entryIndex++];
                     entry.ConfigureEntry(icon, ship, () => onShipSelected(ship.Entity.Id));
                     entry.SetDestroyTarget(ship.Entity.Id, displayName, openDestroy);
@@ -136,6 +149,8 @@ namespace EmpireAtWar.Entities.ShipUi
                 }
                 _slots.AddRange(ship.AbilitySlots);
             }
+            for (int i = entryIndex; i < _entries.Count; i++)
+                if (_entries[i].gameObject.activeSelf) _entries[i].gameObject.SetActive(false);
             if (collapsed)
             {
                 summaryIcon.sprite = icon;
@@ -148,8 +163,25 @@ namespace EmpireAtWar.Entities.ShipUi
             abilityBar.SetAutoPower(autoPower, toggleAutoPower);
         }
 
+        public void PrewarmEntries()
+        {
+            while (_entries.Count < MAX_INDIVIDUAL_SHIPS)
+                CreateEntry().gameObject.SetActive(false);
+        }
+
+        private ShipUi CreateEntry()
+        {
+            ShipUi entry = Instantiate(entryPrefab, entriesLayout.transform);
+            _entries.Add(entry);
+            return entry;
+        }
+
         private void UpdateSummaryHealth()
         {
+#if UNITY_EDITOR || DEVELOPMENT_BUILD
+            SelectionPerfProbe.CountSummaryHealth(_shipCount);
+            using var probeScope = SelectionPerfProbe.SUMMARY_HEALTH_MARKER.Auto();
+#endif
             float hull = 0f;
             float shields = 0f;
             foreach (ShipUiEntry ship in _ships)

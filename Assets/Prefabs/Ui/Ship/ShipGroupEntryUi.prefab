@@ -3169,6 +3169,8 @@ MonoBehaviour:
   buttonParent: {fileID: 2898954827593763386}
   autoPowerButton: {fileID: 0}
   tutorialAnchor: {fileID: 0}
+  scrollRect: {fileID: 3425778100012065326}
+  viewportMask: {fileID: 2441835297079597546}
 --- !u!114 &3425778100012065326
 MonoBehaviour:
   m_ObjectHideFlags: 0

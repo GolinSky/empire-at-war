@@ -30,15 +30,18 @@ namespace EmpireAtWar.Ui.Base
             SetVisibility(false);
         }
 
+        // Skip unchanged writes: a CanvasGroup change notifies every UI behaviour below the group, and the
+        // ship panels call Show/Hide several times per selection change.
         internal void SetInteraction(bool isInteractive)
         {
-            canvasGroup.interactable = isInteractive;
-            canvasGroup.blocksRaycasts = isInteractive;
+            if (canvasGroup.interactable != isInteractive) canvasGroup.interactable = isInteractive;
+            if (canvasGroup.blocksRaycasts != isInteractive) canvasGroup.blocksRaycasts = isInteractive;
         }
 
         private void SetVisibility(bool isVisible)
         {
-            canvasGroup.alpha = isVisible ? 1f : 0f;
+            float alpha = isVisible ? 1f : 0f;
+            if (canvasGroup.alpha != alpha) canvasGroup.alpha = alpha;
             SetInteraction(isVisible);
             IsVisible = isVisible;
         }

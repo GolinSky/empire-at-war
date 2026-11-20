@@ -113,6 +113,10 @@ namespace EmpireAtWar.Components.Ship.Selection
             {
                 _selectionService.RemoveObserver(this);
             }
+#if UNITY_EDITOR || DEVELOPMENT_BUILD
+            if (selectedRenderer.enabled != isActive)
+                EmpireAtWar.Entities.ShipUi.SelectionPerfProbe.SelectedRings += isActive ? 1 : -1;
+#endif
             selectedRenderer.enabled = isActive;
         }
 

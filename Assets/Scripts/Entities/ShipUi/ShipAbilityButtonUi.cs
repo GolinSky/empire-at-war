@@ -87,6 +87,10 @@ namespace EmpireAtWar.Entities.ShipUi
         private void Render()
         {
             if (_slots == null) return;
+#if UNITY_EDITOR || DEVELOPMENT_BUILD
+            SelectionPerfProbe.CountAbilityRender(_slots.Count);
+            using var probeScope = SelectionPerfProbe.ABILITY_RENDER_MARKER.Auto();
+#endif
             float lowestProgress = 1f;
             float activeProgress = 1f;
             bool active = false;

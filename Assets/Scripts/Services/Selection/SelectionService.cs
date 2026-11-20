@@ -363,7 +363,10 @@ namespace EmpireAtWar.Services.Battle
             if (exclude != null)
                 _selectionBuffer.RemoveAll(exclude);
 
-            ResetAllSelections();
+            // Replace diffs against the current selection; clearing Local first deselected and reselected
+            // every already-selected unit and notified every observer twice.
+            if (_otherSelectionContext.HasSelectable)
+                ClearSelection(SelectionScope.Other);
             SetSelection(SelectionScope.Local, _selectionBuffer);
         }
 
@@ -371,7 +374,14 @@ namespace EmpireAtWar.Services.Battle
         {
             foreach (IEntity entity in GetContext(scope).Entities)
                 UnsubscribeDeath(entity);
+#if UNITY_EDITOR || DEVELOPMENT_BUILD
+            // TEMPORARY selection-cost probe. Remove after the investigation.
+            UnityEngine.Profiling.Profiler.BeginSample("SelectionProbe.Replace");
+#endif
             GetContext(scope).Replace(selection);
+#if UNITY_EDITOR || DEVELOPMENT_BUILD
+            UnityEngine.Profiling.Profiler.EndSample();
+#endif
             foreach (IEntity entity in GetContext(scope).Entities)
             {
                 _deathSubscriptions.Add(entity);
@@ -454,7 +464,14 @@ namespace EmpireAtWar.Services.Battle
             IsPruningSelection = isPruningSelection;
             for (int i = 0; i < _observers.Count; i++)
             {
+#if UNITY_EDITOR || DEVELOPMENT_BUILD
+                // TEMPORARY selection-cost probe: one profiler sample per observer type. Remove after the investigation.
+                UnityEngine.Profiling.Profiler.BeginSample("SelectionProbe.Notify." + _observers[i].GetType().Name);
+#endif
                 _observers[i].UpdateState(this);
+#if UNITY_EDITOR || DEVELOPMENT_BUILD
+                UnityEngine.Profiling.Profiler.EndSample();
+#endif
             }
         }
 

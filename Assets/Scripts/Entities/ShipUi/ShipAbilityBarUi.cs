@@ -7,6 +7,7 @@ using EmpireAtWar.Models.ShipUi;
 using EmpireAtWar.Services.ShipAbilities;
 using EmpireAtWar.Services.Tutorial;
 using UnityEngine;
+using UnityEngine.UI;
 
 namespace EmpireAtWar.Entities.ShipUi
 {
@@ -19,6 +20,10 @@ namespace EmpireAtWar.Entities.ShipUi
         [SerializeField] private ShipAutoPowerButtonUi autoPowerButton;
         [Tooltip("The bar's AbilityBar anchor; it also marks the first ability button for tutorial hints.")]
         [SerializeField] private TutorialAnchor tutorialAnchor;
+        [Tooltip("Scrolls the buttons only while they overflow the bar.")]
+        [SerializeField] private ScrollRect scrollRect;
+        [Tooltip("Clips the buttons only while they overflow the bar.")]
+        [SerializeField] private RectMask2D viewportMask;
         private readonly List<ShipAbilityButtonUi> _buttons = new List<ShipAbilityButtonUi>();
         private readonly Dictionary<ShipAbilityId, List<ShipAbilitySlot>> _groups =
             new Dictionary<ShipAbilityId, List<ShipAbilitySlot>>();
@@ -73,6 +78,17 @@ namespace EmpireAtWar.Entities.ShipUi
             for (int i = 0; i < _buttons.Count; i++)
                 if (_buttons[i].gameObject.activeSelf)
                     _buttons[i].SetWaiting(IsWaiting(_buttons[i].Id));
+        }
+
+        // An enabled RectMask2D re-clips every child each frame and splits UI batches, and one bar exists per
+        // selected unit type; clip and scroll only while the buttons do not fit.
+        private void LateUpdate()
+        {
+            bool overflows = scrollRect.content.rect.width > scrollRect.viewport.rect.width;
+            if (viewportMask.enabled == overflows) return;
+            scrollRect.StopMovement();
+            viewportMask.enabled = overflows;
+            scrollRect.enabled = overflows;
         }
 
         private bool IsWaiting(ShipAbilityId id)

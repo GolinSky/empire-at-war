@@ -148,6 +148,7 @@ namespace EmpireAtWar.Tests.Editor
                 SerializedObject serializedPlacement = new SerializedObject(placement);
                 foreach (string field in new[] { "defaultCanvas", "dynamicCanvas", "popupCanvas", "feedbackCanvas",
                     "miniMapSlot", "buildPipelineSlot", "economySlot", "factionLayout", "shipLayout",
+                    "shipLayoutCanvas", "shipLayoutRaycaster",
                     "contextualSlot", "endGameSlot", "modalSlot", "tooltipSlot", "fadeSlot" })
                     Assert.That(serializedPlacement.FindProperty(field).objectReferenceValue, Is.Not.Null, field);
 
@@ -159,7 +160,15 @@ namespace EmpireAtWar.Tests.Editor
                 Assert.That(feedback.parent, Is.SameAs(root.transform));
                 Assert.That(feedback.GetComponent<Canvas>().sortingOrder, Is.EqualTo(-10));
                 Assert.That(feedback.GetComponent<GraphicRaycaster>(), Is.Null);
-                Assert.That(root.GetComponentsInChildren<Canvas>(true), Has.Length.EqualTo(4));
+                // The ship selection panel rebuilds often; its own nested canvas keeps those rebuilds
+                // from re-batching the minimap and build pipeline that share DynamicCanvas.
+                Transform shipLayout = root.transform.Find("DynamicCanvas/ShipLayout");
+                Canvas shipCanvas = shipLayout.GetComponent<Canvas>();
+                Assert.That(shipCanvas, Is.Not.Null);
+                Assert.That(shipCanvas.overrideSorting, Is.False);
+                Assert.That(placement.ShipLayoutCanvas, Is.SameAs(shipCanvas));
+                Assert.That(shipLayout.GetComponent<GraphicRaycaster>(), Is.Not.Null);
+                Assert.That(root.GetComponentsInChildren<Canvas>(true), Has.Length.EqualTo(5));
             }
             finally
             {
@@ -317,7 +326,12 @@ namespace EmpireAtWar.Tests.Editor
                     .Invoke(controller, new object[] { new ProductionSelectionContext(selectionType) });
 
                 Assert.That(service.Placement.FactionLayout.gameObject.activeSelf, Is.EqualTo(expectedVisible));
-                Assert.That(((UiPlacement)service.Placement).ShipLayout.gameObject.activeSelf, Is.False);
+                // The ship panel stays active and hides through its own canvas, so its cards are not re-enabled
+                // and rebuilt on every selection.
+                UiPlacement placement = (UiPlacement)service.Placement;
+                Assert.That(placement.ShipLayout.gameObject.activeSelf, Is.True);
+                Assert.That(placement.ShipLayoutCanvas.enabled, Is.False);
+                Assert.That(placement.ShipLayoutRaycaster.enabled, Is.False);
                 var panel = (Image)new SerializedObject(hud).FindProperty("panelImage").objectReferenceValue;
                 Assert.That(panel.gameObject.activeSelf, Is.EqualTo(expectedVisible));
             }

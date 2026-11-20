@@ -37,7 +37,17 @@ namespace EmpireAtWar.Ui.Base
         {
             _isContentVisible = isVisible;
             placement.FactionLayout.gameObject.SetActive(isVisible && _isFactionContent);
-            placement.ShipLayout.gameObject.SetActive(isVisible && !_isFactionContent);
+            UpdateShipLayoutVisibility();
+        }
+
+        // The ship panel hides through its own Canvas, not SetActive: reactivating it re-ran OnEnable on every
+        // card and rebuilt all their meshes on each selection. HUD visibility is folded in so the nested canvas
+        // never depends on how a disabled parent canvas treats it.
+        private void UpdateShipLayoutVisibility()
+        {
+            bool isVisible = IsHudVisible && _isContentVisible && !_isFactionContent;
+            placement.ShipLayoutCanvas.enabled = isVisible;
+            placement.ShipLayoutRaycaster.enabled = isVisible;
         }
 
         public void SetHudVisible(bool isVisible)
@@ -47,6 +57,7 @@ namespace EmpireAtWar.Ui.Base
             placement.DynamicCanvas.enabled = isVisible;
             placement.FeedbackCanvas.enabled = isVisible;
             placement.ContextualSlot.gameObject.SetActive(isVisible);
+            UpdateShipLayoutVisibility();
         }
     }
 }

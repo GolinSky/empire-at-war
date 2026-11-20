@@ -56,6 +56,10 @@ namespace EmpireAtWar.Entities.ShipUi
 
         private void Update()
         {
+#if UNITY_EDITOR || DEVELOPMENT_BUILD
+            SelectionPerfProbe.CountStateUpdate(_orders.Count + _slots.Count);
+            using var probeScope = SelectionPerfProbe.STATE_UPDATE_MARKER.Auto();
+#endif
             bool changed = _orderMask != GetOrderMask();
             for (int i = 0; i < _slots.Count; i++)
                 changed |= _activeStates[i] != (_slots[i].State == ShipAbilityState.Active);

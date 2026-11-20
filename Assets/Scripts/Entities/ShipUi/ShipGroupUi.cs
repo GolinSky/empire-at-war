@@ -50,6 +50,7 @@ namespace EmpireAtWar.Entities.ShipUi
             if (!_isInitialized) return;
             _model.OnSelectionChanged -= UpdateVisibility;
             ClearGroups();
+            HideUnusedGroups();
             _isInitialized = false;
         }
 
@@ -70,13 +71,18 @@ namespace EmpireAtWar.Entities.ShipUi
         {
             if (_groupCount > 0)
                 _content.sizeDelta = new Vector2(0f, _content.sizeDelta.y);
+            // Groups stay active here: a refresh reuses most of them, and deactivating then reactivating
+            // re-ran OnDisable/OnEnable and rebuilt every card mesh. HideUnusedGroups deactivates the leftovers.
             for (int i = 0; i < _groupCount; i++)
-            {
                 _groups[i].Clear();
-                _groups[i].gameObject.SetActive(false);
-            }
             _groupCount = 0;
             _layoutDirty = true;
+        }
+
+        public void HideUnusedGroups()
+        {
+            for (int i = _groupCount; i < _groups.Count; i++)
+                if (_groups[i].gameObject.activeSelf) _groups[i].gameObject.SetActive(false);
         }
 
         public void AddGroup(ShipType shipType, string displayName, IReadOnlyList<ShipUiEntry> ships,
@@ -99,15 +105,35 @@ namespace EmpireAtWar.Entities.ShipUi
             _layoutDirty = true;
         }
 
-        private ShipSelectionGroupUi GetGroup()
+        // The first "select all" otherwise instantiates every group and entry card in one frame.
+        // The ship layout stays inactive until a selection, and Awake runs on first activation, so each
+        // group is activated once at the scene root before it is parked under this panel.
+        public void Prewarm(int groupCount)
         {
-            if (_groupCount == _groups.Count)
+            while (_groups.Count < groupCount)
             {
-                ShipSelectionGroupUi group = Instantiate(groupPrefab, transform);
+                ShipSelectionGroupUi group = Instantiate(groupPrefab);
+                group.gameObject.SetActive(true);
+                group.PrewarmEntries();
+                group.gameObject.SetActive(false);
+                group.transform.SetParent(transform, false);
                 group.SetTooltipHover(tooltipHover);
                 _groups.Add(group);
             }
+        }
+
+        private ShipSelectionGroupUi GetGroup()
+        {
+            if (_groupCount == _groups.Count) CreateGroup();
             return _groups[_groupCount++];
+        }
+
+        private ShipSelectionGroupUi CreateGroup()
+        {
+            ShipSelectionGroupUi group = Instantiate(groupPrefab, transform);
+            group.SetTooltipHover(tooltipHover);
+            _groups.Add(group);
+            return group;
         }
 
         public override void SetParent(Transform parent)
