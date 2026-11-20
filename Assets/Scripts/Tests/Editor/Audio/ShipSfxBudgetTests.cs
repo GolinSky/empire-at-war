@@ -205,6 +205,52 @@ namespace EmpireAtWar.Tests.Editor
         }
 
         [Test]
+        public void HyperspaceBypassesBurstBudgetAndKeepsCameraAttenuation()
+        {
+            var root = new GameObject("Hyperspace audio test");
+            var clip = AudioClip.Create("Hyperspace exit", 44100, 1, 44100, false);
+            var cameraData = ScriptableObject.CreateInstance<CameraData>();
+            SetField(cameraData, "<ZoomRange>k__BackingField", new FloatRange());
+            try
+            {
+                var camera = root.AddComponent<UnityCamera>();
+                var cameraService = root.AddComponent<CameraService>();
+                SetField(cameraService, "sceneCamera", camera);
+                SetField(_service, "_cameraService", cameraService);
+                SetField(_service, "_cameraData", cameraData);
+                SetField(_service, "_localPlayer", TestPlayers.CreateLocalPlayer(TestPlayers.CreateDuel()));
+                SetField(_service, "_audioService", new RecordingAudio());
+                var sources = root.AddComponent<ShipSfxSources>();
+                var source = root.AddComponent<AudioSource>();
+                SetField(sources, "sfx", new AudioSource[] { null, null, null, source });
+                SetField(_service, "_sources", sources);
+                SetField(_service, "_cooldowns", new Dictionary<SfxProfile, float>());
+                SetField(_service, "_timeFrame", Time.frameCount);
+                var starts = new Queue<float>(new float[_data.StartsPerWindow]);
+                SetField(_service, "_starts", starts);
+                var hyperspace = Profile(80f);
+                SetField(hyperspace, "clip", clip);
+                SetField(_data, "hyperspace", hyperspace);
+                var regular = Profile(80f);
+                SetField(regular, "clip", clip);
+                var ship = new ShipSfxHandle(100, TestPlayers.Human, new HealthStub(), null);
+                var landing = new Vector3(0f, 0f, 100f);
+
+                Assert.That(_service.TryPlayOneShot(ship, regular, landing), Is.False);
+                Assert.That(_service.TryPlayOneShot(ship, hyperspace, -landing), Is.False);
+                Assert.That(_service.TryPlayOneShot(ship, hyperspace, landing), Is.True);
+                Assert.That(source.clip, Is.SameAs(clip));
+                Assert.That(starts.Count, Is.EqualTo(_data.StartsPerWindow));
+            }
+            finally
+            {
+                UnityEngine.Object.DestroyImmediate(root);
+                UnityEngine.Object.DestroyImmediate(cameraData);
+                UnityEngine.Object.DestroyImmediate(clip);
+            }
+        }
+
+        [Test]
         public void LocalFeedbackBypassesWeaponBurstBudgetAndCameraAttenuation()
         {
             var root = new GameObject("Local feedback test");

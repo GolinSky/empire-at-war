@@ -140,7 +140,7 @@ namespace EmpireAtWar.Services.Audio
             if (Time.timeScale == 0f || gain * scale < MIN_AUDIBLE_GAIN) return false;
             if (_cooldowns.TryGetValue(sound, out float readyAt) && _time < readyAt) return false;
             while (_starts.Count > 0 && _time - _starts.Peek() >= _data.StartWindow) _starts.Dequeue();
-            bool throttleStart = ship != null && !sound.LocalFeedback;
+            bool throttleStart = ship != null && !sound.LocalFeedback && sound != _data.Hyperspace;
             if (throttleStart && _starts.Count >= _data.StartsPerWindow) return false;
             int slot = FindSlot(ship, sound, gain, isEngine);
             if (slot < 0) return false;

@@ -5811,7 +5811,7 @@ MonoBehaviour:
   minZoomGain: 0.6
   engineMinZoomGain: 1
   voiceDuckGain: 0.4
-  poolVoices: 40
+  poolVoices: 48
   perShipVoices: 4
   engineVoices: 12
   startsPerWindow: 6
