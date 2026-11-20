@@ -1,6 +1,7 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using MPUIKIT;
 using TMPro;
 using UnityEngine;
 using UnityEngine.UI;
@@ -20,6 +21,7 @@ namespace EmpireAtWar.Entities.MainMenu.Skirmish
         [SerializeField] private Button colorButton;
         [SerializeField] private TMP_Text colorLabel;
         [SerializeField] private TMP_Text roleText;
+        [SerializeField] private MPImage rowBackground;
         [SerializeField] private Graphic colorEdge;
         [SerializeField] private CanvasGroup configurationGroup;
         [SerializeField] private CanvasGroup slotLabelGroup;
@@ -33,6 +35,12 @@ namespace EmpireAtWar.Entities.MainMenu.Skirmish
         private bool _occupantEditable;
         private bool _discardOccupantSelection;
         private Selectable.Transition _occupantTransition;
+        private MPImage _occupantBackground;
+        private Color _occupantFill;
+        private Color _occupantOutline;
+        private Color _rowFill;
+        private Color _rowOutline;
+        private Color _roleColor;
         private readonly List<string> _occupantOptions = new List<string>();
 
         public event Action<int, int> OccupantChanged;
@@ -52,6 +60,13 @@ namespace EmpireAtWar.Entities.MainMenu.Skirmish
         {
             _rowIndex = rowIndex;
             _occupantTransition = occupantDropdown.transition;
+            _occupantBackground = (MPImage)occupantDropdown.targetGraphic;
+            _occupantFill = _occupantBackground.color;
+            _occupantOutline = _occupantBackground.OutlineColor;
+            _rowFill = rowBackground.color;
+            _rowOutline = rowBackground.OutlineColor;
+            _roleColor = roleText.color;
+            colorEdge.enabled = true;
             slotIndexText.text = (rowIndex + 1).ToString("00");
             SetOptions(factionDropdown, factionOptions);
             SetOptions(teamDropdown, teamOptions);
@@ -114,8 +129,15 @@ namespace EmpireAtWar.Entities.MainMenu.Skirmish
             factionDropdown.RefreshShownValue();
             teamDropdown.RefreshShownValue();
             bool isClosed = slot.Occupant == SkirmishSlotOccupant.Closed;
-            colorEdge.color = isClosed ? (Color)new Color32(232, 110, 108, 255) : playerColor;
-            colorEdge.enabled = slot.IsOpen || isClosed;
+            bool isVacant = slot.Occupant == SkirmishSlotOccupant.Vacant;
+            Color warning = new Color32(232, 110, 108, 255);
+            Color vacantAccent = new Color32(109, 184, 226, 255);
+            colorEdge.color = isClosed ? warning : isVacant ? vacantAccent : playerColor;
+            roleText.color = isClosed ? warning : isVacant ? vacantAccent : _roleColor;
+            rowBackground.color = isVacant ? (Color)new Color32(22, 41, 58, 255) : _rowFill;
+            rowBackground.OutlineColor = isVacant ? (Color)new Color32(69, 108, 137, 255) : _rowOutline;
+            _occupantBackground.color = isClosed ? (Color)new Color32(91, 49, 58, 255) : _occupantFill;
+            _occupantBackground.OutlineColor = isClosed ? warning : _occupantOutline;
             configurationGroup.alpha = slot.IsOpen ? 1f : 0.38f;
             slotLabelGroup.alpha = slot.IsOpen ? 1f : 0.5f;
         }

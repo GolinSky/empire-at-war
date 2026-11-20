@@ -7,6 +7,7 @@ using EmpireAtWar.Entities.Planet;
 using EmpireAtWar.Entities.Popups;
 using EmpireAtWar.Models.Players;
 using EmpireAtWar.Entities.Game;
+using MPUIKIT;
 using NUnit.Framework;
 using TMPro;
 using UnityEditor;
@@ -40,11 +41,16 @@ namespace EmpireAtWar.Tests.Editor
                     SkirmishSlotRowView row = rows.GetArrayElementAtIndex(i).objectReferenceValue as SkirmishSlotRowView;
                     Assert.That(row, Is.Not.Null, $"Slot row {i} is not bound.");
                     SerializedObject serializedRow = new SerializedObject(row);
-                    foreach (string field in new[] { "titleText", "occupantDropdown", "factionDropdown", "teamDropdown", "colorButton", "colorLabel" })
+                    foreach (string field in new[] { "titleText", "occupantDropdown", "factionDropdown", "teamDropdown", "colorButton", "colorLabel", "rowBackground" })
                     {
                         Assert.That(serializedRow.FindProperty(field).objectReferenceValue, Is.Not.Null,
                             $"Slot row {i} has no {field}.");
                     }
+
+                    var faction = (TMP_Dropdown)serializedRow.FindProperty("factionDropdown").objectReferenceValue;
+                    var checkmark = (TMP_Text)faction.template.GetComponentInChildren<Toggle>(true).graphic;
+                    Assert.That(checkmark.text, Is.EqualTo("\u2713"));
+                    Assert.That(checkmark.color, Is.EqualTo((Color)new Color32(246, 208, 137, 255)));
                 }
 
                 var paletteView = (SkirmishColorPaletteView)serializedPopup.FindProperty("colorPalette").objectReferenceValue;
@@ -150,12 +156,16 @@ namespace EmpireAtWar.Tests.Editor
                 var thirdRow = (SkirmishSlotRowView)rows.GetArrayElementAtIndex(2).objectReferenceValue;
                 using var serializedThird = new SerializedObject(thirdRow);
                 var thirdEdge = (Graphic)serializedThird.FindProperty("colorEdge").objectReferenceValue;
+                var thirdBackground = (MPImage)serializedThird.FindProperty("rowBackground").objectReferenceValue;
+                var thirdOccupantBackground = (MPImage)thirdOccupant.targetGraphic;
+                Color normalRowFill = thirdBackground.color;
                 Button startGameButton = serializedPopup.FindProperty("startGameButton").objectReferenceValue as Button;
 
                 Assert.That(humanOccupant.interactable, Is.False);
                 Assert.That(thirdFaction.interactable, Is.False);
                 Assert.That(thirdEdge.enabled, Is.True);
                 Assert.That(thirdEdge.color, Is.EqualTo((Color)new Color32(232, 110, 108, 255)));
+                Assert.That(thirdOccupantBackground.color, Is.EqualTo((Color)new Color32(91, 49, 58, 255)));
                 Assert.That(startGameButton.interactable, Is.True);
 
                 thirdOccupant.value = (int)SkirmishSlotOccupant.AiHard;
@@ -164,6 +174,8 @@ namespace EmpireAtWar.Tests.Editor
                 Assert.That(thirdFaction.interactable, Is.True);
                 Assert.That(thirdEdge.enabled, Is.True);
                 Assert.That(thirdEdge.color, Is.EqualTo(teamColors.GetColor(model.Slots[2].ColorIndex)));
+                Color normalOccupantFill = thirdOccupantBackground.color;
+                Assert.That(normalOccupantFill, Is.EqualTo((Color)new Color32(52, 67, 87, 255)));
 
                 var humanRow = (SkirmishSlotRowView)rows.GetArrayElementAtIndex(0).objectReferenceValue;
                 var enemyRow = (SkirmishSlotRowView)rows.GetArrayElementAtIndex(1).objectReferenceValue;
@@ -198,6 +210,15 @@ namespace EmpireAtWar.Tests.Editor
                 Toggle superWeapons = (Toggle)serializedPopup.FindProperty("superWeaponsToggle").objectReferenceValue;
                 superWeapons.isOn = false;
                 Assert.That(model.CreateBattle().HasFeature(BattleFeatures.SuperWeapons), Is.False);
+
+                model.BeginHostLobby(0, "Host");
+                model.SelectSlotOccupant(2, SkirmishSlotOccupant.Vacant);
+                Assert.That(thirdBackground.color, Is.EqualTo((Color)new Color32(22, 41, 58, 255)));
+                Assert.That(thirdEdge.color, Is.EqualTo((Color)new Color32(109, 184, 226, 255)));
+                Assert.That(thirdOccupantBackground.color, Is.EqualTo(normalOccupantFill));
+                model.SelectSlotOccupant(2, SkirmishSlotOccupant.AiMedium);
+                Assert.That(thirdBackground.color, Is.EqualTo(normalRowFill));
+
                 model.Changed -= popup.Render;
                 popup.Dispose();
             }
