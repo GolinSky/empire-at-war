@@ -6,7 +6,9 @@ namespace EmpireAtWar.Components.Ui
 {
     public sealed class HudButtonAttention : MonoBehaviour
     {
-        private const float PULSE_DURATION = 0.9f;
+        private const float PULSE_DURATION = 1.8f;
+        private const float PULSE_STRENGTH = 0.4f;
+        private static readonly Color32 PULSE_ACCENT = new(109, 184, 226, 255);
 
         [SerializeField] private Button button;
         [SerializeField] private GameObject readyIndicator;
@@ -33,7 +35,8 @@ namespace EmpireAtWar.Components.Ui
 
             Graphic graphic = button.targetGraphic;
             _originalColor = graphic.color;
-            Color readyColor = new(1f, 128f / 255f, 128f / 255f, _originalColor.a);
+            Color readyColor = Color.Lerp(_originalColor, PULSE_ACCENT, PULSE_STRENGTH);
+            readyColor.a = _originalColor.a;
             _pulse = graphic.DOColor(readyColor, PULSE_DURATION)
                 .SetEase(Ease.InOutSine)
                 .SetLoops(-1, LoopType.Yoyo)
