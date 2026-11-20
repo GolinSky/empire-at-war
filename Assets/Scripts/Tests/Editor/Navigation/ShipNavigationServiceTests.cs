@@ -1432,21 +1432,24 @@ namespace EmpireAtWar.Tests.Movement
         }
 
         [Test]
-        public void EngineTrails_ReachFourteenWidthsAtFullPace()
+        public void EngineTrails_ReachFourteenWidthsAtFullPaceUnlessLifetimeIsCapped()
         {
             GameObject ship = new GameObject("Trail length");
             try
             {
                 TrailRenderer narrow = CreateEngineTrail(ship, 1f);
-                TrailRenderer wide = CreateEngineTrail(ship, 10f);
+                TrailRenderer wide = CreateEngineTrail(ship, 100f);
                 const float PACE = 20f;
                 new ShipEnginePlumes(new[] { narrow, wide }, PACE);
+                Assert.That(narrow.time * PACE, Is.EqualTo(14f * narrow.widthMultiplier).Within(0.001f),
+                    "Trail length = pace × lifetime.");
+                Assert.That(wide.time, Is.LessThan(14f * wide.widthMultiplier / PACE),
+                    "Slow wide trails are capped so they reshape quickly in turns.");
+                Assert.That(wide.time, Is.GreaterThanOrEqualTo(narrow.time));
                 foreach (TrailRenderer trail in new[] { narrow, wide })
                 {
-                    Assert.That(trail.time * PACE, Is.EqualTo(14f * trail.widthMultiplier).Within(0.001f),
-                        "Trail length = pace × lifetime.");
                     Assert.That(trail.minVertexDistance, Is.GreaterThan(0f));
-                    Assert.That(trail.minVertexDistance, Is.LessThan(14f * trail.widthMultiplier));
+                    Assert.That(trail.minVertexDistance, Is.LessThan(PACE * trail.time));
                 }
             }
             finally { Object.DestroyImmediate(ship); }
