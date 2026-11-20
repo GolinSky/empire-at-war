@@ -8,11 +8,6 @@ namespace EmpireAtWar.Services.Player
     [CreateAssetMenu(fileName = nameof(HullDamageSettings), menuName = "Data/HullDamageSettings")]
     public sealed class HullDamageSettings : Data
     {
-        [Header("Detail")]
-        [Tooltip("R height, G cracks, B roughness. Tools/Empire At War/Bake Hull Damage Texture.")]
-        [SerializeField] private Texture2D detailMap;
-        [SerializeField, Min(0.0001f)] private float detailSize = 4f;
-
         [Header("Marks")]
         [Tooltip("Smallest mark radius in world units, before the ship material's Mark Scale.")]
         [SerializeField, Min(0.01f)] private float markRadiusMin = 3.5f;
@@ -20,32 +15,31 @@ namespace EmpireAtWar.Services.Player
         [SerializeField, Min(0.01f)] private float markRadiusMax = 6.1f;
         [Tooltip("Share of mark spots in use at 0 hull. Each damage step switches on 1/15 of them.")]
         [SerializeField, Range(0f, 1f)] private float markDensity = 1f;
-        [Tooltip("How far the detail texture frays the round edge, in mark radii.")]
+        [Tooltip("How far smooth noise waves the round edge in and out, in mark radii.")]
         [SerializeField, Range(0f, 0.6f)] private float edgeBreakup = 0.35f;
+        [Tooltip("Waves along a mark's edge per mark spacing. Higher = more ragged outline.")]
+        [SerializeField, Min(0.1f)] private float edgeNoiseFrequency = 3f;
 
         [Header("Surface")]
-        [SerializeField] private Color sootColor = new Color(0.06f, 0.05f, 0.045f, 1f);
+        [SerializeField] private Color sootColor = new Color(0.015f, 0.013f, 0.012f, 1f);
         [Tooltip("Each mark gets its own opacity between these two; most marks stay near the lowest.")]
         [FormerlySerializedAs("sootOpacity")]
         [SerializeField, Range(0f, 1f)] private float sootOpacityMin = 0.7f;
         [SerializeField, Range(0f, 1f)] private float sootOpacityMax = 1f;
         [Tooltip("Soot opacity at the very centre of every mark; fades out to the mark's own opacity.")]
-        [SerializeField, Range(0f, 1f)] private float sootOpacityCenter = 0.95f;
-        [Tooltip("Share of the mark radius over which the centre opacity fades to the mark's own opacity.")]
-        [SerializeField, Range(0.05f, 1f)] private float centerFade = 0.6f;
-        [SerializeField] private Color blisterColor = new Color(0.32f, 0.3f, 0.28f, 1f);
+        [SerializeField, Range(0f, 1f)] private float sootOpacityCenter = 1f;
+        [Tooltip("Share of the mark radius where the solid centre has faded to the mark's own opacity. Solid up to half of it.")]
+        [SerializeField, Range(0.05f, 1f)] private float centerFade = 0.8f;
 
-        public Texture2D DetailMap => detailMap;
-        public float DetailSize => detailSize;
         public float MarkRadiusMin => markRadiusMin;
         public float MarkRadiusMax => markRadiusMax;
         public float MarkDensity => markDensity;
         public float EdgeBreakup => edgeBreakup;
+        public float EdgeNoiseFrequency => edgeNoiseFrequency;
         public Color SootColor => sootColor;
         public float SootOpacityMin => sootOpacityMin;
         public float SootOpacityMax => sootOpacityMax;
         public float SootOpacityCenter => sootOpacityCenter;
         public float CenterFade => centerFade;
-        public Color BlisterColor => blisterColor;
     }
 }

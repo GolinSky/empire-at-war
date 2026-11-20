@@ -12,12 +12,13 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 97caba3a515d96248ab49429343c483c, type: 3}
   m_Name: HullDamageSettings
   m_EditorClassIdentifier: Assembly-CSharp::EmpireAtWar.Services.Player.HullDamageSettings
-  detailMap: {fileID: 2800000, guid: 4aeaaeb14da55f945b00c0d0b84133f6, type: 3}
-  detailSize: 4
   markRadiusMin: 3.5
   markRadiusMax: 6.1
   markDensity: 1
   edgeBreakup: 0.35
-  sootColor: {r: 0.06, g: 0.05, b: 0.045, a: 1}
-  sootOpacity: 0.7
-  blisterColor: {r: 0.32, g: 0.3, b: 0.28, a: 1}
+  edgeNoiseFrequency: 3
+  sootColor: {r: 0.015, g: 0.013, b: 0.012, a: 1}
+  sootOpacityMin: 0.7
+  sootOpacityMax: 1
+  sootOpacityCenter: 1
+  centerFade: 0.8
