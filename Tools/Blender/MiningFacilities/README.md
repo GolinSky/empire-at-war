@@ -79,8 +79,8 @@ Verified 2026-10-14, Blender 3.6.23, MCP protocol 13, telemetry disabled.
 - Legacy asset rebuild menus still describe the previous procedural facility pipeline; use these scoped scripts to reproduce the vanilla replacement. The legacy site builder receives the mandatory new rock binding so it cannot create an unbound `CaptureSiteView`.
 
 ```powershell
-unity command run_script --file Tools/Blender/MiningFacilities/BuildArt.cs --entry BuildMiningFacilityArt.Main --json
-unity command run_script --file Tools/Blender/MiningFacilities/Integrate.cs --entry IntegrateMiningFacilities.Main --json
-unity command run_script --file Tools/Blender/MiningFacilities/Verify.cs --entry VerifyMiningFacilities.Main --json
-unity command run_script --file Tools/Blender/MiningFacilities/Render.cs --entry RenderMiningFacilities.Main --json
+unity command script run --file Tools/Blender/MiningFacilities/BuildArt.cs --entry BuildMiningFacilityArt.Main --json
+unity command script run --file Tools/Blender/MiningFacilities/Integrate.cs --entry IntegrateMiningFacilities.Main --json
+unity command script run --file Tools/Blender/MiningFacilities/Verify.cs --entry VerifyMiningFacilities.Main --json
+unity command script run --file Tools/Blender/MiningFacilities/Render.cs --entry RenderMiningFacilities.Main --json
 ```

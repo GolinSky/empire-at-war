@@ -57,5 +57,5 @@
 1. `uv run --with pillow python Tools/Blender/Nebula/Prepare.py`.
 2. Start the isolated Blender with `Tools/Blender/ISDIRemake/Start.py`; run `uv run python Tools/Blender/Nebula/Convert.py`.
 3. `uv run --with pillow python Tools/Blender/Nebula/Stage.py`; `uv run python Tools/Blender/Nebula/GenerateBuilders.py`.
-4. Run `BuildArt.cs` → `BuildGameplay.cs` → `Persist.cs` → `Render.cs` → `Register.cs` → `Verify.cs` using `unity command run_script --file Tools/Blender/Nebula/<file> --timeout_ms 120000 --timeout 150 --json`; inspect nested `result.success`.
+4. Run `BuildArt.cs` → `BuildGameplay.cs` → `Persist.cs` → `Render.cs` → `Register.cs` → `Verify.cs` using `unity command script run --file Tools/Blender/Nebula/<file> --timeout 150 --json`; check the exit code (`6` = script failure) and the returned `result`.
 5. `uv run --with pillow python Tools/Blender/Nebula/Preserve.py` verifies source fidelity and copies evidence/editable outputs before Unity clears `Temp`.

@@ -17,8 +17,8 @@
 ## Verification
 
 ```powershell
-unity command eval_file --file Tools/UiCanvasRouting/Verify.cs --json
-unity command eval_file --file Tools/UiCanvasRouting/VerifyFactionLayout.cs --json
+unity command script eval --file Tools/UiCanvasRouting/Verify.cs --json
+unity command script eval --file Tools/UiCanvasRouting/VerifyFactionLayout.cs --json
 ```
 
 - Uses prefab preview scenes; never enters Play Mode or writes production assets.

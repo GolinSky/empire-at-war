@@ -76,7 +76,7 @@ reviewed: 2026-10-20
 ### 3. Unity import and materials
 
 1. Verify `F:/Private/empire-at-war` is the connected project and Unity is in Edit Mode.
-2. Run **`BuildArt.cs` → `BuildAttachments.cs` → `RepairDomeUv.cs` → `BuildView.cs`** through `unity command run_script --file ... --json`. Inspect nested `result.success` after each.
+2. Run **`BuildArt.cs` → `BuildAttachments.cs` → `RepairDomeUv.cs` → `BuildView.cs`** through `unity command script run --file ... --json`. check the exit code (`6` = script failure) and the returned `result` after each.
 3. Base art rebuilding resets generated visual metadata. Attach source artwork and repair display UVs before fitting shields and assigning gameplay references.
 4. All four builders save prefab contents and dirty assets. Reopen the saved assets with `Verify.cs`; no manual focus/save step is required.
 
@@ -185,7 +185,7 @@ reviewed: 2026-10-20
 
 ### Level progression — 2026-10-07
 
-- Final step for every leveled station: `unity command run_script --file Tools/Blender/SpaceStations/BuildStationLevels.cs --args '["<Faction>"]' --json`. Config: `Tools/Blender/SpaceStations/{Rebellion,Empire,Republic,Separatist}.json`; README beside it. CIS-specific conversion and mapping: [[AssetPipeline/Guides/CIS_SPACE_STATION_MODEL_IMPORT_GUIDE]].
+- Final step for every leveled station: `unity command script run --file Tools/Blender/SpaceStations/BuildStationLevels.cs --args '["<Faction>"]' --json`. Config: `Tools/Blender/SpaceStations/{Rebellion,Empire,Republic,Separatist}.json`; README beside it. CIS-specific conversion and mapping: [[AssetPipeline/Guides/CIS_SPACE_STATION_MODEL_IMPORT_GUIDE]].
 - **Shared pivot.** Per-level centering made stations jump on upgrade: Rebel ≤35 units, Empire ~100 units in X/Z. All levels now use level 1's source offset; builder fails if a shared anchor moves > `0.01` units.
 - Hull centers after fix — Rebel L1–5: `(0,0,0)`, `(15.0,0,13.4)`, `(15.0,0,27.0)`, `(4.4,34.4,6.1)`, `(11.8,34.4,25.5)`. Empire: `(0,0,0)`, `(1.7,-4.5,105.0)`, `(79.0,-14.0,105.0)`, `(91.0,-15.6,105.0)`, `(92.2,-17.0,105.0)`.
 - Farthest XZ hull corner from root: Empire `≈341`, Rebel `≈238`; both inside station radius `396`.

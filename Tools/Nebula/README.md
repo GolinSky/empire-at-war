@@ -14,8 +14,8 @@
 Run from the repository root with Unity open:
 
 ```powershell
-unity command run_script --file Tools/Nebula/BuildNebula.cs --entry BuildNebula.Run --timeout_ms 120000 --timeout 150 --json
-unity command run_script --file Tools/Nebula/PreviewNebula.cs --entry PreviewNebula.Run --args '["final"]' --json
+unity command script run --file Tools/Nebula/BuildNebula.cs --entry BuildNebula.Run --timeout 150 --json
+unity command script run --file Tools/Nebula/PreviewNebula.cs --entry PreviewNebula.Run --args '["final"]' --json
 ```
 
 - Builder preserves prefab root identities and existing material/texture GUIDs; it saves all generated assets.

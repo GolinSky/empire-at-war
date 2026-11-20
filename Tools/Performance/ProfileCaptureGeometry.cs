@@ -17,7 +17,7 @@ using UnityEngine;
 using VContainer;
 
 // Profiling only: invokes the actual read-only strength tally paths without ticking gameplay, editing views or running tests.
-// run_script entry: ProfileCaptureGeometry.Run; args: [scope ObjectRef, output JSON path, passes (e.g.12)].
+// `unity command script run` entry: ProfileCaptureGeometry.Run; args: [scope ObjectRef, output JSON path, passes (e.g.12)].
 public static class ProfileCaptureGeometry
 {
     public static object Main() => Run(UnityEngine.Object.FindAnyObjectByType<SkirmishScope>(),

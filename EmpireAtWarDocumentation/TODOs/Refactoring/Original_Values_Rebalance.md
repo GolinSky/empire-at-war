@@ -50,7 +50,7 @@ Data and comparison tables: [[TODOs/Refactoring/Original_Values_Rebalance - Rese
 ## Preconditions
 
 - [ ] Commit or shelve the current uncommitted WIP (fire-pattern removal, `StatModifierAbility`, 11 ship prefabs/data).
-- [ ] Unity scenes clean (`unity command list_open_scenes --json`).
+- [ ] Unity scenes clean (`unity command scene list_open --json`).
 
 ## Implementation
 
@@ -59,7 +59,7 @@ Data and comparison tables: [[TODOs/Refactoring/Original_Values_Rebalance - Rese
 1. [x] Simulator duels: every same-class, cross-faction ship pair, 1v1, 10 seeds (seed 1), 900 s limit, live assets → 260 matchups.
 2. [x] Per-unit price, HP, shields, radar, `BalanceDpsEstimator` DPS, mount count (56 ships).
 3. [x] Executor per-gun profiles (damage, shots, interval, reload, range, accuracy, DPS).
-- Revision `2f45f1371`, recompile clean, no errors building any unit. Data: `Logs/Rebalance/2026-10-25-baseline/` (`baseline_units.csv`, `baseline_matchups.csv`, `baseline_executor.csv`); rerun with `unity command run_script --file <copy of BaselineDump.cs.txt as .cs> --entry BaselineDump.Run --args '[""]'` (~10 s). Summary: [[TODOs/Refactoring/Original_Values_Rebalance - Research#Baseline 2026-10-25|Research]].
+- Revision `2f45f1371`, recompile clean, no errors building any unit. Data: `Logs/Rebalance/2026-10-25-baseline/` (`baseline_units.csv`, `baseline_matchups.csv`, `baseline_executor.csv`); rerun with `unity command script run --file <copy of BaselineDump.cs.txt as .cs> --entry BaselineDump.Run --args '[""]'` (~10 s). Summary: [[TODOs/Refactoring/Original_Values_Rebalance - Research#Baseline 2026-10-25|Research]].
 
 ### Phase 1 — Remove range classes, hull-relative reach (done except step 6, 2026-10-25)
 

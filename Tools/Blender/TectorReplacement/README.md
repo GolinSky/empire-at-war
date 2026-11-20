@@ -29,7 +29,7 @@
 
 1. Capture `InspectTectorReplacement.Main` and run `Stage.py` once before replacing the original visual; these create the immutable original baseline/backups.
 2. Export the verified Blender hull to `Tector_Remake.fbx`, including rig/helpers and custom metadata; validate its round trip separately.
-3. In Edit Mode run `ImportTectorReplacementArt.Main`, then `ReplaceTectorVisuals.Main` with official `unity command run_script --file Tools/Blender/TectorReplacement/<Class>.cs --entry <Class>.Main --json`.
+3. In Edit Mode run `ImportTectorReplacementArt.Main`, then `ReplaceTectorVisuals.Main` with official `unity command script run --file Tools/Blender/TectorReplacement/<Class>.cs --entry <Class>.Main --json`.
 4. Run `RenderTectorReplacement.Main`, `InspectTectorReplacement.Verify`, `VerifyTectorReplacementAssets.Main`, then `uv run --with pillow python Tools/Blender/TectorReplacement/Verify.py`.
 5. Inspect rendered PNGs and import diagnostics; keep baseline/backups separate from new captures.
 
@@ -39,7 +39,7 @@
 
 - Two hull-conforming circles: radius 3.24 units; centers X ±13.5, Z 14.4. Slightly uneven edges; 128 triangles in one combined mesh/material.
 - Paint mask: `Assets/Art/Textures/Models/EmpireShips/Tector/Tector_WornCircleMask.png`, generated with built-in ImageGen; linear import, mask strength `1.0` (surviving paint mask brightened substantially to approach Allegiance/Acclamator color strength). Black chips expose original hull; near-white paint patches carry strong team color; gray transitions retain fading. Original hull UVs, albedo and normal maps are preserved. Unowned ships remain neutral.
-- Build: `unity command run_script --file Tools/Blender/TectorReplacement/BuildTectorCircles.cs --args '[false]' --json`.
+- Build: `unity command script run --file Tools/Blender/TectorReplacement/BuildTectorCircles.cs --args '[false]' --json`.
 - Render and verify: run `RenderTectorCircles.cs`, then `VerifyTectorCircles.cs`. Previews: `Previews/Tector/`; saved binding evidence: `CircleVerification.txt`.
 - Verified saved visual, live and wreck prefabs; team/fog renderer bindings; eight live/wreck palette renders; no texture import or serialization errors. Latest console check: zero captured errors. Verified original albedo/normal texture references in all three saved prefabs. No gameplay tests run.
 - ImageGen edit prompt (built-in tool): Edit this technical grayscale spaceship paint mask. It currently makes the team paint far too faint and sparse. Make surviving paint almost white (intensity 0.85-1.0), NOT mid gray. Increase paint coverage to roughly 70 percent, with roughly 25 percent pure black exposed-metal chips and 5 percent gray faded transitions. Keep dense irregular chipped mottled character and fine scratches, and retain ragged black holes and larger irregular exposed-metal patches throughout. This should resemble strongly colored but old shabby Republic Acclamator / Allegiance hull paint, not faint pastel washed paint and not pristine solid paint. Preserve square framing, same fine texture scale. Opaque monochrome texture only, no objects, no circles, no stripes, no borders, no lighting. White paint islands must dominate visibly; black chips remain unmistakable.

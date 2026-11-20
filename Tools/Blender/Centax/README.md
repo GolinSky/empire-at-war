@@ -17,7 +17,7 @@
 5. Capture `CENTAX_REPORT` into `ConversionReport.json` / `WreckConversionReport.json`. Editable packed blends and FBXs are in `Temp/CentaxImport/Output`. The blends retain the shared Blender session's other scenes; each FBX exports only its active Centax source scene.
 6. Run `VerifyGeometry.py` through MCP for each variant (replace the scene-name prefix for the wreck). It compares every triangle corner and UV. Capture `before` geometry sampled every 32nd corner as `<Variant>SourceGeometry.json` for the Unity check.
 7. Run `python Tools/Blender/Centax/Stage.py`.
-8. Use `unity command run_script --file Tools/Blender/Centax/<file> --timeout_ms 60000 --json`: `BuildArt.cs` → `BuildShip.cs` → `Render.cs` → `Register.cs` → `VerifyUnityGeometry.cs` → `Verify.cs`.
+8. Use `unity command script run --file Tools/Blender/Centax/<file> --timeout 60 --json`: `BuildArt.cs` → `BuildShip.cs` → `Render.cs` → `Register.cs` → `VerifyUnityGeometry.cs` → `Verify.cs`.
 
 ## Configuration
 

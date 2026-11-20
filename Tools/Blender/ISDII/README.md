@@ -35,8 +35,8 @@
 1. Run `Prepare.py` with Pillow; it audits source models/XML and writes `Temp/ISDIIImport/BinaryAudit.json`.
 2. Run `Convert.py` through the configured Blender MCP SDK client on isolated port `9884`, with safe mode enabled; it reuses `Tools/Blender/export_isd_i.py`. Preserve the connected user's scene.
 3. Run `Stage.py` with Pillow.
-4. Evaluate `BuildArt.cs`, `FixAdditive.cs`, `BuildShip.cs`, `BuildPreview.cs`, `Render.cs` and `Register.cs`, in that order, through official `unity command eval`. Each script exposes `Main()` on its named static class.
-5. After both ISD I and ISD II gameplay/wreck prefabs exist, run `unity command run_script --file Tools/Blender/ISDI/BuildImperialTeamStripes.cs --entry BuildImperialTeamStripes.Main --json` to restore their localized team stripes.
+4. Evaluate `BuildArt.cs`, `FixAdditive.cs`, `BuildShip.cs`, `BuildPreview.cs`, `Render.cs` and `Register.cs`, in that order, through official `unity command script eval`. Each script exposes `Main()` on its named static class.
+5. After both ISD I and ISD II gameplay/wreck prefabs exist, run `unity command script run --file Tools/Blender/ISDI/BuildImperialTeamStripes.cs --entry BuildImperialTeamStripes.Main --json` to restore their localized team stripes.
 6. Inspect saved assets and renders, then follow repository scene safety before asynchronous Unity tests.
 
 ## Verification

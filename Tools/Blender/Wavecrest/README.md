@@ -17,7 +17,7 @@
 
 ## Unity
 
-- Execute serially: `unity command run_script --file Tools/Blender/Wavecrest/<File>.cs --entry <Class>.Main --timeout_ms 60000 --json`.
+- Execute serially: `unity command script run --file Tools/Blender/Wavecrest/<File>.cs --entry <Class>.Main --timeout 60 --json`.
 - Order: `BuildArt.cs` (`BuildWavecrestArt`) → `BuildShip.cs` (`BuildWavecrestShip`) → `Render.cs` (`RenderWavecrest`) → `Register.cs` (`RegisterWavecrest`) → `AddPowerToShields.cs` (`AddWavecrestPowerToShields`) → `Verify.cs` (`VerifyWavecrest`).
 - Root scale 1; bow +Z/up +Y. Tall vertical crescent shape verified against source; visible size 21.0336 × 73.2647 × 90 units.
 - Opaque hull uses `EmpireAtWar/Ship Lit`. Source green recoloring hue .37/range .07/saturation .2; yellow trim preserved. All eight owned palettes rendered.

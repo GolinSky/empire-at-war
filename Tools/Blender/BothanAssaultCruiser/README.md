@@ -3,7 +3,7 @@
 - Source: Remake 4.0, Workshop `1770851727`, `Neutral_Bothan_Cruiser.ALO`; resolved from `Bothan_Assault_Cruiser_MP`. Textures are under `Data/Art/Textures`.
 - Balance: vault `GameDesign/Proposals/Rebel units`, not Remake XML. Hull `7,200`, shields `6,500`, speed `22`, price `5,200`, build `58 s`.
 - Workflow: `uv run --with pillow python Tools/Blender/BothanAssaultCruiser/Prepare.py` → `python Tools/Blender/BothanAssaultCruiser/Convert.py` → `uv run --with pillow python Tools/Blender/BothanAssaultCruiser/Stage.py`.
-- Unity: `unity command run_script --file Tools/Blender/BothanAssaultCruiser/<File>.cs --json` for `BuildArt`, `BuildGameplay`, `Persist`, `Render`, `Register`, `Verify`. Inspect nested `result.success`.
+- Unity: `unity command script run --file Tools/Blender/BothanAssaultCruiser/<File>.cs --json` for `BuildArt`, `BuildGameplay`, `Persist`, `Render`, `Register`, `Verify`. check the exit code (`6` = script failure) and the returned `result`.
 - Package: `uv run --with pillow python Tools/Blender/BothanAssaultCruiser/Package.py`; output `output/remake-rebel-units/BothanAssaultCruiser-Converted`.
 - Blender `3.6.23`, MCP protocol `13`, safe mode. Fresh Bothan source scene; export keeps six source meshes and 42 bones. Existing Blender work is retained. The editable blend is a saved conversion workspace; choose `BothanAssaultCruiser Source` for editing/export. Other imported scenes can remain in that workspace copy.
 - Source binary material assignments are rebuilt per shader and slot. Source-equal triangle/UV round trip: geometry error `0.00004419`, bone error `0.00002369` source units. Unity error `0.00000056` units.

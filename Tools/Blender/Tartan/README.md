@@ -19,9 +19,9 @@
 2. Launch portable Blender 3.6.23 with `--python Tools/Blender/Tartan/StartSession.py` in a hidden window. It uses isolated MCP port `9885`, leaving the main Blender session untouched.
 3. `uvx --from mcp-for-blender==2.1.3 python Tools/Blender/Tartan/ConvertRequest.py` sends source data and code through MCP with safe mode enabled.
 4. Run each saved blend through background Blender with `--python Tools/Blender/Tartan/VerifyGeometry.py`; verifies FBX corner/UV equivalence and trims unrelated datablocks.
-5. `uv run --with pillow python Tools/Blender/Tartan/Stage.py`; then `unity command eval --code 'UnityEditor.AssetDatabase.Refresh();' --json`.
-6. Run `BuildArt.cs`, `BuildShip.cs`, `Render.cs`, `Register.cs`, `Verify.cs`, `BattleChecks.cs` sequentially using `unity command run_script --file Tools/Blender/Tartan/<file> --entry <Class>.Main --timeout_ms 60000 --json`. Inspect nested `result.success` before continuing.
-7. Inspect clean scenes, run `unity command run_tests --mode editor --filter TartanTests --async_tests true --json`, then poll `test_status`. Run relevant shared regressions when requested.
+5. `uv run --with pillow python Tools/Blender/Tartan/Stage.py`; then `unity command script eval --code 'UnityEditor.AssetDatabase.Refresh();' --json`.
+6. Run `BuildArt.cs`, `BuildShip.cs`, `Render.cs`, `Register.cs`, `Verify.cs`, `BattleChecks.cs` sequentially using `unity command script run --file Tools/Blender/Tartan/<file> --entry <Class>.Main --timeout 60 --json`. check the exit code (`6` = script failure) and the returned `result` before continuing.
+7. Inspect clean scenes, run `unity command test run --mode editor --filter TartanTests --async-tests true --json`, then poll `unity command test status`. Run relevant shared regressions when requested.
 8. `uv run --with pillow python Tools/Blender/Tartan/Package.py` checks source hashes, live/wreck palettes and icon alpha bounds, then retains the editable output.
 
 ## Worn livery correction — 2026-10-14

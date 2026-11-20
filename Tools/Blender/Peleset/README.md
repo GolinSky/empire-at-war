@@ -22,7 +22,7 @@
 
 ## Unity
 
-- Run builders serially with `unity command run_script --file Tools/Blender/Peleset/<File>.cs --entry <Class>.Main --timeout_ms 60000 --json`.
+- Run builders serially with `unity command script run --file Tools/Blender/Peleset/<File>.cs --entry <Class>.Main --timeout 60 --json`.
 - Order: `BuildArt.cs` (`BuildPelesetArt`) → `BuildShip.cs` (`BuildPelesetShip`) → `Render.cs` (`RenderPeleset`) → `Register.cs` (`RegisterPeleset`) → `Verify.cs` (`VerifyPeleset`). Inspect actual class names before rerunning.
 - Art uses `SeparatistShips/Peleset`; visual/gameplay use `Assets/Prefabs/Models/Ships/Separatist/`.
 - Length `124.6333` project units is provisional, matching the normalized Recusant. Gameplay root has identity scale; bow is `+Z`.

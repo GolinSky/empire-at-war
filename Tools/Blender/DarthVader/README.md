@@ -16,7 +16,7 @@
 
 ## Unity integration
 
-- `BuildArt.cs` → `VaderArt.Apply`; `Integrate.cs` → `VaderIntegration.Apply`; `Inspect.cs` → `VaderInspect.Run`, using `unity command run_script --file <path> --entry <method> --json`.
+- `BuildArt.cs` → `VaderArt.Apply`; `Integrate.cs` → `VaderIntegration.Apply`; `Inspect.cs` → `VaderInspect.Run`, using `unity command script run --file <path> --entry <method> --json`.
 - Preserve imported root scale when normalizing: multiply existing scale by target/measured length. FBX root scale is 100; replacing it caused a 100× undersized saved model. Final visible length: 6 Unity units.
 - Squadron ID 208; leader weapon 164 ×2; escort weapon 165 ×12 (standard TIE tuning). Paired `MuzzleB_00/01` used intentionally instead of Remake XML's shared `HP_01` barrel position.
 - Vader: 3200 hull, 2400 shields, 400 raw laser DPS. Six TIE escorts: 58 hull, no shields, 21 DPS each. Total: 3548 hull, 2400 shields, 526 DPS; cruise/combat speed 58/66. Shared HeroStrikecraft armor class.

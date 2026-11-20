@@ -19,7 +19,7 @@
 
 ## Unity
 
-- Run serially: `unity command run_script --file Tools/Blender/Recalcitrant/<File>.cs --entry <Class>.Main --timeout_ms 60000 --json`.
+- Run serially: `unity command script run --file Tools/Blender/Recalcitrant/<File>.cs --entry <Class>.Main --timeout 60 --json`.
 - Order: `BuildArt.cs` (`BuildRecalcitrantArt`) → `BuildShip.cs` (`BuildRecalcitrantShip`) → `Render.cs` (`RenderRecalcitrant`) → `Register.cs` (`RegisterRecalcitrant`) → `Verify.cs` (`VerifyRecalcitrant`) → `VerifyUnityGeometry.cs` (`VerifyRecalcitrantUnityGeometry`).
 - `ShipType.Recalcitrant = 113`; CIS roster and existing Addressables groups.
 - Own data, visual/gameplay, icon, placement preview, shield mesh, wreck, audio mapping and matchups.

@@ -101,8 +101,8 @@ Vendor code and conventional Inspector / Assets / GameObject / Window integratio
 After checking that open scenes are clean:
 
 ```powershell
-unity command list_open_scenes --json
-unity command run_script --file Tools/EditorHub/VerifyEditorHub.cs --entry VerifyEditorHub.Run --timeout_ms 30000 --json
+unity command scene list_open --json
+unity command script run --file Tools/EditorHub/VerifyEditorHub.cs --entry VerifyEditorHub.Run --timeout 30 --json
 ```
 
 - Unity 6000.4.7f1 compilation passed with no compilation errors.

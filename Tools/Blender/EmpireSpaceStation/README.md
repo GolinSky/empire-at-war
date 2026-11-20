@@ -28,7 +28,7 @@ Use the repository root, official Unity CLI and installed Blender 3.6.23 with AL
 
 ```powershell
 uv run --with pillow python -B Tools/Blender/EmpireSpaceStation/Prepare.py
-unity command run_script --file Tools/Blender/EmpireSpaceStation/VerifyEmpireStationMapping.cs --args '[true]' --json
+unity command script run --file Tools/Blender/EmpireSpaceStation/VerifyEmpireStationMapping.cs --args '[true]' --json
 ```
 
 Inspect processes and port `9886` first. Reuse only a verified session belonging to this import; stop on an unrelated listener. If absent:
@@ -47,19 +47,19 @@ foreach ($name in $names) {
     if ($LASTEXITCODE -ne 0) { throw "Conversion failed: $name" }
 }
 uv run --with pillow python -B Tools/Blender/EmpireSpaceStation/Stage.py
-unity command run_script --file Temp/EmpireStationImport/BuildEmpireStationArt.cs --json
-unity command run_script --file Temp/EmpireStationImport/BuildEmpireStationAttachments.cs --json
-unity command run_script --file Temp/EmpireStationImport/BuildEmpireStationView.cs --json
-unity command run_script --file Tools/Blender/SpaceStations/BuildStationLevels.cs --args '["Empire"]' --json
-unity command run_script --file Temp/EmpireStationImport/VerifyEmpireStations.cs --json
+unity command script run --file Temp/EmpireStationImport/BuildEmpireStationArt.cs --json
+unity command script run --file Temp/EmpireStationImport/BuildEmpireStationAttachments.cs --json
+unity command script run --file Temp/EmpireStationImport/BuildEmpireStationView.cs --json
+unity command script run --file Tools/Blender/SpaceStations/BuildStationLevels.cs --args '["Empire"]' --json
+unity command script run --file Temp/EmpireStationImport/VerifyEmpireStations.cs --json
 uv run --with pillow python -B Temp/EmpireStationImport/VerifyGeometry.py
-unity command run_script --file Tools/Blender/EmpireSpaceStation/VerifyEmpireStationMapping.cs --args '[false]' --json
-unity command run_script --file Temp/EmpireStationImport/RenderEmpireStations.cs --json
+unity command script run --file Tools/Blender/EmpireSpaceStation/VerifyEmpireStationMapping.cs --args '[false]' --json
+unity command script run --file Temp/EmpireStationImport/RenderEmpireStations.cs --json
 uv run --with pillow python -B Tools/Blender/EmpireSpaceStation/VerifyTeamColors.py
-unity command console --level Error --json
+unity command console get --level error --json
 ```
 
-Inspect nested `data.result.success` after every Unity script. Inspect all five renders and contrasting team colors. Builders save all assets; no manual Editor save is required. Run Unity tests only when requested, following the scene safety rules in `AGENTS.md`.
+check the exit code (`6` = script failure) and the returned `result` after every Unity script. Inspect all five renders and contrasting team colors. Builders save all assets; no manual Editor save is required. Run Unity tests only when requested, following the scene safety rules in `AGENTS.md`.
 
 ## Decisions
 
@@ -79,7 +79,7 @@ Inspect nested `data.result.success` after every Unity script. Inspect all five 
 - All original ALO/DDS hashes unchanged; four staged PNGs equal decoded DDS pixels exactly.
 - Mapping verifier exercises levels 1/5/2/3/4/5/1, validates model identity, collision/attachment updates, shields, fog/team bindings, original hardpoint IDs/unlock levels and unchanged shared configuration.
 - All five levels rendered in eight palettes plus an unowned reference (`LevelNTeam-1.png`); each level and blue/green ownership inspected. No new import/serialization errors; compilation ready. Unity test suite and full battle were not run.
-- 2026-10-07 team-color correction: isolated mask/rim renders reproduced the broad tint from `_TeamRimStrength=0.6`; the GPU mask red-channel mean correctly matched source alpha coverage. Disable the rim only on the Imperial hull material. Apply to existing imports with `unity command run_script --file Tools/Blender/EmpireSpaceStation/FixEmpireStationTeamColors.cs --json`; future `BuildEmpireStationArt.cs` runs set the same value.
+- 2026-10-07 team-color correction: isolated mask/rim renders reproduced the broad tint from `_TeamRimStrength=0.6`; the GPU mask red-channel mean correctly matched source alpha coverage. Disable the rim only on the Imperial hull material. Apply to existing imports with `unity command script run --file Tools/Blender/EmpireSpaceStation/FixEmpireStationTeamColors.cs --json`; future `BuildEmpireStationArt.cs` runs set the same value.
 - All 40 owned renders change only 0.468-4.200% of visible pixels compared with unowned references (channel delta >4/255); at least 95.8% of the hull remains unchanged. `VerifyTeamColors.py` rejects missing recoloring or changes over 10% of visible pixels.
 - ALAMO welds shadow/collision helpers and drops degenerate faces. Those helpers stay in the source FBXs and are excluded from source-topology equality checks; gameplay uses its existing box collider and new fitted shields.
 - No ALA animation or damaged/wreck conversion. Source damage overlays remain disabled; EaW destruction shaders, animated lights and proxy particles are not recreated. Attached hardpoint art remains static.

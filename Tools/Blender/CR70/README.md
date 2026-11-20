@@ -11,7 +11,7 @@
 2. Import the mod ALO into a fresh `CR70 Charger Source` Blender scene through MCP; run `Convert.py` through MCP. ALAMO may fail during global helper cleanup with other scenes open; the converter completes cleanup locally.
 3. Capture printed `CHARGER_REPORT` JSON as `Temp/CR70ChargerImport/ConversionReport.json`. Run `VerifyGeometry.py` through MCP and capture `before` triangle corners as `SourceGeometry.json` for the Unity check.
 4. Run `uv run python Tools/Blender/CR70/Stage.py`; it stages only manifest-listed model textures.
-5. Run the Unity scripts below with `unity command run_script --file Tools/Blender/CR70/<File>.cs --entry <Class>.Main --json`.
+5. Run the Unity scripts below with `unity command script run --file Tools/Blender/CR70/<File>.cs --entry <Class>.Main --json`.
 
 - Source has `5` meshes / `4,222` triangles / `14` bones. Opaque `Hull` + `Object02`: `4,161` triangles; visible additive `Engine`: `48`; hidden `Engines` + `Collision`: `13`.
 - Binary-backed bone parents restored after the importer stopped during cleanup. Identity Root already exists; no extra bone added.

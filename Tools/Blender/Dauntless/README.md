@@ -20,4 +20,4 @@
 4. Unity: `BuildArt.cs`, `BuildGameplay.cs`, `Persist.cs`, `Render.cs`, `Register.cs`, `StripHelpers.cs`, `Inspect.cs`.
 5. `uv run --with pillow python Tools/Blender/Dauntless/Package.py`.
 
-Unity command: `unity command run_script --file Tools/Blender/Dauntless/<File>.cs --timeout_ms 60000 --timeout 70 --json`. Check nested `result.success` before the next step. Builders save assets and preserve unrelated Editor scenes. Never run the donor migration scripts.
+Unity command: `unity command script run --file Tools/Blender/Dauntless/<File>.cs --timeout 70 --json`. check the exit code (`6` = script failure) and the returned `result` before the next step. Builders save assets and preserve unrelated Editor scenes. Never run the donor migration scripts.

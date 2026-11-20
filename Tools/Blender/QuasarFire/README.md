@@ -25,5 +25,5 @@
 
 1. In a fresh compatible Blender session, run `uv run --with pillow python Tools/Blender/QuasarFire/Prepare.py`, then `Convert.py`. Conversion deletes scene objects; do not run against another import's live scene.
 2. Stage the FBX and PNGs into the Quasar art folders. `BuildArt.cs` expects a fresh art import.
-3. Run `BuildArt.cs → BuildGameplay.cs → Persist.cs → Render.cs → Register.cs → Inspect.cs` with `unity command run_script --file Tools/Blender/QuasarFire/<File>.cs --timeout_ms 60000 --json`. Inspect nested `result.success`.
+3. Run `BuildArt.cs → BuildGameplay.cs → Persist.cs → Render.cs → Register.cs → Inspect.cs` with `unity command script run --file Tools/Blender/QuasarFire/<File>.cs --timeout 60 --json`. check the exit code (`6` = script failure) and the returned `result`.
 4. Run `Package.py`; it verifies source hashes and saves the editable outputs/reports.

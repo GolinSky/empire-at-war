@@ -17,7 +17,7 @@
 
 ## Unity integration
 
-Run each file with `unity command run_script --file Tools/Blender/HeavyDreadnought/<file> --entry <entry>.Main --timeout_ms 60000 --json`:
+Run each file with `unity command script run --file Tools/Blender/HeavyDreadnought/<file> --entry <entry>.Main --timeout 60 --json`:
 
 | File | Entry | Result |
 | --- | --- | --- |

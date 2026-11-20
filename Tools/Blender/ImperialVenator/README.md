@@ -82,7 +82,7 @@
 
 1. From repository root: `uv run --with pillow python Tools/Blender/ImperialVenator/Prepare.py`.
 2. On the inspected Blender MCP session: `uv run python Tools/Blender/ImperialVenator/Convert.py`; then `uv run --with pillow python Tools/Blender/ImperialVenator/Stage.py`.
-3. Run Unity scripts sequentially with `unity command run_script --file Tools/Blender/ImperialVenator/<File>.cs --entry <Type>.Main --timeout_ms 120000 --timeout 125 --json`:
+3. Run Unity scripts sequentially with `unity command script run --file Tools/Blender/ImperialVenator/<File>.cs --entry <Type>.Main --timeout 125 --json`:
    `BuildArt/BuildImperialVenatorArt`, `BuildShip/BuildImperialVenatorShip`, `BuildPreview/BuildImperialVenatorPreview`, `StripHelpers/StripImperialVenatorHelpers`, `Render/RenderImperialVenator`, `Register/RegisterImperialVenator`, `VerifyGeometry/VerifyImperialVenatorGeometry`, `Verify/VerifyImperialVenator`.
    `RenderEngines/RenderImperialVenatorEngines` saves rear/upper/lower views with and without glow; `InspectEngines/InspectImperialVenatorEngines` records saved engine geometry and material state.
 4. `uv run --with pyyaml python Tools/Blender/ImperialVenator/Evidence.py`; `uv run python Tools/Blender/ImperialVenator/Pack.py`.

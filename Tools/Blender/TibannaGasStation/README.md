@@ -35,12 +35,12 @@ uv run --with pillow python Tools/Blender/TibannaGasStation/Verify.py
 - Existing Empire/Rebellion saves containing the removed `CommonMiner` roster entry are not migrated by this replacement.
 
 ```powershell
-unity command run_script --file Tools/Blender/TibannaGasStation/BuildArt.cs --json
-unity command run_script --file Tools/Blender/TibannaGasStation/Integrate.cs --json
-unity command run_script --file Tools/Blender/TibannaGasStation/Render.cs --json
-unity command run_script --file Tools/Blender/TibannaGasStation/Register.cs --json
-unity command run_script --file Tools/Blender/TibannaGasStation/VerifyArt.cs --json
-unity command run_script --file Tools/Blender/TibannaGasStation/VerifyRegistration.cs --json
+unity command script run --file Tools/Blender/TibannaGasStation/BuildArt.cs --json
+unity command script run --file Tools/Blender/TibannaGasStation/Integrate.cs --json
+unity command script run --file Tools/Blender/TibannaGasStation/Render.cs --json
+unity command script run --file Tools/Blender/TibannaGasStation/Register.cs --json
+unity command script run --file Tools/Blender/TibannaGasStation/VerifyArt.cs --json
+unity command script run --file Tools/Blender/TibannaGasStation/VerifyRegistration.cs --json
 ```
 
 ## Saved-asset verification — 2026-10-28

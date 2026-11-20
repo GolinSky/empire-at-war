@@ -51,9 +51,9 @@ def unity_stage(jobs, operation):
     write_json(unresolved, operation)
     arguments = [operation['jobId'], operation['operationId'], operation['inputHash'],
                  operation['stage'], str(folder)]
-    command = ['unity', 'command', 'run_script', '--file', str(bridge),
+    command = ['unity', 'command', 'script', 'run', '--file', str(bridge),
                '--entry', 'AloUnityStage.Main', '--args', json.dumps(arguments),
-               '--timeout_ms', '120000', '--json']
+               '--timeout', '120', '--json']
     result = subprocess.run(command, cwd=jobs.project, capture_output=True, text=True,
                             encoding='utf-8', timeout=150)
     (folder / (operation['stage'] + '.stdout.log')).write_text(result.stdout, encoding='utf-8')
@@ -83,9 +83,9 @@ def completion_record(jobs, operation):
 
 def reconcile_editor(jobs, operation):
     folder = jobs.job_dir(operation['jobId'])
-    command = ['unity', 'command', 'run_script', '--file', str(Path(__file__).with_name('UnityStage.cs')),
+    command = ['unity', 'command', 'script', 'run', '--file', str(Path(__file__).with_name('UnityStage.cs')),
                '--entry', 'AloUnityStage.Main', '--args', json.dumps([operation['jobId'], operation['operationId'],
-                 operation['inputHash'], 'recover', str(folder)]), '--timeout_ms', '120000', '--json']
+                 operation['inputHash'], 'recover', str(folder)]), '--timeout', '120', '--json']
     result = subprocess.run(command, cwd=jobs.project, capture_output=True, text=True, encoding='utf-8', timeout=150)
     (folder / 'recovery.stdout.log').write_text(result.stdout, encoding='utf-8')
     (folder / 'recovery.stderr.log').write_text(result.stderr, encoding='utf-8')

@@ -30,7 +30,7 @@ Dedicated reference: `Architecture/CIS_SPACE_STATION_MODEL_IMPORT_GUIDE.md` in `
 
 ```powershell
 uv run --with pillow python -B Tools/Blender/CisSpaceStation/Prepare.py
-unity command run_script --file Tools/Blender/CisSpaceStation/CaptureCisStationBaseline.cs --json
+unity command script run --file Tools/Blender/CisSpaceStation/CaptureCisStationBaseline.cs --json
 ```
 
 Inspect processes and port **9887** before starting. Reuse only this import's verified isolated session. Stop on an unrelated listener. If absent:
@@ -59,25 +59,25 @@ foreach ($stationLevel in 1..5) {
     if ($LASTEXITCODE -ne 0) { throw "Conversion failed: $stationName" }
 }
 uv run --with pillow python -B Tools/Blender/CisSpaceStation/Stage.py
-unity command run_script --file Temp/CisStationImport/BuildArt.cs --timeout_ms 120000 --timeout 180 --json
-unity command run_script --file Temp/CisStationImport/BuildView.cs --json
-unity command run_script --file Tools/Blender/SpaceStations/BuildStationLevels.cs --args '["Separatist"]' --timeout_ms 120000 --timeout 180 --json
-unity command eval --code 'EmpireAtWar.Editor.Rendering.ShipWreckBuilder.Build("Assets/Prefabs/Models/Stations/Separatist/SeparatistSpaceStationView.prefab");' --json
-unity command run_script --file Temp/CisStationImport/Verify.cs --json
+unity command script run --file Temp/CisStationImport/BuildArt.cs --timeout 180 --json
+unity command script run --file Temp/CisStationImport/BuildView.cs --json
+unity command script run --file Tools/Blender/SpaceStations/BuildStationLevels.cs --args '["Separatist"]' --timeout 180 --json
+unity command script eval --code 'EmpireAtWar.Editor.Rendering.ShipWreckBuilder.Build("Assets/Prefabs/Models/Stations/Separatist/SeparatistSpaceStationView.prefab");' --json
+unity command script run --file Temp/CisStationImport/Verify.cs --json
 uv run --with pillow python -B Temp/CisStationImport/VerifyGeometry.py
 uv run --with pillow python -B Tools/Blender/CisSpaceStation/VerifyNormals.py
-unity command run_script --file Tools/Blender/CisSpaceStation/VerifyCisStationMapping.cs --json
-unity command run_script --file Temp/CisStationImport/Render.cs --timeout_ms 120000 --timeout 180 --json
-unity command console --level error --json
+unity command script run --file Tools/Blender/CisSpaceStation/VerifyCisStationMapping.cs --json
+unity command script run --file Temp/CisStationImport/Render.cs --timeout 180 --json
+unity command console get --level error --json
 ```
 
-Inspect **nested `data.result.success`**, not just the CLI exit code. Builders save changed assets and prefabs; verify reloads before delivery. Inspect all five silhouettes and contrasting ownership colors in `Temp/CisStationImport/Previews/`.
+Check the **exit code** (`6` = script failure) and the returned `result`. Builders save changed assets and prefabs; verify reloads before delivery. Inspect all five silhouettes and contrasting ownership colors in `Temp/CisStationImport/Previews/`.
 
-Before requested tests, run `unity command list_open_scenes --json`, inspect every scene, and follow `AGENTS.md` dirty-scene rules. Then:
+Before requested tests, run `unity command scene list_open --json`, inspect every scene, and follow `AGENTS.md` dirty-scene rules. Then:
 
 ```powershell
-unity command run_tests --mode editor --filter Station --async_tests true --json
-unity command test_status --json
+unity command test run --mode editor --filter Station --async-tests true --json
+unity command test status --json
 ```
 
 Poll until finished and capture results immediately when the Editor is shared. Inspect the captured test names as well as the counts: another run can overwrite the shared status. Avoid additional Editor automation while a long synchronous test occupies the main thread.

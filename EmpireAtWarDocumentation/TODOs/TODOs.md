@@ -232,9 +232,6 @@
   - Status: in progress; job/lock/journal infrastructure and Rothana recipe implemented; `apply` disabled. On 2026-11-16, aligned Rothana and Endurance recipe group GUIDs and prefab paths with saved assets; Editor migration gates remain open.
   - Next: production conversion + Editor acceptance; Endurance/Rebel recipes; station/derivative adapters; concurrency recovery acceptance.
 
-- [ ] **Update Unity Pipeline package 0.6.0-exp.1 → 1.0.0 and CLI 1.0.0 → 1.0.1** → [[TODOs/Tooling/Unity_Pipeline_1_0_Update|Unity Pipeline 1.0 Update]]
-  - Status: investigated 2026-11-17; safe with command-name sweep (AGENTS.md, AloImport worker, Tool READMEs). Not started.
-
 - [ ] **Add Jenkins GitHub draft releases** → [[TODOs/Tooling/Jenkins_GitHub_Releases|Jenkins GitHub Releases]]
   - **Remaining**: user adds `github-releases` credential and selects source build/tag; first live upload and recovery acceptance.
   - Rechecked 2026-11-08: installed tools match `main`; only `github-releases` credential missing (Jenkins has `unity-diagnostics-service-account` only). Build 37 (`v0.1.37`, commit pushed) is a valid source.
@@ -433,6 +430,9 @@
   - Completed 2026-10-20: 65 content moves, 10 current GameDesign references, repaired navigation and historical/proposal labels; static checks passed.
 
 ### Tooling
+
+- [x] **Update Unity Pipeline package 0.6.0-exp.1 → 1.0.0 and CLI 1.0.0 → 1.0.1** → [[Done/Tooling/Unity_Pipeline_1_0_Update|Unity Pipeline 1.0 Update]]
+  - Completed 2026-11-20: package + CLI updated, compile clean, AGENTS.md 1.0 command section, `GEMINI.md` added, worker/PS1 + ~80 docs swept; smoke commands passed. Tests not run. Jenkins build gate in acceptance queue.
 
 - [x] **Battle logic simulator (Editor Hub)** → [[Done/Tooling/Battle_Logic_Simulator|Battle Logic Simulator]]
 

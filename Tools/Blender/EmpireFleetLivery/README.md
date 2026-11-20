@@ -16,7 +16,7 @@
 4. Run `Render.cs` once for each ship; regenerates icons plus unowned/eight live/eight wreck renders.
 5. Run `Verify.cs`; then `uv run --with pillow --with numpy python Tools/Blender/EmpireFleetLivery/VerifyRenders.py`.
 
-Unity command: `unity command run_script --file Tools/Blender/EmpireFleetLivery/Build.cs --args '["Procursator"]' --timeout_ms 60000 --timeout 70 --json`. Replace file/argument as required; scripts without ship arguments omit `--args`. Inspect nested `result.success`.
+Unity command: `unity command script run --file Tools/Blender/EmpireFleetLivery/Build.cs --args '["Procursator"]' --timeout 70 --json`. Replace file/argument as required; scripts without ship arguments omit `--args`. check the exit code (`6` = script failure) and the returned `result`.
 
 ## Verification — 2026-10-14
 
@@ -31,8 +31,8 @@ Unity command: `unity command run_script --file Tools/Blender/EmpireFleetLivery/
 - Built-in image generation added fine chips, scratches and fading to existing stripe masks. Existing stripe meshes, source albedos and gameplay prefabs remain unchanged. This refresh uses `_TeamMaskMap`, rather than Allegiance's albedo hue selection.
 - Victory I/II original masks had identical SHA-256 hashes; both receive the same worn layout. ISDI keeps its existing mask path. ISDII uses `Assets/Art/Textures/Models/EmpireShips/ISDIIReplacement/ISDII_WornTeamStripeMask.png`; its live/wreck stripe materials use the existing high-contrast hull albedo/normal instead of the previous white albedo.
 - Other outputs replace `VictoryI_EV_Victory_SD_TeamMask.png`, `VictoryII_EV_Victory_SD_TeamMask.png`, `Victory_Hull_TeamMask.png`, `Imperator_Hull_TeamMask.png`, and `AcclamatorAssault_HullStripeMask.png` in their existing ship texture folders. Existing GUIDs are preserved.
-- Import/save: `unity command run_script --file Tools/Blender/EmpireFleetLivery/ImportWornMasks.cs --json`.
-- Preview: `unity command run_script --file Tools/Blender/EmpireFleetLivery/RenderWornMasks.cs --args '["ISDI"]' --json`; substitute each ship name above. Preview scenes are closed and render settings restored. No icons or gameplay scenes are changed.
+- Import/save: `unity command script run --file Tools/Blender/EmpireFleetLivery/ImportWornMasks.cs --json`.
+- Preview: `unity command script run --file Tools/Blender/EmpireFleetLivery/RenderWornMasks.cs --args '["ISDI"]' --json`; substitute each ship name above. Preview scenes are closed and render settings restored. No icons or gameplay scenes are changed.
 - Verification: 28 neutral/blue/red/green renders in `Previews/WornMasks/<ship>/`; all seven blue/green pairs differ. Results in `Evidence/WornMaskRenderVerification.json`; live/wreck references in `Evidence/WornMaskReferences.json`. No new import/serialization errors after the corrected property audit. No gameplay tests run for this texture/material update.
 
 ### Image prompts
@@ -46,7 +46,7 @@ Unity command: `unity command run_script --file Tools/Blender/EmpireFleetLivery/
 - Procursator already had three narrow bands per side. Its two existing stripe materials now use neutral source albedos plus the worn mask instead of faint hue-selected paint; geometry is unchanged.
 - All three reuse the generated wear texture `Assets/Art/Textures/Models/EmpireShips/ISDI/ISDI_TeamStripes_TeamMask.png`. No additional image generation or source texture edits.
 - New stripe meshes/materials live in each ship's existing `Assets/Art/Models/EmpireShips/<ship>/` and `Assets/Art/Materials/Models/EmpireShips/<ship>/` directories. Wreck materials live in `Assets/Art/Materials/Wrecks/<ship>/`.
-- Build: `unity command run_script --file Tools/Blender/EmpireFleetLivery/BuildSmallTeamMasks.cs --args '["Executor"]' --json`; supported names: `ArquitensImperialCruiser`, `Procursator`, `Executor`.
+- Build: `unity command script run --file Tools/Blender/EmpireFleetLivery/BuildSmallTeamMasks.cs --args '["Executor"]' --json`; supported names: `ArquitensImperialCruiser`, `Procursator`, `Executor`.
 - New live stripes are bound to team color and fog; wreck stripes are bound to `UnitWreckView`. Existing wreck geometry remains intact.
 - `RenderWornMasks.cs` accepts optional second argument `true` for saved wreck previews. Twenty-four live/wreck neutral/blue/red/green images are in `Previews/WornMasks/<ship>/` and its `Wreck/` subfolder.
 - Verification: six saved live/wreck reference checks passed; all six live/wreck blue-green comparisons differ; Executor tests `8/8`, Procursator tests `6/6`. Evidence: `SmallMaskReferenceVerification.json`, `SmallMaskRenderVerification.json`, `ExecutorSmallMaskTests.json`, `ProcursatorSmallMaskTests.json`.

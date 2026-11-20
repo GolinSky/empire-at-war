@@ -25,7 +25,7 @@ reviewed: 2026-10-20
 - XML names `Empire_Star_Base_1–5` represent Republic units. They do not authorize Empire faction routing.
 - Use the existing Rebel ALO reader/converter and shared `BuildStationLevels.cs` workflow.
 - Use an isolated Blender process on port `9897`. Verify the listener PID belongs to that process; another import must use a different port.
-- Inspect nested `data.result.success` after Unity scripts. Builders must save assets; no manual Editor save is required.
+- check the exit code (`6` = script failure) and the returned `result` after Unity scripts. Builders must save assets; no manual Editor save is required.
 
 ## Decision
 - Chosen: five visual prefabs nested in the existing Republic gameplay prefab.
@@ -64,16 +64,16 @@ reviewed: 2026-10-20
 
 ```powershell
 uv run --with pillow python Tools/Blender/RepublicSpaceStation/Prepare.py
-unity command run_script --file Tools/Blender/RepublicSpaceStation/VerifyMapping.cs --args '[true]' --json
+unity command script run --file Tools/Blender/RepublicSpaceStation/VerifyMapping.cs --args '[true]' --json
 Start-Process -FilePath "$env:LOCALAPPDATA/AI-Tools/Blender/blender-3.6.23-windows-x64/blender.exe" -ArgumentList '--python','F:/Private/empire-at-war/Temp/RepublicStationImport/Start.py' -WindowStyle Hidden
 Get-NetTCPConnection -LocalPort 9897 -State Listen
 ./Tools/Blender/RepublicSpaceStation/ConvertLevels.ps1
 uv run --with numpy --with pillow python Tools/Blender/RepublicSpaceStation/RestoreNormals.py
 uv run --with pillow python Tools/Blender/RepublicSpaceStation/Stage.py
-unity command run_script --file Temp/RepublicStationImport/BuildArt.cs --json
-unity command run_script --file Temp/RepublicStationImport/BuildView.cs --json
-unity command run_script --file Tools/Blender/SpaceStations/BuildStationLevels.cs --args '["Republic"]' --json
-unity command run_script --file Tools/Blender/RepublicSpaceStation/BuildWreck.cs --json
+unity command script run --file Temp/RepublicStationImport/BuildArt.cs --json
+unity command script run --file Temp/RepublicStationImport/BuildView.cs --json
+unity command script run --file Tools/Blender/SpaceStations/BuildStationLevels.cs --args '["Republic"]' --json
+unity command script run --file Tools/Blender/RepublicSpaceStation/BuildWreck.cs --json
 ```
 
 ### Hierarchy, orientation, and materials
@@ -97,10 +97,10 @@ unity command run_script --file Tools/Blender/RepublicSpaceStation/BuildWreck.cs
 
 ### Verification
 ```powershell
-unity command run_script --file Temp/RepublicStationImport/Verify.cs --json
+unity command script run --file Temp/RepublicStationImport/Verify.cs --json
 uv run --with pillow python Temp/RepublicStationImport/VerifyGeometry.py
-unity command run_script --file Tools/Blender/RepublicSpaceStation/VerifyMapping.cs --args '[false]' --json
-unity command run_script --file Temp/RepublicStationImport/Render.cs --json
+unity command script run --file Tools/Blender/RepublicSpaceStation/VerifyMapping.cs --args '[false]' --json
+unity command script run --file Temp/RepublicStationImport/Render.cs --json
 ```
 
 - `StationLevelViewTests`: Tests only on explicit user request (root `AGENTS.md` → Local Test Execution Override); then follow Unity Test Safety there.

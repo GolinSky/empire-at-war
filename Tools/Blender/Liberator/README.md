@@ -46,5 +46,5 @@
 1. Start the isolated Blender helper with `Start.py` on port `9893`; the shared Blender remains available.
 2. `uv run --with pillow python Tools/Blender/Liberator/Prepare.py`, then `Convert.py`, then `Stage.py`.
 3. Unity order: `BuildArt.cs` → `BuildGameplay.cs` → `Persist.cs` → `Render.cs` → `Register.cs` → `Inspect.cs`.
-4. Use `unity command run_script --file Tools/Blender/Liberator/<File>.cs --timeout_ms 60000 --timeout 75 --json`; check nested `result.success`.
+4. Use `unity command script run --file Tools/Blender/Liberator/<File>.cs --timeout 75 --json`; check the exit code (`6` = script failure) and the returned `result`.
 5. Run `uv run --with pillow python Tools/Blender/Liberator/Archive.py` after successful verification.

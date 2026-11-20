@@ -34,15 +34,15 @@
 - Blender round trip: maximum corner displacement `0.000035479` source units, UV difference `0`, bone displacement `0.000026703`. Counts, parents and hidden states match.
 - Unity: matching mesh/triangle/bone totals, UVs on all meshes, maximum attachment displacement `0.000000642` project units.
 - Saved asset readback passed: exact targetability, mount counts/IDs, bays, ability, weapon profile, bindings, all registrations, placement dimensions/identity, wreck references. Zero missing scripts, broken serialized references or donor model/prefab dependencies.
-- Builder, renderer, registration and verification scripts compile and execute through official `unity command run_script`. No asset import/serialization errors observed. Concurrent CLI diagnostic errors were unrelated to these assets.
+- Builder, renderer, registration and verification scripts compile and execute through official `unity command script run`. No asset import/serialization errors observed. Concurrent CLI diagnostic errors were unrelated to these assets.
 - No automated Unity tests or Play Mode combat check run. Fire arcs, launch flow, missile interception, ability execution, placement and death behavior need runtime acceptance; provisional balance needs playtesting.
 
 ## Reproduction
 
 1. Run `python Tools/Blender/AcclamatorAssault/Prepare.py` to audit source files and create the safe-mode MCP request.
 2. Use the existing Blender 3.6.23 MCP connection: `uvx --from mcp-for-blender==2.1.3 python Tools/Blender/mcp_call.py Temp/AcclamatorAssaultImport/ConvertRequest.json`. The script creates new scenes and preserves other open work. Save its `CONVERSION_JSON` output as `Temp/AcclamatorAssaultImport/ConversionReport.json`.
-3. Run `uv run --with pillow python Tools/Blender/AcclamatorAssault/Stage.py`, then `unity command eval --code 'UnityEditor.AssetDatabase.Refresh();' --timeout 15000 --json`.
-4. Run `unity command run_script --file Tools/Blender/AcclamatorAssault/BuildArt.cs --entry BuildAcclamatorAssaultArt.Main --timeout_ms 60000 --json`.
+3. Run `uv run --with pillow python Tools/Blender/AcclamatorAssault/Stage.py`, then `unity command script eval --code 'UnityEditor.AssetDatabase.Refresh();' --timeout 15 --json`.
+4. Run `unity command script run --file Tools/Blender/AcclamatorAssault/BuildArt.cs --entry BuildAcclamatorAssaultArt.Main --timeout 60 --json`.
 5. Run the same command form for `BuildShip.cs` / `BuildAcclamatorAssaultShip.Main`, `Livery.cs` / `ApplyAcclamatorAssaultLivery.Main`, `Render.cs` / `RenderAcclamatorAssault.Main`, `Register.cs` / `RegisterAcclamatorAssault.Main`, then `Verify.cs` / `VerifyAcclamatorAssault.Main`.
 6. `VerifyGeometry.py` compares the retained source/validation Blender scenes through MCP. Reports, editable blends, FBX exports and previews live in ignored `Temp/AcclamatorAssaultImport/`.
 

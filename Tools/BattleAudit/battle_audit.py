@@ -17,7 +17,7 @@ Commands:
   compare <editor-dir> <player-dir> <out.json> Compare hitch size/period (matched workloads required).
   report <run-directory>                     Write analysis.md from saved run evidence.
 
-Run the eval scripts with the Unity MCP `eval_file` tool while the frames are still in the Profiler.
+Run the eval scripts with the Unity MCP `script_eval` tool (`file` parameter) while the frames are still in the Profiler.
 """
 import csv
 import gzip

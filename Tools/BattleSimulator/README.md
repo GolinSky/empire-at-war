@@ -46,19 +46,19 @@ Exports: `results.md`, `summary.csv`, `units.csv`, `timeline.csv`, `events.csv`.
 ## Verification
 
 ```powershell
-unity command run_script --file Tools/BattleSimulator/AuditBindings.cs --entry AuditBindings.Run --timeout_ms 30000 --timeout 40 --json
-unity command run_script --file Tools/BattleSimulator/VerifySimulator.cs --entry VerifySimulator.Run --timeout_ms 30000 --timeout 40 --json
-unity command run_script --file Tools/EditorHub/VerifyEditorHub.cs --entry VerifyEditorHub.Run --timeout_ms 30000 --timeout 40 --json
-unity command run_script --file Tools/BattleSimulator/VerifyWindow.cs --entry VerifyWindow.Run --timeout_ms 30000 --timeout 40 --json
+unity command script run --file Tools/BattleSimulator/AuditBindings.cs --entry AuditBindings.Run --timeout 40 --json
+unity command script run --file Tools/BattleSimulator/VerifySimulator.cs --entry VerifySimulator.Run --timeout 40 --json
+unity command script run --file Tools/EditorHub/VerifyEditorHub.cs --entry VerifyEditorHub.Run --timeout 40 --json
+unity command script run --file Tools/BattleSimulator/VerifyWindow.cs --entry VerifyWindow.Run --timeout 40 --json
 ```
 
 `VerifyWindow` sets the simulator to a 10-run Thranta mirror and clicks its embedded Run button. It leaves those example results open. No gameplay scenes are instantiated.
 
-Before EditMode tests, inspect `unity command list_open_scenes --json`; save dirty named scenes and inspect again. An untitled dirty scene blocks tests. Then:
+Before EditMode tests, inspect `unity command scene list_open --json`; save dirty named scenes and inspect again. An untitled dirty scene blocks tests. Then:
 
 ```powershell
-unity command run_tests --mode editor --filter Battle --async_tests true --json
-unity command test_status --json
+unity command test run --mode editor --filter Battle --async-tests true --json
+unity command test status --json
 ```
 
 - Unity 6000.4.7f1: compile clean.

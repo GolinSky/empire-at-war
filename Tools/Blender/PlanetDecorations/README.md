@@ -14,7 +14,7 @@
 ## Reproduce
 1. `python Tools/Blender/PlanetDecorations/Prepare.py`
 2. Owned Blender 3.6.23 background process: `--background --factory-startup --python Tools/Blender/PlanetDecorations/Convert.py` (ALAMO and FBX add-ons required).
-3. `unity command run_script --file Tools/Blender/PlanetDecorations/BuildArt.cs --entry BuildPlanetDecorationArt.Main --timeout_ms 180000 --json`
-4. `unity command run_script --file Tools/Blender/PlanetDecorations/BuildSets.cs --entry BuildPlanetDecorationSets.Main --json`
-5. `unity command run_script --file Tools/Blender/PlanetDecorations/InspectPlacement.cs --entry InspectPlanetDecorations.Main --timeout_ms 180000 --json`
+3. `unity command script run --file Tools/Blender/PlanetDecorations/BuildArt.cs --entry BuildPlanetDecorationArt.Main --timeout 180 --json`
+4. `unity command script run --file Tools/Blender/PlanetDecorations/BuildSets.cs --entry BuildPlanetDecorationSets.Main --json`
+5. `unity command script run --file Tools/Blender/PlanetDecorations/InspectPlacement.cs --entry InspectPlanetDecorations.Main --timeout 180 --json`
 

@@ -22,8 +22,8 @@
 
 1. Run `python Tools/Blender/ConstructionPod/Prepare.py` with Pillow installed.
 2. Run portable Blender 3.6.23 with `--background --factory-startup --python Tools/Blender/ConstructionPod/Convert.py`. Requires installed ALAMO and FBX add-ons. Use an owned background process: shared conversion code clears all objects.
-3. Run `unity command run_script --file Tools/Blender/ConstructionPod/BuildArt.cs --entry BuildConstructionPodArt.Main --json`.
-4. Run `unity command run_script --file Tools/Blender/ConstructionPod/Render.cs --entry RenderConstructionPod.Main --json`.
+3. Run `unity command script run --file Tools/Blender/ConstructionPod/BuildArt.cs --entry BuildConstructionPodArt.Main --json`.
+4. Run `unity command script run --file Tools/Blender/ConstructionPod/Render.cs --entry RenderConstructionPod.Main --json`.
 
 - Extracted unchanged ALO/DDS, editable packed `.blend`, full conversion report and previews: ignored `Temp/ConstructionPodImport/`.
 - Compact provenance, hashes and verification: `ImportEvidence.json`.

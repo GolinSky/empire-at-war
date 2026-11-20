@@ -58,26 +58,26 @@ Get-ChildItem -LiteralPath Temp/RebelStationImport/Attachments -Filter RB_Statio
 python -B Tools/Blender/RebelSpaceStation/StageAttachments.py
 ```
 
-5. In Unity Edit Mode, execute each command and inspect its nested `result.success` before continuing. Always run **all five builders in this order**: recreate base art, attach missing source pieces, repair the dome UV strip, rebuild the gameplay view, then apply the shared level pivot, hardpoint mounts and fitted shields.
+5. In Unity Edit Mode, execute each command and check the exit code (`6` = script failure) and the returned `result` before continuing. Always run **all five builders in this order**: recreate base art, attach missing source pieces, repair the dome UV strip, rebuild the gameplay view, then apply the shared level pivot, hardpoint mounts and fitted shields.
 
 ```powershell
-unity command run_script --file Tools/Blender/RebelSpaceStation/BuildArt.cs --json
-unity command run_script --file Tools/Blender/RebelSpaceStation/BuildAttachments.cs --json
-unity command run_script --file Tools/Blender/RebelSpaceStation/RepairDomeUv.cs --json
-unity command run_script --file Tools/Blender/RebelSpaceStation/BuildView.cs --json
-unity command run_script --file Tools/Blender/SpaceStations/BuildStationLevels.cs --args '["Rebellion"]' --json
-unity command run_script --file Tools/Blender/RebelSpaceStation/Verify.cs --json
+unity command script run --file Tools/Blender/RebelSpaceStation/BuildArt.cs --json
+unity command script run --file Tools/Blender/RebelSpaceStation/BuildAttachments.cs --json
+unity command script run --file Tools/Blender/RebelSpaceStation/RepairDomeUv.cs --json
+unity command script run --file Tools/Blender/RebelSpaceStation/BuildView.cs --json
+unity command script run --file Tools/Blender/SpaceStations/BuildStationLevels.cs --args '["Rebellion"]' --json
+unity command script run --file Tools/Blender/RebelSpaceStation/Verify.cs --json
 uv run --with pillow python Tools/Blender/RebelSpaceStation/VerifyGeometry.py
-unity command run_script --file Tools/Blender/RebelSpaceStation/Render.cs --json
+unity command script run --file Tools/Blender/RebelSpaceStation/Render.cs --json
 ```
 
 6. Inspect the rendered levels, `LevelNCloseup.png` dome views, and contrasting team colors. All builders save their assets; no manual Editor save is required. Inspect the Console for new import/serialization errors.
 7. For authorized tests, inspect open scenes first. Save named dirty scenes and inspect again; an untitled dirty scene blocks testing. Then run asynchronously and poll to completion:
 
 ```powershell
-unity command list_open_scenes --json
-unity command run_tests --mode editor --filter Station --async_tests true --json
-unity command test_status --json
+unity command scene list_open --json
+unity command test run --mode editor --filter Station --async-tests true --json
+unity command test status --json
 ```
 
 ## Conversion decisions

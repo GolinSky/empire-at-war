@@ -5,7 +5,7 @@
 - `Prepare.py`: extract source and both diffuse/normal textures into `Temp/ZoneRelayImport`.
 - `Convert.py`: run in an isolated factory-startup background Blender process. Imports through ALAMO, preserves all 10 bones and 5 meshes, reconstructs original vertex order, exports FBX and compares source/round-trip triangles, UVs and normals.
 - Normal fidelity requires sharp-edge normal spaces and FBX `mesh_smooth_type='EDGE'`. Source smooth/custom normals remain assigned; omitting edge transport caused a 0.00369 normal-vector error after round trip. Final maximum error: 0.000212; UV error: 0 pixels; position error: 0.000024 source units.
-- `Apply.cs` is a **one-shot migration from the original relay**. Do not rerun against the replaced prefab. Invoke with `unity command run_script --file Tools/Blender/ZoneRelay/Apply.cs --entry Apply.Run --json`.
+- `Apply.cs` is a **one-shot migration from the original relay**. Do not rerun against the replaced prefab. Invoke with `unity command script run --file Tools/Blender/ZoneRelay/Apply.cs --entry Apply.Run --json`.
 - `Verify.cs` reads saved base/variant assets and renders only the geometry prefab into `Temp/ZoneRelayImport/UnityPreview.png`. This is an asset inspection, not a test-suite or Play Mode run.
 - Runtime visual: `Assets/Prefabs/Models/Other/SpaceSensorNode.prefab`; two visible meshes, 1,088 triangles, no hidden collision helpers. `Shadow_02` is source-visible textured geometry and is deliberately retained.
 - Material: `EmpireAtWar/Ship Lit`, diffuse texture with alpha ignored, linear normal map with DirectX green-channel flip. No new team-color behavior.

@@ -7,7 +7,7 @@
 - `Stage.py`: shared original-pixel PNGs and 54 FBXs under dedicated `EmpireShips/Allegiance` folders. Run with `uv run --with pillow python Tools/Blender/Allegiance/Stage.py`.
 - `VerifyGeometry.py`: run portable Blender 3.6.23 with `--background --python-exit-code 1 --python Tools/Blender/Allegiance/VerifyGeometry.py`; checks actual ALO/FBX vertex positions and UV corners in a separate process.
 - Unity order: `BuildArt.cs` → `BuildShip.cs` → `StripHelpers.cs` → `Render.cs` → `Register.cs`. `GenerateBuilders.py` records how gameplay/registration builders were adapted from Executor; rerunning it rewrites only this task's builder files.
-- Unity invocation: `unity command run_script --file <path> --entry <Class>.Main --timeout_ms 60000 --timeout 90 --json`; inspect nested `data.result.success`. Art import can exceed the CLI default timeout.
+- Unity invocation: `unity command script run --file <path> --entry <Class>.Main --timeout 90 --json`; check the exit code (`6` = script failure) and the returned `result`. Art import can exceed the CLI default timeout.
 - `BuildArt.cs`: `.02` FBX scale, no welding/compression, source shader/helper classification, 53 mounted turrets, bow `+Z`, up `+Y`; length fitted to live Venator × `2200/1137`.
 - `BuildShip.cs`: requested hull/shields/speed `20000/16000/12`, 21 targetable weapons + 7 systems, fitted own shield/collision/banked height/selection bounds, opaque explosion geometry, complete fog/team bindings, own wreck and hologram.
 - Existing abilities: Power to Main Batteries `24` (nine heavy mounts marked `mainBattery`) and Tractor Beam `22`. Concentrate Fire exists but its fleet-command behavior differs from the requested class-restricted buff; the user authorized an existing power-to-weapons substitution.

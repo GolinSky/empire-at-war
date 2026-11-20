@@ -15,7 +15,7 @@ using UnityEditor;
 using UnityEngine;
 using Object = UnityEngine.Object;
 
-// One-time authoring operation, invoked through unity command run_script outside Assets.
+// One-time authoring operation, invoked through unity command script run outside Assets.
 public static class ResizeSquadrons
 {
     private const string PREFAB_FOLDER = "Assets/Prefabs/Models/Squadrons/";

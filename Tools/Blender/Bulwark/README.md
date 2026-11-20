@@ -44,7 +44,7 @@
 2. Inspect Blender sessions/version/add-ons using the import guide. Launch a fresh portable Blender 3.6.23 process with `--python F:/Private/empire-at-war/Tools/Blender/Bulwark/Start.py` and `Start-Process -WindowStyle Hidden`. This startup script clears its own fresh scene and opens isolated MCP port `9898`; never execute it in a user's existing session.
 3. `python Tools/Blender/Bulwark/RunConversion.py` uses `Call.py` and the configured MCP SDK with port `9898`. The task's helper was closed after verification; shared port `9876` was preserved.
 4. `python Tools/Blender/Bulwark/VerifyGeometry.py`, then `python Tools/Blender/Bulwark/Stage.py`.
-5. Run builders serially: `unity command run_script --file Tools/Blender/Bulwark/<File>.cs --entry <Class>.Main --timeout_ms 60000 --json`.
+5. Run builders serially: `unity command script run --file Tools/Blender/Bulwark/<File>.cs --entry <Class>.Main --timeout 60 --json`.
 6. Order: `BuildArt.cs` / `BuildBulwarkArt`, `BuildShip.cs` / `BuildBulwarkShip`, `Render.cs` / `RenderBulwark`, `Register.cs` / `RegisterBulwark`, `Verify.cs` / `VerifyBulwark`.
 
 ## Verification

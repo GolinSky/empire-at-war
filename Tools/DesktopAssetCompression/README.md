@@ -24,12 +24,12 @@ Windows implementation evidence, 2026-10-11. The vault plan remains in progress.
 Run through the official Unity CLI from the project root. Files stay outside `Assets` and compile into ephemeral assemblies.
 
 ```powershell
-unity command run_script --file Tools/DesktopAssetCompression/DesktopCompressionInventory.cs --json
-unity command run_script --file Tools/DesktopAssetCompression/DesktopCompressionRenderPilot.cs --args '["Before"]' --json
-unity command run_script --file Tools/DesktopAssetCompression/DesktopCompressionPilot.cs --timeout_ms 180000 --timeout 180 --json
-unity command run_script --file Tools/DesktopAssetCompression/DesktopCompressionBatchTextures.cs --args '[0,32]' --timeout_ms 180000 --timeout 180 --json
-unity command run_script --file Tools/DesktopAssetCompression/DesktopCompressionRenderPilot.cs --args '["After"]' --json
-unity command run_script --file Tools/DesktopAssetCompression/DesktopCompressionVerify.cs --json
+unity command script run --file Tools/DesktopAssetCompression/DesktopCompressionInventory.cs --json
+unity command script run --file Tools/DesktopAssetCompression/DesktopCompressionRenderPilot.cs --args '["Before"]' --json
+unity command script run --file Tools/DesktopAssetCompression/DesktopCompressionPilot.cs --timeout 180 --json
+unity command script run --file Tools/DesktopAssetCompression/DesktopCompressionBatchTextures.cs --args '[0,32]' --timeout 180 --json
+unity command script run --file Tools/DesktopAssetCompression/DesktopCompressionRenderPilot.cs --args '["After"]' --json
+unity command script run --file Tools/DesktopAssetCompression/DesktopCompressionVerify.cs --json
 ```
 
 - Inventory describes a specific baseline. Do not replay the old pilot/batches against already changed importers; the baseline comparison rejects that operation. Capture a fresh inventory before a new pass.
@@ -45,8 +45,8 @@ unity command run_script --file Tools/DesktopAssetCompression/DesktopCompression
 - Addressables bundles `1,534,762,737 → 1,025,898,126` bytes; uncompressed payload 6,464 → 2,663 MB. Evidence: `Evidence/Pass2Summary.json`; per-asset results in `output/DesktopAssetCompression/Pass2/`.
 
 ```powershell
-unity command run_script --file Tools/DesktopAssetCompression/DesktopCompressionTexturePass2.cs --entry DesktopCompressionTexturePass2.Main --args '[0,40]' --timeout_ms 900000 --timeout 900 --json
-unity command run_script --file Tools/DesktopAssetCompression/DesktopCompressionMeshPass2.cs --entry DesktopCompressionMeshPass2.Main --args '[0,50]' --timeout_ms 900000 --timeout 900 --json
+unity command script run --file Tools/DesktopAssetCompression/DesktopCompressionTexturePass2.cs --entry DesktopCompressionTexturePass2.Main --args '[0,40]' --timeout 900 --json
+unity command script run --file Tools/DesktopAssetCompression/DesktopCompressionMeshPass2.cs --entry DesktopCompressionMeshPass2.Main --args '[0,50]' --timeout 900 --json
 ```
 
 ## Remaining work

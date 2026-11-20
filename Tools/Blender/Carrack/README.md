@@ -12,7 +12,7 @@
 3. Run `Convert.py` through Blender MCP. Capture `CARRACK_REPORT` JSON into `Temp/CarrackImport/ConversionReport.json`. The script embeds the audited source facts because Blender MCP safe mode cannot read JSON files. Update that literal after a deliberate source update.
 4. Run `VerifyGeometry.py` through Blender MCP. It compares every source/FBX triangle corner and UV. `SourceGeometry.json` used by the Unity verifier samples every 32nd source triangle corner from its `Geometry` function.
 5. `uv run python Tools/Blender/Carrack/Stage.py` stages the FBX and three textures.
-6. Run the following with `unity command run_script --file Tools/Blender/Carrack/<file> --entry <entry> --json`: `BuildArt.cs` → `BuildCarrackArt.Main`; `VerifyUnityGeometry.cs` → `VerifyCarrackUnityGeometry.Main`; `BuildShip.cs` → `BuildCarrackShip.Main`; `Render.cs` → `RenderCarrack.Main`; `Register.cs` → `RegisterCarrack.Main`; `Verify.cs` → `VerifyCarrack.Main`.
+6. Run the following with `unity command script run --file Tools/Blender/Carrack/<file> --entry <entry> --json`: `BuildArt.cs` → `BuildCarrackArt.Main`; `VerifyUnityGeometry.cs` → `VerifyCarrackUnityGeometry.Main`; `BuildShip.cs` → `BuildCarrackShip.Main`; `Render.cs` → `RenderCarrack.Main`; `Register.cs` → `RegisterCarrack.Main`; `Verify.cs` → `VerifyCarrack.Main`.
 
 ## Configuration
 

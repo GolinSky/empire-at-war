@@ -11,7 +11,7 @@
 2. Use a dedicated Blender 3.6.23 process with ALAMO and Blender MCP on port 9883. Keep safe mode enabled. Set scene `blendermcp_auto_start_server = False`, scene `blendermcp_port = 9883`, then start the server. Preserve the user's primary Blender process and preferences.
 3. Execute `Convert.py` through Blender MCP `execute_blender_code`. Prepare `Temp/ISDIIIImport/Output/Textures` first. Extract the `CONVERSION_JSON` line into `ConversionReport.json`.
 4. Run `uv run --with pillow python Tools/Blender/ISDIII/Stage.py` to stage FBX and lossless PNG textures and update material mappings.
-5. Execute `BuildArt.cs`, `BuildShip.cs`, `Render.cs`, then `Register.cs` through `unity command run_script --file <path> --entry <type>.Main --timeout_ms 60000 --json`. Entry types: `BuildISDIIIArt`, `BuildISDIIIShip`, `RenderISDIII`, `RegisterISDIII`. Inspect nested `data.result.success`.
+5. Execute `BuildArt.cs`, `BuildShip.cs`, `Render.cs`, then `Register.cs` through `unity command script run --file <path> --entry <type>.Main --timeout 60 --json`. Entry types: `BuildISDIIIArt`, `BuildISDIIIShip`, `RenderISDIII`, `RegisterISDIII`. check the exit code (`6` = script failure) and the returned `result`.
 6. Execute `VerifyGeometry.py` through isolated Blender MCP. Save each `SOURCE_GEOMETRY` record's `geometry` as `<name>SourceGeometry.json`, and `GEOMETRY_JSON` as `GeometryReport.json` in the temporary import directory.
 7. Execute `InspectGeometry.cs` with entry `InspectISDIIIGeometry.Main`, then `Verify.cs` with entry `VerifyISDIII.Main`. These inspect assets in Edit Mode without running Unity tests or entering Play Mode.
 8. Run `uv run --with pillow python Tools/Blender/ISDIII/Package.py`. Recheck Editor import/serialization diagnostics.

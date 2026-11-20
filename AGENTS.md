@@ -19,6 +19,7 @@ Apply project guidance in this order:
 - `.codex/agents-disabled/` stores inactive project-specific subagent roles. Built-in generic agents remain available.
 - `.agents/mcp_config.json`, `.antigravity/mcp_config.json`, and `.gemini/mcp_config.json` mirror local MCP access for their respective agents.
 - `graphify-out/` is generated local state and is never authoritative documentation.
+- Codex reads this file directly; `CLAUDE.md` (Claude) and `GEMINI.md` (Gemini/Antigravity) import it with `@AGENTS.md`. Put shared policy here, not in those wrappers.
 
 ## Engineering Guidance Routing
 
@@ -240,25 +241,25 @@ When creating, modifying, or refactoring any UI prefab, component, or view:
 
 These rules apply whenever agents run Unity tests.
 
-1. Run `unity command list_open_scenes --json` before any Unity test command and inspect every open scene.
+1. Run `unity command scene list_open --json` before any Unity test command and inspect every open scene.
 2. Dirty or untitled scenes can trigger Editor popups that require user interaction. Discard their unsaved changes without asking before running tests; the user explicitly authorizes this test-preparation step. Reload saved scenes from disk or replace untitled scenes using non-interactive Unity operations.
 3. Inspect the open scenes again and confirm they are clean and no untitled scene remains before starting tests. Do not start tests while scene state is unknown or would trigger a save popup.
 4. Never invoke dialog-producing APIs such as `EditorSceneManager.SaveCurrentModifiedScenesIfUserWantsTo`, `EditorSceneManager.EnsureUntitledSceneHasBeenSaved`, `EditorUtility.DisplayDialog`, or `DisplayDialogComplex` in agent automation.
-5. Start tests with `async_tests=true` and poll `test_status` until completion, failure, cancellation, or timeout.
-6. If a test command times out, do not retry immediately. Inspect `test_status`, Editor status, Console, and `Editor.log`, then confirm no previous test remains active.
-7. Hung run limit: if a test-related background task has run ~20 minutes, or the Unity CLI stops responding (status/`test_status`/`cancel_tests` time out) while tests run, stop the agent's background task immediately, attempt `cancel_tests` once, do not start another run or keep polling, and report the blocker to the user.
+5. Start tests with `unity command test run --async-tests true` and poll `unity command test status` until completion, failure, cancellation, or timeout.
+6. If a test command times out, do not retry immediately. Inspect `test status`, `editor status`, `console get`, and `Editor.log`, then confirm no previous test remains active.
+7. Hung run limit: if a test-related background task has run ~20 minutes, or the Unity CLI stops responding (`editor status`/`test status`/`test cancel` time out) while tests run, stop the agent's background task immediately, attempt `unity command test cancel` once, do not start another run or keep polling, and report the blocker to the user.
 
 ## Test Selection
 
 Run the tests for the areas a change touches, not the whole suite. Every EditMode fixture has a feature `[Category]`; `TestCategoryCoverageTests` fails on an untagged fixture.
 
-- Runner: `run_tests --filter_type category --filter <Category>`. One exact category per call; batch the touched categories into consecutive calls.
-- One fixture: `--filter_type testName --filter <FixtureName>`.
-- Standard runs must use `--include_explicit false`, including full-suite runs and reruns after failures. Never enable explicit tests to diagnose ordinary failures or obtain a broader green result.
-- `--include_explicit true` requires a nonempty, exact category filter for the intended sweep. Never combine it with an unfiltered run or a shared fixture-name filter that selects both quick and exhaustive instances.
+- Runner: `unity command test run --filter-type category --filter <Category>`. One exact category per call; batch the touched categories into consecutive calls.
+- One fixture: `--filter-type testName --filter <FixtureName>`.
+- Standard runs must use `--include-explicit false`, including full-suite runs and reruns after failures. Never enable explicit tests to diagnose ordinary failures or obtain a broader green result.
+- `--include-explicit true` requires a nonempty, exact category filter for the intended sweep. Never combine it with an unfiltered run or a shared fixture-name filter that selects both quick and exhaustive instances.
 - Exhaustive categories (`MapExhaustive`, `NavigationExhaustive`, and future `*Exhaustive` categories) require an explicit user request for that exhaustive run. Permission to run tests or the full suite does not authorize exhaustive sweeps. Run only the requested exhaustive category, once; do not widen scope on failure.
 - Before an authorized run, state its mode, category/fixture, explicit-test setting, and whether it is quick or exhaustive. After failures, rerun only failing fixtures or affected categories; repeat the standard full suite only after fixes are complete when a full run is warranted.
-- Use separate `--mode editor` and `--mode playmode` commands with `--async_tests true`; asynchronous `all` mode is unsupported. The installed Pipeline async runner does not enforce `--timeout`: track elapsed time while polling, report overruns, and never start a replacement run until the previous run is confirmed stopped. Cancellation may wait for Unity's main thread.
+- Use separate `--mode editor` and `--mode playmode` commands with `--async-tests true` (`--mode all` is allowed but mixes both results into one run). `test run` defaults to `editor`; it exits non-zero on a bad filter type, no matching tests, or any failure. Pipeline 1.0 enforces `--timeout` only for synchronous runs; the async runner ignores it: track elapsed time while polling, report overruns, and never start a replacement run until the previous run is confirmed stopped. Cancellation may wait for Unity's main thread.
 
 | Changed path | Categories |
 |---|---|
@@ -284,11 +285,11 @@ Run the tests for the areas a change touches, not the whole suite. Every EditMod
 
 1. Before a feature, name the categories it touches from the table; add a fixture's own category when a test file changes.
 2. While iterating, run only those categories.
-3. `MapLayoutGeneratorTests` is explicit and excluded from standard runs. When map generation changes (`Entities/Map/Generation`, `Entities/Map/Hazards`, map settings assets) and tests are authorized, use `MapGeneration` (3 seeds) with `--include_explicit true`. `MapExhaustive` (all seeds, minutes) is optional and requires the separate exhaustive authorization above; never run it automatically before finishing.
+3. `MapLayoutGeneratorTests` is explicit and excluded from standard runs. When map generation changes (`Entities/Map/Generation`, `Entities/Map/Hazards`, map settings assets) and tests are authorized, use `MapGeneration` (3 seeds) with `--include-explicit true`. `MapExhaustive` (all seeds, minutes) is optional and requires the separate exhaustive authorization above; never run it automatically before finishing.
 4. Run the full EditMode suite only at the end of a large or cross-cutting task, or when the user asks.
 5. Report which categories ran; never imply the full suite passed when only categories ran.
 
-- `ShipArchetypeRouteSweepTests`: quick instance = `Navigation` (3 seeds, 6 routes per archetype/clearance); exhaustive instance = `NavigationExhaustive` (20 seeds, 24 routes). Both remain explicit. For an authorized quick sweep, use `--filter_type category --filter Navigation --include_explicit true`; this also includes ordinary Navigation tests but excludes the exhaustive instance. Never select this shared fixture name with explicit tests enabled.
+- `ShipArchetypeRouteSweepTests`: quick instance = `Navigation` (3 seeds, 6 routes per archetype/clearance); exhaustive instance = `NavigationExhaustive` (20 seeds, 24 routes). Both remain explicit. For an authorized quick sweep, use `--filter-type category --filter Navigation --include-explicit true`; this also includes ordinary Navigation tests but excludes the exhaustive instance. Never select this shared fixture name with explicit tests enabled.
 
 - New fixtures: add one feature `[Category]`; add a new category only for a new feature area and add it to this table.
 - New heavy sweeps: make the fixture explicit with a quick and a full instance, e.g. `[TestFixture(false, Category = "<Area>", Explicit = true)]` + `[TestFixture(true, Category = "<Area>Exhaustive", Explicit = true)]` (see `MapLayoutGeneratorTests`).
@@ -299,7 +300,7 @@ Unity assets must be fully imported and saved after every agent mutation. Never 
 
 When a serialized Unity asset is modified directly on disk, including `.prefab`, `.unity`, `.asset`, `.mat`, `.controller`, `.anim`, or `.overrideController`:
 
-1. Run `unity command eval --code 'UnityEditor.AssetDatabase.Refresh();'`.
+1. Run `unity command script eval --code 'UnityEditor.AssetDatabase.Refresh();'`.
 2. Re-serialize only the changed asset paths with `UnityEditor.AssetDatabase.ForceReserializeAssets(...)`, then call `UnityEditor.AssetDatabase.SaveAssets()`.
 3. Check the Unity console for serialization or import errors.
 
@@ -319,5 +320,17 @@ After any Unity asset mutation, verify that Unity imported the change, the asset
 - Always pass Unity CLI parameters as `--parameter value`. Never use `parameter=value` or include the parameter name inside its value.
 - For asset ObjectRef parameters, prefer explicit JSON such as `--controller '{"path":"Assets/Foo.controller"}'`.
 - For scene objects, use JSON such as `--target '{"hierarchyPath":"/Player/Visual"}'`.
-- Before using an unfamiliar Unity Pipeline command, inspect its registered schema with `unity command --query <name> --json` (bare `unity command` lists all commands; there is no `list` subcommand). Do not guess parameter names or syntax.
+- Before using an unfamiliar Unity Pipeline command, inspect its parameters with `unity command <group> <name> --help`, or search the catalog with `unity command --query <text> --json` (`unity command pipeline list_commands --json` dumps it all). Do not guess parameter names or syntax.
 - If an error contains a malformed resolved path such as `Assets/controller=Assets/...`, stop and correct argument serialization. Do not search for another asset, rename it, reimport it, or modify the project.
+
+### Unity Pipeline 1.0 Commands
+
+Package `com.unity.pipeline` `1.0.0`, CLI `unity` `1.0.1`. Ungrouped 0.6 names are removed with no redirect.
+
+- Form: `unity command <group> <name> --kebab-case-param value`. Snake_case built-in params are refused (exit `2`).
+- Common: `editor status`, `scene list_open`, `console get` / `console clear`, `script eval --code|--file`, `script run --file --entry --args --timeout <seconds>`, `script recompile` / `script recompile_status`, `test run` / `test status` / `test cancel` / `test list`, `capture game_view` / `capture scene_view --output-path`, `pipeline list_commands`.
+- Removed → replacement: `eval_file` → `script eval --file`; `run_script --timeout_ms 120000` → `script run --timeout 120`; `get_console_logs` → `console get`; `screenshot` → `capture game_view`.
+- Project `[CliCommand]` tools live in group `global` and keep their declared names and params: `unity command render_audit_capture --timeout_seconds 15`.
+- Output: `--json` prints the raw command result with no `success`/`data.result` wrapper. `script run` → `{"result": <entry return>, "diagnostics": [...]}`. `script eval` prints the raw value.
+- Failure is reported by exit code: `6` command failure (including a throwing entry point), `2` bad parameter, `14` batch timeout, `130` cancelled `test status`. Check `$LASTEXITCODE` / `returncode`, not a `success` field.
+- Servers bind `127.0.0.1` only. MCP tool names follow the grouped names (`mcp__unity__test_run`, `mcp__unity__script_eval`, `mcp__unity__global_render_audit_capture`).

@@ -27,7 +27,7 @@ reviewed: 2026-10-20
 - Read [[AssetPipeline/Guides/ALO_MODEL_IMPORT_GUIDE]], [[Architecture/PROJECT_ORGANIZATION]] and repository `AGENTS.md`.
 - Source Workshop ID: `1129810972`. Preserve installed ALO/DDS/XML files and existing Unity GUIDs.
 - Reuse existing station upgrade/combat data, hardpoint IDs and unlock levels. Keep `SeparatistSpaceStationView` in `SeparatistUnitViews` per [[AssetPipeline/Guides/ADDRESSABLES_BUNDLE_GUIDE]].
-- Use official `unity` CLI; builders must save all assets. Check nested `data.result.success` and reload saved prefabs.
+- Use official `unity` CLI; builders must save all assets. check the exit code (`6` = script failure) and the returned `result` and reload saved prefabs.
 
 ## Decision
 

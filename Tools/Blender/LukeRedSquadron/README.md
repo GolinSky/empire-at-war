@@ -3,7 +3,7 @@
 - Source: AOTR Workshop `1397421866`, `Data/ART/MODELS/RV_X_Wing.ALO`; source SHA-256 `0996a85694be39ada8e22827d0c3e00c71cb509db0c3f94f854bd5be4741c93e`. Original files unchanged.
 - Existing project XWing uses the different vanilla `RV_XWING.ALO`; it is not reused for Luke or his five wingmen.
 - Run `python Tools/Blender/LukeRedSquadron/Prepare.py`, then portable Blender 3.6.23 `--background --factory-startup --python Tools/Blender/LukeRedSquadron/Convert.py`. No shared Blender scene is modified.
-- Run `unity command run_script --file Tools/Blender/LukeRedSquadron/BuildArt.cs --entry LukeRedSquadronArt.Apply --json` to copy staged art and build the geometry-only prefab. Parent integration builds gameplay/placement prefabs and registrations.
+- Run `unity command script run --file Tools/Blender/LukeRedSquadron/BuildArt.cs --entry LukeRedSquadronArt.Apply --json` to copy staged art and build the geometry-only prefab. Parent integration builds gameplay/placement prefabs and registrations.
 - 26 bones, 12 meshes, 8 visible meshes / 9,099 triangles. Preserve all original helpers in FBX; exclude shadow meshes and collision from gameplay geometry. Source `hidden` flags do not hide the three shadow-volume meshes, so shader identity determines helper exclusion.
 - Retained visible meshes: `Wing1`, `Wing2`, `Plane` (fuselage), `Astrodroid`, `Plane01`–`Plane04` (additive engine glow). Shared material signatures map to four external Unity materials.
 - Laser attachments: `MuzzleA_00`–`MuzzleA_03`; torpedo attachment: `MuzzleB_00`. Four `PE_X_WING` bone names become unique Blender names using `.001`–`.003`. Engine-plane centers are also valid explicit trail anchors.
@@ -16,7 +16,7 @@
 
 ## Gameplay integration
 
-- `Integrate.cs` → `LukeIntegration.Apply`; `ConfigureAbility.cs` → `LukeAbilityConfiguration.Apply`; `Inspect.cs` → `LukeInspect.Run`. Invoke with `unity command run_script --file <path> --entry <method> --json` after `BuildArt.cs`.
+- `Integrate.cs` → `LukeIntegration.Apply`; `ConfigureAbility.cs` → `LukeAbilityConfiguration.Apply`; `Inspect.cs` → `LukeInspect.Run`. Invoke with `unity command script run --file <path> --entry <method> --json` after `BuildArt.cs`.
 - Squadron ID `303`; six members: Luke, Wedge, Biggs, Red Leader, Hobbie, Porkins. Luke uses `3600` hull / `2600` shields; each escort uses `120` hull / `60` shields. Total `4200` hull / `2900` shields. Escorts protect the leader until destroyed.
 - HeroStrikecraft armor; cruise/combat speed `68/78`; acceleration `78`, turn rate `210`, formation spacing `5`. Shield regeneration `1` per living shielded member per second.
 - Four leader lasers (`169`) provide `450` raw DPS using the HeroLaser damage/accuracy profile. Twenty escort lasers (`170`) provide `200` raw DPS. Both use Rebel bolt colors; ordinary X-wing weapons are unchanged.

@@ -11,8 +11,8 @@
 2. Run `Convert.py` with isolated Blender `--background --factory-startup --python-exit-code 1 --python`. Uses the existing source-audited `Tools/AloImport/blender_worker.py`.
 3. Run `Render.py` in another isolated Blender process for the transparent 512 × 512 icon.
 4. Copy the FBX to `Assets/Art/Models/SeparatistShips/Ginivex/Ginivex.fbx`; copy hull albedo/normal, cockpit albedo and engine albedo to their corresponding `Ginivex_*` paths under `Assets/Art/Textures/Models/SeparatistShips/Ginivex/`. Muzzle-flash art is retained only in conversion output because gameplay uses existing project weapon effects.
-5. Initial authoring only: `unity command eval_file --file Tools/Blender/Ginivex/Import.cs --timeout 30000` creates external materials and importer settings. Do not rerun this initial asset-creation script over existing authored materials.
-6. `unity command eval_file --file Tools/Blender/Ginivex/BuildVisual.cs --timeout 30000` creates the geometry-only prefab with four intended surfaces. It operates in an isolated preview scene and saves assets.
+5. Initial authoring only: `unity command script eval --file Tools/Blender/Ginivex/Import.cs --timeout 30` creates external materials and importer settings. Do not rerun this initial asset-creation script over existing authored materials.
+6. `unity command script eval --file Tools/Blender/Ginivex/BuildVisual.cs --timeout 30` creates the geometry-only prefab with four intended surfaces. It operates in an isolated preview scene and saves assets.
 
 ## Verified values
 

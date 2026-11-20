@@ -46,9 +46,9 @@
 1. `uv run --with pillow python Tools/Blender/Titan/Prepare.py`; use a fresh isolated Blender on `9886` with `Tools/Blender/ISDIRemake/Start.py`.
 2. `uv run python Tools/Blender/Titan/Convert.py`; `uv run --with pillow python Tools/Blender/Titan/Stage.py`; `uv run python Tools/Blender/Titan/PreserveParameters.py`.
 3. `uv run python Tools/Blender/Titan/GenerateBuilders.py`; create the white `2×2` stripe mask at `Assets/Art/Textures/Models/EmpireShips/Titan/Titan_TeamStripes_TeamMask.png` if missing.
-4. Run `BuildArt.cs`, `BuildStripes.cs`, `BuildGameplay.cs`, `Persist.cs`, `Finalize.cs`, `FixIntegration.cs`, `Render.cs`, `Register.cs`, `Verify.cs` using `unity command run_script --file Tools/Blender/Titan/<file> --timeout_ms 120000 --timeout 150 --json`; inspect nested `result.success`.
+4. Run `BuildArt.cs`, `BuildStripes.cs`, `BuildGameplay.cs`, `Persist.cs`, `Finalize.cs`, `FixIntegration.cs`, `Render.cs`, `Register.cs`, `Verify.cs` using `unity command script run --file Tools/Blender/Titan/<file> --timeout 150 --json`; check the exit code (`6` = script failure) and the returned `result`.
 5. Preserve Blender shader metadata with `PreserveBlendMetadata.py` and its generated MCP request through `ISDIRemake/Call.py`. Run `uv run --with pillow python Tools/Blender/Titan/Preserve.py` before Unity clears temporary files.
-6. Inspect open scenes; run asynchronous `TitanShipTests` and poll `test_status` to completion.
+6. Inspect open scenes; run asynchronous `TitanShipTests` and poll `unity command test status` to completion.
 
 ## Worn livery correction — 2026-10-14
 

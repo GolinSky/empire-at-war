@@ -3,8 +3,8 @@
 Shared final step for every faction whose station swaps a distinct model per level. Dedicated guide: `Architecture/SPACE_STATION_MODEL_IMPORT_GUIDE.md` in `empire-vault`.
 
 ```powershell
-unity command run_script --file Tools/Blender/SpaceStations/BuildStationLevels.cs --args '["Rebellion"]' --json
-unity command run_script --file Tools/Blender/SpaceStations/BuildStationLevels.cs --args '["Empire"]' --json
+unity command script run --file Tools/Blender/SpaceStations/BuildStationLevels.cs --args '["Rebellion"]' --json
+unity command script run --file Tools/Blender/SpaceStations/BuildStationLevels.cs --args '["Empire"]' --json
 ```
 
 Run it after the faction's art, attachment and view builders. It saves every asset it changes.

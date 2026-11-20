@@ -20,7 +20,7 @@
 1. Run `uv run --with pillow python Tools/Blender/MC50/Prepare.py`.
 2. Start portable Blender `3.6.23` with `--python F:/Private/empire-at-war/Tools/Blender/MC50/Start.py` in a hidden process. Dedicated MCP port `9891` retains configured safe mode and disabled telemetry; shared Blender stays separate.
 3. Run `python Tools/Blender/MC50/Convert.py`, then `uv run --with pillow python Tools/Blender/MC50/Stage.py`. Conversion expects a fresh instance and repairs source material slots before export.
-4. For an initial build, run `unity command run_script --file Tools/Blender/MC50/<File>.cs --timeout_ms 60000 --json` in order: `BuildMC50Art`, `BuildMC50Gameplay`, `PersistMC50`, `RenderMC50`, `RegisterMC50`, `VerifyMC50`. Inspect nested `result.success`.
+4. For an initial build, run `unity command script run --file Tools/Blender/MC50/<File>.cs --timeout 60 --json` in order: `BuildMC50Art`, `BuildMC50Gameplay`, `PersistMC50`, `RenderMC50`, `RegisterMC50`, `VerifyMC50`. check the exit code (`6` = script failure) and the returned `result`.
 5. Run `uv run --with pillow python Tools/Blender/MC50/Package.py`.
 
 ## Verification

@@ -53,7 +53,7 @@ reviewed: 2026-10-20
 ## Rules
 
 - Rebuild: `Prepare.py → Convert.py → Stage.py → GenerateBuilders.py`; Unity `BuildArt.cs → BuildGameplay.cs → Persist.cs → Render.cs → Register.cs → StripHelpers.cs → Inspect.cs`; finish `Package.py` with Pillow.
-- Unity command: `unity command run_script --file Tools/Blender/Dauntless/<File>.cs --timeout_ms 60000 --timeout 70 --json`; inspect nested `result.success`.
+- Unity command: `unity command script run --file Tools/Blender/Dauntless/<File>.cs --timeout 70 --json`; check the exit code (`6` = script failure) and the returned `result`.
 - No automated Unity tests or Play Mode run, per [[AssetPipeline/Guides/ALO_MODEL_IMPORT_GUIDE]]. Preserve other concurrent imports and unrelated changes.
 
 ## Goal

@@ -9,7 +9,7 @@ Empire `ShipType.VictoryII = 203`; hull/shields/speed 12,000/10,000/20.
 - Launch the isolated process with a Python startup script that sets `bpy.context.scene.blendermcp_auto_start_server = False`, `blendermcp_port = 9880`, then calls `bpy.ops.blendermcp.start_server()`. Do not change the primary MCP connection or Blender preferences.
 - Execute `Convert.py` through the existing MCP SDK client configured temporarily for port 9880. Redirect output to `Temp/VictoryIIImport/ConversionLog.txt`; create `Output/Textures` first.
 - Run `uv run --with pillow python Tools/Blender/VictoryII/StageArt.py`. It stages only this ship and the two distinct turret variants, verifies decoded PNG pixels, and writes material mappings.
-- Through the official `unity command run_script --file <path> --json`, execute `BuildVictoryIIArt.cs`, `BuildVictoryIIShip.cs`, `RenderVictoryII.cs`, and `RegisterVictoryII.cs` in that order. No scene opening or Play Mode is required.
+- Through the official `unity command script run --file <path> --json`, execute `BuildVictoryIIArt.cs`, `BuildVictoryIIShip.cs`, `RenderVictoryII.cs`, and `RegisterVictoryII.cs` in that order. No scene opening or Play Mode is required.
 - Execute `VerifyGeometry.py` through isolated Blender MCP; retain `SOURCE_GEOMETRY` JSON lines as `<name>SourceGeometry.json` and `GEOMETRY_JSON` as `GeometryReport.json`. Then execute `InspectVictoryIIGeometry.cs` and `VerifyVictoryII.cs` through Unity.
 - Saved assets use existing type-first Empire folders; Addressables entries stay within existing Data/View groups. Builders preserve existing GUIDs and upsert this ship's registrations.
 

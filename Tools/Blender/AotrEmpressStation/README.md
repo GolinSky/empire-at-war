@@ -54,16 +54,16 @@ python Tools/Blender/AotrEmpressStation/RestoreNormals.py
 & "$env:LOCALAPPDATA/AI-Tools/Blender/blender-3.6.23-windows-x64/blender.exe" --background --python Tools/Blender/AotrEmpressStation/PackBlends.py
 & "$env:LOCALAPPDATA/AI-Tools/Blender/blender-3.6.23-windows-x64/blender.exe" --background --python Tools/Blender/AotrEmpressStation/VerifyBlend.py
 python Tools/Blender/AotrEmpressStation/Stage.py
-unity command run_script --file Tools/Blender/AotrEmpressStation/BuildArt.cs --timeout_ms 180000 --timeout 180 --json
-unity command run_script --file Tools/Blender/AotrEmpressStation/BuildPlatform.cs --timeout_ms 180000 --timeout 180 --json
-unity command run_script --file Tools/Blender/AotrEmpressStation/Render.cs --timeout_ms 90000 --timeout 90 --json
-unity command run_script --file Tools/Blender/AotrEmpressStation/Register.cs --json
-unity command run_script --file Tools/Blender/AotrEmpressStation/Verify.cs --timeout_ms 90000 --timeout 90 --json
+unity command script run --file Tools/Blender/AotrEmpressStation/BuildArt.cs --timeout 180 --json
+unity command script run --file Tools/Blender/AotrEmpressStation/BuildPlatform.cs --timeout 180 --json
+unity command script run --file Tools/Blender/AotrEmpressStation/Render.cs --timeout 90 --json
+unity command script run --file Tools/Blender/AotrEmpressStation/Register.cs --json
+unity command script run --file Tools/Blender/AotrEmpressStation/Verify.cs --timeout 90 --json
 uv run --with pillow python Tools/Blender/AotrEmpressStation/VerifyGeometry.py
 python Tools/Blender/AotrEmpressStation/Package.py
 ```
 
-- Check nested `data.result.success` for Unity scripts. Blender can exit 0 after a Python exception; check logs and expected report files.
+- check the exit code (`6` = script failure) and the returned `result` for Unity scripts. Blender can exit 0 after a Python exception; check logs and expected report files.
 - Shared source geometry/UVs remain unchanged. Raw FBXs retain helpers; saved visual prefab strips disabled helper renderer/mesh components.
 - Every editable blend was reopened and checked for packed external images, source mesh count, UVs and bone parenting.
 

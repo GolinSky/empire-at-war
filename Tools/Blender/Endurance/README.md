@@ -64,12 +64,12 @@ uv run --with pillow python Tools/Blender/Endurance/Stage.py
 python Tools/Blender/Endurance/PrepareUnity.py
 python Tools/Blender/Endurance/PrepareGameplay.py
 python Tools/Blender/Endurance/PrepareRegistration.py
-unity command run_script --file Tools/Blender/Endurance/BuildArt.cs --entry BuildEnduranceArt.Main --args '[true]' --timeout_ms 120000 --json
-unity command run_script --file Tools/Blender/Endurance/BuildShip.cs --entry BuildEnduranceShip.Main --timeout_ms 120000 --json
-unity command run_script --file Tools/Blender/Endurance/Render.cs --entry RenderEndurance.Main --timeout_ms 120000 --json
-unity command run_script --file Tools/Blender/Endurance/Register.cs --entry RegisterEndurance.Main --timeout_ms 120000 --json
-unity command run_script --file Tools/Blender/Endurance/Finalize.cs --entry FinalizeEndurance.Main --timeout_ms 120000 --json
-unity command run_script --file Tools/Blender/Endurance/Verify.cs --entry VerifyEndurance.Main --timeout_ms 120000 --json
+unity command script run --file Tools/Blender/Endurance/BuildArt.cs --entry BuildEnduranceArt.Main --args '[true]' --timeout 120 --json
+unity command script run --file Tools/Blender/Endurance/BuildShip.cs --entry BuildEnduranceShip.Main --timeout 120 --json
+unity command script run --file Tools/Blender/Endurance/Render.cs --entry RenderEndurance.Main --timeout 120 --json
+unity command script run --file Tools/Blender/Endurance/Register.cs --entry RegisterEndurance.Main --timeout 120 --json
+unity command script run --file Tools/Blender/Endurance/Finalize.cs --entry FinalizeEndurance.Main --timeout 120 --json
+unity command script run --file Tools/Blender/Endurance/Verify.cs --entry VerifyEndurance.Main --timeout 120 --json
 uv run --with pillow python Tools/Blender/Endurance/VerifySource.py
 ```
 

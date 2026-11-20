@@ -14,8 +14,8 @@
 1. `uv run --with pillow python Tools/Blender/Invincible/Prepare.py`
 2. Run `Convert.py` in an isolated Blender `3.6.23` process with the installed ALAMO importer: `& "$env:LOCALAPPDATA/AI-Tools/Blender/blender-3.6.23-windows-x64/blender.exe" --background --factory-startup --python Tools/Blender/Invincible/Convert.py`.
 3. `uv run python Tools/Blender/Invincible/VerifyGeometry.py`, then `uv run python Tools/Blender/Invincible/Stage.py`.
-4. Run these entries sequentially with `unity command run_script --file Tools/Blender/Invincible/<Type>.cs --entry <Type>.Main --timeout_ms 60000 --json`: `BuildInvincibleArt`, `VerifyInvincibleUnityGeometry`, `BuildInvincibleShip`, `RenderInvincible`, `RegisterInvincible`, `VerifyInvincible`.
-5. Check nested `data.result.success`; save updated reports from `Temp/InvincibleImport/` into `Evidence/` after a verified rebuild.
+4. Run these entries sequentially with `unity command script run --file Tools/Blender/Invincible/<Type>.cs --entry <Type>.Main --timeout 60 --json`: `BuildInvincibleArt`, `VerifyInvincibleUnityGeometry`, `BuildInvincibleShip`, `RenderInvincible`, `RegisterInvincible`, `VerifyInvincible`.
+5. check the exit code (`6` = script failure) and the returned `result`; save updated reports from `Temp/InvincibleImport/` into `Evidence/` after a verified rebuild.
 
 ## Verification
 

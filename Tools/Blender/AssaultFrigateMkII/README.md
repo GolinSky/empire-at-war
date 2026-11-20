@@ -23,8 +23,8 @@
 1. `uv run --with pillow python Tools/Blender/AssaultFrigateMkII/Prepare.py`
 2. `python Tools/Blender/AssaultFrigateMkII/Convert.py` — fresh source scenes; do not rerun into an existing import with conflicting Blender names.
 3. `python Tools/Blender/AssaultFrigateMkII/Stage.py`
-4. `unity command run_script --file Tools/Blender/AssaultFrigateMkII/BuildArt.cs --timeout_ms 60000 --json`
-5. Run `BuildGameplay.cs`, `Persist.cs`, `Render.cs`, `Register.cs`, `Inspect.cs` in order with the same Unity command; inspect nested `result.success`.
+4. `unity command script run --file Tools/Blender/AssaultFrigateMkII/BuildArt.cs --timeout 60 --json`
+5. Run `BuildGameplay.cs`, `Persist.cs`, `Render.cs`, `Register.cs`, `Inspect.cs` in order with the same Unity command; check the exit code (`6` = script failure) and the returned `result`.
 6. `uv run --with pillow python Tools/Blender/AssaultFrigateMkII/Package.py`
 
 - Evidence/package: `output/remake-rebel-units/AssaultFrigateMkII-Converted/`; temporary working files: `Temp/AssaultFrigateMkIIImport/`.

@@ -190,7 +190,7 @@ created: 2026-11-17
 - Steps 1–4 below are superseded by this section; step 5 (origin isolation) is still open as a cache/perf item, not a correctness bug.
 
 ### Phase 0 — original steps (superseded)
-1. **Offline repro with the recovered seed** (edit-mode `unity command eval`, no Play Mode): generate `MapLayoutGenerator.Generate(MapSize.Small, players, new Random(-1028345868), -1028345868, planet)`. Build the map obstacle contacts for the ISD I span; create `ShipNavMesh(contacts, station, 97.99866, raster)`. Read `_originTriangle` (reflection) and compare with clearances 91.46416 (ISD II) and 101.73192 (Tector). Expected: ISD I −1, others ≥ 0. If the planet matters, try the skirmish planets or wait for the next `_map.csv`.
+1. **Offline repro with the recovered seed** (edit-mode `unity command script eval`, no Play Mode): generate `MapLayoutGenerator.Generate(MapSize.Small, players, new Random(-1028345868), -1028345868, planet)`. Build the map obstacle contacts for the ISD I span; create `ShipNavMesh(contacts, station, 97.99866, raster)`. Read `_originTriangle` (reflection) and compare with clearances 91.46416 (ISD II) and 101.73192 (Tector). Expected: ISD I −1, others ≥ 0. If the planet matters, try the skirmish planets or wait for the next `_map.csv`.
 2. Live confirmation, only if step 1 does not reproduce. During the user's battle, run a read-only eval with ISD I placement open: split `CanSpawnShip` into `IsOpen` / `IsClear` / `IsReachable` at a cell near the captured zone.
 3. Fix the overlay fallback in `ShipNavMesh.ScheduleReachability`: never use `OriginRegion = 0` when `_originTriangle < 0`. Mark every goal unreachable and resolve the origin (step 4).
 4. Make origin resolution robust in `ShipNavMesh.BeginSearch`: when `FindNearest`/`FindEscape` fail for a station-centred origin, escape to the nearest free triangle **outside the station's own keep-out disk**, with search radius ≥ station hull radius + clearance. `IsReachable` and `TryFillReachability` must share this result.
@@ -210,7 +210,7 @@ created: 2026-11-17
    ```sh
    awk -F, 'NR>1 && $3=="sample" && $4=="Player0" { k=$5; if ($13=="1" && $11==px[k] && $12==pz[k]) { c[k]++ } else { if (c[k]>=3) print k, $25, $7, c[k]; c[k]=0 } px[k]=$11; pz[k]=$12 }' <ai_orders.csv>
    ```
-4. Run in edit mode with `unity command eval` (not Play Mode or tests). Print `WeaponEngagementRange.Calculate` and the artillery reach for Titan, Executor, ISD I, ISD II and Tector against `Structure`, `Capital` and `Dreadnought`. Compare the new matrix with the `heavyCapital` values from git HEAD.
+4. Run in edit mode with `unity command script eval` (not Play Mode or tests). Print `WeaponEngagementRange.Calculate` and the artillery reach for Titan, Executor, ISD I, ISD II and Tector against `Structure`, `Capital` and `Dreadnought`. Compare the new matrix with the `heavyCapital` values from git HEAD.
 5. Record which hypothesis each symptom confirms in this note.
 
 ### Phase 2 — Movement fixes (after Phase 1 confirms)

@@ -282,7 +282,7 @@ tags:
 - Faster projectiles shorten time-to-kill in `BattleSimulator` (it fights at max range): speed ×2 → −8…−20%; salvo change alone ±1.5%.
 - Unit descriptions in `*Faction.asset` hand-write "N-burst" counts → update them with any `shotsPerSalvo` change.
 - `AttackSequenceDiagnostics` has battle-wide totals only; per-family ranking needs new counters.
-- Editor eval (`unity command eval_file`) has a 5 s main-thread limit → run `BattleSimulation` ≤10 seeds per call.
+- Editor eval (`unity command script eval`): Pipeline 0.6 had a 5 s main-thread limit; 1.0 defaults to `--timeout 30` s. Keep `BattleSimulation` ≤10 seeds per call.
 - Plan → [[Done/Optimization/Projectile_Visual_Reduction_Plan]].
 
 ### Squadron budgets and model flashes · 2026-11-18

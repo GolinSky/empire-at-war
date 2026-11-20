@@ -13,7 +13,7 @@
 2. Use an isolated Blender 3.6.23 instance with ALAMO. ALAMO's global shadow cleanup can modify other scenes; importing into a separate scene in a shared process is insufficient.
 3. For each of the 16 `MODELS` variants, prepend `VARIANT`, `SOURCE`, `AUDIT` from `BinaryAudit.json`, and `OUTPUT` to `Tools/Blender/export_isd_i.py`. Execute through Blender MCP, retain its `REPORT_JSON` as `<VARIANT>/ConversionReport.json`.
 4. Run `StageArt.py`, then `FixAdditive.py`. Packed sources, FBXs, textures, conversion reports and previews live in ignored `Temp/ISDIImport/`.
-5. Run these model-specific builders using `unity command run_script --file Tools/Blender/ISDI/<file> --json`: `BuildArt.cs`, `FixAdditive.cs`, `BuildShip.cs`, `BuildFighters.cs`, `BuildPreviews.cs`, `Register.cs`.
+5. Run these model-specific builders using `unity command script run --file Tools/Blender/ISDI/<file> --json`: `BuildArt.cs`, `FixAdditive.cs`, `BuildShip.cs`, `BuildFighters.cs`, `BuildPreviews.cs`, `Register.cs`.
 6. Run `Inspect.cs` to inspect saved assets without Play Mode. It writes `Temp/ISDIImport/UnityInspection.json`.
 
 ## Team Colors
@@ -21,7 +21,7 @@
 - ISD I and ISD II share four mirrored foredeck stripes per side; the hull and turrets remain neutral. Tiled hull UVs require fitted geometry instead of a repeating texture mask.
 - `ISDI_TeamStripes.asset`: 540 vertices / 250 triangles, width 2.6 units, surface offset 0.015 units. Original hull albedo, UVs and normal map are preserved; stripe mask strength 1, hull mask/rim strengths 0.
 - The stripe renderer is under `BankingBody` and explicitly bound to ownership, fog and explosion rendering. Both wrecks include the matching renderer/filter pair and wreck material. Team bindings: ISD I 90, ISD II 100; wreck pairs 40/43.
-- After rebuilding either ship, run `unity command run_script --file Tools/Blender/ISDI/BuildImperialTeamStripes.cs --entry BuildImperialTeamStripes.Main --json` after both gameplay/wreck prefabs exist. Repeated runs preserve asset GUIDs and avoid duplicate bindings.
+- After rebuilding either ship, run `unity command script run --file Tools/Blender/ISDI/BuildImperialTeamStripes.cs --entry BuildImperialTeamStripes.Main --json` after both gameplay/wreck prefabs exist. Repeated runs preserve asset GUIDs and avoid duplicate bindings.
 - 2026-10-06: red/blue top and angled ship/wreck renders inspected; all four saved prefab checks passed; no import or serialization errors. Evidence: `Temp/ImperialTeamColorFix/Verification.json`, `After/`, `WreckAfter/`. No combat or automated Unity test run for this fix.
 
 - Hull: 26 meshes / 67,925 triangles / 245 bones. ISD-I parts: 8 / 5,024 / 11.

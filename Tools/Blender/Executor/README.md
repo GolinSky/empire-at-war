@@ -43,9 +43,9 @@ These scripts are specific to Executor and this source layout. Run from the repo
 1. `python Tools/Blender/Executor/AuditSource.py`; create `Temp/ExecutorImport/Output/Textures`.
 2. Execute `Convert.py` through `Tools/Blender/mcp_call.py` using its `code_file` request field. Save the JSON following `CONVERSION_JSON` in the log as `Temp/ExecutorImport/ConversionReport.json`.
 3. `uv run --with pillow python Tools/Blender/Executor/Stage.py`.
-4. `unity command eval --code 'UnityEditor.AssetDatabase.Refresh();' --json`.
-5. Run each class below with `unity command run_script --file Tools/Blender/Executor/<Class>.cs --entry <Class>.Main --timeout_ms 60000 --json`:
+4. `unity command script eval --code 'UnityEditor.AssetDatabase.Refresh();' --json`.
+5. Run each class below with `unity command script run --file Tools/Blender/Executor/<Class>.cs --entry <Class>.Main --timeout 60 --json`:
    - `BuildExecutorArt`, `BuildExecutorShip`, `RenderExecutor`, `RegisterExecutor`, `StripExecutorHelpers`, `VerifyExecutorGeometry`.
-6. Inspect saved assets, renders and Console. For authorized tests, inspect `unity command list_open_scenes --json`, then run `unity command run_tests --mode editor --filter ExecutorShipTests --async_tests true --timeout 300 --json` and poll `unity command test_status --json`.
+6. Inspect saved assets, renders and Console. For authorized tests, inspect `unity command scene list_open --json`, then run `unity command test run --mode editor --filter ExecutorShipTests --async-tests true --timeout 300 --json` and poll `unity command test status --json`.
 
 The builders save assets through Unity APIs and upsert only Executor registrations. Rebuilding art/gameplay requires running helper stripping again.

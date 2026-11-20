@@ -10,6 +10,6 @@
 
 1. Run `Prepare.py` with Pillow available. Original ALO/DDS files stay unchanged.
 2. Generate one request per model with `CreateConversionRequest.py <model>` and submit through Blender MCP. Save each `CONVERSION_JSON` result into the combined `Temp/DefenseSatellitesImport/ConversionReport.json` array.
-3. Run `Stage.py`; use Unity `run_script` for `BuildArt.cs` (`BuildSatelliteArt.Main`), `BuildPlatforms.cs` (`BuildSatellitePlatforms.Main`), `Render.cs` (`RenderSatellites.Main`), `Register.cs` (`RegisterSatellites.Main`), then `IntegrateSites.cs` (`IntegrateSatelliteSites.Main`).
+3. Run `Stage.py`; use `unity command script run` for `BuildArt.cs` (`BuildSatelliteArt.Main`), `BuildPlatforms.cs` (`BuildSatellitePlatforms.Main`), `Render.cs` (`RenderSatellites.Main`), `Register.cs` (`RegisterSatellites.Main`), then `IntegrateSites.cs` (`IntegrateSatelliteSites.Main`).
 4. Builders save assets; they use existing Addressables groups. Registration adds no faction reinforcement entry: satellites are built on captured pads.
 5. Run focused EditMode capture, satellite, AI, map, save and real entity composition checks. In-game visual/combat acceptance remains a user check.

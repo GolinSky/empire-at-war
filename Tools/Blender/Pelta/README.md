@@ -20,7 +20,7 @@
 
 ## Unity integration
 
-Run with `unity command run_script --file Tools/Blender/Pelta/<File>.cs --entry <Entry>.Main --timeout_ms 60000 --json`:
+Run with `unity command script run --file Tools/Blender/Pelta/<File>.cs --entry <Entry>.Main --timeout 60 --json`:
 
 | File | Entry |
 | --- | --- |
@@ -31,7 +31,7 @@ Run with `unity command run_script --file Tools/Blender/Pelta/<File>.cs --entry 
 | Register | RegisterPelta |
 | Verify | VerifyPelta |
 
-- Check nested `data.result.success`; the outer CLI envelope can succeed when a script fails.
+- check the exit code (`6` = script failure) and the returned `result`; a throwing script exits `6`.
 - Builders save/import assets directly. Rendering uses isolated preview scenes and restores global palette/ambient settings.
 - `Evidence/` records source, conversion, Unity geometry, saved-reference and regression-test results.
 - Saved Pelta verification and both automatically discovered Pelta wreck tests pass. Team-color tests `2/2`, placement tests `3/3` and weapon-loadout tests `5/5` pass. Broader wreck filter `135/138`: unrelated Raider/Tartan tests reference a retired wreck field; MiningFacility has existing livery differences.

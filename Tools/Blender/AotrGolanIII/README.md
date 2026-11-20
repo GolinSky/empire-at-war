@@ -30,15 +30,15 @@ uv run --with pillow python Tools/Blender/AotrGolanIII/Prepare.py
 & "$env:LOCALAPPDATA/AI-Tools/Blender/blender-3.6.23-windows-x64/blender.exe" --background --python Tools/Blender/AotrGolanIII/Convert.py *> Temp/AotrGolanIIIImport/Conversion.log
 python Tools/Blender/AotrGolanIII/RestoreNormals.py
 python Tools/Blender/AotrGolanIII/Stage.py
-unity command run_script --file Tools/Blender/AotrGolanIII/BuildArt.cs --timeout_ms 180000 --timeout 180 --json
-unity command run_script --file Tools/Blender/AotrGolanIII/BuildPlatform.cs --timeout_ms 180000 --timeout 180 --json
-unity command run_script --file Tools/Blender/AotrGolanIII/Render.cs --timeout_ms 90000 --timeout 90 --json
-unity command run_script --file Tools/Blender/AotrGolanIII/Register.cs --json
-unity command run_script --file Tools/Blender/AotrGolanIII/Verify.cs --timeout_ms 90000 --timeout 90 --json
+unity command script run --file Tools/Blender/AotrGolanIII/BuildArt.cs --timeout 180 --json
+unity command script run --file Tools/Blender/AotrGolanIII/BuildPlatform.cs --timeout 180 --json
+unity command script run --file Tools/Blender/AotrGolanIII/Render.cs --timeout 90 --json
+unity command script run --file Tools/Blender/AotrGolanIII/Register.cs --json
+unity command script run --file Tools/Blender/AotrGolanIII/Verify.cs --timeout 90 --json
 uv run --with pillow python Tools/Blender/AotrGolanIII/VerifyGeometry.py
 ```
 
-- Inspect nested `data.result.success` after every Unity script.
+- check the exit code (`6` = script failure) and the returned `result` after every Unity script.
 - `Prepare.py` resolves actual DDS references case-insensitively. Only missing base-game textures are extracted from `textures.meg` into the task workspace; source files stay untouched.
 - Converter reuses the audited station workflow, reconstructs source-index bone parents, repairs ALAMO material slots, restores authored normals and preserves mesh-to-bone transforms. Neighbouring position buckets handle FBX corner rounding efficiently.
 - `RestoreNormals.py` restores exact source vertex normals in the binary FBX before Unity imports them.

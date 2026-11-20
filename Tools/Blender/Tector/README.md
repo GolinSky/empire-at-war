@@ -35,7 +35,7 @@
 1. Use a fresh Blender `3.6.23` MCP session; `Convert.py` clears that session's objects. Preserve unrelated Blender work.
 2. Run `Prepare.py`, then `uv run --with pillow python Tools/Blender/Tector/StageTextures.py`.
 3. Run `AuditMaterials.py --source-only`, `Convert.py`, `AuditMaterials.py`, then `Stage.py`.
-4. Run official `unity command run_script --file Tools/Blender/Tector/<File>.cs --entry <Class>.Main --json`: `BuildArt` / `BuildTectorArt`, `BuildShip` / `BuildTectorShip`, `StripHelpers` / `StripTectorHelpers`, `Render` / `RenderTector`, `Register` / `RegisterTector`.
+4. Run official `unity command script run --file Tools/Blender/Tector/<File>.cs --entry <Class>.Main --json`: `BuildArt` / `BuildTectorArt`, `BuildShip` / `BuildTectorShip`, `StripHelpers` / `StripTectorHelpers`, `Render` / `RenderTector`, `Register` / `RegisterTector`.
 5. Inspect `Verify.cs` / `VerifyTector` and `VerifyGeometry.cs` / `VerifyTectorGeometry`; check Console and saved references.
 
 - Working evidence and editable blends: `Temp/TectorImport/`; durable verification summary: `ImportEvidence.json`.

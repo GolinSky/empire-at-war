@@ -242,7 +242,7 @@ created: "2026-10-29\r"
 
 - [[TODOs/Features/Space_Hazards_Plan]]
   - [ ] In-game review: colours/opacity, island layout, asteroid clumps, both hazard types readable; gameplay effects (abilities jammed, shields offline, reinforcement block).
-  - [ ] Tests on request: `Map` category, `MapExhaustive` (`--include_explicit true`), clean full-suite comparison.
+  - [ ] Tests on request: `Map` category, `MapExhaustive` (`--include-explicit true`), clean full-suite comparison.
 
 ## Imported Units (records without a plan)
 
@@ -518,3 +518,7 @@ created: "2026-10-29\r"
 ## Tractor Beam Lower-Class Targeting
 
 - [ ] [[Done/Features/Tractor_Beam_Lower_Class_Targeting]] — In battle: ISD II beams a heavy cruiser; refuses another capital and a fighter squadron; ability and roster tooltips read correctly.
+
+## Unity Pipeline 1.0
+
+- [ ] [[Done/Tooling/Unity_Pipeline_1_0_Update]] — Confirm the next Jenkins player build of committed `main` succeeds on Pipeline `1.0.0`.

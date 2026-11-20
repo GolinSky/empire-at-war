@@ -36,12 +36,12 @@
 - Reproduced empty donor injection slots: one live team view + 30 null references. `DynamicEntityInstaller.Install` attempted `RegisterComponent(null)`.
 - Saved the injection list as 17 current hardpoints + team-color view. Builder creates this explicit list; verifier rejects null, duplicate or missing target bindings.
 - Regression failed before repair, then all six Procursator EditMode tests passed. Actual project/battle/local/AI factory spawning, health, voice, independent state and teardown passed; no new Console errors.
-- Reproduce factory check: `python Tools/Blender/Procursator/VerifyFactory.py`, then `unity command run_script --file Temp/ProcursatorCompositionCheck.cs --entry ProcursatorCompositionRunner.Main --timeout_ms 60000 --json` after confirming clean scene state.
+- Reproduce factory check: `python Tools/Blender/Procursator/VerifyFactory.py`, then `unity command script run --file Temp/ProcursatorCompositionCheck.cs --entry ProcursatorCompositionRunner.Main --timeout 60 --json` after confirming clean scene state.
 
 ## Files
 
 - Rebuild: `Prepare.py` → `Convert.py` → `Stage.py` → `BuildArt.cs` → `BuildGameplay.cs` → `Persist.cs` → `Render.cs` → `Register.cs` → `Verify.cs` → `Package.py`.
-- Unity builder command: `unity command run_script --file Tools/Blender/Procursator/<Script>.cs --timeout_ms 60000 --json`; check nested `result.success` before the next dependent step.
+- Unity builder command: `unity command script run --file Tools/Blender/Procursator/<Script>.cs --timeout 60 --json`; check the exit code (`6` = script failure) and the returned `result` before the next dependent step.
 - Blender 3.6.23, dedicated port `9891`, `Start.py` / `Call.py` pin that listener. Start a separate hidden Blender process; do not point the converter at a user's working scene.
 - Converter repairs material slots using `ISDIRemake/Convert.py` workflow; exporter `export_isd_i.py`. Preparation uses the established binary material/source audit helpers.
 - Evidence: `Tools/Blender/Procursator/Evidence/`; editable source archive and previews `output/remake-empire-units/Procursator-Converted/`.

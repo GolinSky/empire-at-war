@@ -54,4 +54,4 @@
 - Before a repeat conversion, launch portable Blender 3.6.23 in a separate hidden process with `--python Tools/Blender/MC30c/Start.py`; confirm port `9890` belongs to that process. `Call.py` pins the dedicated MCP port. Existing shared Blender scenes must remain untouched.
 - Conversion skips existing completed reports; remove only this import's conversion report when deliberately rebuilding. Original source inputs stay read-only.
 - `GenerateBuilders.py` captures the initial Battlecruiser asset-builder adaptation; committed C# builders are the reviewed rebuild source.
-- Unity invocation: `unity command run_script --file Tools/Blender/MC30c/<Script>.cs --timeout_ms 60000 --json`; inspect nested `result.success`.
+- Unity invocation: `unity command script run --file Tools/Blender/MC30c/<Script>.cs --timeout 60 --json`; check the exit code (`6` = script failure) and the returned `result`.

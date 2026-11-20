@@ -23,9 +23,9 @@
 | `StripModelMuzzleFlashes.Inspect` / `ApplyPrefabs(paths)` / `VerifyReferences(paths)` | Audits model-embedded Flash objects and mesh subassets; removes authored prefab copies and stale fog bindings after model reimport; verifies affected prefab references |
 
 ```powershell
-unity command run_script --file Tools/Performance/ProfileShotPrefabs.cs --entry ProfileShotPrefabs.Main --json
-unity command run_script --file Tools/Performance/SetupCrowdedBattle.cs --entry SetupCrowdedBattle.Status --json
-unity command run_script --file Tools/Performance/DecodeShotAwake.cs --entry DecodeShotAwake.Run --args '[0,301]' --json
+unity command script run --file Tools/Performance/ProfileShotPrefabs.cs --entry ProfileShotPrefabs.Main --json
+unity command script run --file Tools/Performance/SetupCrowdedBattle.cs --entry SetupCrowdedBattle.Status --json
+unity command script run --file Tools/Performance/DecodeShotAwake.cs --entry DecodeShotAwake.Run --args '[0,301]' --json
 ```
 
 - `SetupCrowdedBattle` mutates only the active runtime battle. Do not invoke it during an existing user-owned match without authorization.

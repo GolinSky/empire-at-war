@@ -16,7 +16,7 @@
 
 ## Unity integration
 
-- `YWingBomberArt.cs`, `YWingBomberGameplay.cs`, `YWingBomberRegister.cs` record this import's one-time construction. Run through official `unity command run_script --file <file> --entry <Class>.Main --json` only on a fresh reviewed integration; they are not idempotent rebuild tools.
+- `YWingBomberArt.cs`, `YWingBomberGameplay.cs`, `YWingBomberRegister.cs` record this import's one-time construction. Run through official `unity command script run --file <file> --entry <Class>.Main --json` only on a fresh reviewed integration; they are not idempotent rebuild tools.
 - Safe readback: `YWingBomberVerify.Main` and `YWingBomberArt.Inspect`. `YWingBomberArt.RenderAll` renders isolated geometry previews without changing open scenes or the global team palette.
 - `verify_saved.py` checks persisted bindings and recorded live/conversion reports in `Temp/YWingBomberImport`; run with `uv run --with pillow python Tools/Blender/YWingBomber/verify_saved.py`.
 - New visual/gameplay assets: `Assets/Prefabs/Models/Squadrons/YWingBomber.prefab`, `YWingBomberSquadronView.prefab`; configuration: `Assets/Settings/Data/Squadron/YWingBomberSquadronData.asset`.

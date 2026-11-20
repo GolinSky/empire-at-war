@@ -23,7 +23,7 @@ Compare stern-facing shares for attacks within firing reach using the order capt
 python Tools/BattleAudit/battle_audit.py combat-facing BattleTelemetry/<scene>_<time>_ai_orders.csv Victory VictoryI VictoryII
 ```
 - `Assets/Scripts/Services/Timing/BattleProfilerMarkers.cs` — `Battle.*` markers used in captures.
-- Unity MCP tools: `eval`, `eval_file`, `render_audit_profiler`, `get_console_logs`, `editor_status`.
+- Unity MCP tools (Pipeline 1.0): `script_eval` (`code` or `file`), `global_render_audit_profiler`, `console_get`; CLI `unity command editor status --json`.
 
 ## Procedure
 
@@ -67,7 +67,7 @@ python3 Tools/BattleAudit/battle_audit.py hitches "/path/to/BattleCaptures/Hitch
 - This Editor tool does not establish Development Player or historical-build results. Those require the same setup in separately identified Players. Mac capture is deferred by user request on 2026-10-29.
 
 ### 1. Check state and workload
-`editor_status` must report `playing`. Then record the workload and start the CSV in one `eval`:
+`unity command editor status --json` must report `playMode: playing`. Then record the workload and start the CSV in one `script_eval`:
 
 ```csharp
 EmpireAtWar.Services.Timing.BattlePerformanceCapture.StartCapture();
@@ -111,7 +111,7 @@ return new {
    ```bash
    python Tools/BattleAudit/battle_audit.py decoder allocations <first> <last> Logs/BattleAudit/<run>/decode-allocations.cs Logs/BattleAudit/<run>/allocation-stacks.json
    ```
-   Run `eval_file` on the `.cs` (timeout 90000). Output: total bytes/calls, KB per frame, top methods by bytes; also written to `allocation-stacks.json`.
+   Run `script_eval` with `file` set to the `.cs` (`timeout` 90 s). Output: total bytes/calls, KB per frame, top methods by bytes; also written to `allocation-stacks.json`.
 5. The first resolved method is often a framework method (`String.Concat`, `Object.Internal_CloneSingle`, `MulticastDelegate.CombineImpl`). Find the game caller with a custom decoder that keeps 6–14 resolved stack frames and filters on that method (examples: `Logs/BattleAudit/20261011T1650Z/decode-*.cs`). If the game frame is the method's opening line, inspect its IL for `newarr`/`newobj`/`box` (e.g. `params` overloads such as 5-argument `Mathf.Max`).
 
 ### 5. Attribute spikes and callers
@@ -119,10 +119,10 @@ return new {
   ```bash
   python Tools/BattleAudit/battle_audit.py decoder callers Battle.Navigation.Plan <first> <last> Logs/BattleAudit/<run>/decode-navigation.cs
   ```
-  then `eval_file`. Works for any marker name (`Battle.Squadron.UpdateOrder`, `GameObject.ActivateAwakeRecursively`, …).
+  then `script_eval` with `file`. Works for any marker name (`Battle.Squadron.UpdateOrder`, `GameObject.ActivateAwakeRecursively`, …).
 - Periodic spikes (same cost every N frames) usually mean timers in lockstep: list the CSV column per frame and check its period.
-- Live state via `eval` + reflection (after captures finish): ship order states (`Ship._orders._stateMachine.CurrentState`), navigation queue (`ShipNavigationService._planQueue`), queued ships (`ShipMoveComponent._hasQueuedPlan`).
-- Check the console: `get_console_logs` with `severity: error` and `warning`.
+- Live state via `script_eval` + reflection (after captures finish): ship order states (`Ship._orders._stateMachine.CurrentState`), navigation queue (`ShipNavigationService._planQueue`), queued ships (`ShipMoveComponent._hasQueuedPlan`).
+- Check the console: `console_get` with `level: warn` (includes errors).
 
 ### 6. Write results
 1. `Logs/BattleAudit/<run>/analysis.md` (Logs is git-ignored):

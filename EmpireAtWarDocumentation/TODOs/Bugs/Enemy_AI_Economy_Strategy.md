@@ -17,7 +17,7 @@ follows: "[[Done/Bugs/Enemy_AI_Active_Play_And_Ship_Combat]]"
 - After R1–R9: `EnemyAi` 503/503, `Capture` 131/131, `Map` 125/125, `Core` `ShipAutoPower_…` passes alone.
 - `MapGeneration` (explicit, 3 seeds): Open Field fingerprints pass after the M5 correction; other failures were CLI-bridge timeout logs from overlapping polling, not generation results.
 - Not rerun after R1–R9: `Ships`, `Abilities`, `Navigation` (passed before; no later edits in their code).
-- Testing note: poll `test_status` sparingly (≥ 20 s) and never from two scripts at once; status polling during a run logs "Main thread operation timed out" errors that fail log-sensitive tests.
+- Testing note: poll `unity command test status` sparingly (≥ 20 s) and never from two scripts at once; status polling during a run logs "Main thread operation timed out" errors that fail log-sensitive tests.
 
 ### Open
 - [x] R2 step 4: covered by the rebuild (far reinforcements stay separate while either group fights). Verify in a battle.
