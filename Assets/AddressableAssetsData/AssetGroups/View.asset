@@ -30,6 +30,11 @@ MonoBehaviour:
     m_ReadOnly: 0
     m_SerializedLabels: []
     FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 4b6810d880252ec42b8c389c37439c87
+    m_Address: DevastatorWreckView
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
   - m_GUID: 5090c0e719bb54042924eb52ef50793a
     m_Address: TibannaGasStationWreckView
     m_ReadOnly: 0

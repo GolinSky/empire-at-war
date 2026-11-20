@@ -114,9 +114,25 @@ namespace EmpireAtWar.Tests.Editor
                 Is.EqualTo("Assets/Settings/Data/Models/Wrecks/Empire/ChimaeraWreckData.asset"));
         }
 
+        [TestCase("Chimaera")]
+        [TestCase("Devastator")]
+        public void SavedView_HasOwnTeamStripesAndWreck(string name)
+        {
+            GameObject view = AssetDatabase.LoadAssetAtPath<GameObject>(View(name));
+            MeshRenderer stripes = view.GetComponentsInChildren<MeshRenderer>(true).Single(r => r.name == "TeamStripes");
+            Assert.That(AssetDatabase.GetAssetPath(stripes.GetComponent<MeshFilter>().sharedMesh),
+                Is.EqualTo($"Assets/Art/Models/EmpireShips/{name}/{name}_TeamStripes.asset"));
+            Assert.That(stripes.sharedMaterial.GetTexture("_TeamMaskMap"), Is.Not.Null);
+            Assert.That(References(view, "FogVisibilityComponent", "renderers"), Has.Member(stripes));
+            Assert.That(References(view, "UnitRenderStateComponent", "meshRenderers"), Has.Member(stripes));
+            Assert.That(AssetDatabase.GetAssetPath(AssetDatabase.LoadAssetAtPath<ShipData>(Data(name)).Wreck),
+                Is.EqualTo($"Assets/Settings/Data/Models/Wrecks/Empire/{name}WreckData.asset"));
+        }
+
         [TestCase("Assets/Prefabs/Models/Ships/Empire/View/ChimaeraShipView.prefab")]
         [TestCase("Assets/Prefabs/Models/Ships/Empire/View/DevastatorShipView.prefab")]
         [TestCase("Assets/Prefabs/Models/Wrecks/ChimaeraWreckView.prefab")]
+        [TestCase("Assets/Prefabs/Models/Wrecks/DevastatorWreckView.prefab")]
         [TestCase("Assets/Prefabs/Ui/Reinforcement/ChimaeraReinforcementView.prefab")]
         [TestCase("Assets/Prefabs/Ui/Reinforcement/DevastatorReinforcementView.prefab")]
         public void SavedPrefab_HasNoMissingScriptsOrMaterials(string path)

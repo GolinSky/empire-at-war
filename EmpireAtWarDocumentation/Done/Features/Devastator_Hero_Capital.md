@@ -24,7 +24,8 @@ acceptance: pending-user
 - Shield regen delay `1 → 0.9`; hero `isHero 1`, `MaxCount 1`.
 - Coexists with `Darth Vader - TIE Advanced` (user). No exclusivity code.
 - Build `70 s`, population `10`, level `5` → kept (user).
-- Wreck → reuses `ISDIIWreckData` (same look).
+- Team stripes → **dorsal spine + crossbar** (user pick C, 2026-11-20): centreline stripe `z 79 → 30.6` ending in a crossbar `x ±6.7` (hilt shape). Mesh `Assets/Art/Models/EmpireShips/Devastator/Devastator_TeamStripes.asset` (`195` verts / `252` tris), material `ISDII_TeamStripes.mat`. Build details → [[Done/Features/Chimaera_Hero_Capital]].
+- Wreck → own `DevastatorWreckView` + `DevastatorWreckData` (so the wreck carries the new stripes; was `ISDIIWreckData`).
 
 ## Important Values
 
@@ -39,6 +40,7 @@ acceptance: pending-user
 - Loadout: `4×6, 5×2, 23×4, 32×8, 43×6, 71×2, 91×2` — matches `WeaponLoadoutBaker.DeriveLoadout(view)`.
 - New hardpoints: `HP_Devastator_IC_01/02`, ids `32/33`, local `(∓41.79, -10.89, -48)`, yaw copied from `HP_ISD_IC_05/06`.
 - Octuple turret meshes stay on the retyped mains (no art change requested).
+- Visuals otherwise identical to ISD II; only the team stripes differ.
 
 ## Implementation
 

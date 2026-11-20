@@ -34,6 +34,7 @@ acceptance: pending-user
   - Texture `Chimaera_EmblemMask.png` `512²`: black RGB, alpha = soft ornament mask `clamp((200 − L) / 120)`; `_BaseColor.a = 0.7`.
   - Why not `Ship Lit`: no transparency or alpha clip. Avoid: URP decal projector (extra pass).
 - History: v1 white triangular plate (too small, white field) → v2 opaque per-pixel-run strips (`6,470` tris) → v3 this grid (`804` tris).
+- Team stripes → **bow chevrons** (user pick A, 2026-11-20): two nested V chevrons pointing at the bow, apexes `z 61.2 / 50.4`, arms to `z 36 / 25.2`, `0.62` of the leading-edge half-width. Must differ from ISD II slashes (2 pairs), ISD I slashes (1 pair), Tector circles (1 pair) — all on the forward-mid upper hull. Mesh `Assets/Art/Models/EmpireShips/Chimaera/Chimaera_TeamStripes.asset` (`354` verts / `456` tris), material `Chimaera_TeamStripes.mat` = `ISDII_TeamStripes` with Chimaera HighContrast albedo + metallic map.
 - Model → material overrides on the `ChimaeraShipView` variant, not a separate `Chimaera.prefab` model. Why: a variant cannot swap its nested model instance; overrides keep ISD II edits flowing in.
 
 ## Important Values
@@ -55,6 +56,7 @@ acceptance: pending-user
 - Grid: columns ≤ `3` units with one on the keel `x = 0`, rows ≤ `2` units; `402` of `620` cells kept (cells with no ornament pixels dropped); `497` verts / `804` tris; each vertex `0.25` below the lowest hull hit (all hull renderers, back faces on), `0` misses, faces down. White vertex colours (particle shader multiplies them). Shadow casting off.
 - Wreck: `ShipWreckBuilder` copies only `Ship Lit` renderers → the wreck has no emblem; orphan `Chimaera_Emblem_Wreck.mat` deleted.
 - Gotcha: `EditorUtility.CopySerialized` onto a mesh asset leaves the old GPU buffer in the Editor; `Resources.UnloadAsset` + `ImportAsset(ForceUpdate)` after saving.
+- Stripe meshes (both heroes): `1.5` units wide (= ISD II), 3-vertex cross-section to fold over ridges, segments ≤ `1` unit, `0.12` above the topmost hull hit. UV = top-down `(x, z) × 0.0202` — the ISD II stripes' measured mask density. A fitted projection was stretched and smeared the chipped mask into pale pink; the isotropic one restores the chips.
 - `39` renderers swapped to `9` Chimaera materials; `Hull_1` (turrets), hangar, lights, team stripes stay ISD II.
 
 ## Implementation

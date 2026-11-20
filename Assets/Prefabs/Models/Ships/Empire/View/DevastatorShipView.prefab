@@ -310,6 +310,11 @@ PrefabInstance:
       propertyPath: <WeaponType>k__BackingField
       value: 43
       objectReference: {fileID: 0}
+    - target: {fileID: 2267769439341131825, guid: f24f9301127af634ab504e1c96f3d728,
+        type: 3}
+      propertyPath: m_Mesh
+      value: 
+      objectReference: {fileID: 4300000, guid: 9189dc75119cf484ab6a9c4f3bf3ca95, type: 2}
     - target: {fileID: 2708922646955401821, guid: f24f9301127af634ab504e1c96f3d728,
         type: 3}
       propertyPath: <WeaponType>k__BackingField
