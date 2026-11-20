@@ -27,6 +27,16 @@ namespace EmpireAtWar.Tests.Editor
         [TestCase("Republic")]
         [TestCase("Rebellion")]
         [TestCase("Separatist")]
+        public void ResearchRoster_ContainsEveryResearchLine(string faction)
+        {
+            var research = new FactionResearchModel(CreateRoster(faction));
+            Assert.That(research.ResearchTypes, Is.EquivalentTo(System.Enum.GetValues(typeof(ResearchType))));
+        }
+
+        [TestCase("Empire")]
+        [TestCase("Republic")]
+        [TestCase("Rebellion")]
+        [TestCase("Separatist")]
         public void StationResearch_ReplacesTierAndDoesNotChangeMiningResearch(string faction)
         {
             FactionRoster roster = CreateRoster(faction);

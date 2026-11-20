@@ -603,6 +603,69 @@ MonoBehaviour:
           - shipClasses: 0200000003000000080000000a00000004000000050000000b000000
             stat: 1
             multiplier: 1.25
+    - key: 2
+      value:
+        tiers:
+        - factionData:
+            matchups: {fileID: 0}
+            displayName: Shields I
+            description: Research this upgrade for your faction. Completed research
+              improves the affected units.
+            role: Research
+            iconKey: 46e861879378cc441bb7260e899b7559:21300000
+            isHero: 0
+            <Name>k__BackingField: Enhanced Shields I
+            <MaxCount>k__BackingField: 1
+            <AvailableLevel>k__BackingField: 2
+            <Price>k__BackingField: 1000
+            <BuildTime>k__BackingField: 15
+            <UnitCapacity>k__BackingField: 0
+            <Icon>k__BackingField: {fileID: 21300000, guid: 46e861879378cc441bb7260e899b7559,
+              type: 3}
+          effects:
+          - shipClasses: 0200000003000000
+            stat: 4
+            multiplier: 1.25
+        - factionData:
+            matchups: {fileID: 0}
+            displayName: Shields II
+            description: Research this upgrade for your faction. Completed research
+              improves the affected units.
+            role: Research
+            iconKey: 46e861879378cc441bb7260e899b7559:21300000
+            isHero: 0
+            <Name>k__BackingField: Enhanced Shields II
+            <MaxCount>k__BackingField: 1
+            <AvailableLevel>k__BackingField: 3
+            <Price>k__BackingField: 1500
+            <BuildTime>k__BackingField: 20
+            <UnitCapacity>k__BackingField: 0
+            <Icon>k__BackingField: {fileID: 21300000, guid: 46e861879378cc441bb7260e899b7559,
+              type: 3}
+          effects:
+          - shipClasses: 0200000003000000080000000a00000004000000
+            stat: 4
+            multiplier: 1.25
+        - factionData:
+            matchups: {fileID: 0}
+            displayName: Shields III
+            description: Research this upgrade for your faction. Completed research
+              improves the affected units.
+            role: Research
+            iconKey: 46e861879378cc441bb7260e899b7559:21300000
+            isHero: 0
+            <Name>k__BackingField: Enhanced Shields III
+            <MaxCount>k__BackingField: 1
+            <AvailableLevel>k__BackingField: 4
+            <Price>k__BackingField: 2000
+            <BuildTime>k__BackingField: 25
+            <UnitCapacity>k__BackingField: 0
+            <Icon>k__BackingField: {fileID: 21300000, guid: 46e861879378cc441bb7260e899b7559,
+              type: 3}
+          effects:
+          - shipClasses: 0200000003000000080000000a00000004000000050000000b000000
+            stat: 4
+            multiplier: 1.25
     - key: 3
       value:
         tiers:
