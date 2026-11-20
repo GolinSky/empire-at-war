@@ -1,5 +1,6 @@
 using EmpireAtWar.Mvc;
 using UnityEngine;
+using UnityEngine.Serialization;
 
 namespace EmpireAtWar.Services.Player
 {
@@ -24,7 +25,10 @@ namespace EmpireAtWar.Services.Player
 
         [Header("Surface")]
         [SerializeField] private Color sootColor = new Color(0.06f, 0.05f, 0.045f, 1f);
-        [SerializeField, Range(0f, 1f)] private float sootOpacity = 0.7f;
+        [Tooltip("Each mark gets its own opacity between these two; most marks stay near the lowest.")]
+        [FormerlySerializedAs("sootOpacity")]
+        [SerializeField, Range(0f, 1f)] private float sootOpacityMin = 0.7f;
+        [SerializeField, Range(0f, 1f)] private float sootOpacityMax = 1f;
         [SerializeField] private Color blisterColor = new Color(0.32f, 0.3f, 0.28f, 1f);
 
         public Texture2D DetailMap => detailMap;
@@ -34,7 +38,8 @@ namespace EmpireAtWar.Services.Player
         public float MarkDensity => markDensity;
         public float EdgeBreakup => edgeBreakup;
         public Color SootColor => sootColor;
-        public float SootOpacity => sootOpacity;
+        public float SootOpacityMin => sootOpacityMin;
+        public float SootOpacityMax => sootOpacityMax;
         public Color BlisterColor => blisterColor;
     }
 }

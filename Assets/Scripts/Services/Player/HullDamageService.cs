@@ -49,8 +49,8 @@ namespace EmpireAtWar.Services.Player
             float spacing = settings.MarkRadiusMax * reach;
             Shader.SetGlobalVector(PARAMS_ID, new Vector4(1f / settings.DetailSize, 1f / spacing, 1f / reach,
                 settings.MarkDensity));
-            Shader.SetGlobalVector(SURFACE_ID, new Vector4(settings.SootOpacity, settings.EdgeBreakup,
-                Mathf.Clamp01(settings.MarkRadiusMin / settings.MarkRadiusMax), 0f));
+            Shader.SetGlobalVector(SURFACE_ID, new Vector4(settings.SootOpacityMin, settings.EdgeBreakup,
+                Mathf.Clamp01(settings.MarkRadiusMin / settings.MarkRadiusMax), settings.SootOpacityMax));
             Shader.SetGlobalVector(SOOT_COLOR_ID, settings.SootColor.linear);
             Shader.SetGlobalVector(BLISTER_COLOR_ID, settings.BlisterColor.linear);
         }

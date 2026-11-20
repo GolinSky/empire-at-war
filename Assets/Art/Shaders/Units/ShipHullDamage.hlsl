@@ -22,7 +22,7 @@
 TEXTURE2D(_HullDamageMap);
 SAMPLER(sampler_HullDamageMap);
 float4 _HullDamageParams;    // x = detail repeats per world unit, y = 1 / mark spacing (world units), z = largest mark radius (cells), w = share of cells marked at 0 hull
-float4 _HullDamageSurface;   // x = soot opacity, y = edge breakup (radii), z = smallest / largest mark radius, w = unused
+float4 _HullDamageSurface;   // x = lowest soot opacity, y = edge breakup (radii), z = smallest / largest mark radius, w = highest soot opacity
 half4 _HullDamageSootColor;
 half4 _HullDamageBlisterColor; // blistered paint in the middle of a mark
 float _HullDamageQuality;    // QualitySettings level; below FULL_QUALITY_LEVEL: one planar sample
@@ -50,17 +50,18 @@ uint4 HullDamageHash(int3 cell)
     return v;
 }
 
-// Distance to the nearest active mark, in mark radii (1 = edge). Large when no mark is near.
+// x = distance to the nearest active mark, in mark radii (1 = edge); large when no mark is near.
+// y = that mark's own random number (0..1), used for its opacity.
 // A mark is a disk on the surface: its spot must lie within one radius of the surface, and the distance is
 // measured along the surface, so a spot just under the plating still leaves a full-size mark.
 // A mark reaches at most one cell from its spot (clamped in HullDamageService), so the 3x3x3 cells around
 // this point are enough.
-float GetHullDamageMarkDistance(float3 cellPosition, float3 normalOS, half level)
+float2 GetNearestHullDamageMark(float3 cellPosition, float3 normalOS, half level)
 {
     float activeShare = level * _HullDamageParams.w;
     float maxRadius = _HullDamageParams.z;
     int3 firstCell = (int3)floor(cellPosition) - 1;
-    float nearest = 1e4;
+    float2 nearest = float2(1e4, 0.0);
     for (int z = 0; z < 3; z++)
     for (int y = 0; y < 3; y++)
     for (int x = 0; x < 3; x++)
@@ -75,7 +76,9 @@ float GetHullDamageMarkDistance(float3 cellPosition, float3 normalOS, half level
         float depth = dot(offset, normalOS);
         if (abs(depth) >= radius)
             continue;
-        nearest = min(nearest, length(offset - depth * normalOS) / radius);
+        float distance = length(offset - depth * normalOS) / radius;
+        if (distance < nearest.x)
+            nearest = float2(distance, frac(random.w * 113.9));
     }
 
     return nearest;
@@ -103,10 +106,11 @@ void ApplyHullDamage(inout SurfaceData surface, float3 positionDamage, half leve
 
     float3 normalOS = TransformWorldToObjectDir(normalWS);
     // The material's mark scale grows marks and their spacing together, so marks stay within the 27-cell search.
-    float markDistance = GetHullDamageMarkDistance(positionDamage * (_HullDamageParams.y / _HullDamageMarkScale),
+    float2 mark = GetNearestHullDamageMark(positionDamage * (_HullDamageParams.y / _HullDamageMarkScale),
         normalOS, level);
     // Most of an undamaged-looking hull is far from any mark: skip the texture work there.
     UNITY_BRANCH
+    float markDistance = mark.x;
     if (markDistance >= 1.0 + _HullDamageSurface.y)
     {
         return;
@@ -136,7 +140,10 @@ void ApplyHullDamage(inout SurfaceData surface, float3 positionDamage, half leve
     // The detail height frays the round edge into an irregular stain.
     float frayed = markDistance + (detail.r - 0.5) * 2.0 * _HullDamageSurface.y;
     // Soft, semi-transparent soot fading out to the edge; blistered paint only in the middle.
-    half soot = (1.0h - smoothstep(0.35h, 1.0h, frayed)) * saturate(_HullDamageSurface.x * _HullDamageOpacityScale);
+    // Each mark has its own opacity; squaring the random number keeps most marks near the lowest opacity
+    // and makes fully dark ones rare.
+    half opacity = lerp(_HullDamageSurface.x, _HullDamageSurface.w, mark.y * mark.y);
+    half soot = (1.0h - smoothstep(0.35h, 1.0h, frayed)) * saturate(opacity * _HullDamageOpacityScale);
     half blister = (1.0h - smoothstep(0.15h, 0.45h, frayed)) * smoothstep(0.45h, 0.65h, detail.r + 0.5h * detail.g);
 
     surface.albedo = lerp(surface.albedo, _HullDamageSootColor.rgb, soot);
