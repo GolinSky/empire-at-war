@@ -21,10 +21,10 @@ namespace EmpireAtWar.Services.Player
         [SerializeField, Min(0.1f)] private float edgeNoiseFrequency = 3f;
 
         [Header("Star Shape")]
-        [Tooltip("How deep the gaps between a large mark's rays cut in. 0 = round marks.")]
+        [Tooltip("How deep the gaps between a mark's rays cut in. 0 = round marks.")]
         [SerializeField, Range(0f, 1f)] private float starStrength = 0.8f;
-        [Tooltip("Marks smaller than this share of the size range stay round; rays grow in above it.")]
-        [SerializeField, Range(0f, 1f)] private float starMinSize = 0.35f;
+        [Tooltip("Marks smaller than this share of the size range stay round. 0 = every mark is a star.")]
+        [SerializeField, Range(0f, 1f)] private float starMinSize = 0f;
 
         [Header("Soot")]
         [SerializeField] private Color sootColor = new Color(0.015f, 0.013f, 0.012f, 1f);
@@ -36,9 +36,13 @@ namespace EmpireAtWar.Services.Player
         [SerializeField, Range(0f, 1f)] private float sootOpacityEdge = 0.15f;
 
         [Header("Burnt Paint")]
-        [Tooltip("Dull flakes in the middle of each mark, as a share of its radius.")]
-        [SerializeField, Range(0f, 1f)] private float blisterRadius = 0.3f;
-        [SerializeField] private Color blisterColor = new Color(0.2f, 0.18f, 0.16f, 1f);
+        [Tooltip("Thin glowing lines along each mark's rays, from the centre out to this share of the outline.")]
+        [SerializeField, Range(0f, 1f)] private float emberLength = 0.45f;
+        [Tooltip("Line width in mark radii.")]
+        [SerializeField, Range(0.005f, 0.2f)] private float emberWidth = 0.012f;
+        [SerializeField] private Color emberColor = new Color(1f, 0.4f, 0.1f, 1f);
+        [Tooltip("Glow brightness; keep low so the lines stay faint.")]
+        [SerializeField, Min(0f)] private float emberStrength = 0.35f;
 
         public float MarkRadiusMin => markRadiusMin;
         public float MarkRadiusMax => markRadiusMax;
@@ -51,7 +55,9 @@ namespace EmpireAtWar.Services.Player
         public float SootOpacityMin => sootOpacityMin;
         public float SootOpacityMax => sootOpacityMax;
         public float SootOpacityEdge => sootOpacityEdge;
-        public float BlisterRadius => blisterRadius;
-        public Color BlisterColor => blisterColor;
+        public float EmberLength => emberLength;
+        public float EmberWidth => emberWidth;
+        public Color EmberColor => emberColor;
+        public float EmberStrength => emberStrength;
     }
 }

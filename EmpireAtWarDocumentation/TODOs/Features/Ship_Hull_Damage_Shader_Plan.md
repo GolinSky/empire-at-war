@@ -211,5 +211,11 @@ User-value layout:
   - `edgeBreakup` 0.35 → 0.2 (stronger fray blurred the rays).
   - `_HullDamageCore` = (edge opacity, star strength, star min size, blister radius); `_HullDamageBlisterColor` back.
   - Verified: compile clean, 96 variants clean, console clean; close-ups (Executor, Victory, Tector, Acclamator Assault) + 9-ship sheet via the real `HullDamageService`.
+- Sharp stars on every mark + glowing lines (2026-11-20, user; size unchanged):
+  - `starMinSize` 0 (smoothstep(min − 0.15, min) → every mark is a star); ray mask `pow(…, 3)` (was 1.5), gaps 0.25 (was 0.35).
+  - "Burnt paint" = the user's name for the old glowing lines, wanted smaller and dimmer. Dull flakes (`blisterRadius`, `blisterColor`) replaced by thin emissive lines along the nearest mark's ray centres: `rayOffset` = arc distance to the ray centre line (returned from the 2-nearest search), bent by smooth noise (±width), width `emberWidth` 0.012 radii, from 0.03–0.1 out to `emberLength` 0.45 of the outline, fading toward the tip. Colour `emberColor` (1, 0.4, 0.1) × `emberStrength` 0.35 → `_HullDamageEmberColor` (a = width). No flicker, no texture.
+  - Pitfall: `line` is a reserved HLSL word (geometry primitive) → "unexpected token 'line'"; renamed to `crack`.
+  - First pass (width 0.035, strength 1, length 0.6) read as lava stars → toned down.
+  - Verified: compile clean, 96 variants clean, close-ups + 9-ship sheet via real service.
 - Verification: 96 variant compiles clean; 9-ship preview shows marks at a consistent share of every hull (Executor now visible blotches; Arquitens Imperial now marked). The final tool version was compiled and run in memory (`script run`) because unrelated uncommitted work (`EnemySquadronCommander.cs`, `ShipSpawnPoints.cs`) blocks the project compile; Editor-assembly compile of the tool still pending on that.
 4. Phase 2 only, if approved: audit ship view prefabs — do hull renderers share the view-root space? Yes → store root-space hits, no per-frame work. No → store one world-to-root matrix per slot, written per frame for ships that have hits.

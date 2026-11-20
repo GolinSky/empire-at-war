@@ -18,10 +18,12 @@ MonoBehaviour:
   edgeBreakup: 0.2
   edgeNoiseFrequency: 3
   starStrength: 0.8
-  starMinSize: 0.35
+  starMinSize: 0
   sootColor: {r: 0.015, g: 0.013, b: 0.012, a: 1}
   sootOpacityMin: 0.7
   sootOpacityMax: 1
   sootOpacityEdge: 0.15
-  blisterRadius: 0.3
-  blisterColor: {r: 0.2, g: 0.18, b: 0.16, a: 1}
+  emberLength: 0.45
+  emberWidth: 0.012
+  emberColor: {r: 1, g: 0.4, b: 0.1, a: 1}
+  emberStrength: 0.35
