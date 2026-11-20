@@ -79,6 +79,7 @@ User-value layout:
 | `markDensity` | 1 | share of spots on at 0 hull |
 | `edgeBreakup` / `edgeNoiseFrequency` | 0.2 / 3 | outline wobble |
 | `detailMinPixels` | 10 | pixels across the largest mark radius below which fray + patch fade out (full at 20) |
+| `farSootOpacity` | 0.25 | even soot at 0 hull once marks are < 1 px (blend from 2 px); untuned estimate |
 | `starStrength` / `starMinSize` | 0.45 / 0 | 0 = round, 1 = star |
 | `sootColor` | 0.015 | near-black |
 | `sootOpacityMin/Max/Edge` | 0.7 / 1 / 0.15 | middle band (random, t²) / outline |
@@ -141,6 +142,19 @@ User-value layout:
 - Static count after: lit fragment 1,581 (was 1,514), search loop body 147 (was 119) — more checks, less executed work.
 - Executed estimate per damaged pixel on flat plating: search ~1,300 → ~600; far ships additionally skip ~1,000 instructions of noise/patch work. Estimates from bytecode, not GPU time.
 - Still needed: `RenderAuditAblationCapture` damage on/off/restored with a heavily damaged fleet on High Fidelity and Performant (user Play Mode).
+
+## Code review (2026-11-20, source only)
+
+- Verified correct: 27-cell coverage maths (`spacing = maxRadius × √((1+b)²+1)`), R1 plane skip, R2 shape skip, bit masks in C#/HLSL/outline, wreck level + seed carry-over, repair path, no MPB/keywords.
+- Findings, fixed 2026-11-20:
+  1. R7 far skip: marks blend into an even soot (`level × farSootOpacity × Opacity Scale`) between 2 px and 1 px across the largest mark; below 1 px the 27-cell search is skipped. New setting `farSootOpacity` 0.25 (`_HullDamageBurnt.w`); estimate from mark coverage (≈ 0.86 marks/pixel × ≈ 0.47 mean opacity × ≈ 0.69 star area), **not tuned visually** → adjust in preview if far ships pop lighter/darker.
+  2. `edgeBreakup` range clamped 0.6 → 0.5 (shape cut-off at 1.5 outline radii stays valid). Asset value 0.2 unchanged.
+  3. Pattern-space normal: `HullDamageWorldToPatternDir` / `HullDamagePatternToWorldDir` (`mul(n, M) ÷ scale`), correct on unevenly scaled and mirrored renderers. Identical to before on uniform scale.
+  4. `Ships/UnitHullDamageSyncTests`: initial sync, follow health change, stop after `LateDispose`. Authored, not run.
+  5. `HullDamageService`: `ITickable` poll → `QualitySettings.activeQualityLevelChanged`, unsubscribed in `LateDispose`.
+  6. Comment corrected (seed is per unit).
+- Not changed: any lost hull → level 1 → one batch of marks at 99.9 % hull (intended; test `0.999 → 1`).
+- Verification: all 6 Ship Lit + 4 Ship Wreck passes force-compiled, 0 messages. C#: my files compile; the test assembly still fails on unrelated `EnemyStructurePlacementServiceTests.cs(85)` (`patrol` parameter, other in-progress work) → domain not reloaded, new code not loaded in the Editor yet. `farSootOpacity` written to the asset by hand.
 
 ## Edge Cases
 

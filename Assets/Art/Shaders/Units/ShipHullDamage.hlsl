@@ -22,7 +22,7 @@
 float4 _HullDamageParams;    // x = edge noise frequency (per cell), y = 1 / mark spacing (world units), z = largest mark radius (cells), w = share of cells marked at 0 hull
 float4 _HullDamageSurface;   // x = lowest middle soot opacity, y = edge breakup (radii), z = smallest / largest mark radius, w = highest middle soot opacity
 float4 _HullDamageCore;      // x = soot opacity near the outline, y = star ray strength, z = mark size (0..1) where rays start, w = burnt patch radius (mark radii)
-float4 _HullDamageBurnt;     // x = how far the patch centre may sit from the mark centre (mark radii), y = depth (normal tilt on the patch wall), z = pixels across the largest mark radius below which the detail fades out
+float4 _HullDamageBurnt;     // x = how far the patch centre may sit from the mark centre (mark radii), y = depth (normal tilt on the patch wall), z = pixels across the largest mark radius below which the detail fades out, w = even soot at 0 hull once marks are smaller than a pixel
 float _HullDamageQuality;    // QualitySettings level; below HULL_DAMAGE_FULL_QUALITY_LEVEL: one edge-noise octave, flat patches
 half4 _HullDamageSootColor;
 half4 _HullDamageBurntColor;   // burnt metal inside the patch
@@ -34,14 +34,31 @@ half4 _HullDamageEmberColor;   // rgb = glow colour x strength (linear), a = wid
 #define HULL_DAMAGE_SLOPE_STEP 0.02
 #define HULL_DAMAGE_FULL_QUALITY_LEVEL 2.0
 
-// Object-space position in world units, shifted per renderer so ships of one class differ.
-float3 GetHullDamagePosition(float3 positionOS)
+// Size of the renderer along each object axis, in world units.
+float3 GetHullDamageScale()
 {
     float4x4 objectToWorld = GetObjectToWorldMatrix();
-    float3 scale = float3(length(objectToWorld._m00_m10_m20), length(objectToWorld._m01_m11_m21),
+    return float3(length(objectToWorld._m00_m10_m20), length(objectToWorld._m01_m11_m21),
         length(objectToWorld._m02_m12_m22));
+}
+
+// Pattern space: object-space position in world units, shifted per unit so ships of one class differ.
+float3 GetHullDamagePosition(float3 positionOS)
+{
     float seed = (float)GetHullDamageSeed();
-    return positionOS * scale + seed * float3(37.31, 53.17, 71.93);
+    return positionOS * GetHullDamageScale() + seed * float3(37.31, 53.17, 71.93);
+}
+
+// World direction -> pattern space. Pattern space only undoes the renderer's rotation (its scale is already in
+// the positions), so this stays a true surface normal on unevenly scaled parts.
+float3 HullDamageWorldToPatternDir(float3 directionWS)
+{
+    return normalize(mul(directionWS, (float3x3)GetObjectToWorldMatrix()) / GetHullDamageScale());
+}
+
+float3 HullDamagePatternToWorldDir(float3 directionPattern)
+{
+    return normalize(mul((float3x3)GetObjectToWorldMatrix(), directionPattern / GetHullDamageScale()));
 }
 
 // PCG4D (Jarkko & Olano 2020): four independent random numbers per cell in one go.
@@ -84,6 +101,7 @@ float GetHullDamageShapeDistance(float distance, float3 planar, float3 tangent, 
     float4 random)
 {
     float spikes = _HullDamageCore.y * smoothstep(_HullDamageCore.z - 0.15, _HullDamageCore.z, size01);
+    // Past 1 + the largest edge breakup (0.5, HullDamageSettings) no soot is left, so the shape is not needed.
     if (spikes <= 0.0 || distance >= 1.5)
         return distance;
 
@@ -202,6 +220,17 @@ half GetHullDamageSoot(float distance, float random)
     return opacity * (1.0h - smoothstep(0.8h, 1.0h, distance)) * saturate(_HullDamageOpacityScale);
 }
 
+void ApplyHullDamageSoot(inout SurfaceData surface, half soot)
+{
+    surface.albedo = lerp(surface.albedo, _HullDamageSootColor.rgb, soot);
+    // Soot kills the metal sheen too; otherwise reflections turn a black mark grey.
+    surface.metallic *= 1.0h - soot;
+    surface.smoothness = lerp(surface.smoothness, 0.1h, soot);   // soot is matte
+    surface.occlusion *= 1.0h - 0.5h * soot;
+    // Running lights under soot dim with it.
+    surface.emission *= 1.0h - soot;
+}
+
 // level: 0 = intact (skipped), 1 = destroyed.
 void ApplyHullDamage(inout SurfaceData surface, float3 positionDamage, half level, half3 normalWS, half4 tangentWS)
 {
@@ -216,21 +245,33 @@ void ApplyHullDamage(inout SurfaceData surface, float3 positionDamage, half leve
         return;
     }
 
+    // Far away the marks shrink below a pixel: they blend into an even soot (the average of what the marks would
+    // cover) between 2 and 1 pixels across the largest mark, and past that the mark search is skipped.
+    float largestRadius = _HullDamageParams.z;
+    half farBlend = smoothstep(largestRadius, 2.0 * largestRadius, footprint);
+    half farSoot = level * _HullDamageBurnt.w * saturate(_HullDamageOpacityScale);
+    UNITY_BRANCH
+    if (farBlend >= 1.0h)
+    {
+        ApplyHullDamageSoot(surface, farSoot);
+        return;
+    }
+
     // The material's mark scale grows marks and their spacing together, so marks stay within the 27-cell search.
     float3 cellPosition = positionDamage * (_HullDamageParams.y / _HullDamageMarkScale);
-    float3 normalOS = TransformWorldToObjectDir(normalWS);
+    float3 normalOS = HullDamageWorldToPatternDir(normalWS);
     float3 patch;
     float4 marks = GetNearestHullDamageMarks(cellPosition, normalOS, level, patch);
     // Most of the hull is far from any mark: skip the rest there.
     UNITY_BRANCH
     if (marks.x >= 1.0 + _HullDamageSurface.y)
     {
+        ApplyHullDamageSoot(surface, farSoot * farBlend);
         return;
     }
 
     // Detail (frayed outline, burnt patch) only where a mark is big enough on screen to show it: fades out between
     // 2x and 1x the minimum pixel size across the largest mark radius. Far-away ships get plain soot.
-    float largestRadius = _HullDamageParams.z;
     half detail = 1.0h - smoothstep(largestRadius / (2.0 * _HullDamageBurnt.z), largestRadius / _HullDamageBurnt.z,
         footprint);
     bool fullQuality = _HullDamageQuality >= HULL_DAMAGE_FULL_QUALITY_LEVEL;
@@ -249,14 +290,7 @@ void ApplyHullDamage(inout SurfaceData surface, float3 positionDamage, half leve
     // Overlapping marks stack like two layers of soot.
     half soot = 1.0h - (1.0h - GetHullDamageSoot(marks.x + fray, marks.y))
         * (1.0h - GetHullDamageSoot(marks.z + fray, marks.w));
-
-    surface.albedo = lerp(surface.albedo, _HullDamageSootColor.rgb, soot);
-    // Soot kills the metal sheen too; otherwise reflections turn a black mark grey.
-    surface.metallic *= 1.0h - soot;
-    surface.smoothness = lerp(surface.smoothness, 0.1h, soot);   // soot is matte
-    surface.occlusion *= 1.0h - 0.5h * soot;
-    // Running lights under soot dim with it.
-    surface.emission *= 1.0h - soot;
+    ApplyHullDamageSoot(surface, lerp(soot, farSoot, farBlend));
 
     UNITY_BRANCH
     if (detail <= 0.0h)
@@ -308,7 +342,7 @@ void ApplyHullDamage(inout SurfaceData surface, float3 positionDamage, half leve
     float wallU = saturate((field - (HULL_DAMAGE_PATCH_THRESHOLD - 0.02)) / 0.14);
     float wall = 4.0 * wallU * (1.0 - wallU);
     float3 tiltedOS = normalize(normalOS + slope / max(length(slope), 1e-5) * (_HullDamageBurnt.y * wall * detail));
-    float3 tiltedWS = TransformObjectToWorldDir(tiltedOS);
+    float3 tiltedWS = HullDamagePatternToWorldDir(tiltedOS);
     half3 bitangentWS = tangentWS.w * cross(normalWS, tangentWS.xyz);
     half2 tiltTS = half2(dot(tiltedWS, tangentWS.xyz), dot(tiltedWS, bitangentWS));
     surface.normalTS = normalize(half3(surface.normalTS.xy + tiltTS, surface.normalTS.z));

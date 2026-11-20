@@ -18,6 +18,7 @@ MonoBehaviour:
   edgeBreakup: 0.2
   edgeNoiseFrequency: 3
   detailMinPixels: 10
+  farSootOpacity: 0.25
   starStrength: 0.45
   starMinSize: 0
   sootColor: {r: 0.015, g: 0.013, b: 0.012, a: 1}
