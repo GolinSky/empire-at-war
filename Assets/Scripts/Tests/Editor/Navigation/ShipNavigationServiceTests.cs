@@ -1417,70 +1417,54 @@ namespace EmpireAtWar.Tests.Movement
                 null, new object[] { gameObject.transform, gameObject.transform,
                     gameObject.AddComponent<LineRenderer>(), DG.Tweening.Ease.Linear }, null);
             SetPrivateField(component, "_motion", motion);
-            SetPrivateField(component, "_enginePlumes", new ShipEnginePlumes(System.Array.Empty<LineRenderer>()));
+            SetPrivateField(component, "_enginePlumes",
+                new ShipEnginePlumes(System.Array.Empty<TrailRenderer>(), 1f));
             return component;
         }
 
-        private static LineRenderer CreateEnginePlume(GameObject gameObject)
+        private static TrailRenderer CreateEngineTrail(GameObject gameObject, float width)
         {
-            var plume = new GameObject("Engine plume").AddComponent<LineRenderer>();
-            plume.transform.SetParent(gameObject.transform, false);
-            plume.positionCount = 3;
-            plume.SetPositions(new[] { Vector3.zero, new Vector3(0f, 0f, -1.96f), new Vector3(0f, 0f, -14f) });
-            return plume;
+            var trail = new GameObject("Engine trail").AddComponent<TrailRenderer>();
+            trail.transform.SetParent(gameObject.transform, false);
+            trail.widthMultiplier = width;
+            trail.emitting = false;
+            return trail;
         }
 
-        [TestCase(0f, false, 0f)]
-        [TestCase(0.5f, true, -7f)]
-        [TestCase(1f, true, -14f)]
-        [TestCase(2f, true, -14f)]
-        public void EnginePlumes_LengthFollowsThrottleAndZeroTurnsThemOff(float throttle, bool isOn, float tipZ)
+        [Test]
+        public void EngineTrails_ReachFourteenWidthsAtFullPace()
         {
-            GameObject ship = new GameObject("Plume throttle");
+            GameObject ship = new GameObject("Trail length");
             try
             {
-                LineRenderer first = CreateEnginePlume(ship);
-                LineRenderer second = CreateEnginePlume(ship);
-                var plumes = new ShipEnginePlumes(new[] { first, second });
-                plumes.SetThrottle(throttle);
-                foreach (LineRenderer plume in new[] { first, second })
+                TrailRenderer narrow = CreateEngineTrail(ship, 1f);
+                TrailRenderer wide = CreateEngineTrail(ship, 10f);
+                const float PACE = 20f;
+                new ShipEnginePlumes(new[] { narrow, wide }, PACE);
+                foreach (TrailRenderer trail in new[] { narrow, wide })
                 {
-                    Assert.That(plume.enabled, Is.EqualTo(isOn));
-                    Assert.That(plume.GetPosition(0), Is.EqualTo(Vector3.zero));
-                    Assert.That(plume.GetPosition(2).z, Is.EqualTo(tipZ).Within(0.001f));
-                    Assert.That(plume.GetPosition(1).z, Is.EqualTo(tipZ * 0.14f).Within(0.001f));
+                    Assert.That(trail.time * PACE, Is.EqualTo(14f * trail.widthMultiplier).Within(0.001f),
+                        "Trail length = pace × lifetime.");
+                    Assert.That(trail.minVertexDistance, Is.GreaterThan(0f));
+                    Assert.That(trail.minVertexDistance, Is.LessThan(14f * trail.widthMultiplier));
                 }
             }
             finally { Object.DestroyImmediate(ship); }
         }
 
         [Test]
-        public void EnginePlumes_TurnOffWhenThrottleDropsToZero()
+        public void EngineTrails_EmitOnlyAfterHyperspaceArrival()
         {
-            GameObject ship = new GameObject("Plume stop");
-            try
-            {
-                LineRenderer plume = CreateEnginePlume(ship);
-                var plumes = new ShipEnginePlumes(new[] { plume });
-                plumes.SetThrottle(0.005f);
-                Assert.That(plume.enabled, Is.True);
-                plumes.SetThrottle(0f);
-                Assert.That(plume.enabled, Is.False);
-            }
-            finally { Object.DestroyImmediate(ship); }
-        }
-
-        [Test]
-        public void EnginePlumes_StayOffDuringHyperspaceArrival()
-        {
-            GameObject ship = new GameObject("Plume arrival");
+            GameObject ship = new GameObject("Trail arrival");
             try
             {
                 ShipMoveComponent component = CreateReadyComponent(ship, out _, isReady: false);
-                LineRenderer plume = CreateEnginePlume(ship);
-                SetPrivateField(component, "_enginePlumes", new ShipEnginePlumes(new[] { plume }));
-                component.Tick();
-                Assert.That(plume.enabled, Is.False);
+                TrailRenderer trail = CreateEngineTrail(ship, 1f);
+                SetPrivateField(component, "_enginePlumes", new ShipEnginePlumes(new[] { trail }, 10f));
+                Assert.That(trail.emitting, Is.False);
+                typeof(ShipMoveComponent).GetMethod("FinishHyperSpaceJump",
+                    BindingFlags.Instance | BindingFlags.NonPublic).Invoke(component, null);
+                Assert.That(trail.emitting, Is.True);
             }
             finally { Object.DestroyImmediate(ship); }
         }

@@ -104,11 +104,13 @@ acceptance: pending-user
 
 ## Outcome (2026-11-20)
 
-- 73/73 ship views have plumes (1–5 each). Chimaera and Devastator excluded by user (new, uncommitted hero ships, not edited). Both are `ISDIIShipView` variants → inherit its 3 plumes and `enginePlumes`. Devastator passes all checks. Chimaera overrides fog `renderers` without the plumes → visible through fog; fix in the Chimaera work, `ShipEnginePlumePrefabTests` fails on it until then.
+- 73/73 ship views have plumes (1–5 each). Chimaera and Devastator excluded by user (new, uncommitted hero ships, not edited). Both are `ISDIIShipView` variants → inherit its 3 plumes and `enginePlumes`. Devastator passes all checks. Chimaera overrode fog `renderers` without the plumes → visible through fog; fixed on user request (plumes appended to its fog list; read-back: 3/3 in fog).
 - Read-back check on all 73: plumes are shared instances, in both lists, width = scale, no trail. Unity compile 0 errors. Aft + side preview renders reviewed per ship.
 - Tests not run (local override). In-game look and battle cost → [[TODOs/User_Acceptance_Queue]].
 
 ### Decision changes
+
+- **Switched to `TrailRenderer` (user, 2026-11-20, after checking ISD I/II and Tector):** the fixed-length plume read as on/off at full size and never bent. Each trail now gets `time = 14 × width / undamaged pace` at spawn → full-pace length 14 × width, grows from 0, bends in turns. Throttle code removed; emission follows hyperspace arrival. Same nozzles, widths, material and curves. Cost: long lifetimes on slow capitals (ISD II ≈7 s, Executor ≈26 s). The original Decision section (plume over trail) is superseded by this.
 
 - **Width ignores scale.** View-aligned `LineRenderer` width does not follow Transform scale (probe: scale 10 → length 10×, width 1×). Setup tool also sets `widthMultiplier = width`. The plan's "scale = width" assumption was wrong.
 - **Budget raised** to ≤4 (≤5 over 400 units): symmetric quads (Home One, MC80 Independence, Justice, Resolute, Venator, Rothana, Remonda, Malevolence, CD273, NebulonB, MC75) read better than 3.

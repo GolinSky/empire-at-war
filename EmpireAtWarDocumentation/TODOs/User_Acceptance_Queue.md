@@ -536,6 +536,6 @@ created: "2026-10-29\r"
 
 ## Ship Engine Plumes
 
-- [ ] [[Done/Features/Ship_Engine_Plume_Rollout_Plan]] — In battle: check plume look and length on CR70, ISD II and Executor (moving, turning, stopping, hyperspace arrival, fog); then spot-check other ships for plumes starting off the nozzle.
+- [ ] [[Done/Features/Ship_Engine_Plume_Rollout_Plan]] — In battle: check engine trails on CR70, ISD I/II, Tector and Executor (grow from 0 when departing, bend in turns, fade on stop, none during hyperspace, hidden by fog; capital turn-in-place linger acceptable?); spot-check other ships for trails starting off the nozzle.
 - [ ] [[Done/Features/Ship_Engine_Plume_Rollout_Plan]] — Battle capture with many ships moving: plume draw calls and transparent overdraw.
 - [ ] [[Done/Features/Ship_Engine_Plume_Rollout_Plan]] — Run `Ships` (`ShipEnginePlumePrefabTests`) and `Navigation` (`ShipNavigationServiceTests`) when authorized; compile passed, tests not run.
