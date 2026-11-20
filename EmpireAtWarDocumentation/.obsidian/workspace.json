@@ -13,12 +13,12 @@
             "state": {
               "type": "markdown",
               "state": {
-                "file": "TODOs/Tooling/Battle_Hitch_And_GC_Attribution_Instruments.md",
+                "file": "TODOs/Features/Ship_Hull_Damage_Shader_Plan.md",
                 "mode": "source",
                 "source": false
               },
               "icon": "lucide-file",
-              "title": "Battle_Hitch_And_GC_Attribution_Instruments"
+              "title": "Ship_Hull_Damage_Shader_Plan"
             }
           }
         ]
@@ -43,7 +43,7 @@
                 "sortOrder": "alphabetical",
                 "autoReveal": false,
                 "showSearch": true,
-                "searchQuery": "Battle Hitch and GC Attribution Instruments"
+                "searchQuery": "Ship Hull Damage Shader Plan"
               },
               "icon": "lucide-folder-closed",
               "title": "Files"
@@ -187,7 +187,28 @@
   },
   "active": "6840d7bc3222d620",
   "lastOpenFiles": [
+    "Artifacts/Audits/Faction_Balance_2026-11-20/Faction Balance Analysis - 2026-11-20.md",
+    "Artifacts/Audits/Faction_Balance_2026-11-20",
+    "Done/Features/Ship_Engine_Plume_Rollout_Plan.md",
+    "Done/Features/Chimaera_Hero_Capital_Refs/Chimaera_Rusty_Ref.webp",
+    "Done/Features/Chimaera_Hero_Capital_Refs/Chimaera_Emblem.png",
+    "Done/Features/Chimaera_Hero_Capital_Refs",
+    "Done/Features/Devastator_Hero_Capital.md",
+    "Done/Features/Chimaera_Hero_Capital.md",
+    "Done/Bugs/Enemy_AI_Opening_And_Task_Groups.md",
+    "TODOs/Features/Chimaera_Hero_Capital_Refs/Chimaera_Rusty_Ref.webp",
+    "TODOs/Features/Chimaera_Hero_Capital_Refs/Chimaera_Emblem.png",
+    "TODOs/Features/Chimaera_Hero_Capital_Refs",
     "TODOs/Bugs/Enemy_AI_Opening_And_Task_Groups.md",
+    "TODOs/Features/Devastator_Hero_Capital.md",
+    "TODOs/Features/Chimaera_Hero_Capital.md",
+    "TODOs/Features/Ship_Ui_Icon_Focus_And_Entry_Select.md",
+    "TODOs/Features/Ship_Engine_Plume_Rollout_Plan.md",
+    "TODOs/Features/Ship_Hull_Damage_Shader_Plan.md",
+    "AssetPipeline/Guides/SHIP_ENGINE_TRAIL_GUIDE.md",
+    "TODOs/Bugs/Hardpoint_Based_Weapon_Reach.md",
+    "TODOs/Tooling/Battle_Hitch_And_GC_Attribution_Instruments.md",
+    "Done/Tooling/Unity_Pipeline_1_0_Update.md",
     "Done/Optimization/Projectile_Visual_Reduction_Plan.md",
     "Done/Features/Tractor_Beam_Lower_Class_Targeting.md",
     "TODOs/Optimization/Projectile_Visual_Reduction_Plan.md",
@@ -201,28 +222,11 @@
     "TODOs/Features/Planet_Biome_Atmosphere_Plan.md",
     "TODOs/Bugs/Enemy_AI_Economy_Strategy - Review.md.tmp.19284.69055c6c17ee",
     "TODOs/Bugs/Enemy_AI_Economy_Strategy - Review.md",
-    "Done/Bugs/Map_Enemy_Station_Near_Allies_Fix.md",
-    "Done/Bugs/Enemy_AI_Economy_Strategy_Regression_Fixes.md",
-    "TODOs/Bugs/Map_Enemy_Station_Near_Allies_Fix.md",
-    "TODOs/Bugs/Enemy_AI_Economy_Strategy_Regression_Fixes.md",
-    "TODOs/Bugs/Enemy_AI_Economy_Strategy.md",
-    "Done/Bugs/Enemy_AI_Economy_Strategy.md",
-    "Done/Bugs/Enemy_AI_Active_Play_And_Ship_Combat.md",
-    "Done/Features/Spatial_Pace_Clusters_Plan.md",
-    "TODOs/Bugs/Enemy_AI_Active_Play_And_Ship_Combat.md",
-    "TODOs/Features/Ship_Ui_Icon_Focus_And_Entry_Select.md",
-    "TODOs/Features/Spatial_Pace_Clusters_Plan.md",
     "TODOs/TODOs.md.tmp.13892.064c6a2b4e28",
     "TODOs/TODOs.md.tmp.13892.10dd70fe42ae",
     "TODOs/TODOs.md.tmp.13892.8357a34804c6",
-    "TODOs/Bugs/Enemy_AI_UltraHard_Followup_And_Ship_Idle.md",
-    "Done/Bugs/Enemy_AI_UltraHard_Collapse_And_Attack_Order_Loss.md",
-    "TODOs/Bugs/Enemy_AI_UltraHard_Collapse_And_Attack_Order_Loss.md",
     "TODOs/sediDLRcE",
     "TODOs/User_Acceptance_Queue.md.tmp.31052.e80f7d11297d",
-    "TODOs/Bugs/Capital_Movement_And_Class_Rework_Fixes.md.tmp.36104.34d43ae8b9de",
-    "TODOs/Bugs/Capital_Movement_And_Class_Rework_Fixes.md.tmp.36104.2ea5a221fd6c",
-    "TODOs/TODOs.md.tmp.10912.953868e3797b",
     "Artifacts/Audits/Optimization_2026-11-06/Station_camera.png",
     "Artifacts/Audits/Optimization_2026-11-06/Station_destruction.png"
   ]

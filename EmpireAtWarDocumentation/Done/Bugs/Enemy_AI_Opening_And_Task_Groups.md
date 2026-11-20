@@ -9,9 +9,11 @@ acceptance: pending-user
 ---
 # Enemy AI Opening and Task Groups
 
-## Status (2026-11-20, round 6 implemented)
-- Round 6 (G1–G11) implemented and compiled 2026-11-20. Notes → "Round 6 — implementation notes". Tests written, not run (local override).
-- Acceptance → round-6 playtest gates (user; [[TODOs/User_Acceptance_Queue]]). A failed gate reopens this plan.
+## Status (2026-11-20, round 7 implemented)
+- Round-6 playtest played 17:44 (Rebellion AI vs Empire). User: start as good as before; Rebellion ship selection awful. Reopened and closed again the same day.
+- Round 7 (J1, J2) implemented and compiled 2026-11-20, uncommitted. Notes → "Round 7" at the end. Tests updated, not run (local override).
+- Acceptance → round-7 playtest gates (user; [[TODOs/User_Acceptance_Queue]]). A failed gate reopens this plan.
+- Round 6 (G1–G11) implemented and compiled 2026-11-20, commit `9d0f57830`. Notes → "Round 6 — implementation notes".
 - Round 5 (E1–E12) implemented 2026-11-20, commit `59a2c0776`; playtest 15:48: start and early mid-game perfect, mid-to-late bad.
 - Process (user): implement the whole round first, then one playtest.
 - Rebellion vs Empire battle still not played.
@@ -689,3 +691,47 @@ Order: G1 → G2 → G3 → G4 → G5 → G6 → G7–G10 → G11. Playtest once
 ### Outcome
 - All round-6 scope implemented and source-verified 2026-11-20. Acceptance → round-6 playtest gates (user).
 - Reusable guidance → [[Architecture/Enemy_AI_Objectives]] section "Round 6".
+
+
+## Evidence — battle 2026-11-20 17:44 (round-6 playtest; Small 1v1, code `56e554a0b` dirty, 26:04)
+Files: `…/BattleTelemetry/Loading_20261120_174422_ai.csv`, `_ai_orders.csv`, `_squadrons.csv`, `Battle_20261120_174425_map.csv`, `Battle_20261120_174533.csv`. Log 21.8 s = battle 0 s.
+- AI Rebellion (−1118, −1139) vs human Empire (1118, 1139). Coruscant, seed 712596945. Start money 30,000.
+- Result: AI main station lost 15:30, second station 22:13. Human banked 300,000+ credits from 15:45 (did not spend).
+- User verdict: start as good as before; ship selection for Rebellion awful.
+
+### Worked (round 6)
+- Platforms: 13 bought (3 Golan III, 3 Empress, 7 XQ-6); `source=stationRing` 1:37, 6:51, 18:40, 19:01.
+- Second station: bought 6:36, placed 8:06 at (−1630, −1616), `source=homeCorner`, 1,306 from the nearest hostile; took over 15:30.
+- Battle asteroids: 2 of 17 spot builds.
+- Forward spawn: `spawnAttempt found=True` 149 / 151.
+
+### Faults
+- **K1 (P0) Cheap ships at every level.** Ships bought: Nebulon-B 55 (level 2), Assault Frigate Mk II 31, CD-273 25 (level 2), MC50 22 (level 2), MC30c 13. Level 4 reached 6:45, level 5 at 10:30; first level-4 ship 12:08; 14 ships of level 4–5 all battle.
+  - Cause: G4 buy-now filter (`requireAffordable`) + recovery mode on 2:12–15:23 → only ships paid for now are candidates; money stayed 2,200–3,700, so only level 2–3 ships ever qualified (`counter-selection candidates=1–4`).
+- **K2 (P0) Opening money on two platforms.** Golan III 12,000 (0:57, NW zone) + Empress 10,000 (1:17, centre) = 22,000 of 30,000. Money 3,875 when level 2 landed (1:26); in the 15:48 battle it was 26,000 and bought 8 ships at once.
+  - Cause: `TrySelectDefense` takes the strongest affordable platform; G2 made platforms reachable.
+  - Effect: 2 ships at 2:03 vs 10 hostile at 3:03 → recovery mode for 13 min.
+- **K3 (P1) Queue clog.** 13 ships bought per minute, 10 arrive: same-type builds run one at a time (`EnemyBuildQueue`). ≈ 22 paid ships waited in the queue at 10:00; unit capacity 103–120 of 120 with 5 ships alive; `production-wait reason=capacity` 334 rows.
+- **K4 (P1) Ships die fast.** 177 ships, median life 44 s; 145 spawned within 900 of home, 96 died there. Fleet advantage 0.07–0.38 from 3:00 to 15:00.
+- **K5 (P2) Bombers.** `raidSkip`: noBombers 10, noKnownMine 5, notWinnable 5, holding 2 (22 rows only).
+
+## Round 7 (2026-11-20; implemented, compiled, tests not run)
+- [x] **J1 (K1) Tier span.** `EnemyProductionStrategy.IsShipTierAllowed`: a ship is bought only when its `AvailableLevel` ≥ station level − `SHIP_TIER_SPAN` (1). `GetShipTierFloor` lowers the floor until a ship type exists in the span. A critical station takes any ship that arrives in time. Level-1 corvette rule unchanged.
+  - Rebellion at level 5 → levels 4–5 only (Bothan 4,800, MC80 Justice 5,000, Mon Cal 8,000, Remonda 9,000, Endurance 10,000, Nebula 12,000, Mediator 15,000, MC80 Independence 20,000).
+  - With buy-now and no candidate paid for yet, nothing is ordered until the cheapest allowed ship is paid for (≈ 10 s at 500 /s).
+- [x] **J2 (K2) Cheap platforms for a small fleet.** `TrySelectDefense(cheapestOnly)`: below `SAVING_MIN_SHIPS` (10) reserved ships only the cheapest buildable platform is chosen (XQ-6, 1,000). From 10 ships the old rule applies (fewest copies, then strongest in budget).
+- K3, K4: no change. Expected to ease with J1 (fewer, bigger orders) and J2 (more opening ships); re-measure in the playtest.
+- K5: no change; too few `raidSkip` rows to decide.
+
+### Tests
+- Updated `EnemyProductionDecisionModelTests` (class `EnemyProductionStrategyTests`): `PreferredShipAtLimit_SelectsAnotherAvailableShip` and `UltraHardRebuild_BuysTheBestShipItCanPayNowAndRechecksLosses` set both ships inside the span (levels 4 / 5); `UnaffordablePreferredShip_OnlyAStrongFleetSavesForIt` gained a level parameter and the case "two levels below → not bought".
+- Reviewed, no change: `Level1Corvette_IsNeverBoughtFromLevelTwo` (single non-corvette type → the floor falls to its level), `Opening_…` (level 1–2), critical-station tests (bypass).
+- Not covered: J2 platform choice (the fixture reserves every platform type before the decision).
+- Verification: `unity recompile` → 0 errors. EditMode not run.
+
+### Round 7 playtest gates (user; Rebellion vs Empire, 30,000 start)
+- Level 4 + 60 s onward: no purchase of a level-2 ship. Level 5 + 60 s onward: no purchase of a level-3 ship.
+- No platform above 2,000 credits while the AI has fewer than 10 ships.
+- ≥ 6 ships bought within 30 s of level 2 landing.
+- Unit capacity below 100 of 120 while fewer than 15 ships are alive.
+- Median ship life ≥ 90 s.

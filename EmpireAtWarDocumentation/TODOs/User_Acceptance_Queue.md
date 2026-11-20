@@ -525,7 +525,7 @@ created: "2026-10-29\r"
 
 ## Enemy AI Opening and Task Groups
 
-- [ ] Round-6 playtest (UltraHard Small 1v1 CIS vs Republic, then Rebellion vs Empire) → [[Done/Bugs/Enemy_AI_Opening_And_Task_Groups#Round 6 playtest gates (user, after G11; same matchup, then Rebellion vs Empire)]]: no shared spawn points, station/zone platforms, second station near home ≤ 60 s after level 2, ≤ 1 battle asteroid per zone, no saving below 10 ships, capitals survive ≥ 90 s. Round-5 playtest (15:48) failed mid-to-late game; round 6 implemented 2026-11-20.
+- [ ] Round-7 playtest (Rebellion AI vs Empire, 30,000 start; then CIS vs Republic) → [[Done/Bugs/Enemy_AI_Opening_And_Task_Groups#Round 7 playtest gates (user; Rebellion vs Empire, 30,000 start)]]: no level-2 ships from level 4, no platform above 2,000 credits below 10 ships, ≥ 6 ships within 30 s of level 2, capacity < 100 with < 15 ships alive, median ship life ≥ 90 s. Round-6 playtest played 17:44 (ship selection failed → round 7). Tests not run.
 
 
 ## Empire Hero Capitals

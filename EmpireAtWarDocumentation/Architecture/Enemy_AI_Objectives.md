@@ -76,6 +76,8 @@ verification: Reviewed affected source and regression fixtures. Unity 6000.4.7f1
 - Wings: station-hangar wings are free; carrier wings stay on Guard and are the only escorts. Group A → centre, group B (1–2 wings + bombers) → nearest outer zone with a target, then raids (power rule at the mine). In-zone: free site, pads first, base-side first; contested → next free site; none → bait at the edge. Last 400 → move order (hold inside the pad circle).
 - Production: level-1 corvette only at level 1, from 30 s, max 2. Ships wait while a mandatory satellite or mine is pending. Wings: fighter/interceptor types alternate; bombers once a hostile mine is known. Ships deploy singly until an outer zone is held.
 - Station defence target: ship attacking the station → nearest threatening ship → wing; kept while it threatens.
+- Production, round 7 (2026-11-20): ships are bought only from the station level and one below (`SHIP_TIER_SPAN` 1; floor drops until a type exists; critical station exempt). Below 10 reserved ships only the cheapest platform is chosen.
+  - Why: buy-now + steady income never reaches a higher-tier price; same-type builds run one at a time, so cheap orders clog the queue and the unit limit.
 - Owner and history → [[Done/Bugs/Enemy_AI_Opening_And_Task_Groups]].
 
 ### Ship allocator (2026-11-19, N1–N6)
