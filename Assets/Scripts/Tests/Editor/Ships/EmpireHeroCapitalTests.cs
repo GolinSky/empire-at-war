@@ -90,7 +90,8 @@ namespace EmpireAtWar.Tests.Editor
             WeaponHardPoint[] mains = MainBatteries(devastator);
             Assert.That(mains.Length, Is.EqualTo(MainBatteries(isd).Length));
             Assert.That(Count(mains, WeaponType.ISDIIOctupleTurbolaser), Is.Zero);
-            Assert.That(Count(mains, WeaponType.HeavyDualTurbolaser), Is.EqualTo(6));
+            // ISD I main gun: normal bolt speed (the Imperial variant's slow bolts read as a slow gun).
+            Assert.That(Count(mains, WeaponType.DualHeavyTurboLaser), Is.EqualTo(6));
             WeaponHardPoint[] ions = mains.Where(w => w.WeaponType == WeaponType.HeavyDualIonCannon).ToArray();
             Assert.That(ions.Length, Is.EqualTo(2));
             Assert.That(ions[0].transform.localPosition.x, Is.EqualTo(-ions[1].transform.localPosition.x).Within(0.01f));

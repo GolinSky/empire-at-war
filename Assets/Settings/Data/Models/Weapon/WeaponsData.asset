@@ -1150,7 +1150,7 @@ MonoBehaviour:
     shotPrefab: {fileID: 4723455029226909166, guid: d08e869a202dee742b31818cc8c5b23b,
       type: 3}
     beamPrefab: {fileID: 0}
-    projectileSpeed: 52
+    projectileSpeed: 172.9
     size: {x: 1, y: 1, z: 1}
     overrideColor: 0
     color: {r: 1, g: 1, b: 1, a: 1}

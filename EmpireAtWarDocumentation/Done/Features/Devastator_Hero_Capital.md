@@ -37,7 +37,7 @@ acceptance: pending-user
 | Price | `8,000` | `12,000` (×1.5) |
 | `MaxCount` | `3` | `1` |
 
-- Loadout: `4×6, 5×2, 23×4, 32×8, 43×6, 71×2, 91×2` — matches `WeaponLoadoutBaker.DeriveLoadout(view)`.
+- Loadout: `3×6, 4×6, 5×2, 23×4, 32×8, 71×2, 91×2` — matches `WeaponLoadoutBaker.DeriveLoadout(view)`.
 - New hardpoints: `HP_Devastator_IC_01/02`, ids `32/33`, local `(∓41.79, -10.89, -48)`, yaw copied from `HP_ISD_IC_05/06`.
 - Octuple turret meshes stay on the retyped mains (no art change requested).
 - Visuals otherwise identical to ISD II; only the team stripes differ.

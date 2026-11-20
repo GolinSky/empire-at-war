@@ -233,12 +233,12 @@ PrefabInstance:
     - target: {fileID: 173530818617816141, guid: f24f9301127af634ab504e1c96f3d728,
         type: 3}
       propertyPath: <WeaponType>k__BackingField
-      value: 43
+      value: 3
       objectReference: {fileID: 0}
     - target: {fileID: 675661658933809400, guid: f24f9301127af634ab504e1c96f3d728,
         type: 3}
       propertyPath: <WeaponType>k__BackingField
-      value: 43
+      value: 3
       objectReference: {fileID: 0}
     - target: {fileID: 773376535087680568, guid: f24f9301127af634ab504e1c96f3d728,
         type: 3}
@@ -308,7 +308,7 @@ PrefabInstance:
     - target: {fileID: 1362856859461505581, guid: f24f9301127af634ab504e1c96f3d728,
         type: 3}
       propertyPath: <WeaponType>k__BackingField
-      value: 43
+      value: 3
       objectReference: {fileID: 0}
     - target: {fileID: 2267769439341131825, guid: f24f9301127af634ab504e1c96f3d728,
         type: 3}
@@ -318,7 +318,7 @@ PrefabInstance:
     - target: {fileID: 2708922646955401821, guid: f24f9301127af634ab504e1c96f3d728,
         type: 3}
       propertyPath: <WeaponType>k__BackingField
-      value: 43
+      value: 3
       objectReference: {fileID: 0}
     - target: {fileID: 3372563398739101621, guid: f24f9301127af634ab504e1c96f3d728,
         type: 3}
@@ -348,12 +348,12 @@ PrefabInstance:
     - target: {fileID: 4464647978886112971, guid: f24f9301127af634ab504e1c96f3d728,
         type: 3}
       propertyPath: <WeaponType>k__BackingField
-      value: 43
+      value: 3
       objectReference: {fileID: 0}
     - target: {fileID: 5143949992068866162, guid: f24f9301127af634ab504e1c96f3d728,
         type: 3}
       propertyPath: <WeaponType>k__BackingField
-      value: 43
+      value: 3
       objectReference: {fileID: 0}
     - target: {fileID: 6101720500570053970, guid: f24f9301127af634ab504e1c96f3d728,
         type: 3}
