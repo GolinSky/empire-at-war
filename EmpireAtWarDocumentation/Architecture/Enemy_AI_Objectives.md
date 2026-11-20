@@ -57,6 +57,15 @@ verification: Reviewed affected source and regression fixtures. Unity 6000.4.7f1
 - AI task-force orders pass `AiOrderDeduplicator`: no resend of the same running order (≤ 50 / same target); ended moves resent at once, ended same-target attacks after 10 s.
 - One auto-ability decision (`AutoPowerDecider`) for player and AI; urgent Shields below 40 % with a hostile warship in radar range.
 
+### Round 6 (2026-11-20) — current; supersedes Round 5 where they differ
+- Hull heights differ per ship type, so the 3D hull/landing test lets two types land on one point. Forward spawns add a top-down test: living ships and forward landings of the last 2 s (`ShipSpawnPoints.FORWARD_LANDING_SECONDS`).
+- Forward anchors (`EnemyForwardSpawnAnchors.Select`): ships landed this tick → distance to the task → kind; beacon leads only within 1,000 of the best other anchor. Reject within 800 of known hostile ships, seen/remembered armed structures, hostile stations. Deep anchor → 3 own ships within 600; assault capital → 4, else relay/station.
+- Platforms: count only purchasable types (`EnemyFactionModel.DefendPlatforms`); satellites and battle asteroids are not platforms. Station ring 1 from level 2, 2 from level 4 → centre 2 → other held zones 1; up to 3 only while ships wait on the unit limit. Contested held zones still get one when the point is safe.
+- Production saves for an unaffordable unit only with ≥ 10 ships, advantage ≥ 1 and no recovery; else buys the best affordable unit. From level 2, money ≥ 2 × the ship just bought → one more affordable ship that cycle.
+- One battle asteroid per zone. Held zone "attacked" = known hostile ship or ≥ 3 hostile wings (team intel), not any unit at a site.
+- Second station: from level 2 at 2 × price, no mandatory satellite/mine pending; ring 400–700 around home on the half away from the map centre, never nearer a hostile station than home; fallback own outer zone nearest home; an unplaceable paid station retries every 10 s (no refund).
+- Telemetry: `raidSkip`, `surplusShip`, `ai_orders.issuer` (`executor|dedup|commander|patrol`).
+
 ### Opening and wing groups (2026-11-19, A1–A7)
 
 - Supersedes in the allocator section below: retain-line release (`0.85 ×`), idle reserve / waiting fleet, `hostileZoneOnRoute`, pause on any station pressure, wing raid counts (surplus beyond 3 / behind → all but 1).

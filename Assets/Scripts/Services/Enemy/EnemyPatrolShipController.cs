@@ -77,7 +77,8 @@ namespace EmpireAtWar.Services.Enemy
             // Re-issuing the same attack-move every decision rebuilt the route and braked the ship each time.
             if (_hasIssuedTarget && _issuedTarget == target && _ship.CurrentOrder == UnitOrderType.AttackMove)
                 return _ship;
-            _orders.IssueAttackMove(new[] { _entities.GetEntity(_ship.EntityId) }, target);
+            using (ShipOrderTelemetry.Issue("patrol"))
+                _orders.IssueAttackMove(new[] { _entities.GetEntity(_ship.EntityId) }, target);
             _issuedTarget = target;
             _hasIssuedTarget = true;
             return _ship;

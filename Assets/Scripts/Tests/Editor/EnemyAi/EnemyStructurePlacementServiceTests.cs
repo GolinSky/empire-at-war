@@ -2,7 +2,11 @@ using System;
 using EmpireAtWar.Models.Players;
 using System.Collections.Generic;
 using System.Reflection;
+using EmpireAtWar.Entities.DefendPlatform;
 using EmpireAtWar.Entities.EnemyFaction.Models;
+using EmpireAtWar.Entities.MiningFacility;
+using EmpireAtWar.Entities.SuperWeapons;
+using UnityEditor;
 using EmpireAtWar.Entities.Map;
 using EmpireAtWar.Models.SkirmishCamera;
 using EmpireAtWar.Services.Enemy;
@@ -82,7 +86,20 @@ namespace EmpireAtWar.Tests.Editor
                 vision: vision, areas: _areas,
                 owner: roster.Get(TestPlayers.Enemy), stationPrefab: _stationPrefab,
                 productionAccess: new SelfProductionAccess(TestPlayers.Enemy, new StationRegistry(new EntityLocator()),
-                    roster), recovery: _recovery, zoneSource: _zoneSource, world: new AiWorldSnapshot(_entities), patrol: null);
+                    roster), recovery: _recovery, zoneSource: _zoneSource, world: new AiWorldSnapshot(_entities),
+                factionModel: new EnemyFactionModel(null, CreateRoster()), relations: roster);
+        }
+
+        // The Separatist roster buys XQ6 platforms; satellites and battle asteroids are capture-site facilities.
+        private static FactionRoster CreateRoster()
+        {
+            const string shared = "Assets/Settings/Data/Factions/Shared/";
+            return new FactionRoster(
+                AssetDatabase.LoadAssetAtPath<FactionDefinition>(
+                    "Assets/Settings/Data/Factions/Separatist/SeparatistFaction.asset"),
+                AssetDatabase.LoadAssetAtPath<MiningFacilityCatalog>(shared + "MiningFacilityCatalog.asset"),
+                AssetDatabase.LoadAssetAtPath<DefendPlatformCatalog>(shared + "DefendPlatformCatalog.asset"),
+                AssetDatabase.LoadAssetAtPath<SuperWeaponCatalog>(shared + "SuperWeaponCatalog.asset"));
         }
 
         [Test]
@@ -315,13 +332,43 @@ namespace EmpireAtWar.Tests.Editor
             AddZone(TestPlayers.Enemy, Vector3.zero, isMain: true);
             Vector3 relay = new Vector3(400f, 0f, 0f);
             AddZone(TestPlayers.Enemy, relay);
+            // The centre takes two platforms, every other held zone one.
             AddPlatform(new Vector3(70f, 0f, 0f));
+            AddPlatform(new Vector3(-70f, 0f, 0f));
             AddPlatform(relay + new Vector3(70f, 0f, 0f));
 
             Assert.That(_enemyStructurePlacementService.TryGetDefensePosition(false, out _), Is.False);
             Assert.That(_enemyStructurePlacementService.TryGetDefensePosition(true, out Vector3 extra), Is.True);
-            // Zones with equal platform counts keep the centre-first order.
-            Assert.That(extra.magnitude, Is.LessThan(Vector3.Distance(extra, relay)));
+            // The relay has fewer platforms, so its extra comes first.
+            Assert.That(Vector3.Distance(extra, relay), Is.LessThan(extra.magnitude));
+        }
+
+        [Test]
+        public void DefensePosition_SatellitesAndBattleAsteroidsAreNotPlatforms()
+        {
+            _map.SetBounds(-1000f, 1000f);
+            Vector3 relay = new Vector3(400f, 0f, 0f);
+            AddZone(TestPlayers.Enemy, relay);
+            AddPlatform(relay + new Vector3(70f, 0f, 0f), DefendPlatformType.QuadLaserSatellite);
+            AddPlatform(relay + new Vector3(-70f, 0f, 0f), DefendPlatformType.BattleAsteroid);
+
+            Assert.That(_enemyStructurePlacementService.TryGetDefensePosition(false, out _), Is.True);
+            AddPlatform(relay + new Vector3(0f, 0f, 70f));
+            Assert.That(_enemyStructurePlacementService.TryGetDefensePosition(false, out _), Is.False);
+        }
+
+        [Test]
+        public void SecondStation_LandsOnTheHomeRingOnTheCornerSide()
+        {
+            _map.SetBounds(-1500f, 1500f);
+            _map.Station = new Vector3(800f, 0f, -800f);
+
+            Assert.That(_enemyStructurePlacementService.TryGetSecondStationPosition(out Vector3 position), Is.True);
+            Vector3 fromStation = position - _map.Station;
+            fromStation.y = 0f;
+            Assert.That(fromStation.magnitude, Is.InRange(380f, 720f));
+            Assert.That(Vector3.Dot(fromStation, new Vector3(_map.Station.x, 0f, _map.Station.z)), Is.GreaterThan(0f),
+                "The second station stands on the half away from the map centre.");
         }
 
         [Test]
@@ -361,12 +408,12 @@ namespace EmpireAtWar.Tests.Editor
                 TestPlayers.CreateLocalPlayer(_zoneRoster),
                 new ReinforcementZoneModel(_zoneRoster, owner, 10f, 1f, true), isMain));
 
-        private void AddPlatform(Vector3 position)
+        private void AddPlatform(Vector3 position, DefendPlatformType type = DefendPlatformType.Xq6)
         {
             Transform platform = new GameObject("Defend platform").transform;
             platform.SetParent(_root.transform);
             platform.position = position;
-            _entities.AddEntity(new PlatformEntity(_nextEntityId++, platform));
+            _entities.AddEntity(new PlatformEntity(_nextEntityId++, platform, type));
         }
 
         private sealed class ZoneSourceStub : IReinforcementZoneSource
@@ -390,7 +437,8 @@ namespace EmpireAtWar.Tests.Editor
                 OwnerRelation contestingFirst = OwnerRelation.Neutral, OwnerRelation contestingSecond = OwnerRelation.Neutral) { }
         }
 
-        private sealed class PlatformEntity : IEntity, IHealthModelObserver, IEntityTransformFacade, IStructureKindFacade
+        private sealed class PlatformEntity : IEntity, IHealthModelObserver, IEntityTransformFacade, IStructureKindFacade,
+            IDefendPlatformTypeFacade
         {
             public event Action OnDestroy { add { } remove { } }
             public event Action OnValueChanged { add { } remove { } }
@@ -412,10 +460,13 @@ namespace EmpireAtWar.Tests.Editor
             public bool HasLiveHardPoints => true;
             public bool HasShields => false;
 
-            public PlatformEntity(long id, Transform transform)
+            public DefendPlatformType Type { get; }
+
+            public PlatformEntity(long id, Transform transform, DefendPlatformType type)
             {
                 Id = id;
                 Transform = transform;
+                Type = type;
             }
 
             public IHardPointModel[] GetShipUnits(HardPointType hardPointType) => Array.Empty<IHardPointModel>();

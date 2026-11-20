@@ -525,4 +525,4 @@ created: "2026-10-29\r"
 
 ## Enemy AI Opening and Task Groups
 
-- [ ] [[Done/Bugs/Enemy_AI_Opening_And_Task_Groups]] — Round 5 playtest: UltraHard Small 1v1 CIS vs Republic, then Rebellion vs Empire; check the "Round 5 playtest gates" (forward spawn ≥ 80 %, rear under pressure, centre spots, bomber raids, patrol wing, orders ≤ 4/ship/min, shield boost < 40 %).
+- [ ] Round-6 playtest (UltraHard Small 1v1 CIS vs Republic, then Rebellion vs Empire) → [[Done/Bugs/Enemy_AI_Opening_And_Task_Groups#Round 6 playtest gates (user, after G11; same matchup, then Rebellion vs Empire)]]: no shared spawn points, station/zone platforms, second station near home ≤ 60 s after level 2, ≤ 1 battle asteroid per zone, no saving below 10 ships, capitals survive ≥ 90 s. Round-5 playtest (15:48) failed mid-to-late game; round 6 implemented 2026-11-20.

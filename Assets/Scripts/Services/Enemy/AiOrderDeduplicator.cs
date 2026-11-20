@@ -27,6 +27,8 @@ namespace EmpireAtWar.Services.Enemy
         private readonly List<IEntity> _receivers = new List<IEntity>();
         private readonly List<Vector3> _destinations = new List<Vector3>();
 
+        private bool _resent;
+
         public AiOrderDeduplicator(IUnitOrderService orders) => _orders = orders;
 
         public event Action<UnitOrder> OrderIssued
@@ -37,84 +39,94 @@ namespace EmpireAtWar.Services.Enemy
 
         public void IssueMove(IReadOnlyList<IEntity> receivers, Vector3 point, MovePace pace = MovePace.Formation)
         {
-            if (Filter(receivers, UnitOrderType.Move, null, point)) _orders.IssueMove(_receivers.ToArray(), point, pace);
+            if (Filter(receivers, UnitOrderType.Move, null, point))
+                using (Tag()) _orders.IssueMove(_receivers.ToArray(), point, pace);
         }
 
         public void IssueMove(IReadOnlyList<IEntity> receivers, IReadOnlyList<Vector3> destinations)
         {
             if (Filter(receivers, destinations, UnitOrderType.Move))
-                _orders.IssueMove(_receivers.ToArray(), _destinations.ToArray());
+                using (Tag()) _orders.IssueMove(_receivers.ToArray(), _destinations.ToArray());
         }
 
         public void IssueAttack(IReadOnlyList<IEntity> receivers, IEntity target)
         {
-            if (Filter(receivers, UnitOrderType.Attack, target, default)) _orders.IssueAttack(_receivers.ToArray(), target);
+            if (Filter(receivers, UnitOrderType.Attack, target, default))
+                using (Tag()) _orders.IssueAttack(_receivers.ToArray(), target);
         }
 
         public void IssueAttack(IReadOnlyList<IEntity> receivers, IEntity target, IReadOnlyList<Vector3> offsets)
         {
             Forget(receivers);
-            _orders.IssueAttack(receivers, target, offsets);
+            using (Tag()) _orders.IssueAttack(receivers, target, offsets);
         }
 
         public void IssueHardPointAttack(IReadOnlyList<IEntity> receivers, IEntity target, int hardPointId)
         {
             Forget(receivers);
-            _orders.IssueHardPointAttack(receivers, target, hardPointId);
+            using (Tag()) _orders.IssueHardPointAttack(receivers, target, hardPointId);
         }
 
         public void IssueAttackMove(IReadOnlyList<IEntity> receivers, Vector3 point)
         {
             if (Filter(receivers, UnitOrderType.AttackMove, null, point))
-                _orders.IssueAttackMove(_receivers.ToArray(), point);
+                using (Tag()) _orders.IssueAttackMove(_receivers.ToArray(), point);
         }
 
         public void IssueAttackMove(IReadOnlyList<IEntity> receivers, IReadOnlyList<Vector3> destinations)
         {
             if (Filter(receivers, destinations, UnitOrderType.AttackMove))
-                _orders.IssueAttackMove(_receivers.ToArray(), _destinations.ToArray());
+                using (Tag()) _orders.IssueAttackMove(_receivers.ToArray(), _destinations.ToArray());
         }
 
         public void IssueStop(IReadOnlyList<IEntity> receivers)
         {
             Forget(receivers);
-            _orders.IssueStop(receivers);
+            using (Tag()) _orders.IssueStop(receivers);
         }
 
         public void IssueGuard(IReadOnlyList<IEntity> receivers, IEntity friendly)
         {
             Forget(receivers);
-            _orders.IssueGuard(receivers, friendly);
+            using (Tag()) _orders.IssueGuard(receivers, friendly);
         }
 
         public void IssueGuard(IReadOnlyList<IEntity> receivers, IEntity friendly, IReadOnlyList<Vector3> offsets)
         {
             Forget(receivers);
-            _orders.IssueGuard(receivers, friendly, offsets);
+            using (Tag()) _orders.IssueGuard(receivers, friendly, offsets);
         }
 
         public void IssueWaypointMove(IReadOnlyList<IEntity> receivers, IReadOnlyList<Vector3> waypoints)
         {
             Forget(receivers);
-            _orders.IssueWaypointMove(receivers, waypoints);
+            using (Tag()) _orders.IssueWaypointMove(receivers, waypoints);
         }
 
         public void IssueHunt(IReadOnlyList<IEntity> receivers)
         {
             Forget(receivers);
-            _orders.IssueHunt(receivers);
+            using (Tag()) _orders.IssueHunt(receivers);
         }
 
         public void IssueRetreat(IReadOnlyList<IEntity> receivers)
         {
             Forget(receivers);
-            _orders.IssueRetreat(receivers);
+            using (Tag()) _orders.IssueRetreat(receivers);
         }
 
         public void IssueRetreat(IReadOnlyList<IEntity> receivers, Vector3 point)
         {
             Forget(receivers);
-            _orders.IssueRetreat(receivers, point);
+            using (Tag()) _orders.IssueRetreat(receivers, point);
+        }
+
+        // Rows of orders passed on are tagged; a same order resent after it ended is the filter's own repair.
+        private ShipOrderTelemetry.IssuerScope Tag()
+        {
+            ShipOrderTelemetry.IssuerScope scope = ShipOrderTelemetry.Issue(_resent ? "dedup" : "executor");
+            _resent = false;
+            return scope;
         }
 
         private bool Filter(IReadOnlyList<IEntity> receivers, UnitOrderType type, IEntity target, Vector3 point)
@@ -167,7 +179,9 @@ namespace EmpireAtWar.Services.Enemy
             if (!same) return false;
             bool stillRunning = receiver.TryGetFacade(out IUnitOrderObserverFacade orders) &&
                                 orders.CurrentOrder == type;
-            return stillRunning || type == UnitOrderType.Attack && now - last.At < REISSUE_SECONDS;
+            bool repeat = stillRunning || type == UnitOrderType.Attack && now - last.At < REISSUE_SECONDS;
+            if (!repeat) _resent = true;
+            return repeat;
         }
 
         private void Forget(IReadOnlyList<IEntity> receivers)

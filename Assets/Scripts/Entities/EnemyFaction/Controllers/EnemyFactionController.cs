@@ -48,6 +48,7 @@ namespace EmpireAtWar.Entities.EnemyFaction.Controllers
         private const int MINIMUM_DEFENSE_WAVE = 2;
         private const int MINIMUM_REINFORCEMENT_WAVE = 3;
         private const float ASSAULT_WAVE_INTERVAL = 30f;
+        private const float STATION_PLACEMENT_RETRY_SECONDS = 10f;
 
         private readonly IEconomyProvider _economyProvider;
         private readonly IWallet _wallet;
@@ -452,7 +453,10 @@ namespace EmpireAtWar.Entities.EnemyFaction.Controllers
         {
             position = default;
             anchor = "none";
-            if (!_forwardAnchors.Collect(task, _landedShips, _anchors, out Vector3 awayFrom))
+            // Assault capitals unlock at level 4; the class is read only for those.
+            bool capital = ship.FactionData.AvailableLevel >= 4 &&
+                           Model.IsAssaultCapital(ship.Key, _profiles.Get(UnitTypeId.Ship(ship.Key)).ShipClass);
+            if (!_forwardAnchors.Collect(task, _landedShips, capital, _anchors, out Vector3 awayFrom))
             {
                 EnemyAiTelemetry.RecordEvent(_owner.Id, _owner.Faction, "spawnAttempt",
                     $"unit={ship.Id};units=0;points=0;notOpen=0;notClear=0;found=False");
@@ -621,9 +625,9 @@ namespace EmpireAtWar.Entities.EnemyFaction.Controllers
                 case SecondStationUnitRequest stationRequest:
                     if (!_enemyStructurePlacementService.TryGetSecondStationPosition(out Vector3 stationPosition))
                     {
-                        _enemyStructurePlacementService.RecordDeferred(stationRequest.Id, stationRequest.FactionData.Price);
-                        ReleaseUnit(stationRequest);
-                        _wallet.Refund(stationRequest);
+                        // The paid station waits for a point instead of a refund-and-rebuy loop.
+                        _enemyStructurePlacementService.RecordDeferred(stationRequest.Id, 0f);
+                        _builds.RetryStationPlacement(stationRequest, STATION_PLACEMENT_RETRY_SECONDS);
                         return;
                     }
                     Track(_stationFactory.CreateSecond(Owner, _owner.Faction, stationPosition), stationRequest);

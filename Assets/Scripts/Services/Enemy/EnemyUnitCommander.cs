@@ -477,8 +477,8 @@ namespace EmpireAtWar.Services.Enemy
                     if (_reinforcementZonesSystem.TryGetDefaultZoneExitPosition(
                             _owner.Id, ship.WorldPosition, ship.NavigationRadius, out _))
                     {
-                        _unitOrderService.IssueMove(new[] { shipEntity },
-                            new[] { target });
+                        using (ShipOrderTelemetry.Issue("commander"))
+                            _unitOrderService.IssueMove(new[] { shipEntity }, new[] { target });
                         continue;
                     }
                     _zoneExitTargets.Remove(ship);
@@ -492,7 +492,8 @@ namespace EmpireAtWar.Services.Enemy
                 {
                     _zoneExitTargets.Remove(ship);
                     if (ship.CurrentOrder != UnitOrderType.None)
-                        _unitOrderService.IssueStop(new[] { shipEntity });
+                        using (ShipOrderTelemetry.Issue("commander"))
+                            _unitOrderService.IssueStop(new[] { shipEntity });
                     continue;
                 }
 
@@ -524,8 +525,8 @@ namespace EmpireAtWar.Services.Enemy
             {
                 Vector3 target = ToVector(destinations[i]);
                 _zoneExitTargets.Add(unassignedShips[i], target);
-                _unitOrderService.IssueMove(new[] { unassignedEntities[i] },
-                    new[] { target });
+                using (ShipOrderTelemetry.Issue("commander"))
+                    _unitOrderService.IssueMove(new[] { unassignedEntities[i] }, new[] { target });
             }
         }
 

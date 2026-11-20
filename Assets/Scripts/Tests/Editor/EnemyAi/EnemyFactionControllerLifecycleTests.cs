@@ -885,7 +885,7 @@ namespace EmpireAtWar.Tests.Editor
 
         [TestCase(true)]
         [TestCase(false)]
-        public void SecondStation_RejectsOpeningPurchaseAndRefundsUnsupportedOrUnplaceableBuild(bool upgrade)
+        public void SecondStation_RefundsAnUnsupportedUpgrade_AndKeepsAnUnplaceableStationQueued(bool upgrade)
         {
             var data = ScriptableObject.CreateInstance<ReinforcementData>();
             try
@@ -914,11 +914,23 @@ namespace EmpireAtWar.Tests.Editor
                 controller.RestorePendingBuild(request, 30f);
                 Assert.That(limits.CurrentUnitCapacity, Is.EqualTo(1));
                 controller.Advance(upgrade ? 0f : 30f);
-                Assert.That(wallet.RefundCount, Is.EqualTo(1));
-                Assert.That(controller.PendingBuilds, Is.Empty);
-                Assert.That(limits.CurrentUnitCapacity, Is.Zero);
-                controller.Advance(1f);
-                Assert.That(wallet.RefundCount, Is.EqualTo(1));
+                if (upgrade)
+                {
+                    Assert.That(wallet.RefundCount, Is.EqualTo(1));
+                    Assert.That(controller.PendingBuilds, Is.Empty);
+                    Assert.That(limits.CurrentUnitCapacity, Is.Zero);
+                    controller.Advance(1f);
+                    Assert.That(wallet.RefundCount, Is.EqualTo(1));
+                    return;
+                }
+
+                // Round 6 (G6d): a paid station with no placement point stays queued and retries; no refund-and-rebuy.
+                Assert.That(wallet.RefundCount, Is.Zero);
+                Assert.That(controller.PendingBuilds, Has.Count.EqualTo(1));
+                Assert.That(limits.CurrentUnitCapacity, Is.EqualTo(1));
+                controller.Advance(30f);
+                Assert.That(wallet.RefundCount, Is.Zero);
+                Assert.That(controller.PendingBuilds, Has.Count.EqualTo(1));
             }
             finally { UnityEngine.Object.DestroyImmediate(data); }
         }
@@ -1008,7 +1020,8 @@ namespace EmpireAtWar.Tests.Editor
 
             public FixedForwardAnchors(ForwardSpawnAnchor anchor) => _anchor = anchor;
 
-            public bool Collect(Vector3 task, IReadOnlyList<Vector3> landedShips, List<ForwardSpawnAnchor> anchors,
+            public bool Collect(Vector3 task, IReadOnlyList<Vector3> landedShips, bool capital,
+            List<ForwardSpawnAnchor> anchors,
                 out Vector3 awayFrom)
             {
                 Calls++;

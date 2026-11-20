@@ -31,7 +31,6 @@ namespace EmpireAtWar.Services.Enemy
         private const int MINIMUM_CAPTURE_WINGS = 3;
         private const float COMBAT_RESEARCH_INTERVAL = 30f;
         private const float DEFENSE_BUILD_INTERVAL = 20f;
-        private const float SECOND_STATION_LATE_SECONDS = 480f;
         private const float STATION_PLACEMENT_RETRY_SECONDS = 10f;
         private const int MAX_LEVEL1_CORVETTES = 2;
         /// <summary>Bombers are wanted only to raid: at most this many per known hostile mine.</summary>
@@ -40,6 +39,9 @@ namespace EmpireAtWar.Services.Enemy
         public const float OPENING_NO_CORVETTE_SECONDS = 30f;
         private const float NON_COMPETING_RESEARCH_SHARE = 0.25f;
         private const float PATROL_WING_RETRY_SECONDS = 60f;
+        private const int SAVING_MIN_SHIPS = 10;
+        private const float SAVING_MIN_ADVANTAGE = 1f;
+        private const float SURPLUS_SHIP_FACTOR = 2f;
 
         private readonly IEnemyPurchaseProcessor _purchaseProcessor;
         private readonly IUnitRequestFactory _requestFactory;
@@ -209,18 +211,20 @@ namespace EmpireAtWar.Services.Enemy
             bool hasSquadronRoom = HasSquadronRoom(shipCount);
             bool needsCaptureWings = !critical && CountReservedSquadrons() + CountHangarSquadrons() <
                 GetCaptureWingTarget();
+            // A small or losing fleet buys what fights now; only a strong fleet may save for a unit it cannot pay.
+            bool buyNow = _stationPressure.HasPressure || !CanSaveForUnit(shipCount);
             UnitTypeId counterId = default;
             FactionData counterData = null;
             bool hasCounter = !hasDefenseShip && !needsCaptureWings && TrySelectCounterUnit(
                 !hasSquadronRoom || !critical && canOrderShips && _decisionModel.NeedsMinimumFleet(shipCount),
-                hasSquadronRoom, out counterId, out counterData);
+                hasSquadronRoom, buyNow, out counterId, out counterData);
             bool hasSquadronFallback = !hasCounter && (needsCaptureWings || !critical && !canOrderShips) &&
                                        TrySelectSquadron(shipCount, out squadron) &&
                                        IsAffordable(squadron.Value);
             // Under station pressure money buys what can fight now; saving for a capital loses the station.
             bool hasShip = hasDefenseShip ||
                            !critical && !hasCounter && !hasSquadronFallback && canOrderShips && TrySelectShip(shipCount,
-                               out ship, requireAffordable: _stationPressure.HasPressure);
+                               out ship, requireAffordable: buyNow);
             bool hasShipOption = hasCounter || hasShip || hasSquadronFallback;
             FactionData shipChoice = hasCounter ? counterData : hasShip ? ship.Value : squadron.Value;
             DefenseReserve = hasShipOption ? shipChoice.Price : 0f;
@@ -284,9 +288,7 @@ namespace EmpireAtWar.Services.Enemy
             _factionModel.HasAssaultSurplus = _economyModel.Money >=
                 EnemyFactionModel.MINIMUM_ASSAULT_CAPITALS * cheapestCapital + (levelData?.Price ?? 0f) + (incomeTier?.FactionData.Price ?? 0f);
 
-            if (TryBuySecondStation(critical, hasLevelUpOption || _purchaseProcessor.IsUpgradingStation,
-                    canResearchIncome || canResearchCombat || combatTier != null, canBuildMining || canBuildDefense))
-                return;
+            if (TryBuySecondStation(critical)) return;
 
             if (!canResearchPriorityIncome && !_stationPressure.IsStationCritical && TryBuyScout(shipCount,
                     hasMiningSelection && miningFacilityCount < miningFacilityTarget,
@@ -403,20 +405,23 @@ namespace EmpireAtWar.Services.Enemy
                 _savingUnit = "";
                 _savingSince = -1f;
             }
+            float moneyBefore = _economyModel.Money;
             _purchaseProcessor.Purchase(request);
+            if (category == EnemyProductionCategory.Ship && request is ShipUnitRequest)
+                TryBuySurplusShip(moneyBefore, request.FactionData);
             if (category == EnemyProductionCategory.Defense)
                 _nextDefenseBuildTime = BattleClock.CurrentElapsed + DEFENSE_BUILD_INTERVAL;
             if (category == EnemyProductionCategory.Research && !canResearchIncome)
                 _nextCombatResearchTime = BattleClock.CurrentElapsed + COMBAT_RESEARCH_INTERVAL;
         }
 
-        private bool TryBuySecondStation(bool critical, bool needsLevel, bool needsResearch, bool needsConstruction)
+        /// <summary>From level 2, once money reaches twice its price and no mandatory satellite or mine waits.</summary>
+        private bool TryBuySecondStation(bool critical)
         {
             float now = BattleClock.CurrentElapsed;
             if (now < _nextStationPlacementCheck || _factionModel.CurrentLevel < 2 ||
                 _factionModel.AdditionalStationsBuilt != 0 || _productionAccess.ProductionHost != _owner.Id ||
-                !_productionAccess.HasHostBase ||
-                !critical && (now < SECOND_STATION_LATE_SECONDS || needsLevel || needsResearch || needsConstruction))
+                !_productionAccess.HasHostBase || !critical && PriorityConstructionPending)
                 return false;
             FactionData data = _factionModel.SecondStationData;
             if (_economyModel.Money < data.Price * (critical ? 1f : 2f) ||
@@ -515,6 +520,7 @@ namespace EmpireAtWar.Services.Enemy
         private bool TrySelectCounterUnit(
             bool shipsOnly,
             bool hasSquadronRoom,
+            bool requireAffordable,
             out UnitTypeId selectedId,
             out FactionData selectedData)
         {
@@ -534,13 +540,13 @@ namespace EmpireAtWar.Services.Enemy
                 UnitTypeId unitId = UnitTypeId.Ship(option.Key);
                 AddCounterOption<ShipUnitRequest>(unitId, option.Key.ToString(), option.Value,
                     IsAvailable(option.Value) && IsShipClassAllowed(unitId) &&
-                    IsShipTierAllowed(option.Value, unitId), hasSquadronRoom);
+                    IsShipTierAllowed(option.Value, unitId), hasSquadronRoom, requireAffordable);
             }
 
             foreach (KeyValuePair<SquadronType, FactionData> option in _factionModel.SquadronFactionData)
             {
                 AddCounterOption<SquadronUnitRequest>(UnitTypeId.Squadron(option.Key), option.Key.ToString(),
-                    option.Value, !shipsOnly && hasSquadronRoom, hasSquadronRoom);
+                    option.Value, !shipsOnly && hasSquadronRoom, hasSquadronRoom, requireAffordable);
             }
 
             if (!_counterModel.TrySelect(_ownForce, _hostileForce, _candidates, out int index,
@@ -571,7 +577,8 @@ namespace EmpireAtWar.Services.Enemy
             string requestId,
             FactionData data,
             bool isSelectable,
-            bool hasSquadronRoom)
+            bool hasSquadronRoom,
+            bool requireAffordable)
         {
             _liveUnitCounts.TryGetValue(unitTypeId, out int liveCount);
             int reservedCount = _unitLimitModel.GetReservedCount<TRequest>(requestId);
@@ -588,6 +595,7 @@ namespace EmpireAtWar.Services.Enemy
                 return;
             }
 
+            if (requireAffordable && !IsAffordable(data)) return;
             if (_stationPressure.IsStationCritical && (!IsAffordable(data) ||
                 _unitLimitModel.CurrentUnitCapacity + data.UnitCapacity > _reinforcementData.MaxUnitCapacity)) return;
 
@@ -696,6 +704,36 @@ namespace EmpireAtWar.Services.Enemy
         // Big maps have more expansion zones than early ships: one capture wing per eligible zone plus one.
         private int GetCaptureWingTarget() =>
             Math.Max(MINIMUM_CAPTURE_WINGS, _stateProvider.EligibleExpansionZoneCount + 1);
+
+        /// <summary>
+        /// Saving for a unit the AI cannot pay yet is allowed only for a fleet of at least
+        /// <see cref="SAVING_MIN_SHIPS"/> ships that beats the known hostile force, outside recovery mode.
+        /// </summary>
+        private bool CanSaveForUnit(int shipCount)
+        {
+            if (shipCount < SAVING_MIN_SHIPS || _enemyStructurePlacementService.IsRecovering) return false;
+            PlayerId self = _owner.Id;
+            _forceBuilder.BuildKnown(_hostileForce, _intel, Time.time, sighting => true);
+            _forceBuilder.Build(_ownForce, entity => entity.Owner == self, _liveUnitCounts);
+            return CombatMatchup.Advantage(_ownForce, _hostileForce) >= SAVING_MIN_ADVANTAGE;
+        }
+
+        /// <summary>
+        /// With money at <see cref="SURPLUS_SHIP_FACTOR"/> times the price of the ship just bought, the best ship
+        /// affordable with what is left is bought in the same cycle. From level 2: level-1 corvettes stay one at a time.
+        /// </summary>
+        private void TryBuySurplusShip(float moneyBefore, FactionData bought)
+        {
+            if (_factionModel.CurrentLevel < 2 || moneyBefore < SURPLUS_SHIP_FACTOR * bought.Price ||
+                _stationPressure.IsStationCritical ||
+                !CanOrderAnyShip() ||
+                !TrySelectShip(CountReservedShips(), out KeyValuePair<ShipType, FactionData> extra,
+                    requireAffordable: true))
+                return;
+            EnemyAiTelemetry.RecordEvent(_owner.Id, _owner.Faction, "surplusShip",
+                FormattableString.Invariant($"unit={extra.Key};cost={extra.Value.Price};money={_economyModel.Money:F1}"));
+            _purchaseProcessor.Purchase(_requestFactory.ConstructUnitRequest(extra.Value, extra.Key));
+        }
 
         private void TrackSaving(string unit)
         {

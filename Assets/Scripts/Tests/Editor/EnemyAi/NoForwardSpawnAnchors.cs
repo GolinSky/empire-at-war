@@ -9,7 +9,8 @@ namespace EmpireAtWar.Tests.Editor
     {
         public static readonly NoForwardSpawnAnchors Instance = new NoForwardSpawnAnchors();
 
-        public bool Collect(Vector3 task, IReadOnlyList<Vector3> landedShips, List<ForwardSpawnAnchor> anchors,
+        public bool Collect(Vector3 task, IReadOnlyList<Vector3> landedShips, bool capital,
+            List<ForwardSpawnAnchor> anchors,
             out Vector3 awayFrom)
         {
             anchors.Clear();

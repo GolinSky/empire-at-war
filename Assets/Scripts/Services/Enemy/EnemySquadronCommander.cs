@@ -150,6 +150,7 @@ namespace EmpireAtWar.Services.Enemy
         private ISquadron _scout;
 
         private Vector3 _scoutTarget;
+        private readonly Dictionary<EnemyWingGroup, string> _raidSkipReasons = new Dictionary<EnemyWingGroup, string>();
         private readonly Dictionary<ISquadron, HostileSighting> _raids =
             new Dictionary<ISquadron, HostileSighting>();
         private readonly HashSet<long> _reservedRaidTargets = new HashSet<long>();
@@ -1092,7 +1093,11 @@ namespace EmpireAtWar.Services.Enemy
         {
             _raids.Clear();
             _reservedRaidTargets.Clear();
-            if (_stationDefense.HasValue) return;
+            if (_stationDefense.HasValue)
+            {
+                foreach (EnemyWingGroup group in _outerGroups) RecordRaidSkip(group, "holding");
+                return;
+            }
             foreach (EnemyWingGroup group in _outerGroups) AssignMineRaid(group);
             foreach (EnemyWingGroup group in _outerGroups) AssignSatelliteRaid(group);
         }
@@ -1115,25 +1120,36 @@ namespace EmpireAtWar.Services.Enemy
                 _raidWings.Add(wing);
                 damage += structureDamage;
             }
-            if (_raidWings.Count == 0) return;
+            if (_raidWings.Count == 0)
+            {
+                RecordRaidSkip(group, "noBombers");
+                return;
+            }
 
             _raidForce.Clear();
             foreach (ISquadron wing in _raidWings) AddWingForce(wing, _raidForce);
             Vector3 origin = _raidWings[0].WorldPosition;
             HostileSighting best = default;
             float bestScore = 0f;
+            bool anyMine = false;
             foreach (HostileSighting mine in _intel.Mines)
             {
                 if (_reservedRaidTargets.Contains(mine.EntityId) ||
                     !_entityLocator.TryGetEntity(mine.EntityId, out IEntity target) ||
                     !_playerRoster.IsHostile(_owner.Id, target.Owner) || target.HealthModel.IsDestroyed) continue;
+                anyMine = true;
                 Vector3 position = ToVector(mine.Position);
                 float score = damage / Mathf.Max(1f, Mathf.Sqrt(PlanarDistanceSquared(origin, position)));
                 if (score <= bestScore || !WinsRaid(position)) continue;
                 best = mine;
                 bestScore = score;
             }
-            if (bestScore <= 0f) return;
+            if (bestScore <= 0f)
+            {
+                RecordRaidSkip(group, anyMine ? "notWinnable" : "noKnownMine");
+                return;
+            }
+            _raidSkipReasons.Remove(group);
             _reservedRaidTargets.Add(best.EntityId);
             foreach (ISquadron wing in _raidWings) _raids.Add(wing, best);
         }
@@ -1174,6 +1190,16 @@ namespace EmpireAtWar.Services.Enemy
             var sighting = new HostileSighting(best.Id, default, best.Owner, ToPoint(best.Position),
                 best.Entity.HealthModel.Hull, best.Entity.HealthModel.Shields, 1f, Time.time);
             foreach (ISquadron wing in _raidWings) _raids.Add(wing, sighting);
+        }
+
+        /// <summary>Why a group's mine raid did not start; one row each time the reason changes.</summary>
+        private void RecordRaidSkip(EnemyWingGroup group, string reason)
+        {
+            if (_raidSkipReasons.TryGetValue(group, out string last) && last == reason) return;
+            _raidSkipReasons[group] = reason;
+            EnemyAiTelemetry.RecordEvent(_owner.Id, _owner.Faction, "raidSkip",
+                FormattableString.Invariant(
+                    $"reason={reason};group={_outerGroups.IndexOf(group)};wings={group.Members.Count};knownMines={_intel.Mines.Count}"));
         }
 
         // The raiders in _raidForce at least match the units and armed structures at the mine.

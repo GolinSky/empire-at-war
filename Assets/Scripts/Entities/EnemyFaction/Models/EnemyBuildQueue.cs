@@ -48,6 +48,10 @@ namespace EmpireAtWar.Entities.EnemyFaction.Models
         public void RetrySquadronDeployment(SquadronUnitRequest request, float retryDelay) =>
             _builds.Add(new EnemyPendingBuild(request, 0f) { DeploymentRetryIn = retryDelay });
 
+        /// <summary>A paid second station with no placement point stays queued and tries again later.</summary>
+        public void RetryStationPlacement(SecondStationUnitRequest request, float retryDelay) =>
+            _builds.Add(new EnemyPendingBuild(request, 0f) { DeploymentRetryIn = retryDelay });
+
         /// <summary>Seconds a completed ship has been held because its arrival area was blocked.</summary>
         public float GetDeploymentBlockedSeconds(ShipUnitRequest request) =>
             _blockedSeconds.TryGetValue(request, out float blocked) ? blocked : 0f;

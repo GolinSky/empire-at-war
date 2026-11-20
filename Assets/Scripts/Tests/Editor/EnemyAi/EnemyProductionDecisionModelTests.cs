@@ -466,8 +466,9 @@ namespace EmpireAtWar.Tests.Editor
         [TestCase(5000f, ShipType.Recusant, false)]
         [TestCase(1500f, null, false)]
         [TestCase(0f, null, false)]
-        [TestCase(5000f, null, true)]
-        public void UltraHardRebuild_SavesForPriorityShipAndRechecksLosses(
+        // Round 6 (G4): a one-ship fleet buys the best ship that fits and is paid for now instead of saving.
+        [TestCase(5000f, ShipType.Munificent, true)]
+        public void UltraHardRebuild_BuysTheBestShipItCanPayNowAndRechecksLosses(
             float money,
             ShipType? expectedShip,
             bool capacityBlocked)
@@ -553,6 +554,8 @@ namespace EmpireAtWar.Tests.Editor
                     Assert.That(
                         ((ShipUnitRequest)purchaseProcessor.LastRequest).Key,
                         Is.EqualTo(expectedShip.Value));
+                    // The larger priority ship does not fit; the smaller one that fits is bought, not waited out.
+                    if (capacityBlocked) return;
 
                     strategy.Tick(0f);
                     scheduler.Step(0f);
@@ -572,15 +575,81 @@ namespace EmpireAtWar.Tests.Editor
                 else
                 {
                     Assert.That(purchaseProcessor.LastRequest, Is.Null);
-                    if (capacityBlocked)
-                    {
-                        unitLimitModel.Release(capacityHolder, heldCapacity);
-                        strategy.Tick(0f);
-                        scheduler.Step(0f);
-                        Assert.That(purchaseProcessor.LastRequest, Is.TypeOf<ShipUnitRequest>());
-                        Assert.That(((ShipUnitRequest)purchaseProcessor.LastRequest).Key,
-                            Is.EqualTo(ShipType.Recusant));
-                    }
+                }
+            }
+            finally
+            {
+                UnityEngine.Object.DestroyImmediate(reinforcementData);
+                UnityEngine.Object.DestroyImmediate(definition);
+            }
+        }
+
+        // Round 6 (G4): saving for a ship the AI cannot pay is allowed only for a fleet of 10+ that beats what it knows.
+        [TestCase(1, true)]
+        [TestCase(10, false)]
+        public void UnaffordablePreferredShip_OnlyAStrongFleetSavesForIt(int fleetShips, bool buysNow)
+        {
+            ReinforcementData reinforcementData = ScriptableObject.CreateInstance<ReinforcementData>();
+            FactionDefinition definition =
+                CopyDefinition(FactionType.Separatist, ShipType.Munificent, ShipType.Recusant);
+            SetBackingField(definition.Ships[ShipType.Munificent], nameof(FactionData.BuildTime), 20);
+            SetBackingField(definition.Ships[ShipType.Recusant], nameof(FactionData.BuildTime), 30);
+            SetBackingField(definition.Ships[ShipType.Munificent], nameof(FactionData.Price), 3000);
+            SetBackingField(definition.Ships[ShipType.Recusant], nameof(FactionData.Price), 4000);
+            try
+            {
+                EnemyFactionModel factionModel = CreateFactionModel(definition);
+                factionModel.CurrentLevel = 5;
+                // Room for the whole fleet, so only money decides.
+                SetBackingField(reinforcementData, nameof(ReinforcementData.MaxUnitCapacity), 1000);
+                var limits = new EnemyUnitLimitModel();
+                ReserveEconomicFloor(factionModel, limits, factionModel.MiningFactions.First().Value.MaxCount);
+                ReserveDefensePlatform(factionModel, limits);
+                ReserveCaptureWings(factionModel, limits);
+                FactionData munificent = factionModel.ShipFactionData[ShipType.Munificent];
+                for (int i = 0; i < fleetShips; i++)
+                    limits.Adopt(GetUnitId<ShipUnitRequest>(ShipType.Munificent.ToString()), munificent.UnitCapacity);
+
+                var purchases = new RecordingPurchaseProcessor();
+                var entities = new EntityLocator();
+                var scheduler = new EnemyAiScheduler(new ReplayNotifier<BattleState>(BattleState.Running));
+                scheduler.Initialize();
+                var strategy = new EnemyProductionStrategy(
+                    factionModel: factionModel,
+                    research: CreateCompletedResearch(definition),
+                    purchaseProcessor: purchases,
+                    requestFactory: new UnitRequestFactory(),
+                    // The Recusant (preferred: fewer copies) is out of reach; the Munificent is paid for.
+                    economyModel: new EconomyModelStub(3500f),
+                    stateProvider: new StateProviderStub(),
+                    decisionModel: new EnemyProductionDecisionModel(),
+                    unitLimitModel: limits,
+                    reinforcementData: reinforcementData,
+                    enemyStructurePlacementService: new StructurePlacementServiceStub(),
+                    productionAccess: new OperationalProductionAccess(),
+                    // No hostile is known, so the fleet wins its matchup.
+                    forceBuilder: new ForceCompositionBuilder(entities,
+                        new UnitCombatProfileCatalog(null, null, null, null), new AiWorldSnapshot(entities)),
+                    profileCatalog: UniformValueCatalog(definition),
+                    counterModel: new EnemyCounterProductionModel(new NeutralShipClassMatchups()),
+                    intelRegistry: new TeamIntelRegistry(),
+                    owner: TestPlayers.CreateDuel(EnemyAiDifficulty.UltraHard).Get(TestPlayers.Enemy),
+                    stationPressure: new EnemyStationPressureTracker(),
+                    scheduler: scheduler,
+                    squadrons: new NoPatrolSquadronCommander());
+
+                strategy.Start();
+                strategy.Tick(0f);
+                scheduler.Step(0f);
+
+                if (buysNow)
+                {
+                    Assert.That(purchases.LastRequest, Is.TypeOf<ShipUnitRequest>());
+                    Assert.That(((ShipUnitRequest)purchases.LastRequest).Key, Is.EqualTo(ShipType.Munificent));
+                }
+                else
+                {
+                    Assert.That(purchases.Purchases.OfType<ShipUnitRequest>(), Is.Empty);
                 }
             }
             finally
@@ -779,7 +848,7 @@ namespace EmpireAtWar.Tests.Editor
         [TestCase(2, 2, false)]
         [TestCase(3, 0, false)]
         [TestCase(3, 0, true)]
-        public void Level1Corvette_IsNeverBoughtFromLevelTwoAndSavesForHigherTier(
+        public void Level1Corvette_IsNeverBoughtFromLevelTwo(
             int level, int reservedCorvettes, bool stationCritical)
         {
             var reinforcementData = ScriptableObject.CreateInstance<ReinforcementData>();
@@ -853,8 +922,8 @@ namespace EmpireAtWar.Tests.Editor
                 scheduler.Step(0f);
 
                 Assert.That(pressure.IsStationCritical, Is.EqualTo(stationCritical));
-                Assert.That(purchases.LastRequest, Is.Null,
-                    "Must save for Munificent instead of buying a level-1 corvette, a station emergency included.");
+                Assert.That(purchases.Purchases.OfType<ShipUnitRequest>().Any(ship => ship.Key == ShipType.C9979),
+                    Is.False, "A level-1 corvette is never bought from level 2, a station emergency included.");
             }
             finally
             {

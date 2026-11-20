@@ -18,13 +18,32 @@ namespace EmpireAtWar.Services.Enemy
 {
     public static class ShipOrderTelemetry
     {
+        // The AI part issuing orders right now (executor, dedup, commander, patrol); empty for anyone else.
+        private static string _issuer = "";
+
+        /// <summary>Tags the order rows written inside the scope with <paramref name="issuer"/>.</summary>
+        public static IssuerScope Issue(string issuer) => new IssuerScope(issuer);
+
+        public readonly struct IssuerScope : System.IDisposable
+        {
+            private readonly string _previous;
+
+            public IssuerScope(string issuer)
+            {
+                _previous = _issuer;
+                _issuer = issuer;
+            }
+
+            public void Dispose() => _issuer = _previous;
+        }
+
 #if UNITY_EDITOR || DEVELOPMENT_BUILD
         private const float SAMPLE_INTERVAL = 5f;
         private const float FLUSH_INTERVAL = 10f;
         private const string HEADER = "timeScaledSinceStartup,timeUnscaledSinceStartup,kind,player,entityId," +
             "order,state,targetId,destinationX,destinationZ,x,z,moving,contacts,preferredContactId," +
             "preferredDistance,preferredInRange,trackedContactId,radarRange,weaponRange,visionMultiplier," +
-            "ionDisabled,cloaked,facingDot,hull,shields,reason,movement,attack,shipType,attackTargetInReach";
+            "ionDisabled,cloaked,facingDot,hull,shields,reason,movement,attack,shipType,attackTargetInReach,issuer";
         private static readonly Dictionary<UnitOrderModel, float> _nextSample = new Dictionary<UnitOrderModel, float>();
         private static readonly StringBuilder _lines = new StringBuilder();
         private static string _path;
@@ -118,7 +137,7 @@ namespace EmpireAtWar.Services.Enemy
                 movement.GetRange(preferred.GetFacade<IEntityTransformFacade>().Transform.position);
             _lines.AppendLine(string.Format(CultureInfo.InvariantCulture,
                 "{0:F2},{1:F2},{2},{3},{4},{5},{6},{7},{8:F1},{9:F1},{10:F1},{11:F1},{12},{13},{14}," +
-                "{15:F1},{16},{17},{18:F1},{19:F1},{20:F2},{21},{22},{23:F3},{24:F1},{25:F1},\"{26}\",{27},\"{28}\",{29},{30}",
+                "{15:F1},{16},{17},{18:F1},{19:F1},{20:F2},{21},{22},{23:F3},{24:F1},{25:F1},\"{26}\",{27},\"{28}\",{29},{30},{31}",
                 Time.time, Time.unscaledTime, kind, source.Owner, source.EntityId, orders.Current, state,
                 (attackTarget ?? orders.Target)?.Id ?? 0L, destination.x, destination.z, position.x, position.z,
                 movement.IsMoving ? 1 : 0, radar.Enemies.Count, preferred == null ? 0L : preferred.Id,
@@ -129,7 +148,7 @@ namespace EmpireAtWar.Services.Enemy
                 caster.Modifiers.IsCloaked ? 1 : 0, facingDot, caster.Health.Hull, caster.Health.Shields,
                 reason.Replace("\"", "\"\""),
                 movement is IShipMovementDiagnostics diagnostics ? diagnostics.MovementDiagnostics : "",
-                attack, source.ShipType, attackTargetInReach ? 1 : 0));
+                attack, source.ShipType, attackTargetInReach ? 1 : 0, _issuer));
             if (kind == "release") _nextSample.Remove(orders);
             if (Time.unscaledTime >= _nextFlush) Flush();
 #endif

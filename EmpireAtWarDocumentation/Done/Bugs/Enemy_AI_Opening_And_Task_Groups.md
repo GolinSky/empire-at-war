@@ -9,9 +9,12 @@ acceptance: pending-user
 ---
 # Enemy AI Opening and Task Groups
 
-## Status (2026-11-20, round 5 implemented)
-- Round 5 (E1–E12) implemented 2026-11-20 on the user's go-ahead. Notes → "Round 5 — implementation notes" at the end.
-- Open: the round-5 playtest (user gate). Process (user): one playtest after all of round 5.
+## Status (2026-11-20, round 6 implemented)
+- Round 6 (G1–G11) implemented and compiled 2026-11-20. Notes → "Round 6 — implementation notes". Tests written, not run (local override).
+- Acceptance → round-6 playtest gates (user; [[TODOs/User_Acceptance_Queue]]). A failed gate reopens this plan.
+- Round 5 (E1–E12) implemented 2026-11-20, commit `59a2c0776`; playtest 15:48: start and early mid-game perfect, mid-to-late bad.
+- Process (user): implement the whole round first, then one playtest.
+- Rebellion vs Empire battle still not played.
 
 ## Outcome of rounds 1–4 (closed 2026-11-20, reopened the same day)
 - All scope implemented across rounds 1–4 (A1–A7, B1–B9, C1–C7, D1–D5, I18, I19). `EnemyAi` EditMode 561/561.
@@ -276,7 +279,7 @@ Files: `%USERPROFILE%/AppData/LocalLow/GolinSkyCompany/EmpireAtWar/BattleTelemet
 - [x] **C1** Raiders of an outer group (bombers, or all wings without a zone) are rated together vs the mine and its cover and go to one mine together; one group per mine (`AssignMineRaid`).
 - [x] **C2** Outer group: home zone held (own mine/satellite, no target left) and attacked → defend it, wherever the group works. Zone taken → nearest outer zone with targets **no other group works**; none → raid. `SelectWinnableZone` also skips worked zones.
 - [x] **C3** `EnemyShipTaskGroupPlanner.NoteStalledSieges`: a zone force below an even fight (`Assess` not `Go`) for `STALLED_SIEGE_SECONDS` 90 s → zone marked like a retreat (90 s weak-phase switch). Held zones under attack exempt. "No site flipped" not tracked; the verdict alone decides.
-- [ ] **C4–C7** Not started.
+- [x] **C4–C7** Resolved in round 4 (see "Round 4 — steps").
 - [x] **Tests (`EnemyAi`)**: `SquadronRaid_BombersRaidAGuardedMineOnlyTogether` (×2), `WingGroups_HeldHomeZoneUnderAttackIsDefended_ElseTheGroupNeverSharesAZone` (×2), `Allocation_ForceStalledBelowAnEvenFightIsReleasedAfterNinetySeconds`; updated `SquadronRaid_OuterGroupsRaidTogether_OneMinePerGroup` (3 raids / 1 mine for one group) and the commitment test (taken zone → raid, not share).
 - Verification 2026-11-20: compile 0 errors; `EnemyAi` EditMode **557/557 pass** (quick, explicit excluded; user request). First run 555/557: the updated raid test lacked wing entities and catalog profile; fixed in the test.
 
@@ -549,3 +552,140 @@ Order: E1 → E2 → E3 → E4 → E5–E11 → E12. Playtest once, after E12.
 ### Outcome
 - All round-5 scope implemented and source-verified 2026-11-20. Acceptance → round-5 playtest gates above (user).
 - Reusable guidance → [[Architecture/Enemy_AI_Objectives]] section "Round 5".
+
+
+## Evidence — battle 2026-11-20 15:48 (round-5 playtest; Small 1v1, code `0c44f1fb7` dirty, 19:15)
+Files: `…/BattleTelemetry/Loading_20261120_154837_ai.csv`, `_ai_orders.csv`, `_squadrons.csv`, `Battle_20261120_154841_map.csv`, `Battle_20261120_154952.csv`. Log 10.1 s = battle 0 s.
+- AI Separatist (1316, 1030) vs human Republic (−1316, −1030). Coruscant, seed 1412934133. Start money 30,000. Outer zones NW (−1405, 1459), SE (1405, −1459).
+- Result: AI station lost 18:26. AI held the centre relay 2:19–16:03.
+
+### User verdict
+- Start and early mid-game: perfect, with a lot of money.
+- Mid-to-late: bad ship development; much money and builds nothing, or spawns everywhere. (User attacked several zones at once.)
+- No defence platforms near zones or the station.
+- Second station: built too late and placed badly: near the centre but too close to the user's station and outer zone. Wanted: earlier, near the main station, further into the corner.
+
+### Worked
+- Forward spawn: `spawnAttempt found=True` 77 / 78. 51 of 83 ships arrived > 600 from the station; rear mode 4 / 4 under station pressure.
+- Patrol wing 70: assigned 1:29, alive to 18:28; 19 `spawnBeacon` rows.
+- Median ship life 106 s (13:11 battle: ≈ 80 s); 171 s for ships deployed in minutes 0–4.
+- Fleet 22 ships at 5:36 and 7:56. `wingZoneLeft` fired 7 times.
+
+### Faults
+- **H1 (P0) Capital saving while the fleet dies.** 10:17–16:51: 5 capitals (2 Invincible, 2 Recusant Dreadnought, 1 Lucrehulk) = 91,000; waits 70 / 45 / 59 / 36 / 93 s; fleet 3–11 ships; unit capacity 55–85 of 120.
+  - Capital life: Invincible 56 s (died on its spawn point, never moved) and 105 s; Dreadnought 67 s and 146 s; Lucrehulk 58 s.
+  - Fleet: 22 (7:56) → 10 (10:14) → 3 (13:26). Ship life by deploy minute: 0–4 171 s, 4–8 134 s, 8–12 86 s, 12–16 67 s.
+  - Earlier, 4:24–10:05, capacity was 102–116 of 120: the fleet sat at the unit limit.
+- **H2 (P0, bug) Two ships on one spawn point.** 9 pairs with identical `spawn=` (7:31, 7:52, 8:33, 9:26, 10:03, 10:21, 10:47, 12:41 Invincible + Bulwark, 12:41). Cause: `TryGetSpawnPositionNearUnits` reserves no landing; `IsClear` sees physics only and a ship in hyperspace has none.
+- **H3 (P0) Scattered spawns.** `EnemyForwardSpawnAnchors.Collect` sorts by kind (beacon → wing → ship → structure), then by distance to the task. Invincible: task NW zone (−1405, 1459), spawn at the beacon (1506, −100), 3,300 away. Single ships beside lone wings: Recusant (−842, 171) at 13:59, Peleset (−636, 298) at 14:16.
+  - Hostile test = ship sightings within 800 only; satellites, platforms and wings are not counted.
+- **H4 (P0) Battle asteroids replaced mines.** 10 of 15 `siteBuild` rows. Mining income 504 (3 mines + 3 asteroids, 3:00) → 350 (1 mine + 4 asteroids) from 5:00 to 15:00.
+  - AI income 553 /s at 2:00, 564 /s at 13:00. Human 441 → 592 → 1,012 /s (18:00).
+  - Cause: `EnemySiteConstructionController._lostZones` never clears ("retaken" forever); `heldUnderAttack` = any hostile unit at any site of the zone.
+- **H5 (P0, bug) No defence platforms.** 1 all battle (Xq6, 6:49, SE zone). `CountZonePlatforms` counts every `StructureKind.DefendPlatform`; satellites share that kind; `TryGetHeldZonePosition` requires the count to equal the wanted number → a zone with an own satellite never gets its first platform. No rule places platforms at the station.
+- **H6 (P0) Second station.** Bought 10:26 → `placementDeferred noSafeCandidate` 11:56 (refund) → bought 12:07 → placed 13:37 at (−1000, 333), `nearestHostile=870`, recovery mode on.
+  - Gate: not before `SECOND_STATION_LATE_SECONDS` 480 s; blocked while a level, research or construction is pending; money ≥ 2 × price.
+  - Placement: `MINIMUM_HOME_DISTANCE` 1,400 from the home station and the home zone; candidates = patrol points seen ≤ 45 s ago.
+- **H7 (P1) Opening money idle.** 21,000–26,000 unused 0:15–1:27 (wing cap 6, corvette cap 2, level-2 wait).
+- **H8 (P1) Bombers.** `raids > 0` on 9 of 173 `wingAssignment` rows.
+- **H9 (P2) Order cancels.** 161 `None` orders on 47 ships (13:11: 81 on 24). Issuer not in the log.
+- **H10 (P1) Station fell in 56 s** (17:30–18:26) with 6 ships alive.
+
+### Code review scope
+- Read: `ForwardSpawnRing`, `EnemyForwardSpawnAnchors`, `EnemyFactionController` diff, `EnemySiteConstructionController` diff, `EnemyStructurePlacementService` (defence, second station), `EnemyProductionStrategy` (second station, defence), `EnemyProductionDecisionModel.Evaluate`.
+- Not reviewed in depth: `AiOrderDeduplicator`, `AutoPowerDecider`, `EnemySquadronCommander` changes.
+
+## Round 6 — plan (2026-11-20; implemented the same day)
+Order: G1 → G2 → G3 → G4 → G5 → G6 → G7–G10 → G11. Playtest once, after G11.
+
+### G1 (P0, bug H2) Landing reservation
+- [x] `EnemyFactionController` forward branch: reserve the hull footprint of the chosen point (`IShipSpawnPoints.ReserveDefenseLanding`) before the next ship of the same tick searches; release it when the ship is deployed into the battle (same release point as the defence wave).
+- [x] `ForwardSpawnRing` stays pure; the reservation is seen through `IShipSpawnClearance.IsClear`.
+- Implemented differently: see "Round 6 — implementation notes" (cause was hull heights, not a missing reservation).
+
+### G2 (P0, bug H5) Defence platforms
+- [x] **G2a** `CountZonePlatforms`: count only platform types from the faction's purchasable list (`EnemyFactionModel.DefendPlatforms`). Satellites and battle asteroids are not counted.
+- [x] **G2b** Station ring: `TryGetDefensePosition` also offers the home station (ring search around it): 1 platform from level 2, 2 from level 4. Order: station → centre → captured relays → home relay.
+- [x] **G2c** Zone targets: 1 per held outer zone, 2 at a held centre; up to `MAX_ZONE_PLATFORMS` 3 only while ships are blocked by the unit limit (existing rule).
+- [x] **G2d** A contested zone still gets its platform when the point passes `IsPlacementSafe` (drop the `IsContested` skip).
+
+### G3 (P0, H3) Anchor choice
+- [x] **G3a** `EnemyForwardSpawnAnchors`: sort by distance to the task. Kind is the tie-break only. The beacon is first only when it is within 1,000 of the nearest candidate.
+- [x] **G3b** Hostile test: known hostile ships, platforms, satellites and stations within 800 reject the anchor.
+- [x] **G3c** Deep anchors: an anchor nearer a hostile station or hostile relay than any own relay or station needs ≥ 3 own ships within 600.
+- [x] **G3d** Capitals (`IsAssaultCapital`): forward only at an anchor with ≥ 4 own ships within 600; else held relay or station.
+- [x] **G3e** Ships deployed in one tick share the first ship's anchor (landed ships rank before a new search).
+
+### G4 (P0, H1) Buy what fights now
+- [x] `EnemyProductionStrategy`: saving for a unit that is not affordable is allowed only when own ships ≥ 10 and fleet advantage ≥ 1.0 and recovery mode is off. Otherwise `TrySelectCounterUnit` and `TrySelectShip` pick the best unit affordable now.
+- [x] Money above 2 × the price of the unit being saved for → also buy the best affordable ship in the same cycle.
+- Accepted by the user 2026-11-20. Replaces the earlier "saving for an Invincible under siege is fine".
+
+### G5 (P0, H4) Battle asteroids
+- [x] At most 1 battle asteroid per zone. Every other spot gets a mine.
+- [x] `retaken`: the mark is cleared when the zone's asteroid is built.
+- [x] `heldUnderAttack`: a known hostile ship in the zone, or ≥ 3 hostile wings. A single wing does not count.
+- [x] `opening` rule unchanged (first 120 s), within the 1-per-zone limit.
+
+### G6 (P0, H6) Second station
+- [x] **G6a Timing.** From level 2, when money ≥ 2 × price and no mandatory satellite or mine is pending. Delete the 480 s gate and the "level / research / construction pending" block.
+- [x] **G6b Placement.** Ring 400–700 around the home station, on the half away from the map centre (the corner side); in bounds, visible, placeable; farthest from known hostiles wins. Delete `MINIMUM_HOME_DISTANCE` 1,400 and the patrol-point source.
+- [x] **G6c Fallback.** No point there → own held outer zone nearest home → retry every 10 s (existing). Never a point nearer a hostile station than the home station.
+- [x] **G6d** `placementDeferred` keeps the paid request and retries; no refund-and-rebuy loop.
+
+### G7–G10
+- [x] **G7 (P1, H7) Opening surplus.** Covered by G2b and G6a: with ≥ 15,000 after the opening buys, the station platform and the second station are bought as soon as level 2 lands. No wing-cap change.
+- [x] **G8 (P1, H8) Bombers.** Telemetry `raidSkip reason=noKnownMine|notWinnable|noBombers|holding` per raid decision. Rule change after the next battle, from that row.
+- [x] **G9 (P2, H9) Orders.** `ai_orders` rows carry the issuer (`allocator|executor|commander|dedup`). Rule change after the next battle.
+- [x] **G10 (P1, H10) Station defence.** Covered by G2b (platforms) and G4 (ships now). No separate change.
+
+### G11 Tests (written with each step; run only on the user's request)
+- `EnemyAi`: landing reserved between two ships of one tick; platform count ignores satellites; station ring offered; anchor order by distance; deep-anchor and capital rules; affordable-now rule (weak fleet → no saving; strong fleet → saving); one asteroid per zone, mark cleared; second-station gate and corner-side placement.
+- `Ships`: `IsClear` false on a reserved forward landing.
+- Gaps from round 5 still open: turtle orders, route defenders, stall by result, patrol wing and beacon, lone wing, bomber hold. Add with G11.
+
+### Round 6 playtest gates (user, after G11; same matchup, then Rebellion vs Empire)
+- New telemetry for the review: `raidSkip reason=…;group;wings;knownMines` (G8), `ai_orders` column `issuer` = `executor|dedup|commander|patrol|` (G9), `surplusShip` (G4), `placement source=stationRing|homeCorner|heldZone` (G2/G6), `deployment anchor=landed|beacon|wing|ship|structure|relayOrStation|rear` (G3).
+- 0 pairs of ships with the same `spawn=` point.
+- ≥ 1 platform at the station by level 2 + 60 s; ≥ 1 at each zone held > 120 s.
+- Second station placed ≤ 60 s after level 2 with ≥ 6,000 credits; ≤ 700 from the home station; farther from the hostile station than the home station is.
+- Mining spots: ≤ 1 battle asteroid per zone; mining income never falls while the number of held spots does not fall.
+- No `production-wait reason=saving` row while own ships < 10.
+- No capital dies < 90 s after spawning outside a station defence.
+- ≥ 80 % of forward spawns within 1,000 of the ship's task or of ≥ 3 own ships.
+
+## Round 6 — implementation notes (2026-11-20)
+### G1 Spawn pairs (H2) — cause corrected
+- All 10 pairs in the 15:48 log were **different ship types** (e.g. Dispatcher + Recusant at 461.5 s). `ShipHullFootprint.Overlaps` rejects on height first; hulls fly at per-type heights → the 3D landing test passes. `ShipMoveComponent` already reserves the landing synchronously (VContainer `IInitializable` runs in `Build`).
+- Fix: `ShipSpawnPoints.TryGetSpawnPositionNearUnits` adds a top-down test: no living ship (any height) and no forward landing of the last `FORWARD_LANDING_SECONDS` 2 s (hyperspace 0.6 s) within the two planar radii. No `ReserveDefenseLanding` call; player spawn rules unchanged.
+### G2 Platforms (H5)
+- `EnemyStructurePlacementService.CountPlatforms`: own entities with `IDefendPlatformTypeFacade` whose type is in `EnemyFactionModel.DefendPlatforms` (satellites, battle asteroids excluded). Constructor: `patrol` → `factionModel`, `relations`.
+- Order: station ring (`stationRing`: 1 from level 2, 2 from level 4; only while the AI hosts its own base) → centre → captured relays → home relays. Zone limit: centre 2, others 1; `allowExtra` (ships blocked by the unit limit) → 3. `IsContested` skip removed; points still pass `IsPlacementSafe`.
+### G3 Anchors (H3)
+- `EnemyForwardSpawnAnchors.Select` (static, plain positions in `AnchorPicture`): landed this tick first → distance to task → kind. Beacon promoted to first only within `BEACON_LEAD_RADIUS` 1,000 of the best other anchor.
+- Reject: hostile within 800 = known ships + armed structures seen or remembered (`RememberStructure`; mines excluded) + every hostile station. Deep (nearer a hostile station/relay than an own one) → ≥ 3 own ships within 600. Capital (`IsAssaultCapital`, read only for level-4 ships) → ≥ 4 own ships within 600; else relay/station search.
+- `IEnemyForwardSpawnAnchors.Collect` gained `bool capital`; anchors class now needs `IReinforcementZoneSource`, `IVisionService`.
+### G4 Production (H1)
+- `CanSaveForUnit`: reserved ships ≥ 10, not recovering, `CombatMatchup.Advantage(own live, known hostile)` ≥ 1. Else `TrySelectCounterUnit(requireAffordable)` and `TrySelectShip(requireAffordable)` (also under station pressure, as before).
+- Surplus: after a ship purchase with money before it ≥ 2 × its price → best affordable ship in the same cycle (`surplusShip` row). Interpretation: "money ≥ 2 × the unit bought", since a unit being saved for is unaffordable by definition. Deviation: only from level 2 (level-1 corvettes stay one at a time).
+### G5 Battle asteroids (H4)
+- `EnemySiteConstructionController.ChooseSpotFacility`: zone already has an own asteroid (Constructing/Operational) → mine, and the `retaken` mark is cleared. `heldUnderAttack` = team intel: a known hostile ship, or ≥ `HELD_ATTACK_WINGS` 3 hostile wings in the zone. Opening rule unchanged. Constructor + `TeamIntelRegistry`, `IPlayerRelations`.
+### G6 Second station (H6)
+- `TryBuySecondStation(critical)`: level ≥ 2, money ≥ 2 × price (1 × when critical), no `PriorityConstructionPending`. 480 s gate and level/research/construction block deleted.
+- Placement: rings 400/500/600/700 around the home station, only the half away from the map centre; placeable; never nearer a hostile station than home is; farthest from known hostiles wins (`homeCorner`). Fallback: own held outer zone nearest home (`heldZone`). Patrol-point source and `MINIMUM_HOME_DISTANCE` deleted.
+- `EnemyFactionController`: no point at build time → `EnemyBuildQueue.RetryStationPlacement` 10 s; paid request kept (`placementDeferred refund=0`).
+### G7–G10
+- G7, G10: covered by G2b + G4 + G6a; no separate change.
+- G8: `EnemySquadronCommander.RecordRaidSkip` per outer group, one row per reason change: `holding` (station defence), `noBombers`, `noKnownMine`, `notWinnable`.
+- G9: `ShipOrderTelemetry.Issue(issuer)` scope → `ai_orders` column `issuer`. `AiOrderDeduplicator` tags `executor`, or `dedup` for a same order resent after it ended; `EnemyUnitCommander` zone-exit orders `commander`; patrol ship `patrol`. Empty = player or ship-internal rows. `Tools/BattleAudit/battle_audit.py` reads by column name (unaffected).
+### Tests (G11)
+- New: `EnemyForwardSpawnAnchorsTests` (6: distance order, beacon lead, landed first, hostile structure, deep anchor, capital escort), `EnemySpotFacilityTests` (2: one asteroid per zone, 3 wings), `ForwardLandingTests` (Ships: two types never share a point), `UnaffordablePreferredShip_OnlyAStrongFleetSavesForIt` (×2), `DefensePosition_SatellitesAndBattleAsteroidsAreNotPlatforms`, `SecondStation_LandsOnTheHomeRingOnTheCornerSide`.
+- Updated (contract changed): `UltraHardRebuild_BuysTheBestShipItCanPayNowAndRechecksLosses` (was …SavesForPriorityShip…; capacity case now buys the Munificent that fits), `Level1Corvette_IsNeverBoughtFromLevelTwo` (asserts no C-9979, not "no purchase"), `SecondStation_RefundsAnUnsupportedUpgrade_AndKeepsAnUnplaceableStationQueued` (G6d), `DefensePosition_EveryHeldZoneDefended_…` (centre takes 2), placement fixture (roster-backed `EnemyFactionModel`, typed `PlatformEntity`), site-controller and anchor fakes (new constructor/params).
+- Reviewed, no change: `PreferredShipAtLimit_…` (surplus buys the same type; last request unchanged), opening production test (surplus gated to level ≥ 2), `RealEntityCompositionTests.AiPlayer_RejectsSecondStation…` (level 1 / no base), `AiOrderDeduplicatorTests` (filtering unchanged).
+- Not covered: station ring (needs a living host base), contested-zone platform, G6c fallback, raidSkip/issuer telemetry; round-5 gaps (turtle, route defenders, stall by result, patrol wing/beacon, lone wing, bomber hold) still open.
+### Verification
+- Unity recompile 0 errors (`Assembly-CSharp`, `Assembly-CSharp-Editor`). Tests not run (local override). No playtest yet (user gate).
+- `Tools/Jenkins/TEST_INVENTORY.md` not updated (already stale: lacks round-5 fixtures; another session holds edits to it).
+### Outcome
+- All round-6 scope implemented and source-verified 2026-11-20. Acceptance → round-6 playtest gates (user).
+- Reusable guidance → [[Architecture/Enemy_AI_Objectives]] section "Round 6".

@@ -19,6 +19,8 @@ namespace EmpireAtWar.Services.ShipSpawning
     {
         private const int MAX_RANDOM_SPAWN_ATTEMPTS = 100;
         private const int REAR_SECTOR_ATTEMPTS = 36;
+        /// <summary>A forward landing blocks its point this long; the hyperspace jump lasts well under it.</summary>
+        public const float FORWARD_LANDING_SECONDS = 2f;
         private static readonly float[] REAR_RING_SCALES = { 1f, 1.5f, 2f, 3f };
 
         private readonly IReinforcementZoneSource _zoneSource;
@@ -36,8 +38,13 @@ namespace EmpireAtWar.Services.ShipSpawning
         // Forward points: bounds, hazard, vision and hostile block circle, then the hull; no reachability.
         private readonly Func<Vector3, bool> _isForwardOpen;
         private readonly Func<Vector3, bool> _isForwardClear;
+        // Hulls fly at per-type heights, so the 3D hull test lets two types land on one point; forward points also
+        // keep the top-down footprint of standing ships and of ships still jumping in apart.
+        private readonly List<(Vector3 Position, float Radius, float Until)> _forwardLandings =
+            new List<(Vector3, float, float)>();
         private PlayerId _forwardOwner;
         private ShipType _forwardShip;
+        private float _forwardRadius;
 
         public ShipSpawnPoints(
             IReinforcementZoneSource zoneSource,
@@ -55,7 +62,7 @@ namespace EmpireAtWar.Services.ShipSpawning
             _relations = relations;
             _data = data;
             _isForwardOpen = point => _spawnRule.IsOpen(_forwardOwner, point);
-            _isForwardClear = point => _clearance.IsClear(_forwardOwner, _forwardShip, point);
+            _isForwardClear = point => _clearance.IsClear(_forwardOwner, _forwardShip, point) && IsPlanarFree(point);
         }
 
         public bool TryGetRandomSpawnPosition(PlayerId owner, ShipType shipType, out Vector3 position)
@@ -103,7 +110,36 @@ namespace EmpireAtWar.Services.ShipSpawning
         {
             _forwardOwner = owner;
             _forwardShip = shipType;
-            return ForwardSpawnRing.TryFind(units, awayFrom, _isForwardOpen, _isForwardClear, out position, out attempt);
+            _forwardRadius = _clearance.GetPlanarRadius(shipType);
+            float now = Time.time;
+            _forwardLandings.RemoveAll(landing => landing.Until <= now);
+            if (!ForwardSpawnRing.TryFind(units, awayFrom, _isForwardOpen, _isForwardClear, out position,
+                    out attempt)) return false;
+            _forwardLandings.Add((position, _forwardRadius, now + FORWARD_LANDING_SECONDS));
+            return true;
+        }
+
+        /// <summary>No ship of any height, standing or still landing, overlaps the point seen from above.</summary>
+        private bool IsPlanarFree(Vector3 point)
+        {
+            foreach (var landing in _forwardLandings)
+                if (IsWithin(point, landing.Position, _forwardRadius + landing.Radius)) return false;
+            foreach (IEntity entity in _entities.Entities)
+            {
+                if (!entity.TryGetFacade(out IUnitTypeFacade unit) || !unit.UnitTypeId.IsShip ||
+                    entity.HealthModel.IsDestroyed) continue;
+                Vector3 ship = entity.GetFacade<IEntityTransformFacade>().Transform.position;
+                if (IsWithin(point, ship, _forwardRadius + _clearance.GetPlanarRadius(unit.UnitTypeId.ShipType)))
+                    return false;
+            }
+            return true;
+        }
+
+        private static bool IsWithin(Vector3 a, Vector3 b, float distance)
+        {
+            float x = a.x - b.x;
+            float z = a.z - b.z;
+            return x * x + z * z < distance * distance;
         }
 
         public float GetHullRadius(ShipType shipType) => _clearance.GetPlanarRadius(shipType);

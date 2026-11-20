@@ -157,7 +157,7 @@ namespace EmpireAtWar.Tests.Editor
             var strategy = new EnemyDefenseStrategy();
             var construction = new ConstructionStub(true);
             var controller = new EnemySiteConstructionController(null, null, construction,
-                TestPlayers.CreateDuel().Get(TestPlayers.Enemy), null, strategy, null, null, null);
+                TestPlayers.CreateDuel().Get(TestPlayers.Enemy), null, strategy, null, null, null, null, null);
             var snapshot = Snapshot(new ForceComposition(), 5000f, 2000f, HeldCentrePad(5));
 
             Assert.That(strategy.TrySelect(snapshot, out _), Is.False);
@@ -191,7 +191,7 @@ namespace EmpireAtWar.Tests.Editor
             var construction = new ConstructionStub(satelliteCanStart);
             var roster = TestPlayers.CreateDuel();
             var controller = new EnemySiteConstructionController(null, null, construction,
-                roster.Get(TestPlayers.Enemy), null, strategy, null, null, null);
+                roster.Get(TestPlayers.Enemy), null, strategy, null, null, null, null, null);
             var centre = new EnemyDefensePad(2, 0f, 0.5f, float.PositiveInfinity, false, false,
                 Array.Empty<SiteFacilityType>(), isCentrePad: true);
             var snapshot = new EnemyDefenseSnapshot(2000f, 5f, 0f, default, new ForceComposition(),
@@ -209,7 +209,7 @@ namespace EmpireAtWar.Tests.Editor
             var construction = new ConstructionStub(true);
             var roster = TestPlayers.CreateDuel();
             var controller = new EnemySiteConstructionController(null, null, construction,
-                roster.Get(TestPlayers.Enemy), null, strategy, null, null, null);
+                roster.Get(TestPlayers.Enemy), null, strategy, null, null, null, null, null);
             var snapshot = Snapshot(Force(ShipClass.Cruiser, 5000f, 15000f), 2000f, 0f,
                 Pad(threatened: true, existing: new[] { SiteFacilityType.TurbolaserSatellite }));
             Assert.That(strategy.TrySelectScored(snapshot, out var optional), Is.True);
@@ -228,7 +228,7 @@ namespace EmpireAtWar.Tests.Editor
             var pad = new PadSite { Owner = TestPlayers.Enemy };
             var controller = new EnemySiteConstructionController(new PadDirectory(pad), null,
                 new ConstructionStub(true), roster.Get(TestPlayers.Enemy), null, new EnemyDefenseStrategy(), null,
-                null, null);
+                null, null, null, null);
 
             controller.TrackPadLosses(0f);
             pad.Owner = TestPlayers.Human;
@@ -250,7 +250,7 @@ namespace EmpireAtWar.Tests.Editor
             var pad = new PadSite { Owner = TestPlayers.Enemy };
             var controller = new EnemySiteConstructionController(new PadDirectory(pad), null,
                 new ConstructionStub(true), roster.Get(TestPlayers.Enemy), null, new EnemyDefenseStrategy(), null,
-                null, null);
+                null, null, null, null);
 
             controller.TrackPadLosses(0f);
             pad.Owner = TestPlayers.Human;

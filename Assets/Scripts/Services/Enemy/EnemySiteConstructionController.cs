@@ -8,14 +8,18 @@ using EmpireAtWar.Lifecycle;
 using EmpireAtWar.Entities.EnemyFaction.Models;
 using EmpireAtWar.Presenters.ReinforcementZones;
 using EmpireAtWar.Services.ReinforcementZones;
+using EmpireAtWar.Entities.EnemyFaction.Models.Intel;
+using UnityEngine;
+using static EmpireAtWar.Utils.FormationConversion;
 
 namespace EmpireAtWar.Services.Enemy
 {
     /// <summary>
     /// Builds mines on safe owned sites as soon as affordable, and the required satellites (three per zone, one per mining point) without waiting for a fleet.
     /// Money beyond the production reserve then fills every remaining empty owned pad.
-    /// A mining spot gets a battle asteroid instead of a mine when its zone needs firepower: hostiles are in the held
-    /// zone, the zone was lost and retaken, or a hostile is inside it in the first <see cref="OPENING_SECONDS"/>.
+    /// A mining spot gets a battle asteroid instead of a mine when its zone needs firepower: a known hostile ship or
+    /// <see cref="HELD_ATTACK_WINGS"/> hostile wings are in the held zone, the zone was lost and retaken, or a hostile
+    /// is inside it in the first <see cref="OPENING_SECONDS"/>. At most one battle asteroid per zone.
     /// </summary>
     public sealed class EnemySiteConstructionController : ITickable
     {
@@ -25,6 +29,8 @@ namespace EmpireAtWar.Services.Enemy
         public const int PAD_LOSSES = 2;
         public const float PAD_LOSS_WINDOW = 60f;
         public const float PAD_REBUY_WAIT = 45f;
+        /// <summary>Hostile wings that count as an attack on a held zone; one hostile ship always does.</summary>
+        public const int HELD_ATTACK_WINGS = 3;
         private readonly ICaptureSiteDirectory _sites;
         private readonly ICaptureSitePresence _presence;
         private readonly ICaptureSiteConstruction _construction;
@@ -35,6 +41,8 @@ namespace EmpireAtWar.Services.Enemy
         private readonly EnemyDefenseStrategy _defense;
         private readonly EnemyProductionStrategy _production;
         private readonly IReinforcementZoneSource _zones;
+        private readonly TeamIntelRegistry _intel;
+        private readonly IPlayerRelations _relations;
         private readonly HashSet<ReinforcementZonePresenter> _heldZones = new HashSet<ReinforcementZonePresenter>();
         private readonly HashSet<ReinforcementZonePresenter> _lostZones = new HashSet<ReinforcementZonePresenter>();
         private readonly HashSet<int> _ownedPads = new HashSet<int>();
@@ -46,8 +54,10 @@ namespace EmpireAtWar.Services.Enemy
             PlayerSlot owner, EnemyDefenseSnapshotBuilder snapshotBuilder,
             EnemyDefenseStrategy defense,
             EnemyStationPressureTracker stationPressure, EnemyProductionStrategy production,
-            IReinforcementZoneSource zones)
+            IReinforcementZoneSource zones, TeamIntelRegistry intel, IPlayerRelations relations)
         {
+            _intel = intel;
+            _relations = relations;
             _owner = owner;
             _sites = sites;
             _presence = presence;
@@ -127,11 +137,43 @@ namespace EmpireAtWar.Services.Enemy
             reason = "";
             ReinforcementZonePresenter zone = FindZone(spot);
             if (zone == null) return SiteFacilityType.Mining;
-            bool hostiles = HasHostilesIn(zone);
-            if (hostiles && IsHeld(zone)) reason = "heldUnderAttack";
+            if (HasBattleAsteroid(zone))
+            {
+                // The retaken zone got its asteroid; every other spot there is a mine.
+                _lostZones.Remove(zone);
+                return SiteFacilityType.Mining;
+            }
+            if (IsHeld(zone) && IsHeldZoneAttacked(zone)) reason = "heldUnderAttack";
             else if (_lostZones.Contains(zone)) reason = "retaken";
-            else if (hostiles && BattleClock.CurrentElapsed < OPENING_SECONDS) reason = "opening";
+            else if (BattleClock.CurrentElapsed < OPENING_SECONDS && HasHostilesIn(zone)) reason = "opening";
             return reason.Length > 0 ? SiteFacilityType.BattleAsteroid : SiteFacilityType.Mining;
+        }
+
+        private bool HasBattleAsteroid(ReinforcementZonePresenter zone)
+        {
+            foreach (ICaptureSite site in _sites.Sites)
+                if (site.Kind == CaptureSiteKind.Mining && site.Owner == _owner.Id &&
+                    site.FacilityType == SiteFacilityType.BattleAsteroid &&
+                    site.State is CaptureSiteState.Constructing or CaptureSiteState.Operational &&
+                    EnemyShipTaskGroupPlanner.IsInZone(zone, site.Center))
+                    return true;
+            return false;
+        }
+
+        /// <summary>A known hostile ship, or at least <see cref="HELD_ATTACK_WINGS"/> hostile wings, inside the zone.</summary>
+        private bool IsHeldZoneAttacked(ReinforcementZonePresenter zone)
+        {
+            float now = Time.time;
+            int wings = 0;
+            HostileIntelModel intel = _intel.Get(_owner.Team);
+            foreach (HostileSighting sighting in intel.Sightings)
+            {
+                if (!_relations.IsHostile(_owner.Id, sighting.Owner) || intel.GetConfidence(sighting, now) <= 0f ||
+                    !EnemyShipTaskGroupPlanner.IsInZone(zone, ToVector(sighting.Position))) continue;
+                if (sighting.UnitTypeId.IsShip) return true;
+                if (sighting.UnitTypeId.IsSquadron && ++wings >= HELD_ATTACK_WINGS) return true;
+            }
+            return false;
         }
 
         /// <summary>A satellite pad lost twice within a minute gets no new satellite for a while.</summary>
