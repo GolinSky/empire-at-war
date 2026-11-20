@@ -125,9 +125,10 @@ namespace EmpireAtWar.Entities.MainMenu.Skirmish
         {
             for (int i = 1; i < _model.Slots.Count; i++)
             {
-                int saved = _settings.Saved.Lobby.GetOccupantChoice(i);
-                if (saved >= (int)SkirmishSlotOccupant.Closed && saved <= (int)SkirmishSlotOccupant.AiUltraHard)
-                    _model.SelectSlotOccupant(i, (SkirmishSlotOccupant)saved);
+                var saved = (SkirmishSlotOccupant)_settings.Saved.Lobby.GetOccupantChoice(i);
+                if (saved >= SkirmishSlotOccupant.Closed && saved <= SkirmishSlotOccupant.AiUltraHard)
+                    _model.SelectSlotOccupant(i,
+                        saved == SkirmishSlotOccupant.AiUltraHard ? SkirmishSlotOccupant.AiMedium : saved);
             }
         }
 

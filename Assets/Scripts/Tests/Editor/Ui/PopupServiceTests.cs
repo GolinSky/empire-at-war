@@ -15,6 +15,7 @@ using EmpireAtWar.Services.Tooltip;
 using EmpireAtWar.Ui.Base;
 using NUnit.Framework;
 using Steamworks;
+using TMPro;
 using UnityEditor;
 using UnityEngine;
 using UnityEngine.UI;
@@ -188,6 +189,37 @@ namespace EmpireAtWar.Tests.Editor
                 Assert.That(avatarLoaded.GetValue(online.Steam), Is.Null);
                 Assert.That(_root.GetComponentsInChildren<SteamInvitePopupUi>(true), Is.Empty);
             }
+        }
+
+        [Test]
+        public void OfflineSkirmish_SavedUltraHardOpensAsMediumAndCanBeSelectedAgain()
+        {
+            var settings = new FakeSettingsService();
+            settings.SetLobbyOccupant(1, (int)SkirmishSlotOccupant.AiUltraHard);
+            settings.SetLobbyOccupant(2, (int)SkirmishSlotOccupant.AiHard);
+            var model = new SkirmishModel();
+            var palette = AssetDatabase.LoadAssetAtPath<TeamColorPalette>(
+                "Assets/Settings/Data/Models/Players/TeamColorPalette.asset");
+            var route = new SkirmishRouteUiController(_ui, _router, null, new TooltipServiceStub(),
+                model, palette, null, _popups, settings);
+            try
+            {
+                route.Open();
+                var view = _root.GetComponentInChildren<SkirmishUi>();
+                using var serializedView = new SerializedObject(view);
+                var enemyRow = serializedView.FindProperty("slotRows").GetArrayElementAtIndex(1).objectReferenceValue;
+                using var serializedRow = new SerializedObject(enemyRow);
+                var dropdown = (TMP_Dropdown)serializedRow.FindProperty("occupantDropdown").objectReferenceValue;
+
+                Assert.That(dropdown.value, Is.EqualTo((int)SkirmishSlotOccupant.AiMedium));
+                Assert.That(model.Slots[1].Occupant, Is.EqualTo(SkirmishSlotOccupant.AiMedium));
+                Assert.That(model.Slots[2].Occupant, Is.EqualTo(SkirmishSlotOccupant.AiHard));
+                Assert.That(model.Slots[3].Occupant, Is.EqualTo(SkirmishSlotOccupant.Closed));
+
+                dropdown.value = (int)SkirmishSlotOccupant.AiUltraHard;
+                Assert.That(model.Slots[1].Occupant, Is.EqualTo(SkirmishSlotOccupant.AiUltraHard));
+            }
+            finally { route.LateDispose(); }
         }
 
         [TestCase(LobbyMode.Skirmish, true)]
