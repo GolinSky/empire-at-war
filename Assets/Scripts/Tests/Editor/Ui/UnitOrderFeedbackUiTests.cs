@@ -13,7 +13,7 @@ namespace EmpireAtWar.Tests.Editor
         private const string PREFAB_PATH = "Assets/Prefabs/Ui/UnitOrderFeedback/UnitOrderFeedbackUi.prefab";
 
         [Test]
-        public void PlayTargetOrder_ShowsGuardSpriteAndRestoresAttackSprite()
+        public void PlayTargetOrder_PreservesGuardAspectAndRestoresAttackReticle()
         {
             GameObject prefab = AssetDatabase.LoadAssetAtPath<GameObject>(PREFAB_PATH);
             GameObject instance = Object.Instantiate(prefab);
@@ -23,6 +23,7 @@ namespace EmpireAtWar.Tests.Editor
                 using var bindings = new SerializedObject(ui);
                 Image image = (Image)bindings.FindProperty("attackImage").objectReferenceValue;
                 RectTransform anchor = (RectTransform)bindings.FindProperty("attackAnchor").objectReferenceValue;
+                Vector3 attackScale = anchor.localScale;
                 Sprite guardSprite = AssetDatabase.LoadAssetAtPath<Sprite>(
                     "Assets/Art/Textures/Ui/UnitActions/Guard.png");
                 Sprite attackSprite = image.sprite;
@@ -33,9 +34,13 @@ namespace EmpireAtWar.Tests.Editor
                 ui.PlayTargetOrder(Vector2.zero, isGuard: true, () => { });
                 Assert.That(anchor.gameObject.activeSelf, Is.True);
                 Assert.That(image.overrideSprite, Is.SameAs(guardSprite));
+                Assert.That(image.preserveAspect, Is.True);
+                Assert.That(image.rectTransform.TransformVector(Vector3.right).magnitude,
+                    Is.EqualTo(image.rectTransform.TransformVector(Vector3.up).magnitude).Within(0.0001f));
 
                 ui.PlayTargetOrder(Vector2.zero, isGuard: false, () => { });
                 Assert.That(image.overrideSprite, Is.SameAs(attackSprite));
+                Assert.That(anchor.localScale, Is.EqualTo(attackScale));
 
                 ui.StopTargetOrder();
                 Assert.That(anchor.gameObject.activeSelf, Is.False);

@@ -31,12 +31,14 @@ namespace EmpireAtWar.Entities.UnitOrderFeedback
         private Sequence _targetSequence;
         private Sequence _movementSequence;
         private Color _attackColor;
+        private Vector3 _attackAnchorScale;
 
         private bool _isDisposed;
 
         public void Initialize()
         {
             _attackColor = attackImage.color;
+            _attackAnchorScale = attackAnchor.localScale;
             attackAnchor.gameObject.SetActive(false);
             movementAnchor.gameObject.SetActive(false);
             invalidTargetAnchor.gameObject.SetActive(false);
@@ -55,6 +57,7 @@ namespace EmpireAtWar.Entities.UnitOrderFeedback
         {
             StopTargetOrder();
             SetPosition(attackAnchor, screenPosition);
+            attackAnchor.localScale = isGuard ? Vector3.one : _attackAnchorScale;
             attackImage.overrideSprite = isGuard ? guardIcon : null;
             SetColor(attackImage, isGuard ? formationColor : _attackColor, 0f);
             float scale = isGuard ? GUARD_ICON_SCALE : 1f;
