@@ -19,7 +19,7 @@ MonoBehaviour:
     description: Destroying this cannon prevents Ion Pulse from firing from this
       side.
     hardPointType: 6
-  - icon: {fileID: 21300000, guid: e85f0391617ebec40a9db56824234617, type: 3}
+  - icon: {fileID: 21300000, guid: e200639896af4c818e577a1ebfdf0666, type: 3}
     displayName: Weapon Battery
     description: Destroying it silences the guns it controls.
     hardPointType: 0
