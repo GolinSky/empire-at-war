@@ -5,7 +5,7 @@ namespace EmpireAtWar.Ui.Base
 {
     public sealed class UiContentLayout : MonoBehaviour
     {
-        private const float FACTION_LEFT = 382f;
+        private const float FACTION_LEFT = 374f;
         private const float SHIP_LEFT = 554f;
         private const float RIGHT_MARGIN = 8f;
         private const float BOTTOM_MARGIN = 22f;
