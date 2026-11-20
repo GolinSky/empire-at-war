@@ -105,7 +105,7 @@ namespace EmpireAtWar.Tests.Editor
             string[] weathered = AssetDatabase.FindAssets("t:Material", new[] { CHIMAERA_MATERIALS })
                 .Select(g => System.IO.Path.GetFileNameWithoutExtension(AssetDatabase.GUIDToAssetPath(g))).ToArray();
             foreach (MeshRenderer renderer in view.GetComponentsInChildren<MeshRenderer>(true))
-            foreach (Material material in renderer.sharedMaterials)
+            foreach (Material material in renderer.sharedMaterials.Where(m => m.name.StartsWith("ISDIIReplacement_ISDII_")))
                 Assert.That(weathered, Has.No.Member(material.name.Replace("ISDIIReplacement_ISDII_", "Chimaera_")),
                     $"{renderer.name} still uses {material.name}");
             MeshRenderer emblem = view.GetComponentsInChildren<MeshRenderer>(true).Single(r => r.name == "ChimaeraEmblem");

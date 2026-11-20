@@ -65,7 +65,11 @@ namespace EmpireAtWar.Tests.Editor
                     Assert.That(PrefabUtility.GetCorrespondingObjectFromOriginalSource(plume.gameObject), Is.SameAs(plumePrefab),
                         $"{path}: enginePlumes[{index}] must be an instance of the shared plume.");
                     Assert.That(fogList, Does.Contain(plume), $"{path}: enginePlumes[{index}] must be hidden by fog.");
+                    // Hero views nest another ship view, so the instance's modifications also cover that view's objects.
+                    var plumeSources = plume.GetComponents<Component>().Append<Object>(plume.gameObject)
+                        .Select(part => PrefabUtility.GetCorrespondingObjectFromSource(part)).ToHashSet();
                     string[] foreign = PrefabUtility.GetPropertyModifications(plume.gameObject)
+                        .Where(modification => plumeSources.Contains(modification.target))
                         .Select(modification => modification.propertyPath)
                         .Where(propertyPath => !ALLOWED_OVERRIDE_PREFIXES.Any(propertyPath.StartsWith))
                         .ToArray();

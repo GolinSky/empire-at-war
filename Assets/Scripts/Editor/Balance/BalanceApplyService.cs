@@ -26,7 +26,7 @@ namespace EmpireAtWar.Editor.Balance
                 || !draft.Changes.Any(change => change.Key == field.SourceKey && change.After == field.DraftValue(draft))).ToArray();
             HashSet<string> paths = fields.Select(field => field.AssetPath).ToHashSet();
             BalanceUnit[] derived = registry.Units.Where(unit => unit.Prefab != null && (paths.Contains(AssetDatabase.GetAssetPath(unit.Prefab))
-                    || fields.Any(field => field.SharedMountSource && field.Users.Contains(unit))))
+                    || fields.Any(field => (field.SharedMountSource || field.Owner == BalanceFieldOwner.PrefabOverride) && field.Users.Contains(unit))))
                 .GroupBy(unit => unit.Data).Select(group => group.First()).Where(unit => unit.Data is ShipData
                     || unit.Data is SquadronData).ToArray();
             foreach (BalanceUnit unit in derived) paths.Add(AssetDatabase.GetAssetPath(unit.Data));

@@ -707,13 +707,19 @@ MonoBehaviour:
         quantity: 2
       - isSquadron: 0
         unitId: 205
-        quantity: 5
+        quantity: 4
       - isSquadron: 0
         unitId: 207
-        quantity: 5
+        quantity: 4
       - isSquadron: 0
         unitId: 214
         quantity: 4
+      - isSquadron: 0
+        unitId: 218
+        quantity: 1
+      - isSquadron: 0
+        unitId: 219
+        quantity: 1
       - isSquadron: 0
         unitId: 217
         quantity: 2

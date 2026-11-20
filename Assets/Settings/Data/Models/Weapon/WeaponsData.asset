@@ -1559,13 +1559,14 @@ MonoBehaviour:
     family: 1
     caliber: 2
     mount: 8
-    scope: 2
-    faction: 0
-    unit: ISDII
+    scope: 1
+    faction: 3
+    unit: 
     damageMultiplier: 1
     reloadMultiplier: 1
     rangeMultiplier: 1
-    reason: ISD II main battery.
+    reason: ISD II main battery; shared by the ISD II-based Chimaera and Devastator
+      heroes.
     overrideVisual: 0
     shotPrefab: {fileID: 0}
     beamPrefab: {fileID: 0}
@@ -1578,13 +1579,14 @@ MonoBehaviour:
     family: 2
     caliber: 2
     mount: 4
-    scope: 2
-    faction: 0
-    unit: ISDII
+    scope: 1
+    faction: 3
+    unit: 
     damageMultiplier: 1
     reloadMultiplier: 1
     rangeMultiplier: 1
-    reason: ISD II ion battery.
+    reason: ISD II ion battery; shared by the ISD II-based Chimaera and Devastator
+      heroes.
     overrideVisual: 0
     shotPrefab: {fileID: 0}
     beamPrefab: {fileID: 0}

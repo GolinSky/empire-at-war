@@ -25,7 +25,8 @@ namespace EmpireAtWar.Editor.Balance
                     BalanceField shared = registry.Add(source, mount.Stat, mount.Path, BalanceFieldGroup.Hardpoints,
                         "Shared mount source / " + source.name, BalanceFieldOwner.SharedProfile, true, users, mount.EnumType,
                         mount.Minimum, mount.Maximum, mount.Positive, dependency: "source:" + GlobalObjectId.GetGlobalObjectIdSlow(source));
-                    shared.SharedMountSource = true;
+                    // A source can be another unit's own mount (hero views nest ISDIIShipView); it stays that unit's field.
+                    if (shared.Owner != BalanceFieldOwner.PrefabOverride) shared.SharedMountSource = true;
                     mount.SourceKey = shared.Key;
                 }
             }
