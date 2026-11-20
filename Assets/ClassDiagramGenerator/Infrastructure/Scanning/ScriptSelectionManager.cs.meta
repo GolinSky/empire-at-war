@@ -1,0 +1,10 @@
+﻿fileFormatVersion: 2
+guid: cf74e6007b004618a210d360286b332b
+timeCreated: 1775840316
+AssetOrigin:
+  serializedVersion: 1
+  productId: 323124
+  packageName: Class Diagram Generator
+  packageVersion: 2.3.1
+  assetPath: Assets/ClassDiagramGenerator/Infrastructure/Scanning/ScriptSelectionManager.cs
+  uploadId: 908576

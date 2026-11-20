@@ -1,0 +1,10 @@
+﻿fileFormatVersion: 2
+guid: ea59ee4e428a43528af6b1036c2f9dba
+timeCreated: 1775843178
+AssetOrigin:
+  serializedVersion: 1
+  productId: 323124
+  packageName: Class Diagram Generator
+  packageVersion: 2.3.1
+  assetPath: Assets/ClassDiagramGenerator/Application/Abstractions/IClassDiagramImporter.cs
+  uploadId: 908576

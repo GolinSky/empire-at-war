@@ -1,0 +1,10 @@
+﻿fileFormatVersion: 2
+guid: 6fa4477df98f48db82292f6eedde3789
+timeCreated: 1775844145
+AssetOrigin:
+  serializedVersion: 1
+  productId: 323124
+  packageName: Class Diagram Generator
+  packageVersion: 2.3.1
+  assetPath: Assets/ClassDiagramGenerator/Infrastructure/Import/PlantUmlDiagramImporter.cs
+  uploadId: 908576

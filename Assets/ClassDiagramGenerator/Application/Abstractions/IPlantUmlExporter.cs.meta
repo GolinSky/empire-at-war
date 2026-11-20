@@ -1,0 +1,10 @@
+﻿fileFormatVersion: 2
+guid: 81ee9ec63a0b4ed285c59dbe094bdb77
+timeCreated: 1775840219
+AssetOrigin:
+  serializedVersion: 1
+  productId: 323124
+  packageName: Class Diagram Generator
+  packageVersion: 2.3.1
+  assetPath: Assets/ClassDiagramGenerator/Application/Abstractions/IPlantUmlExporter.cs
+  uploadId: 908576

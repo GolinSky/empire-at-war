@@ -1,0 +1,10 @@
+﻿fileFormatVersion: 2
+guid: 1556abd857de444bb4523e78abc39ce1
+timeCreated: 1775840334
+AssetOrigin:
+  serializedVersion: 1
+  productId: 323124
+  packageName: Class Diagram Generator
+  packageVersion: 2.3.1
+  assetPath: Assets/ClassDiagramGenerator/Infrastructure/Utilities/UnityAssetFileWriter.cs
+  uploadId: 908576

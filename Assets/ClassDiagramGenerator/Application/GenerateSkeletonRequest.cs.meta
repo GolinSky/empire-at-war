@@ -1,0 +1,10 @@
+﻿fileFormatVersion: 2
+guid: 6137599601e343f9b90c1f4a772b1539
+timeCreated: 1775843331
+AssetOrigin:
+  serializedVersion: 1
+  productId: 323124
+  packageName: Class Diagram Generator
+  packageVersion: 2.3.1
+  assetPath: Assets/ClassDiagramGenerator/Application/GenerateSkeletonRequest.cs
+  uploadId: 908576

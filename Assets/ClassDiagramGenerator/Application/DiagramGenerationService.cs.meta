@@ -1,0 +1,10 @@
+﻿fileFormatVersion: 2
+guid: eebde078ad744b21b67c2f10f2560185
+timeCreated: 1775840203
+AssetOrigin:
+  serializedVersion: 1
+  productId: 323124
+  packageName: Class Diagram Generator
+  packageVersion: 2.3.1
+  assetPath: Assets/ClassDiagramGenerator/Application/DiagramGenerationService.cs
+  uploadId: 908576

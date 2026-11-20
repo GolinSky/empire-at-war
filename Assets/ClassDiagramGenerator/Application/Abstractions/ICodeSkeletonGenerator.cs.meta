@@ -1,0 +1,10 @@
+﻿fileFormatVersion: 2
+guid: e52357aa015844c48b8a6569df906760
+timeCreated: 1775843200
+AssetOrigin:
+  serializedVersion: 1
+  productId: 323124
+  packageName: Class Diagram Generator
+  packageVersion: 2.3.1
+  assetPath: Assets/ClassDiagramGenerator/Application/Abstractions/ICodeSkeletonGenerator.cs
+  uploadId: 908576

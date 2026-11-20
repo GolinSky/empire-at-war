@@ -1,0 +1,10 @@
+﻿fileFormatVersion: 2
+guid: ca3989c58f81412796f83b8948100096
+timeCreated: 1775840385
+AssetOrigin:
+  serializedVersion: 1
+  productId: 323124
+  packageName: Class Diagram Generator
+  packageVersion: 2.3.1
+  assetPath: Assets/ClassDiagramGenerator/Infrastructure/Parsing/RegexClassDiagramParser.cs
+  uploadId: 908576

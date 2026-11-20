@@ -1,0 +1,10 @@
+﻿fileFormatVersion: 2
+guid: 9a415534c93148b1a0b09f70687b9499
+timeCreated: 1775844182
+AssetOrigin:
+  serializedVersion: 1
+  productId: 323124
+  packageName: Class Diagram Generator
+  packageVersion: 2.3.1
+  assetPath: Assets/ClassDiagramGenerator/Infrastructure/Generation/CSharpSkeletonGenerator.cs
+  uploadId: 908576
