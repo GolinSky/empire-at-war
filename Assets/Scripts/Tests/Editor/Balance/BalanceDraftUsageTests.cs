@@ -62,6 +62,34 @@ namespace EmpireAtWar.Tests.Editor
             Assert.That(usage.Fields(unit).ContainsKey(settings.Stat), Is.False);
         }
 
+        [Test]
+        public void ShieldRegenTierDraft_MovesUnitToNewTierValueThenUndoRestoresIt()
+        {
+            BalanceRegistration registry = BalanceInventory.Build();
+            Assert.That(registry.Errors, Is.Empty);
+            BalanceUnit unit = registry.Units.First(entry => entry.Fields.ContainsKey("ShieldRegenTier"));
+            BalanceField tier = registry.Fields[unit.Fields["ShieldRegenTier"]];
+            string savedId = tier.Read();
+            string nextId = Enum.GetValues(tier.EnumType).Cast<Enum>().Select(id => Convert.ToInt32(id).ToString()).First(id => id != savedId);
+            BalanceField oldValue = registry.Fields[unit.Fields[BalanceUnitAdapter.SHIELD_REGEN_TIER_VALUE + savedId]];
+            BalanceField newValue = registry.Fields[unit.Fields[BalanceUnitAdapter.SHIELD_REGEN_TIER_VALUE + nextId]];
+            Assert.That(oldValue.Users.Contains(unit), Is.True);
+            Assert.That(newValue.Users.Contains(unit), Is.False);
+            string schema = newValue.Schema;
+            BalanceDraft draft = new BalanceDraft(); draft.Set(tier.Snapshot(), nextId);
+            BalanceDraftUsage usage = new BalanceDraftUsage(registry, draft);
+            Assert.That(usage.Users(oldValue).Contains(unit), Is.False);
+            Assert.That(usage.Users(newValue).Contains(unit), Is.True);
+            Assert.That(usage.Fields(unit).ContainsKey(oldValue.Stat), Is.False);
+            Assert.That(usage.Fields(unit)[newValue.Stat], Is.EqualTo(newValue.Key));
+            Assert.That(newValue.Schema, Is.EqualTo(schema), "Preview must not replace the live conflict baseline.");
+            Assert.That(tier.Read(), Is.EqualTo(savedId));
+            draft.Undo();
+            usage = new BalanceDraftUsage(registry, draft);
+            Assert.That(usage.Users(oldValue).Contains(unit), Is.True);
+            Assert.That(usage.Users(newValue).Contains(unit), Is.False);
+        }
+
         [TestCase(16)]
         [TestCase(17)]
         [TestCase(18)]

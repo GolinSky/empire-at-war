@@ -1,3 +1,4 @@
+using System;
 using System.Collections.Generic;
 using System.Linq;
 
@@ -9,6 +10,7 @@ namespace EmpireAtWar.Editor.Balance
         private readonly BalanceDraft _draft;
         private Dictionary<string, List<BalanceUnit>> _weaponUsers;
         private Dictionary<string, List<BalanceUnit>> _abilityUsers;
+        private Dictionary<string, List<BalanceUnit>> _shieldRegenTierUsers;
         private IReadOnlyList<int> _weaponIds;
 
         public IReadOnlyList<int> WeaponIds => _weaponIds ??= _registry.Fields.Values
@@ -26,6 +28,12 @@ namespace EmpireAtWar.Editor.Balance
                 .Where(id => id.Length != 0).Select(id => (Id: id, Unit: unit)))
             .GroupBy(entry => entry.Id).ToDictionary(group => group.Key, group => group.Select(entry => entry.Unit).Distinct().ToList());
 
+        // Keyed by tier value field key: each ship uses its own tiers asset's value for its draft tier.
+        private Dictionary<string, List<BalanceUnit>> ShieldRegenTierUsers => _shieldRegenTierUsers ??= _registry.Units
+            .Where(unit => unit.Fields.ContainsKey("ShieldRegenTier"))
+            .GroupBy(unit => unit.Fields[BalanceUnitAdapter.SHIELD_REGEN_TIER_VALUE + _registry.Fields[unit.Fields["ShieldRegenTier"]].DraftValue(_draft)])
+            .ToDictionary(group => group.Key, group => group.ToList());
+
         public BalanceDraftUsage(BalanceRegistration registry, BalanceDraft draft)
         {
             _registry = registry;
@@ -35,6 +43,8 @@ namespace EmpireAtWar.Editor.Balance
         public IReadOnlyList<BalanceUnit> Users(BalanceField field)
         {
             if (!IsProfile(field)) return field.Users;
+            if (IsShieldRegenTierValue(field))
+                return ShieldRegenTierUsers.TryGetValue(field.Key, out List<BalanceUnit> tierUsers) ? tierUsers : Array.Empty<BalanceUnit>();
             string[] parts = field.Stat.Split('/');
             var lookup = parts[0] == "weapon" ? WeaponUsers : AbilityUsers;
             string ids = parts[1];
@@ -64,6 +74,8 @@ namespace EmpireAtWar.Editor.Balance
         }
 
         private static bool IsProfile(BalanceField field) => field.Stat.StartsWith("weapon/")
-            || field.Stat.StartsWith("ability/") || field.Stat.StartsWith("settings/");
+            || field.Stat.StartsWith("ability/") || field.Stat.StartsWith("settings/") || IsShieldRegenTierValue(field);
+
+        private static bool IsShieldRegenTierValue(BalanceField field) => field.Stat.StartsWith(BalanceUnitAdapter.SHIELD_REGEN_TIER_VALUE);
     }
 }

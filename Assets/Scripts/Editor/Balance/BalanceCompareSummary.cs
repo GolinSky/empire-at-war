@@ -81,7 +81,7 @@ namespace EmpireAtWar.Editor.Balance
             {
                 Editable(card, "Shield regen tier", regenTier, draft, usage, edit);
                 Editable(card, "Shield regen multiplier", Field(unit, registry, "ShieldRegenMultiplier"), draft, usage, edit);
-                Editable(card, "Faction tier regen (HP)", Field(unit, registry, "ShieldRegenTierValue/" + regenTier.DraftValue(draft)), draft, usage, edit);
+                Editable(card, "Faction tier regen (HP)", Field(unit, registry, BalanceUnitAdapter.SHIELD_REGEN_TIER_VALUE + regenTier.DraftValue(draft)), draft, usage, edit);
             }
             else Editable(card, squadron ? "Shield regen / member (HP)" : "Shield regen (HP)", Field(unit, registry, "ShieldRegenerateValue"), draft, usage, edit);
             Editable(card, "Shield regen delay (s)", Field(unit, registry, "ShieldRegenerateDelay"), draft, usage, edit);
@@ -238,7 +238,7 @@ namespace EmpireAtWar.Editor.Balance
                 BalanceField value = Field(unit, registry, "ShieldRegenerateValue");
                 return value == null ? null : Number(value.DraftValue(draft));
             }
-            BalanceField tierValue = Field(unit, registry, "ShieldRegenTierValue/" + tier.DraftValue(draft));
+            BalanceField tierValue = Field(unit, registry, BalanceUnitAdapter.SHIELD_REGEN_TIER_VALUE + tier.DraftValue(draft));
             BalanceField multiplier = Field(unit, registry, "ShieldRegenMultiplier");
             return Number(multiplier.DraftValue(draft)) * Number(tierValue.DraftValue(draft));
         }

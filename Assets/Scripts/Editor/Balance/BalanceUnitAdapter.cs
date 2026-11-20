@@ -19,6 +19,8 @@ namespace EmpireAtWar.Editor.Balance
 {
     public static class BalanceUnitAdapter
     {
+        public const string SHIELD_REGEN_TIER_VALUE = "ShieldRegenTierValue/";
+
         public static void Register(BalanceRegistration registry, bool combatOnly = false)
         {
             FactionCatalog catalog = registry.Resolve<FactionCatalog>();
@@ -100,22 +102,23 @@ namespace EmpireAtWar.Editor.Balance
                     BalanceFieldOwner.UnitData, false, new[] { unit }, typeof(ShieldRegenTier));
                 using (SerializedObject serialized = new SerializedObject(data))
                 {
-                    ShieldRegenTiers(registry, (Object)serialized.FindProperty("shieldRegenTiers").objectReferenceValue, unit);
+                    ShieldRegenTiers(registry, (Object)serialized.FindProperty("shieldRegenTiers").objectReferenceValue, unit, ((ShipData)data).ShieldRegenTier);
                     if (!combatOnly) Hangar(registry, data, serialized.FindProperty("hangarBays"), "hangarBays", unit);
                 }
             }
             foreach (BalanceField field in registry.FieldsFor(data)) unit.Fields[field.Stat] = field.Key;
         }
 
-        private static void ShieldRegenTiers(BalanceRegistration registry, Object tiers, BalanceUnit unit)
+        // Every tier is indexed so a draft tier change can resolve its value; only the saved tier counts the unit as a user.
+        private static void ShieldRegenTiers(BalanceRegistration registry, Object tiers, BalanceUnit unit, ShieldRegenTier saved)
         {
             foreach (ShieldRegenTier tier in Enum.GetValues(typeof(ShieldRegenTier)))
             {
                 string name = tier.ToString();
                 string member = char.ToLowerInvariant(name[0]) + name.Substring(1);
-                string stat = "ShieldRegenTierValue/" + (int)tier;
+                string stat = SHIELD_REGEN_TIER_VALUE + (int)tier;
                 BalanceField field = registry.Add(tiers, stat, member, BalanceFieldGroup.GlobalData, tiers.name + " / " + name + " shield regen (HP)",
-                    BalanceFieldOwner.SharedProfile, true, new[] { unit });
+                    BalanceFieldOwner.SharedProfile, true, tier == saved ? new[] { unit } : Array.Empty<BalanceUnit>());
                 unit.Fields[stat] = field.Key;
             }
         }
