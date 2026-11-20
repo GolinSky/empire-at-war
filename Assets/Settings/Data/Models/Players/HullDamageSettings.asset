@@ -15,7 +15,7 @@ MonoBehaviour:
   detailMap: {fileID: 2800000, guid: 4aeaaeb14da55f945b00c0d0b84133f6, type: 3}
   detailSize: 4
   markRadiusMin: 3.5
-  markRadiusMax: 7
+  markRadiusMax: 6.1
   markDensity: 1
   edgeBreakup: 0.35
   sootColor: {r: 0.06, g: 0.05, b: 0.045, a: 1}

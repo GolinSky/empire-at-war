@@ -17,7 +17,7 @@ namespace EmpireAtWar.Services.Player
         [Tooltip("Smallest mark radius in world units, before the ship material's Mark Scale.")]
         [SerializeField, Min(0.01f)] private float markRadiusMin = 3.5f;
         [Tooltip("Largest mark radius in world units, before the ship material's Mark Scale. Also sets the spacing of mark spots.")]
-        [SerializeField, Min(0.01f)] private float markRadiusMax = 7f;
+        [SerializeField, Min(0.01f)] private float markRadiusMax = 6.1f;
         [Tooltip("Share of mark spots in use at 0 hull. Each damage step switches on 1/15 of them.")]
         [SerializeField, Range(0f, 1f)] private float markDensity = 1f;
         [Tooltip("How far the detail texture frays the round edge, in mark radii.")]
@@ -29,6 +29,10 @@ namespace EmpireAtWar.Services.Player
         [FormerlySerializedAs("sootOpacity")]
         [SerializeField, Range(0f, 1f)] private float sootOpacityMin = 0.7f;
         [SerializeField, Range(0f, 1f)] private float sootOpacityMax = 1f;
+        [Tooltip("Soot opacity at the very centre of every mark; fades out to the mark's own opacity.")]
+        [SerializeField, Range(0f, 1f)] private float sootOpacityCenter = 0.95f;
+        [Tooltip("Share of the mark radius over which the centre opacity fades to the mark's own opacity.")]
+        [SerializeField, Range(0.05f, 1f)] private float centerFade = 0.6f;
         [SerializeField] private Color blisterColor = new Color(0.32f, 0.3f, 0.28f, 1f);
 
         public Texture2D DetailMap => detailMap;
@@ -40,6 +44,8 @@ namespace EmpireAtWar.Services.Player
         public Color SootColor => sootColor;
         public float SootOpacityMin => sootOpacityMin;
         public float SootOpacityMax => sootOpacityMax;
+        public float SootOpacityCenter => sootOpacityCenter;
+        public float CenterFade => centerFade;
         public Color BlisterColor => blisterColor;
     }
 }

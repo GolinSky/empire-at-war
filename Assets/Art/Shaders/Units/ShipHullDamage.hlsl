@@ -23,6 +23,7 @@ TEXTURE2D(_HullDamageMap);
 SAMPLER(sampler_HullDamageMap);
 float4 _HullDamageParams;    // x = detail repeats per world unit, y = 1 / mark spacing (world units), z = largest mark radius (cells), w = share of cells marked at 0 hull
 float4 _HullDamageSurface;   // x = lowest soot opacity, y = edge breakup (radii), z = smallest / largest mark radius, w = highest soot opacity
+float4 _HullDamageCore;      // x = soot opacity at a mark's centre, y = share of the radius over which it fades to the mark's own opacity
 half4 _HullDamageSootColor;
 half4 _HullDamageBlisterColor; // blistered paint in the middle of a mark
 float _HullDamageQuality;    // QualitySettings level; below FULL_QUALITY_LEVEL: one planar sample
@@ -141,8 +142,9 @@ void ApplyHullDamage(inout SurfaceData surface, float3 positionDamage, half leve
     float frayed = markDistance + (detail.r - 0.5) * 2.0 * _HullDamageSurface.y;
     // Soft, semi-transparent soot fading out to the edge; blistered paint only in the middle.
     // Each mark has its own opacity; squaring the random number keeps most marks near the lowest opacity
-    // and makes fully dark ones rare.
+    // and makes fully dark ones rare. A darker centre fades slowly out to that opacity.
     half opacity = lerp(_HullDamageSurface.x, _HullDamageSurface.w, mark.y * mark.y);
+    opacity = lerp(max(_HullDamageCore.x, opacity), opacity, smoothstep(0.0h, _HullDamageCore.y, frayed));
     half soot = (1.0h - smoothstep(0.35h, 1.0h, frayed)) * saturate(opacity * _HullDamageOpacityScale);
     half blister = (1.0h - smoothstep(0.15h, 0.45h, frayed)) * smoothstep(0.45h, 0.65h, detail.r + 0.5h * detail.g);
 
