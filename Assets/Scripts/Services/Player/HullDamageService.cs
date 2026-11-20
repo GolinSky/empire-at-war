@@ -4,10 +4,10 @@ using UnityEngine;
 namespace EmpireAtWar.Services.Player
 {
     /// <summary>
-    /// Uploads the shared hull damage look (ShipHullDamage.hlsl) once per battle.
-    /// Per-unit damage travels in the renderer user value (UnitRenderStateComponent).
+    /// Uploads the shared hull damage look (ShipHullDamage.hlsl) once per battle, and the quality level whenever it
+    /// changes. Per-unit damage travels in the renderer user value (UnitRenderStateComponent).
     /// </summary>
-    public sealed class HullDamageService : IInitializable
+    public sealed class HullDamageService : IInitializable, ITickable
     {
         private static readonly int PARAMS_ID = Shader.PropertyToID("_HullDamageParams");
         private static readonly int SURFACE_ID = Shader.PropertyToID("_HullDamageSurface");
@@ -16,15 +16,29 @@ namespace EmpireAtWar.Services.Player
         private static readonly int EMBER_COLOR_ID = Shader.PropertyToID("_HullDamageEmberColor");
         private static readonly int BURNT_COLOR_ID = Shader.PropertyToID("_HullDamageBurntColor");
         private static readonly int BURNT_ID = Shader.PropertyToID("_HullDamageBurnt");
+        private static readonly int QUALITY_ID = Shader.PropertyToID("_HullDamageQuality");
 
         private readonly HullDamageSettings _settings;
+        private int _qualityLevel = -1;
 
         public HullDamageService(HullDamageSettings settings)
         {
             _settings = settings;
         }
 
-        public void Initialize() => Upload(_settings);
+        public void Initialize()
+        {
+            Upload(_settings);
+            Tick();
+        }
+
+        public void Tick()
+        {
+            int qualityLevel = QualitySettings.GetQualityLevel();
+            if (_qualityLevel == qualityLevel) return;
+            _qualityLevel = qualityLevel;
+            UploadQuality(qualityLevel);
+        }
 
         /// <summary>Also used by the editor preview, which has no battle to run this service.</summary>
         public static void Upload(HullDamageSettings settings)
@@ -45,7 +59,11 @@ namespace EmpireAtWar.Services.Player
             ember.w = settings.EmberWidth;
             Shader.SetGlobalVector(EMBER_COLOR_ID, ember);
             Shader.SetGlobalVector(BURNT_COLOR_ID, settings.BurntColor.linear);
-            Shader.SetGlobalVector(BURNT_ID, new Vector4(settings.BurntOffset, settings.BurntDepth, 0f, 0f));
+            Shader.SetGlobalVector(BURNT_ID, new Vector4(settings.BurntOffset, settings.BurntDepth,
+                settings.DetailMinPixels, 0f));
         }
+
+        /// <summary>Quality level as the shader reads it; also used by the editor preview.</summary>
+        public static void UploadQuality(int qualityLevel) => Shader.SetGlobalFloat(QUALITY_ID, qualityLevel);
     }
 }

@@ -49,6 +49,7 @@ namespace EmpireAtWar.Editor.Rendering
             if (EditorGUI.EndChangeCheck() || apply)
             {
                 HullDamageService.Upload(_settings);
+                HullDamageService.UploadQuality(QualitySettings.GetQualityLevel());
                 unit.SetHullDamage(_hull);
                 SceneView.RepaintAll();
             }

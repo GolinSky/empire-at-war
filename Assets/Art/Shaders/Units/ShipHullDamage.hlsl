@@ -22,7 +22,8 @@
 float4 _HullDamageParams;    // x = edge noise frequency (per cell), y = 1 / mark spacing (world units), z = largest mark radius (cells), w = share of cells marked at 0 hull
 float4 _HullDamageSurface;   // x = lowest middle soot opacity, y = edge breakup (radii), z = smallest / largest mark radius, w = highest middle soot opacity
 float4 _HullDamageCore;      // x = soot opacity near the outline, y = star ray strength, z = mark size (0..1) where rays start, w = burnt patch radius (mark radii)
-float4 _HullDamageBurnt;     // x = how far the patch centre may sit from the mark centre (mark radii), y = depth (normal tilt on the patch wall)
+float4 _HullDamageBurnt;     // x = how far the patch centre may sit from the mark centre (mark radii), y = depth (normal tilt on the patch wall), z = pixels across the largest mark radius below which the detail fades out
+float _HullDamageQuality;    // QualitySettings level; below HULL_DAMAGE_FULL_QUALITY_LEVEL: one edge-noise octave, flat patches
 half4 _HullDamageSootColor;
 half4 _HullDamageBurntColor;   // burnt metal inside the patch
 half4 _HullDamageEmberColor;   // rgb = glow colour x strength (linear), a = width of the glowing rim
@@ -31,6 +32,7 @@ half4 _HullDamageEmberColor;   // rgb = glow colour x strength (linear), a = wid
 #define HULL_DAMAGE_TWO_PI 6.2831853
 #define HULL_DAMAGE_PATCH_THRESHOLD 0.42
 #define HULL_DAMAGE_SLOPE_STEP 0.02
+#define HULL_DAMAGE_FULL_QUALITY_LEVEL 2.0
 
 // Object-space position in world units, shifted per renderer so ships of one class differ.
 float3 GetHullDamagePosition(float3 positionOS)
@@ -52,6 +54,19 @@ uint4 HullDamageHash(int3 cell)
     return v;
 }
 
+// Cheap integer hash deciding whether a cell's mark is on: the full PCG4D only runs for cells that pass it.
+uint HullDamageActivationHash(int3 cell)
+{
+    uint3 c = asuint(cell);
+    uint h = c.x * 0x8DA6B343u ^ c.y * 0xD8163841u ^ c.z * 0xCB1AB31Fu;
+    h ^= h >> 16u;
+    h *= 0x7FEB352Du;
+    h ^= h >> 15u;
+    h *= 0x846CA68Bu;
+    h ^= h >> 16u;
+    return h;
+}
+
 // Two directions lying on the surface, the same for every pixel that shares this normal.
 void GetHullDamageSurfaceFrame(float3 normalOS, out float3 tangent, out float3 bitangent)
 {
@@ -62,16 +77,16 @@ void GetHullDamageSurfaceFrame(float3 normalOS, out float3 tangent, out float3 b
 
 // Distance from a mark's centre in outline units: 1 is the outline. The outline sits between a circle and a star:
 // 6-10 soft lobes of random length (0.6-1 of the radius); starStrength sets how far the dips between them pull in.
-// Marks below starMinSize stay round. planar: offset from the centre along the surface. size01: 0 = smallest mark.
-float GetHullDamageShapeDistance(float3 planar, float3 normalOS, float radius, float size01, float4 random)
+// Marks below starMinSize stay round. distance: plain distance in mark radii. planar: offset from the centre along
+// the surface. tangent/bitangent: the pixel's surface frame. size01: 0 = smallest mark.
+// The outline never reaches past the plain radius, so the result is never smaller than distance.
+float GetHullDamageShapeDistance(float distance, float3 planar, float3 tangent, float3 bitangent, float size01,
+    float4 random)
 {
-    float distance = length(planar) / radius;
     float spikes = _HullDamageCore.y * smoothstep(_HullDamageCore.z - 0.15, _HullDamageCore.z, size01);
     if (spikes <= 0.0 || distance >= 1.5)
         return distance;
 
-    float3 tangent, bitangent;
-    GetHullDamageSurfaceFrame(normalOS, tangent, bitangent);
     float rays = 6.0 + floor(frac(random.w * 7.31) * 5.0);
     float turns = (atan2(dot(planar, bitangent), dot(planar, tangent)) / HULL_DAMAGE_TWO_PI + random.x) * rays;
     float across = frac(turns + 0.5) - 0.5;                               // -0.5..0.5 across one lobe
@@ -89,10 +104,17 @@ float GetHullDamageShapeDistance(float3 planar, float3 normalOS, float radius, f
 // along the surface, so a spot just under the plating still leaves a full-size mark.
 // A mark reaches at most one cell from its spot (clamped in HullDamageService), so the 3x3x3 cells around
 // this point are enough.
+// Cost: cells whose every possible spot lies farther than the largest radius from the surface plane are skipped
+// before hashing (on flat plating that is most of the layer above and below); the star shape is only evaluated
+// for marks that can still be one of the two nearest.
 float4 GetNearestHullDamageMarks(float3 cellPosition, float3 normalOS, half level, out float3 nearestPatch)
 {
     float activeShare = level * _HullDamageParams.w;
     float maxRadius = _HullDamageParams.z;
+    // A spot lies anywhere in its unit cell, so it is at most sqrt(3)/2 from the cell centre.
+    float planeReach = 0.8660254 + maxRadius;
+    float3 tangent, bitangent;
+    GetHullDamageSurfaceFrame(normalOS, tangent, bitangent);
     int3 firstCell = (int3)floor(cellPosition) - 1;
     float4 nearest = float4(1e4, 0.0, 1e4, 0.0);
     nearestPatch = float3(1e4, 0.0, 0.0);
@@ -101,10 +123,13 @@ float4 GetNearestHullDamageMarks(float3 cellPosition, float3 normalOS, half leve
     for (int x = 0; x < 3; x++)
     {
         int3 cell = firstCell + int3(x, y, z);
-        float4 random = (float4)HullDamageHash(cell) * HULL_DAMAGE_UINT_TO_UNIT;
-        // random.w: the share of damage at which this cell's mark appears.
-        if (random.w >= activeShare)
+        if (abs(dot(float3(cell) + 0.5 - cellPosition, normalOS)) >= planeReach)
             continue;
+        // The share of damage at which this cell's mark appears; cheap hash first, full hash only if it is on.
+        float activation = (float)HullDamageActivationHash(cell) * HULL_DAMAGE_UINT_TO_UNIT;
+        if (activation >= activeShare)
+            continue;
+        float4 random = float4((float3)HullDamageHash(cell).xyz * HULL_DAMAGE_UINT_TO_UNIT, activation);
         float size01 = frac(random.w * 61.7);
         float radius = maxRadius * lerp(_HullDamageSurface.z, 1.0, size01);
         float3 offset = cellPosition - (float3(cell) + random.xyz);
@@ -112,7 +137,10 @@ float4 GetNearestHullDamageMarks(float3 cellPosition, float3 normalOS, half leve
         if (abs(depth) >= radius)
             continue;
         float3 planar = offset - depth * normalOS;
-        float distance = GetHullDamageShapeDistance(planar, normalOS, radius, size01, random);
+        float distance = length(planar) / radius;
+        if (distance >= nearest.z)
+            continue;
+        distance = GetHullDamageShapeDistance(distance, planar, tangent, bitangent, size01, random);
         float2 found = float2(distance, frac(random.w * 113.9));
         if (distance < nearest.x)
         {
@@ -177,6 +205,10 @@ half GetHullDamageSoot(float distance, float random)
 // level: 0 = intact (skipped), 1 = destroyed.
 void ApplyHullDamage(inout SurfaceData surface, float3 positionDamage, half level, half3 normalWS, half4 tangentWS)
 {
+    // How much hull one pixel covers, in mark cells. Derivatives first: they are only valid outside the branches.
+    float footprint = max(length(ddx(positionDamage)), length(ddy(positionDamage)))
+        * (_HullDamageParams.y / _HullDamageMarkScale);
+
     // One user value per draw, so every pixel of the draw takes the same side.
     UNITY_BRANCH
     if (level <= 0.0h)
@@ -196,10 +228,24 @@ void ApplyHullDamage(inout SurfaceData surface, float3 positionDamage, half leve
         return;
     }
 
-    // Two octaves of smooth noise wave the outline into an irregular stain.
-    float3 noisePosition = cellPosition * _HullDamageParams.x;
-    float noise = 0.65 * HullDamageValueNoise(noisePosition) + 0.35 * HullDamageValueNoise(noisePosition * 2.3 + 11.7);
-    float fray = (noise - 0.5) * 2.0 * _HullDamageSurface.y;
+    // Detail (frayed outline, burnt patch) only where a mark is big enough on screen to show it: fades out between
+    // 2x and 1x the minimum pixel size across the largest mark radius. Far-away ships get plain soot.
+    float largestRadius = _HullDamageParams.z;
+    half detail = 1.0h - smoothstep(largestRadius / (2.0 * _HullDamageBurnt.z), largestRadius / _HullDamageBurnt.z,
+        footprint);
+    bool fullQuality = _HullDamageQuality >= HULL_DAMAGE_FULL_QUALITY_LEVEL;
+
+    // Smooth noise waves the outline into an irregular stain (two octaves at full quality).
+    float fray = 0.0;
+    UNITY_BRANCH
+    if (detail > 0.0h)
+    {
+        float3 noisePosition = cellPosition * _HullDamageParams.x;
+        float noise = HullDamageValueNoise(noisePosition);
+        if (fullQuality)
+            noise = 0.65 * noise + 0.35 * HullDamageValueNoise(noisePosition * 2.3 + 11.7);
+        fray = (noise - 0.5) * 2.0 * _HullDamageSurface.y * detail;
+    }
     // Overlapping marks stack like two layers of soot.
     half soot = 1.0h - (1.0h - GetHullDamageSoot(marks.x + fray, marks.y))
         * (1.0h - GetHullDamageSoot(marks.z + fray, marks.w));
@@ -211,6 +257,12 @@ void ApplyHullDamage(inout SurfaceData surface, float3 positionDamage, half leve
     surface.occlusion *= 1.0h - 0.5h * soot;
     // Running lights under soot dim with it.
     surface.emission *= 1.0h - soot;
+
+    UNITY_BRANCH
+    if (detail <= 0.0h)
+    {
+        return;
+    }
 
     // Burnt patch: irregular burnt metal around a random spot inside the nearest mark, sunken, with a glowing rim.
     // The noise decides the shape; nearness to the patch centre only biases it, so no patch repeats another or
@@ -225,13 +277,21 @@ void ApplyHullDamage(inout SurfaceData surface, float3 positionDamage, half leve
         return;
     }
 
-    half burnt = smoothstep(HULL_DAMAGE_PATCH_THRESHOLD, HULL_DAMAGE_PATCH_THRESHOLD + 0.03, field);
+    half burnt = smoothstep(HULL_DAMAGE_PATCH_THRESHOLD, HULL_DAMAGE_PATCH_THRESHOLD + 0.03, field) * detail;
     half rim = smoothstep(HULL_DAMAGE_PATCH_THRESHOLD - rimWidth, HULL_DAMAGE_PATCH_THRESHOLD, field)
-        * (1.0h - smoothstep(HULL_DAMAGE_PATCH_THRESHOLD + 0.01, HULL_DAMAGE_PATCH_THRESHOLD + rimWidth, field));
+        * (1.0h - smoothstep(HULL_DAMAGE_PATCH_THRESHOLD + 0.01, HULL_DAMAGE_PATCH_THRESHOLD + rimWidth, field)) * detail;
     // Deeper inside the patch: darker metal, and a shadow along the inside of the wall.
     half deep = smoothstep(HULL_DAMAGE_PATCH_THRESHOLD, HULL_DAMAGE_PATCH_THRESHOLD + 0.2, field);
     surface.albedo = lerp(surface.albedo, _HullDamageBurntColor.rgb * lerp(1.0h, 0.55h, deep), burnt);
     surface.occlusion *= 1.0h - 0.6h * burnt * (1.0h - deep);
+    surface.emission += _HullDamageEmberColor.rgb * (rim + 0.05h * burnt);
+
+    // Lower quality levels keep the patches flat.
+    UNITY_BRANCH
+    if (!fullQuality)
+    {
+        return;
+    }
 
     // Sunken look: on the patch wall (where the field crosses the threshold) tilt the normal toward the inside,
     // i.e. along the field's slope over the surface. The slope comes from finite differences, not ddx: this runs
@@ -247,13 +307,11 @@ void ApplyHullDamage(inout SurfaceData surface, float3 positionDamage, half leve
     float3 slope = tangent * (fieldT - field) + bitangent * (fieldB - field);
     float wallU = saturate((field - (HULL_DAMAGE_PATCH_THRESHOLD - 0.02)) / 0.14);
     float wall = 4.0 * wallU * (1.0 - wallU);
-    float3 tiltedOS = normalize(normalOS + slope / max(length(slope), 1e-5) * (_HullDamageBurnt.y * wall));
+    float3 tiltedOS = normalize(normalOS + slope / max(length(slope), 1e-5) * (_HullDamageBurnt.y * wall * detail));
     float3 tiltedWS = TransformObjectToWorldDir(tiltedOS);
     half3 bitangentWS = tangentWS.w * cross(normalWS, tangentWS.xyz);
     half2 tiltTS = half2(dot(tiltedWS, tangentWS.xyz), dot(tiltedWS, bitangentWS));
     surface.normalTS = normalize(half3(surface.normalTS.xy + tiltTS, surface.normalTS.z));
-
-    surface.emission += _HullDamageEmberColor.rgb * (rim + 0.05h * burnt);
 }
 
 #endif // SHIP_HULL_DAMAGE_INCLUDED

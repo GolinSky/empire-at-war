@@ -19,6 +19,8 @@ namespace EmpireAtWar.Services.Player
         [SerializeField, Range(0f, 0.6f)] private float edgeBreakup = 0.2f;
         [Tooltip("Waves along a mark's outline per mark spacing. Higher = more ragged outline.")]
         [SerializeField, Min(0.1f)] private float edgeNoiseFrequency = 3f;
+        [Tooltip("Pixels across the largest mark radius below which the frayed outline and burnt patch fade out (far-away ships keep plain soot). Fully on at twice this.")]
+        [SerializeField, Min(1f)] private float detailMinPixels = 10f;
 
         [Header("Star Shape")]
         [Tooltip("How far the dips between a mark's lobes pull in. 0 = round, 1 = star.")]
@@ -54,6 +56,7 @@ namespace EmpireAtWar.Services.Player
         public float MarkDensity => markDensity;
         public float EdgeBreakup => edgeBreakup;
         public float EdgeNoiseFrequency => edgeNoiseFrequency;
+        public float DetailMinPixels => detailMinPixels;
         public float StarStrength => starStrength;
         public float StarMinSize => starMinSize;
         public Color SootColor => sootColor;

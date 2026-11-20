@@ -16,8 +16,8 @@ system:
 
 ## Status (2026-11-20)
 
-- Phase 1 implemented and tuned with the user over many preview rounds; last commit `0c44f1fb7`.
-- Pending: in-game look (user), GPU cost measurement (user Play Mode), optimizations R1–R5 (see Performance), Phase 2 decision.
+- Phase 1 implemented and tuned with the user over many preview rounds; optimizations R1–R6 implemented 2026-11-20.
+- Pending (user): in-game look, GPU cost measurement (Play Mode), Phase 2 decision.
 - Tests authored/updated, not run (local override).
 
 ## Decisions
@@ -62,11 +62,14 @@ User-value layout:
 
 1. `level == 0` → return (per-draw uniform branch).
 2. Position: object space × object scale (+ seed offset), per vertex → interpolated `positionDamage`; ÷ (spacing × material Mark Scale) → cell space.
-3. Search 3×3×3 cells (PCG4D hash per cell): spot xyz, appear-share `w` (on when `w < level × density`), size, opacity. Spot must lie within one radius of the surface; distance measured in the surface plane. Shape distance: 6–10 soft lobes (`starStrength`). Keeps the 2 nearest marks + the nearest mark's burnt-patch offset.
-4. Pixels beyond `1 + edgeBreakup` outline radii → return (per-pixel branch).
-5. Soot: 2-octave edge noise frays the outline; 2 nearest marks blended `1 − (1 − a)(1 − b)` (no seam). Albedo → soot colour; metallic × (1 − soot); smoothness → 0.1; occlusion × (1 − 0.5 soot); emission × (1 − soot).
-6. Patch field = 2-octave patch noise + bias from distance to the patch centre (random offset ≤ `burntOffset`); field below rim → return (per-pixel branch).
-7. Patch: burnt colour (darker deeper in), inner-wall occlusion, normal tilted inward on the wall (finite differences, no `ddx` inside per-pixel branches), rim emission × `emberStrength`, 5 % fill glow.
+3. Pixel footprint in cells from `ddx/ddy(positionDamage)` (before any branch) → `detail` = 1 at ≥ 2 × `detailMinPixels` across the largest mark radius, 0 at ≤ 1 ×.
+4. Search 3×3×3 cells: skip cells whose centre is ≥ 0.866 + max radius from the surface plane (no hash); cheap integer hash → appear-share `w` (on when `w < level × density`); PCG4D only for active cells (spot xyz, size, opacity). Spot must lie within one radius of the surface; distance measured in the surface plane. Shape (6–10 soft lobes, `starStrength`) only when plain distance < current second-nearest; surface frame computed once per pixel. Keeps the 2 nearest marks + the nearest mark's burnt-patch offset.
+5. Pixels beyond `1 + edgeBreakup` outline radii → return (per-pixel branch).
+6. Soot: edge noise (2 octaves at quality ≥ 2, else 1; only when `detail > 0`, scaled by it) frays the outline; 2 nearest marks blended `1 − (1 − a)(1 − b)` (no seam). Albedo → soot colour; metallic × (1 − soot); smoothness → 0.1; occlusion × (1 − 0.5 soot); emission × (1 − soot).
+7. `detail == 0` → return (far ships: plain soot).
+8. Patch field = 2-octave patch noise + bias from distance to the patch centre (random offset ≤ `burntOffset`); field below rim → return.
+9. Patch (× `detail`): burnt colour (darker deeper in), inner-wall occlusion, rim emission × `emberStrength`, 5 % fill glow.
+10. Quality ≥ 2 (`_HullDamageQuality`, ticked by `HullDamageService`): normal tilted inward on the patch wall (finite differences, no `ddx` inside per-pixel branches). Lower quality: flat patches.
 
 ### Settings (current asset values)
 
@@ -75,6 +78,7 @@ User-value layout:
 | `markRadiusMin` / `markRadiusMax` | 3.5 / 6.1 | world units at Mark Scale 1; spacing = max × √((1 + breakup)² + 1) ≈ 9.5 |
 | `markDensity` | 1 | share of spots on at 0 hull |
 | `edgeBreakup` / `edgeNoiseFrequency` | 0.2 / 3 | outline wobble |
+| `detailMinPixels` | 10 | pixels across the largest mark radius below which fray + patch fade out (full at 20) |
 | `starStrength` / `starMinSize` | 0.45 / 0 | 0 = round, 1 = star |
 | `sootColor` | 0.015 | near-black |
 | `sootOpacityMin/Max/Edge` | 0.7 / 1 / 0.15 | middle band (random, t²) / outline |
@@ -92,7 +96,7 @@ User-value layout:
 
 - `Tools/Empire At War/Hull Damage Preview` (`HullDamagePreviewWindow`): hull slider on the selected unit, uploads settings.
 - Auto-scale tool above.
-- Dead: `HullDamageTextureBuilder` + `Assets/Art/Textures/Vfx/HullDamageDetail.png` (unreferenced since the procedural rework) → delete (R6).
+- `HullDamageTextureBuilder` + `HullDamageDetail.png` deleted (R6).
 
 ## Performance investigation (2026-11-20)
 
@@ -123,19 +127,20 @@ User-value layout:
 - Memory: no textures; 7 global float4s.
 - Passes: forward only; shadow, depth, depth-normals and outline passes untouched.
 
-### Recommended optimizations (not implemented)
+### Optimizations (implemented 2026-11-20)
 
-| # | Change | Expected effect | Look change |
-|---|---|---|---|
-| R1 | Before hashing a cell, skip it when its centre is farther than `0.87 + maxRadius` cells from the pixel's surface plane | flat hull: 27 → ~9–15 hashed cells; ~40–60 % of search | none |
-| R2 | Hoist the surface frame out of the loop; skip the shape (`atan2`/`sin`) when plain distance ≥ current second-nearest | removes most worst-case shape work | none |
-| R3 | Distance LOD: `ddx/ddy(positionWS)` before the branches; when a pixel covers > ~¼ mark radius, skip patch + edge noise (soot only) | large win at normal RTS zoom | far: no patch rim/fray (sub-pixel anyway) |
-| R4 | Cheap 1-int hash for `w` first; full PCG4D only for active cells | helps at partial damage (level < 1) | none |
-| R5 | Quality tier (global float, not a keyword): Performant/Low → no wall tilt, 1 edge octave | lower floor on weak GPUs | slightly flatter patches |
-| R6 | Delete the unused texture builder + PNG | repo/import time | none |
+| # | Change | Effect | Look change | Verified |
+|---|---|---|---|---|
+| R1 | Skip a cell before hashing when its centre is ≥ `0.866 + maxRadius` from the pixel's surface plane (exact: a spot sits ≤ √3/2 from its cell centre) | flat plating: ~18 of 27 cells cost one dot product instead of a hash | none | 4 renders pixel-identical to the pre-change baseline |
+| R2 | Surface frame once per pixel; shape (`atan2`, `sin`) only when plain distance < second-nearest (shape distance ≥ plain distance) | removes most shape evaluations | none | same pixel-identical renders |
+| R3 | Footprint LOD: `detail` from `ddx/ddy(positionDamage)`; `detailMinPixels` 10 (fade 20 → 10 px across the largest radius) | far ships skip edge noise + patch (≈ 1,000 executed instr) | far: no fray/patch (sub-pixel anyway) | far Tector render |
+| R4 | Cheap integer hash for `w`; PCG4D only for active cells | partial damage: inactive cells ~10 instr instead of ~25 | marks reshuffled once (different spots, same look) | close-ups |
+| R5 | `_HullDamageQuality` (global float, ticked): < 2 → 1 edge-noise octave, no wall tilt | removes 4 patch-noise evals + transforms on patch pixels | flatter patches on Performant/Low/Balanced | quality-1 render |
+| R6 | Deleted `HullDamageTextureBuilder` + `HullDamageDetail.png` | repo/import | none | no references |
 
-- Do R1 + R2 first (no visual change), then measure; R3 next if battle zoom is still costly.
-- Measurement needed: `RenderAuditAblationCapture` damage on/off/restored with a heavily damaged fleet on High Fidelity and Performant (user Play Mode).
+- Static count after: lit fragment 1,581 (was 1,514), search loop body 147 (was 119) — more checks, less executed work.
+- Executed estimate per damaged pixel on flat plating: search ~1,300 → ~600; far ships additionally skip ~1,000 instructions of noise/patch work. Estimates from bytecode, not GPU time.
+- Still needed: `RenderAuditAblationCapture` damage on/off/restored with a heavily damaged fleet on High Fidelity and Performant (user Play Mode).
 
 ## Edge Cases
 
@@ -151,7 +156,7 @@ User-value layout:
 
 - Shaders: `Assets/Art/Shaders/Units/ShipHullDamage.hlsl`, `ShipLitInput.hlsl` (bits, `UnityPerMaterial` props), `ShipLitForwardPass.hlsl` (varyings, call), `ShipWreckForwardPass.hlsl`, `ShipOutlinePass.hlsl` (mask), `ShipLit.shader` / `ShipWreck.shader` (material props).
 - C#: `Components/TeamColor/UnitRenderStateComponent.cs`, `IUnitRenderStateComponent.cs`; `Entities/BaseEntity/UnitHullDamageSync.cs`, `EntityFeatureBindings.cs`; `Services/Player/HullDamageSettings.cs`, `HullDamageService.cs`; `Services/UnitWreck/*`; `Components/ViewComponents/Wreck/UnitWreckView.cs`; entity wreck callers; `SkirmishScope.cs`.
-- Editor: `Editor/Rendering/HullDamagePreviewWindow.cs`, `HullDamageMarkScaleTool.cs`, `HullDamageTextureBuilder.cs` (dead).
+- Editor: `Editor/Rendering/HullDamagePreviewWindow.cs`, `HullDamageMarkScaleTool.cs`.
 - Data: `Assets/Settings/Data/Models/Players/HullDamageSettings.asset`, `SceneContext.prefab` reference, 876 unit + 774 wreck materials (Mark Scale).
 - Tests: `Ships/UnitRenderStateComponentTests` (bits, 31-step quantization, repair, outline unaffected, wreck value), `Ships/DefendPlatformTests`, `Core/SerializedReferenceTests`, `Core/RealEntityCompositionTests`, `BattleInput/UnitHighlightFacadeTests`; `Health/WreckMaterialSyncTests` relevant for material edits.
 
@@ -175,8 +180,8 @@ User-value layout:
 ## TODO
 
 1. User: judge in-game; tune with the preview window.
-2. Implement R1 + R2, then measure with `RenderAuditAblationCapture` (user Play Mode); decide R3–R5.
-3. R6: delete `HullDamageTextureBuilder` + `HullDamageDetail.png`.
+2. User: GPU capture with `RenderAuditAblationCapture` (damage on/off/restored, heavily damaged fleet, High Fidelity + Performant).
+3. ~~R1–R6~~ → done 2026-11-20.
 4. Phase 2 (hit-placed scorches) only if approved: needs a per-unit slot table (bits 21–30) and root-space positions; would also allow aligned window-light darkening.
 
 ## History (2026-11-20, condensed)
