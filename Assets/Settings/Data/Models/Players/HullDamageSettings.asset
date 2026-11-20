@@ -17,13 +17,14 @@ MonoBehaviour:
   markDensity: 1
   edgeBreakup: 0.2
   edgeNoiseFrequency: 3
-  starStrength: 0.8
+  starStrength: 0.45
   starMinSize: 0
   sootColor: {r: 0.015, g: 0.013, b: 0.012, a: 1}
   sootOpacityMin: 0.7
   sootOpacityMax: 1
   sootOpacityEdge: 0.15
   emberLength: 0.45
-  emberWidth: 0.012
+  emberWidth: 0.03
+  burntColor: {r: 0.24, g: 0.14, b: 0.12, a: 1}
   emberColor: {r: 1, g: 0.4, b: 0.1, a: 1}
-  emberStrength: 0.35
+  emberStrength: 1

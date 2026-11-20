@@ -21,8 +21,8 @@ namespace EmpireAtWar.Services.Player
         [SerializeField, Min(0.1f)] private float edgeNoiseFrequency = 3f;
 
         [Header("Star Shape")]
-        [Tooltip("How deep the gaps between a mark's rays cut in. 0 = round marks.")]
-        [SerializeField, Range(0f, 1f)] private float starStrength = 0.8f;
+        [Tooltip("How far the dips between a mark's lobes pull in. 0 = round, 1 = star.")]
+        [SerializeField, Range(0f, 1f)] private float starStrength = 0.45f;
         [Tooltip("Marks smaller than this share of the size range stay round. 0 = every mark is a star.")]
         [SerializeField, Range(0f, 1f)] private float starMinSize = 0f;
 
@@ -36,13 +36,14 @@ namespace EmpireAtWar.Services.Player
         [SerializeField, Range(0f, 1f)] private float sootOpacityEdge = 0.15f;
 
         [Header("Burnt Paint")]
-        [Tooltip("Thin glowing lines along each mark's rays, from the centre out to this share of the outline.")]
+        [Tooltip("Burnt patches stay inside this share of each mark's outline.")]
         [SerializeField, Range(0f, 1f)] private float emberLength = 0.45f;
-        [Tooltip("Line width in mark radii.")]
-        [SerializeField, Range(0.005f, 0.2f)] private float emberWidth = 0.012f;
+        [Tooltip("Width of the glowing rim around each burnt patch (noise units).")]
+        [SerializeField, Range(0.005f, 0.2f)] private float emberWidth = 0.03f;
+        [SerializeField] private Color burntColor = new Color(0.24f, 0.14f, 0.12f, 1f);
         [SerializeField] private Color emberColor = new Color(1f, 0.4f, 0.1f, 1f);
-        [Tooltip("Glow brightness; keep low so the lines stay faint.")]
-        [SerializeField, Min(0f)] private float emberStrength = 0.35f;
+        [Tooltip("Glow brightness of the rim; the patch inside glows faintly (5%).")]
+        [SerializeField, Min(0f)] private float emberStrength = 1f;
 
         public float MarkRadiusMin => markRadiusMin;
         public float MarkRadiusMax => markRadiusMax;
@@ -57,6 +58,7 @@ namespace EmpireAtWar.Services.Player
         public float SootOpacityEdge => sootOpacityEdge;
         public float EmberLength => emberLength;
         public float EmberWidth => emberWidth;
+        public Color BurntColor => burntColor;
         public Color EmberColor => emberColor;
         public float EmberStrength => emberStrength;
     }

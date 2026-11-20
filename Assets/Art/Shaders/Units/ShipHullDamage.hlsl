@@ -1,6 +1,7 @@
 // ShipHullDamage.hlsl
 // -----------------------------------------------------------------------------
-// Star-shaped soot scorch marks with faint glowing lines along their rays that pile up as a unit loses hull.
+// Soot scorch marks (outline between a circle and a star) with a burnt, faintly glowing patch in the middle,
+// piling up as a unit loses hull.
 //
 // How it stays cheap and batchable
 //   * The damage level (0-15) and a pattern seed live in the renderer user value
@@ -20,12 +21,14 @@
 
 float4 _HullDamageParams;    // x = edge noise frequency (per cell), y = 1 / mark spacing (world units), z = largest mark radius (cells), w = share of cells marked at 0 hull
 float4 _HullDamageSurface;   // x = lowest middle soot opacity, y = edge breakup (radii), z = smallest / largest mark radius, w = highest middle soot opacity
-float4 _HullDamageCore;      // x = soot opacity near the outline, y = star ray strength, z = mark size (0..1) where rays start, w = glowing line length (share of the outline)
+float4 _HullDamageCore;      // x = soot opacity near the outline, y = star ray strength, z = mark size (0..1) where rays start, w = burnt patch radius (share of the outline)
 half4 _HullDamageSootColor;
-half4 _HullDamageEmberColor;   // rgb = glowing line colour x strength (linear), a = line width (mark radii)
+half4 _HullDamageBurntColor;   // burnt metal inside the patch
+half4 _HullDamageEmberColor;   // rgb = glow colour x strength (linear), a = width of the glowing rim
 
 #define HULL_DAMAGE_UINT_TO_UNIT (1.0 / 4294967296.0)
 #define HULL_DAMAGE_TWO_PI 6.2831853
+#define HULL_DAMAGE_PATCH_THRESHOLD 0.42
 
 // Object-space position in world units, shifted per renderer so ships of one class differ.
 float3 GetHullDamagePosition(float3 positionOS)
@@ -47,15 +50,12 @@ uint4 HullDamageHash(int3 cell)
     return v;
 }
 
-// Distance from a mark's centre in outline units: 1 is the outline. Marks are stars: 5-8 sharp rays of random
-// length (0.7-1 of the radius) with the gaps between them pulled in to 0.25. Marks below starMinSize stay round.
-// planar: offset from the mark's centre along the surface. size01: 0 = smallest mark, 1 = largest.
-// rayOffset: signed distance from the nearest ray's centre line, in mark radii (large for round marks).
-float GetHullDamageShapeDistance(float3 planar, float3 normalOS, float radius, float size01, float4 random,
-    out float rayOffset)
+// Distance from a mark's centre in outline units: 1 is the outline. The outline sits between a circle and a star:
+// 6-10 soft lobes of random length (0.6-1 of the radius); starStrength sets how far the dips between them pull in.
+// Marks below starMinSize stay round. planar: offset from the centre along the surface. size01: 0 = smallest mark.
+float GetHullDamageShapeDistance(float3 planar, float3 normalOS, float radius, float size01, float4 random)
 {
     float distance = length(planar) / radius;
-    rayOffset = 1e4;
     float spikes = _HullDamageCore.y * smoothstep(_HullDamageCore.z - 0.15, _HullDamageCore.z, size01);
     if (spikes <= 0.0 || distance >= 1.5)
         return distance;
@@ -64,30 +64,27 @@ float GetHullDamageShapeDistance(float3 planar, float3 normalOS, float radius, f
     float3 axis = abs(normalOS.y) < 0.99 ? float3(0, 1, 0) : float3(1, 0, 0);
     float3 tangent = normalize(cross(axis, normalOS));
     float3 bitangent = cross(normalOS, tangent);
-    float rays = 5.0 + floor(frac(random.w * 7.31) * 4.0);
+    float rays = 6.0 + floor(frac(random.w * 7.31) * 5.0);
     float turns = (atan2(dot(planar, bitangent), dot(planar, tangent)) / HULL_DAMAGE_TWO_PI + random.x) * rays;
-    float across = frac(turns + 0.5) - 0.5;                               // -0.5..0.5 across one ray
-    float rayIndex = floor(turns + 0.5);
-    float rayLength = lerp(0.7, 1.0, frac(sin(rayIndex * 12.9898 + random.y * 78.233) * 43758.5453));
-    float onRay = pow(saturate(1.0 - abs(across) * 2.0), 3.0);           // 1 on the ray, 0 halfway to the next
-    float outline = lerp(1.0, lerp(0.25, rayLength, onRay), spikes);
-    rayOffset = across * (HULL_DAMAGE_TWO_PI / rays) * distance;          // arc length to the ray's centre line
+    float across = frac(turns + 0.5) - 0.5;                               // -0.5..0.5 across one lobe
+    float rayLength = lerp(0.6, 1.0, frac(sin(floor(turns + 0.5) * 12.9898 + random.y * 78.233) * 43758.5453));
+    float onRay = pow(saturate(1.0 - abs(across) * 2.0), 1.5);           // 1 on the lobe, 0 halfway to the next
+    float outline = lerp(1.0, lerp(0.5, rayLength, onRay), spikes);
     return distance / outline;
 }
 
 // The two nearest active marks: x/z = outline distance (1 = outline; large when none), y/w = each mark's own
-// random number (0..1) for its opacity. nearestRayOffset: the nearest mark's rayOffset. Two, so overlapping marks blend instead of meeting at a hard seam.
+// random number (0..1) for its opacity. Two, so overlapping marks blend instead of meeting at a hard seam.
 // A mark lies on the surface: its spot must be within one radius of the surface, and the distance is measured
 // along the surface, so a spot just under the plating still leaves a full-size mark.
 // A mark reaches at most one cell from its spot (clamped in HullDamageService), so the 3x3x3 cells around
 // this point are enough.
-float4 GetNearestHullDamageMarks(float3 cellPosition, float3 normalOS, half level, out float nearestRayOffset)
+float4 GetNearestHullDamageMarks(float3 cellPosition, float3 normalOS, half level)
 {
     float activeShare = level * _HullDamageParams.w;
     float maxRadius = _HullDamageParams.z;
     int3 firstCell = (int3)floor(cellPosition) - 1;
     float4 nearest = float4(1e4, 0.0, 1e4, 0.0);
-    nearestRayOffset = 1e4;
     for (int z = 0; z < 3; z++)
     for (int y = 0; y < 3; y++)
     for (int x = 0; x < 3; x++)
@@ -103,15 +100,10 @@ float4 GetNearestHullDamageMarks(float3 cellPosition, float3 normalOS, half leve
         float depth = dot(offset, normalOS);
         if (abs(depth) >= radius)
             continue;
-        float rayOffset;
-        float distance = GetHullDamageShapeDistance(offset - depth * normalOS, normalOS, radius, size01, random,
-            rayOffset);
+        float distance = GetHullDamageShapeDistance(offset - depth * normalOS, normalOS, radius, size01, random);
         float2 found = float2(distance, frac(random.w * 113.9));
         if (distance < nearest.x)
-        {
             nearest = float4(found, nearest.xy);
-            nearestRayOffset = rayOffset;
-        }
         else if (distance < nearest.z)
             nearest.zw = found;
     }
@@ -126,7 +118,7 @@ float HullDamageNoiseHash(float3 p)
     return frac(p.x * p.y * p.z * (p.x + p.y + p.z));
 }
 
-// Smooth 3D value noise, 0..1. Continuous everywhere, so outlines and lines have no blocks or tiling.
+// Smooth 3D value noise, 0..1. Continuous everywhere, so outlines and patches have no blocks or tiling.
 float HullDamageValueNoise(float3 p)
 {
     float3 cell = floor(p);
@@ -162,8 +154,7 @@ void ApplyHullDamage(inout SurfaceData surface, float3 positionDamage, half leve
 
     // The material's mark scale grows marks and their spacing together, so marks stay within the 27-cell search.
     float3 cellPosition = positionDamage * (_HullDamageParams.y / _HullDamageMarkScale);
-    float rayOffset;
-    float4 marks = GetNearestHullDamageMarks(cellPosition, TransformWorldToObjectDir(normalWS), level, rayOffset);
+    float4 marks = GetNearestHullDamageMarks(cellPosition, TransformWorldToObjectDir(normalWS), level);
     // Most of the hull is far from any mark: skip the rest there.
     UNITY_BRANCH
     if (marks.x >= 1.0 + _HullDamageSurface.y)
@@ -179,22 +170,28 @@ void ApplyHullDamage(inout SurfaceData surface, float3 positionDamage, half leve
     half soot = 1.0h - (1.0h - GetHullDamageSoot(marks.x + fray, marks.y))
         * (1.0h - GetHullDamageSoot(marks.z + fray, marks.w));
 
-    // Burnt paint: thin, faint glowing lines along the nearest mark's rays, from the centre to part-way out.
-    // Smooth noise bends them so they read as cracks, not spokes.
-    float wiggle = (HullDamageValueNoise(noisePosition * 3.3 + 5.1) - 0.5) * 2.0 * _HullDamageEmberColor.a;
-    half crack = 1.0h - smoothstep(0.3h * _HullDamageEmberColor.a, _HullDamageEmberColor.a, abs(rayOffset + wiggle));
-    // Brightest just off the centre, fading out toward the tip; the centre itself stays dark.
-    half along = smoothstep(0.03h, 0.1h, marks.x) * (1.0h - smoothstep(0.0h, _HullDamageCore.w, marks.x));
-    half ember = crack * along;
+    // Burnt paint: an irregular patch of burnt metal in the middle of the nearest mark, its rim glowing.
+    // Its shape comes from finer noise at this spot on the hull, so no two patches match and none follows the outline.
+    // The noise decides the shape (fragmented, uneven pieces); nearness to the centre only biases it, so pieces
+    // thin out toward patchRadius and none appear beyond it.
+    float patchNoise = 0.6 * HullDamageValueNoise(noisePosition * 4.5 + 3.1)
+        + 0.4 * HullDamageValueNoise(noisePosition * 10.3 + 9.7);
+    float inner = 1.0 - smoothstep(0.0, _HullDamageCore.w, marks.x);
+    float field = patchNoise - 0.4 + 0.45 * inner - 0.6 * (1.0 - inner);   // beyond patchRadius: always below the threshold
+    half rimWidth = _HullDamageEmberColor.a;
+    half burnt = smoothstep(HULL_DAMAGE_PATCH_THRESHOLD, HULL_DAMAGE_PATCH_THRESHOLD + 0.03, field);
+    half rim = smoothstep(HULL_DAMAGE_PATCH_THRESHOLD - rimWidth, HULL_DAMAGE_PATCH_THRESHOLD, field)
+        * (1.0h - smoothstep(HULL_DAMAGE_PATCH_THRESHOLD + 0.01, HULL_DAMAGE_PATCH_THRESHOLD + rimWidth, field));
 
     surface.albedo = lerp(surface.albedo, _HullDamageSootColor.rgb, soot);
+    surface.albedo = lerp(surface.albedo, _HullDamageBurntColor.rgb, burnt);
     // Soot kills the metal sheen too; otherwise reflections turn a black mark grey.
     surface.metallic *= 1.0h - soot;
     surface.smoothness = lerp(surface.smoothness, 0.1h, soot);   // soot is matte
     surface.occlusion *= 1.0h - 0.5h * soot;
     // Running lights under soot dim with it.
     surface.emission *= 1.0h - soot;
-    surface.emission += _HullDamageEmberColor.rgb * ember;
+    surface.emission += _HullDamageEmberColor.rgb * (rim + 0.05h * burnt);
 }
 
 #endif // SHIP_HULL_DAMAGE_INCLUDED

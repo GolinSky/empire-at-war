@@ -217,5 +217,10 @@ User-value layout:
   - Pitfall: `line` is a reserved HLSL word (geometry primitive) → "unexpected token 'line'"; renamed to `crack`.
   - First pass (width 0.035, strength 1, length 0.6) read as lava stars → toned down.
   - Verified: compile clean, 96 variants clean, close-ups + 9-ship sheet via real service.
+- Between star and circle + organic burnt patch (2026-11-20, user ref: soft soot halo with an irregular burnt-metal patch, glowing rim, in the middle):
+  - Outline: 6–10 soft lobes (ray mask ^1.5), lobe length 0.6–1.0, dips to 0.5, `starStrength` 0.45 → closer to a circle.
+  - Glowing ray lines removed (they repeated the star pattern). Burnt patch: field = noise(×4.5, ×10.3 of the edge-noise frequency) − 0.4 + 0.45·inner − 0.6·(1 − inner), `inner` = 1 − smoothstep(0, `emberLength` 0.45, d). Inside threshold 0.42 → `burntColor` (0.24, 0.14, 0.12) + 5% glow; rim band `emberWidth` 0.03 → `emberColor` × `emberStrength` 1.0. Shape comes from noise at that hull spot → never the same twice, never along the outline. The −0.6·(1 − inner) term stops stray specks outside marks.
+  - Globals: `_HullDamageBurntColor` new; `_HullDamageEmberColor.a` = rim width; `_HullDamageCore.w` = patch radius.
+  - Verified: compile clean, 96 variants clean, close-ups + 9-ship sheet via real service.
 - Verification: 96 variant compiles clean; 9-ship preview shows marks at a consistent share of every hull (Executor now visible blotches; Arquitens Imperial now marked). The final tool version was compiled and run in memory (`script run`) because unrelated uncommitted work (`EnemySquadronCommander.cs`, `ShipSpawnPoints.cs`) blocks the project compile; Editor-assembly compile of the tool still pending on that.
 4. Phase 2 only, if approved: audit ship view prefabs — do hull renderers share the view-root space? Yes → store root-space hits, no per-frame work. No → store one world-to-root matrix per slot, written per frame for ships that have hits.
