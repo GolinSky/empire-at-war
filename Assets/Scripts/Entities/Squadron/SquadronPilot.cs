@@ -11,7 +11,8 @@ namespace EmpireAtWar.Entities.Squadrons
 {
     /// <summary>
     /// Turns the squadron's current intent into a steering point per fighter:
-    /// travel in a loose wedge, orbit a point or escorted unit, or fly attack passes against a target.
+    /// travel in a loose wedge, hold a wedge beside a moving ship, orbit a point or escorted unit, or fly attack
+    /// passes against a target.
     /// </summary>
     public sealed class SquadronPilot : IFighterAttackRunObserver
     {
@@ -46,8 +47,10 @@ namespace EmpireAtWar.Entities.Squadrons
         private Vector3 _leaderPosition;
         private Vector3 _leaderHeading = Vector3.forward;
         private Vector3 _loiterCenter;
+        private Vector3 _followHeading;
 
         private float _time;
+        private float _followSpeed;
         private float _loiterRadius;
         private float _orbitAngle;
         private float _orbitDirection = 1f;
@@ -57,6 +60,7 @@ namespace EmpireAtWar.Entities.Squadrons
         public bool HasArrived => _mode == Mode.Loiter;
         public Vector3 LoiterCenter => _loiterCenter;
         public bool IsTravelling => _mode == Mode.Travel;
+        public bool IsFollowing => _mode == Mode.Follow;
         public bool IsFighting => _mode == Mode.Engage;
         /// <summary>Engaging and close enough that fighters fly attack passes rather than the approach.</summary>
         public bool IsInAttackZone => _mode == Mode.Engage &&
@@ -81,15 +85,31 @@ namespace EmpireAtWar.Entities.Squadrons
 
         public void FlyTo(Vector3 destination)
         {
+            BeginWedge(destination, Mode.Travel);
+        }
+
+        /// <summary>
+        /// Escorts a moving ship: the wedge holds <paramref name="point"/> beside it facing
+        /// <paramref name="heading"/> and flies at <paramref name="speed"/> once there. Never arrives.
+        /// </summary>
+        public void Follow(Vector3 point, Vector3 heading, float speed)
+        {
+            BeginWedge(point, Mode.Follow);
+            _followHeading = heading;
+            _followSpeed = speed;
+        }
+
+        private void BeginWedge(Vector3 destination, Mode mode)
+        {
             destination.y = Data.Height;
             _destination = destination;
-            if (_mode != Mode.Travel)
+            if (_mode != Mode.Travel && _mode != Mode.Follow)
             {
                 _leaderPosition = _flight.Centroid;
                 _leaderHeading = _flight.Heading;
             }
 
-            _mode = Mode.Travel;
+            _mode = mode;
             _escortAnchor = null;
             _target = null;
             _aimUnits.Clear();
@@ -134,6 +154,9 @@ namespace EmpireAtWar.Entities.Squadrons
             {
                 case Mode.Travel:
                     TickTravel(deltaTime);
+                    break;
+                case Mode.Follow:
+                    TickFollow(deltaTime);
                     break;
                 case Mode.Loiter:
                     TickLoiter(deltaTime);
@@ -182,7 +205,37 @@ namespace EmpireAtWar.Entities.Squadrons
                 return;
             }
 
-            _leaderHeading = Vector3.RotateTowards(_leaderHeading, toDestination / distance,
+            AdvanceLeader(toDestination / distance, distance, deltaTime);
+            SteerWedge(Data.CruiseSpeed);
+        }
+
+        // The leader catches up with the escort point, then rides it; fighters then fly at the escorted ship's speed.
+        private void TickFollow(float deltaTime)
+        {
+            Vector3 toPoint = _destination - _leaderPosition;
+            toPoint.y = 0f;
+            float distance = toPoint.magnitude;
+            if (distance > ARRIVAL_DISTANCE)
+            {
+                AdvanceLeader(toPoint / distance, distance, deltaTime);
+                SteerWedge(Data.CruiseSpeed);
+                return;
+            }
+
+            if (_followHeading.sqrMagnitude > 1e-6f)
+            {
+                _leaderHeading = Vector3.RotateTowards(_leaderHeading, _followHeading,
+                    Data.TurnRate * LEADER_TURN_SHARE * Mathf.Deg2Rad * deltaTime, 0f);
+            }
+
+            _cachedSlotCount = 0;
+            _leaderPosition = _destination;
+            SteerWedge(Mathf.Min(Data.CruiseSpeed, _followSpeed));
+        }
+
+        private void AdvanceLeader(Vector3 direction, float distance, float deltaTime)
+        {
+            _leaderHeading = Vector3.RotateTowards(_leaderHeading, direction,
                 Data.TurnRate * LEADER_TURN_SHARE * Mathf.Deg2Rad * deltaTime, 0f);
             _cachedSlotCount = 0;
             float leaderSpeed = GetSlotLag() > Data.FormationSpacing * LEADER_WAIT_SPACINGS
@@ -190,14 +243,17 @@ namespace EmpireAtWar.Entities.Squadrons
                 : Data.CruiseSpeed;
             _leaderPosition += _leaderHeading * Mathf.Min(leaderSpeed * deltaTime, distance);
             _leaderPosition.y = Data.Height;
+        }
 
+        private void SteerWedge(float baseSpeed)
+        {
             int rank = 0;
             for (int i = 0; i < _flight.Count; i++)
             {
                 if (!_flight.IsAlive(i)) continue;
                 Vector3 slot = GetSlotPosition(rank++) + GetWobble(i);
                 float behind = Vector3.Dot(slot - _flight.GetPosition(i), _leaderHeading);
-                float speed = Data.CruiseSpeed *
+                float speed = baseSpeed *
                               Mathf.Clamp(1f + behind * CATCH_UP_GAIN, MIN_CATCH_UP_SPEED, MAX_CATCH_UP_SPEED);
                 _flight.Steer(i, slot + _leaderHeading * SLOT_LOOKAHEAD, speed);
             }
@@ -298,6 +354,7 @@ namespace EmpireAtWar.Entities.Squadrons
         private enum Mode
         {
             Travel,
+            Follow,
             Loiter,
             Engage,
         }

@@ -151,5 +151,59 @@ namespace EmpireAtWar.Tests.Editor
             target.Leave(targetMember);
             Assert.That(target.MemberCount, Is.EqualTo(0));
         }
+
+        [Test]
+        public void Escorts_FollowTheNearestShipAndDoNotSetPaceOrProgressWhileAShipRemains()
+        {
+            PaceCluster pace = new PaceCluster();
+            int near = pace.Join(FAST, 100f, new Vector2(0f, 0f), 20f, Vector2.UnitX);
+            int far = pace.Join(SLOW, 300f, new Vector2(500f, 0f), 25f, Vector2.UnitY);
+            int escort = pace.Join(SLOW * 0.5f, 900f, new Vector2(50f, 0f), 5f, Vector2.UnitX, isEscort: true);
+
+            Assert.That(pace.Pace, Is.EqualTo(SLOW), "Only ships set the pace.");
+            Assert.That(pace.MeanRemaining, Is.EqualTo(200f), "Escorts do not hold the ships back.");
+            Assert.That(pace.TryGetEscortAnchor(new Vector2(50f, 0f), out Vector2 anchor, out Vector2 heading,
+                out float radius), Is.True);
+            Assert.That(anchor, Is.EqualTo(new Vector2(0f, 0f)));
+            Assert.That(heading, Is.EqualTo(Vector2.UnitX));
+            Assert.That(radius, Is.EqualTo(20f));
+
+            pace.Leave(near);
+            pace.TryGetEscortAnchor(new Vector2(50f, 0f), out anchor, out _, out _);
+            Assert.That(anchor, Is.EqualTo(new Vector2(500f, 0f)));
+
+            pace.Leave(far);
+            Assert.That(pace.TryGetEscortAnchor(new Vector2(50f, 0f), out _, out _, out _), Is.False);
+            pace.Leave(escort);
+        }
+
+        [Test]
+        public void Escorts_WithoutShipsPaceTheirSlowestEscort()
+        {
+            PaceCluster pace = new PaceCluster();
+            pace.Join(FAST, 100f, isEscort: true);
+            pace.Join(SLOW, 300f, isEscort: true);
+
+            Assert.That(pace.Pace, Is.EqualTo(SLOW));
+            Assert.That(pace.MeanRemaining, Is.EqualTo(200f));
+            Assert.That(pace.TryGetEscortAnchor(Vector2.Zero, out _, out _, out _), Is.False);
+        }
+
+        [Test]
+        public void MergeInto_KeepsEscortMembership()
+        {
+            PaceCluster source = new PaceCluster();
+            source.Join(FAST, 100f, new Vector2(10f, 0f), 5f, isEscort: true);
+            source.Join(FAST, 100f, new Vector2(20f, 0f), 5f, isEscort: true);
+            PaceCluster target = new PaceCluster();
+            target.Join(SLOW, 100f, new Vector2(0f, 0f), 20f);
+            target.Join(SLOW, 100f, new Vector2(40f, 0f), 20f);
+
+            source.MergeInto(target);
+
+            Assert.That(target.Pace, Is.EqualTo(SLOW));
+            Assert.That(source.TryGetEscortAnchor(new Vector2(10f, 0f), out Vector2 anchor, out _, out _), Is.True);
+            Assert.That(anchor, Is.EqualTo(new Vector2(0f, 0f)));
+        }
     }
 }

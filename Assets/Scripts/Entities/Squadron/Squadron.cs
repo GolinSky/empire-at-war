@@ -50,6 +50,8 @@ namespace EmpireAtWar.Entities.Squadrons
         private const float TARGET_SEARCH_INTERVAL = 0.25f;
         // Dev telemetry: one periodic order/position row per squadron.
         private const float TELEMETRY_SAMPLE_INTERVAL = 5f;
+        // An escort holds the ship's flank this share of the ship's radius behind its centre, never ahead of it.
+        private const float ESCORT_TRAIL_SHARE = 0.5f;
         private float _nextTelemetrySample;
 
         private ISquadronFlightComponent _flight;
@@ -73,6 +75,7 @@ namespace EmpireAtWar.Entities.Squadrons
         private PaceCluster _pace;
         private int _paceMember;
         private float _stragglerTimer;
+        private bool _isEscorting;
 
         private UnitOrderModel _orders;
         private SquadronPilot _pilot;
@@ -352,7 +355,7 @@ namespace EmpireAtWar.Entities.Squadrons
             SamplePaceGeometry(out System.Numerics.Vector2 position, out float remaining,
                 out System.Numerics.Vector2 heading);
             _pace = pace;
-            _paceMember = pace.Join(PaceSpeed, remaining, position, NavigationRadius, heading);
+            _paceMember = pace.Join(PaceSpeed, remaining, position, NavigationRadius, heading, isEscort: true);
         }
 
         private void LeavePace()
@@ -362,9 +365,61 @@ namespace EmpireAtWar.Entities.Squadrons
             _pace.Leave(_paceMember);
             _pace = null;
             _flight.SetSpeedCap(float.PositiveInfinity);
+            if (!_isEscorting) return;
+            _isEscorting = false;
+            ResumeEscortedCourse();
         }
 
-        // The cluster approaches together; fighters break away freely once in the attack zone or engaging.
+        // Escorting ended (ships arrived, engaged or left, or a new order): the squadron flies its own order again.
+        // A pilot already engaging or given a new course keeps it.
+        private void ResumeEscortedCourse()
+        {
+            if (!_pilot.IsFollowing) return;
+            switch (_orders.Current)
+            {
+                case UnitOrderType.Attack when SquadronTargetSelector.IsAlive(_orders.Target):
+                    _pilot.Engage(_orders.Target);
+                    break;
+                case UnitOrderType.Move:
+                case UnitOrderType.AttackMove:
+                    _pilot.FlyTo(ToVector(_orders.Destination));
+                    break;
+                default:
+                    _pilot.Loiter(_flight.Centroid);
+                    break;
+            }
+        }
+
+        // A squadron sharing a cluster with ships flies beside the nearest one, on its flank and slightly behind,
+        // instead of slowing down ahead of the group where it meets the enemy alone.
+        private void EscortShip(System.Numerics.Vector2 anchorPosition, System.Numerics.Vector2 anchorHeading,
+            float anchorRadius)
+        {
+            _isEscorting = true;
+            _flight.SetSpeedCap(float.PositiveInfinity);
+            Vector3 center = new Vector3(anchorPosition.X, 0f, anchorPosition.Y);
+            Vector3 forward = new Vector3(anchorHeading.X, 0f, anchorHeading.Y);
+            Vector3 fromShip = _flight.Centroid - center;
+            fromShip.y = 0f;
+            float standOff = anchorRadius + _flight.Data.LoiterRadius;
+            Vector3 point;
+            if (forward.sqrMagnitude > 1e-6f)
+            {
+                Vector3 side = new Vector3(forward.z, 0f, -forward.x);
+                if (Vector3.Dot(fromShip, side) < 0f) side = -side;
+                point = center + side * standOff - forward * (anchorRadius * ESCORT_TRAIL_SHARE);
+            }
+            else
+            {
+                point = center + (fromShip.sqrMagnitude > 1e-6f ? fromShip.normalized : Vector3.right) * standOff;
+            }
+
+            float pace = _pace.Pace;
+            _pilot.Follow(point, forward, float.IsPositiveInfinity(pace) ? _flight.Data.CruiseSpeed : pace);
+        }
+
+        // Ships set the pace and squadrons escort them; squadrons alone approach at their slowest squadron's speed.
+        // Fighters break away freely once in the attack zone or engaging.
         private void UpdatePace(float deltaTime)
         {
             if (_pace == null) return;
@@ -386,6 +441,19 @@ namespace EmpireAtWar.Entities.Squadrons
             SamplePaceGeometry(out System.Numerics.Vector2 position, out float remaining,
                 out System.Numerics.Vector2 heading);
             _pace.Report(_paceMember, ownSpeed, remaining, position, heading);
+            if (_pace.TryGetEscortAnchor(position, out System.Numerics.Vector2 anchorPosition,
+                    out System.Numerics.Vector2 anchorHeading, out float anchorRadius))
+            {
+                EscortShip(anchorPosition, anchorHeading, anchorRadius);
+                return;
+            }
+
+            if (_isEscorting)
+            {
+                LeavePace();
+                return;
+            }
+
             if (!_pace.TryGetSpeedCap(remaining, deltaTime, ref _stragglerTimer, out float cap))
             {
                 LeavePace();

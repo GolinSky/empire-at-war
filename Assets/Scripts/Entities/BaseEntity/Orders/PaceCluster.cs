@@ -8,6 +8,8 @@ namespace EmpireAtWar.Entities.BaseEntity.Orders
     /// Shared by one spatial pace cluster of a move, attack, or attack-move order so nearby units approach together.
     /// Members report their own uncapped speed, straight-line remaining distance, position, and heading; a member
     /// that cannot move or is recovering reports <see cref="float.PositiveInfinity"/> so it never holds the cluster back.
+    /// Escort members (squadrons) neither set the pace nor the mean progress while the cluster still has a ship: they
+    /// fly beside the nearest ship (<see cref="TryGetEscortAnchor"/>). A cluster of escorts only paces its slowest escort.
     /// </summary>
     public sealed class PaceCluster
     {
@@ -19,13 +21,17 @@ namespace EmpireAtWar.Entities.BaseEntity.Orders
         private readonly List<float> _radii = new List<float>();
         private readonly List<Vector2> _headings = new List<Vector2>();
         private readonly List<int> _forwardedMembers = new List<int>();
+        private readonly List<bool> _isEscort = new List<bool>();
 
         private PaceCluster _mergedInto;
         private float _issuePace;
         private int _memberCount;
+        private int _anchorCount;
         private float _pace = float.PositiveInfinity;
-        private float _remainingSum;
-        private int _remainingCount;
+        private float _anchorRemainingSum;
+        private int _anchorRemainingCount;
+        private float _escortRemainingSum;
+        private int _escortRemainingCount;
         private Vector2 _centroid;
         private float _radius;
         private Vector2 _heading;
@@ -41,8 +47,8 @@ namespace EmpireAtWar.Entities.BaseEntity.Orders
         public float IssuePace => _mergedInto != null ? _mergedInto.IssuePace : _issuePace;
 
         /// <summary>
-        /// Slowest member speed meeting the straggler speed floor, or <see cref="float.PositiveInfinity"/> when fewer
-        /// than two members remain.
+        /// Slowest ship speed (slowest escort speed when no ship remains) meeting the straggler speed floor, or
+        /// <see cref="float.PositiveInfinity"/> when fewer than two members remain.
         /// </summary>
         public float Pace
         {
@@ -54,13 +60,16 @@ namespace EmpireAtWar.Entities.BaseEntity.Orders
             }
         }
 
-        /// <summary>Average straight-line remaining distance of active members, or NaN if none.</summary>
+        /// <summary>
+        /// Average straight-line remaining distance of active ships (of escorts when no ship reports one), or NaN if none.
+        /// </summary>
         public float MeanRemaining
         {
             get
             {
                 if (_mergedInto != null) return _mergedInto.MeanRemaining;
-                return _remainingCount > 0 ? _remainingSum / _remainingCount : float.NaN;
+                if (_anchorRemainingCount > 0) return _anchorRemainingSum / _anchorRemainingCount;
+                return _escortRemainingCount > 0 ? _escortRemainingSum / _escortRemainingCount : float.NaN;
             }
         }
 
@@ -114,17 +123,20 @@ namespace EmpireAtWar.Entities.BaseEntity.Orders
         /// ship already damaged when the order is given cannot lower the floor and slow its cluster indefinitely.
         /// NaN uses <paramref name="speed"/>.
         /// </param>
+        /// <param name="isEscort">A squadron: it escorts the cluster's ships instead of pacing them.</param>
         public int Join(float speed, float remaining = float.NaN, Vector2 position = default,
-            float radius = 0f, Vector2 heading = default, float referenceSpeed = float.NaN)
+            float radius = 0f, Vector2 heading = default, float referenceSpeed = float.NaN, bool isEscort = false)
         {
             if (_mergedInto != null)
             {
-                int forwarded = _mergedInto.Join(speed, remaining, position, radius, heading, referenceSpeed);
+                int forwarded = _mergedInto.Join(speed, remaining, position, radius, heading, referenceSpeed,
+                    isEscort);
                 _speeds.Add(float.NaN);
                 _remaining.Add(float.NaN);
                 _positions.Add(default);
                 _radii.Add(0f);
                 _headings.Add(default);
+                _isEscort.Add(isEscort);
                 _forwardedMembers.Add(forwarded);
                 return _speeds.Count - 1;
             }
@@ -138,9 +150,11 @@ namespace EmpireAtWar.Entities.BaseEntity.Orders
             _positions.Add(position);
             _radii.Add(radius);
             _headings.Add(heading);
+            _isEscort.Add(isEscort);
             _forwardedMembers.Add(-1);
-            AddRemaining(remaining, 1);
+            AddRemaining(remaining, 1, isEscort);
             _memberCount++;
+            if (!isEscort) _anchorCount++;
             _paceDirty = true;
             _geometryDirty = true;
             return _speeds.Count - 1;
@@ -160,10 +174,11 @@ namespace EmpireAtWar.Entities.BaseEntity.Orders
             }
 
             if (float.IsNaN(_speeds[member])) return;
-            AddRemaining(_remaining[member], -1);
+            AddRemaining(_remaining[member], -1, _isEscort[member]);
             _speeds[member] = float.NaN;
             _remaining[member] = float.NaN;
             _memberCount--;
+            if (!_isEscort[member]) _anchorCount--;
             _paceDirty = true;
             _geometryDirty = true;
         }
@@ -187,8 +202,8 @@ namespace EmpireAtWar.Entities.BaseEntity.Orders
 
             if (!AreEqual(_remaining[member], remaining))
             {
-                AddRemaining(_remaining[member], -1);
-                AddRemaining(remaining, 1);
+                AddRemaining(_remaining[member], -1, _isEscort[member]);
+                AddRemaining(remaining, 1, _isEscort[member]);
                 _remaining[member] = remaining;
             }
 
@@ -225,16 +240,20 @@ namespace EmpireAtWar.Entities.BaseEntity.Orders
                     source._positions[i],
                     source._radii[i],
                     source._headings[i],
-                    source._issuePace);
+                    source._issuePace,
+                    source._isEscort[i]);
                 source._forwardedMembers[i] = newIndex;
                 source._speeds[i] = float.NaN;
                 source._remaining[i] = float.NaN;
             }
 
             source._memberCount = 0;
+            source._anchorCount = 0;
             source._pace = float.PositiveInfinity;
-            source._remainingSum = 0f;
-            source._remainingCount = 0;
+            source._anchorRemainingSum = 0f;
+            source._anchorRemainingCount = 0;
+            source._escortRemainingSum = 0f;
+            source._escortRemainingCount = 0;
             source._paceDirty = false;
             source._geometryDirty = false;
             source._mergedInto = destination;
@@ -276,6 +295,35 @@ namespace EmpireAtWar.Entities.BaseEntity.Orders
             return current;
         }
 
+        /// <summary>
+        /// The ship nearest to <paramref name="position"/>, which an escort flies beside; false when no ship remains.
+        /// </summary>
+        public bool TryGetEscortAnchor(Vector2 position, out Vector2 anchorPosition, out Vector2 anchorHeading,
+            out float anchorRadius)
+        {
+            if (_mergedInto != null)
+                return _mergedInto.TryGetEscortAnchor(position, out anchorPosition, out anchorHeading, out anchorRadius);
+
+            anchorPosition = default;
+            anchorHeading = default;
+            anchorRadius = 0f;
+            if (_anchorCount == 0) return false;
+
+            float nearest = float.PositiveInfinity;
+            for (int i = 0; i < _speeds.Count; i++)
+            {
+                if (float.IsNaN(_speeds[i]) || _isEscort[i]) continue;
+                float distanceSq = Vector2.DistanceSquared(_positions[i], position);
+                if (distanceSq >= nearest) continue;
+                nearest = distanceSq;
+                anchorPosition = _positions[i];
+                anchorHeading = _headings[i];
+                anchorRadius = _radii[i];
+            }
+
+            return true;
+        }
+
         public bool TryGetCentroid(out Vector2 centroid)
         {
             if (_mergedInto != null) return _mergedInto.TryGetCentroid(out centroid);
@@ -300,20 +348,30 @@ namespace EmpireAtWar.Entities.BaseEntity.Orders
                 ? _issuePace * Tuning.StragglerSpeedRatio
                 : 0f;
 
+            // Escorts fly beside the ships, so only ships set the pace while one remains.
+            bool anchorsOnly = _anchorCount > 0;
             for (int i = 0; i < _speeds.Count; i++)
             {
                 float speed = _speeds[i];
-                if (float.IsNaN(speed) || speed < floor) continue;
+                if (float.IsNaN(speed) || speed < floor || (anchorsOnly && _isEscort[i])) continue;
                 if (speed < _pace) _pace = speed;
             }
         }
 
         // A running sum keeps MeanRemaining O(1); every member reads it every tick.
-        private void AddRemaining(float remaining, int sign)
+        private void AddRemaining(float remaining, int sign, bool isEscort)
         {
             if (float.IsNaN(remaining) || float.IsInfinity(remaining)) return;
-            _remainingSum += sign * remaining;
-            _remainingCount += sign;
+            if (isEscort)
+            {
+                _escortRemainingSum += sign * remaining;
+                _escortRemainingCount += sign;
+            }
+            else
+            {
+                _anchorRemainingSum += sign * remaining;
+                _anchorRemainingCount += sign;
+            }
         }
 
         private void RecomputeGeometry()
