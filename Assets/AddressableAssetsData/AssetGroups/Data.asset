@@ -115,6 +115,11 @@ MonoBehaviour:
     m_ReadOnly: 0
     m_SerializedLabels: []
     FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 2f7e6bcef1d623142a165b7f5eae7831
+    m_Address: ChimaeraShipData
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
   - m_GUID: 30c0a1a6c009b8a4b84d1e46ea8d6e40
     m_Address: TIEFighterSquadronData
     m_ReadOnly: 0
@@ -532,6 +537,11 @@ MonoBehaviour:
     FlaggedDuringContentUpdateRestriction: 0
   - m_GUID: f5fb2ca4ac1d3a848a445314158b9a6e
     m_Address: TooltipIconData
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: f882b9d8cdceb60488955f2f04a1c960
+    m_Address: DevastatorShipData
     m_ReadOnly: 0
     m_SerializedLabels: []
     FlaggedDuringContentUpdateRestriction: 0

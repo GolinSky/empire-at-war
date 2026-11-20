@@ -1869,3 +1869,31 @@ MonoBehaviour:
         m_SubObjectType: 
         m_SubObjectGUID: 
         m_EditorAssetChanged: 0
+    - key: ChimaeraShipView
+      value:
+        m_AssetGUID: 457575d3b0f11cf459872bf3d44dd1d8
+        m_SubObjectName: 
+        m_SubObjectType: 
+        m_SubObjectGUID: 
+        m_EditorAssetChanged: 0
+    - key: ChimaeraShipData
+      value:
+        m_AssetGUID: 2f7e6bcef1d623142a165b7f5eae7831
+        m_SubObjectName: 
+        m_SubObjectType: 
+        m_SubObjectGUID: 
+        m_EditorAssetChanged: 0
+    - key: DevastatorShipView
+      value:
+        m_AssetGUID: 31ae8feea4c8f4b41a40e87c4ec45706
+        m_SubObjectName: 
+        m_SubObjectType: 
+        m_SubObjectGUID: 
+        m_EditorAssetChanged: 0
+    - key: DevastatorShipData
+      value:
+        m_AssetGUID: f882b9d8cdceb60488955f2f04a1c960
+        m_SubObjectName: 
+        m_SubObjectType: 
+        m_SubObjectGUID: 
+        m_EditorAssetChanged: 0

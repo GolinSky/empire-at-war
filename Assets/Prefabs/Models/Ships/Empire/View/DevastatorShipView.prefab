@@ -1,0 +1,391 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!1 &1091785517079281914
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 3174853079523889996}
+  m_Layer: 0
+  m_Name: DestroyedVfxAnchor
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &3174853079523889996
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1091785517079281914}
+  serializedVersion: 2
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 0, y: 2.5899906, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 942672984003470718}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!1 &3451324134420536942
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 4969389379042651071}
+  - component: {fileID: 3711345666827639816}
+  - component: {fileID: 2304862591962572355}
+  m_Layer: 0
+  m_Name: HP_Devastator_IC_01
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &4969389379042651071
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 3451324134420536942}
+  serializedVersion: 2
+  m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
+  m_LocalPosition: {x: -41.79, y: -10.89, z: -48}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children:
+  - {fileID: 8051000305271583829}
+  m_Father: {fileID: 8777256829999031117}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &3711345666827639816
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 3451324134420536942}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 6535a63451984d3d8510459aec130f3f, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::EmpireAtWar.ViewComponents.Health.WeaponHardPoint
+  spawnDestroyedExplosion: 1
+  destroyedVfxAnchor: {fileID: 8051000305271583829}
+  destroyedVfxScale: 2.2022212
+  unlockLevel: 1
+  healthOverride: 0
+  healthWeight: 1
+  <HardPointType>k__BackingField: 0
+  <Id>k__BackingField: 32
+  yAxisRange:
+    <Min>k__BackingField: -180
+    <Max>k__BackingField: 18
+  mainBattery: 0
+  <WeaponType>k__BackingField: 32
+--- !u!135 &2304862591962572355
+SphereCollider:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 3451324134420536942}
+  m_Material: {fileID: 0}
+  m_IncludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_ExcludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_LayerOverridePriority: 0
+  m_IsTrigger: 0
+  m_ProvidesContacts: 0
+  m_Enabled: 1
+  serializedVersion: 3
+  m_Radius: 3
+  m_Center: {x: 0, y: 0, z: 0}
+--- !u!1 &6350940252125236896
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 942672984003470718}
+  - component: {fileID: 6779539366337217742}
+  - component: {fileID: 8223115071758929214}
+  m_Layer: 0
+  m_Name: HP_Devastator_IC_02
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &942672984003470718
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 6350940252125236896}
+  serializedVersion: 2
+  m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
+  m_LocalPosition: {x: 41.79, y: -10.89, z: -48}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children:
+  - {fileID: 3174853079523889996}
+  m_Father: {fileID: 8777256829999031117}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &6779539366337217742
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 6350940252125236896}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 6535a63451984d3d8510459aec130f3f, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::EmpireAtWar.ViewComponents.Health.WeaponHardPoint
+  spawnDestroyedExplosion: 1
+  destroyedVfxAnchor: {fileID: 3174853079523889996}
+  destroyedVfxScale: 2.2022212
+  unlockLevel: 1
+  healthOverride: 0
+  healthWeight: 1
+  <HardPointType>k__BackingField: 0
+  <Id>k__BackingField: 33
+  yAxisRange:
+    <Min>k__BackingField: -17
+    <Max>k__BackingField: 180
+  mainBattery: 0
+  <WeaponType>k__BackingField: 32
+--- !u!135 &8223115071758929214
+SphereCollider:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 6350940252125236896}
+  m_Material: {fileID: 0}
+  m_IncludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_ExcludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_LayerOverridePriority: 0
+  m_IsTrigger: 0
+  m_ProvidesContacts: 0
+  m_Enabled: 1
+  serializedVersion: 3
+  m_Radius: 3
+  m_Center: {x: 0, y: 0, z: 0}
+--- !u!1 &7742300883557236440
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 8051000305271583829}
+  m_Layer: 0
+  m_Name: DestroyedVfxAnchor
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &8051000305271583829
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 7742300883557236440}
+  serializedVersion: 2
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 0, y: 2.5900211, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 4969389379042651071}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!1001 &3353774393318145204
+PrefabInstance:
+  m_ObjectHideFlags: 0
+  serializedVersion: 2
+  m_Modification:
+    serializedVersion: 3
+    m_TransformParent: {fileID: 0}
+    m_Modifications:
+    - target: {fileID: 173530818617816141, guid: f24f9301127af634ab504e1c96f3d728,
+        type: 3}
+      propertyPath: <WeaponType>k__BackingField
+      value: 43
+      objectReference: {fileID: 0}
+    - target: {fileID: 675661658933809400, guid: f24f9301127af634ab504e1c96f3d728,
+        type: 3}
+      propertyPath: <WeaponType>k__BackingField
+      value: 43
+      objectReference: {fileID: 0}
+    - target: {fileID: 773376535087680568, guid: f24f9301127af634ab504e1c96f3d728,
+        type: 3}
+      propertyPath: m_LocalPosition.x
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 773376535087680568, guid: f24f9301127af634ab504e1c96f3d728,
+        type: 3}
+      propertyPath: m_LocalPosition.y
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 773376535087680568, guid: f24f9301127af634ab504e1c96f3d728,
+        type: 3}
+      propertyPath: m_LocalPosition.z
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 773376535087680568, guid: f24f9301127af634ab504e1c96f3d728,
+        type: 3}
+      propertyPath: m_LocalRotation.w
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 773376535087680568, guid: f24f9301127af634ab504e1c96f3d728,
+        type: 3}
+      propertyPath: m_LocalRotation.x
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 773376535087680568, guid: f24f9301127af634ab504e1c96f3d728,
+        type: 3}
+      propertyPath: m_LocalRotation.y
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 773376535087680568, guid: f24f9301127af634ab504e1c96f3d728,
+        type: 3}
+      propertyPath: m_LocalRotation.z
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 773376535087680568, guid: f24f9301127af634ab504e1c96f3d728,
+        type: 3}
+      propertyPath: m_LocalEulerAnglesHint.x
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 773376535087680568, guid: f24f9301127af634ab504e1c96f3d728,
+        type: 3}
+      propertyPath: m_LocalEulerAnglesHint.y
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 773376535087680568, guid: f24f9301127af634ab504e1c96f3d728,
+        type: 3}
+      propertyPath: m_LocalEulerAnglesHint.z
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 1115088912326920354, guid: f24f9301127af634ab504e1c96f3d728,
+        type: 3}
+      propertyPath: <ShipUnits>k__BackingField.Array.size
+      value: 34
+      objectReference: {fileID: 0}
+    - target: {fileID: 1115088912326920354, guid: f24f9301127af634ab504e1c96f3d728,
+        type: 3}
+      propertyPath: '<ShipUnits>k__BackingField.Array.data[32]'
+      value: 
+      objectReference: {fileID: 3711345666827639816}
+    - target: {fileID: 1115088912326920354, guid: f24f9301127af634ab504e1c96f3d728,
+        type: 3}
+      propertyPath: '<ShipUnits>k__BackingField.Array.data[33]'
+      value: 
+      objectReference: {fileID: 6779539366337217742}
+    - target: {fileID: 1362856859461505581, guid: f24f9301127af634ab504e1c96f3d728,
+        type: 3}
+      propertyPath: <WeaponType>k__BackingField
+      value: 43
+      objectReference: {fileID: 0}
+    - target: {fileID: 2708922646955401821, guid: f24f9301127af634ab504e1c96f3d728,
+        type: 3}
+      propertyPath: <WeaponType>k__BackingField
+      value: 43
+      objectReference: {fileID: 0}
+    - target: {fileID: 3372563398739101621, guid: f24f9301127af634ab504e1c96f3d728,
+        type: 3}
+      propertyPath: <WeaponType>k__BackingField
+      value: 91
+      objectReference: {fileID: 0}
+    - target: {fileID: 3536569297988240252, guid: f24f9301127af634ab504e1c96f3d728,
+        type: 3}
+      propertyPath: <Injectables>k__BackingField.Array.size
+      value: 35
+      objectReference: {fileID: 0}
+    - target: {fileID: 3536569297988240252, guid: f24f9301127af634ab504e1c96f3d728,
+        type: 3}
+      propertyPath: '<Injectables>k__BackingField.Array.data[33]'
+      value: 
+      objectReference: {fileID: 3711345666827639816}
+    - target: {fileID: 3536569297988240252, guid: f24f9301127af634ab504e1c96f3d728,
+        type: 3}
+      propertyPath: '<Injectables>k__BackingField.Array.data[34]'
+      value: 
+      objectReference: {fileID: 6779539366337217742}
+    - target: {fileID: 3806449680888156439, guid: f24f9301127af634ab504e1c96f3d728,
+        type: 3}
+      propertyPath: m_Name
+      value: DevastatorShipView
+      objectReference: {fileID: 0}
+    - target: {fileID: 4464647978886112971, guid: f24f9301127af634ab504e1c96f3d728,
+        type: 3}
+      propertyPath: <WeaponType>k__BackingField
+      value: 43
+      objectReference: {fileID: 0}
+    - target: {fileID: 5143949992068866162, guid: f24f9301127af634ab504e1c96f3d728,
+        type: 3}
+      propertyPath: <WeaponType>k__BackingField
+      value: 43
+      objectReference: {fileID: 0}
+    - target: {fileID: 6101720500570053970, guid: f24f9301127af634ab504e1c96f3d728,
+        type: 3}
+      propertyPath: <WeaponType>k__BackingField
+      value: 91
+      objectReference: {fileID: 0}
+    - target: {fileID: 7617654330866919581, guid: f24f9301127af634ab504e1c96f3d728,
+        type: 3}
+      propertyPath: hardPoints.Array.size
+      value: 30
+      objectReference: {fileID: 0}
+    - target: {fileID: 7617654330866919581, guid: f24f9301127af634ab504e1c96f3d728,
+        type: 3}
+      propertyPath: 'hardPoints.Array.data[28]'
+      value: 
+      objectReference: {fileID: 3711345666827639816}
+    - target: {fileID: 7617654330866919581, guid: f24f9301127af634ab504e1c96f3d728,
+        type: 3}
+      propertyPath: 'hardPoints.Array.data[29]'
+      value: 
+      objectReference: {fileID: 6779539366337217742}
+    m_RemovedComponents: []
+    m_RemovedGameObjects: []
+    m_AddedGameObjects:
+    - targetCorrespondingSourceObject: {fileID: 6288173655347290105, guid: f24f9301127af634ab504e1c96f3d728,
+        type: 3}
+      insertIndex: -1
+      addedObject: {fileID: 4969389379042651071}
+    - targetCorrespondingSourceObject: {fileID: 6288173655347290105, guid: f24f9301127af634ab504e1c96f3d728,
+        type: 3}
+      insertIndex: -1
+      addedObject: {fileID: 942672984003470718}
+    m_AddedComponents: []
+  m_SourcePrefab: {fileID: 100100000, guid: f24f9301127af634ab504e1c96f3d728, type: 3}
+--- !u!4 &8777256829999031117 stripped
+Transform:
+  m_CorrespondingSourceObject: {fileID: 6288173655347290105, guid: f24f9301127af634ab504e1c96f3d728,
+    type: 3}
+  m_PrefabInstance: {fileID: 3353774393318145204}
+  m_PrefabAsset: {fileID: 0}

@@ -19,12 +19,12 @@ MonoBehaviour:
       value:
         matchups: {fileID: 11400000, guid: 6887148f139f280438d9d67f651593e6, type: 2}
         displayName: Victory I
-        description: 7,800 hull; 5,200 shields; speed 30. Four heavy single-shot artillery-rocket
-          launchers and two single-shot barrage-rocket launchers. Targetable shield generator,
-          two engines and tractor beam. Six light dual turbolasers, four heavy laser
-          cannons are not separately targetable. Full Salvo accelerates rockets and
-          slows other weapons. Tractor Beam slows enemy ships of a lower class. No
-          hangar or squadron deployment.
+        description: 7,800 hull; 5,200 shields; speed 30. Four heavy single-shot
+          artillery-rocket launchers and two single-shot barrage-rocket launchers.
+          Targetable shield generator, two engines and tractor beam. Six light dual
+          turbolasers, four heavy laser cannons are not separately targetable. Full
+          Salvo accelerates rockets and slows other weapons. Tractor Beam slows enemy
+          ships of a lower class. No hangar or squadron deployment.
         role: Artillery / Cruiser
         iconKey: 3896a253ad3c5024b8b7260fb0c214a9:21300000
         isHero: 0
@@ -124,6 +124,51 @@ MonoBehaviour:
         <UnitCapacity>k__BackingField: 10
         <Icon>k__BackingField: {fileID: 21300000, guid: 5c33cff1e56f4c246956a7183bb94b02,
           type: 3}
+    - key: 219
+      value:
+        matchups: {fileID: 11400000, guid: 54dcc30c8c753e14a8a1523ea5adeacb, type: 2}
+        displayName: Devastator
+        description: 28,000 hull; 28,000 shields with faster regeneration; speed
+          20. Six heavy dual turbolasers, two heavy dual ion cannons, two quad ion
+          turrets, eight medium ion cannons, six medium turbolasers, two medium dual
+          turbolasers and four medium lasers. Every weapon is targetable; shield
+          generator, hangar, tractor beam are targetable. Power to Main Batteries
+          and Tractor Beam. Deploys 1 fighter squadron, 1 interceptor squadron and
+          1 bomber squadron at once. Carries 8 total squadron launches, including
+          the initial deployment.
+        role: Hero capital ship / Ship of the line
+        iconKey: c38977cc8632e624c9bb2206fcf65c33:21300000
+        isHero: 1
+        <Name>k__BackingField: "Darth Vader \u2014 Devastator"
+        <MaxCount>k__BackingField: 1
+        <AvailableLevel>k__BackingField: 5
+        <Price>k__BackingField: 12000
+        <BuildTime>k__BackingField: 70
+        <UnitCapacity>k__BackingField: 10
+        <Icon>k__BackingField: {fileID: 21300000, guid: c38977cc8632e624c9bb2206fcf65c33,
+          type: 3}
+    - key: 218
+      value:
+        matchups: {fileID: 11400000, guid: 109032891a860ef4187c095a1ffcdf4b, type: 2}
+        displayName: Chimaera
+        description: 28,000 hull; 28,000 shields with faster regeneration; speed
+          20. Eight octuple turbolasers, two quad ion turrets, six medium ion cannons,
+          six medium turbolasers, four medium dual turbolasers and four medium lasers.
+          Every weapon is targetable; shield generator, hangar, tractor beam are
+          targetable. Power to Main Batteries and Tractor Beam. Deploys 1 fighter
+          squadron, 1 interceptor squadron and 1 bomber squadron at once. Carries
+          8 total squadron launches, including the initial deployment.
+        role: Hero capital ship / Ship of the line
+        iconKey: 03fa721176d788b4698ec7d790cd634c:21300000
+        isHero: 1
+        <Name>k__BackingField: Chimaera
+        <MaxCount>k__BackingField: 1
+        <AvailableLevel>k__BackingField: 5
+        <Price>k__BackingField: 12000
+        <BuildTime>k__BackingField: 70
+        <UnitCapacity>k__BackingField: 10
+        <Icon>k__BackingField: {fileID: 21300000, guid: 03fa721176d788b4698ec7d790cd634c,
+          type: 3}
     - key: 207
       value:
         matchups: {fileID: 11400000, guid: e2411bc7a0dc73f439949739e8ae9a73, type: 2}
@@ -153,10 +198,10 @@ MonoBehaviour:
         displayName: Raider
         description: 600 hull; 600 shields; speed 50. Four 2-burst laser cannons,
           two dual repeating point-defense mounts and two heavy single-shot ion blasters.
-          Targetable engine and
-          shield-generator hardpoints; no hangar or fighter complement. Pursuit increases
-          speed by 12.5% and halves weapon reload and time between shots for 15 s.
-          Shield regeneration stops during the effect. Recovers in 60 s.
+          Targetable engine and shield-generator hardpoints; no hangar or fighter
+          complement. Pursuit increases speed by 12.5% and halves weapon reload and
+          time between shots for 15 s. Shield regeneration stops during the effect.
+          Recovers in 60 s.
         role: Screener / Corvette
         iconKey: 19c7fd1609d6359439e7fb94cbbc0065:21300000
         isHero: 0
@@ -424,8 +469,7 @@ MonoBehaviour:
         description: Ten TIE Avengers. Each fighter has 64 hull, 12 shields, two
           light repeating lasers and two concussion-missile launchers. Boost Weapon
           Power halves weapon reload and time between shots and halves speed and
-          shield regeneration for 7 s. Recovers in 50 s.
-          Weapons are not separately
+          shield regeneration for 7 s. Recovers in 50 s. Weapons are not separately
           targetable. Each surviving craft regenerates 0.095 shield HP/s.
         role: Fighter / Fast attack
         iconKey: 3ebf9b17840b8ee4daae27c4f063d4af:21300000

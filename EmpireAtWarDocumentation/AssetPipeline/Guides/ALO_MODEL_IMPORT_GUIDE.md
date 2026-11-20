@@ -153,6 +153,7 @@ bpy.ops.import_scene.fbx(
 | `ReinforcementData.spawnShipWrapper` | Ship type → `AssetReferenceGameObject` to its own placement prefab (write `value.m_AssetGUID`); placement prefab is an Addressables entry in the same faction group as the gameplay view; address `<Ship>ReinforcementView` |
 | Ship data dependencies | Wreck data, height tier, supported weapon profiles and abilities |
 | `ShipIconGenerator.MAPPINGS` | New ship included for future icon regeneration |
+| `ShipSfxData` `ships` + `shipVoices` | Ship type → engine/explosion/alarm and voice set. Missing keys silently fall back to generic sounds (coverage test still passes). For a hull variant, clone the donor's entries. |
 
 - Inspect actual loaded references after saving. A matching name is insufficient when a serialized GUID or component reference still points to the donor ship.
 - Check faction UI, tooltip and in-battle ship icon consumers independently. Rothana's requested faction/roster icon is a ship sprite rendered from its actual model.

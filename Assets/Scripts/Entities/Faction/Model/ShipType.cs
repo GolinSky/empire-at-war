@@ -61,6 +61,8 @@ namespace EmpireAtWar.Models.Factions
         Allegiance = 213,
         Gladiator = 216,
         InterdictorStarDestroyer = 217,
+        Chimaera = 218,
+        Devastator = 219,
         QuasarFire = 320,
 
         //rebellion
