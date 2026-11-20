@@ -76,6 +76,11 @@ namespace EmpireAtWar.Entities.Faction.Ui
         public void SetData(FactionData factionData, FactionUi factionView, UnitRequest unitRequest)
         {
             FactionData = factionData;
+            if (factionData.IsHero && unitRequest is (ShipUnitRequest or SquadronUnitRequest))
+                cardBackground.color = unitRequest is SquadronUnitRequest
+                    ? new Color32(36, 77, 78, 255)
+                    : new Color32(99, 57, 46, 255);
+
             unitIconImage.sprite = factionData.Icon;
             unitPriceText.text = factionData.Price.ToString();
             unitNameText.text = factionData.DisplayName;

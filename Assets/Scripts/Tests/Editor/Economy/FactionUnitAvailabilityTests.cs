@@ -76,6 +76,8 @@ namespace EmpireAtWar.Tests.Editor
                 Assert.That(roster.SuperWeapons, Is.Not.Empty);
                 FactionUnitUi[] cards = view.GetComponentsInChildren<FactionUnitUi>(true);
                 Assert.That(cards.Any(card => card.Request is ShipUnitRequest), Is.True);
+                Assert.That(cards.Any(card => card.FactionData.IsHero && card.Request is ShipUnitRequest), Is.True);
+                Assert.That(cards.Any(card => card.FactionData.IsHero && card.Request is SquadronUnitRequest), Is.True);
                 Assert.That(cards.All(card => card.Request is ShipUnitRequest or SquadronUnitRequest
                     or LevelUnitRequest or SecondStationLevelUnitRequest), Is.True);
                 Assert.That(cards.Any(card => card.Request is LevelUnitRequest), Is.True);
@@ -121,6 +123,13 @@ namespace EmpireAtWar.Tests.Editor
                     };
                     Assert.That(background.OutlineWidth, Is.EqualTo(width), card.RequestId);
                     Assert.That((Color32)background.OutlineColor, Is.EqualTo(color), card.RequestId);
+                    var fill = (card.FactionData.IsHero, card.Request) switch
+                    {
+                        (true, SquadronUnitRequest) => new Color32(36, 77, 78, 255),
+                        (true, ShipUnitRequest) => new Color32(99, 57, 46, 255),
+                        _ => new Color32(32, 46, 64, 255)
+                    };
+                    Assert.That((Color32)background.color, Is.EqualTo(fill), card.RequestId);
 
                     var serializedCard = new SerializedObject(card);
                     var dot = (MPImage)serializedCard.FindProperty("queuedHighlight").objectReferenceValue;
