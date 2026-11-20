@@ -4,6 +4,7 @@ using EmpireAtWar.Models.Health;
 using EmpireAtWar.Components.Combat;
 using System.Collections.Generic;
 using EmpireAtWar.Components.Ship.Health;
+using EmpireAtWar.Components.TeamColor;
 using EmpireAtWar.Controllers.Economy;
 using EmpireAtWar.Entities.BaseEntity;
 using EmpireAtWar.Models.Factions;
@@ -42,6 +43,7 @@ namespace EmpireAtWar.Entities.MiningFacility
 
         private IUnitExplosionService _unitExplosionService;
         private IUnitWreckService _unitWreckService;
+        private IUnitRenderStateComponent _renderState;
         private ILayerService _layerService;
 
         [SerializeField] private Renderer[] explosionHullRenderers;
@@ -49,7 +51,6 @@ namespace EmpireAtWar.Entities.MiningFacility
         private LifetimeScope _scope;
 
         private Vector3 _startPosition;
-        private PlayerId _owner;
 
         public event Action OnRelease;
 
@@ -68,6 +69,7 @@ namespace EmpireAtWar.Entities.MiningFacility
             CombatModifiers combatModifiers,
             float buildTime,
             IUnitWreckService unitWreckService,
+            IUnitRenderStateComponent renderState,
             IUnitExplosionService unitExplosionService,
             ILayerService layerService,
             IFactionResearchModelObserver research,
@@ -83,9 +85,9 @@ namespace EmpireAtWar.Entities.MiningFacility
             _startPosition = startPosition;
             _componentLifecycle = new EntityComponentLifecycle(monoComponents.Value);
             _unitWreckService = unitWreckService;
+            _renderState = renderState;
             _unitExplosionService = unitExplosionService;
             _scope = scope;
-            _owner = owner;
             _layerService = layerService;
             Data = data;
             _teamIncome = new TeamIncomeSource(rootModel.BaseIncome, construction, research, playerRoster, playerRegistry, owner);
@@ -129,7 +131,7 @@ namespace EmpireAtWar.Entities.MiningFacility
                 // The explosion hides the swap: the wreck appears as the facility entity is destroyed.
                 if (Data.Wreck != null)
                 {
-                    _unitWreckService.Spawn(Data.Wreck, transform, _owner, componentData.DestroyDelay);
+                    _unitWreckService.Spawn(Data.Wreck, transform, _renderState.WreckUserValue, componentData.DestroyDelay);
                 }
 
                 Destroy(_scope.gameObject, componentData.DestroyDelay);

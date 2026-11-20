@@ -87,7 +87,11 @@ namespace EmpireAtWar.Tests.Editor
         {
             public UnitHighlight Highlight { get; private set; }
 
+            public uint WreckUserValue => 0u;
+
             public void SetHighlight(UnitHighlight flags) => Highlight = flags;
+
+            public void SetHullDamage(float hullPercentage) { }
         }
     }
 }

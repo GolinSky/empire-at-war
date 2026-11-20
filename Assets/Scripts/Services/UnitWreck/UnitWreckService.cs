@@ -1,7 +1,5 @@
 using System;
 using System.Collections.Generic;
-using EmpireAtWar.Components.TeamColor;
-using EmpireAtWar.Models.Players;
 using EmpireAtWar.Mvc;
 using EmpireAtWar.Services.Pooling;
 using EmpireAtWar.ViewComponents.Wreck;
@@ -19,7 +17,6 @@ namespace EmpireAtWar.Services.UnitWreck
     /// </summary>
     public sealed class UnitWreckService : Service, IUnitWreckService, ITickable, IOrderedDisposable
     {
-        private readonly IPlayerRoster _playerRoster;
         private readonly IAssetService _assetService;
 
         private readonly Dictionary<UnitWreckData, ViewPool<UnitWreckView>> _pools =
@@ -27,9 +24,8 @@ namespace EmpireAtWar.Services.UnitWreck
         private readonly List<ActiveWreck> _activeWrecks = new List<ActiveWreck>();
         private readonly System.Random _random = new System.Random();
 
-        public UnitWreckService(IPlayerRoster playerRoster, IAssetService assetService)
+        public UnitWreckService(IAssetService assetService)
         {
-            _playerRoster = playerRoster;
             _assetService = assetService;
         }
 
@@ -50,7 +46,7 @@ namespace EmpireAtWar.Services.UnitWreck
             for (int i = _activeWrecks.Count - 1; i >= 0; i--) Release(i);
         }
 
-        public void Spawn(UnitWreckData data, Transform unit, PlayerId owner, float delay)
+        public void Spawn(UnitWreckData data, Transform unit, uint renderUserValue, float delay)
         {
             if (CountActive(data) >= data.MaxActive)
             {
@@ -60,7 +56,7 @@ namespace EmpireAtWar.Services.UnitWreck
             float startTime = Time.time + delay;
             WreckCutPlan cutPlan = WreckCutPlan.Create(data.MinParts, data.MaxParts, data.MinCutRatio, data.MaxCutRatio, _random);
             UnitWreckView view = GetPool(data).Get();
-            view.Show(unit.position, unit.rotation, UnitRenderStateComponent.GetTeamUserValue(owner, _playerRoster), startTime,
+            view.Show(unit.position, unit.rotation, renderUserValue, startTime,
                 cutPlan, (float)_random.NextDouble(), data);
             _activeWrecks.Add(new ActiveWreck(data, view, startTime + data.Lifetime));
         }

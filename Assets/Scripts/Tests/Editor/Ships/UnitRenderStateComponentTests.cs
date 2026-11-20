@@ -10,10 +10,18 @@ namespace EmpireAtWar.Tests.Editor
     [Category("Ships")]
     public sealed class UnitRenderStateComponentTests
     {
+        // Bit layout shared with ShipLitInput.hlsl.
+        private const uint TEAM_MASK = 0xFFu;
+        private const uint HIGHLIGHT_MASK = 0x7u << 8;
+        private const uint DAMAGE_MASK = 0xFu << 11;
+        private const uint SEED_MASK = 0x1Fu << 15;
+
         private GameObject _root;
         private MeshRenderer _renderer;
         private UnitRenderStateComponent _component;
         private IPlayerRoster _roster;
+        // Team 2 plus this unit's pattern seed, as written by Construct.
+        private uint _base;
 
         [SetUp]
         public void SetUp()
@@ -29,6 +37,7 @@ namespace EmpireAtWar.Tests.Editor
             _roster = TestPlayers.CreateDuel();
             typeof(UnitRenderStateComponent).GetMethod("Construct", BindingFlags.Instance | BindingFlags.NonPublic)
                 .Invoke(_component, new object[] { _roster, TestPlayers.Enemy });
+            _base = _renderer.GetShaderUserValue();
         }
 
         [TearDown]
@@ -40,15 +49,15 @@ namespace EmpireAtWar.Tests.Editor
         [Test]
         public void HighlightTransitions_PreserveTeamAndSetAndClearShaderBits()
         {
-            Assert.That(_renderer.GetShaderUserValue(), Is.EqualTo(2u));
+            Assert.That(_renderer.GetShaderUserValue(), Is.EqualTo(_base));
             _component.SetHighlight(UnitHighlight.Hovered);
-            Assert.That(_renderer.GetShaderUserValue(), Is.EqualTo(2u | (1u << 8)));
+            Assert.That(_renderer.GetShaderUserValue(), Is.EqualTo(_base | (1u << 8)));
             _component.SetHighlight(UnitHighlight.Hovered | UnitHighlight.Selected);
-            Assert.That(_renderer.GetShaderUserValue(), Is.EqualTo(2u | (1u << 8) | (1u << 9)));
+            Assert.That(_renderer.GetShaderUserValue(), Is.EqualTo(_base | (1u << 8) | (1u << 9)));
             _component.SetHighlight(UnitHighlight.Selected);
-            Assert.That(_renderer.GetShaderUserValue(), Is.EqualTo(2u | (1u << 9)));
+            Assert.That(_renderer.GetShaderUserValue(), Is.EqualTo(_base | (1u << 9)));
             _component.SetHighlight(UnitHighlight.None);
-            Assert.That(_renderer.GetShaderUserValue(), Is.EqualTo(2u));
+            Assert.That(_renderer.GetShaderUserValue(), Is.EqualTo(_base));
         }
 
         [Test]
@@ -62,7 +71,7 @@ namespace EmpireAtWar.Tests.Editor
             Assert.That(_renderer.GetShaderUserValue(), Is.EqualTo(123u));
             Assert.That(_renderer.renderingLayerMask, Is.EqualTo(4u));
             _component.SetHighlight(UnitHighlight.None);
-            Assert.That(_renderer.GetShaderUserValue(), Is.EqualTo(2u));
+            Assert.That(_renderer.GetShaderUserValue(), Is.EqualTo(_base));
             Assert.That(_renderer.renderingLayerMask, Is.EqualTo(4u));
         }
 
@@ -78,10 +87,10 @@ namespace EmpireAtWar.Tests.Editor
 
             Assert.That(_renderer.renderingLayerMask,
                 Is.EqualTo(OTHER_LAYERS | UnitOutlineRendererFeature.OUTLINE_RENDERING_LAYER));
-            Assert.That(_renderer.GetShaderUserValue(), Is.EqualTo(2u | ((uint)highlight << 8)));
+            Assert.That(_renderer.GetShaderUserValue(), Is.EqualTo(_base | ((uint)highlight << 8)));
             _component.SetHighlight(UnitHighlight.None);
             Assert.That(_renderer.renderingLayerMask, Is.EqualTo(OTHER_LAYERS));
-            Assert.That(_renderer.GetShaderUserValue(), Is.EqualTo(2u));
+            Assert.That(_renderer.GetShaderUserValue(), Is.EqualTo(_base));
         }
 
         [Test]
@@ -90,31 +99,78 @@ namespace EmpireAtWar.Tests.Editor
             const uint OTHER_LAYERS = 1u | (1u << 11);
             _renderer.renderingLayerMask = OTHER_LAYERS;
             _component.SetHighlight(UnitHighlight.Hovered | UnitHighlight.Selected | UnitHighlight.AttackTargeted);
-            Assert.That(_renderer.GetShaderUserValue(), Is.EqualTo(2u | (7u << 8)));
+            Assert.That(_renderer.GetShaderUserValue(), Is.EqualTo(_base | (7u << 8)));
 
             _component.SetHighlight(UnitHighlight.Hovered | UnitHighlight.Selected);
             Assert.That(_renderer.renderingLayerMask,
                 Is.EqualTo(OTHER_LAYERS | UnitOutlineRendererFeature.OUTLINE_RENDERING_LAYER));
-            Assert.That(_renderer.GetShaderUserValue(), Is.EqualTo(2u | (3u << 8)));
+            Assert.That(_renderer.GetShaderUserValue(), Is.EqualTo(_base | (3u << 8)));
 
             _component.SetHighlight(UnitHighlight.Hovered);
             Assert.That(_renderer.renderingLayerMask,
                 Is.EqualTo(OTHER_LAYERS | UnitOutlineRendererFeature.OUTLINE_RENDERING_LAYER));
-            Assert.That(_renderer.GetShaderUserValue(), Is.EqualTo(2u | (1u << 8)));
+            Assert.That(_renderer.GetShaderUserValue(), Is.EqualTo(_base | (1u << 8)));
 
             _component.SetHighlight(UnitHighlight.None);
             Assert.That(_renderer.renderingLayerMask, Is.EqualTo(OTHER_LAYERS));
-            Assert.That(_renderer.GetShaderUserValue(), Is.EqualTo(2u));
+            Assert.That(_renderer.GetShaderUserValue(), Is.EqualTo(_base));
         }
 
         [Test]
-        public void WreckTeamValue_DoesNotCarryLiveUnitHighlight()
+        public void Construct_WritesTeamAndOnlyTeamAndSeedBits()
         {
+            Assert.That(_base & TEAM_MASK, Is.EqualTo(2u));
+            Assert.That(_base & (HIGHLIGHT_MASK | DAMAGE_MASK), Is.Zero);
+            Assert.That(_base & ~(TEAM_MASK | SEED_MASK), Is.Zero);
+        }
+
+        [TestCase(1f, 0u)]
+        [TestCase(0.999f, 1u)]
+        [TestCase(0.5f, 8u)]
+        [TestCase(0f, 15u)]
+        public void HullDamage_QuantizesHullIntoLevelBits(float hull, uint level)
+        {
+            _component.SetHullDamage(hull);
+
+            Assert.That(_renderer.GetShaderUserValue(), Is.EqualTo(_base | (level << 11)));
+        }
+
+        [Test]
+        public void HullDamage_RepairLowersLevel()
+        {
+            _component.SetHullDamage(0.2f);
+            _component.SetHullDamage(1f);
+
+            Assert.That(_renderer.GetShaderUserValue(), Is.EqualTo(_base));
+        }
+
+        [Test]
+        public void HullDamageAndHighlight_PreserveEachOther()
+        {
+            const uint OTHER_LAYERS = 1u | (1u << 5);
+            _renderer.renderingLayerMask = OTHER_LAYERS;
+            _component.SetHullDamage(0f);
+            Assert.That(_renderer.renderingLayerMask, Is.EqualTo(OTHER_LAYERS),
+                "Damage bits alone must not turn the outline on.");
+
+            _component.SetHighlight(UnitHighlight.Selected);
+            Assert.That(_renderer.GetShaderUserValue(), Is.EqualTo(_base | (15u << 11) | (2u << 8)));
+            Assert.That(_renderer.renderingLayerMask,
+                Is.EqualTo(OTHER_LAYERS | UnitOutlineRendererFeature.OUTLINE_RENDERING_LAYER));
+
+            _component.SetHighlight(UnitHighlight.None);
+            Assert.That(_renderer.GetShaderUserValue(), Is.EqualTo(_base | (15u << 11)));
+            Assert.That(_renderer.renderingLayerMask, Is.EqualTo(OTHER_LAYERS));
+        }
+
+        [Test]
+        public void WreckUserValue_CarriesTeamDamageAndSeedButNotHighlight()
+        {
+            _component.SetHullDamage(0f);
             _component.SetHighlight(UnitHighlight.Hovered | UnitHighlight.Selected);
-            uint wreckValue = UnitRenderStateComponent.GetTeamUserValue(TestPlayers.Enemy, _roster);
-            Assert.That(wreckValue, Is.EqualTo(2u));
-            Assert.That(wreckValue & ~0xFFu, Is.Zero);
-            Assert.That(_renderer.GetShaderUserValue() & ~0xFFu, Is.Not.Zero);
+
+            Assert.That(_component.WreckUserValue, Is.EqualTo(_base | (15u << 11)));
+            Assert.That(_renderer.GetShaderUserValue() & HIGHLIGHT_MASK, Is.Not.Zero);
         }
     }
 }

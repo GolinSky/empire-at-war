@@ -951,6 +951,7 @@ MonoBehaviour:
   teamColorPalette: {fileID: 11400000, guid: e126eded0451c624bbeb3e2c6170e260, type: 2}
   unitHighlightSettings: {fileID: 11400000, guid: 0aac2804c0ddb744fa5d2d7bd30f1c8f,
     type: 2}
+  hullDamageSettings: {fileID: 11400000, guid: 5f501570d07921f4f9a17f1b20037c6b, type: 2}
   fighterExplosion: {fileID: 6075391245261940467, guid: 54f8def27abde8249aeb5df35d3462d9,
     type: 3}
   hardPointExplosion: {fileID: 6307781649551483135, guid: 17a65e70ac12d8e4b839ac0bd03f953b,

@@ -62,6 +62,7 @@ namespace EmpireAtWar.Tests.Editor
             new SerializedReference(typeof(SkirmishScope), "reinforcementZonesSystem"),
             new SerializedReference(typeof(SkirmishScope), "captureSitesSystem"),
             new SerializedReference(typeof(SkirmishScope), "atmosphereView"),
+            new SerializedReference(typeof(SkirmishScope), "hullDamageSettings"),
             new SerializedReference(typeof(BattleAtmosphereView), "sun"),
             new SerializedReference(typeof(BattleAtmosphereView), "gradeVolume"),
             new SerializedReference(typeof(SkirmishUi), "closeButton"),

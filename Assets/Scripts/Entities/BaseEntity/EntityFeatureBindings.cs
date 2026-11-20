@@ -32,6 +32,12 @@ namespace EmpireAtWar.Entities.BaseEntity
             builder.Register<UnitHighlightFacade>(Lifetime.Singleton).AsImplementedInterfaces();
         }
 
+        /// <summary>Scorches the hull as it loses health. Needs <see cref="RegisterHighlight"/> and <see cref="RegisterHealth"/>.</summary>
+        public static void RegisterHullDamage(IContainerBuilder builder)
+        {
+            builder.Register<UnitHullDamageSync>(Lifetime.Singleton).AsImplementedInterfaces();
+        }
+
         public static void RegisterSelection(IContainerBuilder builder, EntityBindings bindings,
             SelectionType selectionType, SelectionType selectedAs)
         {

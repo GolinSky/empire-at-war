@@ -75,7 +75,7 @@ namespace EmpireAtWar.ViewComponents.Wreck
             }
         }
 
-        public void Show(Vector3 position, Quaternion rotation, uint teamUserValue, float startTime,
+        public void Show(Vector3 position, Quaternion rotation, uint renderUserValue, float startTime,
             WreckCutPlan cutPlan, float seed, UnitWreckData data)
         {
             transform.SetPositionAndRotation(position, rotation);
@@ -84,7 +84,8 @@ namespace EmpireAtWar.ViewComponents.Wreck
             for (int i = 0; i < meshRenderers.Length; i++)
             {
                 MeshRenderer meshRenderer = meshRenderers[i];
-                meshRenderer.SetShaderUserValue(teamUserValue);
+                // Team, hull damage and pattern seed of the ship, so its scorches carry over.
+                meshRenderer.SetShaderUserValue(renderUserValue);
                 meshRenderer.localBounds = GetTravelBounds(meshFilters[i].sharedMesh.bounds,
                     (data.MaxTravel + shipRadius) / meshRenderer.transform.lossyScale.x);
             }

@@ -25,7 +25,7 @@ struct OutlineVaryings
 
 half4 GetOutlineColor()
 {
-    uint flags = unity_RendererUserValue >> HIGHLIGHT_USER_VALUE_SHIFT;
+    uint flags = (unity_RendererUserValue >> HIGHLIGHT_USER_VALUE_SHIFT) & HIGHLIGHT_USER_VALUE_MASK;
     if ((flags & ATTACKED_FLAG) != 0u)
         return _UnitOutlineAttackColor;
     if ((flags & SELECTED_FLAG) != 0u)

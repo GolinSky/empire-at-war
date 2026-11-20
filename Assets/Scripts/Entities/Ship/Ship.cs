@@ -5,6 +5,7 @@ using EmpireAtWar.Components.AttackComponent;
 using EmpireAtWar.Components.Radar;
 using EmpireAtWar.Components.Ship.Audio;
 using EmpireAtWar.Components.Ship.Health;
+using EmpireAtWar.Components.TeamColor;
 using EmpireAtWar.Components.Ship.Movement;
 using EmpireAtWar.Components.Weapon;
 using EmpireAtWar.Entities.BaseEntity;
@@ -60,6 +61,7 @@ namespace EmpireAtWar.Ship
         private ILayerService _layerService;
         private IUnitExplosionService _unitExplosionService;
         private IUnitWreckService _unitWreckService;
+        private IUnitRenderStateComponent _renderState;
 
         [SerializeField] private Renderer[] explosionHullRenderers;
         [SerializeField] private Transform compositeBeamMuzzle;
@@ -102,6 +104,7 @@ namespace EmpireAtWar.Ship
             ContainerLocal<IReadOnlyList<IAudioDialogShipComponent>> audioDialogShipComponents,
             ILayerService layerService,
             IUnitWreckService unitWreckService,
+            IUnitRenderStateComponent renderState,
             IUnitExplosionService unitExplosionService,
             ShipOrderRunner orders,
             long entityId,
@@ -126,6 +129,7 @@ namespace EmpireAtWar.Ship
             _componentLifecycle = new EntityComponentLifecycle(monoComponents.Value);
             _layerService = layerService;
             _unitWreckService = unitWreckService;
+            _renderState = renderState;
             _unitExplosionService = unitExplosionService;
             _scopeRelease = scopeRelease;
             ShipService = shipService;
@@ -232,7 +236,7 @@ namespace EmpireAtWar.Ship
                 // The explosion hides the swap: the wreck appears as the ship entity is destroyed.
                 if (Data.Wreck != null)
                 {
-                    _unitWreckService.Spawn(Data.Wreck, transform, _owner, Data.DestroyDelay);
+                    _unitWreckService.Spawn(Data.Wreck, transform, _renderState.WreckUserValue, Data.DestroyDelay);
                 }
 
                 _scopeRelease.Destroy(Data.DestroyDelay);

@@ -16,6 +16,7 @@
 #define SHIP_LIT_FORWARD_PASS_INCLUDED
 
 #include "Packages/com.unity.render-pipelines.universal/ShaderLibrary/Lighting.hlsl"
+#include "ShipHullDamage.hlsl"
 
 // Per-vertex data read from the mesh. The ": POSITION" style names are "semantics":
 // they tell the GPU which mesh channel feeds each field.
@@ -46,6 +47,8 @@ struct Varyings
 #if defined(REQUIRES_VERTEX_SHADOW_COORD_INTERPOLATOR)
     float4 shadowCoord            : TEXCOORD7;   // only needed when shadows cannot be resolved per pixel
 #endif
+    float3 positionDamage         : TEXCOORD8;   // hull damage pattern space (ShipHullDamage.hlsl)
+    nointerpolation half hullDamageLevel : TEXCOORD9; // 0 = intact, 1 = destroyed; same for the whole draw
     UNITY_VERTEX_INPUT_INSTANCE_ID
     UNITY_VERTEX_OUTPUT_STEREO                   // VR single-pass support; costs nothing otherwise
 };
@@ -73,6 +76,8 @@ Varyings ShipLitPassVertex(Attributes input)
 
     // Read once per vertex instead of once per pixel.
     output.teamColor = GetTeamColor();
+    output.positionDamage = GetHullDamagePosition(input.positionOS.xyz);
+    output.hullDamageLevel = GetHullDamageLevel();
     output.fogFactor = ComputeFogFactor(positionInputs.positionCS.z);
 
 #ifdef _ADDITIONAL_LIGHTS_VERTEX
@@ -112,6 +117,10 @@ SurfaceData CreateSurfaceData(Varyings input)
 
     half3 emission = SAMPLE_TEXTURE2D(_EmissionMap, sampler_BaseMap, input.uv).rgb * _EmissionColor.rgb;
     surface.emission = ApplyTeamEmission(emission, input.teamColor);
+
+    // After the team paint, so scorches cover the livery too.
+    ApplyHullDamage(surface, input.positionDamage, input.hullDamageLevel, input.positionWS, input.normalWS,
+        input.tangentWS);
     return surface;
 }
 

@@ -359,7 +359,7 @@ namespace EmpireAtWar.Tests.Editor
 
             public void Spawn(Vector3 position, float diameter) { }
 
-            public void Spawn(UnitWreckData data, Transform unit, PlayerId owner, float delay) { }
+            public void Spawn(UnitWreckData data, Transform unit, uint renderUserValue, float delay) { }
         }
 
         [Test]

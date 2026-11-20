@@ -88,6 +88,7 @@ namespace EmpireAtWar.Services.VContainer
         [SerializeField] private TacticalMarkerSettings tacticalMarkerSettings;
         [SerializeField] private TeamColorPalette teamColorPalette;
         [SerializeField] private UnitHighlightSettings unitHighlightSettings;
+        [SerializeField] private HullDamageSettings hullDamageSettings;
         [SerializeField] private ExplosionVfx fighterExplosion;
         [SerializeField] private ExplosionVfx hardPointExplosion;
         [SerializeField] private ImpactEffectView impactEffectPrefab;
@@ -135,6 +136,8 @@ namespace EmpireAtWar.Services.VContainer
             builder.Register<TeamColorService>(Lifetime.Singleton).AsImplementedInterfaces().AsSelf();
             builder.RegisterInstance(unitHighlightSettings);
             builder.Register<UnitHighlightService>(Lifetime.Singleton).AsImplementedInterfaces().AsSelf();
+            builder.RegisterInstance(hullDamageSettings);
+            builder.Register<HullDamageService>(Lifetime.Singleton).AsImplementedInterfaces();
             builder.Register<PlayerColors>(Lifetime.Singleton).AsImplementedInterfaces().AsSelf();
             builder.Register<TeamIntelRegistry>(Lifetime.Singleton);
             builder.Register<AiWorldSnapshot>(Lifetime.Singleton).AsImplementedInterfaces().AsSelf();

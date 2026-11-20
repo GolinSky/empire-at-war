@@ -93,12 +93,32 @@ float4 _TeamColors[MAX_TEAM_COLORS];
 //   bit 8    : hovered
 //   bit 9    : selected
 //   bit 10   : attack-order feedback
+//   bits 11-14: hull damage level, 0 = intact, 15 = destroyed (see ShipHullDamage.hlsl)
+//   bits 15-19: hull damage pattern seed
 #define NO_TEAM_USER_VALUE 0u
 #define TEAM_USER_VALUE_MASK 0xFFu
 #define HIGHLIGHT_USER_VALUE_SHIFT 8u
+#define HIGHLIGHT_USER_VALUE_MASK 0x7u
 #define HOVERED_FLAG 1u
 #define SELECTED_FLAG 2u
 #define ATTACKED_FLAG 4u
+#define HULL_DAMAGE_LEVEL_SHIFT 11u
+#define HULL_DAMAGE_LEVEL_MASK 0xFu
+#define HULL_DAMAGE_MAX_LEVEL 15.0
+#define HULL_DAMAGE_SEED_SHIFT 15u
+#define HULL_DAMAGE_SEED_MASK 0x1Fu
+
+// 0 = intact, 1 = destroyed.
+half GetHullDamageLevel()
+{
+    uint level = (unity_RendererUserValue >> HULL_DAMAGE_LEVEL_SHIFT) & HULL_DAMAGE_LEVEL_MASK;
+    return (half)(level / HULL_DAMAGE_MAX_LEVEL);
+}
+
+uint GetHullDamageSeed()
+{
+    return (unity_RendererUserValue >> HULL_DAMAGE_SEED_SHIFT) & HULL_DAMAGE_SEED_MASK;
+}
 
 // Returns rgb = team color, a = 1 when the renderer has a team, 0 otherwise.
 // Using "a" as an on/off weight lets callers blend with lerp() instead of branching.

@@ -74,7 +74,6 @@ namespace EmpireAtWar.Tests.Editor
                 registry.RegisterEconomy(TestPlayers.Ally, ally);
                 registry.RegisterEconomy(TestPlayers.Enemy, enemy);
                 SetField(platform, "_healthComponent", new HealthComponentStub());
-                SetField(platform, "_owner", TestPlayers.Human);
                 SetField(platform, "_componentLifecycle", new EntityComponentLifecycle(Array.Empty<IMonoComponent>()));
                 AttachCompletedConstruction(platform);
                 SetField(platform, "_teamIncome", new TeamIncomeSource(data.Income, platform.Construction,

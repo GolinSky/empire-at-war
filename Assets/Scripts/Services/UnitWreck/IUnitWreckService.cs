@@ -1,4 +1,3 @@
-using EmpireAtWar.Models.Players;
 using EmpireAtWar.Mvc;
 using UnityEngine;
 
@@ -9,7 +8,8 @@ namespace EmpireAtWar.Services.UnitWreck
         /// <summary>
         /// Places a pooled wreck at the unit's pose. It stays invisible for <paramref name="delay"/> seconds,
         /// while the explosion still hides the swap, and returns to the pool after its lifetime.
+        /// <paramref name="renderUserValue"/> is the unit's team and hull damage (IUnitRenderStateComponent.WreckUserValue).
         /// </summary>
-        void Spawn(UnitWreckData data, Transform unit, PlayerId owner, float delay);
+        void Spawn(UnitWreckData data, Transform unit, uint renderUserValue, float delay);
     }
 }

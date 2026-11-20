@@ -46,6 +46,7 @@ namespace EmpireAtWar
             EntityFeatureBindings.RegisterHighlight(builder, Bindings);
             EntityFeatureBindings.RegisterCombatModifiers(builder);
             EntityFeatureBindings.RegisterHealth(builder, Bindings, Data.ComponentData);
+            EntityFeatureBindings.RegisterHullDamage(builder);
             EntityFeatureBindings.RegisterRadar(builder, Bindings);
             EntityFeatureBindings.RegisterWeapons(builder, Bindings, Data.ComponentData.ShipClass);
             EntityFeatureBindings.RegisterStationaryCombat(builder);

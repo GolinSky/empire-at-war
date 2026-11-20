@@ -38,8 +38,10 @@ struct WreckVaryings
 #if defined(REQUIRES_VERTEX_SHADOW_COORD_INTERPOLATOR)
     float4 shadowCoord            : TEXCOORD7;
 #endif
-    float3 restPositionOS         : TEXCOORD8;   // undeformed position: dissolve pattern and torn edge stick to the hull
-    float part                    : TEXCOORD9;   // interpolated on purpose: fractional on triangles torn by a cut
+    float3 positionDamage         : TEXCOORD8;
+    nointerpolation half hullDamageLevel : TEXCOORD9;
+    float3 restPositionOS         : TEXCOORD10;  // undeformed position: dissolve pattern and torn edge stick to the hull
+    float part                    : TEXCOORD11;  // interpolated on purpose: fractional on triangles torn by a cut
     UNITY_VERTEX_INPUT_INSTANCE_ID
     UNITY_VERTEX_OUTPUT_STEREO
 };
@@ -74,6 +76,9 @@ WreckVaryings ShipWreckPassVertex(WreckAttributes input)
 #if defined(REQUIRES_VERTEX_SHADOW_COORD_INTERPOLATOR)
     output.shadowCoord = litOutput.shadowCoord;
 #endif
+    // From the undeformed position, so the scorches the ship died with ride along with its parts.
+    output.positionDamage = GetHullDamagePosition(input.positionOS.xyz);
+    output.hullDamageLevel = litOutput.hullDamageLevel;
     output.restPositionOS = input.positionOS.xyz;
     output.part = part;
     return output;
@@ -89,6 +94,8 @@ Varyings ToLitVaryings(WreckVaryings input, bool isFrontFace)
     lit.normalWS = isFrontFace ? input.normalWS : -input.normalWS;
     lit.tangentWS = input.tangentWS;
     lit.teamColor = input.teamColor;
+    lit.positionDamage = input.positionDamage;
+    lit.hullDamageLevel = input.hullDamageLevel;
     lit.fogFactor = input.fogFactor;
 #ifdef _ADDITIONAL_LIGHTS_VERTEX
     lit.vertexLighting = input.vertexLighting;

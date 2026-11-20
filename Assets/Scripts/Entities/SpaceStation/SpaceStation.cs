@@ -1,6 +1,7 @@
 using System.Collections.Generic;
 using EmpireAtWar.Models.Players;
 using EmpireAtWar.Components.Ship.Health;
+using EmpireAtWar.Components.TeamColor;
 using EmpireAtWar.Entities.BaseEntity;
 using EmpireAtWar.Models.Factions;
 using EmpireAtWar.Mvc;
@@ -29,6 +30,7 @@ namespace EmpireAtWar.Entities.SpaceStation
         private IFactionLevelObserver _factionLevel;
         private IUnitExplosionService _unitExplosionService;
         private IUnitWreckService _unitWreckService;
+        private IUnitRenderStateComponent _renderState;
 
         [SerializeField] private Renderer[] explosionHullRenderers;
         [Tooltip("Optional for factions that use a distinct model at each station level.")]
@@ -57,6 +59,7 @@ namespace EmpireAtWar.Entities.SpaceStation
             IIonFieldShape ionField,
             IFactionLevelObserver factionLevel,
             IUnitWreckService unitWreckService,
+            IUnitRenderStateComponent renderState,
             IUnitExplosionService unitExplosionService,
             ContainerLocal<IReadOnlyList<IMonoComponent>> monoComponents,
             LifetimeScope scope,
@@ -74,6 +77,7 @@ namespace EmpireAtWar.Entities.SpaceStation
             _startPosition = startPosition;
             _componentLifecycle = new EntityComponentLifecycle(monoComponents.Value);
             _unitWreckService = unitWreckService;
+            _renderState = renderState;
             _unitExplosionService = unitExplosionService;
             _scope = scope;
             _factionType = factionType;
@@ -133,7 +137,7 @@ namespace EmpireAtWar.Entities.SpaceStation
                 // The explosion hides the swap: the wreck appears as the station entity is destroyed.
                 if (Data.TryGetWrecks(_factionType, out StationLevelWrecks wrecks))
                 {
-                    _unitWreckService.Spawn(wrecks.Get(_factionLevel.CurrentLevel), transform, _owner,
+                    _unitWreckService.Spawn(wrecks.Get(_factionLevel.CurrentLevel), transform, _renderState.WreckUserValue,
                         componentData.DestroyDelay);
                 }
 
