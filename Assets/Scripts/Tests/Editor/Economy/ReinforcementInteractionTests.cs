@@ -174,6 +174,10 @@ namespace EmpireAtWar.Tests.Editor
         private sealed class FakeDeployInput : IReinforcementDeployInput
         {
             public bool IsDeployAllHeld { get; }
+            public bool IsAimHeld => false;
+            public int TurnDirection => 0;
+            public bool WasTurnPressed => false;
+            public bool WasFacingResetPressed => false;
             public FakeDeployInput(bool deployAll) => IsDeployAllHeld = deployAll;
         }
 

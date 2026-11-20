@@ -54,6 +54,10 @@ namespace EmpireAtWar.Services.Reinforcement
             IsOpen(owner, position) && _shipClearance.IsClear(owner, shipType, position) &&
             _shipReachability.IsReachable(owner, shipType, position);
 
+        public bool CanSpawnShip(PlayerId owner, ShipType shipType, Vector3 position, Quaternion rotation) =>
+            IsOpen(owner, position) && _shipClearance.IsClear(shipType, position, rotation) &&
+            _shipReachability.IsReachable(owner, shipType, position);
+
         public bool CanLaunchStationDefenseShip(PlayerId owner, ShipType shipType, Vector3 position)
         {
             if (!IsVisibleAndInBounds(owner, position)) return false;

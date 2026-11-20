@@ -142,6 +142,8 @@ namespace EmpireAtWar.Tests.Editor
                 Queries++;
                 return Quaternion.Euler(0f, 90f, 0f);
             }
+
+            public Quaternion GetEnemyFacing(PlayerId owner, Vector3 position) => throw new System.NotSupportedException();
         }
     }
 }

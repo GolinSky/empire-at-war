@@ -76,7 +76,9 @@ namespace EmpireAtWar.Tests.Editor
 
             Assert.That(labels, Is.Unique);
             Assert.That(labels, Has.None.Contains("WASD").And.None.Contains("Ctrl").And.None.Contains("Modifier"));
-            Assert.That(labels, Does.Contain("Move Up").And.Contain("Move Up (Alt)").And.Contain("Move Left (Alt 2)"));
+            // Camera Move has WASD and arrow composites; Q/E turn reinforcement previews, not the camera.
+            Assert.That(labels, Does.Contain("Move Up").And.Contain("Move Up (Alt)").And.Contain("Move Left (Alt)"));
+            Assert.That(labels, Has.None.Contains("(Alt 2)"));
             Assert.That(labels, Does.Contain("Zoom In (Alt)").And.Contain("Zoom Out (Alt)"));
         }
 

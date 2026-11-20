@@ -40,6 +40,8 @@ namespace EmpireAtWar.Services.Reinforcement
             _height = height;
         }
 
+        public bool IsRotatable => true;
+
         public UnitSpawnView CreatePreview()
         {
             UnitSpawnView preview = _previewFactory.Create(_previewPrefab);
@@ -50,11 +52,15 @@ namespace EmpireAtWar.Services.Reinforcement
             return preview;
         }
 
-        public bool IsPositionValid(Vector3 position) => _spawnRule.CanSpawnShip(_owner, _shipType, position);
+        public Quaternion GetAutoFacing(Vector3 position) => _previewFactory.GetEnemyFacing(position);
 
-        public void Spawn(Vector3 position)
+        // The complete hull is checked at the chosen heading, not just its center.
+        public bool IsPositionValid(Vector3 position, Quaternion rotation) =>
+            _spawnRule.CanSpawnShip(_owner, _shipType, position, rotation);
+
+        public void Spawn(Vector3 position, Quaternion rotation)
         {
-            ShipEntity ship = _shipFactory.Create(_owner, _shipType, position);
+            ShipEntity ship = _shipFactory.Create(_owner, _shipType, position, rotation);
             ship.OnRelease += _model.RemoveUnitCapacity;
             _model.AddUnitCapacity(_shipType);
         }

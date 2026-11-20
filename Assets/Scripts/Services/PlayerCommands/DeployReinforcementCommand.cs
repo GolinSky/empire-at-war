@@ -11,13 +11,16 @@ namespace EmpireAtWar.Services.PlayerCommands
         public UnitRequestKind Kind { get; }
         public int Key { get; }
         public Vector3[] Slots { get; }
+        /// <summary>World heading in degrees on the battle plane, shared by every slot; structures ignore it.</summary>
+        public float Yaw { get; }
 
-        public DeployReinforcementCommand(PlayerId issuer, UnitRequestKind kind, int key, Vector3[] slots)
+        public DeployReinforcementCommand(PlayerId issuer, UnitRequestKind kind, int key, Vector3[] slots, float yaw)
         {
             Issuer = issuer;
             Kind = kind;
             Key = key;
             Slots = slots;
+            Yaw = yaw;
         }
     }
 }

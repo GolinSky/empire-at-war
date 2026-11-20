@@ -22,7 +22,7 @@ namespace EmpireAtWar.Tests.Camera
         }
 
         [Test]
-        public void CameraMove_UsesArrowKeysWasdAndQe()
+        public void CameraMove_UsesArrowKeysAndWasdOnly()
         {
             InputAction action = _inputActions.FindAction(
                 "Camera/Move",
@@ -37,9 +37,12 @@ namespace EmpireAtWar.Tests.Camera
                 "<Keyboard>/w",
                 "<Keyboard>/s",
                 "<Keyboard>/a",
-                "<Keyboard>/d",
-                "<Keyboard>/q",
-                "<Keyboard>/e");
+                "<Keyboard>/d");
+            // Q and E turn the reinforcement preview instead.
+            Assert.That(
+                action.bindings.Any(binding =>
+                    binding.effectivePath == "<Keyboard>/q" || binding.effectivePath == "<Keyboard>/e"),
+                Is.False);
             Assert.That(
                 action.bindings.Any(binding =>
                     binding.effectivePath == "<Keyboard>/digit2" ||

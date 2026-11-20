@@ -187,7 +187,7 @@ namespace EmpireAtWar.Components.Ship.Movement
             _enginePlumes.SetEmitting(false);
             _enginePlumes.Clear();
             // The spawner already validated this point; the ship lands exactly where it was placed.
-            Quaternion rotation = _spawnPose.IsRestored ? _spawnPose.Rotation : _stationFacingService.GetRotation(_owner);
+            Quaternion rotation = _spawnPose.HasRotation ? _spawnPose.Rotation : _stationFacingService.GetRotation(_owner);
             Model.ConfigureSpawnPose(_startPosition.ToNumerics(), rotation.ToNumerics());
             if (_spawnPose.IsRestored)
             {
@@ -205,7 +205,7 @@ namespace EmpireAtWar.Components.Ship.Movement
                 _shipNavigationService.Register(this, Model.HyperSpacePosition.ToUnity());
                 _isNavigationRegistered = true;
                 // Holds the landing spot against other spawns until the hull physically arrives.
-                _shipSpawnClearance.ReserveLanding(this, _owner, _shipType, _startPosition);
+                _shipSpawnClearance.ReserveLanding(this, _shipType, _startPosition, rotation);
                 _motion.PlayHyperSpace(Model.HyperSpacePosition.ToUnity(),
                     Model.HyperSpaceDuration, FinishHyperSpaceJump);
             }

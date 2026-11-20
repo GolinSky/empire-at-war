@@ -28,5 +28,7 @@ namespace EmpireAtWar.Services.Reinforcement
             preview.SetRotation(rotation);
             return preview;
         }
+
+        public Quaternion GetEnemyFacing(Vector3 position) => _stationFacingService.GetEnemyFacing(_owner.Id, position);
     }
 }

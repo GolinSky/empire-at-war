@@ -157,7 +157,7 @@ namespace EmpireAtWar.Tests.Editor
             {
                 Kind = PlayerCommandKind.DeployReinforcement,
                 DeployReinforcement = new DeployReinforcementCommand(TestPlayers.Human, UnitRequestKind.Squadron, 4,
-                    new[] { Vector3.one })
+                    new[] { Vector3.one }, 135f)
             };
 
             PlayerCommandMessage readOrder = RoundTrip(order);
@@ -171,6 +171,7 @@ namespace EmpireAtWar.Tests.Editor
             Assert.That(readOrder.UnitOrder.Pace, Is.EqualTo(MovePace.Loose));
             Assert.That(readDeploy.DeployReinforcement.Kind, Is.EqualTo(UnitRequestKind.Squadron));
             Assert.That(readDeploy.DeployReinforcement.Slots, Is.EqualTo(new[] { Vector3.one }));
+            Assert.That(readDeploy.DeployReinforcement.Yaw, Is.EqualTo(135f));
             Assert.That(HostCommandReceiver.IssuerOf(readDeploy), Is.EqualTo(TestPlayers.Human));
         }
 

@@ -185,7 +185,13 @@ namespace EmpireAtWar.Tests.Editor
 
             public bool IsClear(PlayerId owner, ShipType shipType, Vector3 position) => IsClearResult;
 
+            public bool IsClear(ShipType shipType, Vector3 position, Quaternion rotation) => IsClearResult;
+
             public void ReserveLanding(object ship, PlayerId owner, ShipType shipType, Vector3 position)
+            {
+            }
+
+            public void ReserveLanding(object ship, ShipType shipType, Vector3 position, Quaternion rotation)
             {
             }
 

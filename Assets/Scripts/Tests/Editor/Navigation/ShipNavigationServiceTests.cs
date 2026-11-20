@@ -1478,7 +1478,13 @@ namespace EmpireAtWar.Tests.Movement
 
             public bool IsClear(PlayerId owner, ShipType shipType, Vector3 position) => true;
 
+            public bool IsClear(ShipType shipType, Vector3 position, Quaternion rotation) => true;
+
             public void ReserveLanding(object ship, PlayerId owner, ShipType shipType, Vector3 position)
+            {
+            }
+
+            public void ReserveLanding(object ship, ShipType shipType, Vector3 position, Quaternion rotation)
             {
             }
 

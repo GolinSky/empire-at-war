@@ -36,11 +36,16 @@ namespace EmpireAtWar.Services.Reinforcement
             _faction = faction;
         }
 
+        // Structures keep their fixed spawn rotation.
+        public bool IsRotatable => false;
+
         public UnitSpawnView CreatePreview() => _previewFactory.Create(_previewPrefab, Quaternion.identity);
 
-        public bool IsPositionValid(Vector3 position) => _spawnRule.CanSpawnStructure(_owner, position);
+        public Quaternion GetAutoFacing(Vector3 position) => throw new System.NotSupportedException();
 
-        public void Spawn(Vector3 position)
+        public bool IsPositionValid(Vector3 position, Quaternion rotation) => _spawnRule.CanSpawnStructure(_owner, position);
+
+        public void Spawn(Vector3 position, Quaternion rotation)
         {
             SpaceStationEntity station = _stationFactory.CreateSecond(_owner, _faction, position);
             station.Destroyed += () =>

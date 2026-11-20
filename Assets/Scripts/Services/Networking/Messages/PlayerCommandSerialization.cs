@@ -159,11 +159,12 @@ namespace EmpireAtWar.Services.Networking.Messages
             writer.WriteByte((byte)command.Kind);
             writer.WriteInt(command.Key);
             writer.WriteArray(command.Slots);
+            writer.WriteFloat(command.Yaw);
         }
 
         public static DeployReinforcementCommand ReadDeployReinforcementCommand(this NetworkReader reader) =>
             new DeployReinforcementCommand(reader.ReadPlayerId(), (UnitRequestKind)reader.ReadByte(), reader.ReadInt(),
-                reader.ReadArray<Vector3>());
+                reader.ReadArray<Vector3>(), reader.ReadFloat());
 
         public static void WriteDestroyShipCommand(this NetworkWriter writer, DestroyShipCommand command)
         {

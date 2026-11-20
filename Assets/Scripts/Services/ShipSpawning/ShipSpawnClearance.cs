@@ -50,6 +50,9 @@ namespace EmpireAtWar.Services.ShipSpawning
         public bool IsClear(PlayerId owner, ShipType shipType, Vector3 position)
             => IsClear(GetFootprint(owner, shipType, position));
 
+        public bool IsClear(ShipType shipType, Vector3 position, Quaternion rotation)
+            => IsClear(GetFootprint(shipType, position, rotation));
+
         private bool IsClear(ShipHullFootprint footprint)
         {
             if (Physics.CheckBox(footprint.Center, footprint.HalfExtents, footprint.Rotation,
@@ -113,15 +116,22 @@ namespace EmpireAtWar.Services.ShipSpawning
             _landings.Add(ship, GetFootprint(owner, shipType, position));
         }
 
+        public void ReserveLanding(object ship, ShipType shipType, Vector3 position, Quaternion rotation)
+        {
+            _landings.Add(ship, GetFootprint(shipType, position, rotation));
+        }
+
         public void ReleaseLanding(object ship)
         {
             _landings.Remove(ship);
         }
 
-        private ShipHullFootprint GetFootprint(PlayerId owner, ShipType shipType, Vector3 position)
+        private ShipHullFootprint GetFootprint(PlayerId owner, ShipType shipType, Vector3 position) =>
+            GetFootprint(shipType, position, _stationFacingService.GetRotation(owner));
+
+        private ShipHullFootprint GetFootprint(ShipType shipType, Vector3 position, Quaternion rotation)
         {
             Hull hull = GetHull(shipType);
-            Quaternion rotation = _stationFacingService.GetRotation(owner);
             position.y = hull.Height;
             return new ShipHullFootprint(position + rotation * hull.LocalCenter, hull.HalfExtents, rotation);
         }

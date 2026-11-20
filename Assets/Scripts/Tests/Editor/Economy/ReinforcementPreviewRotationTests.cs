@@ -64,6 +64,7 @@ namespace EmpireAtWar.Tests.Editor
             private readonly Quaternion _rotation;
             public FakeStationFacing(float yaw) => _rotation = Quaternion.Euler(0f, yaw, 0f);
             public Quaternion GetRotation(PlayerId owner) => _rotation;
+            public Quaternion GetEnemyFacing(PlayerId owner, Vector3 position) => throw new System.NotSupportedException();
         }
     }
 }

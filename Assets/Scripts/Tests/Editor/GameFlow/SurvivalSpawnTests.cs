@@ -72,7 +72,9 @@ namespace EmpireAtWar.Tests.Editor
             public int Attempts;
             public float GetPlanarRadius(ShipType type) => 50;
             public bool IsClear(PlayerId owner, ShipType type, Vector3 position) => ++Attempts > 2;
+            public bool IsClear(ShipType type, Vector3 position, Quaternion rotation) => ++Attempts > 2;
             public void ReserveLanding(object ship, PlayerId owner, ShipType type, Vector3 position) { }
+            public void ReserveLanding(object ship, ShipType type, Vector3 position, Quaternion rotation) { }
             public void ReleaseLanding(object ship) { }
         }
     }

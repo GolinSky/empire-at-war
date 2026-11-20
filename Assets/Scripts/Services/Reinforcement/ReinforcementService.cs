@@ -34,6 +34,8 @@ namespace EmpireAtWar.Services.Reinforcement
     {
         // Gap between batch slots, relative to the preview's planar radius.
         private const float SLOT_SPACING_FACTOR = 2.2f;
+        // A right-drag shorter than this share of the preview's planar radius keeps the heading.
+        private const float AIM_DEAD_ZONE_FACTOR = 0.25f;
         private readonly IInputLock _inputLock;
         private readonly IPointerInput _pointerInput;
         private readonly IUiHitTest _uiHitTest;
@@ -55,6 +57,11 @@ namespace EmpireAtWar.Services.Reinforcement
         private readonly List<UnitSpawnView> _previews = new List<UnitSpawnView>();
         private UnitRequest _currentRequest;
         private float _slotSpacing;
+        // Lives as long as the battle, so a manual heading carries over to the next placement.
+        private readonly ReinforcementFacing _facing = new ReinforcementFacing();
+        private Quaternion _previewRotation = Quaternion.identity;
+        private bool _isAiming;
+        private Vector3 _aimAnchor;
 
         private bool _hasBattleEnded;
         private readonly IHazardService _hazards;
@@ -135,8 +142,9 @@ namespace EmpireAtWar.Services.Reinforcement
                 return;
             }
 
-            Vector3 position = _cameraService.GetWorldPoint(_pointerInput.Position, _previews[0].Position);
-            position.y = 0;
+            Vector3 cursor = _cameraService.GetWorldPoint(_pointerInput.Position, _previews[0].Position);
+            cursor.y = 0;
+            Vector3 position = UpdateFacing(cursor);
             bool canPlace = !_inputLock.IsLocked && !_uiHitTest.IsOverUi(_pointerInput.Position) &&
                             !IsPlacementCapacityBlocked();
             bool hasValidSlot = false;
@@ -144,7 +152,8 @@ namespace EmpireAtWar.Services.Reinforcement
             {
                 Vector3 slot = GetSlotPosition(position, i);
                 _previews[i].UpdatePosition(slot);
-                _previews[i].SetPlacementValidity(canPlace && _placement.IsPositionValid(slot));
+                if (_placement.IsRotatable) _previews[i].SetRotation(_previewRotation);
+                _previews[i].SetPlacementValidity(canPlace && _placement.IsPositionValid(slot, _previewRotation));
                 hasValidSlot |= _previews[i].CanSpawn;
             }
             _model.CanDeployPreview = hasValidSlot;
@@ -223,7 +232,10 @@ namespace EmpireAtWar.Services.Reinforcement
                 bool placingStructure = !ReinforcementModel.UsesCapacity(request);
                 if (placingStructure)
                     _slotSpacing = Mathf.Max(_slotSpacing, _structureClearance.Radius * SLOT_SPACING_FACTOR);
-                _spawnAreaOverlay.Show(_owner.Id, request, placement.IsPositionValid);
+                _isAiming = false;
+                // Ship hull cells in the overlay keep the station heading; the preview tint checks the chosen one.
+                _spawnAreaOverlay.Show(_owner.Id, request,
+                    position => placement.IsPositionValid(position, _previewRotation));
                 _slotSpacing = _spawnAreaOverlay.GetPlacementSpacing(_slotSpacing);
                 _cancelRouter.Focus(this);
             }
@@ -277,12 +289,15 @@ namespace EmpireAtWar.Services.Reinforcement
                 }
 
                 Vector3 dropPoint = _cameraService.GetWorldPoint(screenPosition, _previews[0].Position);
+                // A pinned preview drops where it was pinned, not under the aiming cursor.
+                if (_isAiming) dropPoint = _aimAnchor;
+                Quaternion rotation = GetFacingRotation(dropPoint);
                 // Previews flag locally blocked slots; the authority re-checks every slot it receives.
                 List<Vector3> slots = new List<Vector3>(_previews.Count);
                 for (int i = 0; i < _previews.Count; i++)
                 {
                     Vector3 slot = GetSlotPosition(dropPoint, i);
-                    _previews[i].SetPlacementValidity(_placement.IsPositionValid(slot));
+                    _previews[i].SetPlacementValidity(_placement.IsPositionValid(slot, rotation));
                     if (_previews[i].CanSpawn) slots.Add(slot);
                 }
 
@@ -293,7 +308,8 @@ namespace EmpireAtWar.Services.Reinforcement
                 }
 
                 UnitRequestKey key = UnitRequestKey.From(_currentRequest);
-                _commands.Submit(new DeployReinforcementCommand(_owner.Id, key.Kind, key.Key, slots.ToArray()));
+                _commands.Submit(new DeployReinforcementCommand(_owner.Id, key.Kind, key.Key, slots.ToArray(),
+                    rotation.eulerAngles.y));
             }
             finally
             {
@@ -323,17 +339,18 @@ namespace EmpireAtWar.Services.Reinforcement
             bool usesCapacity = ReinforcementModel.UsesCapacity(request);
             bool isCapacityBlocked = false;
             int deployedCount = 0;
+            Quaternion rotation = Quaternion.Euler(0f, command.Yaw, 0f);
             foreach (Vector3 slot in command.Slots)
             {
                 if (_model.GetReserveCount(request) == 0) break;
-                if (!placement.IsPositionValid(slot)) continue;
+                if (!placement.IsPositionValid(slot, rotation)) continue;
                 if (usesCapacity && !_model.HasRoomFor(request))
                 {
                     isCapacityBlocked = true;
                     break;
                 }
 
-                placement.Spawn(slot);
+                placement.Spawn(slot, rotation);
                 _model.ConsumeReinforcement(request);
                 deployedCount++;
                 ReinforcementDeployed?.Invoke(request);
@@ -362,6 +379,39 @@ namespace EmpireAtWar.Services.Reinforcement
             request = null;
             return false;
         }
+
+        /// <summary>Applies this frame's turn, aim and reset input; returns where the previews stand.</summary>
+        private Vector3 UpdateFacing(Vector3 cursor)
+        {
+            if (!_placement.IsRotatable) return cursor;
+
+            if (_deployInput.WasFacingResetPressed) _facing.Reset();
+            Vector3 position = cursor;
+            if (_deployInput.IsAimHeld)
+            {
+                // Right-drag pins the previews and turns them toward the cursor.
+                if (!_isAiming) _aimAnchor = cursor;
+                _isAiming = true;
+                position = _aimAnchor;
+                _facing.Aim(_aimAnchor, cursor, _previews[0].PlanarRadius * AIM_DEAD_ZONE_FACTOR);
+            }
+            else
+            {
+                _isAiming = false;
+                _facing.Turn(_deployInput.TurnDirection, _deployInput.WasTurnPressed, Time.deltaTime,
+                    GetAutoYaw(cursor));
+            }
+
+            _previewRotation = GetFacingRotation(position);
+            return position;
+        }
+
+        // World-space yaw on the battle plane, independent of the camera angle.
+        private Quaternion GetFacingRotation(Vector3 position) => _placement.IsRotatable
+            ? Quaternion.Euler(0f, _facing.GetYaw(GetAutoYaw(position)), 0f)
+            : Quaternion.identity;
+
+        private float GetAutoYaw(Vector3 position) => _placement.GetAutoFacing(position).eulerAngles.y;
 
         private Vector3 GetSlotPosition(Vector3 dropPoint, int index)
         {

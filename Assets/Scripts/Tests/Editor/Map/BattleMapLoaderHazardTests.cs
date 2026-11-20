@@ -121,7 +121,9 @@ namespace EmpireAtWar.Tests.Editor
         {
             public float GetPlanarRadius(ShipType shipType) => throw new System.InvalidOperationException();
             public bool IsClear(PlayerId owner, ShipType shipType, Vector3 position) => throw new System.InvalidOperationException();
+            public bool IsClear(ShipType shipType, Vector3 position, Quaternion rotation) => throw new System.InvalidOperationException();
             public void ReserveLanding(object ship, PlayerId owner, ShipType shipType, Vector3 position) => throw new System.InvalidOperationException();
+            public void ReserveLanding(object ship, ShipType shipType, Vector3 position, Quaternion rotation) => throw new System.InvalidOperationException();
             public void ReleaseLanding(object ship) => throw new System.InvalidOperationException();
         }
     }

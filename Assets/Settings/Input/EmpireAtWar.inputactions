@@ -259,39 +259,6 @@
                     "isPartOfComposite": true
                 },
                 {
-                    "name": "QE",
-                    "id": "389e8a0c-c7f5-412f-9a9b-4005af3477c3",
-                    "path": "2DVector",
-                    "interactions": "",
-                    "processors": "",
-                    "groups": "",
-                    "action": "Move",
-                    "isComposite": true,
-                    "isPartOfComposite": false
-                },
-                {
-                    "name": "left",
-                    "id": "2eca760c-4a7d-4bc8-81c2-4445eda67f72",
-                    "path": "<Keyboard>/q",
-                    "interactions": "",
-                    "processors": "",
-                    "groups": "Keyboard&Mouse",
-                    "action": "Move",
-                    "isComposite": false,
-                    "isPartOfComposite": true
-                },
-                {
-                    "name": "right",
-                    "id": "22d39371-b80e-4b37-9f55-d987731b4046",
-                    "path": "<Keyboard>/e",
-                    "interactions": "",
-                    "processors": "",
-                    "groups": "Keyboard&Mouse",
-                    "action": "Move",
-                    "isComposite": false,
-                    "isPartOfComposite": true
-                },
-                {
                     "name": "",
                     "id": "1917346b-f29e-47a9-9ece-d888f1a0fc46",
                     "path": "<Mouse>/scroll/y",

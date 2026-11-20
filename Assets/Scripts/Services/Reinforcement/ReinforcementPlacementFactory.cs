@@ -11,7 +11,6 @@ using EmpireAtWar.Models.Factions;
 using EmpireAtWar.Models.Players;
 using EmpireAtWar.Models.Reinforcement;
 using EmpireAtWar.Mvc;
-using EmpireAtWar.Services.StationFacing;
 using EmpireAtWar.Ship;
 
 namespace EmpireAtWar.Services.Reinforcement
@@ -20,7 +19,6 @@ namespace EmpireAtWar.Services.Reinforcement
     public sealed class ReinforcementPlacementFactory
     {
         private readonly IReinforcementSpawnRule _spawnRule;
-        private readonly IStationFacingService _stationFacingService;
         private readonly IAssetService _assetService;
 
         private readonly ReinforcementPreviewFactory _previewFactory;
@@ -37,7 +35,6 @@ namespace EmpireAtWar.Services.Reinforcement
 
         public ReinforcementPlacementFactory(
             IReinforcementSpawnRule spawnRule,
-            IStationFacingService stationFacingService,
             IAssetService assetService,
             ReinforcementPreviewFactory previewFactory,
             ReinforcementModel model,
@@ -52,7 +49,6 @@ namespace EmpireAtWar.Services.Reinforcement
             PlayerSlot owner)
         {
             _spawnRule = spawnRule;
-            _stationFacingService = stationFacingService;
             _assetService = assetService;
             _previewFactory = previewFactory;
             _model = model;
@@ -83,7 +79,7 @@ namespace EmpireAtWar.Services.Reinforcement
                         _assetService.Load<ShipData>(_shipsData.GetShipDataPath(shipRequest.Key)).Height);
                     return true;
                 case SquadronUnitRequest squadronRequest:
-                    placement = new SquadronReinforcementPlacement(_spawnRule, _stationFacingService,
+                    placement = new SquadronReinforcementPlacement(_spawnRule,
                         _previewFactory, _model, _squadronSpawner, LoadPreview(_data.GetSpawnPrefabKey(squadronRequest.Key)),
                         _owner.Id, squadronRequest.Key);
                     return true;
