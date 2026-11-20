@@ -195,14 +195,30 @@ namespace EmpireAtWar.Tests.Editor
         [Test]
         public void Allocate_HeldZoneWithOwnSatellitesGetsShipsBelowAnEvenFight_ARelayAloneDoesNot()
         {
-            EnemyZoneObjective satellites = Zone("satellites", defenders: 10, held: true, ownStructures: 2);
-            EnemyZoneObjective relayOnly = Zone("relayOnly", defenders: 10, held: true);
+            EnemyZoneObjective satellites = Zone("satellites", defenders: 3, held: true, ownStructures: 2);
+            EnemyZoneObjective relayOnly = Zone("relayOnly", defenders: 3, held: true);
+            EnemyZoneObjective overrun = Zone("overrun", defenders: 10, held: true, ownStructures: 2);
 
             List<int> defended = Allocate(new EnemyZoneAllocator(), new[] { satellites }, ships: 2);
             List<int> gathered = Allocate(new EnemyZoneAllocator(), new[] { relayOnly }, ships: 2);
+            List<int> spared = Allocate(new EnemyZoneAllocator(), new[] { overrun }, ships: 2);
 
             Assert.That(defended, Is.All.EqualTo(0), "Ships fight around their own satellites.");
             Assert.That(gathered, Is.All.EqualTo(RESERVE));
+            Assert.That(spared, Is.All.EqualTo(RESERVE),
+                "Far below the defend floor the ships gather instead of dying one by one.");
+        }
+
+        [Test]
+        public void Allocate_LeftoverShipJoinsOnlyAForceItKeepsWinning()
+        {
+            EnemyZoneObjective losing = Zone("losing", defenders: 10);
+            var current = new List<int> { 0, 0, RESERVE };
+
+            List<int> assignment = Allocate(new EnemyZoneAllocator(), new[] { losing }, ships: 3, currentPerShip: current);
+
+            Assert.That(assignment[0], Is.EqualTo(0), "A kept force keeps its zone.");
+            Assert.That(assignment[2], Is.EqualTo(RESERVE), "A free ship is not fed alone into a losing fight.");
         }
 
         [Test]

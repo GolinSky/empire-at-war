@@ -61,8 +61,11 @@ namespace EmpireAtWar.Services.Enemy
                 if (_ship != null) Log(_ship, "assigned", "cheapestCorvette");
             }
             if (_ship == null) return null;
+            // No safe point left: the patrol still goes out to the stalest reachable point, as intel and bait.
             if (!_patrol.TryGetTarget($"ship:{_ship.EntityId}", _ship.WorldPosition,
-                    point => _safety.IsObjectiveSafe(_ship.EntityId, _ship.WorldPosition, point, _ship.NavigationRadius, true), out var target))
+                    point => _safety.IsObjectiveSafe(_ship.EntityId, _ship.WorldPosition, point, _ship.NavigationRadius, true), out var target) &&
+                !_patrol.TryGetTarget($"ship:{_ship.EntityId}", _ship.WorldPosition,
+                    point => _safety.IsReachable(_ship.WorldPosition, point, _ship.NavigationRadius), out target))
             {
                 Log(_ship, "released", "noSafeTarget");
                 _ship = null;

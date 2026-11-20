@@ -33,7 +33,18 @@ verification: Reviewed affected source and regression fixtures. Unity 6000.4.7f1
 - Bombers: mine → hostile satellite in their zone (together, power rule) → relay. Ships in a hostile zone: known hostile satellites (blocking-facility candidates, +2000) → relay (+1000) → pads.
 - Raids (2026-11-20): a group's raiders go together, rated as one force vs the mine and its cover; one group per mine. Outer groups never share a zone; a held home zone under attack is defended first.
 - Stalled siege: a zone force below an even fight for 90 s is released and its zone marked like a retreat (held zones under attack exempt).
-- Open (owner plan): no route waypoint around a hostile centre.
+
+### Rounds 3–4 (2026-11-20) — current
+- No drip-feed: a free ship joins a zone force only if the force with it is a `Go`; else it gathers in the reserve. Held-zone defence below even only at advantage ≥ 0.6 (`DEFEND_FLOOR`); weak-phase attack only at pool advantage ≥ 0.6.
+- Stalled siege: released when advantage stays < 1.25 for 90 s (held zones under attack exempt).
+- Armed structures seen once stay defenders while they stand (`HostileIntelModel.RememberStructure`).
+- Station lost → 180 s turtle: every force recalled, ships gather at home.
+- Wings: zone-less groups without a raid work group A's zone together; no one-per-target spread.
+- Production under station pressure buys only what is affordable now. Patrol without a safe point goes to the stalest reachable point (bait).
+- Capture moves past a hostile-held centre use a waypoint `2R + 500` beside it.
+- Own side with no allied station: measured from the team's fixed relays.
+- Spawn and platform placement obey hostile `SpawnBlock` circles: a held but contested relay may give no spawn point (expected).
+- Known risk, not verified: a held zone with no candidate site left gives its zone group nothing to capture.
 
 ### Opening and wing groups (2026-11-19, A1–A7)
 
@@ -45,7 +56,7 @@ verification: Reviewed affected source and regression fixtures. Unity 6000.4.7f1
 - Wings: station-hangar wings are free; carrier wings stay on Guard and are the only escorts. Group A → centre, group B (1–2 wings + bombers) → nearest outer zone with a target, then raids (power rule at the mine). In-zone: free site, pads first, base-side first; contested → next free site; none → bait at the edge. Last 400 → move order (hold inside the pad circle).
 - Production: level-1 corvette only at level 1, from 30 s, max 2. Ships wait while a mandatory satellite or mine is pending. Wings: fighter/interceptor types alternate; bombers once a hostile mine is known. Ships deploy singly until an outer zone is held.
 - Station defence target: ship attacking the station → nearest threatening ship → wing; kept while it threatens.
-- Owner and open items → [[TODOs/Bugs/Enemy_AI_Opening_And_Task_Groups]].
+- Owner and open items → [[Done/Bugs/Enemy_AI_Opening_And_Task_Groups]].
 
 ### Ship allocator (2026-11-19, N1–N6)
 

@@ -45,6 +45,12 @@ namespace EmpireAtWar.Services.Enemy
             _forces = forces;
         }
 
+        /// <summary>A ship can reach <paramref name="destination"/> and may stand there; no threat check.</summary>
+        public bool IsReachable(Vector3 origin, Vector3 destination, float clearance) =>
+            !_areas.IsBlocked(_owner.Id, destination) &&
+            _navigation.IsPositionClear(destination, clearance, includeReservations: false) &&
+            _navigation.IsReachable(origin, destination, clearance, ShipHullSpan.Unbounded, _map.SizeRange);
+
         public bool IsObjectiveSafe(long unitId, Vector3 origin, Vector3 destination, float clearance, bool ship,
             bool raiding = false)
         {

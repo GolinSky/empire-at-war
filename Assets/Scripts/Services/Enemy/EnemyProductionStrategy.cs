@@ -211,8 +211,10 @@ namespace EmpireAtWar.Services.Enemy
             bool hasSquadronFallback = !hasCounter && (needsCaptureWings || !critical && !canOrderShips) &&
                                        TrySelectSquadron(shipCount, out squadron) &&
                                        IsAffordable(squadron.Value);
+            // Under station pressure money buys what can fight now; saving for a capital loses the station.
             bool hasShip = hasDefenseShip ||
-                           !critical && !hasCounter && !hasSquadronFallback && canOrderShips && TrySelectShip(shipCount, out ship);
+                           !critical && !hasCounter && !hasSquadronFallback && canOrderShips && TrySelectShip(shipCount,
+                               out ship, requireAffordable: _stationPressure.HasPressure);
             bool hasShipOption = hasCounter || hasShip || hasSquadronFallback;
             FactionData shipChoice = hasCounter ? counterData : hasShip ? ship.Value : squadron.Value;
             DefenseReserve = hasShipOption ? shipChoice.Price : 0f;

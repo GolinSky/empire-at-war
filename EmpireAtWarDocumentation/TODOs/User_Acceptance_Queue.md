@@ -522,3 +522,7 @@ created: "2026-10-29\r"
 ## Unity Pipeline 1.0
 
 - [ ] [[Done/Tooling/Unity_Pipeline_1_0_Update]] — Confirm the next Jenkins player build of committed `main` succeeds on Pipeline `1.0.0`.
+
+## Enemy AI Opening and Task Groups
+
+- [ ] [[Done/Bugs/Enemy_AI_Opening_And_Task_Groups]] — Play UltraHard Small 1v1 CIS vs Republic on round-4 code (no single-ship drip, armada gathers, turtle after station loss, bombers raid together), then Rebellion vs Empire. `EnemyAi` 561/561 passed.

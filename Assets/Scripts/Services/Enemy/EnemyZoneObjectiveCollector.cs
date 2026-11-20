@@ -42,6 +42,7 @@ namespace EmpireAtWar.Services.Enemy
         private readonly IVisionService _vision;
         private readonly TeamAiPicture _picture;
         private readonly ForceCompositionBuilder _forceBuilder;
+        private readonly HostileIntelModel _intel;
         private readonly PlayerId _owner;
         private readonly List<EnemyZoneObjective> _pool = new List<EnemyZoneObjective>();
         private readonly List<EnemyZoneObjective> _objectives = new List<EnemyZoneObjective>();
@@ -60,9 +61,11 @@ namespace EmpireAtWar.Services.Enemy
         private float _defenderRadiusSquared;
 
         public EnemyZoneObjectiveCollector(IReinforcementZoneSource zones, IPlayerRoster roster, AiWorldSnapshot world,
-            IVisionService vision, TeamAiPicture picture, ForceCompositionBuilder forceBuilder, PlayerId owner)
+            IVisionService vision, TeamAiPicture picture, ForceCompositionBuilder forceBuilder, HostileIntelModel intel,
+            PlayerId owner)
         {
             _forceBuilder = forceBuilder;
+            _intel = intel;
             _zones = zones;
             _roster = roster;
             _world = world;
@@ -188,18 +191,22 @@ namespace EmpireAtWar.Services.Enemy
         /// <summary>
         /// Adds every visible armed hostile structure within <paramref name="reach"/> of <paramref name="centre"/> to
         /// <paramref name="defenders"/> and returns how many. Satellites and defend platforms are not units, so
-        /// intel never lists them. Each is rated by its platform type's weapon loadout.
+        /// intel never lists them. Each is rated by its platform type's weapon loadout. One seen once stays counted
+        /// while it stands (<paramref name="intel"/> remembers it): a zone with known platforms is never rated empty.
         /// </summary>
         public static int AddArmedStructures(ForceComposition defenders, AiWorldSnapshot world, IPlayerRoster roster,
-            IVisionService vision, ForceCompositionBuilder forces, PlayerId owner, Vector3 centre, float reach)
+            IVisionService vision, ForceCompositionBuilder forces, HostileIntelModel intel, PlayerId owner,
+            Vector3 centre, float reach)
         {
             int count = 0;
             IReadOnlyList<AiWorldSnapshot.Entry> structures = world.RaidStructures;
             for (int i = 0; i < structures.Count; i++)
             {
                 AiWorldSnapshot.Entry entry = structures[i];
-                if (!IsArmedHostileStructure(entry, roster, vision, owner) ||
-                    PlanarDistance(entry.Position, centre) > reach) continue;
+                if (PlanarDistance(entry.Position, centre) > reach || !IsArmedHostileStructure(entry, roster, owner))
+                    continue;
+                if (vision.IsVisible(owner, entry.Entity)) intel.RememberStructure(entry.Id);
+                else if (!intel.IsStructureKnown(entry.Id)) continue;
                 forces.AddStructure(defenders, entry.Entity);
                 count++;
             }
@@ -241,13 +248,16 @@ namespace EmpireAtWar.Services.Enemy
         /// <summary>A living, visible hostile satellite or defend platform.</summary>
         public static bool IsArmedHostileStructure(AiWorldSnapshot.Entry entry, IPlayerRoster roster,
             IVisionService vision, PlayerId owner) =>
+            IsArmedHostileStructure(entry, roster, owner) && vision.IsVisible(owner, entry.Entity);
+
+        private static bool IsArmedHostileStructure(AiWorldSnapshot.Entry entry, IPlayerRoster roster, PlayerId owner) =>
             roster.IsHostile(owner, entry.Owner) && !entry.Entity.HealthModel.IsDestroyed &&
             entry.Entity.TryGetFacade(out IStructureKindFacade structure) &&
-            structure.Kind == StructureKind.DefendPlatform && vision.IsVisible(owner, entry.Entity);
+            structure.Kind == StructureKind.DefendPlatform;
 
         /// <summary>Adds the visible armed hostile structures whose weapons cover <paramref name="position"/>.</summary>
         public int AddStaticDefenders(ForceComposition defenders, Vector3 position) =>
-            AddArmedStructures(defenders, _world, _roster, _vision, _forceBuilder, _owner, position,
+            AddArmedStructures(defenders, _world, _roster, _vision, _forceBuilder, _intel, _owner, position,
                 STATIC_DEFENSE_REACH);
 
         private int BuildDefenders(ForceComposition defenders, Vector3 centre, float radius)
@@ -256,7 +266,7 @@ namespace EmpireAtWar.Services.Enemy
             float reach = ZONE_DEFENDER_MARGIN + radius;
             _defenderRadiusSquared = reach * reach;
             _picture.BuildKnownFromConfident(defenders, _includeDefender);
-            return AddArmedStructures(defenders, _world, _roster, _vision, _forceBuilder, _owner, centre,
+            return AddArmedStructures(defenders, _world, _roster, _vision, _forceBuilder, _intel, _owner, centre,
                 2f * radius + STATIC_DEFENSE_REACH);
         }
 
@@ -282,6 +292,10 @@ namespace EmpireAtWar.Services.Enemy
             return -1;
         }
 
+        /// <summary>
+        /// The nearest allied station is no farther than the nearest hostile one. With every allied station lost, the
+        /// team's fixed home relays stand in for them, so the own half of the map stays own side.
+        /// </summary>
         private bool IsOwnSide(Vector3 position)
         {
             float allied = float.PositiveInfinity;
@@ -292,6 +306,10 @@ namespace EmpireAtWar.Services.Enemy
                 if (_roster.IsAllied(_owner, station.Owner)) allied = Mathf.Min(allied, distance);
                 else if (_roster.IsHostile(_owner, station.Owner)) hostile = Mathf.Min(hostile, distance);
             }
+            if (float.IsPositiveInfinity(allied))
+                foreach (ReinforcementZonePresenter zone in _zones.Zones)
+                    if (!zone.IsCapturable && !zone.Owner.IsNone && _roster.IsAllied(_owner, zone.Owner))
+                        allied = Mathf.Min(allied, PlanarDistance(position, zone.Center));
             return allied <= hostile;
         }
 

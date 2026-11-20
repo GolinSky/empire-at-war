@@ -14,6 +14,8 @@ namespace EmpireAtWar.Entities.EnemyFaction.Models.Intel
         private readonly Dictionary<long, HostileSighting> _sightings = new Dictionary<long, HostileSighting>();
         private readonly Dictionary<long, HostileSighting> _mines = new Dictionary<long, HostileSighting>();
         private readonly List<long> _expired = new List<long>();
+        // Hostile satellites and platforms seen once: they cannot move, so they stay known while they stand.
+        private readonly HashSet<long> _structures = new HashSet<long>();
 
         public IReadOnlyCollection<HostileSighting> Sightings => _sightings.Values;
         public IReadOnlyCollection<HostileSighting> Mines => _mines.Values;
@@ -22,6 +24,10 @@ namespace EmpireAtWar.Entities.EnemyFaction.Models.Intel
         public void ReportMine(HostileSighting sighting) => _mines[sighting.EntityId] = sighting;
 
         public bool TryGetMine(long entityId, out HostileSighting sighting) => _mines.TryGetValue(entityId, out sighting);
+
+        public void RememberStructure(long entityId) => _structures.Add(entityId);
+
+        public bool IsStructureKnown(long entityId) => _structures.Contains(entityId);
 
         public void Report(HostileSighting sighting)
         {

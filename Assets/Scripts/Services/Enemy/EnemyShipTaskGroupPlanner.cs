@@ -27,6 +27,12 @@ namespace EmpireAtWar.Services.Enemy
         /// like a retreat. A held zone under attack is never released this way.
         /// </summary>
         public const float STALLED_SIEGE_SECONDS = 90f;
+        /// <summary>The stall clock restarts only once the force clearly wins: a fight hovering at 1.0 is a stall.</summary>
+        public const float STALL_CLEAR_ADVANTAGE = 1.25f;
+        /// <summary>After an own station is lost no new force leaves this long: ships gather at home in waves.</summary>
+        public const float TURTLE_SECONDS = 180f;
+        /// <summary>The weak-phase attack needs the whole pool to reach this share of the target's defenders.</summary>
+        public const float WEAK_ATTACK_FLOOR = 0.6f;
 
         private readonly EnemyStrategicContextBuilder _contextBuilder;
         private readonly IUnitOrderService _orders;
@@ -48,6 +54,8 @@ namespace EmpireAtWar.Services.Enemy
         private readonly EnemyZoneEvaluator _evaluator = new EnemyZoneEvaluator();
         private readonly Dictionary<string, float> _belowEvenSince = new Dictionary<string, float>();
         private readonly List<string> _staleSieges = new List<string>();
+        private int _stationCount = -1;
+        private float _turtleUntil = float.NegativeInfinity;
         private string _retreatedZoneId;
         private float _retreatedUntil;
 #if UNITY_EDITOR || DEVELOPMENT_BUILD
@@ -110,8 +118,9 @@ namespace EmpireAtWar.Services.Enemy
         public void Allocate(IReadOnlyList<IShipEntity> ships, ISet<string> reservedObjectives, bool stationPressure,
             float now = 0f)
         {
-            // New forces pause only while the station is about to fall.
+            // New forces pause only while the station is about to fall, or for a while after one was lost.
             stationPressure &= _contextBuilder.StationCritical;
+            bool turtle = NoteStationLoss(now);
             NoteRetreats(now);
             if (CollectPool(ships))
             {
@@ -134,6 +143,9 @@ namespace EmpireAtWar.Services.Enemy
                 if (stationPressure)
                     for (int i = 0; i < _assignment.Count; i++)
                         if (_assignment[i] != _current[i]) _assignment[i] = EnemyZoneAllocator.RESERVE;
+                // A lost station: every force comes home and the fleet gathers before it moves again.
+                if (turtle)
+                    for (int i = 0; i < _assignment.Count; i++) _assignment[i] = EnemyZoneAllocator.RESERVE;
                 for (int i = 0; i < _poolShips.Count; i++)
                 {
                     IShipEntity ship = _poolShips[i];
@@ -149,10 +161,10 @@ namespace EmpireAtWar.Services.Enemy
                 // Weak phase: reinforcements gather near the zone the pool attacks.
                 if (gather == EnemyZoneAllocator.RESERVE && _assignment.Contains(_allocator.WeakTarget))
                     gather = _allocator.WeakTarget;
-                _contextBuilder.ReserveStagingPoint = gather == EnemyZoneAllocator.RESERVE
+                _contextBuilder.ReserveStagingPoint = gather == EnemyZoneAllocator.RESERVE || turtle
                     ? (Vector3?)null : _pool.GetPoolStagingPoint(gather, home);
                 GatherPoint = _contextBuilder.ReserveStagingPoint ?? _pool.GetIdleGatherPoint(home);
-                int deploy = _allocator.DeployZone;
+                int deploy = turtle ? EnemyZoneAllocator.RESERVE : _allocator.DeployZone;
                 DeploymentPoint = deploy == EnemyZoneAllocator.RESERVE ? (Vector3?)null : _pool.GetPoolZoneCentre(deploy);
                 EligibleExpansionZoneCount = 0;
                 _zoneReservations.Clear();
@@ -171,6 +183,18 @@ namespace EmpireAtWar.Services.Enemy
             foreach (string reservation in _zoneReservations) reservedObjectives.Add(reservation);
         }
 
+        /// <summary>
+        /// True for <see cref="TURTLE_SECONDS"/> after the count of own stations drops: the AI holds its fleet at home
+        /// instead of sending what is left out piece by piece.
+        /// </summary>
+        private bool NoteStationLoss(float now)
+        {
+            int stations = _contextBuilder.CountOwnStations();
+            if (_stationCount >= 0 && stations < _stationCount) _turtleUntil = now + TURTLE_SECONDS;
+            _stationCount = stations;
+            return now < _turtleUntil;
+        }
+
         /// <summary>A zone force that retreats marks its zone; the weak-phase attack switches to another one.</summary>
         private void NoteRetreats(float now)
         {
@@ -183,7 +207,7 @@ namespace EmpireAtWar.Services.Enemy
         }
 
         /// <summary>
-        /// A zone force whose ships stay below an even fight against the zone for <see cref="STALLED_SIEGE_SECONDS"/>
+        /// A zone force whose ships do not clearly win (<see cref="STALL_CLEAR_ADVANTAGE"/>) for <see cref="STALLED_SIEGE_SECONDS"/>
         /// takes nothing and only waits to be caught: its zone is marked like a retreat, so the ships are free again
         /// and the weak-phase attack switches to another zone.
         /// </summary>
@@ -206,8 +230,8 @@ namespace EmpireAtWar.Services.Enemy
                 _groupForce.Clear();
                 for (int i = 0; i < _poolShips.Count; i++)
                     if (group.Ships.Contains(_poolShips[i])) _groupForce.Add(_poolForces[i]);
-                if (_evaluator.Assess(zones[zone], _groupForce, EnemyZoneEvaluator.COMMIT_ADVANTAGE).Verdict ==
-                    EnemyZoneVerdict.Go)
+                if (_evaluator.Assess(zones[zone], _groupForce, EnemyZoneEvaluator.COMMIT_ADVANTAGE).Advantage >=
+                    STALL_CLEAR_ADVANTAGE)
                 {
                     _belowEvenSince.Remove(zoneId);
                     continue;
@@ -226,7 +250,8 @@ namespace EmpireAtWar.Services.Enemy
 
         /// <summary>
         /// Weak phase target: the outer zone the whole pool rates best against its defenders, never the zone a force
-        /// just retreated from. The centre is never a weak-phase target.
+        /// just retreated from, and only while the pool reaches <see cref="WEAK_ATTACK_FLOOR"/>. The centre is never a
+        /// weak-phase target.
         /// </summary>
         private int SelectWeakTarget(IReadOnlyList<EnemyZoneObjective> zones, float now)
         {
@@ -245,7 +270,8 @@ namespace EmpireAtWar.Services.Enemy
                 best = zone;
                 bestAdvantage = advantage;
             }
-            return best;
+            // A pool far too weak for every zone gathers instead of feeding the attack.
+            return bestAdvantage >= WEAK_ATTACK_FLOOR ? best : EnemyZoneAllocator.RESERVE;
         }
 
         /// <summary>

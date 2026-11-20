@@ -805,9 +805,14 @@ namespace EmpireAtWar.Tests.Editor
             var (planner, _, _, weak, _, _) = AllocationPlanner(defended: true);
             IShipEntity[] ships = { weak };
             planner.Reconcile(ships);
+            // A force already sent to the defended zone: it keeps the zone until its stall is noticed.
+            BindingFlags flags = BindingFlags.Instance | BindingFlags.NonPublic;
+            var force = (EnemyShipTaskGroup)typeof(EnemyShipTaskGroupPlanner).GetMethod("GetOrCreateZoneGroup", flags)
+                .Invoke(planner, new object[] { "zone:0" });
+            planner.Groups[0].Ships.Remove(weak);
+            force.Ships.Add(weak);
+            typeof(EnemyShipTaskGroupPlanner).GetMethod("RebuildGroups", flags).Invoke(planner, null);
 
-            planner.Allocate(ships, new HashSet<string>(), stationPressure: false, now: 0f);
-            planner.Reconcile(ships);
             planner.Allocate(ships, new HashSet<string>(), stationPressure: false, now: 10f);
             planner.Reconcile(ships);
             planner.Allocate(ships, new HashSet<string>(), stationPressure: false, now: 60f);
@@ -820,6 +825,114 @@ namespace EmpireAtWar.Tests.Editor
             Assert.That(planner.Groups.Any(group => group.IsCaptureDetachment &&
                 group.ContextBuilder.AssignedZoneId == "zone:0"), Is.False,
                 "A force kept below an even fight takes nothing: it leaves the zone.");
+        }
+
+        [Test]
+        public void ArmedStructures_SeenOnceStayDefendersOutOfSight()
+        {
+            GameObject satelliteView = new GameObject("Satellite");
+            GameObject scoutView = new GameObject("Scout");
+            try
+            {
+                PlayerRoster roster = TestPlayers.CreateDuel();
+                var locator = new EntityLocator();
+                locator.AddEntity(new FakeEntity(new FakeHealthModel(satelliteView.transform), TestPlayers.Human, 1)
+                    { IsUnit = false, IsDefendPlatform = true });
+                UnitCombatProfileCatalog catalog = PlatformCatalog();
+                var snapshot = new AiWorldSnapshot(locator);
+                var forces = new ForceCompositionBuilder(locator, catalog, snapshot);
+                var vision = new VisionService(roster);
+                var intel = new HostileIntelModel();
+                var unseen = new ForceComposition();
+                EnemyZoneObjectiveCollector.AddArmedStructures(unseen, snapshot, roster, vision, forces, intel,
+                    TestPlayers.Enemy, Vector3.zero, 500f);
+
+                vision.Register(TestPlayers.Enemy, scoutView.transform, 200f);
+                var seen = new ForceComposition();
+                EnemyZoneObjectiveCollector.AddArmedStructures(seen, snapshot, roster, vision, forces, intel,
+                    TestPlayers.Enemy, Vector3.zero, 500f);
+                vision.Unregister(scoutView.transform);
+                var remembered = new ForceComposition();
+                EnemyZoneObjectiveCollector.AddArmedStructures(remembered, snapshot, roster, vision, forces, intel,
+                    TestPlayers.Enemy, Vector3.zero, 500f);
+
+                Assert.That(unseen.IsEmpty, Is.True, "A platform never seen is unknown.");
+                Assert.That(seen.IsEmpty, Is.False);
+                Assert.That(remembered.IsEmpty, Is.False, "Once seen, a platform that cannot move stays a defender.");
+            }
+            finally
+            {
+                UnityEngine.Object.DestroyImmediate(satelliteView);
+                UnityEngine.Object.DestroyImmediate(scoutView);
+            }
+        }
+
+        [Test]
+        public void WingGroups_ZonelessGroupWithoutARaidWorksTheCentreTogether()
+        {
+            PlayerRoster roster = TestPlayers.CreateDuel();
+            var locator = new EntityLocator();
+            UnitCombatProfile fighter = Rated(ShipClass.Fighter, 100f, 10f);
+            var catalog = new UnitCombatProfileCatalog(null, null, null, null);
+            ((Dictionary<UnitTypeId, UnitCombatProfile>)typeof(UnitCombatProfileCatalog)
+                .GetField("_profiles", BindingFlags.Instance | BindingFlags.NonPublic).GetValue(catalog))
+                .Add(UnitTypeId.Squadron(SquadronType.Vulture), fighter);
+            var snapshot = new AiWorldSnapshot(locator);
+            var forces = new ForceCompositionBuilder(locator, catalog, snapshot);
+            // The outer zone is already the AI's; the centre still has its relay to take.
+            var zones = new ZoneSource(roster, 0, Vector3.zero, Vector3.right * 1500f);
+            zones.Zones[1].Restore(TestPlayers.Enemy, PlayerId.None, 0f, false);
+            var battleState = new ReplayNotifier<BattleState>(BattleState.Running);
+            var intel = new TeamIntelRegistry();
+            PlayerSlot owner = roster.Get(TestPlayers.Enemy);
+            var commander = new EnemySquadronCommander(Array.Empty<IEnemyCaptureObjectiveSource>(), zones, locator,
+                roster, forces, catalog, new ScoutPlacement(), intel, owner, null, null, battleState, snapshot,
+                new EnemyAiScheduler(battleState), new VisionService(roster, fogEnabled: false));
+            BindingFlags flags = BindingFlags.Instance | BindingFlags.NonPublic;
+            var tracked = (Dictionary<ISquadron, CommandedSquadron>)typeof(EnemySquadronCommander)
+                .GetField("_squadrons", flags).GetValue(commander);
+            var wing = new FakeSquadron(1, owner.Id);
+            locator.AddEntity(wing);
+            tracked.Add(wing, new CommandedSquadron(fighter, null));
+
+            foreach (string step in new[] { "CollectCaptureTargets", "UpdateGroups", "AssignRaiders", "AssignCaptureTargets" })
+                typeof(EnemySquadronCommander).GetMethod(step, flags).Invoke(commander, null);
+
+            var outer = (List<EnemyWingGroup>)typeof(EnemySquadronCommander).GetField("_outerGroups", flags)
+                .GetValue(commander);
+            var assignments = (EnemySquadronCaptureAssignments)typeof(EnemySquadronCommander)
+                .GetField("_captureAssignments", flags).GetValue(commander);
+            Assert.That(outer.Single().Members, Does.Contain(wing));
+            Assert.That(outer.Single().Zone, Is.Null);
+            Assert.That(assignments.TryGetTarget(wing, out Vector3 target), Is.True);
+            Assert.That(target, Is.EqualTo(Vector3.zero), "Without a raid the wing joins the centre, not a lone target.");
+        }
+
+        [Test]
+        public void CaptureRoute_PassesAHostileCentreByAWaypoint()
+        {
+            PlayerRoster roster = TestPlayers.CreateDuel();
+            var zones = new ZoneSource(roster, 0, Vector3.zero);
+            zones.Zones[0].Restore(TestPlayers.Human, PlayerId.None, 0f, false);
+            var builder = CreateContextBuilder(new ShipService(), null, Array.Empty<IEnemyCaptureObjectiveSource>(),
+                new EntityLocator(), null, roster, null, new TeamIntelRegistry(), null,
+                roster.Get(TestPlayers.Enemy), null, new TestHazards(), zones, null,
+                new EnemyStationPressureTracker(), null);
+            MethodInfo route = typeof(EnemyStrategicContextBuilder).GetMethod("RouteAroundHostileCentre",
+                BindingFlags.Instance | BindingFlags.NonPublic);
+            Vector3 origin = new Vector3(-2000f, 0f, 0f);
+            Vector3 target = new Vector3(2000f, 0f, 100f);
+
+            var waypoint = (Vector3)route.Invoke(builder, new object[] { origin, target });
+            var inCentre = (Vector3)route.Invoke(builder, new object[] { origin, Vector3.right * 5f });
+            zones.Zones[0].Restore(TestPlayers.Enemy, PlayerId.None, 0f, false);
+            var ownCentre = (Vector3)route.Invoke(builder, new object[] { origin, target });
+
+            Assert.That(waypoint, Is.Not.EqualTo(target));
+            Assert.That(new Vector2(waypoint.x, waypoint.z).magnitude, Is.GreaterThan(2f * zones.Zones[0].Radius),
+                "The waypoint lies outside the hostile centre.");
+            Assert.That(inCentre, Is.EqualTo(Vector3.right * 5f), "A target in the centre is approached directly.");
+            Assert.That(ownCentre, Is.EqualTo(target), "An own centre is crossed directly.");
         }
 
         [Test]
@@ -843,11 +956,11 @@ namespace EmpireAtWar.Tests.Editor
                 var turbolaser = new ForceComposition();
                 satellite.Type = DefendPlatformType.TurbolaserSatellite;
                 EnemyZoneObjectiveCollector.AddArmedStructures(turbolaser, snapshot, roster, vision, forces,
-                    TestPlayers.Enemy, Vector3.zero, 500f);
+                    new HostileIntelModel(), TestPlayers.Enemy, Vector3.zero, 500f);
                 var quadLaser = new ForceComposition();
                 satellite.Type = DefendPlatformType.QuadLaserSatellite;
                 EnemyZoneObjectiveCollector.AddArmedStructures(quadLaser, snapshot, roster, vision, forces,
-                    TestPlayers.Enemy, Vector3.zero, 500f);
+                    new HostileIntelModel(), TestPlayers.Enemy, Vector3.zero, 500f);
 
                 Assert.That(CombatMatchup.Advantage(wing, turbolaser), Is.GreaterThan(CombatMatchup.Advantage(wing, quadLaser)),
                     "A wing fares better against the satellite whose guns hurt it less.");
@@ -2817,15 +2930,14 @@ namespace EmpireAtWar.Tests.Editor
         }
 
         [Test]
-        public void Allocation_PoolTooWeakForEveryZoneAttacksTheOuterZoneAndIsJoinedByReinforcements()
+        public void Allocation_PoolFarTooWeakGathers_ReinforcedPoolAttacksTogether()
         {
             var (planner, _, _, weak, strong, _) = AllocationPlanner(defended: true);
             planner.Reconcile(new IShipEntity[] { weak });
             planner.Allocate(new IShipEntity[] { weak }, new HashSet<string>(), stationPressure: false);
 
-            EnemyShipTaskGroup attack = planner.Groups.Single();
-            Assert.That(attack.IsCaptureDetachment, Is.True, "Weak phase: the pool attacks an outer zone, it does not wait.");
-            Assert.That(attack.ContextBuilder.AssignedZoneId, Is.EqualTo("zone:0"));
+            Assert.That(planner.Groups.Single().IsCaptureDetachment, Is.False,
+                "A pool far below the defenders gathers instead of feeding a lone ship into the zone.");
 
             IShipEntity[] reinforced = { weak, strong };
             planner.Reconcile(reinforced);

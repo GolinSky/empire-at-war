@@ -1,4 +1,5 @@
 using static EmpireAtWar.Utils.FormationConversion;
+using EmpireAtWar.Utils;
 using EmpireAtWar.Models.Players;
 using EmpireAtWar.Models.Factions;
 using System;
@@ -179,6 +180,8 @@ namespace EmpireAtWar.Services.Enemy
         /// Inside a hostile zone the relay is taken before its pads: about one zone hop of travel.
         /// </summary>
         private const float HOSTILE_RELAY_FIRST_BONUS = 1000f;
+        /// <summary>Ships route this far outside twice the radius of a hostile-held centre: one common weapon range.</summary>
+        private const float CENTRE_ROUTE_MARGIN = 500f;
         /// <summary>Hostile satellites come before the relay: order inside a hostile zone is satellites → relay → pads.</summary>
         private const float HOSTILE_SATELLITE_FIRST_BONUS = 2000f;
         private const float BASE_EXCLUSION_MARGIN = 900f;
@@ -365,7 +368,7 @@ namespace EmpireAtWar.Services.Enemy
             _includeNearbyOwn = IncludeNearbyOwn;
             _isNearHostileBase = IsNearHostileBase;
             _zoneObjectives = new EnemyZoneObjectiveCollector(zones, playerRoster, worldSnapshot, vision, _teamPicture,
-                forceBuilder, owner.Id);
+                forceBuilder, _intel, owner.Id);
             _assessedForce = _ownForce;
         }
 
@@ -397,7 +400,7 @@ namespace EmpireAtWar.Services.Enemy
             _includeNearbyOwn = IncludeNearbyOwn;
             _isNearHostileBase = IsNearHostileBase;
             _zoneObjectives = new EnemyZoneObjectiveCollector(_zones, _playerRoster, _worldSnapshot, _vision, _teamPicture,
-                _forceBuilder, _owner.Id);
+                _forceBuilder, _intel, _owner.Id);
             _assessedForce = _ownForce;
         }
 
@@ -476,6 +479,45 @@ namespace EmpireAtWar.Services.Enemy
         public bool IsBehindOnZones() => IsBehindOnZones(CountTeamHeldZones(_owner.Id, out _));
 
         /// <summary>The team holds an uncontested outer (non-centre) zone.</summary>
+        /// <summary>
+        /// A capture move whose straight line passes a hostile-held centre goes first to a waypoint beside it:
+        /// <see cref="CENTRE_ROUTE_MARGIN"/> beyond twice the centre radius, on the side the group comes from. A
+        /// target inside the centre, or a group already inside its keep-out circle, keeps the direct line.
+        /// </summary>
+        private Vector3 RouteAroundHostileCentre(Vector3 origin, Vector3 target)
+        {
+            ReinforcementZonePresenter centre = EnemyShipTaskGroupPlanner.GetCentre(_zones.Zones);
+            if (centre == null || centre.Owner.IsNone || !_playerRoster.IsHostile(_owner.Id, centre.Owner) ||
+                EnemyShipTaskGroupPlanner.IsInZone(centre, target)) return target;
+            Vector3 middle = ToVector(ToPoint(centre.Center));
+            float keepOut = 2f * centre.Radius + CENTRE_ROUTE_MARGIN;
+            if (PlanarGeometry.Distance(origin, middle) <= keepOut) return target;
+            Vector3 line = target - origin;
+            line.y = 0f;
+            float length = line.magnitude;
+            if (length < 1f) return target;
+            Vector3 direction = line / length;
+            Vector3 toMiddle = middle - origin;
+            toMiddle.y = 0f;
+            float along = Vector3.Dot(toMiddle, direction);
+            if (along <= 0f || along >= length) return target;
+            Vector3 closest = origin + direction * along;
+            Vector3 side = closest - middle;
+            side.y = 0f;
+            if (side.magnitude >= keepOut) return target;
+            Vector3 normal = side.sqrMagnitude > 1f ? side.normalized : new Vector3(-direction.z, 0f, direction.x);
+            return middle + normal * keepOut;
+        }
+
+        /// <summary>Living stations this AI owns.</summary>
+        public int CountOwnStations()
+        {
+            int count = 0;
+            foreach (AiWorldSnapshot.Entry station in _worldSnapshot.Bases)
+                if (station.Owner == _owner.Id) count++;
+            return count;
+        }
+
         public bool HoldsOuterZone()
         {
             foreach (ReinforcementZonePresenter zone in _zones.Zones)
@@ -828,7 +870,7 @@ namespace EmpireAtWar.Services.Enemy
             return new EnemyStrategicContext(
                 snapshot: snapshot,
                 ships: ownShips,
-                captureTarget: captureObjective != null ? captureObjective.Position : origin,
+                captureTarget: captureObjective != null ? RouteAroundHostileCentre(origin, captureObjective.Position) : origin,
                 guardPosition: guardPosition,
                 assaultCapitals: _assaultCapitals,
                 enemyFleetTarget: enemyFleetTarget,

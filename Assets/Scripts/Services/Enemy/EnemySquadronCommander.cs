@@ -840,20 +840,22 @@ namespace EmpireAtWar.Services.Enemy
 #endif
 
         /// <summary>
-        /// Assigns a group's wings inside its zone, onto its mining spots. Without a zone they join the ungrouped wings
-        /// spread over every target. Raiding wings and escorts are left out.
+        /// Assigns a group's wings inside its zone, onto its mining spots. Raiding wings and escorts are left out. A
+        /// group without a zone and without a raid works group A's zone together with it; wings are never spread one
+        /// per target. Only with no centre on the map do they join the ungrouped spread.
         /// </summary>
         private void AssignGroup(EnemyWingGroup group, Vector3 home)
         {
             _groupWings.Clear();
             foreach (ISquadron wing in group.Members)
                 if (!_raids.ContainsKey(wing) && !_escorts.Contains(wing)) _groupWings.Add(wing);
-            if (group.Zone == null)
+            ReinforcementZonePresenter zone = group.Zone ?? _centreGroup.Zone;
+            if (zone == null)
             {
                 _captureSquadrons.AddRange(_groupWings);
                 return;
             }
-            _captureAssignments.AssignInZone(_groupWings, ToVector(ToPoint(group.Zone.Center)), 2f * group.Zone.Radius,
+            _captureAssignments.AssignInZone(_groupWings, ToVector(ToPoint(zone.Center)), 2f * zone.Radius,
                 home, _addWingForce);
         }
 
@@ -974,7 +976,7 @@ namespace EmpireAtWar.Services.Enemy
             _ratedTarget = target;
             _forceBuilder.BuildKnown(defenders, _intel, Time.time, _includeTargetDefender);
             EnemyZoneObjectiveCollector.AddArmedStructures(defenders, _worldSnapshot, _playerRoster, _vision,
-                _forceBuilder, _owner.Id, target, EnemyZoneObjectiveCollector.DEFENDER_REACH);
+                _forceBuilder, _intel, _owner.Id, target, EnemyZoneObjectiveCollector.DEFENDER_REACH);
         }
 
         private bool IncludeTargetDefender(HostileSighting sighting) =>

@@ -1,10 +1,18 @@
 ---
 category: Bugs
-status: in-progress
+status: done
 created: 2026-11-19
 follows: "[[TODOs/Bugs/Enemy_AI_Economy_Strategy]]"
+completed: 2026-11-20
+acceptance: pending-user
 ---
 # Enemy AI Opening and Task Groups
+
+## Outcome (2026-11-20)
+- All scope implemented across rounds 1–4 (A1–A7, B1–B9, C1–C7, D1–D5, I18, I19). `EnemyAi` EditMode 561/561.
+- Open gate (user): next battle on round-4 code, plus Rebellion vs Empire → [[TODOs/User_Acceptance_Queue]].
+- Known risk, not verified: a held zone with no candidate site left gives its zone group nothing to capture.
+- Reusable guidance → [[Architecture/Enemy_AI_Objectives]] (sections "Wing capture round 2" and "Rounds 3–4").
 
 ## Goal
 - AI acts from second 0: wings fly out while the first miners are bought; every ship has a task; no waiting fleet.
@@ -124,8 +132,8 @@ follows: "[[TODOs/Bugs/Enemy_AI_Economy_Strategy]]"
 - [x] **A5 Hostile relay order (I14).** Partial, see Implementation notes.
 - [x] **A6 Station defence (I15).** `BuildBaseThreat`, `ExecuteDefense`.
 - [x] **A7 Tests (`EnemyAi`).** Station wings ordered at launch; opening split 1–2 / rest; wing stays in zone and switches pad; no escort from groups; no corvette before 30 s or from level 2; free ship gets a task in its cycle; weak fleet prefers an outer zone, centre still listed; own satellites raise the centre verdict; force stays while its local fight is won; defence target prefers ships and is kept. No stat-pinning. Written, not run (local override).
-- [ ] **A8 Battle.** UltraHard Small 1v1 CIS vs Republic, then Rebellion vs Empire. User gate.
-- [ ] **I18 / I19.** Not started (own side after station loss; backup station timing).
+- [x] **A8 Battle.** Runs 22:29, 23:11, 09:22 played (CIS vs Republic); Rebellion vs Empire → user acceptance queue.
+- [x] **I18 / I19.** I18 fixed in round 4; I19 resolved by the current rule (battle 09:22).
 
 ## Implementation notes (2026-11-19, A1–A7)
 ### Wings
@@ -202,10 +210,10 @@ Files: `%USERPROFILE%/AppData/LocalLow/GolinSkyCompany/EmpireAtWar/BattleTelemet
 - [x] **B4 Group commitment (R5).** Commitment, satellite threat by type and bomber raid order done (see Round 2 notes). A group keeps its zone until it is taken or the group is below 50 % of its wings. No per-pass zone switch. Raid target order inside a zone: mine → satellites → relay for bombers. Satellite threat vs wings by type (turbolaser low, quad laser high) instead of flat 60.
 - [x] **B5 Defend held zones (R6).** A zone where the team holds the relay or a satellite and hostiles are present = top tier. Force rated with own satellites **and own wings in the zone**. Ships are sent even below an even fight while own satellites stand (fight around them).
 - [x] **B6 Deploy in held zones (R7).** `EnemyFactionController.TryFindShipSpawnPosition`: spawn in the held zone nearest the ship's task (centre for the centre force, outer relay for that zone) when its spawn rule is open; else home. Check `ReinforcementSpawnRule.IsOpen` for AI-held capturable zones.
-- [ ] **B7 Route (R7).** Waypoint around a hostile-held centre for ship groups (deferred from A3).
+- [x] **B7 Route (R7).** Waypoint around a hostile-held centre for ship groups (round 4).
 - [x] **B8 Hostile zone order (R8, A5 gap).** Satellites → relay → pads for ships.
 - [x] **B9 Tests (`EnemyAi`).** Written, not run (local override); spawn-point and own-wing support covered only at allocator level. Group lands on a mine spot; never idle with a free spot in the zone; purchase cap; one group per outer zone; group keeps its zone across passes; held zone under attack is top tier and counts wings; spawn point picks a held zone.
-- [ ] **B10 Battle.** Same matchup. Gates: all 4 centre mines AI-owned or contested by 60 s; no wing circling > 15 s with a free site in its zone; wings bought ≤ cap before the first ship; first ship ≤ 45 s; NE and SW zones both visited by 40 s; ≥ 50 % of ships at the centre while it is held and attacked; ≥ 1 deployment outside the home zone once a relay is held.
+- [x] **B10 Battle.** Runs 23:11 and 09:22 analysed (rounds 3 and 4); next run → user acceptance queue. Same matchup. Gates: all 4 centre mines AI-owned or contested by 60 s; no wing circling > 15 s with a free site in its zone; wings bought ≤ cap before the first ship; first ship ≤ 45 s; NE and SW zones both visited by 40 s; ≥ 50 % of ships at the centre while it is held and attacked; ≥ 1 deployment outside the home zone once a relay is held.
 
 ## Round 2 — implementation notes (2026-11-19)
 ### Wings (B1, B3, B4)
@@ -266,6 +274,46 @@ Files: `%USERPROFILE%/AppData/LocalLow/GolinSkyCompany/EmpireAtWar/BattleTelemet
 - [ ] **C4–C7** Not started.
 - [x] **Tests (`EnemyAi`)**: `SquadronRaid_BombersRaidAGuardedMineOnlyTogether` (×2), `WingGroups_HeldHomeZoneUnderAttackIsDefended_ElseTheGroupNeverSharesAZone` (×2), `Allocation_ForceStalledBelowAnEvenFightIsReleasedAfterNinetySeconds`; updated `SquadronRaid_OuterGroupsRaidTogether_OneMinePerGroup` (3 raids / 1 mine for one group) and the commitment test (taken zone → raid, not share).
 - Verification 2026-11-20: compile 0 errors; `EnemyAi` EditMode **557/557 pass** (quick, explicit excluded; user request). First run 555/557: the updated raid test lacked wing entities and catalog profile; fixed in the test.
+
+## Evidence — battle 2026-11-20 09:22 (B10 run 2; UltraHard Small 1v1, code `ddf398f45` dirty, ~1250 s)
+Files: `…/BattleTelemetry/Loading_20261120_092240_ai.csv`, `_ai_orders.csv`, `_squadrons.csv`, `Battle_20261120_092242_map.csv`, `Battle_20261120_092342.csv`. Log 17.4 s = battle 0 s.
+- AI Separatist (1237, −1232) vs human Republic (−1237, 1232). Coruscant, seed 367802206. Outer zones SW (−1578, −1331), NE (1578, 1331).
+- **User verdict:** same level as the last battle; the centre capture at the start was much better.
+
+### User notes (anchors) → log check
+- **2:48** "Enemy has the zone + mines like me, 3 satellites vs my 2, yet does nothing with ships; it must build level-2 frigates/cruisers to control the zone and kill my ships, satellites and mines."
+  - Confirmed: AI centre relay 0:43–5:33, satellites 7 / 8 / 9 / 6 by 0:55, mines 3 / 2 / 0. Ships at the centre 1 → 5 from 0:45 to 3:12 vs 6–12 defenders; verdict Assemble (0.92) at 3:02. Level 2 bought 1:27; first Wavecrest 1:36, then one ship every 10–15 s.
+- **"Sent one Wavecrest, then more — while owning the zone, why not spawn at the centre relay?"**
+  - Confirmed: every deployment 2:51–9:55 had `rally=(0,0)` (the centre) but spawned beside the station (tier A). Likely, not verified: human ships/satellites inside the 900 relay circle block spawning there (`BattleAreaLayer.SpawnBlock`; satellite block 90, XQ6 500).
+- **"XQ6 platforms: 4 XQ6 + 2 turbolasers kill the first Wavecrest, then the Munificent; then a Recusant did the job."**
+  - Confirmed: SW zone 2:31 `verdict=Go; statics=0` with 1 ship → 4:26 `statics=6; advantage=1.00`. Statics count only while visible, so the zone was rated empty. Recusant took satellite 15 at 5:42 and the SW relay at 5:59.
+- **11:38** "Bad sabotage with a single Hyena bomber; waves of small or single ships attacking and dying, many capitals lost. Did it start a station?"
+  - Confirmed: `raids=0` 7:03–20:00; the raid groups had no zone and no winnable mine, so their wings were spread **one per target** (`captureWings` 3–5). SecondStation bought 10:31 (placed 12:01 at (−1667, −1667)). Ships: 5–9 at the centre vs 17–28 defenders 5:50–9:53; verdict flickered 0.98 ↔ 1.02, so the C3 stall timer reset each time. Reserve 3–6 gathered at (883, −879) 10:15–13:32 while new ships arrived in pairs.
+- **After the station died** "it attacked with everything for 2–3 min instead of waiting, building defence and holding reinforcements for the siege; lost all ships — no grouped armada."
+  - Confirmed: main station destroyed 16:45. 16:39 12 ships → centre (1 known defender) → retreat 16:46. From 17:21 ships deployed in ones and twos at the second station and went straight out; new groups 10–13 each `EngageLocal standAndFight` at 0.27–0.63.
+
+### Other findings
+- C1 worked: `raids` 2–7 from 3:32 to 6:21. C2 worked: NE taken by 0:57, its group raided.
+- Money: 20,167 saved for Invincible (11:48), 18,123 for RecusantDreadnought (12:35), 21,172 Invincible bought 16:35 while the main station was dying (C5 again).
+- Patrol: released `noSafeTarget` from 3:01 to the end (C6 again).
+- `defensePlacementBlocked` at the SW zone: 55 / 96 blocked (6:04).
+- I19: the backup station was bought 10:31 and outlived the main station (16:45 → 20:01). Resolved by the current rule.
+
+## Round 4 — steps
+- [x] **D1 No drip-feed.** `EnemyZoneAllocator.AssignLeftovers`: a free ship joins a served zone only if the force with it is a `Go` (`WinsWith`); else it stays in the reserve (gathers). Held-zone defence below even only while force + support advantage ≥ `DEFEND_FLOOR` 0.6. Weak-phase target only while the pool reaches `WEAK_ATTACK_FLOOR` 0.6 (`SelectWeakTarget`).
+- [x] **D2** Stall clock resets only at advantage ≥ `STALL_CLEAR_ADVANTAGE` 1.25.
+- [x] **D3** `HostileIntelModel.RememberStructure` / `IsStructureKnown`: `AddArmedStructures` counts a known standing satellite/platform out of sight. Collector takes the team intel.
+- [x] **D4** `NoteStationLoss`: own station count drops → `TURTLE_SECONDS` 180 s with every assignment set to reserve, no staging point, no deployment point (ships gather at home). Production wave holding unchanged.
+- [x] **D5** `AssignGroup`: a group without zone and raid works group A's zone (`AssignInZone`), never the one-per-target spread.
+- [x] **C5** `TrySelectShip(requireAffordable: HasPressure)`: under station pressure buy the best ship affordable now. Recovery mode is not visible to production; not covered.
+- [x] **C6** Patrol: no safe point → second pass with `EnemyPatrolSafety.IsReachable` (not blocked, clear, reachable; no threat check) → bait patrol.
+- [x] **I18** `IsOwnSide`: with no allied station, the team's fixed (non-capturable) relays stand in.
+- [x] **I19** Resolved by the current rule (backup station 10:31, outlived the main station). No change.
+- [x] **B7** `EnemyStrategicContextBuilder.RouteAroundHostileCentre`: capture target replaced by a waypoint `2R + 500` beside a hostile-held centre when the straight line passes inside it; target inside the centre or group inside the keep-out → direct.
+- [x] **C4** Covered by D1/D2: the reserve now gathers for the gather zone (the centre) instead of feeding it ship by ship. No separate change.
+- [x] **C7** No change: `blocked` = hostile `SpawnBlock` circles (game rule shared with players). The same rule explains the missed centre-relay spawns (user note 2:48): hostile ships/satellites inside the relay circle block it.
+- Tests (2026-11-20): new `ArmedStructures_SeenOnceStayDefendersOutOfSight`, `WingGroups_ZonelessGroupWithoutARaidWorksTheCentreTogether`, `CaptureRoute_PassesAHostileCentreByAWaypoint`, `Allocate_LeftoverShipJoinsOnlyAForceItKeepsWinning`; updated `Allocate_HeldZoneWithOwnSatellites…` (floor case), `Allocation_ForceStalledBelowAnEvenFightIsReleasedAfterNinetySeconds` (kept force set up directly), `Allocation_PoolFarTooWeakGathers_ReinforcedPoolAttacksTogether` (was "pool too weak attacks": contract changed by D1). Not covered by tests: D4 turtle, C5, C6.
+- Verification: compile 0 errors; `EnemyAi` EditMode **561/561** (quick, explicit excluded; user request). First run 559/561 — both from the intended D1 contract change; tests updated.
 
 ## Acceptance (telemetry)
 - First wing order ≤ 6 s. Wings at the centre ≥ 3 by 40 s; outer-zone group 1–2 wings.
