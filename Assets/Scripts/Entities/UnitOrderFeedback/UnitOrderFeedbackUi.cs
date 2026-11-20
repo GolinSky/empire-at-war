@@ -9,10 +9,11 @@ namespace EmpireAtWar.Entities.UnitOrderFeedback
 {
     public sealed class UnitOrderFeedbackUi : BaseUi
     {
-        private const float ATTACK_FADE_IN = 0.09f;
-        private const float ATTACK_SETTLE = 0.5f;
-        private const float ATTACK_FADE_START = 1.05f;
-        private const float ATTACK_FADE_OUT = 0.5f;
+        private const float TARGET_FADE_IN = 0.09f;
+        private const float TARGET_SETTLE = 0.5f;
+        private const float TARGET_FADE_START = 1.05f;
+        private const float TARGET_FADE_OUT = 0.5f;
+        private const float GUARD_ICON_SCALE = 0.45f;
         private const float WAVE_DURATION = 0.68f;
         private const float ECHO_DELAY = 0.12f;
 
@@ -22,17 +23,20 @@ namespace EmpireAtWar.Entities.UnitOrderFeedback
         [SerializeField] private RectTransform invalidTargetAnchor;
         [SerializeField] private RectTransform attackCursorAnchor;
         [SerializeField] private Image attackImage;
+        [SerializeField] private Sprite guardIcon;
         [SerializeField] private Image movementWave;
         [SerializeField] private Image movementEcho;
         [SerializeField] private Color formationColor = new Color(0.21960784f, 0.7411765f, 0.972549f, 1f);
         [SerializeField] private Color looseColor = new Color(0.2901961f, 0.87058824f, 0.5019608f, 1f);
-        private Sequence _attackSequence;
+        private Sequence _targetSequence;
         private Sequence _movementSequence;
+        private Color _attackColor;
 
         private bool _isDisposed;
 
         public void Initialize()
         {
+            _attackColor = attackImage.color;
             attackAnchor.gameObject.SetActive(false);
             movementAnchor.gameObject.SetActive(false);
             invalidTargetAnchor.gameObject.SetActive(false);
@@ -43,30 +47,32 @@ namespace EmpireAtWar.Entities.UnitOrderFeedback
         {
             if (_isDisposed) return;
             _isDisposed = true;
-            StopAttack();
+            StopTargetOrder();
             StopMovement();
         }
 
-        public void PlayAttack(Vector2 screenPosition, Action completed)
+        public void PlayTargetOrder(Vector2 screenPosition, bool isGuard, Action completed)
         {
-            StopAttack();
+            StopTargetOrder();
             SetPosition(attackAnchor, screenPosition);
+            attackImage.overrideSprite = isGuard ? guardIcon : null;
+            SetColor(attackImage, isGuard ? formationColor : _attackColor, 0f);
+            float scale = isGuard ? GUARD_ICON_SCALE : 1f;
             attackAnchor.gameObject.SetActive(true);
-            SetAlpha(attackImage, 0f);
-            attackImage.rectTransform.localScale = Vector3.one * 1.45f;
+            attackImage.rectTransform.localScale = Vector3.one * (1.45f * scale);
             attackImage.rectTransform.localRotation = Quaternion.Euler(0f, 0f, 12f);
-            _attackSequence = DOTween.Sequence()
-                .Append(attackImage.DOFade(1f, ATTACK_FADE_IN).SetEase(Ease.OutQuad))
-                .Insert(0f, attackImage.rectTransform.DOScale(1f, ATTACK_SETTLE).SetEase(Ease.OutBack))
-                .Insert(0f, attackImage.rectTransform.DOLocalRotate(Vector3.zero, ATTACK_SETTLE)
+            _targetSequence = DOTween.Sequence()
+                .Append(attackImage.DOFade(1f, TARGET_FADE_IN).SetEase(Ease.OutQuad))
+                .Insert(0f, attackImage.rectTransform.DOScale(scale, TARGET_SETTLE).SetEase(Ease.OutBack))
+                .Insert(0f, attackImage.rectTransform.DOLocalRotate(Vector3.zero, TARGET_SETTLE)
                     .SetEase(Ease.OutCubic))
-                .Insert(ATTACK_FADE_START, attackImage.DOFade(0f, ATTACK_FADE_OUT).SetEase(Ease.InQuad))
-                .Insert(ATTACK_FADE_START, attackImage.rectTransform.DOScale(1.08f, ATTACK_FADE_OUT)
+                .Insert(TARGET_FADE_START, attackImage.DOFade(0f, TARGET_FADE_OUT).SetEase(Ease.InQuad))
+                .Insert(TARGET_FADE_START, attackImage.rectTransform.DOScale(1.08f * scale, TARGET_FADE_OUT)
                     .SetEase(Ease.InQuad))
                 .SetUpdate(true)
                 .OnComplete(() =>
                 {
-                    _attackSequence = null;
+                    _targetSequence = null;
                     attackAnchor.gameObject.SetActive(false);
                     completed();
                 });
@@ -93,16 +99,16 @@ namespace EmpireAtWar.Entities.UnitOrderFeedback
             });
         }
 
-        public void SetAttackPosition(Vector2 screenPosition) => SetPosition(attackAnchor, screenPosition);
+        public void SetTargetOrderPosition(Vector2 screenPosition) => SetPosition(attackAnchor, screenPosition);
 
         public void SetMovementPosition(Vector2 screenPosition) => SetPosition(movementAnchor, screenPosition);
 
-        public void StopAttack()
+        public void StopTargetOrder()
         {
-            if (_attackSequence != null)
+            if (_targetSequence != null)
             {
-                _attackSequence.Kill();
-                _attackSequence = null;
+                _targetSequence.Kill();
+                _targetSequence = null;
             }
             attackAnchor.gameObject.SetActive(false);
         }
@@ -144,13 +150,6 @@ namespace EmpireAtWar.Entities.UnitOrderFeedback
             sequence.Insert(delay, image.rectTransform.DOScale(1.35f, WAVE_DURATION).SetEase(Ease.OutQuad));
             sequence.Insert(delay, image.DOFade(opacity, 0.08f).SetEase(Ease.OutQuad));
             sequence.Insert(delay + 0.12f, image.DOFade(0f, WAVE_DURATION - 0.12f).SetEase(Ease.InQuad));
-        }
-
-        private static void SetAlpha(Image image, float alpha)
-        {
-            Color color = image.color;
-            color.a = alpha;
-            image.color = color;
         }
 
         private static void SetColor(Image image, Color color, float alpha)

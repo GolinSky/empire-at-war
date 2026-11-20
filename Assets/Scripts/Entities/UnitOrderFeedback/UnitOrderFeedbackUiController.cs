@@ -24,7 +24,7 @@ namespace EmpireAtWar.Entities.UnitOrderFeedback
         private readonly IOrderCursorService _orderCursor;
         private readonly IPointerInput _pointerInput;
         private UnitOrderFeedbackUi _ui;
-        private IEntity _attackTarget;
+        private IEntity _feedbackTarget;
 
         private readonly UnitActionTargetingModel _targeting;
 
@@ -63,7 +63,7 @@ namespace EmpireAtWar.Entities.UnitOrderFeedback
             _targeting.Changed -= HandleTargetingChanged;
             _entityLocator.EntityRemoved -= HandleEntityRemoved;
             if (_ui != null) _ui.Dispose();
-            _attackTarget = null;
+            _feedbackTarget = null;
             _movementPoint = null;
         }
 
@@ -74,30 +74,32 @@ namespace EmpireAtWar.Entities.UnitOrderFeedback
             if (_movementPoint.HasValue)
                 _ui.SetMovementPosition(_cameraService.WorldToScreenPoint(_movementPoint.Value));
 
-            if (_attackTarget == null) return;
-            if (_attackTarget.HealthModel.IsDestroyed)
+            if (_feedbackTarget == null) return;
+            if (_feedbackTarget.HealthModel.IsDestroyed)
             {
-                _ui.StopAttack();
-                _attackTarget = null;
+                _ui.StopTargetOrder();
+                _feedbackTarget = null;
                 return;
             }
 
-            _ui.SetAttackPosition(_cameraService.WorldToScreenPoint(
-                _attackTarget.GetFacade<IEntityTransformFacade>().Transform.position));
+            _ui.SetTargetOrderPosition(_cameraService.WorldToScreenPoint(
+                _feedbackTarget.GetFacade<IEntityTransformFacade>().Transform.position));
         }
 
-        private void AttackFeedbackCompleted() => _attackTarget = null;
+        private void TargetFeedbackCompleted() => _feedbackTarget = null;
 
         private void MovementFeedbackCompleted() => _movementPoint = null;
 
         private void HandleOrder(UnitOrder order)
         {
             if (!_localPlayer.IsLocal(order.Issuer)) return;
-            if (order.Action == UnitActionId.Attack && order.Target != null)
+            bool isGuard = order.Action == UnitActionId.Guard;
+            if ((order.Action == UnitActionId.Attack || isGuard) && order.Target != null)
             {
-                _attackTarget = order.Target;
-                _ui.PlayAttack(_cameraService.WorldToScreenPoint(
-                    _attackTarget.GetFacade<IEntityTransformFacade>().Transform.position), AttackFeedbackCompleted);
+                _feedbackTarget = order.Target;
+                _ui.PlayTargetOrder(_cameraService.WorldToScreenPoint(
+                    _feedbackTarget.GetFacade<IEntityTransformFacade>().Transform.position), isGuard,
+                    TargetFeedbackCompleted);
             }
             else if (order.Action == UnitActionId.WaypointMove &&
                      order.Waypoints != null)
@@ -107,7 +109,6 @@ namespace EmpireAtWar.Entities.UnitOrderFeedback
             }
             else if (order.Action == UnitActionId.Move ||
                      order.Action == UnitActionId.AttackMove ||
-                     order.Action == UnitActionId.Guard ||
                      order.Action == UnitActionId.Retreat)
                 PlayMovement(order.Point, order.Action == UnitActionId.Move && order.IsLoose);
         }
@@ -120,9 +121,9 @@ namespace EmpireAtWar.Entities.UnitOrderFeedback
 
         private void HandleEntityRemoved(IEntity entity)
         {
-            if (entity != _attackTarget) return;
-            _ui.StopAttack();
-            _attackTarget = null;
+            if (entity != _feedbackTarget) return;
+            _ui.StopTargetOrder();
+            _feedbackTarget = null;
         }
 
         private void HandleTargetingChanged()

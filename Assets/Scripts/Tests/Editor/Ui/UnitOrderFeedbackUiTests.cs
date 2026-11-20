@@ -13,6 +13,40 @@ namespace EmpireAtWar.Tests.Editor
         private const string PREFAB_PATH = "Assets/Prefabs/Ui/UnitOrderFeedback/UnitOrderFeedbackUi.prefab";
 
         [Test]
+        public void PlayTargetOrder_ShowsGuardSpriteAndRestoresAttackSprite()
+        {
+            GameObject prefab = AssetDatabase.LoadAssetAtPath<GameObject>(PREFAB_PATH);
+            GameObject instance = Object.Instantiate(prefab);
+            try
+            {
+                UnitOrderFeedbackUi ui = instance.GetComponent<UnitOrderFeedbackUi>();
+                using var bindings = new SerializedObject(ui);
+                Image image = (Image)bindings.FindProperty("attackImage").objectReferenceValue;
+                RectTransform anchor = (RectTransform)bindings.FindProperty("attackAnchor").objectReferenceValue;
+                Sprite guardSprite = AssetDatabase.LoadAssetAtPath<Sprite>(
+                    "Assets/Art/Textures/Ui/UnitActions/Guard.png");
+                Sprite attackSprite = image.sprite;
+                Assert.That(guardSprite, Is.Not.Null);
+                Assert.That(attackSprite, Is.Not.Null.And.Not.EqualTo(guardSprite));
+                ui.Initialize();
+
+                ui.PlayTargetOrder(Vector2.zero, isGuard: true, () => { });
+                Assert.That(anchor.gameObject.activeSelf, Is.True);
+                Assert.That(image.overrideSprite, Is.SameAs(guardSprite));
+
+                ui.PlayTargetOrder(Vector2.zero, isGuard: false, () => { });
+                Assert.That(image.overrideSprite, Is.SameAs(attackSprite));
+
+                ui.StopTargetOrder();
+                Assert.That(anchor.gameObject.activeSelf, Is.False);
+            }
+            finally
+            {
+                Object.DestroyImmediate(instance);
+            }
+        }
+
+        [Test]
         public void PlayMovement_AppliesDistinctFormationAndLooseWaveColors()
         {
             GameObject prefab = AssetDatabase.LoadAssetAtPath<GameObject>(PREFAB_PATH);

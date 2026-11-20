@@ -682,6 +682,7 @@ MonoBehaviour:
   invalidTargetAnchor: {fileID: 5069193425919337189}
   attackCursorAnchor: {fileID: 4999539330838725075}
   attackImage: {fileID: 6526318424254110359}
+  guardIcon: {fileID: 21300000, guid: 6419c6c8a033ca44f8d6ee43dbfc6174, type: 3}
   movementWave: {fileID: 7481741939814046730}
   movementEcho: {fileID: 4063955997527714922}
   formationColor: {r: 0.21960784, g: 0.7411765, b: 0.972549, a: 1}
