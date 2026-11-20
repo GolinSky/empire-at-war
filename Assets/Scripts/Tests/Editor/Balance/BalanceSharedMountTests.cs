@@ -121,6 +121,8 @@ namespace EmpireAtWar.Tests.Editor
             BalanceField local = registry.Fields.Values.Single(field => !field.SharedMountSource && field.Stat == "mainBattery");
             BalanceDraft draft = new BalanceDraft(); draft.Set(local.Snapshot(), "true");
             BalancePreset preset = ScriptableObject.CreateInstance<BalancePreset>();
+            // Rollback refreshes the AssetDatabase, which may unload this transient preset; keep it until finally.
+            preset.hideFlags = HideFlags.DontUnloadUnusedAsset;
             try
             {
                 BalancePresetService.Save(preset, registry, draft, fullScope ? BalancePresetScope.FullRegisteredSet : BalancePresetScope.ChangedFieldsOnly);
