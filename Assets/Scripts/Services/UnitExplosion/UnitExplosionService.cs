@@ -52,8 +52,13 @@ namespace EmpireAtWar.Services.UnitExplosion
 
             // The enclosing sphere covers every corner, even for a long or rotated hull.
             float diameter = bounds.extents.magnitude * 2f * COVERAGE_PADDING * coverageScale;
+            Spawn(bounds.center, diameter);
+        }
+
+        public void Spawn(Vector3 position, float diameter)
+        {
             UnitExplosionView view = _pool.Get();
-            view.Play(bounds.center, diameter / _prefab.Diameter);
+            view.Play(position, diameter / _prefab.Diameter);
             _active.Add(view);
         }
 

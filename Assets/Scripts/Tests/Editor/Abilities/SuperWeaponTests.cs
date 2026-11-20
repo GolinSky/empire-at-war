@@ -31,6 +31,7 @@ using EmpireAtWar.Services.Saves;
 using EmpireAtWar.Services.ShipAbilities;
 using EmpireAtWar.Services.Stations;
 using EmpireAtWar.Services.SuperWeapons;
+using EmpireAtWar.Services.UnitExplosion;
 using EmpireAtWar.Services.Vision;
 using EmpireAtWar.Components.Hangar;
 using EmpireAtWar.Mvc;
@@ -242,10 +243,13 @@ namespace EmpireAtWar.Tests.Editor
                 "Assets/Settings/Data/Models/SuperWeapons/SuperWeaponData.asset");
             SuperWeaponFireService fire = CreateFireService(entities, data, audio);
             RecordingAudio restoredAudio = new RecordingAudio();
-            SuperWeaponFireService restored = CreateFireService(entities, data, audio, restoredAudio);
+            RecordingUnitExplosions explosions = new RecordingUnitExplosions();
+            SuperWeaponFireService restored = CreateFireService(entities, data, audio, restoredAudio,
+                unitExplosions: explosions);
             try
             {
                 origin.transform.position = new Vector3(3f, 5f, 7f);
+                view.transform.position = new Vector3(10f, 20f, 30f);
                 SuperWeaponSalvo salvo = new SuperWeaponSalvo(type, target, data.GetProfile(type), origin.transform)
                 {
                     ShotsFired = data.GetProfile(type).Weapon.ShotsPerSalvo,
@@ -274,8 +278,11 @@ namespace EmpireAtWar.Tests.Editor
                 Assert.That(restored.Salvos[1].ImpactTimes, Is.Empty);
                 MethodInfo advance = typeof(SuperWeaponFireService).GetMethod("AdvanceSalvo",
                     BindingFlags.Instance | BindingFlags.NonPublic);
+                bool explosive = type != SuperWeaponType.IonCannon;
+                Assert.That(explosions.Impacts, Is.Empty);
                 advance.Invoke(restored, new object[] { loaded, 0.11f });
                 Assert.That(health.HitCount, Is.EqualTo(1));
+                Assert.That(explosions.Impacts, Has.Count.EqualTo(explosive ? 1 : 0));
                 Assert.That(loaded.IsComplete, Is.False);
                 advance.Invoke(restored, new object[] { loaded, 0.2f });
                 Assert.That(health.HitCount, Is.EqualTo(2));
@@ -283,6 +290,12 @@ namespace EmpireAtWar.Tests.Editor
                 Assert.That(restoredAudio.Clips, Is.Empty, "Restoring and resolving already-fired impacts must not replay launch SFX.");
                 advance.Invoke(restored, new object[] { loaded, 1f });
                 Assert.That(health.HitCount, Is.EqualTo(2), "Loaded impacts must apply exactly once.");
+                Assert.That(explosions.Impacts, Has.Count.EqualTo(explosive ? 2 : 0));
+                foreach ((Vector3 position, float diameter) in explosions.Impacts)
+                {
+                    Assert.That(position, Is.EqualTo(view.transform.position));
+                    Assert.That(diameter, Is.EqualTo(loaded.Profile.ImpactSize));
+                }
                 health.Destroyed = true;
                 new SuperWeaponCombatSaveSource(fire, entities, data).Capture(save);
                 Assert.That(save.SuperWeaponSalvos, Is.Empty, "Dead targets are absent from the saved entities.");
@@ -349,7 +362,8 @@ namespace EmpireAtWar.Tests.Editor
         }
 
         private static SuperWeaponFireService CreateFireService(EntityLocator entities, SuperWeaponData data, GameObject audio,
-            IAudioService audioService = null, BoltFlightBatch boltFlights = null)
+            IAudioService audioService = null, BoltFlightBatch boltFlights = null,
+            IUnitExplosionService unitExplosions = null)
         {
             AudioSource audioSource = audio.AddComponent<AudioSource>();
             ShipSfxSources sources = audio.AddComponent<ShipSfxSources>();
@@ -358,7 +372,17 @@ namespace EmpireAtWar.Tests.Editor
             ShipSfxData sfx = AssetDatabase.LoadAssetAtPath<ShipSfxData>(
                 "Assets/Settings/Data/Models/Audio/ShipSfxData.asset");
             return new SuperWeaponFireService(entities, null, TestPlayers.CreateTeamGame(), data,
-                new ImpactEffectPresenter(null, null), boltFlights, audioService, sfx, sources);
+                new ImpactEffectPresenter(null, null), unitExplosions ?? new RecordingUnitExplosions(),
+                boltFlights, audioService, sfx, sources);
+        }
+
+        private sealed class RecordingUnitExplosions : Service, IUnitExplosionService
+        {
+            public readonly List<(Vector3 Position, float Diameter)> Impacts = new List<(Vector3, float)>();
+
+            public void Spawn(IReadOnlyList<Renderer> hullRenderers, float coverageScale) { }
+
+            public void Spawn(Vector3 position, float diameter) => Impacts.Add((position, diameter));
         }
 
         private sealed class RecordingAudio : Service, IAudioService

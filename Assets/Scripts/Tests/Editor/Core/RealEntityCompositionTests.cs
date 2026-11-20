@@ -357,6 +357,8 @@ namespace EmpireAtWar.Tests.Editor
 
             public void Spawn(IReadOnlyList<Renderer> hullRenderers, float coverageScale) { }
 
+            public void Spawn(Vector3 position, float diameter) { }
+
             public void Spawn(UnitWreckData data, Transform unit, PlayerId owner, float delay) { }
         }
 

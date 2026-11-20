@@ -10,6 +10,7 @@ using EmpireAtWar.Entities.BaseEntity.EntityFacades;
 using EmpireAtWar.Entities.SuperWeapons;
 using EmpireAtWar.Models.Health;
 using EmpireAtWar.Services.Audio;
+using EmpireAtWar.Services.UnitExplosion;
 using EmpireAtWar.ViewComponents.Weapon;
 using UnityEngine;
 using VContainer;
@@ -32,6 +33,7 @@ namespace EmpireAtWar.Services.SuperWeapons
 
         private readonly SuperWeaponData _data;
         private readonly ImpactEffectPresenter _impactPresenter;
+        private readonly IUnitExplosionService _unitExplosions;
         private readonly BoltFlightBatch _boltFlights;
         private readonly IAudioService _audioService;
         private readonly ShipSfxData _sfxData;
@@ -83,13 +85,15 @@ namespace EmpireAtWar.Services.SuperWeapons
 
         public SuperWeaponFireService(IEntityLocator entities, ISuperWeaponOrigin origin,
             IPlayerRelations relations, SuperWeaponData data,
-            ImpactEffectPresenter impactPresenter, BoltFlightBatch boltFlights, IAudioService audioService,
+            ImpactEffectPresenter impactPresenter, IUnitExplosionService unitExplosions,
+            BoltFlightBatch boltFlights, IAudioService audioService,
             ShipSfxData sfxData, ShipSfxSources sfxSources)
         {
             _boltFlights = boltFlights;
             _relations = relations;
             _data = data;
             _impactPresenter = impactPresenter;
+            _unitExplosions = unitExplosions;
             _entities = entities;
             _origin = origin;
             _audioService = audioService;
@@ -211,6 +215,13 @@ namespace EmpireAtWar.Services.SuperWeapons
             if (target.HealthModel.IsDestroyed) return;
 
             Vector3 impactPosition = target.GetFacade<IEntityTransformFacade>().Transform.position;
+            if (salvo.Type != SuperWeaponType.IonCannon)
+            {
+                Vector3 explosionPosition = _impactPresenter.GetImpactPosition(target.HealthModel,
+                    profile.Weapon.DamageType, salvo.Origin.position, impactPosition);
+                _unitExplosions.Spawn(explosionPosition, profile.ImpactSize);
+            }
+
             ApplyDamage(target, profile.Weapon.Damage, profile);
             if (!target.HealthModel.IsDestroyed && profile.StunDuration > 0f &&
                 target.TryGetFacade(out ICombatModifiersFacade combat))
