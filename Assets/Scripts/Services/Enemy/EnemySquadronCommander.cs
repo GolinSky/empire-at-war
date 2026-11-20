@@ -661,6 +661,13 @@ namespace EmpireAtWar.Services.Enemy
         private void UpdateOuterZone(EnemyWingGroup group)
         {
             int capturers = CountCapturers(group);
+            // A home zone already taken and now attacked is defended first, wherever the group works.
+            if (IsHeldUnderAttack(group.HomeZone))
+            {
+                if (group.Zone != group.HomeZone) group.Peak = capturers;
+                group.Zone = group.HomeZone;
+                return;
+            }
             bool taken = group.Zone == null || !HasTargetsIn(group.Zone);
             bool weak = capturers * 2 < group.Peak;
             if (!taken && !weak) return;
@@ -668,27 +675,52 @@ namespace EmpireAtWar.Services.Enemy
             group.Peak = capturers;
         }
 
+        /// <summary>
+        /// Nothing is left to take in the zone, an own mine or satellite stands in it, and known hostiles or armed
+        /// hostile structures are there.
+        /// </summary>
+        private bool IsHeldUnderAttack(ReinforcementZonePresenter zone)
+        {
+            if (HasTargetsIn(zone) || !HasOwnStructureIn(zone)) return false;
+            _zoneDefenders.Clear();
+            FillTargetDefenders(ToVector(ToPoint(zone.Center)), _zoneDefenders);
+            return !_zoneDefenders.IsEmpty;
+        }
+
+        private bool HasOwnStructureIn(ReinforcementZonePresenter zone)
+        {
+            IReadOnlyList<AiWorldSnapshot.Entry> structures = _worldSnapshot.RaidStructures;
+            for (int i = 0; i < structures.Count; i++)
+                if (structures[i].Owner == _owner.Id && EnemyShipTaskGroupPlanner.IsInZone(zone, structures[i].Position))
+                    return true;
+            return false;
+        }
+
+        /// <summary>
+        /// The nearest outer zone with targets that no other group works; null when none is left (the group raids).
+        /// Two groups never share a zone.
+        /// </summary>
         private ReinforcementZonePresenter SelectNextOuterZone(EnemyWingGroup group)
         {
             Vector3 from = (group.Zone ?? group.HomeZone).Center;
             ReinforcementZonePresenter best = null;
-            bool bestShared = true;
             float bestDistance = float.PositiveInfinity;
             foreach (EnemyWingGroup candidate in _outerGroups)
             {
                 ReinforcementZonePresenter zone = candidate.HomeZone;
-                if (!HasTargetsIn(zone)) continue;
-                bool shared = IsWorkedByOther(zone, group);
+                if (!HasTargetsIn(zone) || IsWorkedByOther(zone, group)) continue;
                 float distance = PlanarDistanceSquared(zone.Center, from);
-                if (shared && !bestShared || shared == bestShared && distance >= bestDistance) continue;
+                if (distance >= bestDistance) continue;
                 best = zone;
-                bestShared = shared;
                 bestDistance = distance;
             }
             return best;
         }
 
-        /// <summary>The outer zone with targets nearest home whose defenders the group at least matches; null when none.</summary>
+        /// <summary>
+        /// The outer zone with targets nearest home, not worked by another group, whose defenders the group at least
+        /// matches; null when none.
+        /// </summary>
         private ReinforcementZonePresenter SelectWinnableZone(EnemyWingGroup group)
         {
             _groupForce.Clear();
@@ -696,7 +728,7 @@ namespace EmpireAtWar.Services.Enemy
             foreach (EnemyWingGroup candidate in _outerGroups)
             {
                 ReinforcementZonePresenter zone = candidate.HomeZone;
-                if (!HasTargetsIn(zone)) continue;
+                if (!HasTargetsIn(zone) || IsWorkedByOther(zone, group)) continue;
                 _zoneDefenders.Clear();
                 FillTargetDefenders(ToVector(ToPoint(zone.Center)), _zoneDefenders);
                 if (_zoneDefenders.IsEmpty || CombatMatchup.Advantage(_groupForce, _zoneDefenders) >= EVEN_FIGHT)
@@ -831,8 +863,9 @@ namespace EmpireAtWar.Services.Enemy
         }
 
         /// <summary>
-        /// Outer groups raid known hostile mines: a group without a zone with all its wings, bombers at any time.
-        /// Bombers left without a mine then hit the hostile satellites of their zone (mine → satellites → relay).
+        /// Outer groups raid known hostile mines: a group without a zone with all its wings, bombers at any time,
+        /// always together. Bombers left without a mine then hit the hostile satellites of their zone
+        /// (mine → satellites → relay).
         /// A wing raids a mine only when it at least matches the units and armed structures there (the power rule);
         /// no blanket structure-near-route block applies. One wing per mine, best damage per distance first.
         /// </summary>
@@ -841,44 +874,49 @@ namespace EmpireAtWar.Services.Enemy
             _raids.Clear();
             _reservedRaidTargets.Clear();
             if (_stationDefense.HasValue) return;
-
-            while (true)
-            {
-                ISquadron bestWing = null;
-                HostileSighting bestMine = default;
-                float bestScore = 0f;
-                foreach (EnemyWingGroup group in _outerGroups)
-                {
-                    foreach (ISquadron candidate in group.Members)
-                    {
-                        CommandedSquadron commanded = _squadrons[candidate];
-                        if (_raids.ContainsKey(candidate) ||
-                            group.Zone != null && commanded.Profile.ShipClass != ShipClass.Bomber) continue;
-                        float damage = commanded.Profile.HullDps(ShipClass.Structure) +
-                                       commanded.Profile.PiercingDps(ShipClass.Structure);
-                        if (damage <= 0f) continue;
-
-                        foreach (HostileSighting mine in _intel.Mines)
-                        {
-                            if (_reservedRaidTargets.Contains(mine.EntityId) ||
-                                !_entityLocator.TryGetEntity(mine.EntityId, out IEntity target) ||
-                                !_playerRoster.IsHostile(_owner.Id, target.Owner) || target.HealthModel.IsDestroyed) continue;
-                            Vector3 position = ToVector(mine.Position);
-                            float distance = Mathf.Sqrt(PlanarDistanceSquared(candidate.WorldPosition, position));
-                            float score = damage / Mathf.Max(1f, distance);
-                            if (score <= bestScore || !WinsRaid(candidate, position)) continue;
-                            bestWing = candidate;
-                            bestMine = mine;
-                            bestScore = score;
-                        }
-                    }
-                }
-
-                if (bestWing == null) break;
-                _raids.Add(bestWing, bestMine);
-                _reservedRaidTargets.Add(bestMine.EntityId);
-            }
+            foreach (EnemyWingGroup group in _outerGroups) AssignMineRaid(group);
             foreach (EnemyWingGroup group in _outerGroups) AssignSatelliteRaid(group);
+        }
+
+        /// <summary>
+        /// A group's raiders (all its wings without a zone, else its bombers) go together to the known hostile mine
+        /// with the best damage per distance that they at least match together with whatever covers it. One group per
+        /// mine. A lone bomber never takes on a mine under satellites.
+        /// </summary>
+        private void AssignMineRaid(EnemyWingGroup group)
+        {
+            _raidWings.Clear();
+            float damage = 0f;
+            foreach (ISquadron wing in group.Members)
+            {
+                UnitCombatProfile profile = _squadrons[wing].Profile;
+                float structureDamage = profile.HullDps(ShipClass.Structure) + profile.PiercingDps(ShipClass.Structure);
+                if (_raids.ContainsKey(wing) || structureDamage <= 0f ||
+                    group.Zone != null && profile.ShipClass != ShipClass.Bomber) continue;
+                _raidWings.Add(wing);
+                damage += structureDamage;
+            }
+            if (_raidWings.Count == 0) return;
+
+            _raidForce.Clear();
+            foreach (ISquadron wing in _raidWings) AddWingForce(wing, _raidForce);
+            Vector3 origin = _raidWings[0].WorldPosition;
+            HostileSighting best = default;
+            float bestScore = 0f;
+            foreach (HostileSighting mine in _intel.Mines)
+            {
+                if (_reservedRaidTargets.Contains(mine.EntityId) ||
+                    !_entityLocator.TryGetEntity(mine.EntityId, out IEntity target) ||
+                    !_playerRoster.IsHostile(_owner.Id, target.Owner) || target.HealthModel.IsDestroyed) continue;
+                Vector3 position = ToVector(mine.Position);
+                float score = damage / Mathf.Max(1f, Mathf.Sqrt(PlanarDistanceSquared(origin, position)));
+                if (score <= bestScore || !WinsRaid(position)) continue;
+                best = mine;
+                bestScore = score;
+            }
+            if (bestScore <= 0f) return;
+            _reservedRaidTargets.Add(best.EntityId);
+            foreach (ISquadron wing in _raidWings) _raids.Add(wing, best);
         }
 
         /// <summary>
@@ -919,14 +957,12 @@ namespace EmpireAtWar.Services.Enemy
             foreach (ISquadron wing in _raidWings) _raids.Add(wing, sighting);
         }
 
-        private bool WinsRaid(ISquadron wing, Vector3 mine)
+        // The raiders in _raidForce at least match the units and armed structures at the mine.
+        private bool WinsRaid(Vector3 mine)
         {
             _raidDefenders.Clear();
             FillTargetDefenders(mine, _raidDefenders);
-            if (_raidDefenders.IsEmpty) return true;
-            _raidForce.Clear();
-            AddWingForce(wing, _raidForce);
-            return CombatMatchup.Advantage(_raidForce, _raidDefenders) >= EVEN_FIGHT;
+            return _raidDefenders.IsEmpty || CombatMatchup.Advantage(_raidForce, _raidDefenders) >= EVEN_FIGHT;
         }
 
         /// <summary>

@@ -31,6 +31,8 @@ verification: Reviewed affected source and regression fixtures. Unity 6000.4.7f1
 - New ships arrive at the held relay/station nearest `EnemyZoneAllocator.DeployZone` (gather zone → best served zone → weak target).
 - Armed structures are rated by platform type (`IDefendPlatformTypeFacade` → `UnitCombatProfileCatalog.GetPlatform` from the weapon loadout); supersedes the flat 60 DPS profile below.
 - Bombers: mine → hostile satellite in their zone (together, power rule) → relay. Ships in a hostile zone: known hostile satellites (blocking-facility candidates, +2000) → relay (+1000) → pads.
+- Raids (2026-11-20): a group's raiders go together, rated as one force vs the mine and its cover; one group per mine. Outer groups never share a zone; a held home zone under attack is defended first.
+- Stalled siege: a zone force below an even fight for 90 s is released and its zone marked like a retreat (held zones under attack exempt).
 - Open (owner plan): no route waypoint around a hostile centre.
 
 ### Opening and wing groups (2026-11-19, A1–A7)

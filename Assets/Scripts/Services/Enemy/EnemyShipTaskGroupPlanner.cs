@@ -22,6 +22,11 @@ namespace EmpireAtWar.Services.Enemy
     {
         /// <summary>After a retreat the weak-phase attack avoids that zone this long and tries another.</summary>
         public const float WEAK_ZONE_SWITCH_SECONDS = 90f;
+        /// <summary>
+        /// A zone force kept below an even fight this long is a stalled siege: it is released and its zone marked
+        /// like a retreat. A held zone under attack is never released this way.
+        /// </summary>
+        public const float STALLED_SIEGE_SECONDS = 90f;
 
         private readonly EnemyStrategicContextBuilder _contextBuilder;
         private readonly IUnitOrderService _orders;
@@ -39,6 +44,10 @@ namespace EmpireAtWar.Services.Enemy
         private readonly List<string> _zoneReservations = new List<string>();
         private readonly Func<int, int, float> _distance;
         private readonly ForceComposition _poolTotal = new ForceComposition();
+        private readonly ForceComposition _groupForce = new ForceComposition();
+        private readonly EnemyZoneEvaluator _evaluator = new EnemyZoneEvaluator();
+        private readonly Dictionary<string, float> _belowEvenSince = new Dictionary<string, float>();
+        private readonly List<string> _staleSieges = new List<string>();
         private string _retreatedZoneId;
         private float _retreatedUntil;
 #if UNITY_EDITOR || DEVELOPMENT_BUILD
@@ -108,6 +117,7 @@ namespace EmpireAtWar.Services.Enemy
             {
                 Vector3 home = _pool.GetHome(_poolShips[0].WorldPosition);
                 IReadOnlyList<EnemyZoneObjective> zones = _pool.CollectPoolZones(home, GetPoolSpeed());
+                NoteStalledSieges(zones, now);
                 _current.Clear();
                 foreach (IShipEntity ship in _poolShips)
                 {
@@ -168,6 +178,48 @@ namespace EmpireAtWar.Services.Enemy
             {
                 if (group.Context == null || group.Decision.State != EnemyStrategicState.RetreatValue) continue;
                 _retreatedZoneId = group.ContextBuilder.AssignedZoneId;
+                _retreatedUntil = now + WEAK_ZONE_SWITCH_SECONDS;
+            }
+        }
+
+        /// <summary>
+        /// A zone force whose ships stay below an even fight against the zone for <see cref="STALLED_SIEGE_SECONDS"/>
+        /// takes nothing and only waits to be caught: its zone is marked like a retreat, so the ships are free again
+        /// and the weak-phase attack switches to another zone.
+        /// </summary>
+        private void NoteStalledSieges(IReadOnlyList<EnemyZoneObjective> zones, float now)
+        {
+            // A zone no force holds starts its clock afresh when a force is sent again.
+            _staleSieges.Clear();
+            foreach (string zoneId in _belowEvenSince.Keys)
+                if (FindZoneGroup(zoneId) == null) _staleSieges.Add(zoneId);
+            foreach (string zoneId in _staleSieges) _belowEvenSince.Remove(zoneId);
+            foreach (EnemyShipTaskGroup group in _zoneGroups)
+            {
+                string zoneId = group.ContextBuilder.AssignedZoneId;
+                int zone = IndexOf(zones, zoneId);
+                if (zone == EnemyZoneAllocator.RESERVE || zones[zone].IsHeldUnderAttack)
+                {
+                    _belowEvenSince.Remove(zoneId);
+                    continue;
+                }
+                _groupForce.Clear();
+                for (int i = 0; i < _poolShips.Count; i++)
+                    if (group.Ships.Contains(_poolShips[i])) _groupForce.Add(_poolForces[i]);
+                if (_evaluator.Assess(zones[zone], _groupForce, EnemyZoneEvaluator.COMMIT_ADVANTAGE).Verdict ==
+                    EnemyZoneVerdict.Go)
+                {
+                    _belowEvenSince.Remove(zoneId);
+                    continue;
+                }
+                if (!_belowEvenSince.TryGetValue(zoneId, out float since))
+                {
+                    _belowEvenSince[zoneId] = now;
+                    continue;
+                }
+                if (now - since < STALLED_SIEGE_SECONDS) continue;
+                _belowEvenSince.Remove(zoneId);
+                _retreatedZoneId = zoneId;
                 _retreatedUntil = now + WEAK_ZONE_SWITCH_SECONDS;
             }
         }
@@ -249,6 +301,13 @@ namespace EmpireAtWar.Services.Enemy
             group.ContextBuilder.AssignedZoneId = zoneId;
             _zoneGroups.Add(group);
             return group;
+        }
+
+        private EnemyShipTaskGroup FindZoneGroup(string zoneId)
+        {
+            foreach (EnemyShipTaskGroup group in _zoneGroups)
+                if (group.ContextBuilder.AssignedZoneId == zoneId) return group;
+            return null;
         }
 
         private static int IndexOf(IReadOnlyList<EnemyZoneObjective> zones, string zoneId)

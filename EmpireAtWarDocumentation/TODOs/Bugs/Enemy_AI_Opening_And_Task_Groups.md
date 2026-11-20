@@ -238,6 +238,35 @@ Files: `%USERPROFILE%/AppData/LocalLow/GolinSkyCompany/EmpireAtWar/BattleTelemet
 - Unity recompile: 0 errors. Tests not run (local override).
 - Updated: `EnemySquadronCaptureAssignmentsTests` (5 `AssignInZone` tests replace 3), `EnemyUnitCommanderTests` (raid, group fill, commitment), `EnemyZoneAllocatorTests` (+3), `EnemyProductionDecisionModelTests` (opening cap step). Reviewed, no change: rally test (no allocation → `GatherPoint` path), `OwnedSiteDefense_*` (data has Mining settings).
 
+## Evidence — battle 2026-11-19 23:11 (B10 run 1; UltraHard Small 1v1, code `4a6ccd830` dirty, 936 s)
+Files: `%USERPROFILE%/AppData/LocalLow/GolinSkyCompany/EmpireAtWar/BattleTelemetry/Loading_20261119_231116_ai.csv`, `_ai_orders.csv`, `_squadrons.csv`, `Battle_20261119_231121_map.csv`, `Battle_20261119_231230.csv`. Log 14.5 s = battle 0 s.
+- AI Separatist (1204, 1325) vs human Republic (−1204, −1325). Coruscant, seed −123418381. Outer zones NW (−1556, 1477), SE (1556, −1477).
+- **User verdict:** best battle so far. The AI sabotages and retakes mines and holds one outer mine. Dozens of issues remain, but the dynamics are better.
+- Result: AI lost at 936 s. Kills Republic → Separatist 186, Separatist → Republic 109.
+
+### Worked
+- Opening: home satellite at 8 s; centre satellites at 38 / 45 / 51 s, mines 0 / 1 at 52 / 61 s, centre relay at 57 s; NW zone 2 satellites + mine by 64 s.
+- Wing cap: 6 wings bought by 15 s, none extra before the first ships. Corvettes only at 30 / 31 s (2).
+- NW outer zone and its mine held from 64 s to 904 s. Centre mines changed hands 8 times: retaken at 123 / 157 / 188 s.
+- B8: human satellite 15 destroyed twice (347 s, 466 s).
+
+### Faults (round 3)
+- **C1 (P0) Bombers never raid.** `raids=0` on almost all rows; 20 Hyena bombers bought, 27 bomber wings lost. Cause: `WinsRaid` rates **one** bomber against the mine and its satellites.
+- **C2 (P0) Both outer groups on one zone; the held zone is left bare.** From 98 s both groups work SE; NW (held) gets no wings; human retakes NW at 885–932 s unopposed. Cause: a group whose zone is taken may share a zone another group works.
+- **C3 (P0) Fleet stalls at a zone it cannot take.** 7–12 ships at SE for 262–622 s vs 15–17 defenders (`fleetAdv` 0.4–0.6); no site flipped (human rebuilt satellite 15 within 1 s each time). Then the human army hit the station (645 s); station lost 760 s. Cause: an allocator-sent group commits regardless of verdict; its local fight is never lost (`localRaw` 100).
+- **C4 (P1) Centre lost at 162–168 s, never retaken.** `gather=zone:0` with 0 ships for 262–622 s; all ships go to SE.
+- **C5 (P1) Money banked during the station siege.** 11–20k credits at 690–766 s (`saving Lucrehulk` × 153, `critical … etaSeconds=Infinity` × 65); 5 `deploymentBlocked` at home.
+- **C6 (P1) Patrol ship never patrols.** `patrolShip assigned → released reason=noSafeTarget` every 10 s from 101 s.
+- **C7 (P2)** Late centre platform: `defensePlacementBlocked` 78 / 96 candidates blocked (842–933 s).
+
+## Round 3 — steps
+- [x] **C1** Raiders of an outer group (bombers, or all wings without a zone) are rated together vs the mine and its cover and go to one mine together; one group per mine (`AssignMineRaid`).
+- [x] **C2** Outer group: home zone held (own mine/satellite, no target left) and attacked → defend it, wherever the group works. Zone taken → nearest outer zone with targets **no other group works**; none → raid. `SelectWinnableZone` also skips worked zones.
+- [x] **C3** `EnemyShipTaskGroupPlanner.NoteStalledSieges`: a zone force below an even fight (`Assess` not `Go`) for `STALLED_SIEGE_SECONDS` 90 s → zone marked like a retreat (90 s weak-phase switch). Held zones under attack exempt. "No site flipped" not tracked; the verdict alone decides.
+- [ ] **C4–C7** Not started.
+- [x] **Tests (`EnemyAi`)**: `SquadronRaid_BombersRaidAGuardedMineOnlyTogether` (×2), `WingGroups_HeldHomeZoneUnderAttackIsDefended_ElseTheGroupNeverSharesAZone` (×2), `Allocation_ForceStalledBelowAnEvenFightIsReleasedAfterNinetySeconds`; updated `SquadronRaid_OuterGroupsRaidTogether_OneMinePerGroup` (3 raids / 1 mine for one group) and the commitment test (taken zone → raid, not share).
+- Verification 2026-11-20: compile 0 errors; `EnemyAi` EditMode **557/557 pass** (quick, explicit excluded; user request). First run 555/557: the updated raid test lacked wing entities and catalog profile; fixed in the test.
+
 ## Acceptance (telemetry)
 - First wing order ≤ 6 s. Wings at the centre ≥ 3 by 40 s; outer-zone group 1–2 wings.
 - AI satellites: ≥ 2 at the centre and ≥ 1 at the own-side zone by 60 s when uncontested at arrival.
