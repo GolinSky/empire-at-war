@@ -114,6 +114,16 @@ namespace EmpireAtWar.Tests.Editor
 
         private sealed class NoShipSpawnPoints : IShipSpawnPoints
         {
+            public bool TryGetSpawnPositionNearUnits(PlayerId owner, ShipType shipType, IReadOnlyList<Vector3> units,
+                Vector3 awayFrom, out Vector3 position, out ForwardSpawnAttempt attempt)
+            {
+                attempt = new ForwardSpawnAttempt { UnitIndex = -1 };
+                position = default;
+                return false;
+            }
+
+            public float GetHullRadius(ShipType shipType) => 0f;
+
             public bool TryGetRandomSpawnPosition(PlayerId owner, ShipType shipType, out Vector3 position)
             {
                 position = default;

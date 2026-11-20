@@ -19,6 +19,11 @@ namespace EmpireAtWar.Services.Enemy
         public ReinforcementZonePresenter HomeZone { get; }
         /// <summary>Most capturing (non-bomber) wings the group held since it last chose its zone.</summary>
         public int Peak { get; set; }
+        /// <summary>Times its wings died inside the zone it works; cleared when it changes zone.</summary>
+        public List<float> ZoneDeaths { get; } = new List<float>();
+        /// <summary>A zone a lone wing left after dying there twice; skipped until <see cref="AbandonedUntil"/>.</summary>
+        public ReinforcementZonePresenter AbandonedZone { get; set; }
+        public float AbandonedUntil { get; set; }
 
         public EnemyWingGroup(EnemyWingRole role, ReinforcementZonePresenter homeZone = null)
         {

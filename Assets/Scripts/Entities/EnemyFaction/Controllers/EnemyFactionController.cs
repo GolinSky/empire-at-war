@@ -14,6 +14,7 @@ using EmpireAtWar.Entities.DefendPlatform;
 using EmpireAtWar.Entities.EnemyFaction.Models;
 using EmpireAtWar.Entities.MiningFacility;
 using EmpireAtWar.Entities.Squadrons;
+using EmpireAtWar.Models.Economy;
 using EmpireAtWar.Models.Factions;
 using EmpireAtWar.Models.Reinforcement;
 using EmpireAtWar.Services.Enemy;
@@ -38,7 +39,6 @@ namespace EmpireAtWar.Entities.EnemyFaction.Controllers
     public class EnemyFactionController : Controller<EnemyFactionModel>, IEnemyPurchaseProcessor, IEnemyStationCheat, IInitializable, ILateDisposable, IIncomeProvider,
         ITickable
     {
-        private const float DEFAULT_INCOME = 15f;
         private const float DEPLOYMENT_RETRY_INTERVAL = 1f;
         private const float DEPLOYMENT_TIER_B_SECONDS = 4f;
         private const float MAX_DEPLOYMENT_HOLD_SECONDS = 8f;
@@ -77,11 +77,18 @@ namespace EmpireAtWar.Entities.EnemyFaction.Controllers
         private readonly MiningFacilityFactory _miningFacilityFactory;
         private readonly DefendPlatformFactory _defendPlatformFactory;
         private readonly FactionResearchModel _research;
+        private readonly SecondStationLevelModel _secondStation;
+        private readonly IEnemyForwardSpawnAnchors _forwardAnchors;
+        private readonly List<ForwardSpawnAnchor> _anchors = new List<ForwardSpawnAnchor>();
+        private readonly List<Vector3> _anchorPositions = new List<Vector3>();
+        // Ships placed this tick are anchors for the next ship before the world snapshot sees them.
+        private readonly List<Vector3> _landedShips = new List<Vector3>();
+        private readonly Comparison<UnitRequest> _smallestShipFirst;
 
         private bool _isInitialized;
 
         private PlayerId Owner => _owner.Id;
-        public float Income => DEFAULT_INCOME * Model.CurrentLevel * _research.StationIncomeMultiplier;
+        public float Income => StationIncome.Get(Model.CurrentLevel, _research.StationIncomeMultiplier, _secondStation.IsBuilt);
         public bool HasPendingReinforcement => _builds.Count > 0;
         public bool PriorityConstructionPending { get; set; }
         public bool IsUpgradingStation => _builds.Builds.Any(build => build.Request is LevelUnitRequest);
@@ -120,8 +127,13 @@ namespace EmpireAtWar.Entities.EnemyFaction.Controllers
             PlayerSlot owner,
             IEnemyAiStateProvider aiState,
             SpaceStationFactory stationFactory,
-            UnitCombatProfileCatalog profiles) : base(model)
+            UnitCombatProfileCatalog profiles,
+            SecondStationLevelModel secondStation,
+            IEnemyForwardSpawnAnchors forwardAnchors) : base(model)
         {
+            _secondStation = secondStation;
+            _forwardAnchors = forwardAnchors;
+            _smallestShipFirst = CompareHullSize;
             _owner = owner;
             _aiState = aiState;
             _stationFactory = stationFactory;
@@ -153,6 +165,7 @@ namespace EmpireAtWar.Entities.EnemyFaction.Controllers
             _enemyStructurePlacementService.Reset();
             _economyProvider.AddProvider(this);
             Model.OnLevelUpgraded += RecalculateIncome;
+            _secondStation.BuiltChanged += HandleSecondStationChanged;
             _playerRegistry.RegisterAiStationCheat(Owner, this);
             _isInitialized = true;
         }
@@ -168,6 +181,7 @@ namespace EmpireAtWar.Entities.EnemyFaction.Controllers
 
             _economyProvider.RemoveProvider(this);
             Model.OnLevelUpgraded -= RecalculateIncome;
+            _secondStation.BuiltChanged -= HandleSecondStationChanged;
             _playerRegistry.UnregisterAiStationCheat(Owner);
             _isInitialized = false;
         }
@@ -240,6 +254,7 @@ namespace EmpireAtWar.Entities.EnemyFaction.Controllers
                     EnemyWingPricing.HasCheapFighterWing(Model.SquadronFactionData, _profiles) ? 2 : 1);
                 _outerWingCountSent = true;
             }
+            _squadronCommander.SetWingPatrol(Model.CurrentLevel >= 2);
             bool hasRally = _aiState.TryGetReinforcementRally(out Vector3 rally, out bool defendHome);
             _squadronCommander.SetStationDefense(hasRally && defendHome ? rally : (Vector3?)null);
             bool hasStation = _productionAccess.TryGetProductionBase(out var station);
@@ -281,13 +296,19 @@ namespace EmpireAtWar.Entities.EnemyFaction.Controllers
                 defendHome ? MINIMUM_DEFENSE_WAVE : MINIMUM_REINFORCEMENT_WAVE;
             bool allowLoneUnit = assault || !defendHome &&
                                  _unitLimitModel.CurrentUnitCapacity >= _reinforcementData.MaxUnitCapacity;
+            _landedShips.Clear();
             _builds.Advance(deltaTime, ExecuteBuild, minimumGroup,
                 allowLoneUnit ? LONE_REINFORCEMENT_WAIT_SECONDS : DEPLOYMENT_EMERGENCY_SECONDS,
                 batchDeploymentRetries: defendHome,
                 deployWave: defendHome && holdReserve ? DeployDefenseWave : null,
-                maxBlockedHoldSeconds: MAX_DEPLOYMENT_HOLD_SECONDS);
+                maxBlockedHoldSeconds: MAX_DEPLOYMENT_HOLD_SECONDS, shipDeployOrder: _smallestShipFirst);
             Model.HeldShips = _builds.CountHeldShips();
         }
+
+        // Small hulls land first: they fit more points, and each one widens the fog vision for the next.
+        private int CompareHullSize(UnitRequest left, UnitRequest right) =>
+            _shipSpawnPoints.GetHullRadius(((ShipUnitRequest)left).Key)
+                .CompareTo(_shipSpawnPoints.GetHullRadius(((ShipUnitRequest)right).Key));
 
         private void DeployDefenseWave(IReadOnlyList<UnitRequest> wave)
         {
@@ -315,7 +336,7 @@ namespace EmpireAtWar.Entities.EnemyFaction.Controllers
                     float heldSeconds = _builds.GetDeploymentBlockedSeconds(ship);
                     anyPastHoldLimit |= heldSeconds >= MAX_DEPLOYMENT_HOLD_SECONDS;
                     bool found = TryFindShipSpawnPosition(home, ship.Key, hasRally: true, defendHome: true, rally,
-                        hasRear: false, default, heldSeconds, out Vector3 position, out string tier,
+                        heldSeconds, out Vector3 position, out string tier,
                         out bool forced, out bool emergency);
                     if (!found)
                     {
@@ -355,16 +376,15 @@ namespace EmpireAtWar.Entities.EnemyFaction.Controllers
             bool hasRally,
             bool defendHome,
             Vector3 rally,
-            bool hasRear,
-            Vector3 stationAnchor,
             float heldSeconds,
             out Vector3 position,
             out string tier,
             out bool forced,
             out bool emergency)
         {
-            bool useRearAnchor = hasRally && defendHome || hasRear;
-            Vector3 anchor = hasRear ? stationAnchor : rally;
+            // Rear mode only for a defended station or one under pressure; otherwise the forward search ran first.
+            bool useRearAnchor = hasRally && defendHome;
+            Vector3 anchor = rally;
             forced = false;
             emergency = false;
 
@@ -424,6 +444,28 @@ namespace EmpireAtWar.Entities.EnemyFaction.Controllers
             position = default;
             forced = false;
             return false;
+        }
+
+        /// <summary>Forward mode: beside the spawn beacon, wings, ships or structures nearest the ship's task.</summary>
+        private bool TryForwardSpawn(PlayerId home, ShipUnitRequest ship, Vector3 task, out Vector3 position,
+            out string anchor)
+        {
+            position = default;
+            anchor = "none";
+            if (!_forwardAnchors.Collect(task, _landedShips, _anchors, out Vector3 awayFrom))
+            {
+                EnemyAiTelemetry.RecordEvent(_owner.Id, _owner.Faction, "spawnAttempt",
+                    $"unit={ship.Id};units=0;points=0;notOpen=0;notClear=0;found=False");
+                return false;
+            }
+            _anchorPositions.Clear();
+            foreach (ForwardSpawnAnchor candidate in _anchors) _anchorPositions.Add(candidate.Position);
+            bool found = _shipSpawnPoints.TryGetSpawnPositionNearUnits(home, ship.Key, _anchorPositions, awayFrom,
+                out position, out ForwardSpawnAttempt attempt);
+            if (found) anchor = _anchors[attempt.UnitIndex].Kind;
+            EnemyAiTelemetry.RecordEvent(_owner.Id, _owner.Faction, "spawnAttempt",
+                $"unit={ship.Id};units={_anchors.Count};points={attempt.Points};notOpen={attempt.NotOpen};notClear={attempt.NotClear};found={found};anchor={anchor}");
+            return found;
         }
 
         private bool TryTierDSpawn(PlayerId home, ShipType shipType, out Vector3 position) =>
@@ -500,10 +542,7 @@ namespace EmpireAtWar.Entities.EnemyFaction.Controllers
                     string tier;
                     bool forced;
                     bool emergency;
-                    Vector3 stationAnchor = default;
-                    bool hasRear = !defendHome && _productionAccess.TryGetProductionBase(out var baseEntity) &&
-                        _aiState.TryGetRearDeploymentThreats(stationAnchor =
-                            baseEntity.GetFacade<IEntityTransformFacade>().Transform.position, _defenseDeploymentThreats);
+                    string anchor;
                     if (_defenseLandings.Remove(shipUnitRequest, out var landing))
                     {
                         _shipSpawnPoints.ReleaseDefenseLanding(shipUnitRequest);
@@ -512,13 +551,24 @@ namespace EmpireAtWar.Entities.EnemyFaction.Controllers
                         forced = landing.Forced;
                         emergency = landing.Emergency;
                         foundPosition = true;
+                        anchor = "rear";
+                    }
+                    else if (hasRally && !defendHome &&
+                             TryForwardSpawn(home, shipUnitRequest, rally, out position, out anchor))
+                    {
+                        tier = "F";
+                        forced = false;
+                        emergency = false;
+                        foundPosition = true;
                     }
                     else
                     {
                         if (hasRally && defendHome)
                             _aiState.FillDefenseDeploymentThreats(_defenseDeploymentThreats);
+                        // No forward point: the held relay or station search runs in the same tick.
                         foundPosition = TryFindShipSpawnPosition(home, shipUnitRequest.Key, hasRally, defendHome, rally,
-                            hasRear, stationAnchor, heldSeconds, out position, out tier, out forced, out emergency);
+                            heldSeconds, out position, out tier, out forced, out emergency);
+                        anchor = defendHome ? "rear" : "relayOrStation";
                     }
                     if (!foundPosition)
                     {
@@ -547,9 +597,10 @@ namespace EmpireAtWar.Entities.EnemyFaction.Controllers
                                 $"unit={shipUnitRequest.Id};rally={rally};spawn={position};tier={tier};heldSeconds={heldSeconds:F1}"));
                     EnemyAiTelemetry.RecordEvent(_owner.Id, _owner.Faction, "deployment",
                         FormattableString.Invariant(
-                            $"unit={shipUnitRequest.Id};homeDefense={defendHome};rally={rally};spawn={position};tier={tier};heldSeconds={heldSeconds:F1}"));
+                            $"unit={shipUnitRequest.Id};homeDefense={defendHome};rally={rally};spawn={position};tier={tier};anchor={anchor};heldSeconds={heldSeconds:F1}"));
                     _builds.ClearDeploymentBlock(shipUnitRequest);
                     Track(_shipFactory.Create(Owner, shipUnitRequest.Key, position), shipUnitRequest);
+                    _landedShips.Add(position);
                     break;
                 case SquadronUnitRequest squadronUnitRequest:
                     if (!_squadronLauncher.TryLaunchFromStation(Owner, squadronUnitRequest.Key, out ISquadron squadron))
@@ -665,6 +716,8 @@ namespace EmpireAtWar.Entities.EnemyFaction.Controllers
         }
 
         private void RecalculateIncome(int level) => _economyProvider.RecalculateIncome(this);
+
+        private void HandleSecondStationChanged(bool built) => _economyProvider.RecalculateIncome(this);
 
         private void ReleaseUnit(UnitRequest unitRequest)
         {

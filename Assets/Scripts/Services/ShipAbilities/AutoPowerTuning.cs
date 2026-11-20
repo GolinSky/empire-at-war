@@ -11,6 +11,8 @@ namespace EmpireAtWar.Services.ShipAbilities
         [SerializeField] private float shieldLossWindow = 3f;
         [SerializeField] private float heavyShieldLoss = 0.25f;
         [SerializeField] private float lowShields = 0.6f;
+        // Below this, with a hostile warship in radar range, Shields fire at once (round 5, E11).
+        [SerializeField] private float shieldBoostBelow = 0.4f;
         [SerializeField] private float lastStandHull = 0.35f;
         [SerializeField] private int confirmationChecks = 2;
         [SerializeField] private float manualActionDelay = 2f;
@@ -23,6 +25,7 @@ namespace EmpireAtWar.Services.ShipAbilities
         public float ShieldLossWindow => shieldLossWindow;
         public float HeavyShieldLoss => heavyShieldLoss;
         public float LowShields => lowShields;
+        public float ShieldBoostBelow => shieldBoostBelow;
         public float LastStandHull => lastStandHull;
         public int ConfirmationChecks => confirmationChecks;
         public float ManualActionDelay => manualActionDelay;

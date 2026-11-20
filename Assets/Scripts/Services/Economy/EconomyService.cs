@@ -17,6 +17,8 @@ namespace EmpireAtWar.Services.Economy
         ILateDisposable, IObserver<BattleState>
     {
         private const float DEFAULT_INCOME = 3f;
+        /// <summary>One <c>economy</c> telemetry row per player this often: money, income and its sources.</summary>
+        private const float TELEMETRY_SECONDS = 15f;
 
         private readonly EconomyModel _model;
         private readonly EconomyData _data;
@@ -24,6 +26,8 @@ namespace EmpireAtWar.Services.Economy
         private readonly IPlayerRegistry _playerRegistry;
         private readonly IFactionResearchModelObserver _research;
         private readonly PlayerId _owner;
+        private readonly PlayerSlot _slot;
+        private float _telemetryIn;
         private readonly List<IIncomeProvider> _incomeProviders = new();
 
         private float _commonIncome;
@@ -48,6 +52,7 @@ namespace EmpireAtWar.Services.Economy
             _battleState = battleState;
             _playerRegistry = playerRegistry;
             _research = research;
+            _slot = owner;
             _owner = owner.Id;
         }
 
@@ -83,7 +88,32 @@ namespace EmpireAtWar.Services.Economy
             {
                 _model.AddMoney(_commonIncome);
             }
+#if UNITY_EDITOR || DEVELOPMENT_BUILD
+            if (!_isRunning || _followsHost) return;
+            _telemetryIn -= Time.deltaTime;
+            if (_telemetryIn > 0f) return;
+            _telemetryIn = TELEMETRY_SECONDS;
+            RecordEconomy();
+#endif
         }
+
+#if UNITY_EDITOR || DEVELOPMENT_BUILD
+        private void RecordEconomy()
+        {
+            var sources = new SortedDictionary<string, (int Count, float Income)>();
+            foreach (IIncomeProvider provider in _incomeProviders)
+            {
+                string name = provider.GetType().Name;
+                sources.TryGetValue(name, out var entry);
+                sources[name] = (entry.Count + 1, entry.Income + provider.Income);
+            }
+            var text = new System.Text.StringBuilder(System.FormattableString.Invariant(
+                $"money={_model.Money:F0};income={_commonIncome:F1};sources="));
+            foreach (KeyValuePair<string, (int Count, float Income)> source in sources)
+                text.Append(System.FormattableString.Invariant($"{source.Key}x{source.Value.Count}:{source.Value.Income:F1} "));
+            EmpireAtWar.Services.Enemy.EnemyAiTelemetry.RecordEvent(_owner, _slot.Faction, "economy", text.ToString());
+        }
+#endif
 
         public bool TrySpend(UnitRequest unitRequest)
         {

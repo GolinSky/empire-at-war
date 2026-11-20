@@ -60,12 +60,12 @@ namespace EmpireAtWar.Tests.Editor
             Assert.That(research.StationIncomeMultiplier, Is.EqualTo(1.4f).Within(0.0001f));
         }
 
-        [TestCase(1, 18f)]
-        [TestCase(2, 33f)]
-        [TestCase(3, 48f)]
-        [TestCase(4, 63f)]
-        [TestCase(5, 78f)]
-        public void StationIncome_IsTripledAndResearchRefreshesRegisteredProviders(int level, float baseIncome)
+        [TestCase(1)]
+        [TestCase(2)]
+        [TestCase(3)]
+        [TestCase(4)]
+        [TestCase(5)]
+        public void StationIncome_GrowsWithLevelAndResearchRefreshesRegisteredProviders(int level)
         {
             FactionRoster roster = CreateRoster("Empire");
             FactionResearchModel research = new FactionResearchModel(roster);
@@ -83,7 +83,13 @@ namespace EmpireAtWar.Tests.Editor
             try
             {
                 economy.AddProvider(station);
-                Assert.That(economy.TotalIncome, Is.EqualTo(baseIncome));
+                float stationIncome = station.Income;
+                faction.CurrentLevel = 1;
+                Assert.That(stationIncome, Is.EqualTo(level * station.Income).Within(0.0001f),
+                    "Station income grows in equal steps per level.");
+                faction.CurrentLevel = level;
+                float baseIncome = stationIncome + economy.Income;
+                Assert.That(economy.TotalIncome, Is.EqualTo(baseIncome).Within(0.0001f));
                 economy.AddProvider(new FixedIncomeProvider());
                 research.Complete(ResearchType.IncreasedStationIncome);
                 Assert.That(economy.TotalIncome, Is.EqualTo(baseIncome * 1.2f + 60f).Within(0.0001f));
@@ -97,7 +103,7 @@ namespace EmpireAtWar.Tests.Editor
         }
 
         [Test]
-        public void SecondStation_BuildUpgradeAndLossDoNotChangeIncome()
+        public void SecondStation_RaisesIncomeWhileItStands()
         {
             FactionRoster roster = CreateRoster("Empire");
             FactionResearchModel research = new FactionResearchModel(roster);
@@ -108,13 +114,15 @@ namespace EmpireAtWar.Tests.Editor
                 faction, research, null, TestPlayers.CreateDuel().Get(TestPlayers.Human), null, secondStation,
                 TestPlayers.CreateLocalPlayer(TestPlayers.CreateDuel()));
 
-            Assert.That(station.Income, Is.EqualTo(45f));
+            float single = station.Income;
             secondStation.IsBuilt = true;
-            Assert.That(station.Income, Is.EqualTo(45f));
+            float withSecond = station.Income;
+            Assert.That(withSecond, Is.GreaterThan(single));
+            Assert.That(withSecond, Is.LessThan(2f * single), "The second station adds less than a full station.");
             secondStation.CompleteLevelUpgrade();
-            Assert.That(station.Income, Is.EqualTo(45f));
+            Assert.That(station.Income, Is.EqualTo(withSecond));
             secondStation.HandleLost();
-            Assert.That(station.Income, Is.EqualTo(45f));
+            Assert.That(station.Income, Is.EqualTo(single));
         }
 
         [Test]

@@ -45,8 +45,9 @@ namespace EmpireAtWar.Services.Enemy
         /// It joins the fleet only when the station is about to fall or it is the last ship.</summary>
         public IShipEntity Select(IReadOnlyList<IShipEntity> ships, bool stationCritical)
         {
+            // From level 2 a wing patrols instead (EnemySquadronCommander).
             IShipEntity selected = CanPatrol(_owner.Difficulty, ships.Count, stationCritical) &&
-                                   Time.time >= _retryAt
+                                   _faction.CurrentLevel <= 1 && Time.time >= _retryAt
                 ? FindCheapest(ships) : null;
             if (selected != _ship)
             {
@@ -54,7 +55,7 @@ namespace EmpireAtWar.Services.Enemy
                 {
                     _patrol.Release($"ship:{_ship.EntityId}");
                     Log(_ship, "released", stationCritical ? "stationCritical" :
-                        ships.Count <= 1 ? "lastShip" : "unavailable");
+                        ships.Count <= 1 ? "lastShip" : _faction.CurrentLevel > 1 ? "wingPatrol" : "unavailable");
                 }
                 _ship = selected;
                 _hasIssuedTarget = false;

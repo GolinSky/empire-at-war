@@ -283,7 +283,8 @@ namespace EmpireAtWar.Tests.Editor
                     intelRegistry: new TeamIntelRegistry(),
                     owner: TestPlayers.CreateDuel(difficulty).Get(TestPlayers.Enemy),
                     stationPressure: new EnemyStationPressureTracker(),
-                    scheduler: scheduler);
+                    scheduler: scheduler,
+                    squadrons: new NoPatrolSquadronCommander());
 
                 strategy.Start();
                 Assert.That(strategy.OpeningMiningPending, Is.True);
@@ -441,7 +442,8 @@ namespace EmpireAtWar.Tests.Editor
                     counterModel: new EnemyCounterProductionModel(new NeutralShipClassMatchups()),
                     intelRegistry: new TeamIntelRegistry(),
                     owner: owner, stationPressure: new EnemyStationPressureTracker(),
-                    scheduler: scheduler);
+                    scheduler: scheduler,
+                    squadrons: new NoPatrolSquadronCommander());
 
                 strategy.Start();
                 strategy.Tick(0f);
@@ -526,7 +528,8 @@ namespace EmpireAtWar.Tests.Editor
                     counterModel: new EnemyCounterProductionModel(new NeutralShipClassMatchups()),
                     intelRegistry: new TeamIntelRegistry(),
                     owner: owner, stationPressure: new EnemyStationPressureTracker(),
-                    scheduler: scheduler);
+                    scheduler: scheduler,
+                    squadrons: new NoPatrolSquadronCommander());
 
                 UnitLimitKey capacityHolder = GetUnitId<ShipUnitRequest>("capacity-holder");
                 int heldCapacity = MAX_UNIT_CAPACITY - unitLimitModel.CurrentUnitCapacity -
@@ -629,7 +632,8 @@ namespace EmpireAtWar.Tests.Editor
                     counterModel: new EnemyCounterProductionModel(new NeutralShipClassMatchups()),
                     intelRegistry: new TeamIntelRegistry(),
                     owner: owner, stationPressure: new EnemyStationPressureTracker(),
-                    scheduler: scheduler);
+                    scheduler: scheduler,
+                    squadrons: new NoPatrolSquadronCommander());
 
                 strategy.Start();
                 strategy.Tick(0f);
@@ -717,7 +721,8 @@ namespace EmpireAtWar.Tests.Editor
                     intelRegistry: new TeamIntelRegistry(),
                     owner: TestPlayers.CreateDuel(EnemyAiDifficulty.UltraHard).Get(TestPlayers.Enemy),
                     stationPressure: pressure,
-                    scheduler: scheduler);
+                    scheduler: scheduler,
+                    squadrons: new NoPatrolSquadronCommander());
 
                 strategy.Start();
                 strategy.Tick(0f);
@@ -754,7 +759,8 @@ namespace EmpireAtWar.Tests.Editor
                     productionAccess: new OperationalProductionAccess { CanProduce = false },
                     forceBuilder: null, profileCatalog: null, counterModel: null, intelRegistry: new TeamIntelRegistry(),
                     owner: TestPlayers.CreateDuel().Get(TestPlayers.Enemy), stationPressure: new EnemyStationPressureTracker(),
-                    scheduler: scheduler);
+                    scheduler: scheduler,
+                    squadrons: new NoPatrolSquadronCommander());
 
                 strategy.Start();
                 strategy.Tick(0f);
@@ -839,7 +845,8 @@ namespace EmpireAtWar.Tests.Editor
                     intelRegistry: new TeamIntelRegistry(),
                     owner: TestPlayers.CreateDuel(EnemyAiDifficulty.UltraHard).Get(TestPlayers.Enemy),
                     stationPressure: pressure,
-                    scheduler: scheduler);
+                    scheduler: scheduler,
+                    squadrons: new NoPatrolSquadronCommander());
 
                 strategy.Start();
                 strategy.Tick(0f);

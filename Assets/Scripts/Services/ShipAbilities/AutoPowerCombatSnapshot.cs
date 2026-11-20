@@ -26,18 +26,19 @@ namespace EmpireAtWar.Services.ShipAbilities
         private readonly ForceComposition _hostile = new ForceComposition();
         private readonly ForceComposition _engagedHostile = new ForceComposition();
         private readonly IEntityLocator _entities;
-        private readonly ILocalPlayer _player;
+        private readonly IPlayerRelations _relations;
         private readonly ShipAbilityService _abilities;
         private readonly UnitCombatProfileCatalog _profiles;
         private readonly ForceCompositionBuilder _forces;
         private readonly AutoPowerTuning _tuning;
         private float _maxTargetFootprint;
 
-        public AutoPowerCombatSnapshot(IEntityLocator entities, ILocalPlayer player, ShipAbilityService abilities,
+        /// <summary>One snapshot serves every owner: each assessment reads the caster's own owner.</summary>
+        public AutoPowerCombatSnapshot(IEntityLocator entities, IPlayerRelations relations, ShipAbilityService abilities,
             UnitCombatProfileCatalog profiles, ForceCompositionBuilder forces, ShipAbilityCatalog catalog)
         {
             _entities = entities;
-            _player = player;
+            _relations = relations;
             _abilities = abilities;
             _profiles = profiles;
             _forces = forces;
@@ -112,18 +113,21 @@ namespace EmpireAtWar.Services.ShipAbilities
             _engagedHostile.Clear();
             bool canAttack = false;
             bool hostileWarship = false;
+            bool hostileShipNearby = false;
+            PlayerId owner = caster.Entity.Owner;
             CollectNearby(caster.WorldPosition, caster.RadarRange);
             foreach ((IEntity entity, Vector3 position) in _nearby)
             {
-                if (_abilities.IsVisibleHostile(_player.Id, entity))
+                if (_abilities.IsVisibleHostile(owner, entity))
                 {
                     _forces.AddUnit(_hostile, entity);
+                    hostileShipNearby |= !entity.HealthModel.ShipClass.IsStrikecraft();
                     if (!automation.CanEngage(entity.HealthModel.ShipClass, position)) continue;
                     _forces.AddUnit(_engagedHostile, entity);
                     hostileWarship |= !entity.HealthModel.ShipClass.IsStrikecraft();
                     canAttack = true;
                 }
-                else if (_player.IsFriendly(entity.Owner))
+                else if (_relations.IsAllied(owner, entity.Owner))
                     _forces.AddUnit(_own, entity);
             }
             ShipClass targetClass = caster.Health.ShipClass;
@@ -142,14 +146,24 @@ namespace EmpireAtWar.Services.ShipAbilities
             }
             AutoPowerRole power = ChooseRole(health.HullPercentage, health.Shields, health.ShieldPercentage,
                 hasShieldPower && automation.CanRegenerateShields, shieldsBoosted, shieldLoss, meaningful, canAttack,
-                CombatMatchup.Advantage(_hostile, _own));
+                CombatMatchup.Advantage(_hostile, _own), hostileShipNearby);
             bool heavyLoss = shieldLoss == AutoPowerShieldLoss.Heavy;
             return new AutoPowerSituation(power, hostileNearby: !_hostile.IsEmpty, engaged: meaningful && canAttack,
                 endangered: heavyLoss && health.ShieldPercentage < _tuning.LowShields,
-                cornered: heavyLoss && health.HullPercentage < _tuning.LastStandHull, travelling);
+                cornered: heavyLoss && health.HullPercentage < _tuning.LastStandHull, travelling,
+                urgent: IsUrgentShieldBoost(health.ShieldPercentage, hasShieldPower && automation.CanRegenerateShields,
+                    shieldsBoosted, hostileShipNearby));
         }
 
-        /// <summary>Priority: last-stand Weapons → Shields → normal Weapons.</summary>
+        /// <summary>
+        /// Shields below <see cref="AutoPowerTuning.ShieldBoostBelow"/> with a visible hostile warship (not
+        /// strikecraft) in radar range: boost at once, before any other power choice.
+        /// </summary>
+        public bool IsUrgentShieldBoost(float shieldFraction, bool canBoostShields, bool shieldsBoosted,
+            bool hostileShipNearby) =>
+            canBoostShields && !shieldsBoosted && hostileShipNearby && shieldFraction < _tuning.ShieldBoostBelow;
+
+        /// <summary>Priority: urgent Shields (low shields, warship near) → last-stand Weapons → Shields → normal Weapons.</summary>
         /// <remarks>
         /// Any shield damage below the low-shield line asks for Shields: a burst threshold alone can never be met
         /// once fewer shields remain than the burst, and steady fire never reaches it.
@@ -157,8 +171,10 @@ namespace EmpireAtWar.Services.ShipAbilities
         /// </remarks>
         public AutoPowerRole ChooseRole(float hull, float shields, float shieldFraction, bool canBoostShields,
             bool shieldsBoosted, AutoPowerShieldLoss shieldLoss, bool meaningfulForce, bool canAttack,
-            float hostileAdvantage)
+            float hostileAdvantage, bool hostileShipNearby = false)
         {
+            if (IsUrgentShieldBoost(shieldFraction, canBoostShields, shieldsBoosted, hostileShipNearby))
+                return AutoPowerRole.Shields;
             if (meaningfulForce && canAttack && hull < _tuning.LastStandHull && shields <= 0f &&
                 hostileAdvantage >= _tuning.LastStandForceRatio)
                 return AutoPowerRole.Weapons;

@@ -16,10 +16,13 @@ namespace EmpireAtWar.Services.ShipAbilities
         public bool Endangered { get; }
         public bool Cornered { get; }
         public bool Travelling { get; }
+        /// <summary>The shield boost is urgent: it fires without waiting for a confirming check.</summary>
+        public bool Urgent { get; }
 
         public AutoPowerSituation(AutoPowerRole power, bool hostileNearby, bool engaged, bool endangered,
-            bool cornered, bool travelling)
+            bool cornered, bool travelling, bool urgent = false)
         {
+            Urgent = urgent;
             Power = power;
             HostileNearby = hostileNearby;
             Engaged = engaged;

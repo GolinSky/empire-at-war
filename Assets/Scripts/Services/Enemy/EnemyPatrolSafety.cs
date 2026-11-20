@@ -45,6 +45,9 @@ namespace EmpireAtWar.Services.Enemy
             _forces = forces;
         }
 
+        /// <summary>No hostile spawn block circle (station, relay or structure) covers the point.</summary>
+        public bool IsOutsideHostileBlock(Vector3 point) => !_areas.IsBlocked(_owner.Id, point);
+
         /// <summary>A ship can reach <paramref name="destination"/> and may stand there; no threat check.</summary>
         public bool IsReachable(Vector3 origin, Vector3 destination, float clearance) =>
             !_areas.IsBlocked(_owner.Id, destination) &&

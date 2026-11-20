@@ -11,6 +11,7 @@ namespace EmpireAtWar.Entities.EnemyFaction.Models
         private readonly List<EnemyPendingBuild> _builds = new List<EnemyPendingBuild>();
         private readonly List<UnitRequest> _finished = new List<UnitRequest>();
         private readonly List<UnitRequest> _wave = new List<UnitRequest>();
+        private readonly List<UnitRequest> _ships = new List<UnitRequest>();
         private readonly HashSet<string> _pipelineIds = new HashSet<string>();
         private readonly HashSet<string> _externalPipelines = new HashSet<string>();
         private readonly Dictionary<string, float> _remainingTime = new Dictionary<string, float>();
@@ -80,7 +81,7 @@ namespace EmpireAtWar.Entities.EnemyFaction.Models
         public void Advance(float deltaTime, Action<UnitRequest> complete, int minimumReadyCombatUnits = 0,
             float deploymentWaitLimit = float.PositiveInfinity, bool batchDeploymentRetries = false,
             Action<IReadOnlyList<UnitRequest>> deployWave = null,
-            float maxBlockedHoldSeconds = float.PositiveInfinity)
+            float maxBlockedHoldSeconds = float.PositiveInfinity, Comparison<UnitRequest> shipDeployOrder = null)
         {
             if (deltaTime < 0f) throw new ArgumentOutOfRangeException(nameof(deltaTime));
 
@@ -165,8 +166,32 @@ namespace EmpireAtWar.Entities.EnemyFaction.Models
                 }
             }
 
+            if (shipDeployOrder != null)
+            {
+                OrderShips(_finished, shipDeployOrder);
+                OrderShips(_wave, shipDeployOrder);
+            }
             for (int i = 0; i < _finished.Count; i++) complete(_finished[i]);
             if (_wave.Count > 0) deployWave(_wave);
+        }
+
+        /// <summary>Re-orders only the ship entries among themselves (stable); other requests keep their slots.</summary>
+        private void OrderShips(List<UnitRequest> requests, Comparison<UnitRequest> order)
+        {
+            _ships.Clear();
+            foreach (UnitRequest request in requests)
+                if (request is ShipUnitRequest) _ships.Add(request);
+            if (_ships.Count < 2) return;
+            for (int i = 1; i < _ships.Count; i++)
+            {
+                UnitRequest ship = _ships[i];
+                int j = i - 1;
+                for (; j >= 0 && order(_ships[j], ship) > 0; j--) _ships[j + 1] = _ships[j];
+                _ships[j + 1] = ship;
+            }
+            int next = 0;
+            for (int i = 0; i < requests.Count; i++)
+                if (requests[i] is ShipUnitRequest) requests[i] = _ships[next++];
         }
 
         private static bool IsCombatUnit(UnitRequest request) =>

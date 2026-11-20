@@ -1,3 +1,4 @@
+using System;
 using System.Collections.Generic;
 using EmpireAtWar.Entities.BaseEntity;
 using EmpireAtWar.Entities.BaseEntity.EntityFacades;
@@ -32,6 +33,11 @@ namespace EmpireAtWar.Services.ShipSpawning
             new List<(Vector3, float, bool)>();
 
         private readonly List<Vector3> _anchors = new List<Vector3>();
+        // Forward points: bounds, hazard, vision and hostile block circle, then the hull; no reachability.
+        private readonly Func<Vector3, bool> _isForwardOpen;
+        private readonly Func<Vector3, bool> _isForwardClear;
+        private PlayerId _forwardOwner;
+        private ShipType _forwardShip;
 
         public ShipSpawnPoints(
             IReinforcementZoneSource zoneSource,
@@ -48,6 +54,8 @@ namespace EmpireAtWar.Services.ShipSpawning
             _spawnRule = spawnRule;
             _relations = relations;
             _data = data;
+            _isForwardOpen = point => _spawnRule.IsOpen(_forwardOwner, point);
+            _isForwardClear = point => _clearance.IsClear(_forwardOwner, _forwardShip, point);
         }
 
         public bool TryGetRandomSpawnPosition(PlayerId owner, ShipType shipType, out Vector3 position)
@@ -89,6 +97,16 @@ namespace EmpireAtWar.Services.ShipSpawning
             position = default;
             return false;
         }
+
+        public bool TryGetSpawnPositionNearUnits(PlayerId owner, ShipType shipType, IReadOnlyList<Vector3> units,
+            Vector3 awayFrom, out Vector3 position, out ForwardSpawnAttempt attempt)
+        {
+            _forwardOwner = owner;
+            _forwardShip = shipType;
+            return ForwardSpawnRing.TryFind(units, awayFrom, _isForwardOpen, _isForwardClear, out position, out attempt);
+        }
+
+        public float GetHullRadius(ShipType shipType) => _clearance.GetPlanarRadius(shipType);
 
         public bool TryGetDefaultZoneSpawnPosition(PlayerId owner, ShipType shipType, out Vector3 position)
         {

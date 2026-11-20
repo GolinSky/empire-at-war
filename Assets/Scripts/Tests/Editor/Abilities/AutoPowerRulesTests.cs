@@ -45,6 +45,29 @@ namespace EmpireAtWar.Tests.Editor
                 shieldsBoosted, shieldLoss, true, attack, advantage), Is.EqualTo(expected));
         }
 
+        // Round 5, E11: below 40 % with a hostile warship in radar range the shield boost fires at once; the
+        // older rule (below 60 % with recent shield damage) still applies after confirmation.
+        [TestCase(0.39f, true, AutoPowerShieldLoss.None, AutoPowerRole.Shields, true)]
+        [TestCase(0.39f, false, AutoPowerShieldLoss.None, AutoPowerRole.None, false)]
+        [TestCase(0.55f, false, AutoPowerShieldLoss.Light, AutoPowerRole.Shields, false)]
+        [TestCase(0.65f, true, AutoPowerShieldLoss.None, AutoPowerRole.None, false)]
+        public void ShieldBoost_UrgentBelowFortyWithWarshipNear(float shieldFraction, bool warshipNear,
+            AutoPowerShieldLoss shieldLoss, AutoPowerRole expected, bool urgent)
+        {
+            Assert.That(_combat.ChooseRole(1f, shieldFraction * 100f, shieldFraction, true, false, shieldLoss,
+                false, false, 1f, warshipNear), Is.EqualTo(expected));
+            Assert.That(_combat.IsUrgentShieldBoost(shieldFraction, true, false, warshipNear), Is.EqualTo(urgent));
+        }
+
+        [Test]
+        public void ShieldBoost_UrgentRuleComesBeforeLastStandWeapons()
+        {
+            Assert.That(_combat.ChooseRole(0.2f, 0f, 0f, true, false, AutoPowerShieldLoss.Heavy, true, true, 2f,
+                hostileShipNearby: true), Is.EqualTo(AutoPowerRole.Shields));
+            Assert.That(_combat.IsUrgentShieldBoost(0.1f, true, true, true), Is.False, "Already boosted.");
+            Assert.That(_combat.IsUrgentShieldBoost(0.1f, false, false, true), Is.False, "No shield power.");
+        }
+
         [Test]
         public void NoMeaningfulEnemy_BlocksWeaponsIncludingLastStand()
         {

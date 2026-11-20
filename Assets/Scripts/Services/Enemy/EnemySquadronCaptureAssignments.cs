@@ -18,6 +18,8 @@ namespace EmpireAtWar.Services.Enemy
         private const float EVEN_FIGHT = 1f;
         /// <summary>A group this large splits in half over the two best mining spots of its zone.</summary>
         public const int SPLIT_GROUP_WINGS = 6;
+        /// <summary>A spreading group (group A) sends at least this many wings to each mining spot it works.</summary>
+        public const int MIN_SPOT_WINGS = 2;
 
         private readonly Dictionary<Vector3, int> _targets = new Dictionary<Vector3, int>();
         private readonly Dictionary<Vector3, ForceComposition> _defenders = new Dictionary<Vector3, ForceComposition>();
@@ -32,6 +34,7 @@ namespace EmpireAtWar.Services.Enemy
         private readonly List<Vector3> _zoneSpots = new List<Vector3>();
         private readonly List<Vector3> _zoneSites = new List<Vector3>();
         private readonly List<ISquadron> _part = new List<ISquadron>();
+        private readonly HashSet<Vector3> _takenSpots = new HashSet<Vector3>();
         // Wings sent to an uncontested mining spot: they hold inside its circle (a move, not an attack-move).
         private readonly Dictionary<ISquadron, float> _holds = new Dictionary<ISquadron, float>();
         private Vector3 _zoneHome;
@@ -173,10 +176,13 @@ namespace EmpireAtWar.Services.Enemy
         /// one is fought for when the wings at least match its defenders, else the next spot is tried. With no spot
         /// left the wings take the remaining site nearest home (free first, else they fight for it) and, with nothing
         /// left at all, hold the zone centre. A group is never left idle.
+        /// A spreading group (group A) splits into parts of at least <see cref="MIN_SPOT_WINGS"/> wings, one per
+        /// mining spot with work; a part that wins no spot joins the next part. It never parks on a contested site it
+        /// cannot win: with no free site left it holds the zone centre.
         /// </summary>
         /// <param name="addWing">Adds a wing at its current strength to a force, to rate a contested spot.</param>
         public void AssignInZone(IReadOnlyList<ISquadron> wings, Vector3 centre, float reach, Vector3 home,
-            Action<ISquadron, ForceComposition> addWing)
+            Action<ISquadron, ForceComposition> addWing, bool spread = false)
         {
             if (wings.Count == 0) return;
             _zoneHome = home;
@@ -189,15 +195,23 @@ namespace EmpireAtWar.Services.Enemy
                 if (PlanarDistanceSquared(target, centre) <= reach * reach) _zoneSites.Add(target);
             _zoneSites.Sort(_compareByHome);
 
-            bool split = wings.Count >= SPLIT_GROUP_WINGS && _zoneSpots.Count >= 2;
-            int firstPart = split ? wings.Count / 2 : wings.Count;
-            Vector3? taken = AssignPart(wings, 0, firstPart, centre, null, addWing);
-            if (split) AssignPart(wings, firstPart, wings.Count, centre, taken, addWing);
+            int parts = spread
+                ? Mathf.Max(1, Mathf.Min(wings.Count / MIN_SPOT_WINGS, _zoneSpots.Count))
+                : wings.Count >= SPLIT_GROUP_WINGS && _zoneSpots.Count >= 2 ? 2 : 1;
+            _takenSpots.Clear();
+            for (int part = 0; part < parts; part++)
+            {
+                bool last = part == parts - 1;
+                // Unassigned wings of an earlier part that won nothing are gathered again here.
+                int to = (part + 1) * wings.Count / parts;
+                Vector3? spot = AssignPart(wings, 0, to, centre, addWing, fallback: last, parkOnContested: !spread);
+                if (spot.HasValue) _takenSpots.Add(spot.Value);
+            }
         }
 
-        /// <returns>The mining spot the part took, or null when it went elsewhere.</returns>
-        private Vector3? AssignPart(IReadOnlyList<ISquadron> wings, int from, int to, Vector3 centre, Vector3? skip,
-            Action<ISquadron, ForceComposition> addWing)
+        /// <returns>The mining spot the part took, or null when it went elsewhere or (without fallback) nowhere.</returns>
+        private Vector3? AssignPart(IReadOnlyList<ISquadron> wings, int from, int to, Vector3 centre,
+            Action<ISquadron, ForceComposition> addWing, bool fallback, bool parkOnContested)
         {
             _part.Clear();
             for (int i = from; i < to; i++)
@@ -206,12 +220,13 @@ namespace EmpireAtWar.Services.Enemy
 
             foreach (Vector3 spot in _zoneSpots)
             {
-                if (skip.HasValue && skip.Value == spot) continue;
+                if (_takenSpots.Contains(spot)) continue;
                 bool contested = IsContested(spot);
                 if (contested && !Wins(spot, addWing)) continue;
                 AssignPartTo(spot, contested ? (float?)null : _spots[spot]);
                 return spot;
             }
+            if (!fallback) return null;
 
             // No mining spot is left or winnable: the remaining site nearest home, free first, else fight for it.
             foreach (Vector3 site in _zoneSites)
@@ -220,7 +235,7 @@ namespace EmpireAtWar.Services.Enemy
                 AssignPartTo(site, null);
                 return null;
             }
-            AssignPartTo(_zoneSites.Count > 0 ? _zoneSites[0] : centre, null);
+            AssignPartTo(parkOnContested && _zoneSites.Count > 0 ? _zoneSites[0] : centre, null);
             return null;
         }
 

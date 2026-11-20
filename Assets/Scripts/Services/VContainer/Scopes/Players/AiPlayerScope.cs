@@ -71,6 +71,7 @@ namespace EmpireAtWar.Services.VContainer
                 builder.Register<SuperWeaponSaveSource>(Lifetime.Singleton).AsImplementedInterfaces();
             builder.Register<EnemyUnitLimitModel>(Lifetime.Singleton);
             builder.Register<EnemySquadronCommander>(Lifetime.Singleton).AsImplementedInterfaces().AsSelf();
+            builder.Register<EnemyForwardSpawnAnchors>(Lifetime.Singleton).AsImplementedInterfaces();
             builder.Register<FactionRoster>(Lifetime.Singleton)
                 .WithParameter(battleScope.Factions.Get(_owner.Faction))
                 .WithParameter(player.Features);

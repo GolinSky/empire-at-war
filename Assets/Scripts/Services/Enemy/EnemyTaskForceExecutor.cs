@@ -80,7 +80,9 @@ namespace EmpireAtWar.Services.Enemy
         private Vector3 _markerPoint;
         private readonly HashSet<IShipEntity> _markerShips = new HashSet<IShipEntity>();
 
-        public EnemyTaskForceExecutor(IUnitOrderService unitOrderService) => _unitOrderService = unitOrderService;
+        // Orders pass a filter: the same order to the same target or point is not sent again (E9 churn).
+        public EnemyTaskForceExecutor(IUnitOrderService unitOrderService) =>
+            _unitOrderService = new AiOrderDeduplicator(unitOrderService);
 
         /// <summary>Ships committed with the main body by the last offensive order; 0 for other states.</summary>
         public int BodyCount => _body.Count;
@@ -386,6 +388,19 @@ namespace EmpireAtWar.Services.Enemy
             {
                 RallyBody(context, anchor);
                 ActionReason = $"Assembling capture force: {_body.Count}/{count} ships in the body.";
+                return;
+            }
+            if (context.CaptureBlockingFacility is GameEntity routed && !routed.HealthModel.IsDestroyed &&
+                objective != null &&
+                (context.CaptureTarget - objective.Position).sqrMagnitude > CAPTURE_TARGET_EPSILON_SQUARED)
+            {
+                // The straight line to the facility passes a hostile-held centre: go round it first.
+                var movers = new List<GameEntity>();
+                foreach (IShipEntity ship in _body)
+                    movers.Add(context.Receivers[ship]);
+                _unitOrderService.IssueAttackMove(movers, context.CaptureTarget);
+                ActionReason = "Route around the hostile-held centre before attacking the blocking structure.";
+                FinishCaptureAssignments(context, anchor, count);
                 return;
             }
             if (context.CaptureBlockingFacility is GameEntity facility && !facility.HealthModel.IsDestroyed)

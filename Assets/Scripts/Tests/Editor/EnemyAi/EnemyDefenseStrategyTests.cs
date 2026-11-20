@@ -11,6 +11,7 @@ using EmpireAtWar.Services.CaptureSites;
 using EmpireAtWar.Services.Enemy;
 using NUnit.Framework;
 using UnityEditor;
+using UnityEngine;
 
 namespace EmpireAtWar.Tests.Editor
 {
@@ -217,6 +218,74 @@ namespace EmpireAtWar.Tests.Editor
             controller.BuildNext(snapshot, mineSite: -1, mandatorySatellite: false);
 
             Assert.That(construction.Started, Is.EqualTo(new[] { 3, optional.SiteIndex }));
+        }
+
+        // Round 5, E9: a pad lost twice within a minute gets no new satellite for a while.
+        [Test]
+        public void PadLostTwiceWithinAMinute_WaitsBeforeTheNextSatellite()
+        {
+            var roster = TestPlayers.CreateDuel();
+            var pad = new PadSite { Owner = TestPlayers.Enemy };
+            var controller = new EnemySiteConstructionController(new PadDirectory(pad), null,
+                new ConstructionStub(true), roster.Get(TestPlayers.Enemy), null, new EnemyDefenseStrategy(), null,
+                null, null);
+
+            controller.TrackPadLosses(0f);
+            pad.Owner = TestPlayers.Human;
+            controller.TrackPadLosses(10f);
+            Assert.That(controller.IsPadWaiting(0, 11f), Is.False, "One loss is ordinary fighting.");
+            pad.Owner = TestPlayers.Enemy;
+            controller.TrackPadLosses(20f);
+            pad.Owner = TestPlayers.Human;
+            controller.TrackPadLosses(30f);
+
+            Assert.That(controller.IsPadWaiting(0, 31f), Is.True);
+            Assert.That(controller.IsPadWaiting(0, 30f + EnemySiteConstructionController.PAD_REBUY_WAIT), Is.False);
+        }
+
+        [Test]
+        public void PadLostTwiceMoreThanAMinuteApart_DoesNotWait()
+        {
+            var roster = TestPlayers.CreateDuel();
+            var pad = new PadSite { Owner = TestPlayers.Enemy };
+            var controller = new EnemySiteConstructionController(new PadDirectory(pad), null,
+                new ConstructionStub(true), roster.Get(TestPlayers.Enemy), null, new EnemyDefenseStrategy(), null,
+                null, null);
+
+            controller.TrackPadLosses(0f);
+            pad.Owner = TestPlayers.Human;
+            controller.TrackPadLosses(10f);
+            pad.Owner = TestPlayers.Enemy;
+            controller.TrackPadLosses(20f);
+            pad.Owner = TestPlayers.Human;
+            controller.TrackPadLosses(10f + EnemySiteConstructionController.PAD_LOSS_WINDOW + 1f);
+
+            Assert.That(controller.IsPadWaiting(0, 80f), Is.False);
+        }
+
+        private sealed class PadDirectory : ICaptureSiteDirectory
+        {
+            public event Action SitesChanged { add { } remove { } }
+            public IReadOnlyList<ICaptureSite> Sites { get; }
+
+            public PadDirectory(ICaptureSite site) => Sites = new[] { site };
+        }
+
+        private sealed class PadSite : ICaptureSite
+        {
+            public CaptureSiteKind Kind => CaptureSiteKind.Satellite;
+            public int PointId => 0;
+            public PlayerId Owner { get; set; }
+            public CaptureSiteState State => CaptureSiteState.Owned;
+            public SiteFacilityType FacilityType => SiteFacilityType.TurbolaserSatellite;
+            public float CaptureProgress => 0f;
+            public float ConstructionProgress => 0f;
+            public Vector3 Center => Vector3.zero;
+            public Vector3 FacilityPosition => Vector3.zero;
+            public bool IsRevealed => true;
+            public bool IsOperational => true;
+            public float PointerHitDistance(Ray ray) => float.PositiveInfinity;
+            public bool Contains(Vector3 position, float clearance = 0f) => false;
         }
 
         private sealed class ConstructionStub : ICaptureSiteConstruction

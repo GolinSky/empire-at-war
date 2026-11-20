@@ -118,6 +118,29 @@ namespace EmpireAtWar.Tests.Editor
             Assert.That(arrived, Is.EqualTo(new UnitRequest[] { blocked, escort }));
         }
 
+        // Round 5, E1f: ships finished together land smallest hull first; other requests keep their place.
+        [Test]
+        public void Advance_ShipDeployOrder_DeploysSmallestHullFirst()
+        {
+            var queue = new EnemyBuildQueue();
+            var capital = new ShipUnitRequest(new FactionData(), ShipType.Venator);
+            var corvette = new ShipUnitRequest(new FactionData(), ShipType.CorellianCorvette);
+            var frigate = new ShipUnitRequest(new FactionData(), ShipType.Recusant);
+            var hull = new Dictionary<ShipType, float>
+            {
+                [ShipType.Venator] = 600f, [ShipType.CorellianCorvette] = 80f, [ShipType.Recusant] = 250f
+            };
+            queue.Add(capital, 1f);
+            queue.Add(corvette, 1f);
+            queue.Add(frigate, 1f);
+            var arrived = new List<UnitRequest>();
+
+            queue.Advance(1f, arrived.Add, shipDeployOrder: (left, right) =>
+                hull[((ShipUnitRequest)left).Key].CompareTo(hull[((ShipUnitRequest)right).Key]));
+
+            Assert.That(arrived, Is.EqualTo(new UnitRequest[] { corvette, frigate, capital }));
+        }
+
         [Test]
         public void Advance_ReleasesReadyShipWhenProductionPipelinesAreOccupied()
         {
@@ -193,7 +216,8 @@ namespace EmpireAtWar.Tests.Editor
                     enemyStructurePlacementService: new UnavailableStructurePlacement(),
                     productionAccess: new OperationalProductionAccess(), squadronLauncher: null,
                     squadronCommander: null, owner: TestPlayers.CreateDuel().Get(TestPlayers.Enemy),
-                    playerRegistry: new PlayerRegistry(), stationFactory: null, profiles: null);
+                    playerRegistry: new PlayerRegistry(), stationFactory: null, profiles: null,
+                    secondStation: new SecondStationLevelModel(), forwardAnchors: NoForwardSpawnAnchors.Instance);
                 var request = new ShipUnitRequest(faction, ShipType.Venator);
                 var escort = new ShipUnitRequest(faction, ShipType.Recusant);
                 controller.Purchase(request);
@@ -263,7 +287,8 @@ namespace EmpireAtWar.Tests.Editor
                     reinforcementData: data, enemyStructurePlacementService: new UnavailableStructurePlacement(),
                     productionAccess: new OperationalProductionAccess(), squadronLauncher: null,
                     squadronCommander: null, owner: TestPlayers.CreateDuel().Get(TestPlayers.Enemy),
-                    playerRegistry: new PlayerRegistry(), stationFactory: null, profiles: null);
+                    playerRegistry: new PlayerRegistry(), stationFactory: null, profiles: null,
+                    secondStation: new SecondStationLevelModel(), forwardAnchors: NoForwardSpawnAnchors.Instance);
 
                 controller.Purchase(new ShipUnitRequest(faction, ShipType.Venator));
                 controller.Purchase(new ShipUnitRequest(faction, ShipType.Recusant));
@@ -307,7 +332,8 @@ namespace EmpireAtWar.Tests.Editor
                     reinforcementData: data, enemyStructurePlacementService: new UnavailableStructurePlacement(),
                     productionAccess: new OperationalProductionAccess(), squadronLauncher: null,
                     squadronCommander: null, owner: TestPlayers.CreateDuel().Get(TestPlayers.Enemy),
-                    playerRegistry: new PlayerRegistry(), stationFactory: null, profiles: null);
+                    playerRegistry: new PlayerRegistry(), stationFactory: null, profiles: null,
+                    secondStation: new SecondStationLevelModel(), forwardAnchors: NoForwardSpawnAnchors.Instance);
 
                 controller.Purchase(new ShipUnitRequest(faction, ShipType.Venator));
                 controller.Purchase(new ShipUnitRequest(faction, ShipType.Recusant));
@@ -364,7 +390,8 @@ namespace EmpireAtWar.Tests.Editor
                     squadronLauncher: null,
                     squadronCommander: null,
                     owner: TestPlayers.CreateDuel().Get(TestPlayers.Enemy),
-                    playerRegistry: new PlayerRegistry(), stationFactory: null, profiles: null);
+                    playerRegistry: new PlayerRegistry(), stationFactory: null, profiles: null,
+                    secondStation: new SecondStationLevelModel(), forwardAnchors: NoForwardSpawnAnchors.Instance);
 
                 controller.Initialize();
                 controller.Purchase(
@@ -418,7 +445,8 @@ namespace EmpireAtWar.Tests.Editor
                     squadronLauncher: null,
                     squadronCommander: null,
                     owner: TestPlayers.CreateDuel().Get(TestPlayers.Enemy),
-                    playerRegistry: new PlayerRegistry(), stationFactory: null, profiles: null);
+                    playerRegistry: new PlayerRegistry(), stationFactory: null, profiles: null,
+                    secondStation: new SecondStationLevelModel(), forwardAnchors: NoForwardSpawnAnchors.Instance);
                 ShipType[] types = (ShipType[])Enum.GetValues(typeof(ShipType));
                 for (int i = 0; i < PlayerFactionModel.MAX_ACTIVE_PIPELINES; i++)
                     controller.Purchase(new ShipUnitRequest(data, types[i]));
@@ -478,7 +506,8 @@ namespace EmpireAtWar.Tests.Editor
                     squadronLauncher: null,
                     squadronCommander: null,
                     owner: TestPlayers.CreateDuel().Get(TestPlayers.Enemy),
-                    playerRegistry: new PlayerRegistry(), stationFactory: null, profiles: null);
+                    playerRegistry: new PlayerRegistry(), stationFactory: null, profiles: null,
+                    secondStation: new SecondStationLevelModel(), forwardAnchors: NoForwardSpawnAnchors.Instance);
                 ShipUnitRequest request =
                     new ShipUnitRequest(factionData, ShipType.Venator);
                 Regex failure = new Regex(
@@ -509,6 +538,71 @@ namespace EmpireAtWar.Tests.Editor
             }
         }
 
+        // Round 5, E1a/E1d: no station pressure → forward beside own units first; none open → relay or station
+        // search in the same tick; a defended station → rear mode, no forward search.
+        [TestCase(true, false, "forward")]
+        [TestCase(false, false, "near")]
+        [TestCase(true, true, "rear")]
+        public void ShipDeployment_ChoosesForwardOrFallbackOrRearMode(bool forwardOpen, bool defendHome,
+            string expected)
+        {
+            var data = ScriptableObject.CreateInstance<ReinforcementData>();
+            var shipObject = new GameObject("Forward deployment ship");
+            try
+            {
+                SetBackingField(data, nameof(ReinforcementData.MaxUnitCapacity), 10);
+                var faction = new FactionData();
+                SetBackingField(faction, nameof(FactionData.MaxCount), 1);
+                SetBackingField(faction, nameof(FactionData.BuildTime), 1);
+                SetBackingField(faction, nameof(FactionData.UnitCapacity), 1);
+                Vector3 task = new Vector3(0f, 0f, 1500f);
+                Vector3 wing = new Vector3(200f, 0f, 1200f);
+                var spawnPoints = new ForwardShipSpawnPoints { ForwardOpen = forwardOpen };
+                var anchors = new FixedForwardAnchors(new ForwardSpawnAnchor(wing, "wing"));
+                var factory = new TrackingShipFactory(shipObject.AddComponent<ShipEntity>());
+                var controller = new EnemyFactionController(
+                    aiState: new TaskAiState { Rally = task, DefendHome = defendHome },
+                    model: new EnemyFactionModel(null, null),
+                    shipFactory: factory, miningFacilityFactory: null, defendPlatformFactory: null, research: null,
+                    economyProvider: new TrackingEconomyProvider(), wallet: new TrackingWallet(),
+                    shipSpawnPoints: spawnPoints, unitLimitModel: new EnemyUnitLimitModel(), reinforcementData: data,
+                    enemyStructurePlacementService: new UnavailableStructurePlacement(),
+                    productionAccess: new OperationalProductionAccess(), squadronLauncher: null,
+                    squadronCommander: null, owner: TestPlayers.CreateDuel().Get(TestPlayers.Enemy),
+                    playerRegistry: new PlayerRegistry(), stationFactory: null, profiles: null,
+                    secondStation: new SecondStationLevelModel(), forwardAnchors: anchors);
+
+                controller.Purchase(new ShipUnitRequest(faction, ShipType.Venator));
+                controller.Advance(1f);
+
+                if (expected == "rear")
+                {
+                    Assert.That(anchors.Calls, Is.Zero, "A defended station never looks for forward points.");
+                    Assert.That(spawnPoints.Calls, Does.Not.Contain("forward"));
+                    return;
+                }
+                Assert.That(factory.Created, Is.EqualTo(new[] { ShipType.Venator }), "The ship lands in this tick.");
+                Assert.That(anchors.LastTask, Is.EqualTo(task), "Units nearest the ship's task come first.");
+                Assert.That(spawnPoints.ForwardUnits, Is.EqualTo(new[] { wing }));
+                Assert.That(spawnPoints.Calls[0], Is.EqualTo("forward"));
+                if (expected == "forward")
+                {
+                    Assert.That(spawnPoints.Calls, Is.EqualTo(new[] { "forward" }));
+                    Assert.That(factory.Positions[0], Is.EqualTo(ForwardShipSpawnPoints.FORWARD_POINT));
+                }
+                else
+                {
+                    Assert.That(spawnPoints.Calls, Is.EqualTo(new[] { "forward", "near" }));
+                    Assert.That(factory.Positions[0], Is.EqualTo(ForwardShipSpawnPoints.NEAR_POINT));
+                }
+            }
+            finally
+            {
+                UnityEngine.Object.DestroyImmediate(shipObject);
+                UnityEngine.Object.DestroyImmediate(data);
+            }
+        }
+
         [Test]
         public void BlockedShip_RetainsPurchaseAndRetriesWithoutDelayingOtherBuilds()
         {
@@ -532,7 +626,8 @@ namespace EmpireAtWar.Tests.Editor
                     enemyStructurePlacementService: new UnavailableStructurePlacement(),
                     productionAccess: new OperationalProductionAccess(), squadronLauncher: null,
                     squadronCommander: null, owner: TestPlayers.CreateDuel().Get(TestPlayers.Enemy),
-                    playerRegistry: new PlayerRegistry(), stationFactory: null, profiles: null);
+                    playerRegistry: new PlayerRegistry(), stationFactory: null, profiles: null,
+                    secondStation: new SecondStationLevelModel(), forwardAnchors: NoForwardSpawnAnchors.Instance);
                 var blocked = new ShipUnitRequest(faction, ShipType.Venator);
                 controller.Purchase(blocked);
                 controller.Purchase(new ShipUnitRequest(faction, ShipType.Recusant));
@@ -596,7 +691,8 @@ namespace EmpireAtWar.Tests.Editor
                     shipSpawnPoints: new BlockedShipSpawnPoints(), unitLimitModel: limits, reinforcementData: data,
                     enemyStructurePlacementService: new UnavailableStructurePlacement(),
                     productionAccess: access, squadronLauncher: null, squadronCommander: null,
-                    owner: TestPlayers.CreateDuel().Get(TestPlayers.Enemy), playerRegistry: new PlayerRegistry(), stationFactory: null, profiles: null);
+                    owner: TestPlayers.CreateDuel().Get(TestPlayers.Enemy), playerRegistry: new PlayerRegistry(), stationFactory: null, profiles: null,
+                    secondStation: new SecondStationLevelModel(), forwardAnchors: NoForwardSpawnAnchors.Instance);
                 controller.Purchase(new ShipUnitRequest(faction, ShipType.Venator));
                 controller.Advance(10f);
                 Assert.That(controller.HasPendingReinforcement, Is.True);
@@ -647,7 +743,8 @@ namespace EmpireAtWar.Tests.Editor
                     squadronLauncher: null,
                     squadronCommander: null,
                     owner: TestPlayers.CreateDuel().Get(TestPlayers.Enemy),
-                    playerRegistry: new PlayerRegistry(), stationFactory: null, profiles: null);
+                    playerRegistry: new PlayerRegistry(), stationFactory: null, profiles: null,
+                    secondStation: new SecondStationLevelModel(), forwardAnchors: NoForwardSpawnAnchors.Instance);
                 ResearchUnitRequest request =
                     new ResearchUnitRequest(tier.FactionData, ResearchType.IncreasedProduction, 1);
 
@@ -692,7 +789,8 @@ namespace EmpireAtWar.Tests.Editor
                 squadronLauncher: null,
                 squadronCommander: null,
                 owner: TestPlayers.CreateDuel().Get(TestPlayers.Enemy),
-                playerRegistry: new PlayerRegistry(), stationFactory: null, profiles: null);
+                playerRegistry: new PlayerRegistry(), stationFactory: null, profiles: null,
+                    secondStation: new SecondStationLevelModel(), forwardAnchors: NoForwardSpawnAnchors.Instance);
 
             controller.Initialize();
             controller.Initialize();
@@ -723,7 +821,8 @@ namespace EmpireAtWar.Tests.Editor
                     enemyStructurePlacementService: new UnavailableStructurePlacement(),
                     productionAccess: new OperationalProductionAccess(), squadronLauncher: null,
                     squadronCommander: null, owner: TestPlayers.CreateDuel().Get(TestPlayers.Enemy),
-                    playerRegistry: new PlayerRegistry(), stationFactory: null, profiles: null);
+                    playerRegistry: new PlayerRegistry(), stationFactory: null, profiles: null,
+                    secondStation: new SecondStationLevelModel(), forwardAnchors: NoForwardSpawnAnchors.Instance);
                 UnitRequest request = platform
                     ? new DefendPlatformUnitRequest(faction, DefendPlatformType.Xq6)
                     : new MiningFacilityUnitRequest(faction, MiningFacilityType.CommonMiner);
@@ -767,7 +866,8 @@ namespace EmpireAtWar.Tests.Editor
                     economyProvider: new TrackingEconomyProvider(), wallet: wallet, shipSpawnPoints: null,
                     unitLimitModel: limits, reinforcementData: data, enemyStructurePlacementService: new UnavailableStructurePlacement(),
                     productionAccess: access, squadronLauncher: null, squadronCommander: null,
-                    owner: TestPlayers.CreateDuel().Get(TestPlayers.Enemy), playerRegistry: new PlayerRegistry(), stationFactory: null, profiles: null);
+                    owner: TestPlayers.CreateDuel().Get(TestPlayers.Enemy), playerRegistry: new PlayerRegistry(), stationFactory: null, profiles: null,
+                    secondStation: new SecondStationLevelModel(), forwardAnchors: NoForwardSpawnAnchors.Instance);
                 controller.Purchase(new LevelUnitRequest(faction, 1));
                 Assert.That(wallet.SpendCount, Is.Zero);
                 Assert.That(controller.ForceUpgradeStation(), Is.False);
@@ -803,7 +903,8 @@ namespace EmpireAtWar.Tests.Editor
                     enemyStructurePlacementService: new UnavailableStructurePlacement { IsRecovering = true },
                     productionAccess: new OperationalProductionAccess(),
                     squadronLauncher: null, squadronCommander: null,
-                    owner: TestPlayers.CreateDuel().Get(TestPlayers.Enemy), playerRegistry: new PlayerRegistry(), stationFactory: null, profiles: null);
+                    owner: TestPlayers.CreateDuel().Get(TestPlayers.Enemy), playerRegistry: new PlayerRegistry(), stationFactory: null, profiles: null,
+                    secondStation: new SecondStationLevelModel(), forwardAnchors: NoForwardSpawnAnchors.Instance);
                 UnitRequest request = upgrade ? new SecondStationLevelUnitRequest(faction, 1) : new SecondStationUnitRequest(faction);
 
                 controller.Purchase(request);
@@ -840,7 +941,8 @@ namespace EmpireAtWar.Tests.Editor
                     enemyStructurePlacementService: new UnavailableStructurePlacement(),
                     productionAccess: new OperationalProductionAccess(), squadronLauncher: null,
                     squadronCommander: null, owner: TestPlayers.CreateDuel().Get(TestPlayers.Enemy),
-                    playerRegistry: new PlayerRegistry(), stationFactory: null, profiles: null);
+                    playerRegistry: new PlayerRegistry(), stationFactory: null, profiles: null,
+                    secondStation: new SecondStationLevelModel(), forwardAnchors: NoForwardSpawnAnchors.Instance);
 
                 controller.Purchase(new LevelUnitRequest(upgrade, 1));
                 controller.Purchase(new LevelUnitRequest(upgrade, 1));
@@ -880,6 +982,110 @@ namespace EmpireAtWar.Tests.Editor
             }
         }
 
+        private sealed class TaskAiState : IEnemyAiStateProvider
+        {
+            public EnemyStrategicState CurrentState => EnemyStrategicState.CaptureZone;
+            public int ActiveShipCount => 0;
+            public Vector3 Rally { get; set; }
+            public bool DefendHome { get; set; }
+
+            public bool TryGetReinforcementRally(out Vector3 rally, out bool defendHome)
+            {
+                rally = Rally;
+                defendHome = DefendHome;
+                return true;
+            }
+
+            public void FillDefenseDeploymentThreats(PlacementThreatSnapshot threats) => threats.Clear();
+        }
+
+        private sealed class FixedForwardAnchors : IEnemyForwardSpawnAnchors
+        {
+            private readonly ForwardSpawnAnchor _anchor;
+
+            public int Calls { get; private set; }
+            public Vector3 LastTask { get; private set; }
+
+            public FixedForwardAnchors(ForwardSpawnAnchor anchor) => _anchor = anchor;
+
+            public bool Collect(Vector3 task, IReadOnlyList<Vector3> landedShips, List<ForwardSpawnAnchor> anchors,
+                out Vector3 awayFrom)
+            {
+                Calls++;
+                LastTask = task;
+                anchors.Clear();
+                anchors.Add(_anchor);
+                awayFrom = Vector3.zero;
+                return true;
+            }
+        }
+
+        private sealed class ForwardShipSpawnPoints : IShipSpawnPoints
+        {
+            public static readonly Vector3 FORWARD_POINT = new Vector3(300f, 0f, 1400f);
+            public static readonly Vector3 NEAR_POINT = new Vector3(0f, 0f, -800f);
+
+            public bool ForwardOpen { get; set; }
+            public List<string> Calls { get; } = new List<string>();
+            public List<Vector3> ForwardUnits { get; } = new List<Vector3>();
+
+            public bool TryGetSpawnPositionNearUnits(PlayerId owner, ShipType shipType, IReadOnlyList<Vector3> units,
+                Vector3 awayFrom, out Vector3 position, out ForwardSpawnAttempt attempt)
+            {
+                Calls.Add("forward");
+                ForwardUnits.AddRange(units);
+                attempt = new ForwardSpawnAttempt { UnitIndex = ForwardOpen ? 0 : -1, Points = 1 };
+                position = ForwardOpen ? FORWARD_POINT : default;
+                return ForwardOpen;
+            }
+
+            public float GetHullRadius(ShipType shipType) => 0f;
+
+            public bool TryGetSpawnPositionNear(PlayerId owner, ShipType shipType, Vector3 target, out Vector3 position)
+            {
+                Calls.Add("near");
+                position = NEAR_POINT;
+                return true;
+            }
+
+            public bool TryGetRearSpawnPosition(PlayerId owner, ShipType shipType, Vector3 anchor,
+                PlacementThreatSnapshot threats, bool requireThreatSafety, out Vector3 position)
+            {
+                Calls.Add("rear");
+                position = anchor + Vector3.back * 500f;
+                return true;
+            }
+
+            public bool TryGetRandomSpawnPosition(PlayerId owner, ShipType shipType, out Vector3 position) =>
+                Fail("random", out position);
+
+            public bool TryGetStationSpawnPosition(PlayerId owner, ShipType shipType, out Vector3 position) =>
+                Fail("station", out position);
+
+            public bool TryGetDefaultZoneSpawnPosition(PlayerId owner, ShipType shipType, out Vector3 position) =>
+                Fail("default", out position);
+
+            public bool TryGetDefenseSpawnPosition(PlayerId owner, ShipType shipType, Vector3 anchor,
+                PlacementThreatSnapshot threats, out Vector3 position) => Fail("defense", out position);
+
+            public void ReserveDefenseLanding(object token, PlayerId owner, ShipType shipType, Vector3 position) { }
+
+            public void ReleaseDefenseLanding(object token) { }
+
+            public bool TryGetBestDefenseSpawnPosition(PlayerId owner, ShipType shipType, Vector3 anchor,
+                PlacementThreatSnapshot threats, out Vector3 position) => Fail("best", out position);
+
+            public bool TryGetWideDefenseSpawnPosition(PlayerId owner, ShipType shipType, Vector3 anchor,
+                PlacementThreatSnapshot threats, out Vector3 position) => Fail("wide", out position);
+
+            private bool Fail(string call, out Vector3 position)
+            {
+                Calls.Add(call);
+                position = default;
+                return false;
+            }
+        }
+
         private sealed class RallyAiState : IEnemyAiStateProvider
         {
             public EnemyStrategicState CurrentState => EnemyStrategicState.RetreatValue;
@@ -898,6 +1104,16 @@ namespace EmpireAtWar.Tests.Editor
 
         private sealed class RallyShipSpawnPoints : IShipSpawnPoints
         {
+            public bool TryGetSpawnPositionNearUnits(PlayerId owner, ShipType shipType, IReadOnlyList<Vector3> units,
+                Vector3 awayFrom, out Vector3 position, out ForwardSpawnAttempt attempt)
+            {
+                attempt = new ForwardSpawnAttempt { UnitIndex = -1 };
+                position = default;
+                return false;
+            }
+
+            public float GetHullRadius(ShipType shipType) => 0f;
+
             public List<string> Calls { get; } = new List<string>();
             public bool IsAvailable { get; set; }
             public Vector3 Anchor { get; private set; }
@@ -965,6 +1181,16 @@ namespace EmpireAtWar.Tests.Editor
 
         private sealed class BlockedShipSpawnPoints : IShipSpawnPoints
         {
+            public bool TryGetSpawnPositionNearUnits(PlayerId owner, ShipType shipType, IReadOnlyList<Vector3> units,
+                Vector3 awayFrom, out Vector3 position, out ForwardSpawnAttempt attempt)
+            {
+                attempt = new ForwardSpawnAttempt { UnitIndex = -1 };
+                position = default;
+                return false;
+            }
+
+            public float GetHullRadius(ShipType shipType) => 0f;
+
             public bool IsBlocked { get; set; } = true;
             public int BlockedShipAttempts { get; private set; }
 

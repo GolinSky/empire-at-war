@@ -525,4 +525,4 @@ created: "2026-10-29\r"
 
 ## Enemy AI Opening and Task Groups
 
-- [ ] [[Done/Bugs/Enemy_AI_Opening_And_Task_Groups]] — Play UltraHard Small 1v1 CIS vs Republic on round-4 code (no single-ship drip, armada gathers, turtle after station loss, bombers raid together), then Rebellion vs Empire. `EnemyAi` 561/561 passed.
+- [ ] [[Done/Bugs/Enemy_AI_Opening_And_Task_Groups]] — Round 5 playtest: UltraHard Small 1v1 CIS vs Republic, then Rebellion vs Empire; check the "Round 5 playtest gates" (forward spawn ≥ 80 %, rear under pressure, centre spots, bomber raids, patrol wing, orders ≤ 4/ship/min, shield boost < 40 %).

@@ -1,4 +1,5 @@
 using EmpireAtWar.Controllers.Economy;
+using EmpireAtWar.Models.Economy;
 using EmpireAtWar.Models.Players;
 using EmpireAtWar.Controllers.Factions;
 using EmpireAtWar.Services.Stations;
@@ -33,8 +34,6 @@ namespace EmpireAtWar.Services.Factions
     public class FactionService : Service, IFactionService, IInitializable, ILateDisposable,
         IIncomeProvider, IObserver<ISelectionSubject>, ITickable
     {
-        private const float DEFAULT_INCOME = 15f;
-
         private readonly ISelectionService _selectionService;
         private readonly IWallet _wallet;
         private readonly IReinforcementPool _reinforcementPool;
@@ -59,7 +58,7 @@ namespace EmpireAtWar.Services.Factions
         public event System.Action<ResearchType> ResearchCompleted;
         public event System.Action StationUpgraded;
 
-        public float Income => DEFAULT_INCOME * _model.CurrentLevel * _research.StationIncomeMultiplier;
+        public float Income => StationIncome.Get(_model.CurrentLevel, _research.StationIncomeMultiplier, _secondStation.IsBuilt);
 
         public FactionService(
             ISelectionService selectionService,
@@ -101,6 +100,7 @@ namespace EmpireAtWar.Services.Factions
             _model.OnUnitCompleted += BuildUnit;
             _entities.EntityAdded += HandleEntityAdded;
             _entities.EntityRemoved += HandleEntityRemoved;
+            _secondStation.BuiltChanged += HandleSecondStationChanged;
             foreach (IEntity entity in _entities.Entities) HandleEntityAdded(entity);
             _isInitialized = true;
         }
@@ -117,8 +117,11 @@ namespace EmpireAtWar.Services.Factions
             _model.OnUnitCompleted -= BuildUnit;
             _entities.EntityAdded -= HandleEntityAdded;
             _entities.EntityRemoved -= HandleEntityRemoved;
+            _secondStation.BuiltChanged -= HandleSecondStationChanged;
             _isInitialized = false;
         }
+
+        private void HandleSecondStationChanged(bool built) => _economyProvider.RecalculateIncome(this);
 
         public void ChangeSelection()
         {

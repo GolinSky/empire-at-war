@@ -182,6 +182,13 @@ namespace EmpireAtWar.Services.Enemy
         private const float HOSTILE_RELAY_FIRST_BONUS = 1000f;
         /// <summary>Ships route this far outside twice the radius of a hostile-held centre: one common weapon range.</summary>
         private const float CENTRE_ROUTE_MARGIN = 500f;
+        /// <summary>Known hostile ships this close to the line from the pool to a zone count as its defenders.</summary>
+        public const float ROUTE_DEFENDER_REACH = 800f;
+        private readonly ForceComposition _routeDefenders = new ForceComposition();
+        private readonly Predicate<HostileSighting> _includeRouteDefender;
+        private Vector3 _routeDefenderOrigin;
+        private Vector3 _routeDefenderEnd;
+        private float _routeDefenderSkip;
         /// <summary>Hostile satellites come before the relay: order inside a hostile zone is satellites → relay → pads.</summary>
         private const float HOSTILE_SATELLITE_FIRST_BONUS = 2000f;
         private const float BASE_EXCLUSION_MARGIN = 900f;
@@ -257,29 +264,13 @@ namespace EmpireAtWar.Services.Enemy
             return true;
         }
 
-        public void FillDefenseDeploymentThreats(PlacementThreatSnapshot threats) =>
-            _recovery.FillPlacementThreats(threats);
-
-        public bool TryGetRearDeploymentThreats(Vector3 station, PlacementThreatSnapshot threats)
+        /// <summary>Remembered threats around the defended station; the station attacker sets the rear direction
+        /// when no threat is near the station itself.</summary>
+        public void FillDefenseDeploymentThreats(PlacementThreatSnapshot threats)
         {
-            FillDefenseDeploymentThreats(threats);
+            _recovery.FillPlacementThreats(threats);
             if (_stationPressure.HasThreatPosition)
-            {
                 threats.SetApproach(_stationPressure.ThreatX, _stationPressure.ThreatZ);
-                return true;
-            }
-            ReinforcementZonePresenter centre = EnemyShipTaskGroupPlanner.GetCentre(_zones.Zones);
-            if (centre != null)
-            {
-                threats.SetApproach(centre.Center.x, centre.Center.z);
-                return true;
-            }
-            if (_reinforcementZonesSystem.TryGetDefaultZoneCenter(_owner.Id, out Vector3 home))
-            {
-                threats.SetApproach(home.x, home.z);
-                return true;
-            }
-            return false;
         }
 
         public AllyAiMarkerSource AlliedMarkers { get; }
@@ -367,6 +358,7 @@ namespace EmpireAtWar.Services.Enemy
             _includeWithdrawBlocker = IncludeWithdrawBlocker;
             _includeNearbyOwn = IncludeNearbyOwn;
             _isNearHostileBase = IsNearHostileBase;
+            _includeRouteDefender = IncludeRouteDefender;
             _zoneObjectives = new EnemyZoneObjectiveCollector(zones, playerRoster, worldSnapshot, vision, _teamPicture,
                 forceBuilder, _intel, owner.Id);
             _assessedForce = _ownForce;
@@ -399,6 +391,7 @@ namespace EmpireAtWar.Services.Enemy
             _includeWithdrawBlocker = IncludeWithdrawBlocker;
             _includeNearbyOwn = IncludeNearbyOwn;
             _isNearHostileBase = IsNearHostileBase;
+            _includeRouteDefender = IncludeRouteDefender;
             _zoneObjectives = new EnemyZoneObjectiveCollector(_zones, _playerRoster, _worldSnapshot, _vision, _teamPicture,
                 _forceBuilder, _intel, _owner.Id);
             _assessedForce = _ownForce;
@@ -410,7 +403,8 @@ namespace EmpireAtWar.Services.Enemy
         /// Rates every zone for the whole ship pool as seen from <paramref name="home"/>: the allocator's input.
         /// Zones an allied AI reserved are left out. Borrowed until the next call on this builder.
         /// </summary>
-        public IReadOnlyList<EnemyZoneObjective> CollectPoolZones(Vector3 home, float speed)
+        /// <param name="origin">Where the pool stands; ships on the way from it to a zone defend that zone.</param>
+        public IReadOnlyList<EnemyZoneObjective> CollectPoolZones(Vector3 home, float speed, Vector3? origin = null)
         {
             _teamPicture.EnsureRefreshed(Time.time);
             _reservedCaptureObjectives = null;
@@ -429,7 +423,42 @@ namespace EmpireAtWar.Services.Enemy
                 _zonePriorities.Add(-GetCaptureScore(home, candidate));
             }
             _zoneObjectives.Collect(_zoneCandidates, _zonePriorities, home, speed, _isNearHostileBase);
+            AddRouteDefenders(origin ?? home);
             return _zoneObjectives.Objectives;
+        }
+
+        /// <summary>
+        /// Known hostile ships within <see cref="ROUTE_DEFENDER_REACH"/> of the straight line from the pool to a zone
+        /// count as that zone's defenders: a force sent past them fights them first. Held zones are left as they are.
+        /// </summary>
+        private void AddRouteDefenders(Vector3 origin)
+        {
+            IReadOnlyList<EnemyZoneObjective> zones = _zoneObjectives.Objectives;
+            _routeDefenderOrigin = origin;
+            for (int area = 0; area < zones.Count; area++)
+            {
+                if (zones[area].IsDenied || zones[area].IsHeld) continue;
+                _routeDefenderEnd = _zoneObjectives.GetCentre(area);
+                ReinforcementZonePresenter zone = _zoneObjectives.GetZone(area);
+                // Ships near the zone are already its defenders.
+                _routeDefenderSkip = EnemyZoneObjectiveCollector.DEFENDER_REACH + (zone != null ? 2f * zone.Radius : 0f);
+                _teamPicture.BuildKnownFromConfident(_routeDefenders, _includeRouteDefender);
+                if (!_routeDefenders.IsEmpty) zones[area].Defenders.Add(_routeDefenders);
+            }
+        }
+
+        private bool IncludeRouteDefender(HostileSighting sighting)
+        {
+            if (!sighting.UnitTypeId.IsShip || !_playerRoster.IsHostile(_owner.Id, sighting.Owner)) return false;
+            Vector3 position = ToVector(sighting.Position);
+            if (PlanarDistance(position, _routeDefenderEnd) <= _routeDefenderSkip) return false;
+            Vector3 segment = _routeDefenderEnd - _routeDefenderOrigin;
+            segment.y = 0f;
+            Vector3 offset = position - _routeDefenderOrigin;
+            offset.y = 0f;
+            float lengthSquared = segment.sqrMagnitude;
+            float t = lengthSquared > 0f ? Mathf.Clamp01(Vector3.Dot(offset, segment) / lengthSquared) : 0f;
+            return PlanarDistance(position, _routeDefenderOrigin + segment * t) <= ROUTE_DEFENDER_REACH;
         }
 
         /// <summary>The reinforcement zone of a pool zone; null for a lone site.</summary>
@@ -773,8 +802,10 @@ namespace EmpireAtWar.Services.Enemy
             bool securedCentre = centre != null && !centre.IsContested && _playerRoster.IsAllied(self, centre.Owner);
             // Never guard a zone the team does not hold; a group too weak for every zone gathers at its staging point.
             Vector3? stagingPoint = _assembleArea >= 0 ? GetStagingPoint(_assembleArea, home) : (Vector3?)null;
-            Vector3? guardPosition = stagingPoint ?? (AssignedZoneId != null ? null :
-                (preferStrategicObjectives && securedCentre ? centre.Center : (Vector3?)null) ?? FindNearbyHeldZone(origin));
+            // A zone force whose zone has nothing left to take guards the zone's nearest own satellite.
+            Vector3? guardPosition = stagingPoint ?? (AssignedZoneId != null
+                ? captureObjective == null ? FindOwnSatelliteInAssignedZone(origin) : null
+                : (preferStrategicObjectives && securedCentre ? centre.Center : (Vector3?)null) ?? FindNearbyHeldZone(origin));
             // The reserve always gathers at one point: the held centre, else the staging point of the next zone, else home.
             if (IsReserve) guardPosition = securedCentre ? centre.Center : ReserveStagingPoint ?? GetIdleGatherPoint(home);
             string recoveryReason = withdrawPoint.HasValue ? "Outmatched away from held ground; pull back to the gathering point." :
@@ -1396,6 +1427,28 @@ namespace EmpireAtWar.Services.Enemy
                 : " NoViableObjective: no zone to take.";
             RecordCaptureBlocked(next == null && _assembleArea < 0, now);
             return next;
+        }
+
+        /// <summary>The own satellite or platform in the assigned zone nearest the group; null when none stands.</summary>
+        private Vector3? FindOwnSatelliteInAssignedZone(Vector3 origin)
+        {
+            int area = FindZoneArea(AssignedZoneId);
+            ReinforcementZonePresenter zone = area >= 0 ? _zoneObjectives.GetZone(area) : null;
+            if (zone == null) return null;
+            Vector3? best = null;
+            float bestDistance = float.PositiveInfinity;
+            IReadOnlyList<AiWorldSnapshot.Entry> structures = _worldSnapshot.RaidStructures;
+            for (int i = 0; i < structures.Count; i++)
+            {
+                AiWorldSnapshot.Entry entry = structures[i];
+                if (entry.Owner != _owner.Id || entry.IsMiningFacility ||
+                    !EnemyShipTaskGroupPlanner.IsInZone(zone, entry.Position)) continue;
+                float distance = PlanarDistance(entry.Position, origin);
+                if (distance >= bestDistance) continue;
+                best = entry.Position;
+                bestDistance = distance;
+            }
+            return best;
         }
 
         private int FindZoneArea(string zoneId)

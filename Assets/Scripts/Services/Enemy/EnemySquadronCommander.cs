@@ -42,6 +42,18 @@ namespace EmpireAtWar.Services.Enemy
         /// <summary>Hostile strikecraft within this planar distance of an own ship count toward its escort need.</summary>
         private const float ESCORT_THREAT_RADIUS = 2000f;
         private const int OPENING_CAPTURE_WINGS = 3;
+        /// <summary>Group A gives one wing to the patrol only while it keeps more than this many.</summary>
+        private const int PATROL_SPARE_GROUP_WINGS = 4;
+        /// <summary>The patrol wing reacts to hostile ships this close (its vision plus known intel).</summary>
+        private const float PATROL_SIGHT_RADIUS = 1200f;
+        private const float BEACON_STEP = 200f;
+        private const float BEACON_RELAY_CLEARANCE = 1000f;
+        private const float BEACON_SHIP_CLEARANCE = 1200f;
+        private const float BEACON_HOLD_SECONDS = 60f;
+        private const float BEACON_ARRIVED_RADIUS = 150f;
+        /// <summary>A lone outer wing that died twice at its zone within this window leaves the zone for as long.</summary>
+        private const float LONE_WING_DEATH_WINDOW = 180f;
+        private const int LONE_WING_DEATHS = 2;
 #if UNITY_EDITOR || DEVELOPMENT_BUILD
         private const float WING_ASSIGNMENT_REPORT_INTERVAL = 6f;
         private string _lastWingAssignment;
@@ -93,6 +105,14 @@ namespace EmpireAtWar.Services.Enemy
         private readonly List<ISquadron> _raidWings = new List<ISquadron>();
         private readonly Predicate<ISquadron> _leftGroup;
         private int _outerWingCount = 1;
+        private bool _wingPatrol;
+        private ISquadron _patrolWing;
+        private Vector3? _beacon;
+        private float _beaconUntil;
+        private readonly List<Vector3> _seenShips = new List<Vector3>();
+        private readonly List<ISquadron> _idleBombers = new List<ISquadron>();
+        // Bombers without a winnable mine hold at the centre of the nearest own held zone.
+        private readonly Dictionary<ISquadron, Vector3> _bomberHolds = new Dictionary<ISquadron, Vector3>();
 
         private readonly IEnemyStructurePlacementService _structurePlacement;
         private readonly HostileIntelModel _intel;
@@ -111,6 +131,18 @@ namespace EmpireAtWar.Services.Enemy
         public void SetStationDefense(Vector3? position) => _stationDefense = position;
 
         public void SetOuterWingCount(int count) => _outerWingCount = count;
+
+        public void SetWingPatrol(bool enabled) => _wingPatrol = enabled;
+
+        public bool NeedsPatrolWing => _wingPatrol && _patrolWing == null && !_stationDefense.HasValue;
+
+        public bool TryGetSpawnBeacon(out Vector3 position)
+        {
+            position = _beacon ?? default;
+            return _patrolWing != null && _beacon.HasValue &&
+                   PlanarDistanceSquared(_patrolWing.WorldPosition, position) <=
+                   BEACON_ARRIVED_RADIUS * BEACON_ARRIVED_RADIUS;
+        }
 
         private int _nextEscortTarget;
 
@@ -423,6 +455,18 @@ namespace EmpireAtWar.Services.Enemy
                 return;
             }
 
+            if (squadron == _patrolWing)
+            {
+                IssuePatrolOrder(squadron);
+                return;
+            }
+
+            if (_bomberHolds.TryGetValue(squadron, out Vector3 bomberHold))
+            {
+                squadron.AttackMoveTo(bomberHold);
+                return;
+            }
+
             if (_raids.TryGetValue(squadron, out HostileSighting raid) &&
                 _entityLocator.TryGetEntity(raid.EntityId, out IEntity raidTarget))
             {
@@ -633,9 +677,10 @@ namespace EmpireAtWar.Services.Enemy
                 group.Members.RemoveAll(_leftGroup);
                 UpdateOuterZone(group);
             }
+            UpdatePatrolWing();
             foreach (KeyValuePair<ISquadron, CommandedSquadron> pair in _squadrons)
             {
-                if (!IsFree(pair.Value) || IsGrouped(pair.Key)) continue;
+                if (!IsFree(pair.Value) || IsGrouped(pair.Key) || pair.Key == _patrolWing) continue;
                 EnemyWingGroup group = pair.Value.Profile.ShipClass == ShipClass.Bomber
                     ? _outerGroups.Count > 0 ? _outerGroups[0] : _centreGroup
                     : SelectGroupWithRoom() ?? _centreGroup;
@@ -661,17 +706,35 @@ namespace EmpireAtWar.Services.Enemy
         private void UpdateOuterZone(EnemyWingGroup group)
         {
             int capturers = CountCapturers(group);
-            // A home zone already taken and now attacked is defended first, wherever the group works.
-            if (IsHeldUnderAttack(group.HomeZone))
+            float now = Time.time;
+            group.ZoneDeaths.RemoveAll(time => now - time > LONE_WING_DEATH_WINDOW);
+            if (group.AbandonedZone != null && now >= group.AbandonedUntil) group.AbandonedZone = null;
+            if (group.Zone != null && capturers <= 1 && group.ZoneDeaths.Count >= LONE_WING_DEATHS)
             {
-                if (group.Zone != group.HomeZone) group.Peak = capturers;
-                group.Zone = group.HomeZone;
+                // A lone wing that keeps dying at its zone takes the next outer zone with targets, else raids.
+                group.AbandonedZone = group.Zone;
+                group.AbandonedUntil = now + LONE_WING_DEATH_WINDOW;
+                EnemyAiTelemetry.RecordEvent(_owner.Id, _owner.Faction, "wingZoneLeft", FormattableString.Invariant(
+                    $"zone=({group.Zone.Center.x:F0} {group.Zone.Center.z:F0});deaths={group.ZoneDeaths.Count}"));
+                SetZone(group, SelectNextOuterZone(group), capturers);
+                return;
+            }
+            // A home zone already taken and now attacked is defended first, wherever the group works.
+            if (group.HomeZone != group.AbandonedZone && IsHeldUnderAttack(group.HomeZone))
+            {
+                if (group.Zone != group.HomeZone) SetZone(group, group.HomeZone, capturers);
                 return;
             }
             bool taken = group.Zone == null || !HasTargetsIn(group.Zone);
             bool weak = capturers * 2 < group.Peak;
             if (!taken && !weak) return;
-            group.Zone = taken ? SelectNextOuterZone(group) : SelectWinnableZone(group) ?? group.Zone;
+            SetZone(group, taken ? SelectNextOuterZone(group) : SelectWinnableZone(group) ?? group.Zone, capturers);
+        }
+
+        private static void SetZone(EnemyWingGroup group, ReinforcementZonePresenter zone, int capturers)
+        {
+            if (zone != group.Zone) group.ZoneDeaths.Clear();
+            group.Zone = zone;
             group.Peak = capturers;
         }
 
@@ -708,7 +771,7 @@ namespace EmpireAtWar.Services.Enemy
             foreach (EnemyWingGroup candidate in _outerGroups)
             {
                 ReinforcementZonePresenter zone = candidate.HomeZone;
-                if (!HasTargetsIn(zone) || IsWorkedByOther(zone, group)) continue;
+                if (zone == group.AbandonedZone || !HasTargetsIn(zone) || IsWorkedByOther(zone, group)) continue;
                 float distance = PlanarDistanceSquared(zone.Center, from);
                 if (distance >= bestDistance) continue;
                 best = zone;
@@ -728,7 +791,7 @@ namespace EmpireAtWar.Services.Enemy
             foreach (EnemyWingGroup candidate in _outerGroups)
             {
                 ReinforcementZonePresenter zone = candidate.HomeZone;
-                if (!HasTargetsIn(zone) || IsWorkedByOther(zone, group)) continue;
+                if (zone == group.AbandonedZone || !HasTargetsIn(zone) || IsWorkedByOther(zone, group)) continue;
                 _zoneDefenders.Clear();
                 FillTargetDefenders(ToVector(ToPoint(zone.Center)), _zoneDefenders);
                 if (_zoneDefenders.IsEmpty || CombatMatchup.Advantage(_groupForce, _zoneDefenders) >= EVEN_FIGHT)
@@ -795,6 +858,7 @@ namespace EmpireAtWar.Services.Enemy
         {
             _captureAssignments.BeginAssignment();
             _captureSquadrons.Clear();
+            _bomberHolds.Clear();
             Vector3 home = GetHome();
             AssignGroup(_centreGroup, home);
             foreach (EnemyWingGroup group in _outerGroups) AssignGroup(group, home);
@@ -847,8 +911,15 @@ namespace EmpireAtWar.Services.Enemy
         private void AssignGroup(EnemyWingGroup group, Vector3 home)
         {
             _groupWings.Clear();
+            _idleBombers.Clear();
             foreach (ISquadron wing in group.Members)
-                if (!_raids.ContainsKey(wing) && !_escorts.Contains(wing)) _groupWings.Add(wing);
+            {
+                if (_raids.ContainsKey(wing) || _escorts.Contains(wing)) continue;
+                if (_squadrons[wing].Profile.ShipClass == ShipClass.Bomber) _idleBombers.Add(wing);
+                else _groupWings.Add(wing);
+            }
+            HoldIdleBombers(home);
+            // The centre fallback (D5) is for fighters and interceptors only.
             ReinforcementZonePresenter zone = group.Zone ?? _centreGroup.Zone;
             if (zone == null)
             {
@@ -856,7 +927,153 @@ namespace EmpireAtWar.Services.Enemy
                 return;
             }
             _captureAssignments.AssignInZone(_groupWings, ToVector(ToPoint(zone.Center)), 2f * zone.Radius,
-                home, _addWingForce);
+                home, _addWingForce, spread: group == _centreGroup);
+        }
+
+        /// <summary>Bombers without a winnable mine or satellite hold at the centre of the nearest own held zone
+        /// (home when none is held) instead of joining a fight on a defended pad.</summary>
+        private void HoldIdleBombers(Vector3 home)
+        {
+            if (_idleBombers.Count == 0) return;
+            Vector3 hold = home;
+            float nearest = float.PositiveInfinity;
+            foreach (ReinforcementZonePresenter zone in _zones.Zones)
+            {
+                if (!zone.IsCapturable || !_playerRoster.IsAllied(zone.Owner, _owner.Id)) continue;
+                float distance = PlanarDistanceSquared(zone.Center, _idleBombers[0].WorldPosition);
+                if (distance >= nearest) continue;
+                nearest = distance;
+                hold = ToVector(ToPoint(zone.Center));
+            }
+            foreach (ISquadron bomber in _idleBombers) _bomberHolds[bomber] = hold;
+        }
+
+        /// <summary>
+        /// From level 2 one fighter or interceptor wing patrols: a free ungrouped wing first (a purchase made for it),
+        /// else a spare wing of group A while it keeps more than <see cref="PATROL_SPARE_GROUP_WINGS"/>.
+        /// </summary>
+        private void UpdatePatrolWing()
+        {
+            if (!_wingPatrol)
+            {
+                ReleasePatrolWing("disabled");
+                return;
+            }
+            if (_patrolWing != null) return;
+            foreach (KeyValuePair<ISquadron, CommandedSquadron> pair in _squadrons)
+                if (IsFree(pair.Value) && !pair.Value.IsHangarLaunched && !IsGrouped(pair.Key) &&
+                    IsPatrolClass(pair.Value.Profile.ShipClass))
+                {
+                    AssignPatrolWing(pair.Key, "free");
+                    return;
+                }
+            if (_centreGroup.Members.Count <= PATROL_SPARE_GROUP_WINGS) return;
+            for (int i = _centreGroup.Members.Count - 1; i >= 0; i--)
+            {
+                ISquadron wing = _centreGroup.Members[i];
+                if (_squadrons[wing].IsHangarLaunched || !IsPatrolClass(_squadrons[wing].Profile.ShipClass)) continue;
+                _centreGroup.Members.RemoveAt(i);
+                AssignPatrolWing(wing, "groupA");
+                return;
+            }
+        }
+
+        private static bool IsPatrolClass(ShipClass shipClass) =>
+            shipClass == ShipClass.Fighter || shipClass == ShipClass.Interceptor;
+
+        private void AssignPatrolWing(ISquadron wing, string source)
+        {
+            _patrolWing = wing;
+            _beacon = null;
+            EnemyAiTelemetry.RecordEvent(_owner.Id, _owner.Faction, "patrolWing",
+                $"wing={wing.EntityId};action=assigned;source={source}");
+        }
+
+        private void ReleasePatrolWing(string reason)
+        {
+            if (_patrolWing == null) return;
+            EnemyAiTelemetry.RecordEvent(_owner.Id, _owner.Faction, "patrolWing",
+                $"wing={_patrolWing.EntityId};action=released;reason={reason}");
+            _patrol.Release($"squadron:{_patrolWing.EntityId}");
+            _patrolWing = null;
+            _beacon = null;
+        }
+
+        /// <summary>
+        /// The patrol wing visits stale map points. When it meets hostile ships it pulls back toward home to a spawn
+        /// beacon (outside hostile block circles, away from hostile relays and the ships) and holds there, so new
+        /// ships can arrive beside it.
+        /// </summary>
+        private void IssuePatrolOrder(ISquadron wing)
+        {
+            float now = Time.time;
+            CollectSeenShips(now);
+            if (_beacon is Vector3 held && (now >= _beaconUntil || !IsBeaconSafe(held))) _beacon = null;
+            if (_beacon == null && SeesHostileShip(wing.WorldPosition) &&
+                TryFindBeacon(wing.WorldPosition, out Vector3 beacon))
+            {
+                _beacon = beacon;
+                _beaconUntil = now + BEACON_HOLD_SECONDS;
+                EnemyAiTelemetry.RecordEvent(_owner.Id, _owner.Faction, "spawnBeacon", FormattableString.Invariant(
+                    $"wing={wing.EntityId};beacon=({beacon.x:F0} {beacon.z:F0});ships={_seenShips.Count}"));
+            }
+            if (_beacon is Vector3 point)
+            {
+                _entityLocator.GetEntity(wing.EntityId).GetFacade<IMoveFacade>().MoveTo(point);
+                return;
+            }
+            Vector3 origin = wing.WorldPosition;
+            if (_patrol.TryGetTarget($"squadron:{wing.EntityId}", origin,
+                    target => _patrolSafety.IsObjectiveSafe(wing.EntityId, origin, target, 0f, false),
+                    out Vector3 patrolTarget))
+                wing.AttackMoveTo(patrolTarget);
+            else
+                wing.AttackMoveTo(GetHome());
+        }
+
+        private void CollectSeenShips(float now)
+        {
+            _seenShips.Clear();
+            foreach (HostileSighting sighting in _intel.Sightings)
+                if (sighting.UnitTypeId.IsShip && _playerRoster.IsHostile(_owner.Id, sighting.Owner) &&
+                    _intel.GetConfidence(sighting, now) > 0f)
+                    _seenShips.Add(ToVector(sighting.Position));
+        }
+
+        private bool SeesHostileShip(Vector3 position)
+        {
+            foreach (Vector3 ship in _seenShips)
+                if (PlanarDistanceSquared(ship, position) <= PATROL_SIGHT_RADIUS * PATROL_SIGHT_RADIUS) return true;
+            return false;
+        }
+
+        /// <summary>The first point toward home, in <see cref="BEACON_STEP"/> steps, that is a safe beacon.</summary>
+        private bool TryFindBeacon(Vector3 origin, out Vector3 beacon)
+        {
+            Vector3 toHome = GetHome() - origin;
+            toHome.y = 0f;
+            float length = toHome.magnitude;
+            Vector3 direction = length > 0f ? toHome / length : Vector3.zero;
+            for (float travelled = 0f; travelled <= length; travelled += BEACON_STEP)
+            {
+                beacon = origin + direction * travelled;
+                beacon.y = 0f;
+                if (IsBeaconSafe(beacon)) return true;
+            }
+            beacon = default;
+            return false;
+        }
+
+        private bool IsBeaconSafe(Vector3 point)
+        {
+            if (!_patrolSafety.IsOutsideHostileBlock(point)) return false;
+            foreach (ReinforcementZonePresenter zone in _zones.Zones)
+                if (_playerRoster.IsHostile(_owner.Id, zone.Owner) &&
+                    PlanarDistanceSquared(zone.Center, point) < BEACON_RELAY_CLEARANCE * BEACON_RELAY_CLEARANCE)
+                    return false;
+            foreach (Vector3 ship in _seenShips)
+                if (PlanarDistanceSquared(ship, point) < BEACON_SHIP_CLEARANCE * BEACON_SHIP_CLEARANCE) return false;
+            return true;
         }
 
         private void PrioritizeZone(ReinforcementZonePresenter zone)
@@ -990,6 +1207,12 @@ namespace EmpireAtWar.Services.Enemy
 
         private void Release(ISquadron squadron)
         {
+            foreach (EnemyWingGroup group in _outerGroups)
+                if (group.Zone != null && group.Members.Contains(squadron) &&
+                    EnemyShipTaskGroupPlanner.IsInZone(group.Zone, squadron.WorldPosition))
+                    group.ZoneDeaths.Add(Time.time);
+            if (squadron == _patrolWing) ReleasePatrolWing("lost");
+            _bomberHolds.Remove(squadron);
             squadron.Released -= _squadrons[squadron].ReleaseHandler;
             _squadrons.Remove(squadron);
             _escorts.Remove(squadron);

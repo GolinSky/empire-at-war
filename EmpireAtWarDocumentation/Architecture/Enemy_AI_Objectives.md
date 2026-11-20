@@ -44,7 +44,18 @@ verification: Reviewed affected source and regression fixtures. Unity 6000.4.7f1
 - Capture moves past a hostile-held centre use a waypoint `2R + 500` beside it.
 - Own side with no allied station: measured from the team's fixed relays.
 - Spawn and platform placement obey hostile `SpawnBlock` circles: a held but contested relay may give no spawn point (expected).
-- Known risk, not verified: a held zone with no candidate site left gives its zone group nothing to capture.
+- A held zone with no candidate site left → its zone force guards the zone's nearest own satellite (round 5, E3c).
+
+### Round 5 (2026-11-20)
+
+- Ship spawn: rear search only for a defended station (`defendHome`); otherwise forward first: `EnemyForwardSpawnAnchors` (spawn beacon → wings → ships → own structures, none within 800 of a known hostile ship, ≤ 3) → `ForwardSpawnRing` (8 points, ring 250, `IsOpen` + hull box, no reachability) → else relay/station in the same tick. Smallest hull lands first.
+- Patrol from level 2 = fighter/interceptor wing; meeting hostile ships it holds a spawn beacon toward home (outside hostile block circles, ≥ 1,000 from hostile relays, ≥ 1,200 from ships). Corvette patrol only at level 1.
+- Income: `StationIncome` 30/level × research, × 1.5 with a living second station; miner 30. Skirmish money 5,000–30,000 (default 12,000).
+- Group A spreads ≥ 2 wings per winnable mining spot, never parks on a contested site it cannot win. Idle bombers hold at the nearest own held zone.
+- Battle asteroid instead of a mine when the zone is held and attacked, was lost and retaken, or has hostiles before 120 s.
+- Route defenders: hostile ships within 800 of the pool → zone line count for that zone. Zone force with no site change for 120 s = stalled.
+- AI task-force orders pass `AiOrderDeduplicator`: no resend of the same running order (≤ 50 / same target); ended moves resent at once, ended same-target attacks after 10 s.
+- One auto-ability decision (`AutoPowerDecider`) for player and AI; urgent Shields below 40 % with a hostile warship in radar range.
 
 ### Opening and wing groups (2026-11-19, A1–A7)
 
@@ -56,7 +67,7 @@ verification: Reviewed affected source and regression fixtures. Unity 6000.4.7f1
 - Wings: station-hangar wings are free; carrier wings stay on Guard and are the only escorts. Group A → centre, group B (1–2 wings + bombers) → nearest outer zone with a target, then raids (power rule at the mine). In-zone: free site, pads first, base-side first; contested → next free site; none → bait at the edge. Last 400 → move order (hold inside the pad circle).
 - Production: level-1 corvette only at level 1, from 30 s, max 2. Ships wait while a mandatory satellite or mine is pending. Wings: fighter/interceptor types alternate; bombers once a hostile mine is known. Ships deploy singly until an outer zone is held.
 - Station defence target: ship attacking the station → nearest threatening ship → wing; kept while it threatens.
-- Owner and open items → [[Done/Bugs/Enemy_AI_Opening_And_Task_Groups]].
+- Owner and history → [[Done/Bugs/Enemy_AI_Opening_And_Task_Groups]].
 
 ### Ship allocator (2026-11-19, N1–N6)
 

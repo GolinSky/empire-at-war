@@ -1,4 +1,5 @@
 using System;
+using System.Collections.Generic;
 using EmpireAtWar.Components.Ship.Health;
 using EmpireAtWar.Entities.BaseEntity;
 using EmpireAtWar.Entities.EnemyFaction.Models.Combat;
@@ -373,6 +374,61 @@ namespace EmpireAtWar.Tests.Editor
             Assert.That(freeTarget, Is.EqualTo(freePad), "With no winnable spot the wing takes the free pad.");
             Assert.That(foughtTarget, Is.EqualTo(nearPad),
                 "With every site contested the wing fights for the one nearest home instead of idling.");
+        }
+
+        // Round 5, E3a: group A spreads at least two wings to every mining spot with work it can win.
+        [Test]
+        public void AssignInZone_SpreadingGroupSendsAtLeastTwoWingsToEachSpot()
+        {
+            var assignments = new EnemySquadronCaptureAssignments();
+            Vector3 home = new Vector3(-2000f, 0f, 0f);
+            Vector3[] spots = { new Vector3(-270f, 0f, 0f), new Vector3(270f, 0f, 0f), new Vector3(0f, 0f, 400f) };
+            foreach (Vector3 spot in spots)
+            {
+                assignments.AddMiningSpot(spot, MINE_RADIUS);
+                assignments.AddTarget(spot, isMine: true);
+            }
+            // The base-side spot is held by one defender: a two-wing part wins it.
+            assignments.RateTargets((target, defenders) => { if (target == spots[0]) AddWings(defenders, 1); });
+            var wings = new ISquadron[5];
+            for (int i = 0; i < wings.Length; i++) wings[i] = new Squadron(home);
+
+            assignments.BeginAssignment();
+            assignments.AssignInZone(wings, Vector3.zero, 1000f, home, AddWing, spread: true);
+
+            var counts = new Dictionary<Vector3, int>();
+            foreach (ISquadron wing in wings)
+            {
+                Assert.That(assignments.TryGetTarget(wing, out Vector3 target), Is.True, "No wing is left idle.");
+                counts[target] = counts.TryGetValue(target, out int count) ? count + 1 : 1;
+            }
+            Assert.That(counts.Count, Is.EqualTo(wings.Length / EnemySquadronCaptureAssignments.MIN_SPOT_WINGS));
+            foreach (KeyValuePair<Vector3, int> spot in counts)
+                Assert.That(spot.Value, Is.GreaterThanOrEqualTo(EnemySquadronCaptureAssignments.MIN_SPOT_WINGS));
+            Assert.That(counts.ContainsKey(spots[0]), Is.True, "Two wings beat the lone defender.");
+        }
+
+        [Test]
+        public void AssignInZone_SpreadingGroupNeverParksOnAContestedSiteItCannotWin()
+        {
+            var assignments = new EnemySquadronCaptureAssignments();
+            Vector3 home = new Vector3(-2000f, 0f, 0f);
+            Vector3 spot = new Vector3(0f, 0f, 270f);
+            Vector3 pad = new Vector3(-470f, 0f, -470f);
+            assignments.AddMiningSpot(spot, MINE_RADIUS);
+            assignments.AddTarget(spot, isMine: true);
+            assignments.AddTarget(pad, isSatellitePad: true, captureRadius: PAD_RADIUS);
+            assignments.RateTargets((target, defenders) => AddWings(defenders, 5));
+            var wings = new ISquadron[] { new Squadron(home), new Squadron(home) };
+
+            assignments.BeginAssignment();
+            assignments.AssignInZone(wings, Vector3.zero, 1000f, home, AddWing, spread: true);
+
+            foreach (ISquadron wing in wings)
+            {
+                Assert.That(assignments.TryGetTarget(wing, out Vector3 target), Is.True);
+                Assert.That(target, Is.EqualTo(Vector3.zero), "Group A holds the zone centre instead.");
+            }
         }
 
         private static void AddWing(ISquadron squadron, ForceComposition force) => AddWings(force, 1);

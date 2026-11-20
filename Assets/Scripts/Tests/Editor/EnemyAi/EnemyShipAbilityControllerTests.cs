@@ -22,8 +22,21 @@ namespace EmpireAtWar.Tests.Editor
     [Category("EnemyAi")]
     public sealed class EnemyShipAbilityControllerTests
     {
+        private ShipAbilityCatalog _catalog;
+
+        [SetUp]
+        public void SetUp() => _catalog = ScriptableObject.CreateInstance<ShipAbilityCatalog>();
+
+        [TearDown]
+        public void TearDown() => UnityEngine.Object.DestroyImmediate(_catalog);
+
+        // Abilities without an auto-power role (default definitions) take the AI's own Offensive and Escape rules.
+        private EnemyShipAbilityController CreateController(IEntityLocator entities, IEnemyAiStateProvider state,
+            PlayerRoster roster, ShipAbilityService service) =>
+            new EnemyShipAbilityController(entities, state, roster, service, roster.Get(TestPlayers.Enemy), null,
+                new AutoPowerCombatSnapshot(entities, roster, service, null, null, _catalog), _catalog);
         [Test]
-        public void LowShieldsAndNearbyPlayer_ActivatesDefensiveAbility()
+        public void NearbyPlayer_ActivatesAbilityWithoutAutoPowerRole()
         {
             GameObject playerView = new GameObject("Player");
             try
@@ -32,7 +45,7 @@ namespace EmpireAtWar.Tests.Editor
                 ShipAbilityDefinition definition = new ShipAbilityDefinition();
                 BindingFlags flags = BindingFlags.Instance | BindingFlags.NonPublic;
                 Type type = typeof(ShipAbilityDefinition);
-                type.GetField("aiUse", flags).SetValue(definition, ShipAbilityAiUse.Defensive);
+                type.GetField("aiUse", flags).SetValue(definition, ShipAbilityAiUse.Offensive);
                 type.GetField("settings", flags).SetValue(definition, new BoostShieldPowerSettings());
                 type.GetField("duration", flags).SetValue(definition, 5f);
                 type.GetField("recoveryDelay", flags).SetValue(definition, 5f);
@@ -46,8 +59,7 @@ namespace EmpireAtWar.Tests.Editor
                 PlayerRoster roster = TestPlayers.CreateDuel(EnemyAiDifficulty.UltraHard);
                 ShipAbilityService service = new ShipAbilityService(factory, roster,
                     new VisionService(roster, fogEnabled: false));
-                EnemyShipAbilityController controller = new EnemyShipAbilityController(
-                    entities, new FakeState(), roster, service, roster.Get(TestPlayers.Enemy), null);
+                EnemyShipAbilityController controller = CreateController(entities, new FakeState(), roster, service);
 
                 controller.Tick();
 
@@ -71,7 +83,7 @@ namespace EmpireAtWar.Tests.Editor
                 ShipAbilityDefinition definition = new ShipAbilityDefinition();
                 BindingFlags flags = BindingFlags.Instance | BindingFlags.NonPublic;
                 Type type = typeof(ShipAbilityDefinition);
-                type.GetField("aiUse", flags).SetValue(definition, ShipAbilityAiUse.Defensive);
+                type.GetField("aiUse", flags).SetValue(definition, ShipAbilityAiUse.Offensive);
                 type.GetField("settings", flags).SetValue(definition, new BoostShieldPowerSettings());
                 type.GetField("duration", flags).SetValue(definition, 5f);
                 type.GetField("recoveryDelay", flags).SetValue(definition, 5f);
@@ -88,8 +100,7 @@ namespace EmpireAtWar.Tests.Editor
                 PlayerRoster roster = TestPlayers.CreateDuel(EnemyAiDifficulty.UltraHard);
                 ShipAbilityService service = new ShipAbilityService(factory, roster,
                     new VisionService(roster, fogEnabled: false));
-                EnemyShipAbilityController controller = new EnemyShipAbilityController(
-                    entities, new FakeState(), roster, service, roster.Get(TestPlayers.Enemy), null);
+                EnemyShipAbilityController controller = CreateController(entities, new FakeState(), roster, service);
 
                 Assert.DoesNotThrow(controller.Tick);
                 Assert.That(caster.Slots[0].State, Is.EqualTo(ShipAbilityState.Active));
@@ -112,7 +123,7 @@ namespace EmpireAtWar.Tests.Editor
                 ShipAbilityDefinition definition = new ShipAbilityDefinition();
                 BindingFlags flags = BindingFlags.Instance | BindingFlags.NonPublic;
                 Type type = typeof(ShipAbilityDefinition);
-                type.GetField("aiUse", flags).SetValue(definition, ShipAbilityAiUse.Defensive);
+                type.GetField("aiUse", flags).SetValue(definition, ShipAbilityAiUse.Offensive);
                 type.GetField("settings", flags).SetValue(definition, new BoostShieldPowerSettings());
                 type.GetField("duration", flags).SetValue(definition, 5f);
                 type.GetField("recoveryDelay", flags).SetValue(definition, 5f);
@@ -131,8 +142,7 @@ namespace EmpireAtWar.Tests.Editor
                 PlayerRoster roster = TestPlayers.CreateDuel(EnemyAiDifficulty.UltraHard);
                 ShipAbilityService service = new ShipAbilityService(new RecordingFactory(), roster,
                     new VisionService(roster, fogEnabled: false));
-                EnemyShipAbilityController controller = new EnemyShipAbilityController(
-                    entities, new FakeState(), roster, service, roster.Get(TestPlayers.Enemy), null);
+                EnemyShipAbilityController controller = CreateController(entities, new FakeState(), roster, service);
 
                 controller.Tick();
                 entities.RemoveEntity(casters[4].OwnEntity);
@@ -161,7 +171,7 @@ namespace EmpireAtWar.Tests.Editor
                 targetView.transform.position = Vector3.right * (change == "moved-in" ? 100f : 5f);
                 ShipAbilityDefinition definition = new ShipAbilityDefinition();
                 BindingFlags flags = BindingFlags.Instance | BindingFlags.NonPublic;
-                typeof(ShipAbilityDefinition).GetField("aiUse", flags).SetValue(definition, ShipAbilityAiUse.Defensive);
+                typeof(ShipAbilityDefinition).GetField("aiUse", flags).SetValue(definition, ShipAbilityAiUse.Offensive);
                 typeof(ShipAbilityDefinition).GetField("settings", flags)
                     .SetValue(definition, new BoostShieldPowerSettings());
                 typeof(ShipAbilityDefinition).GetField("duration", flags).SetValue(definition, 5f);
@@ -174,9 +184,7 @@ namespace EmpireAtWar.Tests.Editor
                 PlayerRoster roster = TestPlayers.CreateDuel(EnemyAiDifficulty.UltraHard);
                 ShipAbilityService service = new ShipAbilityService(factory, roster,
                     new VisionService(roster, fogEnabled: false));
-                EnemyShipAbilityController controller = new EnemyShipAbilityController(
-                    entities, new FakeState(), roster, service,
-                    roster.Get(TestPlayers.Enemy), null);
+                EnemyShipAbilityController controller = CreateController(entities, new FakeState(), roster, service);
                 typeof(EnemyShipAbilityController).GetMethod("StartDecision", flags).Invoke(controller, null);
 
                 if (change == "removed" || change == "replaced")
@@ -233,8 +241,7 @@ namespace EmpireAtWar.Tests.Editor
                 PlayerRoster roster = TestPlayers.CreateDuel(EnemyAiDifficulty.UltraHard);
                 ShipAbilityService service = new ShipAbilityService(factory, roster,
                     new VisionService(roster, fogEnabled: false));
-                EnemyShipAbilityController controller = new EnemyShipAbilityController(
-                    entities, new FakeState(), roster, service, roster.Get(TestPlayers.Enemy), null);
+                EnemyShipAbilityController controller = CreateController(entities, new FakeState(), roster, service);
 
                 controller.Tick();
 
@@ -268,8 +275,7 @@ namespace EmpireAtWar.Tests.Editor
             ShipAbilityService service = new ShipAbilityService(factory, roster,
                 new VisionService(roster, fogEnabled: false));
             FakeState state = new FakeState { CurrentState = EnemyStrategicState.RetreatValue };
-            EnemyShipAbilityController controller = new EnemyShipAbilityController(
-                entities, state, roster, service, roster.Get(TestPlayers.Enemy), null);
+            EnemyShipAbilityController controller = CreateController(entities, state, roster, service);
 
             controller.Tick();
             service.Advance(60f);
@@ -318,8 +324,7 @@ namespace EmpireAtWar.Tests.Editor
                 VisionService vision = new VisionService(roster);
                 if (visibleAtDecision) vision.Register(TestPlayers.Enemy, scoutView.transform, 10f);
                 ShipAbilityService service = new ShipAbilityService(factory, roster, vision);
-                EnemyShipAbilityController controller = new EnemyShipAbilityController(
-                    entities, new FakeState(), roster, service, roster.Get(TestPlayers.Enemy), null);
+                EnemyShipAbilityController controller = CreateController(entities, new FakeState(), roster, service);
 
                 typeof(EnemyShipAbilityController).GetMethod("StartDecision", flags).Invoke(controller, null);
                 vision.Unregister(scoutView.transform);

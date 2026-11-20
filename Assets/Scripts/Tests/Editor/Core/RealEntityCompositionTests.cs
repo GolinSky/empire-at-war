@@ -206,7 +206,8 @@ namespace EmpireAtWar.Tests.Editor
             var ally = players.Single(scope => scope.Container.Resolve<PlayerSlot>().Id == new PlayerId(1));
             var wave = players.Single(scope => scope.Container.Resolve<PlayerSlot>().Id == new PlayerId(2));
             Assert.That(human.Container.Resolve<PlayerFactionModel>().CurrentLevel, Is.EqualTo(5));
-            Assert.That(human.Container.Resolve<FactionService>().Income, Is.EqualTo(75));
+            Assert.That(human.Container.Resolve<FactionService>().Income, Is.EqualTo(StationIncome.Get(5,
+                human.Container.Resolve<FactionResearchModel>().StationIncomeMultiplier, false)));
             Assert.That(ally.Container.Resolve<EnemyFactionModel>().CurrentLevel, Is.EqualTo(5));
             Assert.That(ally.Container.Resolve<IProductionAccess>().ProductionHost, Is.EqualTo(new PlayerId(0)));
             Assert.That(wave.Container.TryGetRegistration(typeof(FactionResearchModel), out _), Is.False);
@@ -663,7 +664,7 @@ namespace EmpireAtWar.Tests.Editor
             settings.Saved.Gameplay.AutoPowerAbilities = true;
             var catalog = _battle.Container.Resolve<ShipAbilityCatalog>();
             var profiles = _battle.Container.Resolve<UnitCombatProfileCatalog>();
-            var combat = new AutoPowerCombatSnapshot(entities, local,
+            var combat = new AutoPowerCombatSnapshot(entities, _battle.Container.Resolve<IPlayerRoster>(),
                 new ShipAbilityService(null, _battle.Container.Resolve<IPlayerRoster>(),
                     _battle.Container.Resolve<IVisionService>()),
                 profiles, new ForceCompositionBuilder(entities, profiles, _battle.Container.Resolve<AiWorldSnapshot>()), catalog);
@@ -908,7 +909,9 @@ namespace EmpireAtWar.Tests.Editor
             Assert.That(human.Container.Resolve<EconomyModel>().IncomeTimeLeft, Is.EqualTo(7f), "Loading does not pay early.");
             faction = human.Container.Resolve<PlayerFactionModel>();
             Assert.That(faction.CurrentLevel, Is.EqualTo(2));
-            Assert.That(human.Container.Resolve<FactionService>().Income, Is.EqualTo(30f));
+            Assert.That(human.Container.Resolve<FactionService>().Income, Is.EqualTo(StationIncome.Get(2,
+                human.Container.Resolve<FactionResearchModel>().StationIncomeMultiplier, false)),
+                "Income follows the restored station level.");
             Assert.That(human.Container.Resolve<FactionResearchModel>().GetCompletedTiers(researchLine), Is.EqualTo(1));
             ProductionQueueItem restoredItem = faction.QueuedItems.Single();
             Assert.That(restoredItem.UnitRequest.Id, Is.EqualTo(queued.Id));

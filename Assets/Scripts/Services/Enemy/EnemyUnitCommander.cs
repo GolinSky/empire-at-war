@@ -46,7 +46,6 @@ namespace EmpireAtWar.Services.Enemy
         /// <summary>The team holds an outer zone; until then finished ships deploy one at a time.</summary>
         bool HoldsOuterZone => true;
         bool TryGetReinforcementRally(out Vector3 rally, out bool defendHome);
-        bool TryGetRearDeploymentThreats(Vector3 station, PlacementThreatSnapshot threats) => false;
         void FillDefenseDeploymentThreats(PlacementThreatSnapshot threats) =>
             throw new InvalidOperationException("This AI does not provide station-defense deployment threats.");
     }
@@ -120,9 +119,6 @@ namespace EmpireAtWar.Services.Enemy
         public int EligibleExpansionZoneCount => _taskGroups.EligibleExpansionZoneCount;
         public bool HoldsOuterZone => _contextBuilder.HoldsOuterZone();
         public bool IsStationCritical => _contextBuilder.StationCritical;
-
-        public bool TryGetRearDeploymentThreats(Vector3 station, PlacementThreatSnapshot threats) =>
-            _contextBuilder.TryGetRearDeploymentThreats(station, threats);
 
         public void FillDefenseDeploymentThreats(PlacementThreatSnapshot threats) =>
             _contextBuilder.FillDefenseDeploymentThreats(threats);

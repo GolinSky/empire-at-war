@@ -58,11 +58,11 @@ namespace EmpireAtWar.Tests.Editor
             }
         }
 
-        [TestCase(0f, 500f)]
-        [TestCase(0.5f, 5200f)]
-        [TestCase(0.98f, 9800f)]
-        [TestCase(1f, 10000f)]
-        public void StartingMoneyBarClick_ReportsNearestHundred(float fraction, float expectedValue)
+        [TestCase(0f, 5000f)]
+        [TestCase(0.5f, 17500f)]
+        [TestCase(0.98f, 29500f)]
+        [TestCase(1f, 30000f)]
+        public void StartingMoneyBarClick_ReportsNearestStep(float fraction, float expectedValue)
         {
             GameObject prefab = AssetDatabase.LoadAssetAtPath<GameObject>(SKIRMISH_PATH);
             Slider source = (Slider)new SerializedObject(prefab.GetComponent<SkirmishUi>())

@@ -22,6 +22,8 @@ namespace EmpireAtWar.Services.Enemy
         public bool HasMarkerRequest { get; private set; }
         public float RecoveryStartedAt { get; private set; } = -1f;
         public float NoViableCaptureSince { get; internal set; } = -1f;
+        /// <summary>A station was lost: only defend or gather until the turtle time ends (no raid, capture or move out).</summary>
+        public bool Turtle { get; set; }
 
         public EnemyShipTaskGroup(EnemyStrategicContextBuilder contextBuilder,
             EnemyStrategicDecisionModel decisionModel, EnemyTaskForceExecutor executor,
@@ -58,6 +60,11 @@ namespace EmpireAtWar.Services.Enemy
                 !ContextBuilder.IsMarkerApproachSafe(request.Point)) request = null;
             if (request == null && IsMainForce)
                 request = ContextBuilder.SelectAllyDefenseRequest(Context.Snapshot.RecoveryMode);
+            if (Turtle && request != null && request.Type != TacticalMarkerType.Retreat) request = null;
+            if (Turtle && next.State is not (EnemyStrategicState.DefendBase or EnemyStrategicState.Hold or
+                    EnemyStrategicState.RebuildFleet or EnemyStrategicState.RetreatValue))
+                next = new EnemyStrategicDecision("Turtle: a station was lost; the fleet gathers at home.",
+                    EnemyStrategicState.Hold, Ships.Count);
             if (request != null)
             {
                 next = new EnemyStrategicDecision($"Accepted allied {request.Type} request.",

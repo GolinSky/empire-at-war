@@ -3,14 +3,19 @@ category: Bugs
 status: done
 created: 2026-11-19
 follows: "[[TODOs/Bugs/Enemy_AI_Economy_Strategy]]"
+reopened: 2026-11-20
 completed: 2026-11-20
 acceptance: pending-user
 ---
 # Enemy AI Opening and Task Groups
 
-## Outcome (2026-11-20)
+## Status (2026-11-20, round 5 implemented)
+- Round 5 (E1–E12) implemented 2026-11-20 on the user's go-ahead. Notes → "Round 5 — implementation notes" at the end.
+- Open: the round-5 playtest (user gate). Process (user): one playtest after all of round 5.
+
+## Outcome of rounds 1–4 (closed 2026-11-20, reopened the same day)
 - All scope implemented across rounds 1–4 (A1–A7, B1–B9, C1–C7, D1–D5, I18, I19). `EnemyAi` EditMode 561/561.
-- Open gate (user): next battle on round-4 code, plus Rebellion vs Empire → [[TODOs/User_Acceptance_Queue]].
+- Gate battle played 13:11 → failed (see Evidence — battle 2026-11-20 13:11).
 - Known risk, not verified: a held zone with no candidate site left gives its zone group nothing to capture.
 - Reusable guidance → [[Architecture/Enemy_AI_Objectives]] (sections "Wing capture round 2" and "Rounds 3–4").
 
@@ -311,7 +316,7 @@ Files: `…/BattleTelemetry/Loading_20261120_092240_ai.csv`, `_ai_orders.csv`, `
 - [x] **I19** Resolved by the current rule (backup station 10:31, outlived the main station). No change.
 - [x] **B7** `EnemyStrategicContextBuilder.RouteAroundHostileCentre`: capture target replaced by a waypoint `2R + 500` beside a hostile-held centre when the straight line passes inside it; target inside the centre or group inside the keep-out → direct.
 - [x] **C4** Covered by D1/D2: the reserve now gathers for the gather zone (the centre) instead of feeding it ship by ship. No separate change.
-- [x] **C7** No change: `blocked` = hostile `SpawnBlock` circles (game rule shared with players). The same rule explains the missed centre-relay spawns (user note 2:48): hostile ships/satellites inside the relay circle block it.
+- [x] **C7** (Spawn part corrected 2026-11-20: relay spawns were missed because of F1, not block circles.) No change: `blocked` = hostile `SpawnBlock` circles (game rule shared with players). The same rule explains the missed centre-relay spawns (user note 2:48): hostile ships/satellites inside the relay circle block it.
 - Tests (2026-11-20): new `ArmedStructures_SeenOnceStayDefendersOutOfSight`, `WingGroups_ZonelessGroupWithoutARaidWorksTheCentreTogether`, `CaptureRoute_PassesAHostileCentreByAWaypoint`, `Allocate_LeftoverShipJoinsOnlyAForceItKeepsWinning`; updated `Allocate_HeldZoneWithOwnSatellites…` (floor case), `Allocation_ForceStalledBelowAnEvenFightIsReleasedAfterNinetySeconds` (kept force set up directly), `Allocation_PoolFarTooWeakGathers_ReinforcedPoolAttacksTogether` (was "pool too weak attacks": contract changed by D1). Not covered by tests: D4 turtle, C5, C6.
 - Verification: compile 0 errors; `EnemyAi` EditMode **561/561** (quick, explicit excluded; user request). First run 559/561 — both from the intended D1 contract change; tests updated.
 
@@ -330,3 +335,217 @@ Files: `…/BattleTelemetry/Loading_20261120_092240_ai.csv`, `_ai_orders.csv`, `
 ## Decisions (user, 2026-11-19)
 - Outer-zone wing count: 2 when a fighter wing costs ≤ 300 credits (Vulture 200), otherwise 1.
 - Interceptor not unlocked at level 1 → buy a second fighter type instead of waiting.
+
+
+## Evidence — battle 2026-11-20 13:11 (round-4 gate; Small 1v1, code `b07afa568` dirty, 24:12)
+Files: `…/BattleTelemetry/Loading_20261120_131143_ai.csv`, `_ai_orders.csv`, `_squadrons.csv`, `Battle_20261120_131145_map.csv`, `Battle_20261120_131254.csv`. Log 24.9 s = battle 0 s.
+- AI Separatist (1293, 1283) vs human Republic (−1293, −1283). Coruscant, seed −906205694. Start money 10,000. Outer zones SE (1531, −1552), NW (−1531, 1552).
+- Result: AI main station lost 18:59, second station 22:27. Losses: AI 84 ships + 164 wings; human 36 ships + 121 wings. AI spent 377,500 on ships.
+
+### Worked
+- First wing order 0:01; 6 wings by 0:15; corvettes only 0:30 / 0:31.
+- Centre: pads 0:37–0:47, relay 0:48, 4 satellites by 0:48, mines 0:48 / 0:57. NW zone: satellite 0:57, relay 1:04, mine 1:05.
+- Levels bought ≤ 5 s after they opened (1:27, 3:35, 6:42). Second station bought 10:22, took over 19:00.
+
+### Faults
+- **F1 (P0) Every ship spawns at a station.** 88 / 88 deployments at home (or the second station); 15 of them while the AI held the centre relay (0:48–4:34); NW relay held 1:04–21:58.
+  - Cause (source): `EnemyFactionController.cs:504` → `hasRear` = station alive ∧ `TryGetRearDeploymentThreats`, which returns true whenever a centre zone exists → `useRearAnchor` always → `TryGetRearSpawnPosition(station)`. `TryGetSpawnPositionNear(rally)` (B6) is never reached.
+- **F2 (P0) Ships die in transit, in pairs.** Median life ≈ 80 s. Deaths: 50 inside the centre zone, 29 at home, 5 NW, 4 transit. 1 of 88 came within 700 of the SE zone.
+  - 42 ships got `Attack` on SE structures 113–115 (2:42–17:14); the 2 satellites stood all battle (`statics2`).
+  - `zoneAlloc`: SE rated `defenders4 statics2` → any pair is a `Go`; `reserve=0` from 0:45 to 15:39. 20 human ships at the centre (minutes 8–16) not rated.
+  - B7 waypoint covers `captureTarget` only (`EnemyStrategicContextBuilder.cs:873`), not the blocking-facility `Attack`.
+- **F3 (P0) Centre held, not used.** Held 0:48–4:34 with 4 satellites; ships there 1–2 until 2:41, 4 at 3:08 (3 went SE). Group A (8–10 wings) sat on one contested pad 1:26–4:14 (`spots=` empty) while mines 2 / 3 were hostile or free. `siteBuild` = mine only; no battle asteroid built. From 8:05 `zone:0 ships0`; retaken 19:45.
+- **F4 (P0) No site changed hands 8:42–19:28.** Two ships bought every ≈ 20 s through it.
+- **F5 (P1) Turtle leaks (D4).** Station lost 18:59 → 19:27 ship 267 `Attack` on the SE mine (4,292 away), 19:45 `AttackMove` to the centre; 3 ships died there 20:32–21:08. `EnemyShipTaskGroupPlanner.cs:147` resets the allocator only; the reserve group's own states (`RaidStructures`, `Consolidate`) still send it out.
+- **F6 (P1) Bombers do not raid.** 26 Hyena wings bought 4:28–10:18; `raids>0` on 4 of 138 rows (4:28–19:00). Raid groups sat on centre pad 5 vs 16–41 defenders (D5 fallback). 42 Hyena wings lost.
+- **F7 (P1) Patrol empty 4:20 → end.** Patrol ship (C-9979) died, `released reason=unavailable`, never replaced.
+- **F8 (P1) One wing fed to the SE zone all battle** (`defenders 2–4`); group never switched.
+- **F9 (P2) Satellite churn.** 29 satellites / 26,500 credits after 19:20; pads 5 and 9 flipped ≈ every 10 s with 2–5 ships alive.
+- **F10 (P2) Order churn.** Median 10.5 orders per ship-minute (gate ≤ 4). 24 ships got `Attack` → `None` loops (81 cancels). 18 / 88 ships idle > 30 s after spawn.
+- **Not a fault (user):** saving 99 s for an Invincible (12:18–13:57) under siege is acceptable. C5 stays as is.
+
+### Economy (measured, start 10,000)
+- Income ≈ 270 /s at 1:30, ≈ 400 /s from 2:00 to 19:00. Spend 20–24k per minute, almost all ships.
+- `production-wait` on 1,179 of ≈ 1,450 s: the AI always had a next buy and waited for money.
+- Opening bill, first 60 s: research 1,200 + miners 5,000 + level 2,000 + wings 1,500 + corvettes 2,700 + satellites 2,300 = 14,700 (+ mines) vs 10,000 start.
+- Mandatory misses: pad 9 owned 27 s without a satellite (0:56); pad 6 110 s (2:31) while 21,100 went to ships that minute.
+
+## User notes (2026-11-20, after 13:11)
+- **Top priority 1:** the AI must spawn ships at held zones, and in open space near its own wings (their fog vision allows it). Not all ships: about 80 %, by ship size.
+- F2 and F3 follow from F1: ships arrive at home instead of at the zone.
+- Held centre: use the wings already there to capture the remaining mining spots. Build a **battle asteroid** when the zone is lost, about to be lost, or at the start: more defence firepower.
+- Patrol replacement is a **wing**, not a corvette.
+- **Top priority 2:** economy. Big maps and 2 AIs do better: more money, more time. Money is the main reason.
+  - Find the moments the AI cannot pay a mandatory action; raise the min and max starting money from that.
+  - Small income bonus from the second station.
+  - Revisit income per station level, per research, per mine: a side with 1–2 outer zones and no centre can still buy the mandatory power; the side with more mines buys more units, but the gap is not big.
+  - Today even centre (4 mines) + 5 miners + home mine + 1 outer mine is not enough at levels 1–4.
+  - Fixes expensive wings at the start too.
+- All other faults matter too.
+
+## User decisions (2026-11-20, second pass)
+- **Rear spawn stays** for a station under attack or siege: ships arrive behind, out of reach of the whole armada, and can fire from range. One ship at a time is then safe.
+- **E1 forward spawn: agreed.** Every ship size may spawn at any forward point. No size limit.
+- **Spawn beacon:** a patrol wing finds the enemy, pulls back to a point outside relay and station block circles, stops, and the AI spawns ships there. Smallest ships first: easy to place, and each one widens fog vision.
+  - If that does not work: raise fog vision range of units (all, if needed).
+- **E3 held centre: accepted.**
+- **"Min / max money"** = the skirmish starting-credits slider.
+- **Invincible saved under siege:** fine. Not a fault.
+- **Patrol replacement:** a wing, never a corvette.
+- **Abilities:** one auto-ability system. The player's auto-use also drives the AI.
+- **Shield ability:** fires when shields < 40 % and an enemy ship is nearby.
+- **Process:** implement all of round 5 first. Then one user playtest. No battle between steps.
+- Third pass: E2 income values accepted (station 30 per level, miner 30, second station +50 %).
+- Third pass: forward spawn must be cheap and simple: one call that takes units and returns a point; looser spawn rules.
+- Third pass: shield ability keeps the old rule and adds the new one; the new one has priority.
+
+## Source checks (2026-11-20)
+### Can a dreadnought spawn near a wing?
+- `ReinforcementSpawnRule.CanSpawnShip` = in bounds ∧ **centre point** visible ∧ no hazard ∧ not in a hostile block circle ∧ hull box free (`Physics.CheckBox`) ∧ reachable from the station.
+- Vision is tested at the centre point only → hull size does not matter for fog. A wing's 350 circle is enough for any ship.
+- Hull size matters only for the box check: rocks, structures, other hulls, reserved landings.
+- Only structures carry `SpawnBlockRadius` (satellite 90, mine 160, platforms up to 500, relay 900). Ships and wings block nothing.
+
+### Retry cost
+- `ShipSpawnPoints.TryFindOpenPosition`: 100 random tries per anchor. Each try = vision lookup + physics box + navigation reachability.
+- `EnemyFactionController` retries a blocked ship every 1 s (`DEPLOYMENT_RETRY_INTERVAL`); tiers B / C / D at 4 / 8 / 12 s.
+- With every wing as an anchor: 10 wings × 100 tries × waiting ships, each second → replaced by the fixed 8-point pattern in E1b (≤ 24 points per call).
+
+### Abilities today
+- Player: `PlayerAutoPowerService` → roles (`AutoPowerRole`), `AutoPowerCombatSnapshot.Assess`, 2 confirmation checks, 0.5 s interval.
+- AI: `EnemyShipAbilityController` → separate rules (`ShipAbilityAiUse`, random `AbilityUseChance`, `RetreatShieldThreshold`). Shares only `IShipAbilityAutoUseRule`.
+- Shield role now: shields < 60 % (`lowShields`) ∧ shield damage in the last 3 s. No "enemy ship nearby" test.
+
+## Open items from rounds 1–4 → resolution
+| Item | Resolution |
+|---|---|
+| A5 "partial": no satellite-first target | Closed by B8 (round 2). |
+| Risk: held zone with no candidate site → zone group has no task | E3c. |
+| B2: "first ship deployed" counted as first ship bought | Final rule: the wing cap lifts at the first ship purchase. |
+| C3: site flips not tracked, verdict alone decides | E4c. |
+| C4 "covered by D1 / D2" | Not confirmed by 13:11 (centre got 0 ships 8:05–19:45) → E1 + E4. |
+| C5: recovery mode not visible to production | Dropped (user: saving for a capital is fine). |
+| C7 and the 09:22 note: hostile block circles stop relay spawns | Wrong. Cause = F1 (`hasRear` always true) → E1. |
+| Tests missing: D4 turtle, C6 patrol, B8 ranking bonus, B6 spawn point | E12. |
+| Gates A8 / B10 and the old Acceptance section | Replaced by "Round 5 playtest gates". |
+| Rebellion vs Empire battle | Part of the round-5 playtest. |
+
+## Round 5 — plan (2026-11-20; do not start before the user says so)
+Order: E1 → E2 → E3 → E4 → E5–E11 → E12. Playtest once, after E12.
+
+### E1 (P0) Spawn modes (simplified 2026-11-20, third pass)
+- Decision: one cheap call that takes units and returns a point. Fixed pattern, no random search, no cooldowns, no retry timers.
+- Why: the first draft (100 random tries per anchor, caps, 5 s skips, 8 s waits) was heavy and complex.
+- Avoid: per-point navigation checks, per-point threat checks, a new anchor registry.
+- [x] **E1a Mode.** `EnemyFactionController` ship deployment:
+  - Rear mode (unchanged, `TryGetRearSpawnPosition` at the station) only when `TryGetReinforcementRally` returns `defendHome = true` (defended station or station pressure).
+  - Else forward mode (E1b). Delete the always-true `hasRear` path.
+- [x] **E1b API.** `IShipSpawnPoints.TryGetSpawnPositionNearUnits(PlayerId owner, ShipType shipType, IReadOnlyList<IEntity> units, Vector3 awayFrom, out Vector3 position)`.
+  - Per unit: 8 fixed points on a ring 250 from the unit, first point straight away from `awayFrom`, then alternating left / right.
+  - Per point, cheap first: in bounds → no hazard → centre visible → not in a hostile block circle → hull box free (`IShipSpawnClearance.IsClear`). First point that passes is returned.
+  - At most 3 units per call → ≤ 24 points; the box check runs only on points that passed the cheap tests.
+- [x] **E1c Looser rules for forward points.** Dropped: navigation reachability (the unit already stands there) and `PlacementThreatSnapshot.IsSafe`. Kept: bounds, hazard, vision, hostile block circle, hull box: the players' rule minus reachability.
+  - Accepted risk: a ship lands in a rock pocket it cannot leave. Check `spawnAttempt` rows and ship idle time in the playtest.
+- [x] **E1d Caller.** `EnemyFactionController` passes, nearest the ship's task first (`DeploymentPoint`, else `GatherPoint`), up to 3 own units with no known hostile ship within 800: spawn beacon (E1e) → wings → ships → satellites and mines. `awayFrom` = known hostile centroid, else the map centre.
+  - No point → same tick: existing held-relay / station search (`TryGetSpawnPositionNear`). No wait.
+- [x] **E1e Spawn beacon.** Patrol wing sees a hostile ship → moves back toward home to the first point ≥ 1,000 from every hostile relay, outside every hostile station block circle and ≥ 1,200 from the seen ships → holds. It is passed first in E1d while it lives.
+- [x] **E1f Order.** Ships waiting together deploy smallest hull first (`GetPlanarRadius`). A landed ship is a unit for the next call.
+- [x] **E1g Telemetry.** `deployment … anchor=beacon|wing|ship|structure|relay|station`; `spawnAttempt units=…;points=…;notVisible=…;blocked=…;notClear=…`.
+- Contingency, only after the playtest: capitals fail on > 50 % of `spawnAttempt` rows → raise wing `VisionRange` 350 → 500 and the ring to 350. Not part of this round.
+
+### E2 (P0) Economy (shared by human and AI)
+- [x] **E2a** `SkirmishModel`: starting credits min 500 → 5,000, default 2,000 → 12,000, max 10,000 → 30,000. Slider step and saved setups reviewed.
+- [x] **E2b** Station income per level 15 → 30 (`FactionService.DEFAULT_INCOME`, `EnemyFactionController.DEFAULT_INCOME`; one shared value).
+- [x] **E2c** Miner (`MiningFacilityData` `Income`) 20 → 30. Asteroid mine stays 60. Battle asteroid stays 10.
+- [x] **E2d** Second station: +50 % of station income while it lives.
+- [x] **E2e** Telemetry: one `economy` row per player every 15 s (money, income, sources).
+- Effect at level 3 with Production II: home mine only 272 → 387 /s; home + 1 outer 356 → 471; 6 mines 692 → 807; gap 1.94× → 1.71×.
+- Income values accepted by the user 2026-11-20 (third pass).
+
+### E3 (P0) Held centre
+- [x] **E3a** Group A: its site is contested and a mining spot with work exists in the zone → ≥ 2 wings to each such spot (existing fight rule: advantage ≥ 1, else next spot). No parking on a contested pad.
+- [x] **E3b** `EnemySiteConstructionController`: battle asteroid instead of a mine on a spot when (1) the zone is held and hostiles are in it, or (2) the zone was lost and retaken, or (3) battle time < 120 s and a hostile wing is inside the zone. Else mine.
+- [x] **E3c** A zone group whose held zone has no candidate site left guards the zone's nearest own satellite (`Guard`).
+
+### E4 (P0) No lone transit
+- [x] **E4a** `EnemyZoneAllocator.WinsWith` / `Assess`: known hostile ships within 800 of the straight line from the force to the zone count as defenders.
+- [x] **E4b** Blocking-facility `Attack`: first a `MoveTo` on the `RouteAroundHostileCentre` waypoint when the line passes a hostile-held centre.
+- [x] **E4c** Stall by result: a zone force with no site flip at its zone for 120 s → zone marked like a retreat (90 s switch). Held zones under attack exempt.
+
+### E5–E11
+- [x] **E5 (P1) Turtle.** While `_turtleUntil` runs, the reserve group may only `DefendBase` or gather at `GatherPoint`. No raid, capture or consolidate order.
+- [x] **E6 (P1) Bombers.** A raid group with no winnable mine holds at the centre of the nearest own held zone. The D5 centre fallback stays for fighters and interceptors only.
+- [x] **E7 (P1) Patrol.** From level 2 the patrol unit is a fighter or interceptor wing: the spare wing of group A when it has > 4, else one bought outside the wing cap. Corvette patrol only at level 1.
+- [x] **E8 (P1) Lone outer wing.** A 1-wing zone group that died twice at its zone within 180 s leaves it: next outer zone with targets, else raid.
+- [x] **E9 (P2) Churn.** A pad lost twice within 60 s gets no satellite for 45 s. A ship order is re-issued only when the target id changes or the destination moves > 50.
+- [x] **E10 (P1) One auto-ability system.** Extract the decision from `PlayerAutoPowerService` into a per-owner service; `AutoPowerCombatSnapshot` takes the owner instead of the local player. AI ships use it. `EnemyShipAbilityController` keeps only the difficulty gate (`AbilityDecisionInterval`, `AbilityUseChance`) and the `LockSFoils` cancel; its `ShipAbilityAiUse` rules are deleted with the enum when no ability needs them.
+- [x] **E11 (P1) Shield rule (both rules, new one first).** Ship can boost ∧ is not boosted, then:
+  1. **New, priority:** shields < 40 % (new tuning `shieldBoostBelow` 0.4) ∧ a visible hostile ship (not strikecraft) inside radar range → Shields. Checked first in `ChooseRole`, before last-stand Weapons; fires without the 2-check confirmation.
+  2. **Existing, kept:** shields < 60 % (`lowShields`) ∧ shield damage in the last 3 s → Shields, with the normal confirmation.
+
+### E12 Tests (written with each step; run only on the user's request)
+- `EnemyAi`: spawn mode (rear vs forward), unit order passed to the call, fallback to relay / station in the same tick, smallest first, beacon; battle asteroid choice; group A split; route defenders; stall by result; turtle orders; bomber hold; patrol wing; lone wing; satellite rebuy wait. Also the gaps from rounds 2–4: C6 patrol bait, B8 ranking order.
+- `Ships`: `TryGetSpawnPositionNearUnits`: first point away from the enemy, skips a blocked or unseen point, false when all 24 fail.
+- `Abilities`: shared decision for human and AI owners; shield rules (39 % with a ship nearby → yes, at once; 39 % with only wings and no damage → no; 55 % with recent damage → yes after confirmation; 65 % → no).
+- `Economy`, `Ui`: income sources, second station, slider limits. No stat-pinning: assert relations (level 2 > level 1, second station > none), not numbers.
+
+### Round 5 playtest gates (user, after E12; UltraHard Small 1v1 CIS vs Republic, then Rebellion vs Empire)
+- ≥ 80 % of deployments outside home while no station is under pressure and a relay, beacon or wing is forward.
+- 100 % of deployments in rear mode while the station is under pressure.
+- No ship dies within 60 s of spawning outside a station defence.
+- Held centre: every mining spot AI-owned or fought over within 60 s of the relay capture; ≥ 1 battle asteroid when the centre is attacked.
+- No 5-minute window without a site change while the AI has ≥ 6 ships.
+- 180 s after a station loss: no ship order other than defend or gather.
+- `raids > 0` on ≥ 50 % of rows while a winnable hostile mine is known; no bomber group on a centre pad with > 10 defenders.
+- Patrol unit present ≥ 90 % of the battle from level 2.
+- Orders ≤ 4 per ship per minute (median).
+- AI ships use shield, weapon and target abilities; shield boost only below 40 % with a ship nearby.
+
+## Round 5 — implementation notes (2026-11-20)
+### Spawn (E1)
+- Rear mode only when `TryGetReinforcementRally` → `defendHome`. The always-true `hasRear` path and `TryGetRearDeploymentThreats` are deleted; `FillDefenseDeploymentThreats` sets the station attacker as the rear approach.
+- Forward mode: `EnemyForwardSpawnAnchors.Collect` (beacon → wings → ships → own mines/satellites, nearest the task first, none within 800 of a known hostile ship; ≤ 3) → `IShipSpawnPoints.TryGetSpawnPositionNearUnits` → `ForwardSpawnRing.TryFind` (8 points, ring 250; `IsOpen` then `IShipSpawnClearance.IsClear`; no reachability, no threat test).
+- Deviation: the call takes unit positions (`IReadOnlyList<Vector3>`), not `IEntity`.
+- No forward point → `TryGetSpawnPositionNear` (relay/station) in the same tick.
+- E1f: `EnemyBuildQueue.Advance(shipDeployOrder)` orders ready ships by `GetHullRadius`; ships landed this tick (`_landedShips`) are anchors for the next.
+- E1g: `deployment … anchor=beacon|wing|ship|structure|relayOrStation|rear`; `spawnAttempt units;points;notOpen;notClear;found;anchor`. Deviation: `notOpen` = unseen ∪ hazard ∪ out of bounds ∪ hostile block (one `IsOpen` test).
+- E1e/E7: patrol wing in `EnemySquadronCommander` (`SetWingPatrol(level ≥ 2)`): free ungrouped fighter/interceptor first, else a group A wing while group A > 4. Sees a hostile ship within 1,200 → beacon = first point toward home (200 steps) outside hostile block circles, ≥ 1,000 from hostile relays, ≥ 1,200 from known ships; holds 60 s; `TryGetSpawnBeacon` only once arrived (≤ 150). Production `TryBuyPatrolWing`: cheapest fighter/interceptor outside the wing cap, one order per 60 s. Corvette patrol only at level 1.
+
+### Economy (E2)
+- `StationIncome` (shared): 30 per level × research × 1.5 with a living second station (`SecondStationLevelModel.BuiltChanged` recalculates). `MiningFacilityData` and `TibannaGasStationData` income 20 → 30.
+- Skirmish money 5,000 / 12,000 / 30,000, step 100 → 500 (`SkirmishModel`, `SkirmishSlider.prefab`). Saved setups keep their stored money (not clamped).
+- `economy` telemetry row every 15 s per player (`EconomyService`): money, income, sources by provider type.
+
+### Zones and wings (E3, E4, E6, E8)
+- E3a `AssignInZone(spread: true)` for group A: parts of ≥ 2 wings, one per winnable spot; a part that wins nothing joins the next; no contested-site parking (zone centre instead).
+- E3b `EnemySiteConstructionController.ChooseSpotFacility`: battle asteroid when held ∧ hostiles in zone, or zone lost and retaken, or hostiles in zone before 120 s. Deviation: (3) counts any hostile unit, not only wings.
+- E3c zone force with no capture objective → `GuardPosition` = nearest own satellite/platform in its zone.
+- E4a `CollectPoolZones(…, origin = pool centre)` adds known hostile ships within 800 of the pool → zone line to that zone's defenders (not held zones; ships already near the zone skipped).
+- E4b executor: blocking-facility objective whose capture target is the centre detour → attack-move to the waypoint first.
+- E4c `IsStalledByResult`: zone signature (own structures, hostile statics, held) unchanged 120 s → marked like a retreat. The advantage stall (90 s) stays.
+- E6 bombers without a raid hold (attack-move) at the nearest own held zone centre, else home; D5 fallback only for fighters/interceptors.
+- E8 `EnemyWingGroup.ZoneDeaths`: ≤ 1 capturer and 2 deaths at the zone within 180 s → zone abandoned 180 s; next outer zone, else raid.
+
+### Fleet, churn, abilities (E5, E9–E11)
+- E5 `EnemyShipTaskGroup.Turtle` (set on the reserve while `_turtleUntil` runs): any state other than DefendBase/Hold/RebuildFleet/RetreatValue → Hold (gather); allied non-retreat requests ignored.
+- E9 pads: lost twice within 60 s → no satellite 45 s (`TrackPadLosses`, `IsPadWaiting`).
+- E9 orders: `AiOrderDeduplicator` wraps every `EnemyTaskForceExecutor`. Same move/attack-move point (≤ 50) or same attack target is not resent while running. Deviation: an ended move/attack-move is resent at once (order repair tests); an ended attack on the same target waits 10 s.
+- E10 `AutoPowerDecider` (shared): player `PlayerAutoPowerService` and AI `EnemyShipAbilityController` both use it; `AutoPowerCombatSnapshot` reads the caster's owner (`IPlayerRelations`). AI: shield loss sampled every 0.5 s; one use cycle per `AbilityDecisionInterval`, gated by `AbilityUseChance`; direct `TryActivate`.
+- `ShipAbilityAiUse` kept: Lock S-Foils (Escape), Replenish Wingmen, Lucky Shot, Gravity Well (Offensive) have no auto-power role. Defensive and NearbyStrikecraft code paths and `RetreatShieldThreshold` removed.
+- E11 `AutoPowerTuning.shieldBoostBelow` 0.4: shields < 40 % ∧ visible hostile warship in radar range → Shields first, no confirmation (`AutoPowerSituation.Urgent`). Old 60 % + damage rule kept.
+
+### Tests (E12)
+- Written: `ForwardSpawnRingTests` (Ships); controller forward / fallback / rear modes and smallest-first order (`EnemyFactionControllerLifecycleTests`); group A spread and no contested parking (`EnemySquadronCaptureAssignmentsTests`); `AiOrderDeduplicatorTests`; pad churn (`EnemyDefenseStrategyTests`); shield rule (`AutoPowerRulesTests`); second-station income and per-level income as relations (`EconomyTuningTests`); slider range (`SliderInteractionTests`).
+- Not written: turtle orders, route defenders, stall by result, patrol wing/beacon, lone wing, bomber hold, battle asteroid choice, C6/B8 gaps.
+- Run 2026-11-20: see Verification below.
+
+### Verification (2026-11-20)
+- EditMode categories run (explicit tests off): `EnemyAi` 574/574, `Ships` 225/225, `Economy` 129/129, `Ui` 400/400, `Core` 169/169, `Abilities` 229/230.
+- First `EnemyAi` run: 3 order-repair tests failed (`CaptureZone_StationaryAttackMoveIsOverriddenUntilInsideTheCircle`, `CaptureZone_StoppedOutsideObjectiveReissuesOneSharedGroupOrder`, `GuardSite_RepairsAnIdleShipsOrderOutsideTheGuardArea`) → filter narrowed (ended moves resend at once); rerun green.
+- `Core`: 2 tests pinned station income 15/level → now derived from `StationIncome.Get`.
+- `Abilities` failure not related to this plan: `SuperWeaponTests.ProductionQueueOrbitalCancel_RequiresConfirmationWhileBuildIsPending(True)` ("IonCannon cannot move from Unavailable to Unavailable"); its fixture uses none of the changed code. Not checked against a clean checkout.
+- No playtest (user gate).
+
+### Outcome
+- All round-5 scope implemented and source-verified 2026-11-20. Acceptance → round-5 playtest gates above (user).
+- Reusable guidance → [[Architecture/Enemy_AI_Objectives]] section "Round 5".

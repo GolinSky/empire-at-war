@@ -514,6 +514,7 @@ MonoBehaviour:
     shieldLossWindow: 3
     heavyShieldLoss: 0.25
     lowShields: 0.6
+    shieldBoostBelow: 0.4
     lastStandHull: 0.35
     confirmationChecks: 2
     manualActionDelay: 2

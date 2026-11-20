@@ -1,4 +1,6 @@
+using System.Collections.Generic;
 using EmpireAtWar.Entities.CaptureSites;
+using EmpireAtWar.Services.Saves;
 using EmpireAtWar.Models.Players;
 using EmpireAtWar.Services.CaptureSites;
 using Utilities.ScriptUtils.Time;
@@ -12,10 +14,17 @@ namespace EmpireAtWar.Services.Enemy
     /// <summary>
     /// Builds mines on safe owned sites as soon as affordable, and the required satellites (three per zone, one per mining point) without waiting for a fleet.
     /// Money beyond the production reserve then fills every remaining empty owned pad.
+    /// A mining spot gets a battle asteroid instead of a mine when its zone needs firepower: hostiles are in the held
+    /// zone, the zone was lost and retaken, or a hostile is inside it in the first <see cref="OPENING_SECONDS"/>.
     /// </summary>
     public sealed class EnemySiteConstructionController : ITickable
     {
         private const float DECISION_INTERVAL = 3f;
+        public const float OPENING_SECONDS = 120f;
+        /// <summary>A pad lost this many times within <see cref="PAD_LOSS_WINDOW"/> waits <see cref="PAD_REBUY_WAIT"/>.</summary>
+        public const int PAD_LOSSES = 2;
+        public const float PAD_LOSS_WINDOW = 60f;
+        public const float PAD_REBUY_WAIT = 45f;
         private readonly ICaptureSiteDirectory _sites;
         private readonly ICaptureSitePresence _presence;
         private readonly ICaptureSiteConstruction _construction;
@@ -26,6 +35,11 @@ namespace EmpireAtWar.Services.Enemy
         private readonly EnemyDefenseStrategy _defense;
         private readonly EnemyProductionStrategy _production;
         private readonly IReinforcementZoneSource _zones;
+        private readonly HashSet<ReinforcementZonePresenter> _heldZones = new HashSet<ReinforcementZonePresenter>();
+        private readonly HashSet<ReinforcementZonePresenter> _lostZones = new HashSet<ReinforcementZonePresenter>();
+        private readonly HashSet<int> _ownedPads = new HashSet<int>();
+        private readonly Dictionary<int, List<float>> _padLosses = new Dictionary<int, List<float>>();
+        private readonly Dictionary<int, float> _padWaitUntil = new Dictionary<int, float>();
 
         public EnemySiteConstructionController(ICaptureSiteDirectory sites, ICaptureSitePresence presence,
             ICaptureSiteConstruction construction,
@@ -57,20 +71,30 @@ namespace EmpireAtWar.Services.Enemy
             if (!_snapshotBuilder.IsReady) return;
             EnemyDefenseSnapshot snapshot = _snapshotBuilder.Build();
             ReinforcementZonePresenter centre = EnemyShipTaskGroupPlanner.GetCentre(_zones.Zones);
+            TrackZoneLosses();
+            TrackPadLosses(BattleClock.CurrentElapsed);
             int mineSite = FindMineSite(centre);
             bool mandatorySatellite = _defense.HasMandatoryPad(snapshot);
             _production.PriorityConstructionPending = mandatorySatellite || mineSite >= 0;
-            BuildNext(snapshot, mineSite, mandatorySatellite);
+            string reason = "";
+            SiteFacilityType spotFacility = mineSite >= 0
+                ? ChooseSpotFacility(_sites.Sites[mineSite], out reason) : SiteFacilityType.Mining;
+            BuildNext(snapshot, mineSite, mandatorySatellite, spotFacility, reason);
         }
 
-        internal void BuildNext(EnemyDefenseSnapshot snapshot, int mineSite, bool mandatorySatellite)
+        /// <param name="spotFacility">Mine, or a battle asteroid when the spot's zone needs firepower.</param>
+        internal void BuildNext(EnemyDefenseSnapshot snapshot, int mineSite, bool mandatorySatellite,
+            SiteFacilityType spotFacility = SiteFacilityType.Mining, string reason = "")
         {
             if (_defense.TrySelectMandatory(snapshot, out var required) && StartSatellite(snapshot, required))
                 return;
             if (mineSite >= 0)
             {
-                bool built = _construction.TryStartConstruction(mineSite, _owner.Id, SiteFacilityType.Mining);
-                EnemyAiTelemetry.RecordEvent(_owner.Id, _owner.Faction, "siteBuild", $"kind=mine;started={built}");
+                SiteFacilityType type = spotFacility;
+                bool built = _construction.TryStartConstruction(mineSite, _owner.Id, type);
+                EnemyAiTelemetry.RecordEvent(_owner.Id, _owner.Faction, "siteBuild",
+                    type == SiteFacilityType.Mining ? $"kind=mine;started={built}"
+                        : $"kind=battleAsteroid;started={built};reason={reason}");
                 return;
             }
             if (!mandatorySatellite && (_defense.TrySelectScored(snapshot, out var optional) ||
@@ -80,6 +104,12 @@ namespace EmpireAtWar.Services.Enemy
 
         private bool StartSatellite(EnemyDefenseSnapshot snapshot, EnemyDefenseChoice choice)
         {
+            if (IsPadWaiting(choice.SiteIndex, BattleClock.CurrentElapsed))
+            {
+                EnemyAiTelemetry.RecordEvent(_owner.Id, _owner.Faction, "siteBuild",
+                    $"kind=satellite;started=False;site={choice.SiteIndex};reason=padChurnWait");
+                return false;
+            }
             if (_construction.TryStartConstruction(choice.SiteIndex, _owner.Id, choice.Type))
             {
                 EnemyAiTelemetry.RecordSatellite(_owner.Id, _owner.Faction, choice, snapshot.Money, _defense.TopChoices);
@@ -88,6 +118,72 @@ namespace EmpireAtWar.Services.Enemy
 
             EnemyAiTelemetry.RecordEvent(_owner.Id, _owner.Faction, "siteBuild",
                 $"kind=satellite;started=False;site={choice.SiteIndex};type={choice.Type}");
+            return false;
+        }
+
+        /// <summary>Mine by default; battle asteroid when the spot's zone needs defence firepower.</summary>
+        internal SiteFacilityType ChooseSpotFacility(ICaptureSite spot, out string reason)
+        {
+            reason = "";
+            ReinforcementZonePresenter zone = FindZone(spot);
+            if (zone == null) return SiteFacilityType.Mining;
+            bool hostiles = HasHostilesIn(zone);
+            if (hostiles && IsHeld(zone)) reason = "heldUnderAttack";
+            else if (_lostZones.Contains(zone)) reason = "retaken";
+            else if (hostiles && BattleClock.CurrentElapsed < OPENING_SECONDS) reason = "opening";
+            return reason.Length > 0 ? SiteFacilityType.BattleAsteroid : SiteFacilityType.Mining;
+        }
+
+        /// <summary>A satellite pad lost twice within a minute gets no new satellite for a while.</summary>
+        internal bool IsPadWaiting(int siteIndex, float now) =>
+            _padWaitUntil.TryGetValue(siteIndex, out float until) && now < until;
+
+        internal void TrackPadLosses(float now)
+        {
+            for (int i = 0; i < _sites.Sites.Count; i++)
+            {
+                ICaptureSite site = _sites.Sites[i];
+                if (site.Kind != CaptureSiteKind.Satellite) continue;
+                if (site.Owner == _owner.Id)
+                {
+                    _ownedPads.Add(i);
+                    continue;
+                }
+                if (!_ownedPads.Remove(i)) continue;
+                if (!_padLosses.TryGetValue(i, out List<float> losses)) _padLosses[i] = losses = new List<float>();
+                losses.RemoveAll(time => now - time > PAD_LOSS_WINDOW);
+                losses.Add(now);
+                if (losses.Count < PAD_LOSSES) continue;
+                _padWaitUntil[i] = now + PAD_REBUY_WAIT;
+                losses.Clear();
+            }
+        }
+
+        // A zone held, then lost, is marked; the mark stays once it is retaken.
+        private void TrackZoneLosses()
+        {
+            foreach (ReinforcementZonePresenter zone in _zones.Zones)
+            {
+                if (!zone.IsCapturable) continue;
+                if (IsHeld(zone)) _heldZones.Add(zone);
+                else if (_heldZones.Remove(zone)) _lostZones.Add(zone);
+            }
+        }
+
+        private bool IsHeld(ReinforcementZonePresenter zone) => zone.Owner == _owner.Id;
+
+        private ReinforcementZonePresenter FindZone(ICaptureSite site)
+        {
+            foreach (ReinforcementZonePresenter zone in _zones.Zones)
+                if (zone.IsCapturable && EnemyShipTaskGroupPlanner.IsInZone(zone, site.Center)) return zone;
+            return null;
+        }
+
+        private bool HasHostilesIn(ReinforcementZonePresenter zone)
+        {
+            foreach (ICaptureSite site in _sites.Sites)
+                if (EnemyShipTaskGroupPlanner.IsInZone(zone, site.Center) && _presence.HasHostileUnits(site, _owner.Id))
+                    return true;
             return false;
         }
 

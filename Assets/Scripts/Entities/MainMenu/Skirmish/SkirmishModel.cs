@@ -14,10 +14,10 @@ namespace EmpireAtWar.Entities.MainMenu.Skirmish
     public class SkirmishModel : Model, ISkirmishModelObserver
     {
         public const int NO_MEMBER = -1;
-        private const float MIN_STARTING_MONEY = 500f;
-        private const float MAX_STARTING_MONEY = 10000f;
-        private const float DEFAULT_STARTING_MONEY = 2000f;
-        private const float MONEY_STEP = 100f;
+        private const float MIN_STARTING_MONEY = 5000f;
+        private const float MAX_STARTING_MONEY = 30000f;
+        private const float DEFAULT_STARTING_MONEY = 12000f;
+        private const float MONEY_STEP = 500f;
 
         private readonly SkirmishSlotSetup[] _slots =
         {

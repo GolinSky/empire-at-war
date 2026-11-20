@@ -39,6 +39,7 @@ namespace EmpireAtWar.Services.Enemy
         /// <summary>Wings capture the opening; the first corvette may be bought from this battle time.</summary>
         public const float OPENING_NO_CORVETTE_SECONDS = 30f;
         private const float NON_COMPETING_RESEARCH_SHARE = 0.25f;
+        private const float PATROL_WING_RETRY_SECONDS = 60f;
 
         private readonly IEnemyPurchaseProcessor _purchaseProcessor;
         private readonly IUnitRequestFactory _requestFactory;
@@ -59,6 +60,7 @@ namespace EmpireAtWar.Services.Enemy
         private readonly HostileIntelModel _intel;
         private readonly EnemyStationPressureTracker _stationPressure;
         private readonly EnemyAiScheduler _scheduler;
+        private readonly IEnemySquadronCommander _squadrons;
 
         private EnemyAiScheduler.WorkHandle _workHandle;
 
@@ -75,6 +77,7 @@ namespace EmpireAtWar.Services.Enemy
         private float _nextStationPlacementCheck;
         private string _savingUnit = "";
         private float _savingSince = -1f;
+        private float _patrolWingRetryAt = float.NegativeInfinity;
 
         public float DefenseReserve { get; private set; }
         public bool PriorityConstructionPending
@@ -111,8 +114,10 @@ namespace EmpireAtWar.Services.Enemy
             TeamIntelRegistry intelRegistry,
             PlayerSlot owner,
             EnemyStationPressureTracker stationPressure,
-            EnemyAiScheduler scheduler)
+            EnemyAiScheduler scheduler,
+            IEnemySquadronCommander squadrons)
         {
+            _squadrons = squadrons;
             _scheduler = scheduler;
             _owner = owner;
             _stationPressure = stationPressure;
@@ -182,6 +187,7 @@ namespace EmpireAtWar.Services.Enemy
         private void EvaluateProduction()
         {
             using var sample = _evaluateMarker.Auto();
+            if (TryBuyPatrolWing()) return;
             int shipCount = CountReservedShips();
             int miningFacilityCount = CountReservedMiningFacilities();
             int defensePlatformCount = CountReservedDefensePlatforms();
@@ -815,6 +821,33 @@ namespace EmpireAtWar.Services.Enemy
         /// raid (at most <see cref="BOMBERS_PER_HOSTILE_MINE"/> per mine), or when no other type is available. Hero
         /// wings are never picked here.
         /// </summary>
+        /// <summary>
+        /// From level 2 the patrol is a fighter or interceptor wing. When no wing can be spared, the cheapest one is
+        /// bought outside the wing cap; one order per <see cref="PATROL_WING_RETRY_SECONDS"/> while it builds.
+        /// </summary>
+        private bool TryBuyPatrolWing()
+        {
+            if (_stationPressure.HasPressure || !_squadrons.NeedsPatrolWing ||
+                BattleClock.CurrentElapsed < _patrolWingRetryAt) return false;
+            KeyValuePair<SquadronType, FactionData> cheapest = default;
+            bool found = false;
+            foreach (KeyValuePair<SquadronType, FactionData> option in _factionModel.SquadronFactionData)
+            {
+                ShipClass wingClass = _profileCatalog.Get(UnitTypeId.Squadron(option.Key)).ShipClass;
+                if (wingClass != ShipClass.Fighter && wingClass != ShipClass.Interceptor ||
+                    !IsAvailable(option.Value) || !CanReserve<SquadronUnitRequest>(option.Key.ToString(), option.Value) ||
+                    found && option.Value.Price >= cheapest.Value.Price) continue;
+                cheapest = option;
+                found = true;
+            }
+            if (!found || !IsAffordable(cheapest.Value)) return false;
+            _patrolWingRetryAt = BattleClock.CurrentElapsed + PATROL_WING_RETRY_SECONDS;
+            EnemyAiTelemetry.RecordEvent(_owner.Id, _owner.Faction, "patrolWingPurchase",
+                $"unit={cheapest.Key};price={cheapest.Value.Price}");
+            _purchaseProcessor.Purchase(_requestFactory.ConstructUnitRequest(cheapest.Value, cheapest.Key));
+            return true;
+        }
+
         private bool TrySelectSquadron(
             int shipCount,
             out KeyValuePair<SquadronType, FactionData> selected)

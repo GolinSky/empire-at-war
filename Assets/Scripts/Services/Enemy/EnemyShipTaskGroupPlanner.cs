@@ -33,6 +33,8 @@ namespace EmpireAtWar.Services.Enemy
         public const float TURTLE_SECONDS = 180f;
         /// <summary>The weak-phase attack needs the whole pool to reach this share of the target's defenders.</summary>
         public const float WEAK_ATTACK_FLOOR = 0.6f;
+        /// <summary>A zone force at a zone where no site changed hands this long is stalled by result.</summary>
+        public const float STALL_NO_FLIP_SECONDS = 120f;
 
         private readonly EnemyStrategicContextBuilder _contextBuilder;
         private readonly IUnitOrderService _orders;
@@ -54,6 +56,9 @@ namespace EmpireAtWar.Services.Enemy
         private readonly EnemyZoneEvaluator _evaluator = new EnemyZoneEvaluator();
         private readonly Dictionary<string, float> _belowEvenSince = new Dictionary<string, float>();
         private readonly List<string> _staleSieges = new List<string>();
+        // Per zone with a force: the zone's site signature and since when it is unchanged.
+        private readonly Dictionary<string, (int Signature, float Since)> _flipWatch =
+            new Dictionary<string, (int, float)>();
         private int _stationCount = -1;
         private float _turtleUntil = float.NegativeInfinity;
         private string _retreatedZoneId;
@@ -125,7 +130,7 @@ namespace EmpireAtWar.Services.Enemy
             if (CollectPool(ships))
             {
                 Vector3 home = _pool.GetHome(_poolShips[0].WorldPosition);
-                IReadOnlyList<EnemyZoneObjective> zones = _pool.CollectPoolZones(home, GetPoolSpeed());
+                IReadOnlyList<EnemyZoneObjective> zones = _pool.CollectPoolZones(home, GetPoolSpeed(), GetPoolCentre());
                 NoteStalledSieges(zones, now);
                 _current.Clear();
                 foreach (IShipEntity ship in _poolShips)
@@ -168,6 +173,7 @@ namespace EmpireAtWar.Services.Enemy
                 DeploymentPoint = deploy == EnemyZoneAllocator.RESERVE ? (Vector3?)null : _pool.GetPoolZoneCentre(deploy);
                 EligibleExpansionZoneCount = 0;
                 _zoneReservations.Clear();
+                _reserve.Turtle = turtle;
                 for (int zone = 0; zone < zones.Count; zone++)
                 {
                     ReinforcementZonePresenter presenter = _pool.GetPoolZone(zone);
@@ -218,6 +224,10 @@ namespace EmpireAtWar.Services.Enemy
             foreach (string zoneId in _belowEvenSince.Keys)
                 if (FindZoneGroup(zoneId) == null) _staleSieges.Add(zoneId);
             foreach (string zoneId in _staleSieges) _belowEvenSince.Remove(zoneId);
+            _staleSieges.Clear();
+            foreach (string zoneId in _flipWatch.Keys)
+                if (FindZoneGroup(zoneId) == null) _staleSieges.Add(zoneId);
+            foreach (string zoneId in _staleSieges) _flipWatch.Remove(zoneId);
             foreach (EnemyShipTaskGroup group in _zoneGroups)
             {
                 string zoneId = group.ContextBuilder.AssignedZoneId;
@@ -225,6 +235,17 @@ namespace EmpireAtWar.Services.Enemy
                 if (zone == EnemyZoneAllocator.RESERVE || zones[zone].IsHeldUnderAttack)
                 {
                     _belowEvenSince.Remove(zoneId);
+                    _flipWatch.Remove(zoneId);
+                    continue;
+                }
+                if (IsStalledByResult(zoneId, zones[zone], now))
+                {
+                    _belowEvenSince.Remove(zoneId);
+                    _flipWatch.Remove(zoneId);
+                    _retreatedZoneId = zoneId;
+                    _retreatedUntil = now + WEAK_ZONE_SWITCH_SECONDS;
+                    _pool.RecordZoneAllocation(FormattableString.Invariant(
+                        $"stall=noFlip;zone={zoneId};seconds={STALL_NO_FLIP_SECONDS:F0}"));
                     continue;
                 }
                 _groupForce.Clear();
@@ -246,6 +267,28 @@ namespace EmpireAtWar.Services.Enemy
                 _retreatedZoneId = zoneId;
                 _retreatedUntil = now + WEAK_ZONE_SWITCH_SECONDS;
             }
+        }
+
+        /// <summary>
+        /// A zone force stalls by result when no site in its zone changed hands (own structures, hostile armed
+        /// structures and the hold all unchanged) for <see cref="STALL_NO_FLIP_SECONDS"/>.
+        /// </summary>
+        private bool IsStalledByResult(string zoneId, EnemyZoneObjective zone, float now)
+        {
+            int signature = zone.OwnStructures * 4096 + zone.StaticDefenders * 2 + (zone.IsHeld ? 1 : 0);
+            if (!_flipWatch.TryGetValue(zoneId, out var watch) || watch.Signature != signature)
+            {
+                _flipWatch[zoneId] = (signature, now);
+                return false;
+            }
+            return now - watch.Since >= STALL_NO_FLIP_SECONDS;
+        }
+
+        private Vector3 GetPoolCentre()
+        {
+            Vector3 sum = Vector3.zero;
+            foreach (IShipEntity ship in _poolShips) sum += ship.WorldPosition;
+            return sum / _poolShips.Count;
         }
 
         /// <summary>

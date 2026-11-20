@@ -1,3 +1,4 @@
+using System.Collections.Generic;
 using EmpireAtWar.Models.Factions;
 using EmpireAtWar.Models.Players;
 using EmpireAtWar.Services.Enemy;
@@ -14,6 +15,17 @@ namespace EmpireAtWar.Services.ShipSpawning
 
         /// <summary>Open point around any living owned station, the one nearest the home zone first.</summary>
         bool TryGetStationSpawnPosition(PlayerId owner, ShipType shipType, out Vector3 position);
+
+        /// <summary>
+        /// Forward arrival beside own units: per unit, 8 fixed points on a ring around it, the first straight away
+        /// from <paramref name="awayFrom"/>, then alternating left and right. A point needs bounds, no hazard, vision,
+        /// no hostile block circle and a clear hull; no reachability or threat test (the unit already stands there).
+        /// </summary>
+        bool TryGetSpawnPositionNearUnits(PlayerId owner, ShipType shipType, IReadOnlyList<Vector3> units,
+            Vector3 awayFrom, out Vector3 position, out ForwardSpawnAttempt attempt);
+
+        /// <summary>Planar hull radius, for deploying small ships first.</summary>
+        float GetHullRadius(ShipType shipType);
 
         bool TryGetDefaultZoneSpawnPosition(PlayerId owner, ShipType shipType, out Vector3 position);
 
