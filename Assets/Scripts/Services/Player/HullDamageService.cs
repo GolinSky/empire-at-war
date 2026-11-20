@@ -12,9 +12,8 @@ namespace EmpireAtWar.Services.Player
         private static readonly int MAP_ID = Shader.PropertyToID("_HullDamageMap");
         private static readonly int PARAMS_ID = Shader.PropertyToID("_HullDamageParams");
         private static readonly int SURFACE_ID = Shader.PropertyToID("_HullDamageSurface");
-        private static readonly int CHAR_COLOR_ID = Shader.PropertyToID("_HullDamageCharColor");
-        private static readonly int METAL_COLOR_ID = Shader.PropertyToID("_HullDamageMetalColor");
-        private static readonly int EMBER_COLOR_ID = Shader.PropertyToID("_HullDamageEmberColor");
+        private static readonly int SOOT_COLOR_ID = Shader.PropertyToID("_HullDamageSootColor");
+        private static readonly int BLISTER_COLOR_ID = Shader.PropertyToID("_HullDamageBlisterColor");
         private static readonly int QUALITY_ID = Shader.PropertyToID("_HullDamageQuality");
 
         private readonly HullDamageSettings _settings;
@@ -43,13 +42,15 @@ namespace EmpireAtWar.Services.Player
         public static void Upload(HullDamageSettings settings)
         {
             Shader.SetGlobalTexture(MAP_ID, settings.DetailMap);
-            Shader.SetGlobalVector(PARAMS_ID, new Vector4(1f / settings.DetailSize, 1f / settings.PatchSize,
-                settings.EdgeWidth, settings.HeightBlend));
-            Shader.SetGlobalVector(SURFACE_ID, new Vector4(settings.NormalStrength, settings.EmberStrength,
-                settings.Coverage, settings.EmberFlickerSpeed));
-            Shader.SetGlobalVector(CHAR_COLOR_ID, settings.CharColor.linear);
-            Shader.SetGlobalVector(METAL_COLOR_ID, settings.MetalColor.linear);
-            Shader.SetGlobalVector(EMBER_COLOR_ID, settings.EmberColor.linear);
+            // Every pixel a mark reaches (frayed edge along the surface, up to one radius deep) must lie within
+            // half a cell of its spot: the shader only searches the nearest 8 cells.
+            float reach = Mathf.Sqrt((1f + settings.EdgeBreakup) * (1f + settings.EdgeBreakup) + 1f);
+            float markRadius = Mathf.Min(settings.MarkSize, 0.5f / reach);
+            Shader.SetGlobalVector(PARAMS_ID, new Vector4(1f / settings.DetailSize, 1f / settings.MarkSpacing,
+                markRadius, settings.MarkDensity));
+            Shader.SetGlobalVector(SURFACE_ID, new Vector4(settings.SootOpacity, settings.EdgeBreakup, 0f, 0f));
+            Shader.SetGlobalVector(SOOT_COLOR_ID, settings.SootColor.linear);
+            Shader.SetGlobalVector(BLISTER_COLOR_ID, settings.BlisterColor.linear);
         }
 
         public static void UploadQuality(int qualityLevel) => Shader.SetGlobalFloat(QUALITY_ID, qualityLevel);

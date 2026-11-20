@@ -1,34 +1,34 @@
 // ShipHullDamage.hlsl
 // -----------------------------------------------------------------------------
-// Scorch marks, burnt plating and glowing edges that spread as a unit loses hull.
+// Soot stains and blistered paint that pile up as a unit loses hull.
 //
 // How it stays cheap and batchable
 //   * The damage level (0-15) and a pattern seed live in the renderer user value
 //     (bits 11-19, see ShipLitInput.hlsl). No material, keyword or property block changes.
-//   * Detail comes from one shared texture and a few globals (HullDamageService.cs).
+//   * Breakup detail comes from one shared texture and a few globals (HullDamageService.cs).
 //   * Level 0 skips the whole block: one branch, constant for the whole draw.
 //
-// How the pattern grows
-//   A fixed noise field is compared against a threshold that drops as the level rises.
-//   Higher levels only lower the threshold, so existing marks never move: they grow,
-//   and new ones appear. Repair raises the threshold again and the marks shrink.
-//   The field lives in object space scaled to world units, so it sticks to the hull
-//   (turrets carry their own marks) and a mark is about the same size on every ship.
+// How marks appear
+//   The hull is split into a 3D grid of cells. Each cell holds at most one small mark at a random
+//   spot, with a random "appear at" level. Every damage step switches on the next batch of cells,
+//   so a hit adds new marks elsewhere on the hull; marks never grow. Repair switches them off
+//   in reverse order. The grid lives in object space scaled to world units, so marks stick to
+//   the hull (turrets carry their own) and are the same size on every ship.
 // -----------------------------------------------------------------------------
 #ifndef SHIP_HULL_DAMAGE_INCLUDED
 #define SHIP_HULL_DAMAGE_INCLUDED
 
-// R = height, G = cracks, B = roughness, A = ember mask. Tiles in every direction.
+// R = height, G = cracks, B = roughness, A = unused. Tiles in every direction.
 TEXTURE2D(_HullDamageMap);
 SAMPLER(sampler_HullDamageMap);
-float4 _HullDamageParams;    // x = detail repeats per world unit, y = 1 / patch size (world units), z = edge width, w = height blend
-float4 _HullDamageSurface;   // x = normal strength, y = ember strength, z = coverage at full damage, w = ember flicker speed
-half4 _HullDamageCharColor;  // burnt paint
-half4 _HullDamageMetalColor; // bare metal in the middle of a burn
-half4 _HullDamageEmberColor; // glowing edge (HDR)
-float _HullDamageQuality;    // QualitySettings level; below FULL_QUALITY_LEVEL: one planar sample, no embers
+float4 _HullDamageParams;    // x = detail repeats per world unit, y = 1 / mark spacing (world units), z = mark radius (cells, <= 0.5), w = share of cells marked at 0 hull
+float4 _HullDamageSurface;   // x = soot opacity, y = edge breakup (radii), zw = unused
+half4 _HullDamageSootColor;
+half4 _HullDamageBlisterColor; // blistered paint in the middle of a mark
+float _HullDamageQuality;    // QualitySettings level; below FULL_QUALITY_LEVEL: one planar sample
 
 #define HULL_DAMAGE_FULL_QUALITY_LEVEL 2.0
+#define HULL_DAMAGE_UINT_TO_UNIT (1.0 / 4294967296.0)
 
 // Object-space position in world units, shifted per renderer so ships of one class differ.
 float3 GetHullDamagePosition(float3 positionOS)
@@ -40,24 +40,42 @@ float3 GetHullDamagePosition(float3 positionOS)
     return positionOS * scale + seed * float3(37.31, 53.17, 71.93);
 }
 
-float HullDamageHash(float3 p)
+// PCG4D (Jarkko & Olano 2020): four independent random numbers per cell in one go.
+uint4 HullDamageHash(int3 cell)
 {
-    p = frac(p * 0.3183099 + 0.1);
-    p *= 17.0;
-    return frac(p.x * p.y * p.z * (p.x + p.y + p.z));
+    uint4 v = uint4(asuint(cell), 0x9E3779B9u) * 1664525u + 1013904223u;
+    v.x += v.y * v.w; v.y += v.z * v.x; v.z += v.x * v.y; v.w += v.y * v.z;
+    v ^= v >> 16u;
+    v.x += v.y * v.w; v.y += v.z * v.x; v.z += v.x * v.y; v.w += v.y * v.z;
+    return v;
 }
 
-// Smooth 3D value noise, 0..1.
-float HullDamageValueNoise(float3 p)
+// Distance to the nearest active mark, in mark radii (1 = edge). Large when no mark is near.
+// A mark is a disk on the surface: its spot must lie within one radius of the surface, and the distance is
+// measured along the surface, so a spot just under the plating still leaves a full-size mark.
+// A mark is at most half a cell wide, so only the 2x2x2 cells around the nearest corner can reach this point.
+float GetHullDamageMarkDistance(float3 cellPosition, float3 normalOS, half level)
 {
-    float3 cell = floor(p);
-    float3 f = frac(p);
-    float3 u = f * f * (3.0 - 2.0 * f);
-    float x00 = lerp(HullDamageHash(cell), HullDamageHash(cell + float3(1, 0, 0)), u.x);
-    float x10 = lerp(HullDamageHash(cell + float3(0, 1, 0)), HullDamageHash(cell + float3(1, 1, 0)), u.x);
-    float x01 = lerp(HullDamageHash(cell + float3(0, 0, 1)), HullDamageHash(cell + float3(1, 0, 1)), u.x);
-    float x11 = lerp(HullDamageHash(cell + float3(0, 1, 1)), HullDamageHash(cell + float3(1, 1, 1)), u.x);
-    return lerp(lerp(x00, x10, u.y), lerp(x01, x11, u.y), u.z);
+    float activeShare = level * _HullDamageParams.w;
+    float maxRadius = _HullDamageParams.z;
+    int3 firstCell = (int3)floor(cellPosition - 0.5);
+    float nearest = 1e4;
+    for (int i = 0; i < 8; i++)
+    {
+        int3 cell = firstCell + int3(i & 1, (i >> 1) & 1, (i >> 2) & 1);
+        float4 random = (float4)HullDamageHash(cell) * HULL_DAMAGE_UINT_TO_UNIT;
+        // random.w: the share of damage at which this cell's mark appears.
+        if (random.w >= activeShare)
+            continue;
+        float radius = maxRadius * lerp(0.5, 1.0, frac(random.w * 61.7));
+        float3 offset = cellPosition - (float3(cell) + random.xyz);
+        float depth = dot(offset, normalOS);
+        if (abs(depth) >= radius)
+            continue;
+        nearest = min(nearest, length(offset - depth * normalOS) / radius);
+    }
+
+    return nearest;
 }
 
 half4 SampleHullDamageDetail(float2 uv, float2 uvDdx, float2 uvDdy)
@@ -66,15 +84,12 @@ half4 SampleHullDamageDetail(float2 uv, float2 uvDdx, float2 uvDdy)
 }
 
 // level: 0 = intact (skipped), 1 = destroyed.
-void ApplyHullDamage(inout SurfaceData surface, float3 positionDamage, half level, float3 positionWS,
-    half3 normalWS, half4 tangentWS)
+void ApplyHullDamage(inout SurfaceData surface, float3 positionDamage, half level, half3 normalWS)
 {
-    // Derivatives first: they are only valid outside the branch below.
+    // Derivatives first: they are only valid outside the branches below.
     float3 uvw = positionDamage * _HullDamageParams.x;
     float3 uvwDdx = ddx(uvw);
     float3 uvwDdy = ddy(uvw);
-    float3 positionDdx = ddx(positionWS);
-    float3 positionDdy = ddy(positionWS);
 
     // One user value per draw, so every pixel of the draw takes the same side.
     UNITY_BRANCH
@@ -83,14 +98,20 @@ void ApplyHullDamage(inout SurfaceData surface, float3 positionDamage, half leve
         return;
     }
 
-    half3 normalWSUnit = normalize(normalWS);
-    float3 normalOS = TransformWorldToObjectDir(normalWSUnit);
+    float3 normalOS = TransformWorldToObjectDir(normalWS);
+    float markDistance = GetHullDamageMarkDistance(positionDamage * _HullDamageParams.y, normalOS, level);
+    // Most of an undamaged-looking hull is far from any mark: skip the texture work there.
+    UNITY_BRANCH
+    if (markDistance >= 1.0 + _HullDamageSurface.y)
+    {
+        return;
+    }
+
     float3 blend = pow(abs(normalOS), 4.0);
     blend /= max(blend.x + blend.y + blend.z, 1e-4);
 
-    bool fullQuality = _HullDamageQuality >= HULL_DAMAGE_FULL_QUALITY_LEVEL;
     half4 detail;
-    if (fullQuality)
+    if (_HullDamageQuality >= HULL_DAMAGE_FULL_QUALITY_LEVEL)
     {
         detail = SampleHullDamageDetail(uvw.zy, uvwDdx.zy, uvwDdy.zy) * blend.x
             + SampleHullDamageDetail(uvw.xz, uvwDdx.xz, uvwDdy.xz) * blend.y
@@ -107,52 +128,19 @@ void ApplyHullDamage(inout SurfaceData surface, float3 positionDamage, half leve
         detail = SampleHullDamageDetail(uv, uvDdx, uvDdy);
     }
 
-    // Patch field: two octaves of noise in world-sized cells.
-    float3 patchPosition = positionDamage * _HullDamageParams.y;
-    float field = 0.65 * HullDamageValueNoise(patchPosition)
-        + 0.35 * HullDamageValueNoise(patchPosition * 2.13 + 17.1);
-    // The detail height breaks up the edge, so burns end in ragged plating, not a soft gradient.
-    field += (detail.r - 0.5) * _HullDamageParams.w;
+    // The detail height frays the round edge into an irregular stain.
+    float frayed = markDistance + (detail.r - 0.5) * 2.0 * _HullDamageSurface.y;
+    // Soft, semi-transparent soot fading out to the edge; blistered paint only in the middle.
+    half soot = (1.0h - smoothstep(0.35h, 1.0h, frayed)) * _HullDamageSurface.x;
+    half blister = (1.0h - smoothstep(0.15h, 0.45h, frayed)) * smoothstep(0.45h, 0.65h, detail.r + 0.5h * detail.g);
 
-    half edgeWidth = max(_HullDamageParams.z, 1e-3);
-    float threshold = 1.0 - level * _HullDamageSurface.z;
-    half burn = saturate((field - threshold) / edgeWidth);
-    half core = saturate((field - threshold - edgeWidth) / edgeWidth);
-
-    // Burnt paint, then bare scorched metal in the middle; cracks darken both.
-    half cracks = detail.g * burn;
-    half3 charred = _HullDamageCharColor.rgb * lerp(0.6h, 1.0h, detail.r);
-    surface.albedo = lerp(surface.albedo, charred, burn);
-    surface.albedo = lerp(surface.albedo, _HullDamageMetalColor.rgb, core);
-    surface.albedo *= 1.0h - 0.6h * cracks;
-    surface.metallic = lerp(lerp(surface.metallic, 0.1h, burn), 0.85h, core);
-    surface.smoothness = lerp(surface.smoothness, (1.0h - detail.b) * 0.45h, burn);
-    surface.occlusion *= 1.0h - 0.35h * burn - 0.3h * cracks;
-
-    // Bump from the detail height (surface gradient), only inside the burn.
-    half height = detail.r - 0.5h * detail.g;
-    float heightDdx = ddx(height);
-    float heightDdy = ddy(height);
-    float3 r1 = cross(positionDdy, normalWSUnit);
-    float3 r2 = cross(normalWSUnit, positionDdx);
-    float det = dot(positionDdx, r1);
-    float3 heightGradient = (heightDdx * r1 + heightDdy * r2) * (sign(det) / max(abs(det), 1e-8));
-    half3 bitangentWS = tangentWS.w * cross(normalWSUnit, tangentWS.xyz);
-    half2 gradientTS = half2(dot(heightGradient, tangentWS.xyz), dot(heightGradient, bitangentWS));
-    surface.normalTS = normalize(half3(surface.normalTS.xy - gradientTS * (_HullDamageSurface.x * burn),
-        surface.normalTS.z));
-
-    // Running lights burn out with the plating.
-    surface.emission *= 1.0h - burn;
-    if (fullQuality)
-    {
-        // Embers along the edge of each burn and in its cracks, flickering slowly.
-        // 4b(1-b) is 0 outside the burn and where it is complete, 1 halfway through its edge.
-        half edgeBand = 4.0h * burn * (1.0h - burn);
-        half flicker = 0.75h + 0.25h * sin(_Time.y * _HullDamageSurface.w + field * 40.0);
-        half ember = (edgeBand + cracks * core) * detail.a * flicker * _HullDamageSurface.y;
-        surface.emission += _HullDamageEmberColor.rgb * ember;
-    }
+    surface.albedo = lerp(surface.albedo, _HullDamageSootColor.rgb, soot);
+    surface.albedo = lerp(surface.albedo, _HullDamageBlisterColor.rgb, blister);
+    surface.metallic = lerp(surface.metallic * (1.0h - 0.5h * soot), 0.6h, blister);
+    surface.smoothness = lerp(surface.smoothness, (1.0h - detail.b) * 0.25h, max(soot, blister));
+    surface.occlusion *= 1.0h - 0.25h * soot;
+    // Running lights under soot dim with it.
+    surface.emission *= 1.0h - soot;
 }
 
 #endif // SHIP_HULL_DAMAGE_INCLUDED

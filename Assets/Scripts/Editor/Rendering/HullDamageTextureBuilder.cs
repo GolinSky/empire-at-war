@@ -6,7 +6,8 @@ namespace EmpireAtWar.Editor.Rendering
 {
     /// <summary>
     /// Generates the tiling detail texture for ShipHullDamage.hlsl:
-    /// R = height (dented plating), G = cracks, B = roughness, A = where cracks may glow.
+    /// R = height (dented plating), G = cracks, B = roughness, A = where cracks may glow
+    /// (unused by the soot marks; kept for the Phase 3 breach glow).
     /// Deterministic: rebaking gives the same texture.
     /// </summary>
     public static class HullDamageTextureBuilder
