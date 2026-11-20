@@ -42,6 +42,8 @@ namespace EmpireAtWar.Services.Enemy
         private const int SAVING_MIN_SHIPS = 10;
         private const float SAVING_MIN_ADVANTAGE = 1f;
         private const float SURPLUS_SHIP_FACTOR = 2f;
+        /// <summary>Ships more than this many levels below the station level are no longer bought.</summary>
+        private const int SHIP_TIER_SPAN = 1;
 
         private readonly IEnemyPurchaseProcessor _purchaseProcessor;
         private readonly IUnitRequestFactory _requestFactory;
@@ -198,7 +200,8 @@ namespace EmpireAtWar.Services.Enemy
                 out KeyValuePair<MiningFacilityType, FactionData> mining);
             bool hasMiningOption = canPlaceStructure && hasMiningSelection;
             bool canBuildMining = hasMiningOption && IsAffordable(mining.Value);
-            bool hasDefenseSelection = TrySelectDefense(
+            // A small fleet takes the cheapest platform: a big one would cost it the ships of its opening.
+            bool hasDefenseSelection = TrySelectDefense(shipCount < SAVING_MIN_SHIPS,
                 out KeyValuePair<DefendPlatformType, FactionData> defense);
 
             KeyValuePair<SquadronType, FactionData> squadron = default;
@@ -762,13 +765,27 @@ namespace EmpireAtWar.Services.Enemy
         /// <summary>
         /// Level-1 corvettes answer enemy wings in the opening: none in the first
         /// <see cref="OPENING_NO_CORVETTE_SECONDS"/>, at most <see cref="MAX_LEVEL1_CORVETTES"/>, and never once
-        /// level 2 is reached, station emergency included.
+        /// level 2 is reached, station emergency included. Other ships are bought only from the station's level and
+        /// <see cref="SHIP_TIER_SPAN"/> below it, so a high-level station stops filling its queue with early frigates;
+        /// a station about to fall takes any ship that arrives in time.
         /// </summary>
         private bool IsShipTierAllowed(FactionData data, UnitTypeId id)
         {
-            if (!IsLevel1Corvette(data, id)) return true;
-            return _factionModel.CurrentLevel == 1 && BattleClock.CurrentElapsed >= OPENING_NO_CORVETTE_SECONDS &&
-                CountReservedLevel1Corvettes() < MAX_LEVEL1_CORVETTES;
+            if (IsLevel1Corvette(data, id))
+                return _factionModel.CurrentLevel == 1 && BattleClock.CurrentElapsed >= OPENING_NO_CORVETTE_SECONDS &&
+                    CountReservedLevel1Corvettes() < MAX_LEVEL1_CORVETTES;
+            return _stationPressure.IsStationCritical || data.AvailableLevel >= GetShipTierFloor();
+        }
+
+        /// <summary>The highest level floor within <see cref="SHIP_TIER_SPAN"/> that still leaves a ship type to buy.</summary>
+        private int GetShipTierFloor()
+        {
+            int level = _factionModel.CurrentLevel;
+            for (int floor = level - SHIP_TIER_SPAN; floor > 1; floor--)
+                foreach (KeyValuePair<ShipType, FactionData> option in _factionModel.ShipFactionData)
+                    if (option.Value.AvailableLevel >= floor && option.Value.AvailableLevel <= level)
+                        return floor;
+            return 1;
         }
 
         /// <summary>Live wings, usable carrier reserves and initial wings of ships still awaiting deployment.</summary>
@@ -935,8 +952,10 @@ namespace EmpireAtWar.Services.Enemy
 
         /// <summary>
         /// Prefers an affordable type with fewer existing copies, then the strongest platform within budget.
+        /// With <paramref name="cheapestOnly"/> the cheapest buildable type is the only choice.
         /// </summary>
         private bool TrySelectDefense(
+            bool cheapestOnly,
             out KeyValuePair<DefendPlatformType, FactionData> selected)
         {
             selected = default;
@@ -949,6 +968,16 @@ namespace EmpireAtWar.Services.Enemy
                         option.Key.ToString(),
                         option.Value))
                 {
+                    continue;
+                }
+
+                if (cheapestOnly)
+                {
+                    if (!found || option.Value.Price < selected.Value.Price)
+                    {
+                        selected = option;
+                        found = true;
+                    }
                     continue;
                 }
 
