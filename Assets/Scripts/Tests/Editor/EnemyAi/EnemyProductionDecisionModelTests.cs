@@ -388,6 +388,9 @@ namespace EmpireAtWar.Tests.Editor
                 ScriptableObject.CreateInstance<ReinforcementData>();
             FactionDefinition definition =
                 CopyDefinition(FactionType.Republic, ShipType.Arquitens, ShipType.Venator);
+            // Both ships sit inside the tier span (the station's level and one below).
+            SetBackingField(definition.Ships[ShipType.Arquitens], nameof(FactionData.AvailableLevel), 4);
+            SetBackingField(definition.Ships[ShipType.Venator], nameof(FactionData.AvailableLevel), 5);
 
             try
             {
@@ -479,6 +482,9 @@ namespace EmpireAtWar.Tests.Editor
                 CopyDefinition(FactionType.Separatist, ShipType.Munificent, ShipType.Recusant);
             SetBackingField(definition.Ships[ShipType.Munificent], nameof(FactionData.BuildTime), 20);
             SetBackingField(definition.Ships[ShipType.Recusant], nameof(FactionData.BuildTime), 30);
+            // Both ships sit inside the tier span (the station's level and one below).
+            SetBackingField(definition.Ships[ShipType.Munificent], nameof(FactionData.AvailableLevel), 4);
+            SetBackingField(definition.Ships[ShipType.Recusant], nameof(FactionData.AvailableLevel), 5);
 
             try
             {
@@ -585,9 +591,12 @@ namespace EmpireAtWar.Tests.Editor
         }
 
         // Round 6 (G4): saving for a ship the AI cannot pay is allowed only for a fleet of 10+ that beats what it knows.
-        [TestCase(1, true)]
-        [TestCase(10, false)]
-        public void UnaffordablePreferredShip_OnlyAStrongFleetSavesForIt(int fleetShips, bool buysNow)
+        [TestCase(1, 4, true)]
+        [TestCase(10, 4, false)]
+        // Tier span: two levels below the station, the paid-for Munificent is no longer bought.
+        [TestCase(1, 3, false)]
+        public void UnaffordablePreferredShip_OnlyAStrongFleetSavesForIt(int fleetShips, int cheapShipLevel,
+            bool buysNow)
         {
             ReinforcementData reinforcementData = ScriptableObject.CreateInstance<ReinforcementData>();
             FactionDefinition definition =
@@ -596,6 +605,8 @@ namespace EmpireAtWar.Tests.Editor
             SetBackingField(definition.Ships[ShipType.Recusant], nameof(FactionData.BuildTime), 30);
             SetBackingField(definition.Ships[ShipType.Munificent], nameof(FactionData.Price), 3000);
             SetBackingField(definition.Ships[ShipType.Recusant], nameof(FactionData.Price), 4000);
+            SetBackingField(definition.Ships[ShipType.Munificent], nameof(FactionData.AvailableLevel), cheapShipLevel);
+            SetBackingField(definition.Ships[ShipType.Recusant], nameof(FactionData.AvailableLevel), 5);
             try
             {
                 EnemyFactionModel factionModel = CreateFactionModel(definition);

@@ -664,6 +664,7 @@ namespace EmpireAtWar.Tests.Editor
         {
             using OrbitalMenuFixture menu = new OrbitalMenuFixture();
             menu.Faction.QueueUnit(menu.Request);
+            menu.Weapons.StartCharging(menu.Request.Key);
             int cancelNotifications = 0;
             menu.BuildQueue.Canceled += () => cancelNotifications++;
 
