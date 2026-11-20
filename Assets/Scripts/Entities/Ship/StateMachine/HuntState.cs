@@ -6,6 +6,7 @@ using EmpireAtWar.Entities.BaseEntity;
 using EmpireAtWar.Patterns.StateMachine;
 using EmpireAtWar.Services.UnitOrders;
 using EmpireAtWar.Services.Vision;
+using EmpireAtWar.Utils;
 using UnityEngine;
 using EmpireAtWar.Entities.BaseEntity.EntityFacades;
 
@@ -96,7 +97,7 @@ namespace EmpireAtWar.Entities.Ship.StateMachine
                 if (hasPreferred && !isPreferred) continue;
                 Vector3 position = entity.GetFacade<IEntityTransformFacade>().Transform.position;
                 if (!_visionService.IsVisible(_side, entity)) continue;
-                float distance = (position - _movement.CurrentPosition).sqrMagnitude;
+                float distance = PlanarGeometry.DistanceSquared(position, _movement.CurrentPosition);
                 if (distance >= nearest && (hasPreferred || !isPreferred)) continue;
                 hasPreferred = isPreferred;
                 nearest = distance;

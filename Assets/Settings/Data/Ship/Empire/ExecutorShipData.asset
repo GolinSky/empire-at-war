@@ -61,8 +61,9 @@ MonoBehaviour:
   <Shields>k__BackingField: 150000
   shieldRegenTiers: {fileID: 11400000, guid: 13e8b17936074345b03019b205c57d90, type: 2}
   <ShieldRegenTier>k__BackingField: 5
+  <ShieldRegenMultiplier>k__BackingField: 1
   <ShieldRegenerateDelay>k__BackingField: 1
-  <Range>k__BackingField: 1235
+  <Range>k__BackingField: 2055
   <Delay>k__BackingField: 0.25
   abilities: 2100000016000000
   hangarBays:

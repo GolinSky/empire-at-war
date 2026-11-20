@@ -65,6 +65,7 @@
 
 ### Bugs
 
+- [ ] **Hardpoint-based weapon reach (Praetor/big ships hold with guns out of range; radar + planar leftovers)** → [[TODOs/Bugs/Hardpoint_Based_Weapon_Reach]] — 2026-11-20: multipliers baked on 16 big-ship prefabs, radar raised on 15 ships; planar leftovers and in-game check remain.
 - [ ] **Enemy AI economy strategy** → [[TODOs/Bugs/Enemy_AI_Economy_Strategy]]; follows [[Done/Bugs/Enemy_AI_Active_Play_And_Ship_Combat]]
   - Status: in progress (2026-11-19). X1–X5 (`8e2ebefe6`, `28d1a41fd`) and review fixes R1–R9 (`89810dcb2`) committed; map M2/M4/M5 in `ac7ff075c`. EditMode: EnemyAi 503/503, Capture, Map pass. 17:31 battle lost → objective-selection rebuild P1–P7 implemented 2026-11-19 (zone verdicts Go/Assemble/Deny, pull-back to gathering point). 19:05 battle: same issues (allocator missing) → N1–N6 implemented 2026-11-19 evening: ship allocator (one reserve + one force per zone), commit at an even fight, unscouted-zone estimate, route rule, pull-back fix, sabotage when behind, squadron power rule, satellites counted as defenders; `EnemyAi` EditMode 518/527 → 3 stale fixtures fixed → `EnemyUnitCommanderTests` 146/146. Open: tests for R3/R5/R6, UltraHard 1v1 Small battle, then 2v2 Medium + 1v1 Large → [[TODOs/Bugs/Enemy_AI_Economy_Strategy#Status 2026-11-19 (current)]].
 

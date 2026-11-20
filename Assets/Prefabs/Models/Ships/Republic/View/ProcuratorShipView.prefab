@@ -1715,7 +1715,7 @@ MonoBehaviour:
   - {fileID: 2482767865130341520}
   - {fileID: 5772408728476390959}
   - {fileID: 5790198305721625926}
-  rangeMultiplier: 2
+  rangeMultiplier: 1.11
 --- !u!1 &5144237366868680435
 GameObject:
   m_ObjectHideFlags: 0
@@ -3001,6 +3001,7 @@ MonoBehaviour:
   <SquadronFlight>k__BackingField: {fileID: 0}
   <SquadronIcon>k__BackingField: {fileID: 0}
   <SFoils>k__BackingField: {fileID: 0}
+  <GravityWellEmitter>k__BackingField: {fileID: 0}
   <Injectables>k__BackingField:
   - {fileID: 5026617295197080303}
   - {fileID: 6444785111108732146}
