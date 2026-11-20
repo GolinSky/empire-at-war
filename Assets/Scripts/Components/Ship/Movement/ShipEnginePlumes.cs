@@ -5,10 +5,12 @@ namespace EmpireAtWar.Components.Ship.Movement
     /// <summary>
     /// Engine exhaust trails. Trail length = speed × time, so a lifetime of
     /// 14 × width / undamaged pace gives 14 × width at full pace, shorter when slow.
+    /// The lifetime cap keeps slow capitals' trails reshaping quickly in turns.
     /// </summary>
     internal sealed class ShipEnginePlumes
     {
         private const float LENGTH_PER_WIDTH = 14f;
+        private const float MAX_LIFETIME = 1.5f;
         private const int SEGMENTS_PER_TRAIL = 9;
 
         private readonly TrailRenderer[] _plumes;
@@ -18,9 +20,8 @@ namespace EmpireAtWar.Components.Ship.Movement
             _plumes = plumes;
             foreach (TrailRenderer plume in plumes)
             {
-                float fullLength = LENGTH_PER_WIDTH * plume.widthMultiplier;
-                plume.time = fullLength / undamagedSpeed;
-                plume.minVertexDistance = fullLength / SEGMENTS_PER_TRAIL;
+                plume.time = Mathf.Min(LENGTH_PER_WIDTH * plume.widthMultiplier / undamagedSpeed, MAX_LIFETIME);
+                plume.minVertexDistance = undamagedSpeed * plume.time / SEGMENTS_PER_TRAIL;
             }
         }
 

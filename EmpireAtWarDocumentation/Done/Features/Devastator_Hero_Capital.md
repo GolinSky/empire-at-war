@@ -17,7 +17,10 @@ acceptance: pending-user
 ## Decision
 
 - `ShipType.Devastator = 219`.
-- Main batteries: 8 octuple slots → `6× HeavyDualTurbolaser (43)` "Imperial Heavy Dual Turbolaser" + `2× HeavyDualIonCannon (91)` (user chose `43` over `3`).
+- Main batteries: 8 octuple slots → `6× DualHeavyTurboLaser (3)` (ISD I main gun) + `2× HeavyDualIonCannon (91)`.
+  - Changed 2026-11-20 from `HeavyDualTurbolaser (43)`: same cadence (2 shots / 4 s), but its bolts flew at `52` vs `172.9` (`12.9 s` to max range vs `3.4 s`), so it read as a slow gun. Switching gives up 43's `+10%` damage and `+15%` range.
+  - Type `43` bolt speed also raised `52 → 172.9` in `WeaponsData` — explicit value, because 43 has its own shot prefab and `0` gives speed 0, not the family default. Fixes the Imperial Venator, its only other user.
+  - Main-battery DPS now `6 × 54.9 + 2 × 45.8 ≈ 421`; ISD II `8 × 137.3 ≈ 1,098`; ISD I `6 × 54.9 ≈ 329`.
 - Ion pair = `HP_ISD_New_OTL_02` (+x) and `HP_ISD_New_OTL_07` (−x), mirrored at `z -45.54`. All 8 keep `mainBattery = true` and their yaw arcs.
 - `2× ISDIIQuadIonCannon (71)` kept.
 - Added `2× MediumIonCannon (32)` → total `6 → 8`.
@@ -57,7 +60,7 @@ acceptance: pending-user
 ## Edge Cases
 
 - Ion-heavy loadout (2 heavy dual ion + 2 quad ion + 8 medium ion): AI combat profile derives from the loadout automatically.
-- Weapon ranges of `43` / `91` differ from octuples; ship `Range 750` unchanged.
+- Weapon ranges of `3` / `91` differ from octuples; ship `Range 750` unchanged.
 
 ## Files
 

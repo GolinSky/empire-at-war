@@ -111,6 +111,7 @@ acceptance: pending-user
 ### Decision changes
 
 - **Switched to `TrailRenderer` (user, 2026-11-20, after checking ISD I/II and Tector):** the fixed-length plume read as on/off at full size and never bent. Each trail now gets `time = 14 × width / undamaged pace` at spawn → full-pace length 14 × width, grows from 0, bends in turns. Throttle code removed; emission follows hyperspace arrival. Same nozzles, widths, material and curves. Cost: long lifetimes on slow capitals (ISD II ≈7 s, Executor ≈26 s). The original Decision section (plume over trail) is superseded by this.
+- **Tuning after user check (2026-11-20):** big ships (Capital, BattleCruiser, Dreadnought: 33 base views + Chimaera/Devastator via ISD II) at half width; alpha ×0.6 for all; lifetime capped at 1.5 s so trails reshape quickly in turns.
 
 - **Width ignores scale.** View-aligned `LineRenderer` width does not follow Transform scale (probe: scale 10 → length 10×, width 1×). Setup tool also sets `widthMultiplier = width`. The plan's "scale = width" assumption was wrong.
 - **Budget raised** to ≤4 (≤5 over 400 units): symmetric quads (Home One, MC80 Independence, Justice, Resolute, Venator, Rothana, Remonda, Malevolence, CD273, NebulonB, MC75) read better than 3.

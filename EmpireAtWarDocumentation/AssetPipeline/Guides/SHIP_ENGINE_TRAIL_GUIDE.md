@@ -23,7 +23,9 @@ tags:
 - **Chosen (user, 2026-11-20):** `TrailRenderer` with lifetime `time = 14 × width / undamaged pace`.
 - **Why:** trail length = speed × time → 14 × width at full pace, shorter when slow, grows from 0 on departure, bends in turns.
 - **Avoid:** fixed-length local-space `LineRenderer` plume (shipped first the same day). It reads as on/off at full size and never bends.
-- **Cost:** slow capitals keep long lifetimes (ISD II ≈7 s, Executor ≈26 s) → old points linger while a capital turns in place.
+- **Lifetime cap 1.5 s** (`MAX_LIFETIME`, user 2026-11-20): uncapped capitals (ISD II ≈7 s, Executor ≈26 s) reshaped too slowly in turns. Capped trails are shorter than 14 × width (ISD II ≈30 units at full pace).
+- **Big ships at half width** (user 2026-11-20): `ShipClass` Capital, BattleCruiser, Dreadnought → width ≈ 0.45 × nozzle diameter. Others keep ≈ 0.9 ×.
+- **Alpha** lowered for all (user 2026-11-20): `(0, 0.5)`, `(0.14, 0.38)`, `(1, 0)`.
 
 ## Rules
 
@@ -42,7 +44,7 @@ ShipEnginePlumeSetup.Apply(prefabPath,
 ```
 
 - Parent: `ShipMoveComponent.bodyTransform` (follows bank; survives model reimport). Instance scale stays 1; width = `widthMultiplier` (View-aligned width ignores Transform scale).
-- `new ShipEnginePlumes(trails, Model.UndamagedSpeed)` in `Initialize()` sets `time = 14w / pace`, `minVertexDistance = 14w / 9` (≈9 segments, CR70: 1.5).
+- `new ShipEnginePlumes(trails, Model.UndamagedSpeed)` in `Initialize()` sets `time = min(14w / pace, 1.5 s)`, `minVertexDistance = pace × time / 9` (≈9 segments, CR70: 1.5).
 - Spawn → `emitting = false` + `Clear()`. Hyperspace finish or save restore → `emitting = true`. Stop/ion/anchor need no code: no movement → no new points, trail shrinks over `time`.
 - Engine damage → slower ship → shorter trail. Fog uses `forceRenderingOff`, independent of emission.
 - CR70 check: 14 × 0.95 / 50 = 0.266 s ≈ approved 0.26 s.
@@ -53,13 +55,13 @@ ShipEnginePlumeSetup.Apply(prefabPath,
 |---|---|
 | Width curve | `(0, 1)`, `(0.14, 1)`, `(1, 0.05)` |
 | Color | `(1, 0.99, 0.96)` → `(1, 0.91, 0.80)` |
-| Alpha | `(0, 0.85)`, `(0.14, 0.64)`, `(1, 0)` |
+| Alpha | `(0, 0.5)`, `(0.14, 0.38)`, `(1, 0)` (CR70 approved 0.85 / 0.64; lowered 2026-11-20) |
 | Alignment / texture mode | View / Stretch |
 | Material | `ShipEngineTrail.mat` + `ShipEngineTrailProfile.png` (4 × 64, mipmapped, trilinear, clamp) |
 | Corner / cap vertices | 0 / 0 |
 | Prefab emitting / autodestruct | off / off |
 | Shadows, probes, lighting data | off; motion vectors `ForceNoMotion` |
-| Width per nozzle | ≈ 0.9 × nozzle diameter; CR70 0.95 (approved look) |
+| Width per nozzle | ≈ 0.9 × nozzle diameter (CR70 0.95); Capital / BattleCruiser / Dreadnought ≈ 0.45 × |
 
 ## Placement procedure
 
