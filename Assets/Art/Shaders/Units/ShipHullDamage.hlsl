@@ -53,16 +53,19 @@ uint4 HullDamageHash(int3 cell)
 // Distance to the nearest active mark, in mark radii (1 = edge). Large when no mark is near.
 // A mark is a disk on the surface: its spot must lie within one radius of the surface, and the distance is
 // measured along the surface, so a spot just under the plating still leaves a full-size mark.
-// A mark is at most half a cell wide, so only the 2x2x2 cells around the nearest corner can reach this point.
+// A mark reaches at most one cell from its spot (clamped in HullDamageService), so the 3x3x3 cells around
+// this point are enough.
 float GetHullDamageMarkDistance(float3 cellPosition, float3 normalOS, half level)
 {
     float activeShare = level * _HullDamageParams.w;
     float maxRadius = _HullDamageParams.z;
-    int3 firstCell = (int3)floor(cellPosition - 0.5);
+    int3 firstCell = (int3)floor(cellPosition) - 1;
     float nearest = 1e4;
-    for (int i = 0; i < 8; i++)
+    for (int z = 0; z < 3; z++)
+    for (int y = 0; y < 3; y++)
+    for (int x = 0; x < 3; x++)
     {
-        int3 cell = firstCell + int3(i & 1, (i >> 1) & 1, (i >> 2) & 1);
+        int3 cell = firstCell + int3(x, y, z);
         float4 random = (float4)HullDamageHash(cell) * HULL_DAMAGE_UINT_TO_UNIT;
         // random.w: the share of damage at which this cell's mark appears.
         if (random.w >= activeShare)
@@ -99,7 +102,7 @@ void ApplyHullDamage(inout SurfaceData surface, float3 positionDamage, half leve
     }
 
     float3 normalOS = TransformWorldToObjectDir(normalWS);
-    // The material's mark scale grows marks and their spacing together, so marks stay within the 8-cell search.
+    // The material's mark scale grows marks and their spacing together, so marks stay within the 27-cell search.
     float markDistance = GetHullDamageMarkDistance(positionDamage * (_HullDamageParams.y / _HullDamageMarkScale),
         normalOS, level);
     // Most of an undamaged-looking hull is far from any mark: skip the texture work there.

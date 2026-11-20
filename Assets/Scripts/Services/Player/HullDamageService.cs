@@ -43,9 +43,9 @@ namespace EmpireAtWar.Services.Player
         {
             Shader.SetGlobalTexture(MAP_ID, settings.DetailMap);
             // Every pixel a mark reaches (frayed edge along the surface, up to one radius deep) must lie within
-            // half a cell of its spot: the shader only searches the nearest 8 cells.
+            // one cell of its spot: the shader only searches the 3x3x3 cells around each pixel.
             float reach = Mathf.Sqrt((1f + settings.EdgeBreakup) * (1f + settings.EdgeBreakup) + 1f);
-            float markRadius = Mathf.Min(settings.MarkSize, 0.5f / reach);
+            float markRadius = Mathf.Min(settings.MarkSize, 1f / reach);
             Shader.SetGlobalVector(PARAMS_ID, new Vector4(1f / settings.DetailSize, 1f / settings.MarkSpacing,
                 markRadius, settings.MarkDensity));
             Shader.SetGlobalVector(SURFACE_ID, new Vector4(settings.SootOpacity, settings.EdgeBreakup, 0f, 0f));

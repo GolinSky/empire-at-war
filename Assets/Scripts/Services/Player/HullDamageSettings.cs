@@ -15,8 +15,8 @@ namespace EmpireAtWar.Services.Player
         [Header("Marks")]
         [Tooltip("World units between possible mark spots. Smaller = smaller, denser marks.")]
         [SerializeField, Min(0.01f)] private float markSpacing = 8f;
-        [Tooltip("Largest mark radius as a share of the spacing. Clamped to about 0.3 so a mark never spills past its search range.")]
-        [SerializeField, Range(0.05f, 0.5f)] private float markSize = 0.3f;
+        [Tooltip("Largest mark radius as a share of the spacing. Clamped to about 0.6 so a mark never spills past its search range.")]
+        [SerializeField, Range(0.05f, 0.6f)] private float markSize = 0.45f;
         [Tooltip("Share of mark spots in use at 0 hull. Each damage step switches on 1/15 of them.")]
         [SerializeField, Range(0f, 1f)] private float markDensity = 0.85f;
         [Tooltip("How far the detail texture frays the round edge, in mark radii.")]

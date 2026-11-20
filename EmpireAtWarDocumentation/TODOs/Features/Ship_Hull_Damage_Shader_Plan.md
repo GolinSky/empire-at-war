@@ -68,6 +68,8 @@ Current mark model (replaces the noise-threshold mask in step 2 below):
 - Set a ship's source hull material and its wreck copy to the same values (`WreckMaterialSyncTests`; tool: Tools/Empire At War/Rendering/Materials/Sync Wreck Materials).
 - Victory: `Victory_Hull.mat` + `Victory_Hull_Wreck.mat` → mark scale 1.3, opacity scale 1.2. `Victory_Lights.mat` is URP Unlit → window lights never darken under soot (explains the earlier "lights stay lit" note).
 - Pitfall: `Material.SetFloat` in the same call as a forced shader reimport was lost on save; set material values after the import finishes.
+- 2026-11-20 user: marks too small and too few → +50% both. Search widened from 2×2×2 to 3×3×3 cells (27 PCG4D hashes per damaged pixel, nested x/y/z loop: `int` `%`/`/` drew D3D slow-divide warnings); radius clamp `1 / sqrt((1 + breakup)² + 1)` ≈ 0.59 of spacing; `markSize` 0.3 → 0.45 at unchanged spacing 8 → marks 1.5× wider and 1.5× more often hit the hull (count +50%). Cost not measured.
+- 9-ship preview (Victory, Venator, Imperial Venator, Tector, both Arquitens, both Acclamators, Executor): marks read well on Victory / Imperial Venator / Tector / Acclamator Assault. World-unit size does not fit every hull: Arquitens Imperial (radius 23) gets almost none, Executor (radius 1,056) turns to dust, Tector reads as round dots. Open: per-ship size → see TODO 5.
 
 - [x] 1. Input accessors + outline mask
 - [x] 2. `ShipHullDamage.hlsl`
@@ -179,5 +181,6 @@ User-value layout:
 
 1. ~~Source of the damage texture~~ → generated: `Tools/Empire At War/Bake Hull Damage Texture` (`HullDamageTextureBuilder`) → `Assets/Art/Textures/Vfx/HullDamageDetail.png` (512², linear, repeat, BC7). Authored art can replace the PNG later.
 2. ~~GPU Resident Drawer re-batching~~ → Unity 6000.6 docs: RSUV changes per-renderer shading "without using different materials or additional CPU time" and is designed to combine with the GPU Resident Drawer.
-3. After Phase 1: user judges in-game → decide Phase 2. Tune `HullDamageSettings` with the preview window (spacing 8, size 0.3, density 0.85, breakup 0.35, soot opacity 0.7 are first guesses).
+3. After Phase 1: user judges in-game → decide Phase 2. Tune `HullDamageSettings` with the preview window (spacing 8, size 0.45, density 0.85, breakup 0.35, soot opacity 0.7 are first guesses).
+5. Mark size vs ship size (radius 20 → 1,056): pick per-ship `_HullDamageMarkScale` by hand, or an editor tool that writes it from each ship's hull size. Awaiting user decision.
 4. Phase 2 only, if approved: audit ship view prefabs — do hull renderers share the view-root space? Yes → store root-space hits, no per-frame work. No → store one world-to-root matrix per slot, written per frame for ships that have hits.
