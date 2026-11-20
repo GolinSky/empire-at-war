@@ -94,9 +94,9 @@ User-value layout:
 |---|---|
 | 0–7 | team (unchanged) |
 | 8–10 | highlight (unchanged) |
-| 11–14 | damage level 0–15 |
-| 15–19 | pattern seed 0–31 |
-| 20–29 | hit slot, 0 = none (Phase 2) |
+| 11–15 | damage level 0–31 (was 11–14, 0–15 until 2026-11-20) |
+| 16–20 | pattern seed 0–31 |
+| 21–30 | hit slot, 0 = none (Phase 2) |
 
 1. `ShipLitInput.hlsl`: add `HIGHLIGHT_USER_VALUE_MASK 0x7u`, damage/seed accessors; mask in `ShipOutlinePass.hlsl`.
 2. New `ShipHullDamage.hlsl`: `ApplyHullDamage(inout SurfaceData, positionDamage, normalWS, level, seed)`.
@@ -222,5 +222,11 @@ User-value layout:
   - Glowing ray lines removed (they repeated the star pattern). Burnt patch: field = noise(×4.5, ×10.3 of the edge-noise frequency) − 0.4 + 0.45·inner − 0.6·(1 − inner), `inner` = 1 − smoothstep(0, `emberLength` 0.45, d). Inside threshold 0.42 → `burntColor` (0.24, 0.14, 0.12) + 5% glow; rim band `emberWidth` 0.03 → `emberColor` × `emberStrength` 1.0. Shape comes from noise at that hull spot → never the same twice, never along the outline. The −0.6·(1 − inner) term stops stray specks outside marks.
   - Globals: `_HullDamageBurntColor` new; `_HullDamageEmberColor.a` = rim width; `_HullDamageCore.w` = patch radius.
   - Verified: compile clean, 96 variants clean, close-ups + 9-ship sheet via real service.
+- 31 damage steps + off-centre sunken patches (2026-11-20, user):
+  - User-value layout changed: level bits 11–15 (0–31, `HULL_DAMAGE_MAX_LEVEL` 31), seed bits 16–20; Phase 2 hit slot would now use 21–30. C# `UnitRenderStateComponent` + `ShipLitInput.hlsl` + `UnitRenderStateComponentTests` (masks, cases 0.5 → 16, 0 → 31) updated. Each step switches on 1/31 of the mark spots.
+  - Patch centre: random shift inside the mark up to `burntOffset` 0.35 radii (projected onto the surface); patch can fall partly on the rim, so not every mark shows a full patch.
+  - Depth: `burntDepth` 0.6 tilts the normal toward the patch inside on its wall (field slope from finite differences — no ddx inside the per-pixel branch), darker metal deeper in (×0.55), occlusion shadow along the inner wall. Needs `tangentWS` → `ApplyHullDamage(…, normalWS, tangentWS)`.
+  - New global `_HullDamageBurnt` (x offset, y depth). Patch work skipped when the field is below the rim (third early-out).
+  - Verified: compile clean, 96 variants clean, close-ups + 8-step Tector strip via real service. Tests updated, not run.
 - Verification: 96 variant compiles clean; 9-ship preview shows marks at a consistent share of every hull (Executor now visible blotches; Arquitens Imperial now marked). The final tool version was compiled and run in memory (`script run`) because unrelated uncommitted work (`EnemySquadronCommander.cs`, `ShipSpawnPoints.cs`) blocks the project compile; Editor-assembly compile of the tool still pending on that.
 4. Phase 2 only, if approved: audit ship view prefabs — do hull renderers share the view-root space? Yes → store root-space hits, no per-frame work. No → store one world-to-root matrix per slot, written per frame for ships that have hits.

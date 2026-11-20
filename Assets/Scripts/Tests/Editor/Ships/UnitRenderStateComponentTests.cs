@@ -13,8 +13,8 @@ namespace EmpireAtWar.Tests.Editor
         // Bit layout shared with ShipLitInput.hlsl.
         private const uint TEAM_MASK = 0xFFu;
         private const uint HIGHLIGHT_MASK = 0x7u << 8;
-        private const uint DAMAGE_MASK = 0xFu << 11;
-        private const uint SEED_MASK = 0x1Fu << 15;
+        private const uint DAMAGE_MASK = 0x1Fu << 11;
+        private const uint SEED_MASK = 0x1Fu << 16;
 
         private GameObject _root;
         private MeshRenderer _renderer;
@@ -126,8 +126,8 @@ namespace EmpireAtWar.Tests.Editor
 
         [TestCase(1f, 0u)]
         [TestCase(0.999f, 1u)]
-        [TestCase(0.5f, 8u)]
-        [TestCase(0f, 15u)]
+        [TestCase(0.5f, 16u)]
+        [TestCase(0f, 31u)]
         public void HullDamage_QuantizesHullIntoLevelBits(float hull, uint level)
         {
             _component.SetHullDamage(hull);
@@ -154,12 +154,12 @@ namespace EmpireAtWar.Tests.Editor
                 "Damage bits alone must not turn the outline on.");
 
             _component.SetHighlight(UnitHighlight.Selected);
-            Assert.That(_renderer.GetShaderUserValue(), Is.EqualTo(_base | (15u << 11) | (2u << 8)));
+            Assert.That(_renderer.GetShaderUserValue(), Is.EqualTo(_base | (31u << 11) | (2u << 8)));
             Assert.That(_renderer.renderingLayerMask,
                 Is.EqualTo(OTHER_LAYERS | UnitOutlineRendererFeature.OUTLINE_RENDERING_LAYER));
 
             _component.SetHighlight(UnitHighlight.None);
-            Assert.That(_renderer.GetShaderUserValue(), Is.EqualTo(_base | (15u << 11)));
+            Assert.That(_renderer.GetShaderUserValue(), Is.EqualTo(_base | (31u << 11)));
             Assert.That(_renderer.renderingLayerMask, Is.EqualTo(OTHER_LAYERS));
         }
 
@@ -169,7 +169,7 @@ namespace EmpireAtWar.Tests.Editor
             _component.SetHullDamage(0f);
             _component.SetHighlight(UnitHighlight.Hovered | UnitHighlight.Selected);
 
-            Assert.That(_component.WreckUserValue, Is.EqualTo(_base | (15u << 11)));
+            Assert.That(_component.WreckUserValue, Is.EqualTo(_base | (31u << 11)));
             Assert.That(_renderer.GetShaderUserValue() & HIGHLIGHT_MASK, Is.Not.Zero);
         }
     }

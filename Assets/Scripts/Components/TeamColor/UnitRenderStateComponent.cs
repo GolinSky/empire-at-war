@@ -16,9 +16,9 @@ namespace EmpireAtWar.Components.TeamColor
         private const int HIGHLIGHT_SHIFT = 8;
         private const uint HIGHLIGHT_MASK = 0x7u << HIGHLIGHT_SHIFT;
         private const int HULL_DAMAGE_LEVEL_SHIFT = 11;
-        private const uint HULL_DAMAGE_LEVEL_MASK = 0xFu << HULL_DAMAGE_LEVEL_SHIFT;
-        private const int HULL_DAMAGE_MAX_LEVEL = 15;
-        private const int HULL_DAMAGE_SEED_SHIFT = 15;
+        private const uint HULL_DAMAGE_LEVEL_MASK = 0x1Fu << HULL_DAMAGE_LEVEL_SHIFT;
+        private const int HULL_DAMAGE_MAX_LEVEL = 31;
+        private const int HULL_DAMAGE_SEED_SHIFT = 16;
         private const uint HULL_DAMAGE_SEED_MASK = 0x1Fu << HULL_DAMAGE_SEED_SHIFT;
 
         [SerializeField] private MeshRenderer[] meshRenderers;
@@ -40,7 +40,7 @@ namespace EmpireAtWar.Components.TeamColor
             ApplyUserValue((_userValue & ~HIGHLIGHT_MASK) | ((uint)flags << HIGHLIGHT_SHIFT));
         }
 
-        /// <summary>Quantizes hull (1 = intact) into 16 damage levels; any lost hull shows at least level 1.</summary>
+        /// <summary>Quantizes hull (1 = intact) into 32 damage levels (0-31); any lost hull shows at least level 1.</summary>
         public void SetHullDamage(float hullPercentage)
         {
             uint level = (uint)Mathf.Clamp(Mathf.CeilToInt((1f - hullPercentage) * HULL_DAMAGE_MAX_LEVEL), 0,

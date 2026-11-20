@@ -13,7 +13,7 @@ namespace EmpireAtWar.Services.Player
         [SerializeField, Min(0.01f)] private float markRadiusMin = 3.5f;
         [Tooltip("Largest mark radius in world units, before the ship material's Mark Scale. Also sets the spacing of mark spots.")]
         [SerializeField, Min(0.01f)] private float markRadiusMax = 6.1f;
-        [Tooltip("Share of mark spots in use at 0 hull. Each damage step switches on 1/15 of them.")]
+        [Tooltip("Share of mark spots in use at 0 hull. Each of the 31 damage steps switches on 1/31 of them.")]
         [SerializeField, Range(0f, 1f)] private float markDensity = 1f;
         [Tooltip("How far smooth noise waves the outline in and out, in mark radii.")]
         [SerializeField, Range(0f, 0.6f)] private float edgeBreakup = 0.2f;
@@ -36,8 +36,12 @@ namespace EmpireAtWar.Services.Player
         [SerializeField, Range(0f, 1f)] private float sootOpacityEdge = 0.15f;
 
         [Header("Burnt Paint")]
-        [Tooltip("Burnt patches stay inside this share of each mark's outline.")]
+        [Tooltip("Burnt patch radius as a share of the mark radius.")]
         [SerializeField, Range(0f, 1f)] private float emberLength = 0.45f;
+        [Tooltip("How far a patch centre may sit from its mark's centre, as a share of the mark radius.")]
+        [SerializeField, Range(0f, 0.6f)] private float burntOffset = 0.35f;
+        [Tooltip("How sunken a patch looks: normal tilt on its wall. 0 = flat.")]
+        [SerializeField, Range(0f, 2f)] private float burntDepth = 0.6f;
         [Tooltip("Width of the glowing rim around each burnt patch (noise units).")]
         [SerializeField, Range(0.005f, 0.2f)] private float emberWidth = 0.03f;
         [SerializeField] private Color burntColor = new Color(0.24f, 0.14f, 0.12f, 1f);
@@ -58,6 +62,8 @@ namespace EmpireAtWar.Services.Player
         public float SootOpacityEdge => sootOpacityEdge;
         public float EmberLength => emberLength;
         public float EmberWidth => emberWidth;
+        public float BurntOffset => burntOffset;
+        public float BurntDepth => burntDepth;
         public Color BurntColor => burntColor;
         public Color EmberColor => emberColor;
         public float EmberStrength => emberStrength;

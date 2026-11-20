@@ -95,8 +95,8 @@ float4 _TeamColors[MAX_TEAM_COLORS];
 //   bit 8    : hovered
 //   bit 9    : selected
 //   bit 10   : attack-order feedback
-//   bits 11-14: hull damage level, 0 = intact, 15 = destroyed (see ShipHullDamage.hlsl)
-//   bits 15-19: hull damage pattern seed
+//   bits 11-15: hull damage level, 0 = intact, 31 = destroyed (see ShipHullDamage.hlsl)
+//   bits 16-20: hull damage pattern seed
 #define NO_TEAM_USER_VALUE 0u
 #define TEAM_USER_VALUE_MASK 0xFFu
 #define HIGHLIGHT_USER_VALUE_SHIFT 8u
@@ -105,9 +105,9 @@ float4 _TeamColors[MAX_TEAM_COLORS];
 #define SELECTED_FLAG 2u
 #define ATTACKED_FLAG 4u
 #define HULL_DAMAGE_LEVEL_SHIFT 11u
-#define HULL_DAMAGE_LEVEL_MASK 0xFu
-#define HULL_DAMAGE_MAX_LEVEL 15.0
-#define HULL_DAMAGE_SEED_SHIFT 15u
+#define HULL_DAMAGE_LEVEL_MASK 0x1Fu
+#define HULL_DAMAGE_MAX_LEVEL 31.0
+#define HULL_DAMAGE_SEED_SHIFT 16u
 #define HULL_DAMAGE_SEED_MASK 0x1Fu
 
 // 0 = intact, 1 = destroyed.

@@ -15,6 +15,7 @@ namespace EmpireAtWar.Services.Player
         private static readonly int SOOT_COLOR_ID = Shader.PropertyToID("_HullDamageSootColor");
         private static readonly int EMBER_COLOR_ID = Shader.PropertyToID("_HullDamageEmberColor");
         private static readonly int BURNT_COLOR_ID = Shader.PropertyToID("_HullDamageBurntColor");
+        private static readonly int BURNT_ID = Shader.PropertyToID("_HullDamageBurnt");
 
         private readonly HullDamageSettings _settings;
 
@@ -44,6 +45,7 @@ namespace EmpireAtWar.Services.Player
             ember.w = settings.EmberWidth;
             Shader.SetGlobalVector(EMBER_COLOR_ID, ember);
             Shader.SetGlobalVector(BURNT_COLOR_ID, settings.BurntColor.linear);
+            Shader.SetGlobalVector(BURNT_ID, new Vector4(settings.BurntOffset, settings.BurntDepth, 0f, 0f));
         }
     }
 }

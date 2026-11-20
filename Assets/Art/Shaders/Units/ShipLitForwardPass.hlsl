@@ -119,7 +119,7 @@ SurfaceData CreateSurfaceData(Varyings input)
     surface.emission = ApplyTeamEmission(emission, input.teamColor);
 
     // After the team paint, so scorches cover the livery too.
-    ApplyHullDamage(surface, input.positionDamage, input.hullDamageLevel, input.normalWS);
+    ApplyHullDamage(surface, input.positionDamage, input.hullDamageLevel, input.normalWS, input.tangentWS);
     return surface;
 }
 
