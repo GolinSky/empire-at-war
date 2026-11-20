@@ -21,8 +21,8 @@
 // R = height, G = cracks, B = roughness, A = unused. Tiles in every direction.
 TEXTURE2D(_HullDamageMap);
 SAMPLER(sampler_HullDamageMap);
-float4 _HullDamageParams;    // x = detail repeats per world unit, y = 1 / mark spacing (world units), z = mark radius (cells, <= 0.5), w = share of cells marked at 0 hull
-float4 _HullDamageSurface;   // x = soot opacity, y = edge breakup (radii), zw = unused
+float4 _HullDamageParams;    // x = detail repeats per world unit, y = 1 / mark spacing (world units), z = largest mark radius (cells), w = share of cells marked at 0 hull
+float4 _HullDamageSurface;   // x = soot opacity, y = edge breakup (radii), z = smallest / largest mark radius, w = unused
 half4 _HullDamageSootColor;
 half4 _HullDamageBlisterColor; // blistered paint in the middle of a mark
 float _HullDamageQuality;    // QualitySettings level; below FULL_QUALITY_LEVEL: one planar sample
@@ -70,7 +70,7 @@ float GetHullDamageMarkDistance(float3 cellPosition, float3 normalOS, half level
         // random.w: the share of damage at which this cell's mark appears.
         if (random.w >= activeShare)
             continue;
-        float radius = maxRadius * lerp(0.5, 1.0, frac(random.w * 61.7));
+        float radius = maxRadius * lerp(_HullDamageSurface.z, 1.0, frac(random.w * 61.7));
         float3 offset = cellPosition - (float3(cell) + random.xyz);
         float depth = dot(offset, normalOS);
         if (abs(depth) >= radius)

@@ -43,12 +43,14 @@ namespace EmpireAtWar.Services.Player
         {
             Shader.SetGlobalTexture(MAP_ID, settings.DetailMap);
             // Every pixel a mark reaches (frayed edge along the surface, up to one radius deep) must lie within
-            // one cell of its spot: the shader only searches the 3x3x3 cells around each pixel.
+            // one cell of its spot: the shader only searches the 3x3x3 cells around each pixel. The tightest
+            // spacing that still fits the largest mark gives the most marks.
             float reach = Mathf.Sqrt((1f + settings.EdgeBreakup) * (1f + settings.EdgeBreakup) + 1f);
-            float markRadius = Mathf.Min(settings.MarkSize, 1f / reach);
-            Shader.SetGlobalVector(PARAMS_ID, new Vector4(1f / settings.DetailSize, 1f / settings.MarkSpacing,
-                markRadius, settings.MarkDensity));
-            Shader.SetGlobalVector(SURFACE_ID, new Vector4(settings.SootOpacity, settings.EdgeBreakup, 0f, 0f));
+            float spacing = settings.MarkRadiusMax * reach;
+            Shader.SetGlobalVector(PARAMS_ID, new Vector4(1f / settings.DetailSize, 1f / spacing, 1f / reach,
+                settings.MarkDensity));
+            Shader.SetGlobalVector(SURFACE_ID, new Vector4(settings.SootOpacity, settings.EdgeBreakup,
+                Mathf.Clamp01(settings.MarkRadiusMin / settings.MarkRadiusMax), 0f));
             Shader.SetGlobalVector(SOOT_COLOR_ID, settings.SootColor.linear);
             Shader.SetGlobalVector(BLISTER_COLOR_ID, settings.BlisterColor.linear);
         }

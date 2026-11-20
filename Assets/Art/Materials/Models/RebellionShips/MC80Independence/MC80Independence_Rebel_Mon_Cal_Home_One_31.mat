@@ -64,6 +64,8 @@ Material:
     m_Floats:
     - _BumpScale: 1
     - _Cutoff: 0.5
+    - _HullDamageMarkScale: 4.9915113
+    - _HullDamageOpacityScale: 1
     - _Metallic: 0.1
     - _OcclusionStrength: 1
     - _Smoothness: 0.25

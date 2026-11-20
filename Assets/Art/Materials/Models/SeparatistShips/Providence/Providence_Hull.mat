@@ -104,6 +104,8 @@ Material:
     - _GlossMapScale: 1
     - _Glossiness: 0
     - _GlossyReflections: 1
+    - _HullDamageMarkScale: 1.4208888
+    - _HullDamageOpacityScale: 1
     - _Metallic: 0.389
     - _Mode: 0
     - _OcclusionStrength: 0.65

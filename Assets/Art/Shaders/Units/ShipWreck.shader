@@ -36,7 +36,7 @@ Shader "EmpireAtWar/Ship Wreck"
 
         // Per-ship look of ShipHullDamage.hlsl on top of the shared HullDamageSettings. 1 = shared look.
         [Header(Hull Damage)]
-        _HullDamageMarkScale("Mark Scale", Range(0.25, 4.0)) = 1.0
+        _HullDamageMarkScale("Mark Scale", Range(0.05, 32.0)) = 1.0
         _HullDamageOpacityScale("Soot Opacity Scale", Range(0.0, 2.0)) = 1.0
 
         // Written at runtime from UnitWreckData; the defaults only matter for previews.

@@ -77,6 +77,8 @@ Material:
     - _Cutoff: 0.5
     - _DstBlend: 0
     - _DstBlendAlpha: 0
+    - _HullDamageMarkScale: 0.2153512
+    - _HullDamageOpacityScale: 1
     - _Metallic: 0.1
     - _OcclusionStrength: 1
     - _QueueOffset: 0

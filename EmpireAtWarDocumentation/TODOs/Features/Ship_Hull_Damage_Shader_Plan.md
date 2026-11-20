@@ -182,5 +182,17 @@ User-value layout:
 1. ~~Source of the damage texture~~ → generated: `Tools/Empire At War/Bake Hull Damage Texture` (`HullDamageTextureBuilder`) → `Assets/Art/Textures/Vfx/HullDamageDetail.png` (512², linear, repeat, BC7). Authored art can replace the PNG later.
 2. ~~GPU Resident Drawer re-batching~~ → Unity 6000.6 docs: RSUV changes per-renderer shading "without using different materials or additional CPU time" and is designed to combine with the GPU Resident Drawer.
 3. After Phase 1: user judges in-game → decide Phase 2. Tune `HullDamageSettings` with the preview window (spacing 8, size 0.45, density 0.85, breakup 0.35, soot opacity 0.7 are first guesses).
-5. Mark size vs ship size (radius 20 → 1,056): pick per-ship `_HullDamageMarkScale` by hand, or an editor tool that writes it from each ship's hull size. Awaiting user decision.
+5. ~~Mark size vs ship size~~ → user chose the auto-scale tool (2026-11-20), see below.
+
+## Mark size range + auto scale (2026-11-20)
+
+- User: random mark size, smallest = current size, largest 2×. Settings now `markRadiusMin` 3.5 / `markRadiusMax` 7 world units (at Mark Scale 1); `markSpacing`/`markSize` removed. Spacing derived in `HullDamageService` = `max × sqrt((1 + breakup)² + 1)` ≈ 11.8 → tightest spacing that keeps the largest mark in the 3×3×3 search. `_HullDamageSurface.z` = min/max; shader `radius = max × lerp(min/max, 1, rand)`. `markDensity` 0.85 → 1.
+- Effect: per area about half as many marks as before, each ~2× wider; covered area roughly 2×.
+- Tool: `Tools/Empire At War/Rendering/Materials/Auto Scale Hull Damage Marks` (`HullDamageMarkScaleTool`, editor only, one-time; rerun after adding units — overwrites hand tweaks).
+  - Mark Scale = `1.3 × hullRadius / VictoryRadius(58.3)`, clamped 0.05–32 (material Range widened to match). Hull radius = half-diagonal of world AABB of `UnitRenderStateComponent.meshRenderers` in the prefab.
+  - Materials shared by units of different size → geometric mean + warning (only `SciFiLamps_*`, 0.76–2.3).
+  - Writes the same value into existing wreck copies `<name>_Wreck` under `Assets/Art/Materials/Wrecks`; does not call `Sync Wreck Materials`.
+  - Result: 876 Ship Lit materials + 774 wreck copies. Examples: Arquitens 0.45, Arquitens Imperial 0.53, Acclamators 1.08–1.09, Venator 1.39–1.55, Imperial Venator 1.56, Tector 2.28, Executor 23.5, Victory 1.3.
+- Do not use `Sync Wreck Materials` for this: it (a) reset 15 deliberate-or-drifted wreck values (Gladiator/HeavyDreadnought/Pelta `_TeamRimStrength` 0, Procurator metallic/smoothness, MC80bRemonda/Mediator invalid keywords, Invincible base colour) and (b) created 49 wreck materials for ISDI/ISDII that no wreck prefab references. Both reverted/deleted. The drift itself is pre-existing → `WreckMaterialSyncTests` may already flag these 15; not touched.
+- Verification: 96 variant compiles clean; 9-ship preview shows marks at a consistent share of every hull (Executor now visible blotches; Arquitens Imperial now marked). The final tool version was compiled and run in memory (`script run`) because unrelated uncommitted work (`EnemySquadronCommander.cs`, `ShipSpawnPoints.cs`) blocks the project compile; Editor-assembly compile of the tool still pending on that.
 4. Phase 2 only, if approved: audit ship view prefabs — do hull renderers share the view-root space? Yes → store root-space hits, no per-frame work. No → store one world-to-root matrix per slot, written per frame for ships that have hits.

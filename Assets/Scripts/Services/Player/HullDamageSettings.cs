@@ -13,12 +13,12 @@ namespace EmpireAtWar.Services.Player
         [SerializeField, Min(0.0001f)] private float detailSize = 4f;
 
         [Header("Marks")]
-        [Tooltip("World units between possible mark spots. Smaller = smaller, denser marks.")]
-        [SerializeField, Min(0.01f)] private float markSpacing = 8f;
-        [Tooltip("Largest mark radius as a share of the spacing. Clamped to about 0.6 so a mark never spills past its search range.")]
-        [SerializeField, Range(0.05f, 0.6f)] private float markSize = 0.45f;
+        [Tooltip("Smallest mark radius in world units, before the ship material's Mark Scale.")]
+        [SerializeField, Min(0.01f)] private float markRadiusMin = 3.5f;
+        [Tooltip("Largest mark radius in world units, before the ship material's Mark Scale. Also sets the spacing of mark spots.")]
+        [SerializeField, Min(0.01f)] private float markRadiusMax = 7f;
         [Tooltip("Share of mark spots in use at 0 hull. Each damage step switches on 1/15 of them.")]
-        [SerializeField, Range(0f, 1f)] private float markDensity = 0.85f;
+        [SerializeField, Range(0f, 1f)] private float markDensity = 1f;
         [Tooltip("How far the detail texture frays the round edge, in mark radii.")]
         [SerializeField, Range(0f, 0.6f)] private float edgeBreakup = 0.35f;
 
@@ -29,8 +29,8 @@ namespace EmpireAtWar.Services.Player
 
         public Texture2D DetailMap => detailMap;
         public float DetailSize => detailSize;
-        public float MarkSpacing => markSpacing;
-        public float MarkSize => markSize;
+        public float MarkRadiusMin => markRadiusMin;
+        public float MarkRadiusMax => markRadiusMax;
         public float MarkDensity => markDensity;
         public float EdgeBreakup => edgeBreakup;
         public Color SootColor => sootColor;
