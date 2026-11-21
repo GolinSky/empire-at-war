@@ -18,7 +18,7 @@ MonoBehaviour:
       value:
         matchups: {fileID: 0}
         displayName: Golan III
-        description: 20,000 hull; 20,000 shields. 12 heavy dual turbolasers, 4 heavy
+        description: 60,000 hull; 40,000 shields. 12 heavy dual turbolasers, 4 heavy
           assault missile launchers, 12 heavy proton torpedo launchers and 8 laser
           cannons. Powerful long-range firepower and torpedoes; comparatively vulnerable
           to concentrated bomber attacks.
@@ -29,7 +29,7 @@ MonoBehaviour:
         <MaxCount>k__BackingField: 2
         <AvailableLevel>k__BackingField: 1
         <Price>k__BackingField: 12000
-        <BuildTime>k__BackingField: 50
+        <BuildTime>k__BackingField: 75
         <UnitCapacity>k__BackingField: 0
         <Icon>k__BackingField: {fileID: 21300000, guid: 988c54fd851290641a5fe8c93eff1927,
           type: 3}
@@ -37,7 +37,7 @@ MonoBehaviour:
       value:
         matchups: {fileID: 0}
         displayName: XQ-3 Empress
-        description: 12,000 hull; 25,000 shields. 3 heavy three-burst long-range
+        description: 36,000 hull; 50,000 shields. 3 heavy three-burst long-range
           turbolasers, 3 heavy three-burst long-range turbo-ion cannons, 6 medium
           long-range dual turbolasers, 12 light dual turbolasers and 6 heavy dual
           laser cannons. Emphasizes shields and ion weaponry; Golan III emphasizes
@@ -49,7 +49,7 @@ MonoBehaviour:
         <MaxCount>k__BackingField: 2
         <AvailableLevel>k__BackingField: 1
         <Price>k__BackingField: 10000
-        <BuildTime>k__BackingField: 50
+        <BuildTime>k__BackingField: 75
         <UnitCapacity>k__BackingField: 0
         <Icon>k__BackingField: {fileID: 21300000, guid: 653b257a6a126934d96618b6c8874dae,
           type: 3}
