@@ -17,7 +17,7 @@ completed: 2026-10-27
 - [x] Inspected icon, hologram, wreck and contrasting team-color renders; no new Console errors after baseline cursor467.
 
 ## Important Values
-- Hull3100; shields1500; regeneration30/s through own `WavecrestShieldRegenTiersData.asset`; shared frigate25/s unchanged.
+- Hull3100; shields1500; regeneration30/s = `SeparatistShipShieldRegenTiersData` frigate tier × `ShieldRegenMultiplier` 1.2 (own `WavecrestShieldRegenTiersData` removed 2026-11-21).
 - Weapons: eight turbolasers, four lasers, two ions, one proton torpedo launcher; engines and hangar targetable.
 - Weapon HP250 except ions600; engines400; hangar250.
 - Vulture squadrons: two active, three total launches (one reserve); initial/launch interval5s.

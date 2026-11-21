@@ -150,12 +150,11 @@ public static class BuildWavecrestShip
         var wreckView = ShipWreckBuilder.Build(VIEW);
         var wreck = Load(WRECK_DATA); wreck.targetObject.name = "WavecrestWreckData";
         wreck.FindProperty("prefab.m_AssetGUID").stringValue = AssetDatabase.AssetPathToGUID(AssetDatabase.GetAssetPath(wreckView)); Save(wreck);
-        const string REGEN = "Assets/Settings/Data/Ship/Separatist/WavecrestShieldRegenTiersData.asset";
-        Copy("Assets/Settings/Data/Ship/Shared/ShipShieldRegenTiersData.asset", REGEN);
-        var regen = Load(REGEN); regen.targetObject.name = "WavecrestShieldRegenTiersData";
-        regen.FindProperty("frigate").floatValue = 30; Save(regen);
         var data = Load(DATA); data.targetObject.name = "WavecrestShipData";
-        data.FindProperty("shieldRegenTiers").objectReferenceValue = regen.targetObject;
+        // Separatist frigate tier scaled by 1.2 (25 -> 30 shield regen).
+        data.FindProperty("shieldRegenTiers").objectReferenceValue =
+            AssetDatabase.LoadAssetAtPath<ScriptableObject>("Assets/Settings/Data/Ship/Separatist/SeparatistShipShieldRegenTiersData.asset");
+        data.FindProperty("<ShieldRegenMultiplier>k__BackingField").floatValue = 1.2f;
         Set(data, "Hull", 3100); Set(data, "Shields", 1500);
         // Provisional project conversion: XML speed x10 and turn rate x100.
         Set(data, "Speed", 29); Set(data, "RotationSpeed", 60); Set(data, "TurnAcceleration", 60);
