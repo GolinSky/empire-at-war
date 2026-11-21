@@ -70,7 +70,8 @@ namespace EmpireAtWar.Tests.Editor
                 });
                 view.SetData(roster);
                 view.SetUnitRequestFactory(new UnitRequestFactory());
-                view.SetSecondStation(new SecondStationLevelModel { IsBuilt = true }, levels);
+                var secondStationModel = new SecondStationLevelModel { IsBuilt = true };
+                view.SetSecondStation(secondStationModel, levels);
                 view.Initialize();
 
                 Assert.That(roster.SuperWeapons, Is.Not.Empty);
@@ -96,7 +97,12 @@ namespace EmpireAtWar.Tests.Editor
                     { Key: ResearchType.IncreasedProduction }), Is.True);
                 Assert.That(researchCards.Any(card => card.Request is ResearchUnitRequest
                     { Key: ResearchType.IncreasedStationIncome }), Is.True);
-                Assert.That(researchCards.All(card => card.Request is ResearchUnitRequest), Is.True);
+                Assert.That(researchCards.All(card => card.Request is ResearchUnitRequest or
+                    LevelUnitRequest or SecondStationLevelUnitRequest), Is.True);
+                Assert.That(researchCards.Single(card => card.Request is LevelUnitRequest).Request,
+                    Is.SameAs(cards.Single(card => card.Request is LevelUnitRequest).Request));
+                Assert.That(researchCards.Single(card => card.Request is SecondStationLevelUnitRequest).Request,
+                    Is.SameAs(cards.Single(card => card.Request is SecondStationLevelUnitRequest).Request));
                 foreach (FactionUnitUi card in researchCards)
                 {
                     var tierText = (TextMeshProUGUI)new SerializedObject(card).FindProperty("tierText").objectReferenceValue;
@@ -162,6 +168,8 @@ namespace EmpireAtWar.Tests.Editor
 
                 var menus = hud.ProductionMenus;
                 var serializedMenus = new SerializedObject(menus);
+                var popup = (RectTransform)serializedMenus.FindProperty("popup").objectReferenceValue;
+                float initialPopupHeight = popup.rect.height;
                 var researchButton = (Button)serializedMenus.FindProperty("researchButton").objectReferenceValue;
                 var structuresButton = (Button)serializedMenus.FindProperty("structuresButton").objectReferenceValue;
                 GameObject researchMarker = researchButton.transform.Find("ReadyIndicator").gameObject;
@@ -171,9 +179,16 @@ namespace EmpireAtWar.Tests.Editor
                 menus.Initialize();
                 menus.SetAvailable(true);
                 researchButton.onClick.Invoke();
+                var researchGrid = menus.ResearchCards.GetComponent<GridLayoutGroup>();
+                int rows = Mathf.CeilToInt((float)researchCards.Length / researchGrid.constraintCount);
+                float requiredHeight = researchGrid.padding.vertical +
+                    rows * researchGrid.cellSize.y + (rows - 1) * researchGrid.spacing.y;
+                Assert.That(menus.ResearchCards.rect.height, Is.GreaterThanOrEqualTo(requiredHeight - 0.01f));
+                Assert.That(popup.rect.height, Is.GreaterThan(initialPopupHeight));
                 Assert.That(researchMarker.activeSelf, Is.False);
                 Assert.That(structuresMarker.activeSelf, Is.True);
                 structuresButton.onClick.Invoke();
+                Assert.That(popup.rect.height, Is.EqualTo(initialPopupHeight).Within(0.01f));
                 Assert.That(structuresMarker.activeSelf, Is.False);
                 menus.Close();
                 view.RefreshAvailability(10000f, false);
@@ -182,8 +197,30 @@ namespace EmpireAtWar.Tests.Editor
                 research.Complete(ResearchType.IncreasedProduction);
                 Assert.That(researchMarker.activeSelf, Is.False, "The next tier is still locked.");
                 model.CompleteLevelUpgrade();
-                Assert.That(researchMarker.activeSelf, Is.True, "The level upgrade unlocks a new tier in the same line.");
+                var unlockedTier = menus.ResearchCards.GetComponentsInChildren<FactionUnitUi>(true)
+                    .Single(card => card.Request is ResearchUnitRequest { Key: ResearchType.IncreasedProduction });
+                Assert.That(unlockedTier.gameObject.activeSelf, Is.True);
+                Assert.That(researchMarker.activeSelf, Is.True);
                 Assert.That(structuresMarker.activeSelf, Is.False);
+
+                secondStationModel.CompleteLevelUpgrade();
+                FactionUnitUi stationUpgrade = view.GetComponentsInChildren<FactionUnitUi>(true)
+                    .Single(card => card.Request is SecondStationLevelUnitRequest);
+                FactionUnitUi researchUpgrade = menus.ResearchCards.GetComponentsInChildren<FactionUnitUi>(true)
+                    .Single(card => card.Request is SecondStationLevelUnitRequest);
+                Assert.That(((SecondStationLevelUnitRequest)researchUpgrade.Request).Level,
+                    Is.EqualTo(secondStationModel.CurrentLevel));
+                Assert.That(researchUpgrade.Request, Is.SameAs(stationUpgrade.Request));
+
+                model.QueueUnit(researchUpgrade.Request);
+                view.RefreshAvailability(10000f, false);
+                Assert.That(stationUpgrade.gameObject.activeSelf || researchUpgrade.gameObject.activeSelf, Is.False);
+
+                secondStationModel.HandleLost();
+                Assert.That(view.GetComponentsInChildren<FactionUnitUi>(true)
+                    .Any(card => card.Request is SecondStationLevelUnitRequest), Is.False);
+                Assert.That(menus.ResearchCards.GetComponentsInChildren<FactionUnitUi>(true)
+                    .Any(card => card.Request is SecondStationLevelUnitRequest), Is.False);
                 menus.Dispose();
             }
             finally
@@ -450,7 +487,9 @@ namespace EmpireAtWar.Tests.Editor
             public bool IsUnlockedAtCurrentLevel(FactionData data) => false;
             public bool IsCarrier(UnitRequest request) => false;
             public bool IsScout(UnitRequest request) => false;
-            public bool IsUnitLimitReached(UnitRequest request) => false;
+            public bool IsUnitLimitReached(UnitRequest request) =>
+                request is LevelUnitRequest or SecondStationLevelUnitRequest &&
+                _stationPresenter.IsUnitLimitReached(request);
             public ShipClass GetUnitClass(UnitRequest request) =>
                 request is SquadronUnitRequest ? ShipClass.Fighter : ShipClass.Capital;
             public int GetUnitSortOrder(UnitRequest request) =>

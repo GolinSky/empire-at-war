@@ -30,8 +30,8 @@ namespace EmpireAtWar.Entities.Faction.Ui
             new List<FactionUnitUi>();
         private readonly Dictionary<ResearchType, FactionUnitUi> _researchUnitsUi =
             new Dictionary<ResearchType, FactionUnitUi>();
-        private FactionUnitUi _levelFactionUnitUi;
-        private FactionUnitUi _secondLevelUnitUi;
+        private (FactionUnitUi Station, FactionUnitUi Research) _levelCards;
+        private (FactionUnitUi Station, FactionUnitUi Research) _secondLevelCards;
         private SecondStationLevelModel _secondStation;
         private StationLevelData _stationLevels;
         private FactionRoster _roster;
@@ -184,7 +184,7 @@ namespace EmpireAtWar.Entities.Faction.Ui
                 bool queued = IsQueued(unit, queues);
                 bool unlocked = _presenter.IsUnitAvailable(unit.FactionData);
                 bool atLimit = _presenter.IsUnitLimitReached(unit.Request);
-                unit.SetActive(IsInProductionMenu(unit.Request, _model.SelectionType) &&
+                unit.SetActive(IsInProductionMenu(unit, _model.SelectionType) &&
                                unlocked && !(atLimit && HidesAtLimit(unit)));
                 unit.RenderAvailability(unlocked,
                     credits >= unit.FactionData.Price, queued, battleEnded, atLimit);
@@ -215,9 +215,10 @@ namespace EmpireAtWar.Entities.Faction.Ui
             base.Hide();
         }
 
-        private FactionUnitUi AddUi(UnitRequest unitRequest)
+        private FactionUnitUi AddUi(UnitRequest unitRequest) => AddUi(unitRequest, GetRow(unitRequest));
+
+        private FactionUnitUi AddUi(UnitRequest unitRequest, RectTransform row)
         {
-            RectTransform row = GetRow(unitRequest);
             FactionUnitUi unitUi = Instantiate(row == unitsRow ? stationUnitPrefab : factionUnitPrefab, row);
             unitUi.SetData(unitRequest.FactionData, this, unitRequest);
             if (unitRequest is ShipUnitRequest or SquadronUnitRequest)
@@ -229,7 +230,7 @@ namespace EmpireAtWar.Entities.Faction.Ui
 
         private RectTransform GetRow(UnitRequest request) => request switch
         {
-            ShipUnitRequest or SquadronUnitRequest or LevelUnitRequest or SecondStationLevelUnitRequest => unitsRow,
+            ShipUnitRequest or SquadronUnitRequest => unitsRow,
             ResearchUnitRequest => _productionMenus.ResearchCards,
             DefendPlatformUnitRequest or MiningFacilityUnitRequest or SecondStationUnitRequest =>
                 _productionMenus.StructureCards,
@@ -265,48 +266,50 @@ namespace EmpireAtWar.Entities.Faction.Ui
                 return;
             }
 
-            _levelFactionUnitUi = AddUi(_unitRequestFactory.ConstructUnitRequest(levelData, _model.CurrentLevel));
+            _levelCards = AddLevelCards(_unitRequestFactory.ConstructUnitRequest(levelData, _model.CurrentLevel));
         }
 
         private void UpdateUnits(int level)
         {
-            if (_levelFactionUnitUi != null)
-            {
-                _factionUnitsUi.Remove(_levelFactionUnitUi);
-                _levelFactionUnitUi.SetActive(false);
-                _levelFactionUnitUi.Destroy();
-                _levelFactionUnitUi = null;
-            }
-
+            RemoveLevelCards(ref _levelCards);
             CreateLevelUnit();
             RefreshUnitVisibility(_model.SelectionType);
         }
 
-        // The second station's level-up card exists only while that station stands.
+        // The second station's level-up cards exist only while that station stands.
         private void CreateSecondLevelUnit()
         {
             if (!_secondStation.IsBuilt) return;
             FactionData levelData = _stationLevels.GetSecondStationLevelFactionData(_secondStation.CurrentLevel);
             if (levelData == null) return;
-            _secondLevelUnitUi = AddUi(
+            _secondLevelCards = AddLevelCards(
                 _unitRequestFactory.ConstructSecondStationLevelRequest(levelData, _secondStation.CurrentLevel));
         }
 
         private void UpdateSecondLevelUnit(int level)
         {
-            if (_secondLevelUnitUi != null)
-            {
-                _factionUnitsUi.Remove(_secondLevelUnitUi);
-                _secondLevelUnitUi.SetActive(false);
-                _secondLevelUnitUi.Destroy();
-                _secondLevelUnitUi = null;
-            }
-
+            RemoveLevelCards(ref _secondLevelCards);
             CreateSecondLevelUnit();
             RefreshUnitVisibility(_model.SelectionType);
         }
 
         private void HandleSecondStationBuiltChanged(bool isBuilt) => UpdateSecondLevelUnit(_secondStation.CurrentLevel);
+
+        private (FactionUnitUi Station, FactionUnitUi Research) AddLevelCards(UnitRequest request) =>
+            (AddUi(request, unitsRow), AddUi(request, _productionMenus.ResearchCards));
+
+        private void RemoveLevelCards(ref (FactionUnitUi Station, FactionUnitUi Research) cards)
+        {
+            if (cards.Station == null) return;
+
+            _factionUnitsUi.Remove(cards.Station);
+            _factionUnitsUi.Remove(cards.Research);
+            cards.Station.SetActive(false);
+            cards.Research.SetActive(false);
+            cards.Station.Destroy();
+            cards.Research.Destroy();
+            cards = default;
+        }
 
         private static bool IsQueued(FactionUnitUi unit, IReadOnlyList<ProductionQueueSnapshot> queues)
         {
@@ -321,12 +324,14 @@ namespace EmpireAtWar.Entities.Faction.Ui
             unit.FactionData.IsHero || unit.Request is MiningFacilityUnitRequest or DefendPlatformUnitRequest
                 or LevelUnitRequest or ResearchUnitRequest or SecondStationUnitRequest or SecondStationLevelUnitRequest;
 
-        private bool IsInProductionMenu(UnitRequest request, SelectionType selectionType) => request switch
+        private bool IsInProductionMenu(FactionUnitUi card, SelectionType selectionType) => card.Request switch
         {
             ResearchUnitRequest or DefendPlatformUnitRequest or MiningFacilityUnitRequest
                 or SecondStationUnitRequest => true,
-            LevelUnitRequest => selectionType == SelectionType.Base && !_model.IsSecondStationSelected,
-            SecondStationLevelUnitRequest => selectionType == SelectionType.Base && _model.IsSecondStationSelected,
+            LevelUnitRequest => card.transform.parent != unitsRow ||
+                                selectionType == SelectionType.Base && !_model.IsSecondStationSelected,
+            SecondStationLevelUnitRequest => card.transform.parent != unitsRow ||
+                                             selectionType == SelectionType.Base && _model.IsSecondStationSelected,
             _ => selectionType == SelectionType.Base
         };
 
@@ -356,7 +361,7 @@ namespace EmpireAtWar.Entities.Faction.Ui
                 unitUi.transform.SetAsLastSibling();
                 bool isShown = _presenter.IsUnitAvailable(unitUi.FactionData) &&
                                !(HidesAtLimit(unitUi) && _presenter.IsUnitLimitReached(unitUi.Request)) &&
-                               IsInProductionMenu(unitUi.Request, selectionType);
+                               IsInProductionMenu(unitUi, selectionType);
                 unitUi.SetActive(isShown);
                 if (!isShown) continue;
                 switch (unitUi.Request)
@@ -383,7 +388,7 @@ namespace EmpireAtWar.Entities.Faction.Ui
                         if (isEconomy && economyResearch == null) economyResearch = unitUi;
                         if (!isEconomy && fleetResearch == null) fleetResearch = unitUi;
                         break;
-                    case LevelUnitRequest:
+                    case LevelUnitRequest when unitUi.transform.parent == unitsRow:
                         level = unitUi;
                         break;
                     case MiningFacilityUnitRequest:

@@ -22,6 +22,7 @@ namespace EmpireAtWar.Entities.Faction.Ui
 
         private readonly MenuAttention _research = new();
         private readonly MenuAttention _structures = new();
+        private float _popupChromeHeight;
 
         public RectTransform ResearchCards => researchCards;
         public RectTransform StructureCards => structureCards;
@@ -30,6 +31,7 @@ namespace EmpireAtWar.Entities.Faction.Ui
 
         public void Initialize()
         {
+            _popupChromeHeight = popup.rect.height - structureCards.rect.height;
             researchButton.onClick.AddListener(ToggleResearch);
             structuresButton.onClick.AddListener(ToggleStructures);
             closeButton.onClick.AddListener(Close);
@@ -96,6 +98,8 @@ namespace EmpireAtWar.Entities.Faction.Ui
             }
 
             title.text = research ? "Research" : "Structures";
+            RectTransform cards = research ? researchCards : structureCards;
+            popup.SetSizeWithCurrentAnchors(RectTransform.Axis.Vertical, _popupChromeHeight + cards.rect.height);
             researchCards.gameObject.SetActive(research);
             structureCards.gameObject.SetActive(!research);
             if (research) _research.Acknowledge(researchAttention);
