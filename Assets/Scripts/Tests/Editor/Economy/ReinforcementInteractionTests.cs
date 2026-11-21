@@ -128,6 +128,41 @@ namespace EmpireAtWar.Tests.Editor
             Assert.That(_pauseRequests, Is.EqualTo(1));
         }
 
+        [Test]
+        public void ReleasingAim_KeepsPreviewPinned_UntilFacingReset()
+        {
+            var input = new FakeDeployInput(false);
+            SetField("_deployInput", input);
+            SetField("_placement", new FakeRotatablePlacement());
+            typeof(UnitSpawnView).GetField("meshRenderers", BindingFlags.Instance | BindingFlags.NonPublic)
+                .SetValue(_previewObject.GetComponent<UnitSpawnView>(), new MeshRenderer[0]);
+            Vector3 anchor = Vector3.zero;
+            Vector3 cursor = new Vector3(10f, 0f, 0f);
+
+            input.IsAimHeld = true;
+            Assert.That(UpdateFacing(anchor), Is.EqualTo(anchor));
+            Assert.That(UpdateFacing(cursor), Is.EqualTo(anchor));
+
+            // Releasing the aim button while the cursor is away must not snap the preview to it.
+            input.IsAimHeld = false;
+            Assert.That(UpdateFacing(cursor), Is.EqualTo(anchor));
+            Assert.That(UpdateFacing(cursor + Vector3.forward), Is.EqualTo(anchor));
+
+            // Pressing aim again only re-aims from the same pin.
+            input.IsAimHeld = true;
+            Assert.That(UpdateFacing(cursor), Is.EqualTo(anchor));
+            input.IsAimHeld = false;
+
+            input.WasFacingResetPressed = true;
+            Assert.That(UpdateFacing(cursor), Is.EqualTo(cursor));
+            input.WasFacingResetPressed = false;
+            Assert.That(UpdateFacing(-cursor), Is.EqualTo(-cursor));
+        }
+
+        private Vector3 UpdateFacing(Vector3 cursor) => (Vector3)typeof(ReinforcementService)
+            .GetMethod("UpdateFacing", BindingFlags.Instance | BindingFlags.NonPublic)
+            .Invoke(_service, new object[] { cursor });
+
         private void AssertCancelled()
         {
             Assert.That(_model.IsTrySpawning, Is.False);
@@ -174,11 +209,20 @@ namespace EmpireAtWar.Tests.Editor
         private sealed class FakeDeployInput : IReinforcementDeployInput
         {
             public bool IsDeployAllHeld { get; }
-            public bool IsAimHeld => false;
+            public bool IsAimHeld { get; set; }
             public int TurnDirection => 0;
             public bool WasTurnPressed => false;
-            public bool WasFacingResetPressed => false;
+            public bool WasFacingResetPressed { get; set; }
             public FakeDeployInput(bool deployAll) => IsDeployAllHeld = deployAll;
+        }
+
+        private sealed class FakeRotatablePlacement : IReinforcementPlacement
+        {
+            public bool IsRotatable => true;
+            public UnitSpawnView CreatePreview() => throw new NotSupportedException();
+            public Quaternion GetAutoFacing(Vector3 position) => Quaternion.identity;
+            public bool IsPositionValid(Vector3 position, Quaternion rotation) => true;
+            public void Spawn(Vector3 position, Quaternion rotation) => throw new NotSupportedException();
         }
 
         private sealed class PlacementLock : IDisposable

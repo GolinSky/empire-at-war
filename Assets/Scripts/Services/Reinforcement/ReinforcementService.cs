@@ -60,7 +60,8 @@ namespace EmpireAtWar.Services.Reinforcement
         // Lives as long as the battle, so a manual heading carries over to the next placement.
         private readonly ReinforcementFacing _facing = new ReinforcementFacing();
         private Quaternion _previewRotation = Quaternion.identity;
-        private bool _isAiming;
+        // Set by the first right-drag; the previews stay here until the drop or a facing reset.
+        private bool _isPinned;
         private Vector3 _aimAnchor;
 
         private bool _hasBattleEnded;
@@ -232,7 +233,7 @@ namespace EmpireAtWar.Services.Reinforcement
                 bool placingStructure = !ReinforcementModel.UsesCapacity(request);
                 if (placingStructure)
                     _slotSpacing = Mathf.Max(_slotSpacing, _structureClearance.Radius * SLOT_SPACING_FACTOR);
-                _isAiming = false;
+                _isPinned = false;
                 // Ship hull cells in the overlay keep the station heading; the preview tint checks the chosen one.
                 _spawnAreaOverlay.Show(_owner.Id, request,
                     position => placement.IsPositionValid(position, _previewRotation));
@@ -289,8 +290,8 @@ namespace EmpireAtWar.Services.Reinforcement
                 }
 
                 Vector3 dropPoint = _cameraService.GetWorldPoint(screenPosition, _previews[0].Position);
-                // A pinned preview drops where it was pinned, not under the aiming cursor.
-                if (_isAiming) dropPoint = _aimAnchor;
+                // A pinned preview drops where it was pinned, not under the cursor, at the usual drop height.
+                if (_isPinned) dropPoint = new Vector3(_aimAnchor.x, dropPoint.y, _aimAnchor.z);
                 Quaternion rotation = GetFacingRotation(dropPoint);
                 // Previews flag locally blocked slots; the authority re-checks every slot it receives.
                 List<Vector3> slots = new List<Vector3>(_previews.Count);
@@ -385,22 +386,31 @@ namespace EmpireAtWar.Services.Reinforcement
         {
             if (!_placement.IsRotatable) return cursor;
 
-            if (_deployInput.WasFacingResetPressed) _facing.Reset();
-            Vector3 position = cursor;
+            if (_deployInput.WasFacingResetPressed)
+            {
+                // Reset also unpins, so the previews follow the cursor again.
+                _facing.Reset();
+                _isPinned = false;
+            }
+
             if (_deployInput.IsAimHeld)
             {
-                // Right-drag pins the previews and turns them toward the cursor.
-                if (!_isAiming) _aimAnchor = cursor;
-                _isAiming = true;
-                position = _aimAnchor;
+                // Right-drag pins the previews and turns them toward the cursor; a later right-drag
+                // keeps the same pin so releasing and pressing again only fine-tunes the heading.
+                if (!_isPinned) _aimAnchor = cursor;
+                _isPinned = true;
                 _facing.Aim(_aimAnchor, cursor, _previews[0].PlanarRadius * AIM_DEAD_ZONE_FACTOR);
             }
             else
             {
-                _isAiming = false;
-                _facing.Turn(_deployInput.TurnDirection, _deployInput.WasTurnPressed, Time.deltaTime,
-                    GetAutoYaw(cursor));
+                Vector3 turnPoint = _isPinned ? _aimAnchor : cursor;
+                // Unscaled time: the turn sweep is interface input and must not stall while paused.
+                _facing.Turn(_deployInput.TurnDirection, _deployInput.WasTurnPressed, Time.unscaledDeltaTime,
+                    GetAutoYaw(turnPoint));
             }
+
+            // Releasing the right button must not snap a pinned preview back under the cursor.
+            Vector3 position = _isPinned ? _aimAnchor : cursor;
 
             _previewRotation = GetFacingRotation(position);
             return position;
