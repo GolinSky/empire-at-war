@@ -105,6 +105,8 @@ namespace EmpireAtWar.Entities.Squadrons
         private float _guardedRadius;
 
         private bool _isReleased;
+        // An attack-move flies to its point without breaking off for fights on the way; set on first arrival.
+        private bool _hasReachedAttackMovePoint;
 
         public event Action Released;
         public event Action Respawned;
@@ -522,6 +524,7 @@ namespace EmpireAtWar.Entities.Squadrons
                 return;
             }
             _orders.Replace(UnitOrderType.AttackMove, ToPoint(worldPosition));
+            _hasReachedAttackMovePoint = false;
             PlayMoveAudio(worldPosition);
             Disengage();
             _pilot.FlyTo(worldPosition);
@@ -640,6 +643,13 @@ namespace EmpireAtWar.Entities.Squadrons
                         Mathf.Max(_guardedRadius + Data.GuardRadius, _orderSettings.SquadronGuardEngageRadius)));
                     break;
                 case UnitOrderType.AttackMove:
+                    if (!_hasReachedAttackMovePoint)
+                    {
+                        if (!_pilot.HasArrived) break;
+                        _hasReachedAttackMovePoint = true;
+                        // Search on arrival, before the empty-handed order clears below.
+                        _targetSearchTimer = 0f;
+                    }
                     if (ShouldSearchTargets(elapsed))
                         DefendArea(_targetSelector.SelectNear(_radar, _flight.Centroid, Data.GuardRadius));
                     if (_engaged == null && _pilot.HasArrived) _orders.Clear();

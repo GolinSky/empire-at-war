@@ -236,28 +236,40 @@ namespace EmpireAtWar.Tests.Editor
 
         [TestCase(true)]
         [TestCase(false)]
-        public void AttackMovePreview_MatchesEnemyAndEmptySpaceCommands(bool enemy)
+        public void AttackMove_EnemyUnderCursorDoesNotBlockIt(bool enemy)
         {
             _query.ReturnEnemy = enemy;
             _targeting.Start(UnitActionId.AttackMove);
-            Assert.That(_handler.CanIssueAttackMove(Vector2.zero), Is.EqualTo(!enemy));
+            Assert.That(_handler.CanIssueAttackMove(Vector2.zero), Is.True);
             _input.RightClick(Vector2.zero);
-            Assert.That(_orders.LastAction, Is.EqualTo(enemy ? (UnitActionId?)null : UnitActionId.AttackMove));
-            Assert.That(_targeting.Pending, Is.EqualTo(enemy ? (UnitActionId?)UnitActionId.AttackMove : null));
+            Assert.That(_orders.LastAction, Is.EqualTo(UnitActionId.AttackMove));
+            Assert.That(_targeting.Pending, Is.Null);
         }
 
         [TestCase(false)]
         [TestCase(true)]
-        public void AttackMovePreview_FriendlyFacilityRequiresCaptureSiteSnap(bool insideSite)
+        public void AttackMove_FriendlyFacilityDoesNotBlockIt(bool insideSite)
         {
             _query.Target = _receiver;
             _query.Command = new FakeFacilitySelection();
             if (insideSite) RegisterSite();
             Vector2 point = new Vector2(11f, 21f);
             _targeting.Start(UnitActionId.AttackMove);
-            Assert.That(_handler.CanIssueAttackMove(point), Is.EqualTo(insideSite));
+            Assert.That(_handler.CanIssueAttackMove(point), Is.True);
             _input.RightClick(point);
-            Assert.That(_orders.LastAction, Is.EqualTo(insideSite ? (UnitActionId?)UnitActionId.AttackMove : null));
+            Assert.That(_orders.LastAction, Is.EqualTo(UnitActionId.AttackMove));
+        }
+
+        [Test]
+        public void AttackMove_HoveredHardPointDoesNotBlockIt()
+        {
+            InstallHardPoints();
+            _hardPointHover.Inspect(_enemy, 0, true);
+            _targeting.Start(UnitActionId.AttackMove);
+            Assert.That(_handler.CanIssueAttackMove(Vector2.zero), Is.True);
+            _input.RightClick(Vector2.zero);
+            Assert.That(_orders.LastAction, Is.EqualTo(UnitActionId.AttackMove));
+            Assert.That(_targeting.Pending, Is.Null);
         }
 
         [Test]

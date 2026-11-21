@@ -101,7 +101,7 @@ namespace EmpireAtWar.Entities.UnitActions.Controller
             string description = action switch
             {
                 UnitActionId.Attack => $"Attack an enemy unit or hardpoint. Choose a target with {command}. Cancel with {cancel}.",
-                UnitActionId.AttackMove => $"Move to a point and engage threats on the way. Choose a valid destination with {command}. Cancel with {cancel}.",
+                UnitActionId.AttackMove => $"Fly to a point without stopping for fights on the way, then engage enemies there. Choose a destination with {command}. Cancel with {cancel}.",
                 UnitActionId.Stop => "Stop movement and clear the current order.",
                 UnitActionId.Guard => $"Follow and protect a friendly or allied unit. Engage threats, then return. Choose with {command}; cancel with {cancel}.",
                 UnitActionId.WaypointMove => $"Choose successive points with {command}. Click this command again to finish. Cancel with {cancel}.",

@@ -966,6 +966,26 @@ namespace EmpireAtWar.Tests.Movement
         }
 
         [Test]
+        public void AttackMove_EnRouteShipIgnoresContactsUntilItArrives()
+        {
+            Radar radar = new Radar();
+            radar.Enemies.Add(_target);
+            AttackMoveEngagement engagement = new AttackMoveEngagement();
+            AttackMoveState state = new AttackMoveState(_movement, _weapon, radar, null);
+            state.SetData(Vector3.forward * 100f, engagement);
+            state.Enter();
+
+            state.Tick(0.1f);
+            Assert.That(engagement.Contains(_target), Is.False);
+            Assert.That(_movement.Destination, Is.EqualTo(Vector3.forward * 100f));
+
+            _movement.FinishLeg();
+            state.Tick(0.1f);
+            Assert.That(engagement.Contains(_target), Is.True);
+            state.Exit();
+        }
+
+        [Test]
         public void Hunt_NoVisibleEnemiesRemainsActiveAndStopsPreviousMovement()
         {
             UnitOrderSettings settings = ScriptableObject.CreateInstance<UnitOrderSettings>();
@@ -1198,8 +1218,10 @@ namespace EmpireAtWar.Tests.Movement
             {
                 _target.Transform.position = Vector3.right * 95f;
                 var attackMove = new AttackMoveState(_movement, _weapon, radar, null);
-                attackMove.SetData(Vector3.forward * 100f, new AttackMoveEngagement());
+                attackMove.SetData(Vector3.zero, new AttackMoveEngagement());
                 attackMove.Enter();
+                // Attack-move fights only once the ship has reached its point.
+                _movement.FinishLeg();
                 typeof(AttackMoveState).GetField("_engagementTarget", PRIVATE_INSTANCE).SetValue(attackMove, _target);
                 state = attackMove;
             }

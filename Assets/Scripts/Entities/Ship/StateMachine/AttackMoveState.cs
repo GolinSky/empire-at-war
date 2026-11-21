@@ -12,9 +12,10 @@ using EmpireAtWar.Entities.BaseEntity.EntityFacades;
 namespace EmpireAtWar.Entities.Ship.StateMachine
 {
     /// <summary>
-    /// Moves toward the destination and fights every enemy the attack-move group detects on the way.
+    /// Flies to the destination without breaking off for fights on the way (weapons still fire at what passes in
+    /// range), then fights every enemy the arrived attack-move group detects there.
     /// Targets come from the shared <see cref="AttackMoveEngagement"/> so the group spreads its fire;
-    /// once the engagement set is clear the ship resumes its course.
+    /// once the engagement set is clear the ship returns to the destination.
     /// </summary>
     public sealed class AttackMoveState : IBaseState
     {
@@ -40,6 +41,8 @@ namespace EmpireAtWar.Entities.Ship.StateMachine
         private float _nextSearchTime;
         // A search found nothing since the last target was dropped; until then the order is not finished.
         private bool _hasSearched;
+        // Set once the ship first reaches the destination; until then it neither reports nor claims enemies.
+        private bool _hasArrived;
 
         public bool IsComplete => _engagementTarget == null && _hasSearched && !_movement.IsMoving;
         public bool IsEngaging => _engagementTarget != null;
@@ -70,6 +73,7 @@ namespace EmpireAtWar.Entities.Ship.StateMachine
         {
             _engagement = _nextEngagement;
             _engagementTarget = null;
+            _hasArrived = false;
             _member = _engagement.Join();
             _movement.MoveToPosition(_destination);
             DelaySearch();
@@ -77,6 +81,12 @@ namespace EmpireAtWar.Entities.Ship.StateMachine
 
         public void Tick(float deltaTime)
         {
+            if (!_hasArrived)
+            {
+                if (_movement.IsMoving) return;
+                _hasArrived = true;
+            }
+
             _engagement.Report(_member, _radar.Enemies);
             if (_engagementTarget != null && !_engagement.Contains(_engagementTarget))
             {

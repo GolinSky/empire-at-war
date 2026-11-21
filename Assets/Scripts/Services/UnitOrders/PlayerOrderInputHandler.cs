@@ -152,6 +152,15 @@ namespace EmpireAtWar.Services.UnitOrders
 
         private void HandleCommand(Vector2 screen)
         {
+            if (IsAttackMoveArmed())
+            {
+                _pressedMarker = default;
+                _pressedHardPointOwner = null;
+                _hasPressedHardPoint = false;
+                IssueAttackMoveAt(screen);
+                return;
+            }
+
             SelectionEntry hit = _pressedMarker;
             _pressedMarker = default;
             bool capturedMarker = hit.IsBattleMarker;
@@ -253,16 +262,7 @@ namespace EmpireAtWar.Services.UnitOrders
             {
                 if (hasUnit && !isFriendlyShip || IsObstacle(screen)) return;
                 Vector3 point = _cameraService.GetWorldPoint(screen, ReferencePosition(receivers));
-                switch (pending.Value)
-                {
-                    case UnitActionId.AttackMove:
-                        _playerOrders.IssueAttackMove(receivers, point);
-                        _targeting.Cancel();
-                        break;
-                    case UnitActionId.WaypointMove:
-                        _targeting.AddWaypoint(ToPoint(point));
-                        break;
-                }
+                if (pending == UnitActionId.WaypointMove) _targeting.AddWaypoint(ToPoint(point));
                 return;
             }
 
@@ -275,16 +275,26 @@ namespace EmpireAtWar.Services.UnitOrders
             }
         }
 
-        public bool CanIssueAttackMove(Vector2 screen)
+        // Attack-move orders the ground under the cursor: units, hardpoints and markers never block it.
+        public bool CanIssueAttackMove(Vector2 screen) => TryGetOrderSnap(screen, out _) || !IsObstacle(screen);
+
+        private bool IsAttackMoveArmed() =>
+            _targeting.Pending == UnitActionId.AttackMove && !_abilities.IsWaitingForTarget &&
+            _superWeapons.Pending == null;
+
+        private void IssueAttackMoveAt(Vector2 screen)
         {
-            bool hasHardPoint = _hardPointHover.TryGetHovered(out IEntity owner, out _);
-            SelectionEntry hit = default;
-            bool hasUnit = hasHardPoint || _query.TryFindAt(screen, out hit);
-            IEntity target = hasHardPoint ? owner : hasUnit ? hit.Entity : null;
-            if (!hasHardPoint && !IsEnemy(target) && TryGetOrderSnap(screen, out _)) return true;
-            bool isFriendlyShip = hasUnit && !hasHardPoint && _localPlayer.IsFriendly(target.Owner) &&
-                hit.Command.SelectionType == SelectionType.Ship;
-            return (!hasUnit || isFriendlyShip) && !IsObstacle(screen);
+            if (TryGetOrderSnap(screen, out Vector3 snap))
+            {
+                TryIssueMove(snap);
+                return;
+            }
+
+            if (IsObstacle(screen)) return;
+            List<IEntity> receivers = Snapshot();
+            if (receivers.Count == 0) return;
+            _playerOrders.IssueAttackMove(receivers, _cameraService.GetWorldPoint(screen, ReferencePosition(receivers)));
+            _targeting.Cancel();
         }
 
         private bool TryGetOrderSnap(Vector2 screen, out Vector3 point)
