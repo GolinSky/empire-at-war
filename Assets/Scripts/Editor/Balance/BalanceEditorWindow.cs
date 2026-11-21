@@ -163,10 +163,13 @@ namespace EmpireAtWar.Editor.Balance
             Label title = new Label(ObjectNames.NicifyVariableName(state.Tab.ToString()));
             title.AddToClassList("balance-unit-name");
             centre.Add(title);
+            BalanceDraftUsage usage = new BalanceDraftUsage(_registry, state.Draft);
+            if (state.Tab == BalanceTab.GlobalData) BalanceShieldRegenTiersView.Build(centre, _registry, _controller, usage);
             var fields = _registry.Fields.Values.Where(field => !field.SharedMountSource && (state.Tab == BalanceTab.AbilityCatalog
                 ? field.Group == BalanceFieldGroup.Abilities
-                : field.Group == BalanceFieldGroup.GlobalData && !field.Stat.StartsWith("matrix/") && field.Stat != "missSpread"));
-            BalanceUnitView.Fields(centre, fields, _controller, "tools-" + state.Tab, new BalanceDraftUsage(_registry, state.Draft));
+                : field.Group == BalanceFieldGroup.GlobalData && !field.Stat.StartsWith("matrix/") && field.Stat != "missSpread"
+                    && !BalanceShieldRegenTiersView.Contains(field)));
+            BalanceUnitView.Fields(centre, fields, _controller, "tools-" + state.Tab, usage);
         }
 
         private void Apply() => Run(() =>
