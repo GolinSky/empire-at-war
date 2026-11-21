@@ -33,6 +33,7 @@ namespace EmpireAtWar.Tests.Editor
     {
         private readonly List<GameObject> _objects = new List<GameObject>();
         private readonly List<IEntity> _candidates = new List<IEntity>();
+        private readonly List<ScriptableObject> _assets = new List<ScriptableObject>();
         private EntityLocator _locator;
         private VisionSpy _vision;
 
@@ -48,6 +49,8 @@ namespace EmpireAtWar.Tests.Editor
         {
             foreach (GameObject item in _objects) UnityEngine.Object.DestroyImmediate(item);
             _objects.Clear();
+            foreach (ScriptableObject asset in _assets) UnityEngine.Object.DestroyImmediate(asset);
+            _assets.Clear();
             _candidates.Clear();
         }
 
@@ -257,6 +260,131 @@ namespace EmpireAtWar.Tests.Editor
                 UnityEngine.Object.DestroyImmediate(settings);
             }
         }
+
+        // Leash tests: engage radius 100, leash factor 1.5 -> targets beyond 150 from the post or guarded unit are dropped.
+        private const float LEASH_ENGAGE_RADIUS = 100f;
+        private const float LEASH_FACTOR = 1.5f;
+        private const BindingFlags LEASH_FIELDS = BindingFlags.Instance | BindingFlags.NonPublic;
+
+        [TestCase(200f, false)]
+        [TestCase(120f, true)]
+        public void IdleSquadron_DropsTargetBeyondLeashAndFliesBackToItsPost(float targetDistance, bool staysEngaged)
+        {
+            Vector3 post = new Vector3(-50f, 0f, 0f);
+            IEntity target = AddTarget(targetDistance);
+            target.GetFacade<IEntityTransformFacade>().Transform.position = post + Vector3.forward * targetDistance;
+            Squadron squadron = CreateLeashSquadron(CreateSelector(), out SquadronPilot pilot, out WeaponSpy weapon,
+                out _);
+            pilot.Loiter(post);
+            EngageForTest(squadron, pilot, target);
+
+            UpdateOrderOnce(squadron);
+
+            Assert.That(Engaged(squadron), staysEngaged ? Is.SameAs(target) : Is.Null);
+            Assert.That(pilot.IsFighting, Is.EqualTo(staysEngaged));
+            Assert.That(pilot.IsTravelling, Is.EqualTo(!staysEngaged));
+            Assert.That(pilot.LoiterCenter, Is.EqualTo(post));
+            Assert.That(weapon.ResetCount, Is.EqualTo(staysEngaged ? 0 : 1));
+        }
+
+        [Test]
+        public void IdleSquadron_AfterAKill_ReturnsToItsPostInsteadOfLoiteringAtTheFight()
+        {
+            Vector3 post = new Vector3(-50f, 0f, 0f);
+            IEntity killed = AddTarget(1f);
+            Squadron squadron = CreateLeashSquadron(CreateSelector(), out SquadronPilot pilot, out WeaponSpy weapon,
+                out _);
+            pilot.Loiter(post);
+            EngageForTest(squadron, pilot, killed);
+            ((HealthStub)killed.HealthModel).IsDestroyed = true;
+
+            UpdateOrderOnce(squadron);
+
+            Assert.That(Engaged(squadron), Is.Null);
+            Assert.That(pilot.IsTravelling, Is.True);
+            Assert.That(pilot.LoiterCenter, Is.EqualTo(post));
+            Assert.That(weapon.ResetCount, Is.EqualTo(1));
+        }
+
+        [TestCase(200f, false)]
+        [TestCase(120f, true)]
+        public void GuardingSquadron_DropsTargetBeyondLeashFromGuardedUnit(float targetDistance, bool staysEngaged)
+        {
+            IEntity target = AddTarget(targetDistance);
+            IEntity guarded = Guarded(null);
+            Squadron squadron = CreateLeashSquadron(CreateSelector(), out SquadronPilot pilot, out WeaponSpy weapon,
+                out UnitOrderModel orders);
+            orders.Replace(UnitOrderType.Guard, target: guarded);
+            EngageForTest(squadron, pilot, target);
+
+            UpdateOrderOnce(squadron);
+
+            Assert.That(orders.Current, Is.EqualTo(UnitOrderType.Guard));
+            Assert.That(Engaged(squadron), staysEngaged ? Is.SameAs(target) : Is.Null);
+            Assert.That(pilot.IsFighting, Is.EqualTo(staysEngaged));
+            Assert.That(pilot.HasArrived, Is.EqualTo(!staysEngaged), "Beyond the leash the squadron escorts again.");
+            Assert.That(weapon.ResetCount, Is.EqualTo(staysEngaged ? 0 : 1));
+        }
+
+        [Test]
+        public void GuardingBomber_KeepsGuardedUnitsTargetBeyondLeash()
+        {
+            IEntity fought = AddTarget(500f, ShipClass.Frigate);
+            IEntity guarded = Guarded(fought);
+            Squadron squadron = CreateLeashSquadron(CreateSelector(ShipClass.Bomber), out SquadronPilot pilot,
+                out WeaponSpy weapon, out UnitOrderModel orders);
+            orders.Replace(UnitOrderType.Guard, target: guarded);
+            EngageForTest(squadron, pilot, fought);
+
+            UpdateOrderOnce(squadron);
+
+            Assert.That(Engaged(squadron), Is.SameAs(fought));
+            Assert.That(pilot.IsFighting, Is.True);
+            Assert.That(weapon.ResetCount, Is.Zero);
+        }
+
+        private Squadron CreateLeashSquadron(SquadronTargetSelector selector, out SquadronPilot pilot,
+            out WeaponSpy weapon, out UnitOrderModel orders)
+        {
+            GameObject root = new GameObject("LeashedSquadron");
+            _objects.Add(root);
+            Squadron squadron = root.AddComponent<Squadron>();
+            SquadronData data = ScriptableObject.CreateInstance<SquadronData>();
+            UnitOrderSettings settings = ScriptableObject.CreateInstance<UnitOrderSettings>();
+            _assets.Add(data);
+            _assets.Add(settings);
+            typeof(SquadronData).GetField("<GuardRadius>k__BackingField", LEASH_FIELDS)
+                .SetValue(data, LEASH_ENGAGE_RADIUS);
+            typeof(UnitOrderSettings).GetField("squadronGuardEngageRadius", LEASH_FIELDS)
+                .SetValue(settings, LEASH_ENGAGE_RADIUS);
+            typeof(UnitOrderSettings).GetField("squadronLeashFactor", LEASH_FIELDS).SetValue(settings, LEASH_FACTOR);
+
+            var flight = new FlightStub(data);
+            pilot = new SquadronPilot(flight);
+            weapon = new WeaponSpy();
+            orders = new UnitOrderModel();
+            typeof(Squadron).GetField("_orders", LEASH_FIELDS).SetValue(squadron, orders);
+            typeof(Squadron).GetField("_flight", LEASH_FIELDS).SetValue(squadron, flight);
+            typeof(Squadron).GetField("_pilot", LEASH_FIELDS).SetValue(squadron, pilot);
+            typeof(Squadron).GetField("_weapon", LEASH_FIELDS).SetValue(squadron, weapon);
+            typeof(Squadron).GetField("_orderSettings", LEASH_FIELDS).SetValue(squadron, settings);
+            typeof(Squadron).GetField("_targetSelector", LEASH_FIELDS).SetValue(squadron, selector);
+            typeof(Squadron).GetField("_radar", LEASH_FIELDS).SetValue(squadron, new RadarStub(Array.Empty<IEntity>()));
+            typeof(Squadron).GetProperty("Data", LEASH_FIELDS).SetValue(squadron, data);
+            return squadron;
+        }
+
+        private static void EngageForTest(Squadron squadron, SquadronPilot pilot, IEntity target)
+        {
+            pilot.Engage(target);
+            typeof(Squadron).GetField("_engaged", LEASH_FIELDS).SetValue(squadron, target);
+        }
+
+        private static void UpdateOrderOnce(Squadron squadron) =>
+            typeof(Squadron).GetMethod("UpdateOrder", LEASH_FIELDS).Invoke(squadron, new object[] { 1f });
+
+        private static object Engaged(Squadron squadron) =>
+            typeof(Squadron).GetField("_engaged", LEASH_FIELDS).GetValue(squadron);
 
         [TestCase(UnitOrderType.Attack, UnitOrderType.None)]
         [TestCase(UnitOrderType.Guard, UnitOrderType.None)]

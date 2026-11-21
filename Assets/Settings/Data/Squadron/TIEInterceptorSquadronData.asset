@@ -13,7 +13,7 @@ MonoBehaviour:
   m_Name: TIEInterceptorSquadronData
   m_EditorClassIdentifier: Assembly-CSharp::EmpireAtWar.Entities.Squadrons.Data.SquadronData
   <NavigationRadius>k__BackingField: 29
-  <GuardRadius>k__BackingField: 70
+  <GuardRadius>k__BackingField: 250
   <CruiseSpeed>k__BackingField: 72.8
   <CombatSpeed>k__BackingField: 81.12
   <Acceleration>k__BackingField: 30

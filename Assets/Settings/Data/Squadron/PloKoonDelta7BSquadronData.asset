@@ -13,7 +13,7 @@ MonoBehaviour:
   m_Name: PloKoonDelta7BSquadronData
   m_EditorClassIdentifier: Assembly-CSharp::EmpireAtWar.Entities.Squadrons.Data.SquadronData
   <NavigationRadius>k__BackingField: 4
-  <GuardRadius>k__BackingField: 70
+  <GuardRadius>k__BackingField: 250
   <CruiseSpeed>k__BackingField: 83.2
   <CombatSpeed>k__BackingField: 93.6
   <Acceleration>k__BackingField: 72

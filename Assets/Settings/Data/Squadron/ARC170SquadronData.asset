@@ -13,7 +13,7 @@ MonoBehaviour:
   m_Name: ARC170SquadronData
   m_EditorClassIdentifier: Assembly-CSharp::EmpireAtWar.Entities.Squadrons.Data.SquadronData
   <NavigationRadius>k__BackingField: 22
-  <GuardRadius>k__BackingField: 70
+  <GuardRadius>k__BackingField: 250
   <CruiseSpeed>k__BackingField: 62
   <CombatSpeed>k__BackingField: 70
   <Acceleration>k__BackingField: 21

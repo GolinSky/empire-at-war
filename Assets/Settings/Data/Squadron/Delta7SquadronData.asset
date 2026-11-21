@@ -13,7 +13,7 @@ MonoBehaviour:
   m_Name: Delta7SquadronData
   m_EditorClassIdentifier: Assembly-CSharp::EmpireAtWar.Entities.Squadrons.Data.SquadronData
   <NavigationRadius>k__BackingField: 6
-  <GuardRadius>k__BackingField: 70
+  <GuardRadius>k__BackingField: 250
   <CruiseSpeed>k__BackingField: 61.36
   <CombatSpeed>k__BackingField: 68.64
   <Acceleration>k__BackingField: 36

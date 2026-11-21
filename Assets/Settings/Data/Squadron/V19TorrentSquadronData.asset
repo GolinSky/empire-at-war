@@ -13,7 +13,7 @@ MonoBehaviour:
   m_Name: V19TorrentSquadronData
   m_EditorClassIdentifier: Assembly-CSharp::EmpireAtWar.Entities.Squadrons.Data.SquadronData
   <NavigationRadius>k__BackingField: 17
-  <GuardRadius>k__BackingField: 70
+  <GuardRadius>k__BackingField: 250
   <CruiseSpeed>k__BackingField: 73.84
   <CombatSpeed>k__BackingField: 84.24
   <Acceleration>k__BackingField: 30

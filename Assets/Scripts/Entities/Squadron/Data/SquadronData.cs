@@ -20,7 +20,7 @@ namespace EmpireAtWar.Entities.Squadrons.Data
         [Tooltip("Radius used when compacting group move orders.")]
         [field: SerializeField] public float NavigationRadius { get; private set; } = 6f;
         [Tooltip("Enemies closer than this to the guarded unit's hull or the loiter point are engaged automatically.")]
-        [field: SerializeField] public float GuardRadius { get; private set; } = 70f;
+        [field: SerializeField] public float GuardRadius { get; private set; } = 250f;
 
         [Header("Flight")]
         [field: SerializeField] public float CruiseSpeed { get; private set; } = 12f;

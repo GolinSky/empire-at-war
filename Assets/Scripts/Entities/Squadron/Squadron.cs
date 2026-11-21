@@ -634,13 +634,21 @@ namespace EmpireAtWar.Entities.Squadrons
                     UpdateAbilityCast();
                     break;
                 case UnitOrderType.Guard:
-                    if (!SquadronTargetSelector.IsAlive(_orders.Target)) Stop();
+                    if (!SquadronTargetSelector.IsAlive(_orders.Target))
+                    {
+                        Stop();
+                        break;
+                    }
+
                     // Fighters orbit one side of the guarded unit, so the whole guard area is
                     // searched in what the team sees rather than in the squadron's own radar.
                     // The area reaches past the guarded unit's guns, so escorts join the fight it is in.
-                    else if (ShouldSearchTargets(elapsed)) DefendArea(_targetSelector.SelectGuardTarget(
-                        _orders.Target, _orders.Target.GetFacade<IEntityTransformFacade>().Transform.position,
-                        Mathf.Max(_guardedRadius + Data.GuardRadius, _orderSettings.SquadronGuardEngageRadius)));
+                    Vector3 guardedPosition = _orders.Target.GetFacade<IEntityTransformFacade>().Transform.position;
+                    float guardRadius = Mathf.Max(_guardedRadius + Data.GuardRadius,
+                        _orderSettings.SquadronGuardEngageRadius);
+                    if (!IsGuardedUnitTarget(_engaged) && BreakOffBeyondLeash(guardedPosition, guardRadius)) break;
+                    if (ShouldSearchTargets(elapsed))
+                        DefendArea(_targetSelector.SelectGuardTarget(_orders.Target, guardedPosition, guardRadius));
                     break;
                 case UnitOrderType.AttackMove:
                     if (!_hasReachedAttackMovePoint)
@@ -664,11 +672,33 @@ namespace EmpireAtWar.Entities.Squadrons
                     else _orders.Clear();
                     break;
                 default:
+                    if (BreakOffBeyondLeash(_pilot.LoiterCenter, Data.GuardRadius)) break;
                     if (ShouldSearchTargets(elapsed))
                         DefendArea(_targetSelector.SelectNear(_radar, _pilot.LoiterCenter, Data.GuardRadius));
                     break;
             }
         }
+
+        /// <summary>
+        /// Guard and idle only: a target chased farther than the engage radius times the leash factor from
+        /// <paramref name="anchor"/> is dropped and the squadron returns to its post or escort.
+        /// Reacquiring needs the target back inside the engage radius, so the gap between both radii stops flip-flops.
+        /// </summary>
+        private bool BreakOffBeyondLeash(Vector3 anchor, float engageRadius)
+        {
+            if (!IsEngaging) return false;
+            float leash = engageRadius * _orderSettings.SquadronLeashFactor;
+            Vector3 target = _engaged.GetFacade<IEntityTransformFacade>().Transform.position;
+            if ((target - anchor).sqrMagnitude <= leash * leash) return false;
+            Disengage();
+            ResumeCourse();
+            return true;
+        }
+
+        /// <summary>The guarded unit's guns already bound the distance to its own target, so no leash applies.</summary>
+        private bool IsGuardedUnitTarget(IEntity target) =>
+            target != null && _orders.Target.TryGetFacade(out IUnitCombatObserverFacade combat) &&
+            ReferenceEquals(combat.Target, target);
 
         private void UpdateAbilityCast()
         {
@@ -743,6 +773,10 @@ namespace EmpireAtWar.Entities.Squadrons
                     break;
                 case UnitOrderType.AttackMove:
                     _pilot.FlyTo(ToVector(_orders.Destination));
+                    break;
+                case UnitOrderType.None:
+                    // Idle squadrons return to their post instead of loitering where the fight ended.
+                    _pilot.FlyTo(_pilot.LoiterCenter);
                     break;
                 default:
                     _pilot.Loiter(_flight.Centroid);

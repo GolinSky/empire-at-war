@@ -13,7 +13,7 @@ MonoBehaviour:
   m_Name: BobaFettSlaveISquadronData
   m_EditorClassIdentifier: Assembly-CSharp::EmpireAtWar.Entities.Squadrons.Data.SquadronData
   <NavigationRadius>k__BackingField: 6
-  <GuardRadius>k__BackingField: 70
+  <GuardRadius>k__BackingField: 250
   <CruiseSpeed>k__BackingField: 72.8
   <CombatSpeed>k__BackingField: 78
   <Acceleration>k__BackingField: 52

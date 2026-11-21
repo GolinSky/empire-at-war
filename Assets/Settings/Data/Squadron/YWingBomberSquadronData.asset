@@ -13,7 +13,7 @@ MonoBehaviour:
   m_Name: YWingBomberSquadronData
   m_EditorClassIdentifier: Assembly-CSharp::EmpireAtWar.Entities.Squadrons.Data.SquadronData
   <NavigationRadius>k__BackingField: 18
-  <GuardRadius>k__BackingField: 70
+  <GuardRadius>k__BackingField: 250
   <CruiseSpeed>k__BackingField: 39.52
   <CombatSpeed>k__BackingField: 45.76
   <Acceleration>k__BackingField: 16

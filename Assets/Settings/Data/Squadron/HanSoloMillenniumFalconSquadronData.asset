@@ -13,7 +13,7 @@ MonoBehaviour:
   m_Name: HanSoloMillenniumFalconSquadronData
   m_EditorClassIdentifier: Assembly-CSharp::EmpireAtWar.Entities.Squadrons.Data.SquadronData
   <NavigationRadius>k__BackingField: 6
-  <GuardRadius>k__BackingField: 70
+  <GuardRadius>k__BackingField: 250
   <CruiseSpeed>k__BackingField: 62.4
   <CombatSpeed>k__BackingField: 67.6
   <Acceleration>k__BackingField: 58

@@ -11,6 +11,8 @@ namespace EmpireAtWar.Services.UnitOrders
         [SerializeField, Min(0f)] private float guardChaseDistance = 120f;
         [Tooltip("Guarding squadrons attack enemies this close to the guarded unit, so escorts join their carrier's fight.")]
         [SerializeField, Min(0f)] private float squadronGuardEngageRadius = 800f;
+        [Tooltip("Guarding and idle squadrons drop a target farther than their engage radius times this factor from the guarded unit or their post.")]
+        [SerializeField, Min(1f)] private float squadronLeashFactor = 1.3f;
         [SerializeField, Min(0f)] private float huntRetargetInterval = 1f;
         [SerializeField, Min(0f)] private float stationClearance = 150f;
 
@@ -34,6 +36,7 @@ namespace EmpireAtWar.Services.UnitOrders
         public float GuardFollowRadius => guardFollowRadius;
         public float GuardChaseDistance => guardChaseDistance;
         public float SquadronGuardEngageRadius => squadronGuardEngageRadius;
+        public float SquadronLeashFactor => squadronLeashFactor;
         public float HuntRetargetInterval => huntRetargetInterval;
         public float StationClearance => stationClearance;
 

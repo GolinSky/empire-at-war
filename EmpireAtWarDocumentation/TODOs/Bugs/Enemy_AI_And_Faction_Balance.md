@@ -39,7 +39,7 @@ commit: 6babee5e1
 | Belbullab-22 | `BelbullabTripleLaser` (122): Unit scope, Triple mount, ×1.5 → ~200 DPS (was 44); hull 220→300 |
 | Carrack `ShieldRegenTier` | Corvette → Frigate (5 → 25) |
 | Concentrate Fire (Resolute) | damage 1.25→1.15, fire delay 0.4→0.6, duration 12→8 s |
-| `UnitOrderSettings.squadronGuardEngageRadius` | 800: guarding squadrons attack enemies near the guarded unit |
+| `UnitOrderSettings.squadronGuardEngageRadius` | 400 (was 800, 2026-11-21): guarding squadrons attack enemies near the guarded unit; leash ×`squadronLeashFactor` 1.3 → break off beyond 520 |
 
 ## Implementation — AI
 

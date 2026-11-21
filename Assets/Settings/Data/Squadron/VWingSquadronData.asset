@@ -13,7 +13,7 @@ MonoBehaviour:
   m_Name: VWingSquadronData
   m_EditorClassIdentifier: Assembly-CSharp::EmpireAtWar.Entities.Squadrons.Data.SquadronData
   <NavigationRadius>k__BackingField: 15
-  <GuardRadius>k__BackingField: 70
+  <GuardRadius>k__BackingField: 250
   <CruiseSpeed>k__BackingField: 79.04
   <CombatSpeed>k__BackingField: 87.36
   <Acceleration>k__BackingField: 40

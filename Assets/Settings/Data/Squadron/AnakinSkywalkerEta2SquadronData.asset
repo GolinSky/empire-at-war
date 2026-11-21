@@ -13,7 +13,7 @@ MonoBehaviour:
   m_Name: AnakinSkywalkerEta2SquadronData
   m_EditorClassIdentifier: Assembly-CSharp::EmpireAtWar.Entities.Squadrons.Data.SquadronData
   <NavigationRadius>k__BackingField: 4
-  <GuardRadius>k__BackingField: 70
+  <GuardRadius>k__BackingField: 250
   <CruiseSpeed>k__BackingField: 88.4
   <CombatSpeed>k__BackingField: 98.8
   <Acceleration>k__BackingField: 76
