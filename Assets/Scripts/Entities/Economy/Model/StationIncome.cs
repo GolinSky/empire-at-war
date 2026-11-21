@@ -4,8 +4,8 @@ namespace EmpireAtWar.Models.Economy
     /// living second station.</summary>
     public static class StationIncome
     {
-        public const float PER_LEVEL = 30f;
-        public const float SECOND_STATION_SHARE = 0.5f;
+        public const float PER_LEVEL = 20f;
+        public const float SECOND_STATION_SHARE = 0.25f;
 
         public static float Get(int level, float researchMultiplier, bool hasSecondStation) =>
             PER_LEVEL * level * researchMultiplier * (hasSecondStation ? 1f + SECOND_STATION_SHARE : 1f);

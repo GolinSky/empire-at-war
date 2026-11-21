@@ -18,15 +18,18 @@ namespace EmpireAtWar.MiningFacility
     {
         private readonly MiningFacilityType _type;
         private readonly float _buildTime;
+        private readonly float _income;
 
         protected override MarkType? MiniMapMarkOverride =>
             _type == MiningFacilityType.TibannaGasStation ? MarkType.TibannaGasStation : null;
 
         public MiningFacilityInstaller(MiningFacilityEntity view, MiningFacilityData data, ILocalPlayer localPlayer,
-            PlayerId owner, long entityId, Vector3 position, MiningFacilityType type, float buildTime = 0f)
+            PlayerId owner, long entityId, Vector3 position, MiningFacilityType type, float income,
+            float buildTime = 0f)
             : base(view, data, localPlayer, owner, entityId, position)
         {
             _type = type;
+            _income = income;
             _buildTime = buildTime;
         }
 
@@ -38,7 +41,7 @@ namespace EmpireAtWar.MiningFacility
             builder.RegisterInstance(_type);
             builder.RegisterInstance(Data.ComponentData).AsSelf().As<IRadarData, IFogVisionData, ISpawnBlockerData>();
             builder.Register<MiningFacilityModel>(Lifetime.Singleton).AsSelf().AsImplementedInterfaces()
-                .WithParameter("baseIncome", Data.Income);
+                .WithParameter("baseIncome", _income);
             builder.Register<MiningFacilityTooltipFacade>(Lifetime.Singleton).AsImplementedInterfaces();
             builder.Register<MiningFacilityFacade>(Lifetime.Singleton).AsImplementedInterfaces();
             builder.Register<StructureSaveFacade>(Lifetime.Singleton).AsImplementedInterfaces()

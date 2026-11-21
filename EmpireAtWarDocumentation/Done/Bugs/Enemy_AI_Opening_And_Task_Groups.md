@@ -735,3 +735,75 @@ Files: `…/BattleTelemetry/Loading_20261120_174422_ai.csv`, `_ai_orders.csv`, `
 - ≥ 6 ships bought within 30 s of level 2 landing.
 - Unit capacity below 100 of 120 while fewer than 15 ships are alive.
 - Median ship life ≥ 90 s.
+
+
+## Round 7 follow-up (2026-11-20, evening)
+### Tests
+- Full EditMode run by the user: `Assets/TestResults_20261120_185627.xml` → 4,451 passed, 0 failed, 4 skipped. Includes the round-7 tests (`UnaffordablePreferredShip_…(1,3,False)` and the two re-levelled tests).
+
+### Rebellion balance check (user: "same price, different hull / shields / regen / DPS")
+Source: every faction ship through `UnitCombatProfileCatalog` (the AI's own numbers), Editor state of 2026-11-20 evening (7 balance assets had unsaved Editor edits). Table → `Logs/BalanceDump.csv`. Static model; no duels run.
+- Value per 1,000 credits = `GetCombatValue()` / price × 1,000 (√(durability × hull DPS)).
+
+| Level | Rebellion min–median–max | Empire | Republic | Separatist |
+|---|---|---|---|---|
+| 2 | 201–401–489 | 501 | 250–284–448 | 209–290–391 |
+| 3 | 414–566–790 | 401–545–639 | 401–422–639 | 364–496–644 |
+| 4 | 385–546–561 | 472–548–752 | 514–676–752 | 458–550–603 |
+| 5 | 391–455–489 | 369–409–815 | 346–604–815 | 249–415–512 |
+
+- Rebellion is not weak overall: its median is the best at levels 2–3 and equal at level 4.
+- Its curve falls with level; the others rise. Best Rebellion ships are level 3: MC80 Freedom 790, MC75 632, Liberator 589, MC30c 566. Best at levels 4–5: 561 (Mediator, Mon Cal) vs 752–815 for Empire and Republic (Tector, ISD II, Secutor).
+- Outliers:
+  - MC80 Freedom: level 3, 5,500 credits, 38,000 durability (class HeavyCruiser). More durable than the level-4 Mon Cal (27,000, 8,000 credits) and MC80b Remonda (37,000, 9,000).
+  - MC80b Remonda: 9,000 credits, hull DPS 267 → 385. Lower value than MC80 Freedom at 5,500.
+  - Nebula: level 5, 12,000 credits ≈ Mon Cal stats (value 4,694 vs 4,476) for + 50 % price.
+  - Level-4–5 Rebellion hull DPS per 1,000 credits: 30–43 (Justice, Remonda, Mediator, Independence, Home One) vs 107–140 (Providence, Tector, ISD II, Secutor).
+  - Same price, different role: MC75 vs MC80 Freedom (5,500): durability 14,300 vs 38,000, hull DPS 845 vs 305. Corellian Battlecruiser vs MC30c (3,500): hull DPS 230 vs 403.
+- Effect on the AI: J1 (levels 4–5 only at station level 5) barred Rebellion from its four best ships.
+
+### J3 (implemented, compiled, tests not run)
+- [x] `IsShipTierAllowed`: a ship below the tier floor stays buyable while its value per credit is strictly above every available ship of the span (`GetBestSpanValuePerCredit`). Rebellion at level 5 keeps MC80 Freedom, MC75, Liberator, MC30c; Nebulon-B, CD-273, MC50 stay excluded. Empire and Republic: no ship qualifies (best value is in the span).
+- Tests reviewed, no change: fixtures use a uniform value per credit, so the strict comparison never exempts a ship. Not covered: the exemption itself.
+- Data not touched: prices, levels and stats are the user's balance work (unsaved Editor edits were in progress).
+
+### Balance changes (user decision 2026-11-20, applied, uncommitted)
+- [x] MC80 Freedom: level 3 → 4 (`RebellionFaction.asset`).
+- [x] MC80b Remonda: price 9,000 → 6,500.
+- [x] Nebula: price 12,000 → 9,000.
+- [ ] Not decided: Rebellion levels 4–5 hull DPS / prices. With the Freedom at level 4 the best level-4 value is 790.
+- Survival mode (`SurvivalWaveData.asset`): a wave holds every ship of its level and below; each tier's quantities sum to 2 × the largest tier size of any faction. The Freedom move changed tier 3 from 7 to 6 ships (sum 14 → 12) and tier 4 from 6 to 7 (sum 12 → 14) for every faction.
+  - Rebellion: Freedom removed from wave 3; stays in waves 4–5 with quantity 2.
+  - Republic: Arquitens 7 → 6, Heavy Dreadnought 6 → 5, Tector 2 → 4.
+  - Separatist: Dispatcher 5 → 4, Recalcitrant 5 → 4, Bulwark 2 → 3, Bulwark II 2 → 3.
+  - Empire: Arquitens 4 → 3, Imperial Venator 4 → 3, ISD I 2 → 3, Tector 2 → 3.
+- Applied through `SerializedObject` + `AssetDatabase.SaveAssets`; values read back from disk.
+- Tests: `SurvivalGameplayTests.AuthoredWaves_IncludeEveryUnlockedShipWithEqualTierCounts` reads both assets, so no test code changed; its rules were re-checked by script against the saved data → valid. No other test pins these levels or prices. EditMode not run (`GameFlow`, `Economy`, `EnemyAi` are the categories to run).
+
+
+## Economy normalization (2026-11-21; user decision, implemented, compiled, tests not run)
+### Problem (user, after 4 online games)
+- Income exploded in 2v2 and on big maps; mining zones stopped mattering; station buffs possibly too strong.
+- Wanted: the same economy progression on every map size and player count.
+
+### Cause (source)
+- A site mine paid a fixed 60, split between allies (`TeamIncomeSource`). Spots per map = 4 centre + 1 home per player + 2 per outer-zone pair (Small 1, Medium 2, Large 3, + (players − 3) / 2 on archetype layouts).
+- Fixed part per player at level 5 with research: station 210 + miners 210 + base 4 = 424.
+- Per player, half map / whole map: Small 1v1 760 / 1,096; Large 1v1 928 / 1,432; Small 2v2 634 / 844; Large 4v4 655 / 886.
+- Spend ceiling ≈ 450–600 /s (same-type builds run one at a time, 7 pipelines, unit limit 120).
+
+### Decision
+- **Mining pool:** site mine income = `MiningPool.PER_PLAYER` 200 × players in the match / mining spots on the map. Team shares are still split between members.
+- **Station:** `StationIncome.PER_LEVEL` 30 → 20; `SECOND_STATION_SHARE` 0.5 → 0.25.
+- Unchanged: station miners 30, battle asteroid 10, research multipliers, starting-credit slider.
+- Result at level 5 with research, every setup: fixed part 354; half the map 634; whole map 914.
+- Avoid: fixed pay per spot (scales with map size); per-team pools (a 1-player team would out-earn each member of a 4-player team).
+
+### Implementation
+- `MiningPool` (`Entities/Economy/Model`): `GetSpotIncome(playerCount, spotCount)`.
+- `MiningFacilityFactory.GetIncome`: `AsteroidMiner` → pool share from `IPlayerRoster.Players.Count` and the `Mining` sites of `ICaptureSiteDirectory`; passed to `MiningFacilityInstaller` as `income`.
+- Edge: Survival → data income (its mining ring is not normalized). No mining spot on the map → data income. Station miners and Tibanna stations → data income.
+- Edge: spot pay examples: Small 1v1 50; Large 1v1 33; Small 2v2 80 (40 per ally); Large 4v4 73 (18 per ally).
+- Tests: added `MiningPool_PaysTheSamePerPlayerForTheSameShareOfTheMap` (5 setups). Reviewed, no change: `StationIncome_…` and `SecondStation_…` (relations only), `RealEntityCompositionTests` (uses `StationIncome.Get`; asteroid mine without sites → data income).
+- Verification: `unity recompile` → 0 errors. EditMode not run.
+- Open (user playtest): 2v2 and a Large map; income per player should match Small 1v1 for the same map share.

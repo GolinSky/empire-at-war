@@ -102,6 +102,19 @@ namespace EmpireAtWar.Tests.Editor
             }
         }
 
+        [TestCase(2, 8)]
+        [TestCase(2, 12)]
+        [TestCase(4, 10)]
+        [TestCase(6, 16)]
+        [TestCase(8, 22)]
+        public void MiningPool_PaysTheSamePerPlayerForTheSameShareOfTheMap(int players, int spots)
+        {
+            // One of two equal teams holds half the spots and splits their income between its members.
+            float perMember = MiningPool.GetSpotIncome(players, spots) * (spots / 2f) / (players / 2f);
+
+            Assert.That(perMember, Is.EqualTo(MiningPool.PER_PLAYER).Within(0.0001f));
+        }
+
         [Test]
         public void SecondStation_RaisesIncomeWhileItStands()
         {

@@ -1,5 +1,9 @@
+using System.Collections.Generic;
 using EmpireAtWar.Mvc;
 using EmpireAtWar.Entities.CaptureSites;
+using EmpireAtWar.Entities.Game;
+using EmpireAtWar.Models.Economy;
+using EmpireAtWar.Services.CaptureSites;
 using EmpireAtWar.Services.VContainer;
 using EmpireAtWar.Models.Players;
 using EmpireAtWar.Services.Factory;
@@ -15,13 +19,20 @@ namespace EmpireAtWar.Entities.MiningFacility
         private readonly ILocalPlayer _localPlayer;
         private readonly IUniqueIdGenerator _ids;
         private readonly MiningFacilityCatalog _catalog;
+        private readonly IPlayerRoster _roster;
+        private readonly IReadOnlyList<ICaptureSiteDirectory> _sites;
+        private readonly IGameModelObserver _game;
 
         public MiningFacilityFactory(IAssetService assets, LifetimeScope scope, EntityScopeOwnership ownership, ILocalPlayer localPlayer,
-            IUniqueIdGenerator ids, MiningFacilityCatalog catalog) : base(assets, scope, ownership)
+            IUniqueIdGenerator ids, MiningFacilityCatalog catalog, IPlayerRoster roster,
+            IReadOnlyList<ICaptureSiteDirectory> sites, IGameModelObserver game) : base(assets, scope, ownership)
         {
             _localPlayer = localPlayer;
             _ids = ids;
             _catalog = catalog;
+            _roster = roster;
+            _sites = sites;
+            _game = game;
         }
 
         public virtual MiningFacility Create(PlayerId owner, MiningFacilityType type, Vector3 position, float? buildDuration = null) =>
@@ -35,9 +46,25 @@ namespace EmpireAtWar.Entities.MiningFacility
             float buildTime = buildDuration ?? (type == MiningFacilityType.AsteroidMiner
                 ? Assets.Load<CaptureSiteData>(nameof(CaptureSiteData)).GetCost(SiteFacilityType.Mining).BuildTime
                 : _catalog.Get(type == MiningFacilityType.BattleMiner ? MiningFacilityType.CommonMiner : type).BuildTime);
+            float income = GetIncome(type, data);
             return Spawn(Assets.LoadComponent<MiningFacility>(assetName + "View"), position, Quaternion.identity,
                 (builder, view) => new MiningFacilityInstaller(view, data,
-                    _localPlayer, owner, entityId, position, type, buildTime).Install(builder));
+                    _localPlayer, owner, entityId, position, type, income, buildTime).Install(builder));
+        }
+
+        /// <summary>
+        /// A mine on a capture site pays its share of the map's <see cref="MiningPool"/>, so income per player is the
+        /// same on every map size and player count. Station miners, and mines in Survival or on a map without mining
+        /// spots, pay the income of their data.
+        /// </summary>
+        private float GetIncome(MiningFacilityType type, MiningFacilityData data)
+        {
+            if (type != MiningFacilityType.AsteroidMiner || _game.GameMode == GameMode.Survival) return data.Income;
+            int spots = 0;
+            foreach (ICaptureSiteDirectory directory in _sites)
+                foreach (ICaptureSite site in directory.Sites)
+                    if (site.Kind == CaptureSiteKind.Mining) spots++;
+            return spots == 0 ? data.Income : MiningPool.GetSpotIncome(_roster.Players.Count, spots);
         }
     }
 }
