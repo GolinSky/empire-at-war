@@ -47,6 +47,7 @@ using EmpireAtWar.Services.FogOfWar;
 using EmpireAtWar.Services.Vision;
 using EmpireAtWar.Services.Player;
 using EmpireAtWar.Services.Reinforcement;
+using EmpireAtWar.Services.Repair;
 using EmpireAtWar.Services.Saves;
 using EmpireAtWar.Services.SpawnBlocking;
 using EmpireAtWar.Services.Squadrons;
@@ -1298,12 +1299,14 @@ namespace EmpireAtWar.Tests.Editor
                 Assert.That(ship.EntityId, Is.EqualTo(shipScope.Container.Resolve<IEntity>().Id));
                 AssertVoiceCapability(shipScope, slot);
                 AssertDecoratedHealth(shipScope, data);
+                AssertRepairable(shipScope, true);
                 SquadronType squadronType = player.Container.Resolve<FactionRoster>().Squadrons.Keys.OrderBy(type => type).First();
                 _battle.Container.Resolve<FighterPoseBatch>().PostTick();
                 Squadron squadron = player.Container.Resolve<SquadronFactory>().Create(
                     slot.Id, squadronType, origin + Vector3.right * 100f, Quaternion.identity);
                 EntityLifetimeScope squadronScope = AssertEntity(squadron, player, slot);
                 Assert.That(squadronScope.Container.Resolve<IEntity>().GetFacade<ISquadron>(), Is.SameAs(squadron));
+                AssertRepairable(squadronScope, false);
                 AssertVoiceCapability(squadronScope, slot);
                 int[] poseSlots = AssertFightersBank(squadron);
                 AssertPoolRoundTrip(squadron, squadronScope, origin + Vector3.right * 150f);
@@ -1312,15 +1315,18 @@ namespace EmpireAtWar.Tests.Editor
                 EntityLifetimeScope station = AssertEntity(player.Container.Resolve<SpaceStationFactory>()
                     .Create(slot.Id, slot.Faction, origin + Vector3.forward * 150f), player, slot);
                 AssertDecoratedHealth(station, station.Container.Resolve<SpaceStationData>().ComponentData);
+                AssertRepairable(station, true);
                 EntityLifetimeScope mining = AssertEntity(player.Container.Resolve<MiningFacilityFactory>()
                     .Create(slot.Id, MiningFacilityType.CommonMiner, origin + Vector3.forward * 200f), player, slot);
                 AssertDecoratedHealth(mining, mining.Container.Resolve<MiningFacilityData>().ComponentData);
+                AssertRepairable(mining, true);
                 EntityLifetimeScope asteroidMining = AssertEntity(player.Container.Resolve<MiningFacilityFactory>()
                     .Create(slot.Id, MiningFacilityType.AsteroidMiner, origin + Vector3.forward * 250f), player, slot);
                 AssertDecoratedHealth(asteroidMining, asteroidMining.Container.Resolve<MiningFacilityData>().ComponentData);
                 EntityLifetimeScope platform = AssertEntity(player.Container.Resolve<DefendPlatformFactory>()
                     .Create(slot.Id, DefendPlatformType.Xq6, origin + Vector3.forward * 300f), player, slot);
                 AssertDecoratedHealth(platform, platform.Container.Resolve<DefendPlatformData>().ComponentData);
+                AssertRepairable(platform, true);
                 EntityLifetimeScope asteroidPlatform = AssertEntity(player.Container.Resolve<DefendPlatformFactory>()
                     .Create(slot.Id, DefendPlatformType.BattleAsteroid, origin + Vector3.forward * 350f), player, slot);
                 AssertDecoratedHealth(asteroidPlatform, asteroidPlatform.Container.Resolve<DefendPlatformData>().ComponentData);
@@ -1333,9 +1339,20 @@ namespace EmpireAtWar.Tests.Editor
                     AssertDecoratedHealth(satellite, satellite.Container.Resolve<DefendPlatformData>().ComponentData);
                     Assert.That(satellite.Container.Resolve<HealthModel>().HardPointModels.Length, Is.EqualTo(6));
                     Assert.That(satellite.Container.Resolve<DefendPlatformType>(), Is.EqualTo(type));
+                    AssertRepairable(satellite, true);
+                    Assert.That(satellite.Container.Resolve<IEntity>().TryGetFacade(out IRepairSourceFacade _), Is.False,
+                        "Only data with a repair profile repairs.");
                 }
+                EntityLifetimeScope repairSatellite = AssertEntity(player.Container.Resolve<DefendPlatformFactory>()
+                    .Create(slot.Id, DefendPlatformType.RepairSatellite,
+                        origin + Vector3.forward * (400f + (int)DefendPlatformType.RepairSatellite * 30f)), player, slot);
+                DefendPlatformData repairData = repairSatellite.Container.Resolve<DefendPlatformData>();
+                AssertDecoratedHealth(repairSatellite, repairData.ComponentData);
+                AssertRepairable(repairSatellite, true);
+                Assert.That(repairSatellite.Container.Resolve<IEntity>().TryGetFacade(out IRepairSourceFacade repairSource), Is.True);
+                Assert.That(repairSource.Profile, Is.SameAs(repairData.RepairProfile));
             }
-            Assert.That(_entityIds.Count, Is.EqualTo(24));
+            Assert.That(_entityIds.Count, Is.EqualTo(26));
             CombatModifiers first = shipScopes[0].Container.Resolve<CombatModifiers>();
             CombatModifiers second = shipScopes[1].Container.Resolve<CombatModifiers>();
             first.SetCloaked(true);
@@ -1470,6 +1487,12 @@ namespace EmpireAtWar.Tests.Editor
         private static void AssertVoiceCapability(EntityLifetimeScope scope, PlayerSlot owner) =>
             Assert.That(scope.Container.Resolve<ContainerLocal<IReadOnlyList<IAudioDialogShipComponent>>>().Value.Count,
                 Is.EqualTo(owner.IsAi ? 0 : 1));
+
+        private static void AssertRepairable(EntityLifetimeScope scope, bool repairable)
+        {
+            Assert.That(scope.Container.Resolve<IEntity>().TryGetFacade(out IRepairableFacade _), Is.EqualTo(repairable),
+                "Ships and structures are repair targets; squadrons are not.");
+        }
 
         private static void AssertDecoratedHealth(EntityLifetimeScope scope, IHealthData baseData)
         {

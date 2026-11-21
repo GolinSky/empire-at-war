@@ -2,6 +2,7 @@ using System.Threading;
 using EmpireAtWar.Components.Weapon;
 using EmpireAtWar.Entities.Game;
 using EmpireAtWar.Models.Players;
+using EmpireAtWar.Services.Repair;
 using EmpireAtWar.Services.Squadrons;
 using EmpireAtWar.Services.Enemy;
 using EmpireAtWar.Services.ShipAbilities;
@@ -29,25 +30,28 @@ namespace EmpireAtWar.Services.Battle
         private readonly TeamIntelRegistry _intel;
         private readonly ShipAbilityService _abilities;
         private readonly HarmonicBombService _bombs;
+        private readonly RepairService _repairs;
         private readonly CombatAttackCoordinator _attacks;
 
         public SimulationResetService(PlayerScopeBootstrap players, PlayerRoster roster, ShotPoolPrewarmer shots,
             BoltFlightBatch bolts, IncomingMissileRegistry missiles, UnitWreckService wrecks,
             UnitExplosionService explosions, FighterExplosionPool fighters, HardPointExplosionPool hardPoints,
             ImpactEffectView impacts, BattleVictoryService victory, TeamIntelRegistry intel, ShipAbilityService abilities,
-            CombatAttackCoordinator attacks, HarmonicBombService bombs)
+            CombatAttackCoordinator attacks, HarmonicBombService bombs, RepairService repairs)
         {
             _players = players; _roster = roster; _shots = shots; _bolts = bolts;
             _missiles = missiles; _wrecks = wrecks; _explosions = explosions; _fighters = fighters;
             _hardPoints = hardPoints; _impacts = impacts; _victory = victory;
             _intel = intel; _abilities = abilities; _attacks = attacks;
             _bombs = bombs;
+            _repairs = repairs;
         }
 
         public async Awaitable ResetAsync(SimulationSetup setup, CancellationToken cancellationToken)
         {
             _abilities.Clear();
             _bombs.Clear();
+            _repairs.Clear();
             _players.Dispose();
             _attacks.ClearPendingAttacks();
             _intel.Clear();

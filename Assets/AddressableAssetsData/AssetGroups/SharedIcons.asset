@@ -575,6 +575,11 @@ MonoBehaviour:
     m_ReadOnly: 0
     m_SerializedLabels: []
     FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: d846cedf6810ffb4ea05703dbeeee74c
+    m_Address: Assets/Art/Textures/Ui/Icons/DefendPlatform/RepairSatelliteIcon.png
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
   - m_GUID: d899a22bd6d129e46a5aed14df2b81fa
     m_Address: Assets/Art/Textures/Ui/Icons/ShipIcon/VenatorIcon.png
     m_ReadOnly: 0

@@ -40,7 +40,8 @@ namespace EmpireAtWar.Tests.Editor
                 ui.SetFacilities(data.GetAllowedFacilities(CaptureSiteKind.Satellite));
                 var options = (List<SiteFacilityOptionView>)typeof(CaptureSiteBuildUi)
                     .GetField("_options", BindingFlags.Instance | BindingFlags.NonPublic).GetValue(ui);
-                Assert.That(options.Count(option => option.gameObject.activeSelf), Is.EqualTo(5));
+                Assert.That(options.Count(option => option.gameObject.activeSelf),
+                    Is.EqualTo(data.GetAllowedFacilities(CaptureSiteKind.Satellite).Count));
                 RectTransform panel = (RectTransform)typeof(CaptureSiteBuildUi)
                     .GetField("panel", BindingFlags.Instance | BindingFlags.NonPublic).GetValue(ui);
                 Vector2 scaled = Vector2.Scale(panel.rect.size, panel.localScale);
@@ -56,7 +57,8 @@ namespace EmpireAtWar.Tests.Editor
                 ui.Dispose();
                 ui.Initialize();
                 ui.SetFacilities(data.GetAllowedFacilities(CaptureSiteKind.Satellite));
-                Assert.That(options.Count, Is.EqualTo(5), "Reinitialization must not duplicate pooled rows.");
+                Assert.That(options.Count, Is.EqualTo(data.GetAllowedFacilities(CaptureSiteKind.Satellite).Count),
+                    "Reinitialization must not duplicate pooled rows.");
                 AssertPanelAvoidsMiniMap(panel, miniMapSlot, root);
             }
             finally { Object.DestroyImmediate(ui.gameObject); }

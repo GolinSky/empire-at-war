@@ -11,5 +11,6 @@
         IonSatellite = 6,
         MassDriverSatellite = 7,
         MissileSatellite = 8,
+        RepairSatellite = 9,
     }
 }

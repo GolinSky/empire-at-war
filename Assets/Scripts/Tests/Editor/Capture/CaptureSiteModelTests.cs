@@ -146,6 +146,7 @@ namespace EmpireAtWar.Tests.Editor
         [TestCase(SiteFacilityType.IonSatellite)]
         [TestCase(SiteFacilityType.MassDriverSatellite)]
         [TestCase(SiteFacilityType.MissileSatellite)]
+        [TestCase(SiteFacilityType.RepairSatellite)]
         public void Satellite_RestoresConstructionAndReleasesAfterDestruction(SiteFacilityType type)
         {
             CaptureSiteModel model = new CaptureSiteModel(ROSTER, CAPTURE_DURATION, 1f);

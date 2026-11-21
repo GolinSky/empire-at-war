@@ -31,6 +31,7 @@ namespace EmpireAtWar.Tests.Editor
         [TestCase(SiteFacilityType.IonSatellite, DefendPlatformType.IonSatellite)]
         [TestCase(SiteFacilityType.MassDriverSatellite, DefendPlatformType.MassDriverSatellite)]
         [TestCase(SiteFacilityType.MissileSatellite, DefendPlatformType.MissileSatellite)]
+        [TestCase(SiteFacilityType.RepairSatellite, DefendPlatformType.RepairSatellite)]
         public void SatellitePad_RoundTripsOwnerConstructionAndFacility(SiteFacilityType type, DefendPlatformType platform)
         {
             BattleSave template = CreateSave(Skirmish(), BattleSaveSlot.Quicksave, DateTime.UtcNow);

@@ -182,6 +182,8 @@ namespace EmpireAtWar.Services.Enemy
         {
             foreach (SiteFacilityType type in _siteData.GetAllowedFacilities(CaptureSiteKind.Satellite))
             {
+                // The enemy AI does not build repair satellites yet.
+                if (type == SiteFacilityType.RepairSatellite) continue;
                 DefendPlatformData data = _assets.Load<DefendPlatformData>(type.ToSatelliteType() + "Data");
                 EntityComponentData components = data.ComponentData;
                 UnitCombatProfile profile = UnitCombatProfileFactory.Create(components.ShipClass, components.Hull,

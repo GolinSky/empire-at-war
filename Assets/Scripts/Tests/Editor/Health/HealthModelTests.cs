@@ -613,6 +613,76 @@ namespace EmpireAtWar.Tests.Editor
             Assert.That(lockedWeapon.MaxHealth, Is.Zero);
         }
 
+        [Test]
+        public void Repair_RestoresHullAndLiveHardPointsByFractionOfMaximum()
+        {
+            HealthModel model = CreateModel(0f, out HardPointModel weapon, out HardPointModel engine,
+                out HardPointModel shieldGenerator);
+            model.ApplyDamage(40f, DamageType.Turbolaser, weapon.Id);
+            model.ApplyDamage(10f, DamageType.Turbolaser, engine.Id);
+            int changes = 0;
+            model.OnValueChanged += () => changes++;
+            Assert.That(model.NeedsRepair, Is.True);
+
+            model.Repair(0.01f);
+
+            Assert.That(changes, Is.EqualTo(1));
+            Assert.That(model.Hull, Is.EqualTo(HULL - 30f + HULL * 0.01f).Within(0.01f));
+            Assert.That(weapon.Health, Is.EqualTo(60f + weapon.MaxHealth * 0.01f).Within(0.01f));
+            Assert.That(engine.Health, Is.EqualTo(190f + engine.MaxHealth * 0.01f).Within(0.01f));
+            Assert.That(shieldGenerator.Health, Is.EqualTo(shieldGenerator.MaxHealth));
+
+            model.Repair(1f);
+
+            Assert.That(model.Hull, Is.EqualTo(model.MaxHull));
+            Assert.That(weapon.Health, Is.EqualTo(weapon.MaxHealth));
+            Assert.That(engine.Health, Is.EqualTo(engine.MaxHealth));
+            Assert.That(model.NeedsRepair, Is.False);
+        }
+
+        [Test]
+        public void Repair_LeavesShieldsDestroyedAndLockedHardPointsAndLostGeneratorUntouched()
+        {
+            HealthModel model = new HealthModel(new HealthDataStub(SHIELDS), _matrix, new CombatModifiers(), new HardPointHealthBudget());
+            var weapon = new HardPointModel(HardPointType.Weapon, 0);
+            var generator = new HardPointModel(HardPointType.ShieldGenerator, 1);
+            var locked = new HardPointModel(HardPointType.Weapon, 2, unlockLevel: 2);
+            model.InitializeHardPoints(new[] { weapon, generator, locked });
+            model.ApplyDamage(100f, DamageType.Turbolaser, weapon.Id);
+            float shields = model.Shields;
+            model.ApplyDamage(10f, DamageType.ProtonTorpedo, weapon.Id);
+
+            model.Repair(1f);
+
+            Assert.That(model.Shields, Is.EqualTo(shields));
+            Assert.That(model.Hull, Is.EqualTo(model.MaxHull));
+            Assert.That(locked.IsInstalled, Is.False);
+            Assert.That(locked.Health, Is.Zero);
+
+            model.ApplyDamage(generator.MaxHealth, DamageType.ProtonTorpedo, generator.Id);
+            Assert.That(generator.IsDestroyed, Is.True);
+            Assert.That(model.IsLostShieldGenerator, Is.True);
+
+            model.Repair(1f);
+
+            Assert.That(generator.Health, Is.Zero);
+            Assert.That(model.IsLostShieldGenerator, Is.True);
+            Assert.That(model.Shields, Is.Zero);
+            Assert.That(model.NeedsRepair, Is.False, "Destroyed hardpoints are never rebuilt, so they need no repair.");
+        }
+
+        [Test]
+        public void Repair_DoesNothingOnADestroyedUnit()
+        {
+            HealthModel model = CreateModel(0f, out _, out _, out _);
+            model.Kill();
+
+            model.Repair(1f);
+
+            Assert.That(model.Hull, Is.Zero);
+            Assert.That(model.NeedsRepair, Is.False);
+        }
+
         private HealthModel CreateModel(float shields, out HardPointModel weapon, out HardPointModel engine,
             out HardPointModel shieldGenerator)
         {

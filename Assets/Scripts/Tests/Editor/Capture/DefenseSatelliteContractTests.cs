@@ -3,6 +3,7 @@ using System.Linq;
 using EmpireAtWar.Components.AttackComponent;
 using EmpireAtWar.Components.Combat;
 using EmpireAtWar.Components.Construction;
+using EmpireAtWar.Components.Repair;
 using EmpireAtWar.Components.TeamColor;
 using EmpireAtWar.Entities.BaseEntity;
 using EmpireAtWar.Components.Ship.Health;
@@ -11,6 +12,8 @@ using EmpireAtWar.Entities.DefendPlatform;
 using EmpireAtWar.Entities.Map;
 using EmpireAtWar.Entities.Tooltip;
 using EmpireAtWar.Models.Health;
+using EmpireAtWar.Services.CaptureSites;
+using EmpireAtWar.Services.Repair;
 using EmpireAtWar.Services.Tooltip;
 using NUnit.Framework;
 using UnityEditor;
@@ -84,6 +87,7 @@ namespace EmpireAtWar.Tests.Editor
         [TestCase(DefendPlatformType.IonSatellite)]
         [TestCase(DefendPlatformType.MassDriverSatellite)]
         [TestCase(DefendPlatformType.MissileSatellite)]
+        [TestCase(DefendPlatformType.RepairSatellite)]
         public void Satellite_ConstructionFitsReservedFootprintAndRestoresMaterials(DefendPlatformType platform)
         {
             GameObject instance = PrefabUtility.LoadPrefabContents(
@@ -167,6 +171,7 @@ namespace EmpireAtWar.Tests.Editor
         [TestCase(DefendPlatformType.IonSatellite, "Ion Satellite")]
         [TestCase(DefendPlatformType.MassDriverSatellite, "Mass Driver Satellite")]
         [TestCase(DefendPlatformType.MissileSatellite, "Missile Satellite")]
+        [TestCase(DefendPlatformType.RepairSatellite, "Repair Satellite")]
         [TestCase(DefendPlatformType.BattleAsteroid, "Battle Asteroid")]
         public void DefendPlatformTooltipFacade_ShowsPlatformTypeAsTitle(DefendPlatformType platform, string expectedTitle)
         {
@@ -182,6 +187,48 @@ namespace EmpireAtWar.Tests.Editor
             Assert.That(content.Status, Is.EqualTo("Owner: Player · Structure"));
             if (platform != DefendPlatformType.BattleAsteroid)
                 Assert.That(icons.Resolve(content.IconKey), Is.Not.Null);
+        }
+
+        [Test]
+        public void RepairSatellite_IsAnUnarmedBuildableSatelliteWithARepairProfileAndRangeRing()
+        {
+            Assert.That(SiteFacilityType.RepairSatellite.ToSatelliteType(), Is.EqualTo(DefendPlatformType.RepairSatellite));
+            Assert.That(SiteFacilityBuilder.IsSatellite(SiteFacilityType.RepairSatellite), Is.True);
+            DefendPlatformData data = LoadData(DefendPlatformType.RepairSatellite);
+            Assert.That(data.Income, Is.Zero);
+            Assert.That(data.WeaponLoadout, Is.Empty);
+            RepairProfile profile = data.RepairProfile;
+            Assert.That(profile, Is.Not.Null, "The repair profile enables the repair feature.");
+            Assert.That(profile.Radius, Is.GreaterThan(0f));
+            Assert.That(profile.Interval, Is.GreaterThan(0f));
+            Assert.That(profile.PercentPerTick, Is.GreaterThan(0f).And.LessThanOrEqualTo(100f));
+            Assert.That(profile.MaxTargets, Is.GreaterThanOrEqualTo(1));
+            Assert.That(profile.MaxHealersPerTarget, Is.GreaterThanOrEqualTo(1));
+
+            var catalog = AssetDatabase.LoadAssetAtPath<DefendPlatformCatalog>(
+                "Assets/Settings/Data/Factions/Shared/DefendPlatformCatalog.asset");
+            Assert.That(catalog.Entries.ContainsKey(DefendPlatformType.RepairSatellite), Is.True);
+            var sites = AssetDatabase.LoadAssetAtPath<CaptureSiteData>(
+                "Assets/Settings/Data/Models/CaptureSites/CaptureSiteData.asset");
+            Assert.That(sites.GetAllowedFacilities(CaptureSiteKind.Satellite), Contains.Item(SiteFacilityType.RepairSatellite));
+            SiteFacilityCost cost = sites.GetCost(SiteFacilityType.RepairSatellite);
+            Assert.That(cost.Price, Is.GreaterThan(0f));
+            Assert.That(cost.BuildTime, Is.GreaterThan(0f));
+            Assert.That(cost.Icon, Is.Not.Null);
+            Assert.That(cost.Icon.rect.size, Is.EqualTo(new Vector2(512f, 512f)));
+
+            var prefab = AssetDatabase.LoadAssetAtPath<GameObject>("Assets/Prefabs/Models/DefendStation/RepairSatelliteView.prefab");
+            Assert.That(prefab, Is.Not.Null);
+            Assert.That(prefab.transform.localScale, Is.EqualTo(Vector3.one * 3f));
+            Assert.That(prefab.GetComponentInChildren<HealthComponent>(true).ShipUnits, Is.Empty,
+                "Without hardpoints the hull is the only target.");
+            EntityBindings bindings = prefab.GetComponent<EntityBindings>();
+            Assert.That(bindings.Injectables.All(component => component != null), Is.True);
+            RepairRangeView ring = bindings.Injectables.OfType<RepairRangeView>().Single();
+            var line = (LineRenderer)new SerializedObject(ring).FindProperty("ring").objectReferenceValue;
+            Assert.That(line, Is.Not.Null);
+            Assert.That(line.enabled, Is.False, "The ring shows only while the satellite is selected.");
+            Assert.That(line.useWorldSpace, Is.True, "The radius is in world units, independent of the prefab scale.");
         }
 
         private static DefendPlatformData LoadData(DefendPlatformType platform)

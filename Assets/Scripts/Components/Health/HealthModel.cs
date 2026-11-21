@@ -64,6 +64,18 @@ namespace EmpireAtWar.Models.Health
                 return false;
             }
         }
+        /// <summary>True while alive and the hull or any live hardpoint is below its maximum.</summary>
+        public bool NeedsRepair
+        {
+            get
+            {
+                if (IsDestroyed) return false;
+                if (Hull < MaxHull) return true;
+                foreach (HardPointModel hardPoint in HardPointModels)
+                    if (!hardPoint.IsDestroyed && hardPoint.Health < hardPoint.MaxHealth) return true;
+                return false;
+            }
+        }
 
         public HealthModel(IHealthData data, DamageMatrixData damageMatrix, CombatModifiers modifiers,
             HardPointHealthBudget hardPointHealthBudget)
@@ -280,6 +292,19 @@ namespace EmpireAtWar.Models.Health
             IsDestroyed = true;
             OnValueChanged?.Invoke();
             OnDestroy?.Invoke();
+        }
+
+        /// <summary>
+        /// Restores a fraction of the maximum hull and of each live hardpoint. Shields, a lost shield generator and
+        /// destroyed or locked hardpoints stay as they are.
+        /// </summary>
+        public void Repair(float fraction)
+        {
+            if (IsDestroyed || fraction <= 0f) return;
+            Hull = Math.Min(MaxHull, Hull + MaxHull * fraction);
+            foreach (HardPointModel hardPoint in HardPointModels)
+                hardPoint.Repair(hardPoint.MaxHealth * fraction);
+            OnValueChanged?.Invoke();
         }
 
         public void RegenerateShields(float value)

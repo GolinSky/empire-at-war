@@ -5,6 +5,11 @@ created: "2026-10-29\r"
 ---
 # User Acceptance Queue
 
+## Repair Satellite
+
+- [ ] [[Done/Features/Repair_Feature_Plan]] — In battle: build a Repair Satellite on a captured satellite pad; check the model/scale on the pad, the radius ring when selected, that damaged own/allied ships and structures in range regain hull + live hardpoints (not shields, not destroyed hardpoints), and that it stops while ion-disabled. Tune `0.5 %/s`, radius `400`, `10` targets, `2` per target, cost `500`. Decide on ship repair beams.
+- [ ] [[Done/Features/Repair_Feature_Plan]] — Run `Health`, `Capture`, `Core`, `GameFlow`, `Audio` EditMode categories when explicitly authorized; compile passed, tests not run.
+
 ## Online Skirmish Lobby
 
 - [ ] [[Done/Bugs/Online_Skirmish_Join_Slot_Race]] — Run authored regression coverage in `Networking`, `GameFlow` and `Ui` when explicitly authorized; source review and Unity compilation passed. User declined reproduction as a prerequisite.

@@ -25,6 +25,11 @@ MonoBehaviour:
     m_ReadOnly: 0
     m_SerializedLabels: []
     FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 23ca96a09fbb7e8439d2b14bccc6913b
+    m_Address: RepairSatelliteView
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
   - m_GUID: 496b266af08a4d14095a8cf797575d90
     m_Address: MissileSatelliteView
     m_ReadOnly: 0

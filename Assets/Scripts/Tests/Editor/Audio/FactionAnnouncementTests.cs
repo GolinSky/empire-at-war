@@ -133,6 +133,7 @@ namespace EmpireAtWar.Tests.Editor
 
         [TestCase(SiteFacilityType.QuadLaserSatellite)]
         [TestCase(SiteFacilityType.MissileSatellite)]
+        [TestCase(SiteFacilityType.RepairSatellite)]
         public void LocalSatelliteCompletionAndLossReuseConstructionAndUnitLossCues(SiteFacilityType type)
         {
             InvokeSite("HandleConstructionCompleted", TestPlayers.Enemy, type);

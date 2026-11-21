@@ -268,7 +268,7 @@ Run the tests for the areas a change touches, not the whole suite. Every EditMod
 | `Entities/Map`, `Entities/Planet`, `Services/Hazards`, `Components/Environment`, `Components/Obstacles` | `Map`; plus `MapGeneration` (explicit) when map generation changes |
 | `Components/Movement`, `Services/ShipNavigation`, `Services/SpawnBlocking`, `Services/StationFacing`, `Services/FleetCommand`, `Entities/SpawnArea` | `Navigation`; `NavigationExhaustive` only on explicit user request |
 | `Components/AttackComponent`, `Components/Weapon`, `Components/CombatModifiers`, `Components/ViewComponents`, `Services/Pooling` | `Combat` |
-| `Components/Health`, `Services/UnitExplosion`, `Services/UnitWreck` | `Health` |
+| `Components/Health`, `Components/Repair`, `Services/Repair`, `Services/UnitExplosion`, `Services/UnitWreck` | `Health` |
 | `Components/Ship`, `Entities/Ship`, `Entities/SpaceStation`, `Entities/DefendPlatform`, `Services/Ship`, `Services/ShipSpawning`, `Services/Station`, `Editor/Ship` | `Ships` |
 | `Components/Squadron`, `Components/Hangar`, `Entities/Squadron`, `Services/Squadron`, `Editor/Squadron` | `Squadrons` |
 | `Services/ShipAbilities`, `Entities/SuperWeapon`, `Services/SuperWeapons`, `Entities/Cheats`, `Services/Cheats` | `Abilities` |

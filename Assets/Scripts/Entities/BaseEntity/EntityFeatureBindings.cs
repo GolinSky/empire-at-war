@@ -17,6 +17,7 @@ using EmpireAtWar.Entities.Ship.EntityFacades.Selection;
 using EmpireAtWar.Entities.BaseEntity.EntityFacades;
 using EmpireAtWar.Models.Health;
 using EmpireAtWar.Models.Selection;
+using EmpireAtWar.Services.Repair;
 using EmpireAtWar.Services.Selection;
 using UnityEngine;
 using VContainer;
@@ -57,6 +58,14 @@ namespace EmpireAtWar.Entities.BaseEntity
             builder.Register<HealthFacade>(Lifetime.Singleton).AsImplementedInterfaces();
             builder.Register<HardPointsFacade>(Lifetime.Singleton).AsImplementedInterfaces();
             builder.Register<HealthReplicaDeathFacade>(Lifetime.Singleton).AsImplementedInterfaces();
+            builder.Register<RepairableFacade>(Lifetime.Singleton).AsImplementedInterfaces();
+        }
+
+        /// <summary>Lets the unit repair allies through <see cref="RepairService"/>. Needs <see cref="RegisterHealth"/> and <see cref="RegisterCombatModifiers"/>.</summary>
+        public static void RegisterRepair(IContainerBuilder builder, RepairProfile profile)
+        {
+            builder.RegisterInstance(profile);
+            builder.Register<RepairSourceFacade>(Lifetime.Singleton).AsImplementedInterfaces();
         }
 
         public static void RegisterRadar(IContainerBuilder builder, EntityBindings bindings)

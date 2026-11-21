@@ -87,6 +87,24 @@ MonoBehaviour:
         <UnitCapacity>k__BackingField: 0
         <Icon>k__BackingField: {fileID: 21300000, guid: 514bfb32fe0d62847bd99758ec3b05bd,
           type: 3}
+    - key: 9
+      value:
+        matchups: {fileID: 0}
+        displayName: Repair Satellite
+        description: 3,000 hull, 5,000 shields; no weapons. Repairs hull and live
+          hardpoints of nearby allied ships and structures. Built on captured satellite
+          pads.
+        role: Stationary fleet repair
+        iconKey: d846cedf6810ffb4ea05703dbeeee74c:21300000
+        isHero: 0
+        <Name>k__BackingField: Repair Satellite
+        <MaxCount>k__BackingField: 0
+        <AvailableLevel>k__BackingField: 1
+        <Price>k__BackingField: 500
+        <BuildTime>k__BackingField: 25
+        <UnitCapacity>k__BackingField: 0
+        <Icon>k__BackingField: {fileID: 21300000, guid: d846cedf6810ffb4ea05703dbeeee74c,
+          type: 3}
     - key: 6
       value:
         matchups: {fileID: 0}

@@ -1897,3 +1897,17 @@ MonoBehaviour:
         m_SubObjectType: 
         m_SubObjectGUID: 
         m_EditorAssetChanged: 0
+    - key: RepairSatelliteView
+      value:
+        m_AssetGUID: 23ca96a09fbb7e8439d2b14bccc6913b
+        m_SubObjectName: 
+        m_SubObjectType: 
+        m_SubObjectGUID: 
+        m_EditorAssetChanged: 0
+    - key: RepairSatelliteData
+      value:
+        m_AssetGUID: b6da25f8b85f4bd488cea313189de2fa
+        m_SubObjectName: 
+        m_SubObjectType: 
+        m_SubObjectGUID: 
+        m_EditorAssetChanged: 0

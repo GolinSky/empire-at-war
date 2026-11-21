@@ -1,0 +1,89 @@
+{
+  "source": "D:\\SteamLibrary\\steamapps\\workshop\\content\\32470\\1129810972\\Data\\Art\\Models\\Rv_satallite_repair.alo",
+  "meshes": {
+    "utility": {
+      "hidden": false,
+      "triangles": 1524,
+      "material": "W_Sattalite_Utility Material",
+      "uv": true
+    },
+    "arm2": {
+      "hidden": false,
+      "triangles": 204,
+      "material": "W_Sattalite_Utility Material",
+      "uv": true
+    },
+    "arm_1": {
+      "hidden": false,
+      "triangles": 184,
+      "material": "W_Sattalite_Utility Material",
+      "uv": true
+    },
+    "arm_3": {
+      "hidden": false,
+      "triangles": 184,
+      "material": "W_Sattalite_Utility Material",
+      "uv": true
+    },
+    "base": {
+      "hidden": false,
+      "triangles": 1304,
+      "material": "W_Sattalite_Base Material",
+      "uv": true
+    },
+    "shadow_base": {
+      "hidden": true,
+      "triangles": 1304,
+      "material": "SHADOW",
+      "uv": true
+    },
+    "COL": {
+      "hidden": true,
+      "triangles": 32,
+      "material": "COLLISION",
+      "uv": true
+    },
+    "lights": {
+      "hidden": false,
+      "triangles": 160,
+      "material": "W_Sattalite_Base Material",
+      "uv": true
+    },
+    "utility_bottom": {
+      "hidden": false,
+      "triangles": 384,
+      "material": "W_Sattalite_Utility Material",
+      "uv": true
+    },
+    "shadow_utility_bottom": {
+      "hidden": true,
+      "triangles": 384,
+      "material": "SHADOW",
+      "uv": true
+    },
+    "shadow_utility": {
+      "hidden": true,
+      "triangles": 1524,
+      "material": "SHADOW",
+      "uv": true
+    },
+    "shadow_arm": {
+      "hidden": true,
+      "triangles": 204,
+      "material": "SHADOW",
+      "uv": true
+    },
+    "shadow_arm_": {
+      "hidden": true,
+      "triangles": 184,
+      "material": "SHADOW",
+      "uv": true
+    },
+    "shadow_arm_.001": {
+      "hidden": true,
+      "triangles": 184,
+      "material": "SHADOW",
+      "uv": true
+    }
+  }
+}

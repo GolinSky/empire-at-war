@@ -67,7 +67,8 @@ namespace EmpireAtWar.Services.CaptureSites
 
         public static bool IsSatellite(SiteFacilityType type) => type is SiteFacilityType.QuadLaserSatellite or
             SiteFacilityType.TurbolaserSatellite or SiteFacilityType.IonSatellite or
-            SiteFacilityType.MassDriverSatellite or SiteFacilityType.MissileSatellite;
+            SiteFacilityType.MassDriverSatellite or SiteFacilityType.MissileSatellite or
+            SiteFacilityType.RepairSatellite;
 
         public long Build(SiteFacilityType facilityType, Vector3 position, Action onDestroyed,
             Action<float> onConstructionProgress)
@@ -94,6 +95,7 @@ namespace EmpireAtWar.Services.CaptureSites
                 case SiteFacilityType.IonSatellite:
                 case SiteFacilityType.MassDriverSatellite:
                 case SiteFacilityType.MissileSatellite:
+                case SiteFacilityType.RepairSatellite:
                     var satellite = _defendPlatformFactory.Create(_owner, facilityType.ToSatelliteType(), position, entityId,
                         buildDuration: _data.GetCost(facilityType).BuildTime);
                     satellite.OnRelease += onDestroyed;

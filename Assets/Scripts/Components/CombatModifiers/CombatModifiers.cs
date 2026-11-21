@@ -147,6 +147,8 @@ namespace EmpireAtWar.Components.Combat
 
         public bool CanFireWeapon(bool mainBattery) => !_isConstructing && (!_mainBatteriesActive || mainBattery);
 
+        public bool IsConstructing => _isConstructing;
+
         public void SetConstructionActive(bool constructing) => _isConstructing = constructing;
 
         public float GetMainBatteryFireDelayMultiplier(bool mainBattery) =>

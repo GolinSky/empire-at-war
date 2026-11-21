@@ -51,6 +51,7 @@ using EmpireAtWar.Services.Networking.Online;
 using EmpireAtWar.Services.Player;
 using EmpireAtWar.Services.Reinforcement;
 using EmpireAtWar.Services.ReinforcementZones;
+using EmpireAtWar.Services.Repair;
 using EmpireAtWar.Services.Saves;
 using EmpireAtWar.Services.ShipAbilities;
 using EmpireAtWar.Services.ShipAbilities.Abilities;
@@ -209,6 +210,7 @@ namespace EmpireAtWar.Services.VContainer
             AssetRegistrations.RegisterShared<ShipAbilityCatalog>(builder, Assets);
             builder.Register<HarmonicBombEffects>(Lifetime.Singleton).AsImplementedInterfaces().AsSelf();
             builder.Register<HarmonicBombService>(Lifetime.Singleton).AsImplementedInterfaces().AsSelf();
+            builder.Register<RepairService>(Lifetime.Singleton).AsImplementedInterfaces().AsSelf();
             builder.Register<GravityWellEffects>(Lifetime.Singleton).AsImplementedInterfaces().AsSelf()
                 .WithParameter(cameraService.SceneCamera);
             builder.Register<ShipAbilityDependencies>(Lifetime.Singleton);

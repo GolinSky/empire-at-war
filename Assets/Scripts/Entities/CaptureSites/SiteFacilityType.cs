@@ -9,5 +9,6 @@ namespace EmpireAtWar.Entities.CaptureSites
         IonSatellite = 4,
         MassDriverSatellite = 5,
         MissileSatellite = 6,
+        RepairSatellite = 7,
     }
 }

@@ -9,7 +9,7 @@ namespace EmpireAtWar.Entities.DefendPlatform
             DefendPlatformType.BattleAsteroid => "AsteroidDefendPlatformData",
             DefendPlatformType.QuadLaserSatellite or DefendPlatformType.TurbolaserSatellite or
                 DefendPlatformType.IonSatellite or DefendPlatformType.MassDriverSatellite or
-                DefendPlatformType.MissileSatellite => type + "Data",
+                DefendPlatformType.MissileSatellite or DefendPlatformType.RepairSatellite => type + "Data",
             _ => nameof(DefendPlatformData),
         };
 
@@ -20,7 +20,7 @@ namespace EmpireAtWar.Entities.DefendPlatform
             DefendPlatformType.BattleAsteroid => "AsteroidDefendPlatformView",
             DefendPlatformType.QuadLaserSatellite or DefendPlatformType.TurbolaserSatellite or
                 DefendPlatformType.IonSatellite or DefendPlatformType.MassDriverSatellite or
-                DefendPlatformType.MissileSatellite => type + "View",
+                DefendPlatformType.MissileSatellite or DefendPlatformType.RepairSatellite => type + "View",
             _ => "DefendPlatformView",
         };
     }

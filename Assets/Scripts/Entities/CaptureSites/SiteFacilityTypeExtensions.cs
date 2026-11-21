@@ -12,6 +12,7 @@ namespace EmpireAtWar.Entities.CaptureSites
             SiteFacilityType.IonSatellite => DefendPlatformType.IonSatellite,
             SiteFacilityType.MassDriverSatellite => DefendPlatformType.MassDriverSatellite,
             SiteFacilityType.MissileSatellite => DefendPlatformType.MissileSatellite,
+            SiteFacilityType.RepairSatellite => DefendPlatformType.RepairSatellite,
             _ => throw new ArgumentOutOfRangeException(nameof(type), type, null)
         };
     }

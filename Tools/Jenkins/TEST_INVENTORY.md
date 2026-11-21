@@ -4,7 +4,7 @@ Static source inventory: **2026-11-14**. No tests were run.
 
 ## Scope and counts
 
-- `Assets/Scripts/Tests/Editor`: **310 fixture source files** named `*Tests.cs`; compiled into the predefined Editor assembly (no local `.asmdef`).
+- `Assets/Scripts/Tests/Editor`: **311 fixture source files** named `*Tests.cs`; compiled into the predefined Editor assembly (no local `.asmdef`).
 - `Assets/Scripts/Tests`: **345 C# files** total, including support classes, benchmark implementations, and fixture wrappers.
 - Benchmark coverage: two abstract test bases, instantiated by four concrete Editor/player fixture wrappers in two separate assemblies.
 - Tooling coverage: five Python test modules and three PowerShell regression scripts.
@@ -27,7 +27,7 @@ Counts are fixture source files carrying a category in the class header. A file 
 | `Economy` | 12 |
 | `EnemyAi` | 19 |
 | `GameFlow` | 17 |
-| `Health` | 9 |
+| `Health` | 10 |
 | `Map` | 15 |
 | `MapExhaustive` | 2 |
 | `MapGeneration` | 3 |
@@ -273,13 +273,14 @@ All paths below are relative to `Assets/Scripts/Tests/Editor/`.
 - [SurvivalSpawnTests.cs](../../Assets/Scripts/Tests/Editor/GameFlow/SurvivalSpawnTests.cs)
 - [UnitSaveTests.cs](../../Assets/Scripts/Tests/Editor/GameFlow/UnitSaveTests.cs)
 
-### Health (9)
+### Health (10)
 
 - [HardPointDestructionVfxPrefabTests.cs](../../Assets/Scripts/Tests/Editor/Health/HardPointDestructionVfxPrefabTests.cs)
 - [HardPointExplosionPoolTests.cs](../../Assets/Scripts/Tests/Editor/Health/HardPointExplosionPoolTests.cs)
 - [HardPointMarkerViewTests.cs](../../Assets/Scripts/Tests/Editor/Health/HardPointMarkerViewTests.cs)
 - [HealthModelTests.cs](../../Assets/Scripts/Tests/Editor/Health/HealthModelTests.cs)
 - [HealthOverlayAnchorTests.cs](../../Assets/Scripts/Tests/Editor/Health/HealthOverlayAnchorTests.cs)
+- [RepairServiceTests.cs](../../Assets/Scripts/Tests/Editor/Health/RepairServiceTests.cs)
 - [ShipExplosionPrefabTests.cs](../../Assets/Scripts/Tests/Editor/Health/ShipExplosionPrefabTests.cs)
 - [UnitWreckAssetDependencyTests.cs](../../Assets/Scripts/Tests/Editor/Health/UnitWreckAssetDependencyTests.cs)
 - [WreckCutPlanTests.cs](../../Assets/Scripts/Tests/Editor/Health/WreckCutPlanTests.cs)

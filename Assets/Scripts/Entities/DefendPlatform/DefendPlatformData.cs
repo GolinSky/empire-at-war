@@ -2,6 +2,7 @@ using EmpireAtWar.Entities.BaseEntity;
 using System.Collections.Generic;
 using EmpireAtWar.Components.AttackComponent;
 using EmpireAtWar.Mvc;
+using EmpireAtWar.Services.Repair;
 using EmpireAtWar.Services.UnitWreck;
 using UnityEngine;
 
@@ -16,5 +17,7 @@ namespace EmpireAtWar.Entities.DefendPlatform
         public IReadOnlyList<WeaponLoadoutEntry> WeaponLoadout => weaponLoadout;
         [Tooltip("Optional. Empty = the platform is only removed; set = a breaking wreck replaces it.")]
         [field: SerializeField] public UnitWreckData Wreck { get; private set; }
+        [Tooltip("Optional. Set = the platform repairs allied ships and structures in range.")]
+        [field: SerializeField] public RepairProfile RepairProfile { get; private set; }
     }
 }
