@@ -344,13 +344,18 @@ namespace EmpireAtWar.Tests.Editor
             {
                 ability.Start(caster, definition, null);
                 GravityWellView view = GameObject.Find("Gravity Wells").GetComponentInChildren<GravityWellView>();
-                LineRenderer ring = view.GetComponent<LineRenderer>();
+                MeshRenderer ring = view.GetComponent<MeshRenderer>();
                 Assert.That(ring.enabled, Is.False);
+                Assert.That(view.enabled, Is.False);
 
                 selection.IsSelected = true;
                 Assert.That(ring.enabled, Is.True);
+                Assert.That(view.enabled, Is.True);
+                Assert.That(view.transform.lossyScale.x, Is.EqualTo(definition.Range));
+                Assert.That(view.transform.lossyScale.z, Is.EqualTo(definition.Range));
                 selection.IsSelected = false;
                 Assert.That(ring.enabled, Is.False);
+                Assert.That(view.enabled, Is.False);
 
                 ability.Stop();
                 Assert.That(view.gameObject.activeSelf, Is.False);
@@ -403,9 +408,9 @@ namespace EmpireAtWar.Tests.Editor
         private static GravityWellEffects CreateWellEffects(IPlayerRelations relations, GravityWellSettings settings,
             out GameObject prefabObject)
         {
-            prefabObject = new GameObject("GravityWellPrefab", typeof(LineRenderer));
+            prefabObject = new GameObject("GravityWellPrefab", typeof(MeshRenderer));
             GravityWellView view = prefabObject.AddComponent<GravityWellView>();
-            SetField(view, "ring", prefabObject.GetComponent<LineRenderer>());
+            SetField(view, "ring", prefabObject.GetComponent<MeshRenderer>());
             SetField(settings, "viewPrefab", view);
             return new GravityWellEffects(relations, new OfflineSession(TestPlayers.Human), null);
         }

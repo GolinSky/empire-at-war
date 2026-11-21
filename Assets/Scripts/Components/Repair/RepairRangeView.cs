@@ -5,12 +5,10 @@ using VContainer;
 
 namespace EmpireAtWar.Components.Repair
 {
-    /// <summary>World ring of the repair radius, shown while the repairer is selected (only the local player's own units).</summary>
+    /// <summary>Flat preview of the repair radius, shown while the repairer is selected (only the local player's own units).</summary>
     public sealed class RepairRangeView : MonoBehaviour
     {
-        private const int SEGMENTS = 128;
-
-        [SerializeField] private LineRenderer ring;
+        [SerializeField] private MeshRenderer ring;
         private ISelectionModelObserver _selection;
         private float _radius;
 
@@ -30,20 +28,14 @@ namespace EmpireAtWar.Components.Repair
 
         private void HandleSelected(bool isSelected)
         {
-            if (isSelected) Draw();
-            ring.enabled = isSelected;
-        }
-
-        // World space: the radius is measured in world units from the repairer, independent of the prefab scale.
-        private void Draw()
-        {
-            Vector3 center = transform.position;
-            ring.positionCount = SEGMENTS;
-            for (int i = 0; i < SEGMENTS; i++)
+            if (isSelected)
             {
-                float angle = i * Mathf.PI * 2f / SEGMENTS;
-                ring.SetPosition(i, center + new Vector3(Mathf.Sin(angle) * _radius, 0f, Mathf.Cos(angle) * _radius));
+                // The satellite prefab is scaled, but the repair radius is in world units.
+                Vector3 parentScale = transform.parent.lossyScale;
+                transform.localScale = new Vector3(_radius / parentScale.x, 1f, _radius / parentScale.z);
             }
+
+            ring.enabled = isSelected;
         }
     }
 }

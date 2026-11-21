@@ -225,10 +225,11 @@ namespace EmpireAtWar.Tests.Editor
             EntityBindings bindings = prefab.GetComponent<EntityBindings>();
             Assert.That(bindings.Injectables.All(component => component != null), Is.True);
             RepairRangeView ring = bindings.Injectables.OfType<RepairRangeView>().Single();
-            var line = (LineRenderer)new SerializedObject(ring).FindProperty("ring").objectReferenceValue;
-            Assert.That(line, Is.Not.Null);
-            Assert.That(line.enabled, Is.False, "The ring shows only while the satellite is selected.");
-            Assert.That(line.useWorldSpace, Is.True, "The radius is in world units, independent of the prefab scale.");
+            var renderer = (MeshRenderer)new SerializedObject(ring).FindProperty("ring").objectReferenceValue;
+            Assert.That(renderer, Is.Not.Null);
+            Assert.That(renderer.enabled, Is.False, "The range shows only while the satellite is selected.");
+            Assert.That(renderer.GetComponent<MeshFilter>().sharedMesh, Is.Not.Null);
+            Assert.That(renderer.sharedMaterial.shader.name, Is.EqualTo("EmpireAtWar/Vfx/SelectionRange"));
         }
 
         private static DefendPlatformData LoadData(DefendPlatformType platform)
