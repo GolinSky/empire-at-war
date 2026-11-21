@@ -8,6 +8,7 @@ pipeline {
         buildDiscarder(logRotator(numToKeepStr: '10', artifactNumToKeepStr: '3'))
     }
     parameters {
+        booleanParam(name: 'PUBLISH_GITHUB', defaultValue: false, description: 'After a successful build, queue EmpireAtWar-Publish-GitHub for this build. Creates a verified GitHub draft tagged with the build version; never publishes it.')
         booleanParam(name: 'UPLOAD_DIAGNOSTICS_SYMBOLS', defaultValue: false, description: 'Upload IL2CPP symbols with the Unity Cloud service account for the linked project.')
     }
     stages {
@@ -51,6 +52,23 @@ pipeline {
                     },
                     failFast: true
                 )
+            }
+            // Compiler Issues tab: C# errors/warnings from the Unity log, linked to the CI snapshot sources.
+            // Runs after archiving so a parser problem never blocks artifact recovery.
+            recordIssues(enabledForFailure: true, skipBlames: true,
+                tool: msBuild(id: 'unity-compiler', name: 'Unity Compiler', pattern: 'artifacts/Unity.log'),
+                sourceDirectories: [[path: 'F:/UnityCI/empire-at-war']])
+        }
+        success {
+            script {
+                if (params.PUBLISH_GITHUB) {
+                    // wait: false — the publish job waits for this build to finish and needs the single executor.
+                    build job: 'EmpireAtWar-Publish-GitHub', wait: false, parameters: [
+                        string(name: 'SOURCE_BUILD', value: env.BUILD_NUMBER),
+                        booleanParam(name: 'PRERELEASE', value: true)
+                    ]
+                    currentBuild.description = 'GitHub draft queued'
+                }
             }
         }
     }

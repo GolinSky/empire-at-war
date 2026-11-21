@@ -5,7 +5,7 @@ $repo = 'GolinSky/empire-at-war'
 $gh = 'F:\Jenkins\app\gh\bin\gh.exe'
 $artifacts = Join-Path $env:WORKSPACE 'artifacts'
 $reportPath = Join-Path $env:WORKSPACE 'release-result.json'
-$tag = $env:RELEASE_TAG
+$tag = ''
 $sourceBuild = $env:SOURCE_BUILD
 $report = [ordered]@{ Repository=$repo; SourceJob='EmpireAtWar-Windows-Local'; SourceBuild=$sourceBuild; Tag=$tag; Status='Validating'; Draft=$true }
 
@@ -63,7 +63,6 @@ function Assert-MatchingAsset {
 
 try {
     if ($sourceBuild -cnotmatch '^[1-9][0-9]*$') { throw 'SOURCE_BUILD must be a positive build number.' }
-    if ($tag -cnotmatch '^v(0|[1-9][0-9]*)\.(0|[1-9][0-9]*)\.(0|[1-9][0-9]*)(-[0-9A-Za-z-]+(\.[0-9A-Za-z-]+)*)?$') { throw 'Invalid RELEASE_TAG.' }
     if ($env:PRERELEASE -notin @('true','false')) { throw 'PRERELEASE must be true or false.' }
     $prerelease = $env:PRERELEASE -eq 'true'
     foreach ($name in @('EmpireAtWar-Windows.zip','commit.txt','zip-sha256.json','build-provenance.json','build-info.json')) {
@@ -80,7 +79,10 @@ try {
     }
     $buildInfo = Get-Content -LiteralPath "$artifacts\build-info.json" -Raw | ConvertFrom-Json
     if ($buildInfo.commit -ine $sha -or $buildInfo.build -cne $sourceBuild) { throw 'Archived build-info.json does not match the archived commit and source build.' }
-    if ("v$($buildInfo.version)" -cne $tag) { throw "RELEASE_TAG $tag does not match the build's embedded version v$($buildInfo.version). Bump PlayerSettings.bundleVersion and rebuild, or use the matching tag." }
+    # The tag is the build's embedded version (PlayerSettings.bundleVersion MAJOR.MINOR + Jenkins build number).
+    $tag = "v$($buildInfo.version)"
+    if ($tag -cnotmatch '^v(0|[1-9][0-9]*)\.(0|[1-9][0-9]*)\.(0|[1-9][0-9]*)(-[0-9A-Za-z-]+(\.[0-9A-Za-z-]+)*)?$') { throw "Build version $tag is not vMAJOR.MINOR.PATCH; fix PlayerSettings.bundleVersion and rebuild." }
+    $report.Tag = $tag
     $files = @(foreach ($name in @('EmpireAtWar-Windows.zip','commit.txt','zip-sha256.json')) {
         $file = Get-Item -LiteralPath (Join-Path $artifacts $name)
         if ($file.Length -le 0 -or $file.Length -ge 2GB) { throw "Release asset must be nonempty and smaller than 2 GiB: $name" }

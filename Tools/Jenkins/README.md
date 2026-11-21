@@ -59,6 +59,7 @@
 
 ## Artifacts and recovery
 
+- **Compiler Issues** (Warnings Next Generation plugin `warnings-ng`): every build, including failed ones, parses `artifacts/Unity.log` with the MSBuild parser. The build page shows a **Unity Compiler** tab with C# errors/warnings, file/line links into the copied sources, and a trend chart. Issues never change the build result. Sources resolve from `F:/UnityCI/empire-at-war`, which must stay in Warnings NG's permitted source directories (Manage Jenkins → System).
 - Archives: entire `EmpireAtWar-Windows.zip`, Unity/CLI logs, commit SHA, `build-info.json`, CLI provenance, ZIP inventory/checksum, resource policy and measurements.
 - Packaging uses .NET `ZipFile` with player files at the archive root; Windows' ZIP handler must recognize `EmpireAtWar.exe` before archiving. `tar -C player .` produced ZIPs that Windows Explorer could not extract.
 - Retention: 10 runs; artifacts from 3 runs. Retention limits counts, not total bytes.
@@ -90,7 +91,7 @@
 - `Assets/Scripts/Editor/Versioning/BuildInfoWriter.cs` writes `EmpireAtWar_Data/StreamingAssets/build-info.json` into the player after every build: `version`, `build` (`BUILD_NUMBER`, else `local`), `commit` (`EAW_BUILD_COMMIT`, else `git rev-parse HEAD`), `builtAtUtc`.
 - The build phase sets `EAW_BUILD_COMMIT`, rejects a player whose stamp does not match the commit/build number, and archives `artifacts/build-info.json`.
 - The main menu shows `v<version> | Build <n> | <short sha>` (Editor: `Build Editor | dev`).
-- Publishing requires `RELEASE_TAG` = `v` + the embedded version. Builds made before stamping existed cannot be published.
+- The release tag is always `v` + the embedded version, read from the source build's archived `build-info.json`; it is never typed. To change major/minor, edit `PlayerSettings.bundleVersion` and commit. Builds made before stamping existed cannot be published.
 
 ## Updating the installed job
 
@@ -120,11 +121,12 @@
 
 ### Create a draft
 
-1. Download and manually verify a retained successful build from `EmpireAtWar-Windows-Local`.
-2. Open the publish job → **Build with Parameters**.
-3. Enter `SOURCE_BUILD` (a positive build number, never `latest`) and `RELEASE_TAG` from that build’s archived version (for example `v0.1.26` for build 26). `PRERELEASE` defaults to `true`.
-4. Run the job. Follow the release URL in its description, console, or archived `release-url.txt`.
-5. Confirm `release-result.json` reports `VerifiedDraft`, inspect the draft on GitHub, then publish manually when ready.
+- **One click:** run `EmpireAtWar-Windows-Local` with **`PUBLISH_GITHUB`** ticked (default off). On SUCCESS, after archiving, it queues the publish job with `SOURCE_BUILD` = its own build number and `PRERELEASE=true` (`wait: false`: the publish job waits for the build to finish and needs the single executor). A failed upload can be retried from the publish job alone, without rebuilding Unity.
+- **Manual / retry:** open the publish job → **Build with Parameters**, enter `SOURCE_BUILD` (a positive build number, never `latest`). The tag comes from that build's version (build 26 → `v0.1.26`). `PRERELEASE` defaults to `true`.
+
+1. Optionally download and verify the build from `EmpireAtWar-Windows-Local` first.
+2. Run the publish job (one click or manual, above). Follow the release URL in its description, console, or archived `release-url.txt`.
+3. Confirm `release-result.json` reports `VerifiedDraft`, inspect the draft on GitHub, then publish manually when ready.
    - Publish from the draft's own page (release URL from the job → **Edit** → **Publish release**). Never use **Create release** on the tag page: drafts live at `untagged-…` URLs, so the tag page creates a second, empty release with the same tag. Launchers then read that release and fail to update, and `gh release upload` (which resolves by tag) can send assets into it. Uploads now refuse while another release uses the tag.
 
 Before changing GitHub, the job requires SUCCESS, all four archived inputs, matching Windows build provenance/commit (CLI `source.dirty` is ignored: version stamping and Unity reserialization always dirty the snapshot; preparation already rejects a dirty snapshot before building), the ZIP's archived SHA-256, and nonempty assets below 2 GiB. The archived commit must already exist in GitHub; push the intended commit separately if needed.

@@ -35,7 +35,7 @@ $computers = (Invoke-JenkinsRequest 'computer/api/json?tree=busyExecutors').Cont
 $queue = (Invoke-JenkinsRequest 'queue/api/json?tree=items[id]').Content | ConvertFrom-Json
 if ($null -eq $computers.busyExecutors -or $computers.busyExecutors -ne 0 -or @($queue.items).Count -ne 0) { throw 'Configure publishing only while Jenkins has no running or queued builds.' }
 $plugins = ((Invoke-JenkinsRequest 'pluginManager/api/json?tree=plugins[shortName,version,active]').Content | ConvertFrom-Json).plugins
-foreach ($name in @('copyartifact','pipeline-build-step','credentials-binding','plain-credentials')) {
+foreach ($name in @('copyartifact','pipeline-build-step','credentials-binding','plain-credentials','warnings-ng')) {
     if (-not @($plugins | Where-Object { $_.shortName -eq $name -and $_.active }).Count) { throw "Required plugin is not active: $name" }
 }
 if (-not (Test-Path -LiteralPath "$app\gh\bin\gh.exe" -PathType Leaf)) { throw 'Install GitHub CLI before configuring publishing.' }
@@ -88,7 +88,6 @@ $propertyXml = @'
   <hudson.model.ParametersDefinitionProperty>
     <parameterDefinitions>
       <hudson.model.StringParameterDefinition><name>SOURCE_BUILD</name><description>Successful EmpireAtWar-Windows-Local build number with retained artifacts.</description><defaultValue/><trim>true</trim></hudson.model.StringParameterDefinition>
-      <hudson.model.StringParameterDefinition><name>RELEASE_TAG</name><description>vMAJOR.MINOR.PATCH, optionally with a prerelease suffix. Always creates a draft.</description><defaultValue/><trim>true</trim></hudson.model.StringParameterDefinition>
       <hudson.model.BooleanParameterDefinition><name>PRERELEASE</name><description>Mark the draft as a prerelease.</description><defaultValue>true</defaultValue></hudson.model.BooleanParameterDefinition>
     </parameterDefinitions>
   </hudson.model.ParametersDefinitionProperty>
@@ -139,7 +138,7 @@ if ($LASTEXITCODE -ne 0) { throw 'Could not record source working-tree state.' }
 @{
     JobUrl="${baseUrl}job/$publishJob/"; InstalledAtUtc=[DateTime]::UtcNow.ToString('o'); SourceCommit=$sourceCommit
     SourceWorkingTreeChanges=$sourceChanges; Files=$fileHashes; PipelineValidation='Passed'; ConfigurationReadback='Passed'
-    BackupDirectory=$backup; LiveUploadVerified=$false; Pending='User adds github-releases credential and selects source build/tag.'
+    BackupDirectory=$backup; LiveUploadVerified=$false; Pending='Tick PUBLISH_GITHUB on a build, or run the publish job with SOURCE_BUILD; the tag comes from the build version.'
 } | ConvertTo-Json -Depth 5 | Set-Content -LiteralPath "$app\release-tools-installation.json" -Encoding UTF8
 Write-Host "Configured and verified: ${baseUrl}job/$publishJob/"
 Write-Host 'Next: add Secret Text credential github-releases (repository-scoped Contents read/write). No build or upload was started.'
