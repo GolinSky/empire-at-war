@@ -12,10 +12,10 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 6b3e4f10fd0882147a1c0a22cfbd3b64, type: 3}
   m_Name: SeparatistShipShieldRegenTiersData
   m_EditorClassIdentifier: Assembly-CSharp::EmpireAtWar.Entities.Ship.Data.ShipShieldRegenTiersData
-  corvette: 5
-  frigate: 25
-  cruiser: 90
-  heavyCruiser: 117
-  capital: 216
-  battleCruiser: 400
-  dreadnought: 1111
+  corvette: 15
+  frigate: 65
+  cruiser: 175
+  heavyCruiser: 300
+  capital: 600
+  battleCruiser: 800
+  dreadnought: 1300
