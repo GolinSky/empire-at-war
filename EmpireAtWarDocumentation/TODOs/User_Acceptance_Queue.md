@@ -538,7 +538,12 @@ created: "2026-10-29\r"
 
 ## Enemy AI Opening and Task Groups
 
-- [ ] Round-7 playtest (Rebellion AI vs Empire, 30,000 start; then CIS vs Republic) → [[Done/Bugs/Enemy_AI_Opening_And_Task_Groups#Round 7 playtest gates (user; Rebellion vs Empire, 30,000 start)]]: no level-2 ships from level 4, no platform above 2,000 credits below 10 ships, ≥ 6 ships within 30 s of level 2, capacity < 100 with < 15 ships alive, median ship life ≥ 90 s. Round-6 playtest played 17:44 (ship selection failed → round 7). Tests not run.
+- [ ] Round-7 playtest (Rebellion AI vs Empire, 30,000 start; then CIS vs Republic) → [[TODOs/Bugs/Enemy_AI_Opening_And_Task_Groups#Round 7 playtest gates (user; Rebellion vs Empire, 30,000 start)]]: no level-2 ships from level 4, no platform above 2,000 credits below 10 ships, ≥ 6 ships within 30 s of level 2, capacity < 100 with < 15 ships alive, median ship life ≥ 90 s. Round-6 playtest played 17:44 (ship selection failed → round 7). Tests not run.
+- [ ] Economy playtest → [[TODOs/Bugs/Enemy_AI_Opening_And_Task_Groups#Economy normalization (2026-11-21; user decision, implemented, commit `c2b80479f`; `Economy` 137, `Core` 169, `GameFlow` 220 green)]]: one 2v2 and one Large-map game; income per player for the same map share should match Small 1v1 (about 634 per second at half the map, level 5, full research).
+- [ ] Attack-move battle check (Editor battle) → [[TODOs/Bugs/Enemy_AI_Opening_And_Task_Groups#Open work (all findings; 2026-11-21)]] W14: AI station defenders settle against a moving attacker; AI capture forces do not take heavy losses on the approach.
+- [ ] W1–W12 playtest → [[TODOs/Bugs/Enemy_AI_Opening_And_Task_Groups#Open work — implementation notes (2026-11-21)]]: second station bought early and upgraded to the main level; no miners/platforms around a dead base; wings stay in fights near their post; capture wings cheapest fighter (+ interceptor with spare money); AI uses S-Foils, Replenish Wingmen, Lucky Shot, Gravity Well; Survival ring pays 400 per defender.
+- [ ] W8 ship role review → same plan: check the proposed `roles` on the 77 ShipData assets before the AI reads them.
+- [ ] Compact AI log → [[TODOs/Features/Gameplay_Analytics]]: next release build compiles; the host of one online game finds a `*_ai.csv` in `BattleTelemetry`.
 
 
 ## Empire Hero Capitals

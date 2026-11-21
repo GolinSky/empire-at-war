@@ -56,6 +56,7 @@ MonoBehaviour:
   <Shields>k__BackingField: 11000
   shieldRegenTiers: {fileID: 11400000, guid: 13e8b17936074345b03019b205c57d90, type: 2}
   <ShieldRegenTier>k__BackingField: 3
+  <ShieldRegenMultiplier>k__BackingField: 1
   <ShieldRegenerateDelay>k__BackingField: 1
   <Range>k__BackingField: 775
   <Delay>k__BackingField: 0.25
@@ -84,3 +85,4 @@ MonoBehaviour:
     count: 1
   - weaponType: 43
     count: 2
+  roles: 65

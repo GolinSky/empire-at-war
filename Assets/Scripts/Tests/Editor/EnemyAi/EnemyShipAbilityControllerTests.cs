@@ -5,6 +5,7 @@ using System.Reflection;
 using EmpireAtWar.Components.Combat;
 using EmpireAtWar.Components.Ship.Health;
 using EmpireAtWar.Entities.BaseEntity;
+using EmpireAtWar.Entities.BaseEntity.Orders;
 using EmpireAtWar.Entities.EnemyFaction.Models;
 using EmpireAtWar.Entities.Game;
 using EmpireAtWar.Entities.Ship.Abilities;
@@ -30,224 +31,140 @@ namespace EmpireAtWar.Tests.Editor
         [TearDown]
         public void TearDown() => UnityEngine.Object.DestroyImmediate(_catalog);
 
-        // Abilities without an auto-power role (default definitions) take the AI's own Offensive and Escape rules.
-        private EnemyShipAbilityController CreateController(IEntityLocator entities, IEnemyAiStateProvider state,
-            PlayerRoster roster, ShipAbilityService service) =>
-            new EnemyShipAbilityController(entities, state, roster, service, roster.Get(TestPlayers.Enemy), null,
+        // Default definitions have no auto-power role; the test abilities carry an auto-use rule instead.
+        private EnemyShipAbilityController CreateController(IEntityLocator entities, PlayerRoster roster,
+            ShipAbilityService service) =>
+            new EnemyShipAbilityController(entities, service, roster.Get(TestPlayers.Enemy),
+                new ShipAbilityAutoUse(null),
                 new AutoPowerCombatSnapshot(entities, roster, service, null, null, _catalog), _catalog);
-        [Test]
-        public void NearbyPlayer_ActivatesAbilityWithoutAutoPowerRole()
+
+        private static ShipAbilityDefinition CreateRuleDefinition(ShipAbilitySettings settings,
+            bool requiresEnemyTarget = false)
         {
-            GameObject playerView = new GameObject("Player");
-            try
-            {
-                playerView.transform.position = Vector3.right * 5f;
-                ShipAbilityDefinition definition = new ShipAbilityDefinition();
-                BindingFlags flags = BindingFlags.Instance | BindingFlags.NonPublic;
-                Type type = typeof(ShipAbilityDefinition);
-                type.GetField("aiUse", flags).SetValue(definition, ShipAbilityAiUse.Offensive);
-                type.GetField("settings", flags).SetValue(definition, new BoostShieldPowerSettings());
-                type.GetField("duration", flags).SetValue(definition, 5f);
-                type.GetField("recoveryDelay", flags).SetValue(definition, 5f);
+            ShipAbilityDefinition definition = new ShipAbilityDefinition();
+            BindingFlags flags = BindingFlags.Instance | BindingFlags.NonPublic;
+            Type type = typeof(ShipAbilityDefinition);
+            type.GetField("settings", flags).SetValue(definition, settings);
+            type.GetField("duration", flags).SetValue(definition, 5f);
+            type.GetField("recoveryDelay", flags).SetValue(definition, 5f);
+            type.GetField("requiresEnemyTarget", flags).SetValue(definition, requiresEnemyTarget);
+            type.GetField("range", flags).SetValue(definition, 20f);
+            return definition;
+        }
 
-                FakeCommand caster = new FakeCommand(definition);
-                EntityLocator entities = new EntityLocator();
-                entities.AddEntity(caster.Entity);
-                entities.AddEntity(new FakeEntity(id: 2, owner: TestPlayers.Human,
-                    health: new FakeHealth(playerView.transform, 1f), command: null));
-                RecordingFactory factory = new RecordingFactory();
-                PlayerRoster roster = TestPlayers.CreateDuel(EnemyAiDifficulty.UltraHard);
-                ShipAbilityService service = new ShipAbilityService(factory, roster,
-                    new VisionService(roster, fogEnabled: false));
-                EnemyShipAbilityController controller = CreateController(entities, new FakeState(), roster, service);
+        [TestCase(EnemyAiDifficulty.Easy)]
+        [TestCase(EnemyAiDifficulty.UltraHard)]
+        public void AutoUseRule_FiresOnTheFirstCheckAtEveryDifficulty(EnemyAiDifficulty difficulty)
+        {
+            FakeCommand caster = new FakeCommand(CreateRuleDefinition(new AlwaysSettings()));
+            EntityLocator entities = new EntityLocator();
+            entities.AddEntity(caster.Entity);
+            RecordingFactory factory = new RecordingFactory();
+            PlayerRoster roster = TestPlayers.CreateDuel(difficulty);
+            ShipAbilityService service = new ShipAbilityService(factory, roster,
+                new VisionService(roster, fogEnabled: false));
+            EnemyShipAbilityController controller = CreateController(entities, roster, service);
 
-                controller.Tick();
+            controller.Tick();
 
-                Assert.That(caster.Slots[0].State, Is.EqualTo(ShipAbilityState.Active));
-                Assert.That(factory.CreatedCount, Is.EqualTo(1));
-                service.LateDispose();
-            }
-            finally
-            {
-                UnityEngine.Object.DestroyImmediate(playerView);
-            }
+            Assert.That(caster.Slots[0].State, Is.EqualTo(ShipAbilityState.Active));
+            Assert.That(factory.CreatedCount, Is.EqualTo(1));
+            service.LateDispose();
+        }
+
+        [Test]
+        public void AbilityWithoutRoleOrRule_IsNeverUsed()
+        {
+            FakeCommand caster = new FakeCommand(CreateRuleDefinition(new BoostShieldPowerSettings()));
+            EntityLocator entities = new EntityLocator();
+            entities.AddEntity(caster.Entity);
+            RecordingFactory factory = new RecordingFactory();
+            PlayerRoster roster = TestPlayers.CreateDuel(EnemyAiDifficulty.UltraHard);
+            ShipAbilityService service = new ShipAbilityService(factory, roster,
+                new VisionService(roster, fogEnabled: false));
+            EnemyShipAbilityController controller = CreateController(entities, roster, service);
+
+            controller.Tick();
+
+            Assert.That(factory.CreatedCount, Is.Zero);
+            service.LateDispose();
         }
 
         [Test]
         public void AbilityThatAddsUnits_DoesNotBreakTheCasterScan()
         {
-            GameObject playerView = new GameObject("Player");
-            try
-            {
-                playerView.transform.position = Vector3.right * 5f;
-                ShipAbilityDefinition definition = new ShipAbilityDefinition();
-                BindingFlags flags = BindingFlags.Instance | BindingFlags.NonPublic;
-                Type type = typeof(ShipAbilityDefinition);
-                type.GetField("aiUse", flags).SetValue(definition, ShipAbilityAiUse.Offensive);
-                type.GetField("settings", flags).SetValue(definition, new BoostShieldPowerSettings());
-                type.GetField("duration", flags).SetValue(definition, 5f);
-                type.GetField("recoveryDelay", flags).SetValue(definition, 5f);
+            FakeCommand caster = new FakeCommand(CreateRuleDefinition(new AlwaysSettings()));
+            EntityLocator entities = new EntityLocator();
+            entities.AddEntity(caster.Entity);
+            // Like fighter reinforcements: the ability registers a new unit while the AI scans its casters.
+            IEntity reinforcement = new FakeEntity(id: 3, owner: TestPlayers.Enemy,
+                health: new FakeHealth(null, 1f), command: null);
+            RecordingFactory factory = new RecordingFactory(() => entities.AddEntity(reinforcement));
+            PlayerRoster roster = TestPlayers.CreateDuel(EnemyAiDifficulty.UltraHard);
+            ShipAbilityService service = new ShipAbilityService(factory, roster,
+                new VisionService(roster, fogEnabled: false));
+            EnemyShipAbilityController controller = CreateController(entities, roster, service);
 
-                FakeCommand caster = new FakeCommand(definition);
-                EntityLocator entities = new EntityLocator();
-                entities.AddEntity(caster.Entity);
-                entities.AddEntity(new FakeEntity(id: 2, owner: TestPlayers.Human,
-                    health: new FakeHealth(playerView.transform, 1f), command: null));
-                // Like fighter reinforcements: the ability registers a new unit while the AI scans its casters.
-                IEntity reinforcement = new FakeEntity(id: 3, owner: TestPlayers.Enemy,
-                    health: new FakeHealth(null, 1f), command: null);
-                RecordingFactory factory = new RecordingFactory(() => entities.AddEntity(reinforcement));
-                PlayerRoster roster = TestPlayers.CreateDuel(EnemyAiDifficulty.UltraHard);
-                ShipAbilityService service = new ShipAbilityService(factory, roster,
-                    new VisionService(roster, fogEnabled: false));
-                EnemyShipAbilityController controller = CreateController(entities, new FakeState(), roster, service);
-
-                Assert.DoesNotThrow(controller.Tick);
-                Assert.That(caster.Slots[0].State, Is.EqualTo(ShipAbilityState.Active));
-                service.LateDispose();
-            }
-            finally
-            {
-                UnityEngine.Object.DestroyImmediate(playerView);
-            }
+            Assert.DoesNotThrow(controller.Tick);
+            Assert.That(caster.Slots[0].State, Is.EqualTo(ShipAbilityState.Active));
+            service.LateDispose();
         }
 
         [TestCase(false)]
         [TestCase(true)]
         public void CasterRemovedBeforeItsTurn_IsSkipped(bool replaceEntity)
         {
-            GameObject playerView = new GameObject("Player");
-            try
+            ShipAbilityDefinition definition = CreateRuleDefinition(new AlwaysSettings());
+            EntityLocator entities = new EntityLocator();
+            // Five casters: the first tick works through four, the fifth waits for the next tick.
+            List<LocatedCommand> casters = new List<LocatedCommand>();
+            for (int id = 1; id <= 5; id++)
             {
-                playerView.transform.position = Vector3.right * 5f;
-                ShipAbilityDefinition definition = new ShipAbilityDefinition();
-                BindingFlags flags = BindingFlags.Instance | BindingFlags.NonPublic;
-                Type type = typeof(ShipAbilityDefinition);
-                type.GetField("aiUse", flags).SetValue(definition, ShipAbilityAiUse.Offensive);
-                type.GetField("settings", flags).SetValue(definition, new BoostShieldPowerSettings());
-                type.GetField("duration", flags).SetValue(definition, 5f);
-                type.GetField("recoveryDelay", flags).SetValue(definition, 5f);
-
-                EntityLocator entities = new EntityLocator();
-                // Five casters: the first tick works through four, the fifth waits for the next tick.
-                List<LocatedCommand> casters = new List<LocatedCommand>();
-                for (int id = 1; id <= 5; id++)
-                {
-                    LocatedCommand caster = new LocatedCommand(definition, entities, id);
-                    casters.Add(caster);
-                    entities.AddEntity(caster.OwnEntity);
-                }
-                entities.AddEntity(new FakeEntity(id: 10, owner: TestPlayers.Human,
-                    health: new FakeHealth(playerView.transform, 1f), command: null));
-                PlayerRoster roster = TestPlayers.CreateDuel(EnemyAiDifficulty.UltraHard);
-                ShipAbilityService service = new ShipAbilityService(new RecordingFactory(), roster,
-                    new VisionService(roster, fogEnabled: false));
-                EnemyShipAbilityController controller = CreateController(entities, new FakeState(), roster, service);
-
-                controller.Tick();
-                entities.RemoveEntity(casters[4].OwnEntity);
-                if (replaceEntity)
-                    entities.AddEntity(new FakeEntity(new FakeHealth(null, 1f), null, TestPlayers.Enemy, 5));
-
-                Assert.DoesNotThrow(controller.Tick);
-                Assert.That(casters[4].Slots[0].State, Is.EqualTo(ShipAbilityState.Ready));
-                service.LateDispose();
+                LocatedCommand caster = new LocatedCommand(definition, entities, id);
+                casters.Add(caster);
+                entities.AddEntity(caster.OwnEntity);
             }
-            finally
-            {
-                UnityEngine.Object.DestroyImmediate(playerView);
-            }
+            PlayerRoster roster = TestPlayers.CreateDuel(EnemyAiDifficulty.UltraHard);
+            ShipAbilityService service = new ShipAbilityService(new RecordingFactory(), roster,
+                new VisionService(roster, fogEnabled: false));
+            EnemyShipAbilityController controller = CreateController(entities, roster, service);
+
+            controller.Tick();
+            entities.RemoveEntity(casters[4].OwnEntity);
+            if (replaceEntity)
+                entities.AddEntity(new FakeEntity(new FakeHealth(null, 1f), null, TestPlayers.Enemy, 5));
+
+            Assert.DoesNotThrow(controller.Tick);
+            Assert.That(casters[4].Slots[0].State, Is.EqualTo(ShipAbilityState.Ready));
+            service.LateDispose();
         }
 
-        [TestCase("removed", false)]
-        [TestCase("replaced", false)]
-        [TestCase("moved-out", false)]
-        [TestCase("moved-in", true)]
-        public void CachedHostile_IsValidatedWhenCasterActs(string change, bool shouldActivate)
+        [TestCase(true)]
+        [TestCase(false)]
+        public void TargetedRule_TakesTheAutoPowerTarget(bool targetInRange)
         {
-            GameObject targetView = new GameObject("Cached hostile");
+            GameObject targetView = new GameObject("Target");
             try
             {
-                targetView.transform.position = Vector3.right * (change == "moved-in" ? 100f : 5f);
-                ShipAbilityDefinition definition = new ShipAbilityDefinition();
-                BindingFlags flags = BindingFlags.Instance | BindingFlags.NonPublic;
-                typeof(ShipAbilityDefinition).GetField("aiUse", flags).SetValue(definition, ShipAbilityAiUse.Offensive);
-                typeof(ShipAbilityDefinition).GetField("settings", flags)
-                    .SetValue(definition, new BoostShieldPowerSettings());
-                typeof(ShipAbilityDefinition).GetField("duration", flags).SetValue(definition, 5f);
-                FakeCommand caster = new FakeCommand(definition);
+                targetView.transform.position = Vector3.right * (targetInRange ? 5f : 100f);
+                FakeCommand caster = new FakeCommand(CreateRuleDefinition(new AlwaysSettings(), requiresEnemyTarget: true));
                 EntityLocator entities = new EntityLocator();
                 entities.AddEntity(caster.Entity);
-                IEntity target = new FakeEntity(new FakeHealth(targetView.transform, 1f), null, TestPlayers.Human, 2);
+                IEntity target = new FakeEntity(new FakeHealth(targetView.transform, 1f) { ShipClass = ShipClass.Frigate },
+                    null, TestPlayers.Human, 2);
                 entities.AddEntity(target);
-                RecordingFactory factory = new RecordingFactory();
-                PlayerRoster roster = TestPlayers.CreateDuel(EnemyAiDifficulty.UltraHard);
-                ShipAbilityService service = new ShipAbilityService(factory, roster,
-                    new VisionService(roster, fogEnabled: false));
-                EnemyShipAbilityController controller = CreateController(entities, new FakeState(), roster, service);
-                typeof(EnemyShipAbilityController).GetMethod("StartDecision", flags).Invoke(controller, null);
-
-                if (change == "removed" || change == "replaced")
-                {
-                    entities.RemoveEntity(target);
-                    if (change == "replaced")
-                        entities.AddEntity(new FakeEntity(new FakeHealth(null, 1f), null, TestPlayers.Human, 2));
-                    UnityEngine.Object.DestroyImmediate(targetView);
-                }
-                else targetView.transform.position = Vector3.right * (change == "moved-in" ? 5f : 100f);
-
-                Assert.DoesNotThrow(() => typeof(EnemyShipAbilityController).GetMethod("UseNextCasters", flags)
-                    .Invoke(controller, null));
-                Assert.That(factory.CreatedCount, Is.EqualTo(shouldActivate ? 1 : 0));
-                Assert.That(caster.Slots[0].State, Is.EqualTo(shouldActivate
-                    ? ShipAbilityState.Active : ShipAbilityState.Ready));
-                service.LateDispose();
-            }
-            finally
-            {
-                if (targetView != null) UnityEngine.Object.DestroyImmediate(targetView);
-            }
-        }
-
-        [TestCase(true, 5f, 0f)]
-        [TestCase(false, 5f, 0f)]
-        [TestCase(true, 25f, 25f)]
-        public void TargetSelection_UsesAbilityRulesAndFootprintRange(bool hasEligibleTarget, float centerDistance,
-            float targetRadius)
-        {
-            GameObject targetView = new GameObject("Targets");
-            try
-            {
-                targetView.transform.position = Vector3.right * centerDistance;
-                ShipAbilityDefinition definition = new ShipAbilityDefinition();
-                BindingFlags flags = BindingFlags.Instance | BindingFlags.NonPublic;
-                Type type = typeof(ShipAbilityDefinition);
-                type.GetField("aiUse", flags).SetValue(definition, ShipAbilityAiUse.Offensive);
-                type.GetField("requiresEnemyTarget", flags).SetValue(definition, true);
-                type.GetField("range", flags).SetValue(definition, 20f);
-                type.GetField("duration", flags).SetValue(definition, 5f);
-                FakeCommand caster = new FakeCommand(definition);
-                EntityLocator entities = new EntityLocator();
-                entities.AddEntity(caster.Entity);
-                entities.AddEntity(new FakeEntity(new FakeHealth(targetView.transform, 1f)
-                    { HullPercentage = 0.1f, ShipClass = ShipClass.Corvette },
-                    null, TestPlayers.Human, 2));
-                IEntity eligible = new FakeEntity(new FakeHealth(targetView.transform, 1f)
-                    { ShipClass = hasEligibleTarget ? ShipClass.Frigate : ShipClass.Corvette, NavigationRadius = targetRadius },
-                    null, TestPlayers.Human, 3);
-                entities.AddEntity(eligible);
-                type.GetField("settings", flags).SetValue(definition, new CompositeBeamSettings());
+                caster.CurrentOrder = UnitOrderType.Attack;
+                caster.AttackTarget = target;
                 TargetedFactory factory = new TargetedFactory();
                 PlayerRoster roster = TestPlayers.CreateDuel(EnemyAiDifficulty.UltraHard);
                 ShipAbilityService service = new ShipAbilityService(factory, roster,
                     new VisionService(roster, fogEnabled: false));
-                EnemyShipAbilityController controller = CreateController(entities, new FakeState(), roster, service);
+                EnemyShipAbilityController controller = CreateController(entities, roster, service);
 
                 controller.Tick();
 
-                Assert.That(factory.CreatedCount, Is.EqualTo(hasEligibleTarget ? 1 : 0));
-                Assert.That(factory.ActivatedTarget, Is.SameAs(hasEligibleTarget ? eligible : null));
-                Assert.That(caster.Slots[0].State, Is.EqualTo(hasEligibleTarget
+                Assert.That(factory.ActivatedTarget, Is.SameAs(targetInRange ? target : null));
+                Assert.That(caster.Slots[0].State, Is.EqualTo(targetInRange
                     ? ShipAbilityState.Active : ShipAbilityState.Ready));
                 service.LateDispose();
             }
@@ -258,15 +175,15 @@ namespace EmpireAtWar.Tests.Editor
         }
 
         [Test]
-        public void LockSFoils_StaysClosedDuringRetreatAndReopensAfterward()
+        public void LockSFoils_CloseWhileTravellingAndReopenWhenTravelEnds()
         {
-            ShipAbilityDefinition definition = new ShipAbilityDefinition();
+            ShipAbilityDefinition definition = CreateRuleDefinition(new LockSFoilsSettings());
             BindingFlags flags = BindingFlags.Instance | BindingFlags.NonPublic;
             Type type = typeof(ShipAbilityDefinition);
-            type.GetField("aiUse", flags).SetValue(definition, ShipAbilityAiUse.Escape);
-            type.GetField("settings", flags).SetValue(definition, new LockSFoilsSettings());
             type.GetField("isToggle", flags).SetValue(definition, true);
             type.GetField("canCancel", flags).SetValue(definition, true);
+            type.GetField("duration", flags).SetValue(definition, 0f);
+            type.GetField("recoveryDelay", flags).SetValue(definition, 0f);
             FakeCommand caster = new FakeCommand(definition, ShipAbilityId.LockSFoils);
             EntityLocator entities = new EntityLocator();
             entities.AddEntity(caster.Entity);
@@ -274,75 +191,35 @@ namespace EmpireAtWar.Tests.Editor
             PlayerRoster roster = TestPlayers.CreateDuel(EnemyAiDifficulty.UltraHard);
             ShipAbilityService service = new ShipAbilityService(factory, roster,
                 new VisionService(roster, fogEnabled: false));
-            FakeState state = new FakeState { CurrentState = EnemyStrategicState.RetreatValue };
-            EnemyShipAbilityController controller = CreateController(entities, state, roster, service);
+            EnemyShipAbilityController controller = CreateController(entities, roster, service);
 
             controller.Tick();
-            service.Advance(60f);
+            Assert.That(factory.CreatedCount, Is.Zero, "A unit that does not travel keeps its wings open.");
+
+            caster.CurrentOrder = UnitOrderType.Move;
             typeof(EnemyShipAbilityController).GetField("_timeLeft", flags).SetValue(controller, 0f);
             controller.Tick();
             Assert.That(caster.Slots[0].State, Is.EqualTo(ShipAbilityState.Active));
-            Assert.That(factory.StoppedCount, Is.Zero);
 
-            state.CurrentState = EnemyStrategicState.HuntFleet;
+            caster.CurrentOrder = UnitOrderType.None;
             typeof(EnemyShipAbilityController).GetField("_timeLeft", flags).SetValue(controller, 0f);
             controller.Tick();
             Assert.That(factory.StoppedCount, Is.EqualTo(1));
-            service.Advance(0f);
-            Assert.That(caster.Slots[0].State, Is.EqualTo(ShipAbilityState.Ready));
-            typeof(EnemyShipAbilityController).GetField("_timeLeft", flags).SetValue(controller, 0f);
-            controller.Tick();
-            Assert.That(factory.CreatedCount, Is.EqualTo(1));
             service.LateDispose();
         }
 
-        [TestCase(false)]
-        [TestCase(true)]
-        public void TargetVisibility_IsCheckedWhenCasterActs(bool visibleAtDecision)
+        [Serializable]
+        private sealed class AlwaysSettings : ShipAbilitySettings, IShipAbilityAutoUseRule
         {
-            GameObject targetView = new GameObject("Target");
-            GameObject scoutView = new GameObject("Scout");
-            try
-            {
-                targetView.transform.position = Vector3.right * 5f;
-                ShipAbilityDefinition definition = new ShipAbilityDefinition();
-                BindingFlags flags = BindingFlags.Instance | BindingFlags.NonPublic;
-                Type type = typeof(ShipAbilityDefinition);
-                type.GetField("aiUse", flags).SetValue(definition, ShipAbilityAiUse.Offensive);
-                type.GetField("requiresEnemyTarget", flags).SetValue(definition, true);
-                type.GetField("range", flags).SetValue(definition, 20f);
-                type.GetField("duration", flags).SetValue(definition, 5f);
-                FakeCommand caster = new FakeCommand(definition);
-                EntityLocator entities = new EntityLocator();
-                entities.AddEntity(caster.Entity);
-                IEntity target = new FakeEntity(new FakeHealth(targetView.transform, 1f)
-                    { ShipClass = ShipClass.Frigate }, null, TestPlayers.Human, 2);
-                entities.AddEntity(target);
-                type.GetField("settings", flags).SetValue(definition, new CompositeBeamSettings());
-                TargetedFactory factory = new TargetedFactory();
-                PlayerRoster roster = TestPlayers.CreateDuel(EnemyAiDifficulty.UltraHard);
-                VisionService vision = new VisionService(roster);
-                if (visibleAtDecision) vision.Register(TestPlayers.Enemy, scoutView.transform, 10f);
-                ShipAbilityService service = new ShipAbilityService(factory, roster, vision);
-                EnemyShipAbilityController controller = CreateController(entities, new FakeState(), roster, service);
+            public bool ShouldAutoActivate(ShipAbilityDependencies dependencies, IShipAbilityFacade caster) => true;
 
-                typeof(EnemyShipAbilityController).GetMethod("StartDecision", flags).Invoke(controller, null);
-                vision.Unregister(scoutView.transform);
-                typeof(EnemyShipAbilityController).GetMethod("UseNextCasters", flags).Invoke(controller, null);
-                Assert.That(factory.CreatedCount, Is.Zero);
-                Assert.That(caster.Slots[0].State, Is.EqualTo(ShipAbilityState.Ready));
+            // ShipAbilityFactoryTests creates every settings type and expects its matching *Ability type.
+            public override IShipAbility CreateAbility(ShipAbilityDependencies dependencies) => new AlwaysAbility();
+        }
 
-                vision.Register(TestPlayers.Enemy, scoutView.transform, 10f);
-                typeof(EnemyShipAbilityController).GetMethod("StartDecision", flags).Invoke(controller, null);
-                typeof(EnemyShipAbilityController).GetMethod("UseNextCasters", flags).Invoke(controller, null);
-                Assert.That(factory.ActivatedTarget, Is.SameAs(target));
-                service.LateDispose();
-            }
-            finally
-            {
-                UnityEngine.Object.DestroyImmediate(targetView);
-                UnityEngine.Object.DestroyImmediate(scoutView);
-            }
+        private sealed class AlwaysAbility : IShipAbility
+        {
+            public void Start(IShipAbilityFacade caster, ShipAbilityDefinition definition, IEntity target) { }
         }
 
         private sealed class TargetedFactory : IShipAbilityFactory
@@ -407,20 +284,10 @@ namespace EmpireAtWar.Tests.Editor
             public void Stop() => _onStop();
         }
 
-        private sealed class FakeState : IEnemyAiStateProvider
+        private sealed class FakeCommand : IShipAbilityFacade, IUnitOrderObserverFacade
         {
-            public EnemyStrategicState CurrentState { get; set; } = EnemyStrategicState.Hold;
-            public int ActiveShipCount => 1;
-            public bool TryGetReinforcementRally(out Vector3 rally, out bool defendHome)
-            {
-                rally = default;
-                defendHome = false;
-                return false;
-            }
-        }
-
-        private sealed class FakeCommand : IShipAbilityFacade
-        {
+            public UnitOrderType CurrentOrder { get; set; }
+            public IEntity AttackTarget { get; set; }
             public IReadOnlyList<ShipAbilitySlot> Slots { get; }
             public CombatModifiers Modifiers { get; } = new CombatModifiers();
             public Vector3 WorldPosition => Vector3.zero;

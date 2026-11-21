@@ -56,9 +56,9 @@ namespace EmpireAtWar.Editor.Balance
                     string context = value.FindPropertyRelative("displayName").stringValue;
                     IEnumerable<BalanceUnit> users = usersByAbility[id.ToString()];
                     string key = "ability/" + id + "/";
-                    foreach (string field in new[] { "duration", "recoveryDelay", "range", "aiUse" })
+                    foreach (string field in new[] { "duration", "recoveryDelay", "range" })
                         registry.Add(catalog, key + field, value.propertyPath + "." + field, BalanceFieldGroup.Abilities, context, BalanceFieldOwner.SharedProfile, true, users,
-                            field == "aiUse" ? typeof(ShipAbilityAiUse) : null, serializedTarget: serialized);
+                            null, serializedTarget: serialized);
                     SerializedProperty settings = value.FindPropertyRelative("settings");
                     if (settings.managedReferenceValue == null) throw new InvalidOperationException($"Missing settings: {context}");
                     Type settingsType = settings.managedReferenceValue.GetType();

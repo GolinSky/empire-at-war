@@ -20,17 +20,21 @@ namespace EmpireAtWar.Services.ShipAbilities
         private readonly ShipAbilityAutoUse _autoUse;
         private readonly AutoPowerTuning _tuning;
         private readonly Func<IShipAbilityFacade, ShipAbilityId, IEntity, bool> _activate;
+        private readonly Func<IShipAbilityFacade, ShipAbilityId, bool> _cancel;
         private readonly Dictionary<long, AutoPowerMonitor> _monitors = new Dictionary<long, AutoPowerMonitor>();
 
         /// <param name="activate">Starts the ability: a request from a player, a direct start for the host AI.</param>
+        /// <param name="cancel">Ends a lasting ability whose stop rule says so, the same way.</param>
         public AutoPowerDecider(ShipAbilityService abilities, AutoPowerCombatSnapshot combat, ShipAbilityAutoUse autoUse,
-            AutoPowerTuning tuning, Func<IShipAbilityFacade, ShipAbilityId, IEntity, bool> activate)
+            AutoPowerTuning tuning, Func<IShipAbilityFacade, ShipAbilityId, IEntity, bool> activate,
+            Func<IShipAbilityFacade, ShipAbilityId, bool> cancel)
         {
             _abilities = abilities;
             _combat = combat;
             _autoUse = autoUse;
             _tuning = tuning;
             _activate = activate;
+            _cancel = cancel;
         }
 
         public void Capture() => _combat.Capture();
@@ -64,6 +68,12 @@ namespace EmpireAtWar.Services.ShipAbilities
             AutoPowerShieldLoss shieldLoss = automation == null ? AutoPowerShieldLoss.None
                 : monitor.Sample(now, caster.Health.Shields, automation.MaxShields, automation.ShieldSuppressed,
                     automation.ShieldRevision);
+            // A lasting ability ends once its stop rule says so (S-foils reopen when travel ends); never under a
+            // manual hold, so a hand-set toggle stays as the player left it for the hold time.
+            if (!monitor.IsHeld(now))
+                foreach (ShipAbilitySlot slot in caster.Slots)
+                    if (slot.State == ShipAbilityState.Active && _autoUse.ShouldStop(caster, slot.Definition) &&
+                        _cancel(caster, slot.Id)) return true;
             // An active shield boost is the one ability Weapons may stack on; any other active ability waits.
             bool shieldsBoosted = false;
             foreach (ShipAbilitySlot slot in caster.Slots)
@@ -80,9 +90,12 @@ namespace EmpireAtWar.Services.ShipAbilities
             for (int i = 0; i < caster.Slots.Count && !shieldsBoosted; i++)
             {
                 ShipAbilitySlot slot = caster.Slots[i];
-                if (slot.CanActivate && ShipAbilityAutoUse.HasRule(slot.Definition) &&
-                    _autoUse.ShouldActivate(caster, slot.Definition) &&
-                    _activate(caster, slot.Id, null)) return true;
+                if (!slot.CanActivate || !ShipAbilityAutoUse.HasRule(slot.Definition) ||
+                    !_autoUse.ShouldActivate(caster, slot.Definition)) continue;
+                // A targeted rule ability takes the same target an auto-power role would.
+                IEntity ruleTarget = slot.Definition.RequiresEnemyTarget ? _combat.FindTarget(caster, slot.Definition) : null;
+                if ((ruleTarget != null || !slot.Definition.RequiresEnemyTarget) && _activate(caster, slot.Id, ruleTarget))
+                    return true;
             }
             if (automation == null || !automation.Eligible) return false;
             AutoPowerSituation situation = _combat.Assess(caster, automation, shieldLoss, IsTravelling(entity));

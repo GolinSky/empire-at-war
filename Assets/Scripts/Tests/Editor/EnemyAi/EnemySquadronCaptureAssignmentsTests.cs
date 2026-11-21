@@ -448,6 +448,8 @@ namespace EmpireAtWar.Tests.Editor
             public event Action Released { add { } remove { } }
             public long EntityId => 0;
             public Vector3 WorldPosition { get; }
+            public bool IsEngaging => false;
+            public float IdleLeashRadius => 0f;
             public Squadron(Vector3 position) => WorldPosition = position;
             public void Guard(IEntity friendly, Vector3 offset) { }
             public void AttackMoveTo(Vector3 worldPosition) { }

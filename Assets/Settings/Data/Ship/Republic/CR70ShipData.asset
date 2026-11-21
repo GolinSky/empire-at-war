@@ -57,3 +57,4 @@ MonoBehaviour:
   weaponLoadout:
   - weaponType: 8
     count: 7
+  roles: 513

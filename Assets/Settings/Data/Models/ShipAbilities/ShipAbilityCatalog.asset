@@ -27,7 +27,6 @@ MonoBehaviour:
         isToggle: 0
         requiresEnemyTarget: 1
         range: 1000
-        aiUse: 2
         autoPower: 3
         settings:
           rid: 6801466862182334539
@@ -43,7 +42,6 @@ MonoBehaviour:
         isToggle: 0
         requiresEnemyTarget: 1
         range: 500
-        aiUse: 2
         autoPower: 2
         settings:
           rid: 7607833764655792234
@@ -59,7 +57,6 @@ MonoBehaviour:
         isToggle: 0
         requiresEnemyTarget: 1
         range: 1500
-        aiUse: 2
         autoPower: 2
         settings:
           rid: 7607833764655792233
@@ -76,7 +73,6 @@ MonoBehaviour:
         isToggle: 0
         requiresEnemyTarget: 1
         range: 375
-        aiUse: 2
         autoPower: 3
         settings:
           rid: 6801466921437888600
@@ -92,7 +88,6 @@ MonoBehaviour:
         isToggle: 0
         requiresEnemyTarget: 1
         range: 500
-        aiUse: 2
         autoPower: 3
         settings:
           rid: 7607833764655792203
@@ -107,7 +102,6 @@ MonoBehaviour:
         isToggle: 0
         requiresEnemyTarget: 0
         range: 0
-        aiUse: 0
         autoPower: 5
         settings:
           rid: 7607833764655792204
@@ -124,7 +118,6 @@ MonoBehaviour:
         isToggle: 0
         requiresEnemyTarget: 0
         range: 500
-        aiUse: 0
         autoPower: 5
         settings:
           rid: 6801467062609510483
@@ -140,7 +133,6 @@ MonoBehaviour:
         isToggle: 0
         requiresEnemyTarget: 0
         range: 0
-        aiUse: 2
         autoPower: 4
         settings:
           rid: 6801467062609510486
@@ -156,7 +148,6 @@ MonoBehaviour:
         isToggle: 0
         requiresEnemyTarget: 0
         range: 0
-        aiUse: 0
         autoPower: 1
         settings:
           rid: 7607833764655792205
@@ -172,7 +163,6 @@ MonoBehaviour:
         isToggle: 1
         requiresEnemyTarget: 0
         range: 0
-        aiUse: 1
         autoPower: 0
         settings:
           rid: 6801466898397790291
@@ -188,7 +178,6 @@ MonoBehaviour:
         isToggle: 0
         requiresEnemyTarget: 0
         range: 0
-        aiUse: 1
         autoPower: 7
         settings:
           rid: 7607833764655792206
@@ -205,7 +194,6 @@ MonoBehaviour:
         isToggle: 0
         requiresEnemyTarget: 0
         range: 0
-        aiUse: 2
         autoPower: 2
         settings:
           rid: 6801466921437888601
@@ -221,7 +209,6 @@ MonoBehaviour:
         isToggle: 0
         requiresEnemyTarget: 0
         range: 0
-        aiUse: 2
         autoPower: 2
         settings:
           rid: 7607833764655792207
@@ -238,7 +225,6 @@ MonoBehaviour:
         isToggle: 0
         requiresEnemyTarget: 0
         range: 500
-        aiUse: 2
         autoPower: 7
         settings:
           rid: 6801466944227639371
@@ -254,7 +240,6 @@ MonoBehaviour:
         isToggle: 0
         requiresEnemyTarget: 1
         range: 500
-        aiUse: 2
         autoPower: 3
         settings:
           rid: 7607833764655792208
@@ -270,7 +255,6 @@ MonoBehaviour:
         isToggle: 0
         requiresEnemyTarget: 1
         range: 500
-        aiUse: 2
         autoPower: 3
         settings:
           rid: 6801466898397790289
@@ -287,7 +271,6 @@ MonoBehaviour:
         isToggle: 0
         requiresEnemyTarget: 1
         range: 750
-        aiUse: 2
         autoPower: 3
         settings:
           rid: 7607833764655792209
@@ -303,7 +286,6 @@ MonoBehaviour:
         isToggle: 0
         requiresEnemyTarget: 1
         range: 100
-        aiUse: 2
         autoPower: 3
         settings:
           rid: 6801466898397790283
@@ -320,7 +302,6 @@ MonoBehaviour:
         isToggle: 0
         requiresEnemyTarget: 0
         range: 0
-        aiUse: 0
         autoPower: 6
         settings:
           rid: 6801466898397790284
@@ -336,7 +317,6 @@ MonoBehaviour:
         isToggle: 0
         requiresEnemyTarget: 0
         range: 0
-        aiUse: 2
         autoPower: 4
         settings:
           rid: 6801466989490733131
@@ -353,7 +333,6 @@ MonoBehaviour:
         isToggle: 0
         requiresEnemyTarget: 0
         range: 0
-        aiUse: 2
         autoPower: 4
         settings:
           rid: 6801466921437888590
@@ -371,7 +350,6 @@ MonoBehaviour:
         isToggle: 0
         requiresEnemyTarget: 1
         range: 500
-        aiUse: 2
         autoPower: 3
         settings:
           rid: 6801466921437888597
@@ -387,7 +365,6 @@ MonoBehaviour:
         isToggle: 0
         requiresEnemyTarget: 0
         range: 0
-        aiUse: 2
         autoPower: 4
         settings:
           rid: 6801467062609510478
@@ -404,7 +381,6 @@ MonoBehaviour:
         isToggle: 0
         requiresEnemyTarget: 0
         range: 0
-        aiUse: 0
         autoPower: 4
         settings:
           rid: 6801467062609510480
@@ -420,7 +396,6 @@ MonoBehaviour:
         isToggle: 0
         requiresEnemyTarget: 0
         range: 0
-        aiUse: 2
         autoPower: 4
         settings:
           rid: 6801467062609510485
@@ -437,7 +412,6 @@ MonoBehaviour:
         isToggle: 0
         requiresEnemyTarget: 0
         range: 0
-        aiUse: 2
         autoPower: 4
         settings:
           rid: 6801467062609510488
@@ -454,7 +428,6 @@ MonoBehaviour:
         isToggle: 0
         requiresEnemyTarget: 0
         range: 0
-        aiUse: 3
         autoPower: 0
         settings:
           rid: 7607833764655792235
@@ -470,7 +443,6 @@ MonoBehaviour:
         isToggle: 0
         requiresEnemyTarget: 0
         range: 0
-        aiUse: 2
         autoPower: 0
         settings:
           rid: 2035977045847834708
@@ -488,7 +460,6 @@ MonoBehaviour:
         isToggle: 0
         requiresEnemyTarget: 1
         range: 350
-        aiUse: 2
         autoPower: 0
         settings:
           rid: 2035977048858300924
@@ -504,8 +475,7 @@ MonoBehaviour:
         isToggle: 0
         requiresEnemyTarget: 0
         range: 900
-        aiUse: 2
-        autoPower: 0
+        autoPower: 4
         settings:
           rid: 2035977070347550801
   autoPower:

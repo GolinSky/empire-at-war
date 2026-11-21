@@ -6,6 +6,9 @@ namespace EmpireAtWar.Services.Enemy
     {
         bool IsRecovering { get; }
 
+        /// <summary>A miner may be bought: own base standing, no hostile near it, no turtle after a base loss.</summary>
+        bool CanPlaceMiner => true;
+
         bool TryGetPosition(out Vector3 position);
 
         /// <summary>A held zone without a defend platform; <paramref name="allowExtra"/> also accepts a defended zone below its platform limit.</summary>

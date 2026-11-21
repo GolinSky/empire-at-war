@@ -80,6 +80,8 @@ namespace EmpireAtWar.Tests.Editor
             public event Action Released { add { } remove { } }
             public long EntityId => 0;
             public Vector3 WorldPosition => Vector3.zero;
+            public bool IsEngaging => false;
+            public float IdleLeashRadius => 0f;
             public IEntity Guarded { get; private set; }
             public Vector3 GuardOffset { get; private set; }
             public int GuardCount { get; private set; }

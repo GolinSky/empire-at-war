@@ -10,6 +10,7 @@ using EmpireAtWar.Services.Vision;
 using EmpireAtWar.Services.Stations;
 using Unity.Profiling;
 using UnityEngine;
+using EmpireAtWar.Entities.BaseEntity;
 using EmpireAtWar.Entities.BaseEntity.EntityFacades;
 using EmpireAtWar.Entities.DefendPlatform;
 using EmpireAtWar.Entities.EnemyFaction.Models;
@@ -46,6 +47,10 @@ namespace EmpireAtWar.Services.Enemy
         private const float SECOND_STATION_MIN_DISTANCE = 400f;
         private const float SECOND_STATION_MAX_DISTANCE = 700f;
         private const float SECOND_STATION_RING_SPACING = 100f;
+        /// <summary>A lost own base closes its station radius plus this distance for the rest of the battle.</summary>
+        private const float LOST_BASE_CLOSED_MARGIN = 400f;
+        /// <summary>No miner while a known hostile stands this close to the living base.</summary>
+        private const float MINER_HOSTILE_RANGE = 1000f;
 
 #if UNITY_EDITOR || DEVELOPMENT_BUILD
         private const float DEFENSE_BLOCKED_REPORT_INTERVAL = 30f;
@@ -77,6 +82,11 @@ namespace EmpireAtWar.Services.Enemy
         private readonly PlacementThreatSnapshot _threats = new PlacementThreatSnapshot();
         private readonly List<Bounds> _capturedZoneBounds = new List<Bounds>();
         private readonly Queue<Vector3> _recentDestroyedPositions = new Queue<Vector3>();
+        private readonly List<Vector3> _lostBases = new List<Vector3>();
+        private IEntity _trackedBase;
+        private Vector3 _trackedBaseCenter;
+        private float _baseLostAt = float.NegativeInfinity;
+        private Vector2? _awayFrom;
 
         private readonly Bounds _stationBounds;
         private readonly float _placementRadius;
@@ -136,6 +146,22 @@ namespace EmpireAtWar.Services.Enemy
 
         public bool IsRecovering => _recovery.IsActive;
 
+        /// <summary>
+        /// A living own base stands, no known hostile is within <see cref="MINER_HOSTILE_RANGE"/> of it, and the
+        /// turtle after a lost base (<see cref="EnemyShipTaskGroupPlanner.TURTLE_SECONDS"/>) is over.
+        /// </summary>
+        public bool CanPlaceMiner
+        {
+            get
+            {
+                if (_recovery.IsActive) return true;
+                if (!TryGetStationCenter(out Vector3 centre) ||
+                    Time.time < _baseLostAt + EnemyShipTaskGroupPlanner.TURTLE_SECONDS) return false;
+                PrepareSearch();
+                return !_threats.HasThreatWithin(centre.x, centre.z, MINER_HOSTILE_RANGE);
+            }
+        }
+
         public bool TryGetPosition(out Vector3 position)
         {
             using var sample = _placementMarker.Auto();
@@ -174,7 +200,7 @@ namespace EmpireAtWar.Services.Enemy
             if (!_productionAccess.HasHostBase || _productionAccess.ProductionHost != _owner.Id) return false;
             int level = _factionModel.CurrentLevel;
             int wanted = level >= STATION_SECOND_PLATFORM_LEVEL ? 2 : level >= STATION_PLATFORM_LEVEL ? 1 : 0;
-            Vector3 station = GetStationCenter();
+            if (!TryGetStationCenter(out Vector3 station)) return false;
             float radius = GetStationRadius();
             if (CountPlatforms(station, GetFirstRingRadius(radius) + RING_COUNT * RING_SPACING) >= wanted)
                 return false;
@@ -280,7 +306,11 @@ namespace EmpireAtWar.Services.Enemy
         {
             PrepareSearch();
             _world.EnsureCurrent();
-            Vector3 home = GetStationCenter();
+            if (!TryGetStationCenter(out Vector3 home))
+            {
+                position = default;
+                return false;
+            }
             Vector2 mapCentre = (_mapModel.SizeRange.Min + _mapModel.SizeRange.Max) * 0.5f;
             Vector2 corner = new Vector2(home.x - mapCentre.x, home.z - mapCentre.y);
             bool found = false;
@@ -357,9 +387,10 @@ namespace EmpireAtWar.Services.Enemy
                     return false;
                 }
             }
-            else
+            else if (!TryGetStationCenter(out origin))
             {
-                origin = GetStationCenter();
+                position = default;
+                return false;
             }
 
             PrepareSearch();
@@ -374,7 +405,15 @@ namespace EmpireAtWar.Services.Enemy
             _placementRecovering = recovering;
             float originRadius = recovering ? 0f : GetStationRadius();
             _placementSource = recovering ? "anchor" : "station";
-            if (TryGetPositionNear(origin, originRadius, out position)) return true;
+            // Around the base, only the half facing away from known hostiles.
+            if (!recovering && _threats.HasThreatWithin(origin.x, origin.z, 2f * MINER_HOSTILE_RANGE))
+            {
+                var hostile = _threats.GetLocalCentroid(origin.x, origin.z, 2f * MINER_HOSTILE_RANGE);
+                _awayFrom = new Vector2(hostile.X - origin.x, hostile.Z - origin.z);
+            }
+            bool nearOrigin = TryGetPositionNear(origin, originRadius, out position);
+            _awayFrom = null;
+            if (nearOrigin) return true;
 
             using (_zonesMarker.Auto())
             {
@@ -404,8 +443,16 @@ namespace EmpireAtWar.Services.Enemy
                 return _hasScoutTarget;
             }
 
-            Vector3 origin = _recovery.IsActive && _recovery.TryGetBuildAnchor(out Vector3 anchor)
-                ? anchor : GetStationCenter();
+            Vector3 origin;
+            if (_recovery.IsActive && _recovery.TryGetBuildAnchor(out Vector3 anchor)) origin = anchor;
+            else if (!TryGetStationCenter(out origin))
+            {
+                position = default;
+                _hasScoutTarget = false;
+                _scoutTarget = position;
+                _scoutFrame = frame;
+                return false;
+            }
             PrepareSearch();
             _hasScoutTarget = TrySearchMap(origin, GetStationRadius(), _acceptScoutTarget, "scout", out position);
             _scoutTarget = position;
@@ -480,16 +527,57 @@ namespace EmpireAtWar.Services.Enemy
             InvalidateSearches();
             _hasPlacement = false;
             _recentDestroyedPositions.Clear();
+            _lostBases.Clear();
+            _trackedBase = null;
+            _baseLostAt = float.NegativeInfinity;
         }
 
-        private Vector3 GetStationCenter() =>
-            _mapModel.GetStationPosition(_productionAccess.ProductionHost) + _stationBounds.center;
+        /// <summary>
+        /// Centre of the host's living production base (the station that builds now). A base seen here before and
+        /// destroyed since closes its area (<see cref="IsInLostBaseArea"/>) and starts the miner pause.
+        /// </summary>
+        private bool TryGetStationCenter(out Vector3 centre)
+        {
+            bool hasBase = _productionAccess.TryGetProductionBase(out IEntity productionBase) &&
+                           productionBase.Owner == _productionAccess.ProductionHost;
+            if (_trackedBase != null && (!hasBase || productionBase != _trackedBase) &&
+                _trackedBase.HealthModel.IsDestroyed)
+            {
+                _lostBases.Add(_trackedBaseCenter);
+                _baseLostAt = Time.time;
+                InvalidateSearches();
+                _hasPlacement = false;
+            }
+            if (!hasBase)
+            {
+                _trackedBase = null;
+                centre = default;
+                return false;
+            }
+            centre = productionBase.GetFacade<IEntityTransformFacade>().Transform.position + _stationBounds.center;
+            _trackedBase = productionBase;
+            _trackedBaseCenter = centre;
+            return true;
+        }
+
+        private bool IsInLostBaseArea(Vector3 candidate)
+        {
+            float closed = GetStationRadius() + LOST_BASE_CLOSED_MARGIN;
+            foreach (Vector3 lost in _lostBases)
+                if (PlanarDistanceSquared(candidate, lost) <= closed * closed) return true;
+            return false;
+        }
+
+        private bool IsAwayFromHostiles(Vector3 candidate, Vector3 anchor) =>
+            _awayFrom == null ||
+            Vector2.Dot(new Vector2(candidate.x - anchor.x, candidate.z - anchor.z), _awayFrom.Value) <= 0f;
 
         private float GetStationRadius() =>
             new Vector2(_stationBounds.extents.x, _stationBounds.extents.z).magnitude;
 
         private bool IsPlaceable(Vector3 candidate) =>
             !IsNearRecentDestroyedPosition(candidate) &&
+            !IsInLostBaseArea(candidate) &&
             _spawnRule.IsOpenForStructure(_owner.Id, candidate) &&
             IsPlacementSafe(candidate) &&
             IsClear(candidate);
@@ -569,7 +657,7 @@ namespace EmpireAtWar.Services.Enemy
                     anchor.x + Mathf.Cos(angle) * radius,
                     0f,
                     anchor.z + Mathf.Sin(angle) * radius);
-                if (!InBounds(candidate, bounds)) continue;
+                if (!InBounds(candidate, bounds) || !IsAwayFromHostiles(candidate, anchor)) continue;
                 _candidatesTested++;
                 if (!accept(candidate))
                 {

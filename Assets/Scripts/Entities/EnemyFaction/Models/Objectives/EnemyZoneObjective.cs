@@ -17,6 +17,8 @@ namespace EmpireAtWar.Entities.EnemyFaction.Models.Objectives
         public ForceComposition OwnSupport { get; } = new ForceComposition();
         /// <summary>This AI's own satellites and platforms standing in the zone.</summary>
         public int OwnStructures { get; private set; }
+        /// <summary>Capture sites in the zone not owned by this AI's team.</summary>
+        public int OpenSites { get; private set; }
         /// <summary>The team holds the zone's relay, or this AI has a satellite or platform standing in it.</summary>
         public bool IsHeld { get; private set; }
         /// <summary>A held zone with hostiles in reach: defended before any new zone, around its satellites.</summary>
@@ -39,8 +41,9 @@ namespace EmpireAtWar.Entities.EnemyFaction.Models.Objectives
 
         public void Reset(string id, bool isCentre, bool isOwnSide, float priority, float travelSeconds,
             int staticDefenders, string denyReason, bool isThreatened = false, bool isHeld = false,
-            int ownStructures = 0)
+            int ownStructures = 0, int openSites = 0)
         {
+            OpenSites = openSites;
             IsHeld = isHeld;
             OwnStructures = ownStructures;
             Id = id;

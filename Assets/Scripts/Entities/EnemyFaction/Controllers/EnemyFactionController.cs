@@ -93,6 +93,8 @@ namespace EmpireAtWar.Entities.EnemyFaction.Controllers
         public bool HasPendingReinforcement => _builds.Count > 0;
         public bool PriorityConstructionPending { get; set; }
         public bool IsUpgradingStation => _builds.Builds.Any(build => build.Request is LevelUnitRequest);
+        public bool IsUpgradingSecondStation =>
+            _builds.Builds.Any(build => build.Request is SecondStationLevelUnitRequest);
         public bool HasActiveProduction => _builds.Builds.Any(build => build.TimeLeft > 0f);
         public IReadOnlyList<EnemyPendingBuild> PendingBuilds => _builds.Builds;
 
@@ -202,7 +204,7 @@ namespace EmpireAtWar.Entities.EnemyFaction.Controllers
 
         public void Purchase(UnitRequest unitRequest)
         {
-            if (unitRequest is SecondStationLevelUnitRequest ||
+            if (unitRequest is SecondStationLevelUnitRequest secondLevel && !CanUpgradeSecondStation(secondLevel) ||
                 !CanQueue(unitRequest.Id, unitRequest.FactionData.MaxCount) ||
                 unitRequest is SecondStationUnitRequest && !_enemyStructurePlacementService.TryGetSecondStationPosition(out _) ||
                 !_productionAccess.CanProduce ||
@@ -222,6 +224,9 @@ namespace EmpireAtWar.Entities.EnemyFaction.Controllers
                         return;
                     }
 
+                    break;
+                case SecondStationLevelUnitRequest:
+                    if (IsUpgradingSecondStation || !_wallet.TrySpend(unitRequest)) return;
                     break;
                 case ShipUnitRequest:
                     if (!TryReserveAndSpend(unitRequest)) return;
@@ -262,7 +267,7 @@ namespace EmpireAtWar.Entities.EnemyFaction.Controllers
             if (Time.time >= _stationTelemetryAt || hasStation != _hadStation)
             {
                 EnemyAiTelemetry.RecordEvent(_owner.Id, _owner.Faction, "station",
-                    hasStation ? $"entity={station.Id};hull={station.HealthModel.Hull};shields={station.HealthModel.Shields};defendHome={defendHome}" : "No living production station.");
+                    hasStation ? $"entity={station.Id};hull={station.HealthModel.Hull};shields={station.HealthModel.Shields};defendHome={defendHome};secondLevel={(_secondStation.IsBuilt ? _secondStation.CurrentLevel : 0)}" : "No living production station.");
                 _stationTelemetryAt = Time.time + 15f;
                 _hadStation = hasStation;
             }
@@ -485,8 +490,8 @@ namespace EmpireAtWar.Entities.EnemyFaction.Controllers
         public void RestorePendingBuild(UnitRequest unitRequest, float timeLeft)
         {
             AdoptReservation(unitRequest);
-            // Superseded second-station upgrades are refunded after the economy has loaded.
-            _builds.Add(unitRequest, unitRequest is SecondStationLevelUnitRequest ? 0f : timeLeft);
+            // A superseded second-station upgrade is refunded when it completes.
+            _builds.Add(unitRequest, timeLeft);
         }
 
         /// <summary>Counts a restored unit against the limits again and frees its slot when it is gone.</summary>
@@ -529,6 +534,11 @@ namespace EmpireAtWar.Entities.EnemyFaction.Controllers
                 case ResearchUnitRequest researchUnitRequest:
                     _research.Complete(researchUnitRequest.Key);
                     ReleaseUnit(researchUnitRequest);
+                    break;
+                case SecondStationLevelUnitRequest secondLevelRequest:
+                    _secondStation.CompleteLevelUpgrade();
+                    // Frees the slot a restored upgrade adopted; a purchased upgrade holds none.
+                    ReleaseUnit(secondLevelRequest);
                     break;
                 case ShipUnitRequest shipUnitRequest:
                     bool hasRally = _aiState.TryGetReinforcementRally(out Vector3 rally, out bool defendHome);
@@ -721,7 +731,23 @@ namespace EmpireAtWar.Entities.EnemyFaction.Controllers
 
         private void RecalculateIncome(int level) => _economyProvider.RecalculateIncome(this);
 
-        private void HandleSecondStationChanged(bool built) => _economyProvider.RecalculateIncome(this);
+        private void HandleSecondStationChanged(bool built)
+        {
+            _economyProvider.RecalculateIncome(this);
+            if (built) return;
+            // A lost second station takes its queued upgrade with it.
+            foreach (EnemyPendingBuild upgrade in _builds.Builds.Where(build => build.Request is SecondStationLevelUnitRequest))
+            {
+                ReleaseUnit(upgrade.Request);
+                _wallet.Refund(upgrade.Request);
+            }
+            _builds.RemoveAll(request => request is SecondStationLevelUnitRequest);
+        }
+
+        /// <summary>The second station stands, the upgrade is its next level, and it stays at or below the main level.</summary>
+        private bool CanUpgradeSecondStation(SecondStationLevelUnitRequest request) =>
+            _secondStation.IsBuilt && request.Level == _secondStation.CurrentLevel &&
+            _secondStation.CurrentLevel < Model.CurrentLevel;
 
         private void ReleaseUnit(UnitRequest unitRequest)
         {
@@ -732,7 +758,8 @@ namespace EmpireAtWar.Entities.EnemyFaction.Controllers
 
         private void ExecuteBuild(UnitRequest unitRequest)
         {
-            if (unitRequest is SecondStationLevelUnitRequest ||
+            if (unitRequest is SecondStationLevelUnitRequest secondLevel &&
+                (!_secondStation.IsBuilt || secondLevel.Level != _secondStation.CurrentLevel) ||
                 unitRequest is SecondStationUnitRequest && Model.AdditionalStationsBuilt > 0 ||
                 (unitRequest is LevelUnitRequest
                     ? !_productionAccess.HasHostBase

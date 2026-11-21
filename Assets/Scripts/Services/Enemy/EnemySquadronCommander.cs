@@ -113,6 +113,8 @@ namespace EmpireAtWar.Services.Enemy
         private readonly List<ISquadron> _idleBombers = new List<ISquadron>();
         // Bombers without a winnable mine hold at the centre of the nearest own held zone.
         private readonly Dictionary<ISquadron, Vector3> _bomberHolds = new Dictionary<ISquadron, Vector3>();
+        /// <summary>Uncontested hold spots each wing has reached since it was sent there.</summary>
+        private readonly Dictionary<ISquadron, Vector3> _reachedHolds = new Dictionary<ISquadron, Vector3>();
 
         private readonly IEnemyStructurePlacementService _structurePlacement;
         private readonly HostileIntelModel _intel;
@@ -446,6 +448,7 @@ namespace EmpireAtWar.Services.Enemy
         {
             if (_stationDefense.HasValue && !_squadrons[squadron].IsHangarLaunched)
             {
+                if (KeepsFight(squadron, _stationDefense.Value)) return;
                 squadron.AttackMoveTo(_stationDefense.Value);
                 return;
             }
@@ -464,6 +467,7 @@ namespace EmpireAtWar.Services.Enemy
 
             if (_bomberHolds.TryGetValue(squadron, out Vector3 bomberHold))
             {
+                if (KeepsFight(squadron, bomberHold)) return;
                 squadron.AttackMoveTo(bomberHold);
                 return;
             }
@@ -499,24 +503,34 @@ namespace EmpireAtWar.Services.Enemy
             if (_captureAssignments.TryGetTarget(squadron, out Vector3 target))
             {
                 // On an uncontested mining spot the last leg is a move: a wing that stops to fight would drift out.
-                float entry = 0f;
-                if (_captureAssignments.TryGetHold(squadron, out float holdRadius))
-                    entry = HOLD_ENTRY_SCALE * holdRadius;
-                if (PlanarDistanceSquared(squadron.WorldPosition, target) <= entry * entry)
+                // A wing that reached the spot and was pulled away also comes back by a move.
+                bool hold = _captureAssignments.TryGetHold(squadron, out float holdRadius);
+                if (!hold || !_reachedHolds.TryGetValue(squadron, out Vector3 reached) || reached != target)
+                    _reachedHolds.Remove(squadron);
+                if (KeepsFight(squadron, target)) return;
+                float entry = hold ? HOLD_ENTRY_SCALE * holdRadius : 0f;
+                bool insideEntry = PlanarDistanceSquared(squadron.WorldPosition, target) <= entry * entry;
+                if (hold && insideEntry) _reachedHolds[squadron] = target;
+                if (hold && EnemyWingOrderRules.ReturnsByMove(_reachedHolds.ContainsKey(squadron), insideEntry))
                     _entityLocator.GetEntity(squadron.EntityId).GetFacade<IMoveFacade>().MoveTo(target);
                 else
                     squadron.AttackMoveTo(target);
             }
             else if (_captureAssignments.HasTargets)
             {
-                squadron.AttackMoveTo(EnemyShipTaskGroupPlanner.GetOpeningHome(
-                    _worldSnapshot, _owner.Id, squadron.WorldPosition));
+                Vector3 home = EnemyShipTaskGroupPlanner.GetOpeningHome(_worldSnapshot, _owner.Id, squadron.WorldPosition);
+                if (KeepsFight(squadron, home)) return;
+                squadron.AttackMoveTo(home);
             }
             else
             {
                 squadron.Hunt();
             }
         }
+
+        /// <summary>No new order for a wing fighting within its idle leash of <paramref name="point"/>.</summary>
+        private static bool KeepsFight(ISquadron squadron, Vector3 point) =>
+            EnemyWingOrderRules.KeepsFight(squadron.IsEngaging, squadron.WorldPosition, point, squadron.IdleLeashRadius);
 
         /// <summary>
         /// Rebuilds the hostile strikecraft and ship forces and orders own ships by how much damage
@@ -1103,25 +1117,28 @@ namespace EmpireAtWar.Services.Enemy
         }
 
         /// <summary>
-        /// A group's raiders (all its wings without a zone, else its bombers) go together to the known hostile mine
-        /// with the best damage per distance that they at least match together with whatever covers it. One group per
-        /// mine. A lone bomber never takes on a mine under satellites.
+        /// A group's raiders go together to the known hostile mine with the best damage per distance that they at least
+        /// match together with whatever covers it: a group without a zone with all its wings, a group holding a zone
+        /// once it has a bomber, then with its fighters as escort. One group per mine. Bombers never go alone; a mine
+        /// the group cannot beat waits for the group.
         /// </summary>
         private void AssignMineRaid(EnemyWingGroup group)
         {
             _raidWings.Clear();
             float damage = 0f;
+            bool hasBomber = false;
             foreach (ISquadron wing in group.Members)
             {
+                if (_raids.ContainsKey(wing)) continue;
                 UnitCombatProfile profile = _squadrons[wing].Profile;
                 float structureDamage = profile.HullDps(ShipClass.Structure) + profile.PiercingDps(ShipClass.Structure);
-                if (_raids.ContainsKey(wing) || structureDamage <= 0f ||
-                    group.Zone != null && profile.ShipClass != ShipClass.Bomber) continue;
+                hasBomber |= profile.ShipClass == ShipClass.Bomber && structureDamage > 0f;
                 _raidWings.Add(wing);
                 damage += structureDamage;
             }
-            if (_raidWings.Count == 0)
+            if (damage <= 0f || group.Zone != null && !hasBomber)
             {
+                _raidWings.Clear();
                 RecordRaidSkip(group, "noBombers");
                 return;
             }
@@ -1155,16 +1172,21 @@ namespace EmpireAtWar.Services.Enemy
         }
 
         /// <summary>
-        /// The group's idle bombers go together after the visible hostile satellite nearest them (inside the group's
-        /// zone while it has one) when together they at least match it and whatever else covers it.
+        /// The group's idle bombers, escorted by its idle fighters, go together after the visible hostile satellite
+        /// nearest them (inside the group's zone while it has one) when together they at least match it and whatever
+        /// else covers it.
         /// </summary>
         private void AssignSatelliteRaid(EnemyWingGroup group)
         {
             _raidWings.Clear();
+            bool hasBomber = false;
             foreach (ISquadron wing in group.Members)
-                if (!_raids.ContainsKey(wing) && _squadrons[wing].Profile.ShipClass == ShipClass.Bomber)
-                    _raidWings.Add(wing);
-            if (_raidWings.Count == 0) return;
+            {
+                if (_raids.ContainsKey(wing)) continue;
+                hasBomber |= _squadrons[wing].Profile.ShipClass == ShipClass.Bomber;
+                _raidWings.Add(wing);
+            }
+            if (!hasBomber) return;
 
             Vector3 origin = _raidWings[0].WorldPosition;
             AiWorldSnapshot.Entry best = default;
@@ -1239,6 +1261,7 @@ namespace EmpireAtWar.Services.Enemy
                     group.ZoneDeaths.Add(Time.time);
             if (squadron == _patrolWing) ReleasePatrolWing("lost");
             _bomberHolds.Remove(squadron);
+            _reachedHolds.Remove(squadron);
             squadron.Released -= _squadrons[squadron].ReleaseHandler;
             _squadrons.Remove(squadron);
             _escorts.Remove(squadron);

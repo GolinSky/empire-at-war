@@ -7,8 +7,9 @@ using UnityEngine;
 
 namespace EmpireAtWar.Services.ShipAbilities.Abilities
 {
+    /// <summary>Automatic use: on the auto-power target (a warship or structure in range) whenever Luke can fire.</summary>
     [Serializable]
-    public sealed class LuckyShotSettings : ShipAbilitySettings, IShipAbilityTargetRule
+    public sealed class LuckyShotSettings : ShipAbilitySettings, IShipAbilityTargetRule, IShipAbilityAutoUseRule
     {
         [SerializeField] private float damage = 8000f;
         [SerializeField] private float windup = 1.25f;
@@ -24,8 +25,15 @@ namespace EmpireAtWar.Services.ShipAbilities.Abilities
 
         public bool CanTarget(IShipAbilityFacade caster, IEntity target)
         {
-            if (!CanTarget(target.HealthModel.ShipClass) || !target.TryGetFacade(out IHealthFacade _))
-                return false;
+            return CanTarget(target.HealthModel.ShipClass) && target.TryGetFacade(out IHealthFacade _) &&
+                   IsLukeAlive(caster);
+        }
+
+        public bool ShouldAutoActivate(ShipAbilityDependencies dependencies, IShipAbilityFacade caster) =>
+            IsLukeAlive(caster);
+
+        private static bool IsLukeAlive(IShipAbilityFacade caster)
+        {
             var members = caster.Health.GetShipUnits(HardPointType.Any);
             return members.Length > 0 && members[0].Id == 0 && !members[0].IsDestroyed;
         }

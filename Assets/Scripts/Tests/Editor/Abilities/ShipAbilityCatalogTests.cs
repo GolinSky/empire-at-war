@@ -1,10 +1,12 @@
 using System;
 using System.Collections.Generic;
+using System.Reflection;
 using EmpireAtWar.Entities.Ship.Data;
 using EmpireAtWar.Services.ShipAbilities;
 using EmpireAtWar.Services.ShipAbilities.Abilities;
 using NUnit.Framework;
 using UnityEditor;
+using Utilities.ScriptUtils.EditorSerialization;
 
 namespace EmpireAtWar.Tests.Editor
 {
@@ -54,13 +56,32 @@ namespace EmpireAtWar.Tests.Editor
         }
 
         [Test]
-        public void PowerToMainBatteries_IsUsedOffensively()
+        public void EveryAbility_HasAnAutoPowerRoleOrAutoUseRule()
         {
+            // The AI and player auto-power use abilities only through roles and rules; one without either is never
+            // used automatically.
             ShipAbilityCatalog catalog =
                 AssetDatabase.LoadAssetAtPath<ShipAbilityCatalog>(CATALOG_PATH);
-            Assert.That(catalog.Get(ShipAbilityId.PowerToMainBatteries).AiUse,
-                Is.EqualTo(ShipAbilityAiUse.Offensive));
+            foreach (KeyValuePair<ShipAbilityId, ShipAbilityDefinition> pair in Definitions(catalog))
+                Assert.That(pair.Value.AutoPower != AutoPowerRole.None || ShipAbilityAutoUse.HasRule(pair.Value),
+                    Is.True, $"{pair.Key} has neither an auto-power role nor an auto-use rule.");
         }
+
+        [Test]
+        public void LastingRuleAbilities_CanBeEndedByTheirStopRule()
+        {
+            // A stop rule ends the ability through a cancel, so the ability must allow one.
+            ShipAbilityCatalog catalog =
+                AssetDatabase.LoadAssetAtPath<ShipAbilityCatalog>(CATALOG_PATH);
+            foreach (KeyValuePair<ShipAbilityId, ShipAbilityDefinition> pair in Definitions(catalog))
+                if (pair.Value.Settings is IShipAbilityAutoStopRule)
+                    Assert.That(pair.Value.CanCancel, Is.True, $"{pair.Key} has a stop rule but cannot be cancelled.");
+        }
+
+        private static IEnumerable<KeyValuePair<ShipAbilityId, ShipAbilityDefinition>> Definitions(
+            ShipAbilityCatalog catalog) =>
+            ((DictionaryWrapper<ShipAbilityId, ShipAbilityDefinition>)typeof(ShipAbilityCatalog)
+                .GetField("definitions", BindingFlags.Instance | BindingFlags.NonPublic).GetValue(catalog)).Dictionary;
 
         [Test]
         public void ConfiguredShips_UseCatalogIdsWithoutDuplicates()

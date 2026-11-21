@@ -38,6 +38,19 @@ namespace EmpireAtWar.Services.Enemy
             return count > 0 ? (sumX / count, sumZ / count) : _approach ?? (x, z);
         }
 
+        /// <summary>True when a threat's centre lies within <paramref name="distance"/> of the point.</summary>
+        public bool HasThreatWithin(float x, float z, float distance)
+        {
+            foreach (var threat in _threats)
+            {
+                float dx = x - threat.X;
+                float dz = z - threat.Z;
+                if (dx * dx + dz * dz <= distance * distance) return true;
+            }
+
+            return false;
+        }
+
         public bool IsSafe(float x, float z, float clearance)
         {
             foreach (var threat in _threats)

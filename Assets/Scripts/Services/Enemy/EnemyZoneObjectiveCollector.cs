@@ -50,6 +50,7 @@ namespace EmpireAtWar.Services.Enemy
         private readonly List<float> _radii = new List<float>();
         private readonly List<float> _priorities = new List<float>();
         private readonly List<bool> _threatened = new List<bool>();
+        private readonly List<int> _openSites = new List<int>();
         private readonly List<ReinforcementZonePresenter> _areaZones = new List<ReinforcementZonePresenter>();
         private readonly Dictionary<EnemyCaptureObjective, int> _areaOf = new Dictionary<EnemyCaptureObjective, int>();
         private readonly Dictionary<ReinforcementZonePresenter, int> _zoneArea =
@@ -94,6 +95,7 @@ namespace EmpireAtWar.Services.Enemy
             _radii.Clear();
             _priorities.Clear();
             _threatened.Clear();
+            _openSites.Clear();
             _areaZones.Clear();
             _areaOf.Clear();
             _zoneArea.Clear();
@@ -109,12 +111,14 @@ namespace EmpireAtWar.Services.Enemy
                     _radii.Add(zone != null ? zone.Radius : candidate.Radius);
                     _priorities.Add(priority);
                     _threatened.Add(false);
+                    _openSites.Add(0);
                     _areaZones.Add(zone);
                     if (zone != null) _zoneArea.Add(zone, area);
                 }
                 _areaOf.Add(candidate, area);
                 _priorities[area] = Mathf.Max(_priorities[area], priority);
                 _threatened[area] |= candidate.IsThreatened;
+                if (!_roster.IsAllied(_owner, candidate.Owner)) _openSites[area]++;
             }
 
             for (int area = 0; area < _centres.Count; area++)
@@ -135,7 +139,7 @@ namespace EmpireAtWar.Services.Enemy
                 objective.Reset(zone != null ? $"zone:{IndexOf(zone)}" : $"site:({centre.x:F0} {centre.z:F0})",
                     isCentre, ownSide, _priorities[area],
                     PlanarDistance(origin, centre) / Mathf.Max(1f, speed), statics, deny, _threatened[area], held,
-                    ownStructures);
+                    ownStructures, _openSites[area]);
                 _objectives.Add(objective);
             }
         }

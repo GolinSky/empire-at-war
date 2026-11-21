@@ -20,8 +20,6 @@ namespace EmpireAtWar.Services.ShipAbilities
         [Header("Targeting")]
         [SerializeField] private bool requiresEnemyTarget;
         [SerializeField] private float range;
-        [Header("Ai")]
-        [SerializeField] private ShipAbilityAiUse aiUse;
         [Header("Auto Power")]
         [SerializeField] private AutoPowerRole autoPower;
         [Header("Ability")]
@@ -36,7 +34,6 @@ namespace EmpireAtWar.Services.ShipAbilities
         public bool IsToggle => isToggle;
         public bool RequiresEnemyTarget => requiresEnemyTarget;
         public float Range => range;
-        public ShipAbilityAiUse AiUse => aiUse;
         public AutoPowerRole AutoPower => autoPower;
         public ShipAbilitySettings Settings => settings;
         internal bool IssuesAttackOrder => settings is AssaultSettings or ConcentrateFireSettings or LuckyShotSettings;

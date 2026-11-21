@@ -284,7 +284,8 @@ namespace EmpireAtWar.Tests.Editor
                     owner: TestPlayers.CreateDuel(difficulty).Get(TestPlayers.Enemy),
                     stationPressure: new EnemyStationPressureTracker(),
                     scheduler: scheduler,
-                    squadrons: new NoPatrolSquadronCommander());
+                    squadrons: new NoPatrolSquadronCommander(),
+                    secondStation: new SecondStationLevelModel());
 
                 strategy.Start();
                 Assert.That(strategy.OpeningMiningPending, Is.True);
@@ -446,7 +447,8 @@ namespace EmpireAtWar.Tests.Editor
                     intelRegistry: new TeamIntelRegistry(),
                     owner: owner, stationPressure: new EnemyStationPressureTracker(),
                     scheduler: scheduler,
-                    squadrons: new NoPatrolSquadronCommander());
+                    squadrons: new NoPatrolSquadronCommander(),
+                    secondStation: new SecondStationLevelModel());
 
                 strategy.Start();
                 strategy.Tick(0f);
@@ -536,7 +538,8 @@ namespace EmpireAtWar.Tests.Editor
                     intelRegistry: new TeamIntelRegistry(),
                     owner: owner, stationPressure: new EnemyStationPressureTracker(),
                     scheduler: scheduler,
-                    squadrons: new NoPatrolSquadronCommander());
+                    squadrons: new NoPatrolSquadronCommander(),
+                    secondStation: new SecondStationLevelModel());
 
                 UnitLimitKey capacityHolder = GetUnitId<ShipUnitRequest>("capacity-holder");
                 int heldCapacity = MAX_UNIT_CAPACITY - unitLimitModel.CurrentUnitCapacity -
@@ -647,7 +650,8 @@ namespace EmpireAtWar.Tests.Editor
                     owner: TestPlayers.CreateDuel(EnemyAiDifficulty.UltraHard).Get(TestPlayers.Enemy),
                     stationPressure: new EnemyStationPressureTracker(),
                     scheduler: scheduler,
-                    squadrons: new NoPatrolSquadronCommander());
+                    squadrons: new NoPatrolSquadronCommander(),
+                    secondStation: new SecondStationLevelModel());
 
                 strategy.Start();
                 strategy.Tick(0f);
@@ -713,7 +717,8 @@ namespace EmpireAtWar.Tests.Editor
                     intelRegistry: new TeamIntelRegistry(),
                     owner: owner, stationPressure: new EnemyStationPressureTracker(),
                     scheduler: scheduler,
-                    squadrons: new NoPatrolSquadronCommander());
+                    squadrons: new NoPatrolSquadronCommander(),
+                    secondStation: new SecondStationLevelModel());
 
                 strategy.Start();
                 strategy.Tick(0f);
@@ -802,7 +807,8 @@ namespace EmpireAtWar.Tests.Editor
                     owner: TestPlayers.CreateDuel(EnemyAiDifficulty.UltraHard).Get(TestPlayers.Enemy),
                     stationPressure: pressure,
                     scheduler: scheduler,
-                    squadrons: new NoPatrolSquadronCommander());
+                    squadrons: new NoPatrolSquadronCommander(),
+                    secondStation: new SecondStationLevelModel());
 
                 strategy.Start();
                 strategy.Tick(0f);
@@ -840,7 +846,8 @@ namespace EmpireAtWar.Tests.Editor
                     forceBuilder: null, profileCatalog: null, counterModel: null, intelRegistry: new TeamIntelRegistry(),
                     owner: TestPlayers.CreateDuel().Get(TestPlayers.Enemy), stationPressure: new EnemyStationPressureTracker(),
                     scheduler: scheduler,
-                    squadrons: new NoPatrolSquadronCommander());
+                    squadrons: new NoPatrolSquadronCommander(),
+                    secondStation: new SecondStationLevelModel());
 
                 strategy.Start();
                 strategy.Tick(0f);
@@ -926,7 +933,8 @@ namespace EmpireAtWar.Tests.Editor
                     owner: TestPlayers.CreateDuel(EnemyAiDifficulty.UltraHard).Get(TestPlayers.Enemy),
                     stationPressure: pressure,
                     scheduler: scheduler,
-                    squadrons: new NoPatrolSquadronCommander());
+                    squadrons: new NoPatrolSquadronCommander(),
+                    secondStation: new SecondStationLevelModel());
 
                 strategy.Start();
                 strategy.Tick(0f);
@@ -999,6 +1007,144 @@ namespace EmpireAtWar.Tests.Editor
         /// Copies the faction so tests may edit its data, keeping only the given ships so new
         /// units or rebalanced stats in the live catalog do not change which ship wins.
         /// </summary>
+        // W6: capture wings are the cheapest fighter; an interceptor builds beside them only when money left after
+        // the mandatory bill pays for it.
+        [TestCase(true)]
+        [TestCase(false)]
+        public void CaptureWings_AreTheCheapestFighter_PlusAnInterceptorOnlyWithSpareMoney(bool spareMoney)
+        {
+            var reinforcementData = ScriptableObject.CreateInstance<ReinforcementData>();
+            FactionDefinition definition = CopyDefinition(FactionType.Separatist, ShipType.PatrolFrigate, ShipType.C9979);
+            try
+            {
+                EnemyFactionModel factionModel = CreateFactionModel(definition);
+                // The two cheapest level-1 wings: the cheaper one is the fighter, the dearer one the interceptor.
+                List<KeyValuePair<SquadronType, FactionData>> wings = factionModel.SquadronFactionData
+                    .Where(wing => wing.Value.AvailableLevel <= 1).OrderBy(wing => wing.Value.Price).Take(2).ToList();
+                Assume.That(wings.Count, Is.EqualTo(2));
+                Assume.That(wings[1].Value.Price, Is.GreaterThan(wings[0].Value.Price));
+                UnitCombatProfileCatalog catalog = UniformValueCatalog(definition, ShipClass.Corvette);
+                var profiles = (Dictionary<UnitTypeId, UnitCombatProfile>)typeof(UnitCombatProfileCatalog)
+                    .GetField("_profiles", PRIVATE_INSTANCE).GetValue(catalog);
+                foreach (SquadronType squadron in definition.Squadrons.Keys)
+                {
+                    ShipClass wingClass = squadron == wings[0].Key ? ShipClass.Fighter
+                        : squadron == wings[1].Key ? ShipClass.Interceptor : ShipClass.Bomber;
+                    profiles[UnitTypeId.Squadron(squadron)] = new UnitCombatProfile(wingClass, 100f, 0f,
+                        new float[ForceComposition.ClassSlots], new float[ForceComposition.ClassSlots],
+                        new float[ForceComposition.ClassSlots], Array.Empty<UnitCombatProfile>());
+                }
+                var unitLimits = new EnemyUnitLimitModel();
+                foreach (KeyValuePair<MiningFacilityType, FactionData> mining in factionModel.MiningFactions)
+                    for (int i = 0; i < mining.Value.MaxCount; i++)
+                        unitLimits.Adopt(UnitLimitKey.For<MiningFacilityUnitRequest>(mining.Key.ToString()),
+                            mining.Value.UnitCapacity);
+                SetBackingField(reinforcementData, nameof(ReinforcementData.MaxUnitCapacity), MAX_UNIT_CAPACITY);
+                // The station upgrade is already building, so wings are the only purchase left.
+                var purchases = new RecordingPurchaseProcessor { IsUpgradingStation = true };
+                float money = spareMoney ? 100f * wings[1].Value.Price : wings[1].Value.Price - 1f;
+                var entities = new EntityLocator();
+                var scheduler = new EnemyAiScheduler(new ReplayNotifier<BattleState>(BattleState.Running));
+                scheduler.Initialize();
+                var strategy = new EnemyProductionStrategy(
+                    factionModel: factionModel,
+                    research: CreateCompletedResearch(definition),
+                    purchaseProcessor: purchases,
+                    requestFactory: new UnitRequestFactory(),
+                    economyModel: new EconomyModelStub(money),
+                    stateProvider: new StateProviderStub(),
+                    decisionModel: new EnemyProductionDecisionModel(),
+                    unitLimitModel: unitLimits,
+                    reinforcementData: reinforcementData,
+                    enemyStructurePlacementService: new StructurePlacementServiceStub(),
+                    productionAccess: new OperationalProductionAccess(),
+                    forceBuilder: new ForceCompositionBuilder(entities, catalog, new AiWorldSnapshot(entities)),
+                    profileCatalog: catalog,
+                    counterModel: null,
+                    intelRegistry: new TeamIntelRegistry(),
+                    owner: TestPlayers.CreateDuel(EnemyAiDifficulty.UltraHard).Get(TestPlayers.Enemy),
+                    stationPressure: new EnemyStationPressureTracker(),
+                    scheduler: scheduler,
+                    squadrons: new NoPatrolSquadronCommander(),
+                    secondStation: new SecondStationLevelModel());
+
+                strategy.Start();
+                scheduler.Step(10f);
+
+                List<SquadronType> bought = purchases.Purchases.OfType<SquadronUnitRequest>()
+                    .Select(request => request.Key).ToList();
+                Assert.That(bought.FirstOrDefault(), Is.EqualTo(wings[0].Key), "The capture wing is the cheapest fighter.");
+                Assert.That(bought.Contains(wings[1].Key), Is.EqualTo(spareMoney));
+                Assert.That(bought.Count(key => key != wings[0].Key && key != wings[1].Key), Is.Zero);
+            }
+            finally
+            {
+                UnityEngine.Object.DestroyImmediate(reinforcementData);
+                UnityEngine.Object.DestroyImmediate(definition);
+            }
+        }
+
+        // W1: a standing second station below the main station's level gets its next upgrade; at the main level it gets none.
+        [TestCase(1, true)]
+        [TestCase(3, false)]
+        public void SecondStationBelowTheMainLevel_IsUpgraded(int secondLevel, bool expectUpgrade)
+        {
+            var reinforcementData = ScriptableObject.CreateInstance<ReinforcementData>();
+            FactionDefinition definition = CopyDefinition(FactionType.Separatist, ShipType.PatrolFrigate, ShipType.C9979);
+            try
+            {
+                EnemyFactionModel factionModel = CreateFactionModel(definition);
+                factionModel.CurrentLevel = 3;
+                factionModel.AdditionalStationsBuilt = 1;
+                var secondStation = new SecondStationLevelModel { IsBuilt = true, CurrentLevel = secondLevel };
+                var unitLimits = new EnemyUnitLimitModel();
+                foreach (KeyValuePair<MiningFacilityType, FactionData> mining in factionModel.MiningFactions)
+                    for (int i = 0; i < mining.Value.MaxCount; i++)
+                        unitLimits.Adopt(UnitLimitKey.For<MiningFacilityUnitRequest>(mining.Key.ToString()),
+                            mining.Value.UnitCapacity);
+                SetBackingField(reinforcementData, nameof(ReinforcementData.MaxUnitCapacity), MAX_UNIT_CAPACITY);
+                var purchases = new RecordingPurchaseProcessor { IsUpgradingStation = true };
+                UnitCombatProfileCatalog catalog = UniformValueCatalog(definition);
+                var entities = new EntityLocator();
+                var scheduler = new EnemyAiScheduler(new ReplayNotifier<BattleState>(BattleState.Running));
+                scheduler.Initialize();
+                var strategy = new EnemyProductionStrategy(
+                    factionModel: factionModel,
+                    research: CreateCompletedResearch(definition),
+                    purchaseProcessor: purchases,
+                    requestFactory: new UnitRequestFactory(),
+                    economyModel: new EconomyModelStub(1000000f),
+                    stateProvider: new StateProviderStub(),
+                    decisionModel: new EnemyProductionDecisionModel(),
+                    unitLimitModel: unitLimits,
+                    reinforcementData: reinforcementData,
+                    enemyStructurePlacementService: new StructurePlacementServiceStub(),
+                    productionAccess: new OperationalProductionAccess(),
+                    forceBuilder: new ForceCompositionBuilder(entities, catalog, new AiWorldSnapshot(entities)),
+                    profileCatalog: catalog,
+                    counterModel: new EnemyCounterProductionModel(new NeutralShipClassMatchups()),
+                    intelRegistry: new TeamIntelRegistry(),
+                    owner: TestPlayers.CreateDuel(EnemyAiDifficulty.UltraHard).Get(TestPlayers.Enemy),
+                    stationPressure: new EnemyStationPressureTracker(),
+                    scheduler: scheduler,
+                    squadrons: new NoPatrolSquadronCommander(),
+                    secondStation: secondStation);
+
+                strategy.Start();
+                scheduler.Step(10f);
+
+                List<SecondStationLevelUnitRequest> upgrades =
+                    purchases.Purchases.OfType<SecondStationLevelUnitRequest>().ToList();
+                Assert.That(upgrades.Count, Is.EqualTo(expectUpgrade ? 1 : 0));
+                if (expectUpgrade) Assert.That(upgrades[0].Level, Is.EqualTo(secondLevel), "The next level is bought.");
+            }
+            finally
+            {
+                UnityEngine.Object.DestroyImmediate(reinforcementData);
+                UnityEngine.Object.DestroyImmediate(definition);
+            }
+        }
+
         private static FactionDefinition CopyDefinition(FactionType factionType, params ShipType[] ships)
         {
             FactionDefinition definition =
@@ -1170,8 +1316,12 @@ namespace EmpireAtWar.Tests.Editor
             public bool CanProduce { get; set; } = true;
             public bool HasHostBase => CanProduce;
 
-            public bool TryGetProductionBase(out IEntity station) =>
-                throw new NotImplementedException();
+            // No station entity in these fixtures: the second station is never the production base here.
+            public bool TryGetProductionBase(out IEntity station)
+            {
+                station = null;
+                return false;
+            }
         }
 
         private sealed class RecordingPurchaseProcessor : IEnemyPurchaseProcessor

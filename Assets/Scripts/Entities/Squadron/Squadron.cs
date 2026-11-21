@@ -729,7 +729,9 @@ namespace EmpireAtWar.Entities.Squadrons
             }
         }
 
-        private bool IsEngaging => SquadronTargetSelector.IsAlive(_engaged) && !_engaged.IsCloaked();
+        public bool IsEngaging => SquadronTargetSelector.IsAlive(_engaged) && !_engaged.IsCloaked();
+
+        public float IdleLeashRadius => Data.GuardRadius * _orderSettings.SquadronLeashFactor;
 
         private bool IsBomberOnStrikecraft =>
             _targetSelector.PrefersShips && _engaged.HealthModel.ShipClass.IsStrikecraft();

@@ -65,5 +65,9 @@ namespace EmpireAtWar.Entities.EnemyFaction.Models
         {
             return _stationLevels.GetLevelFactionData(CurrentLevel);
         }
+
+        /// <summary>Cost of upgrading the second station from <paramref name="level"/>; null at max level.</summary>
+        public FactionData GetSecondStationLevelFactionData(int level) =>
+            _stationLevels.GetSecondStationLevelFactionData(level);
     }
 }

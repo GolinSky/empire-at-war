@@ -46,7 +46,7 @@ namespace EmpireAtWar.Entities.MiningFacility
             float buildTime = buildDuration ?? (type == MiningFacilityType.AsteroidMiner
                 ? Assets.Load<CaptureSiteData>(nameof(CaptureSiteData)).GetCost(SiteFacilityType.Mining).BuildTime
                 : _catalog.Get(type == MiningFacilityType.BattleMiner ? MiningFacilityType.CommonMiner : type).BuildTime);
-            float income = GetIncome(type, data);
+            float income = GetIncome(owner, type, data);
             return Spawn(Assets.LoadComponent<MiningFacility>(assetName + "View"), position, Quaternion.identity,
                 (builder, view) => new MiningFacilityInstaller(view, data,
                     _localPlayer, owner, entityId, position, type, income, buildTime).Install(builder));
@@ -54,17 +54,22 @@ namespace EmpireAtWar.Entities.MiningFacility
 
         /// <summary>
         /// A mine on a capture site pays its share of the map's <see cref="MiningPool"/>, so income per player is the
-        /// same on every map size and player count. Station miners, and mines in Survival or on a map without mining
-        /// spots, pay the income of their data.
+        /// same on every map size and player count; in Survival the defenders' team shares the ring's pool. Station
+        /// miners, and mines on a map without mining spots, pay the income of their data.
         /// </summary>
-        private float GetIncome(MiningFacilityType type, MiningFacilityData data)
+        private float GetIncome(PlayerId owner, MiningFacilityType type, MiningFacilityData data)
         {
-            if (type != MiningFacilityType.AsteroidMiner || _game.GameMode == GameMode.Survival) return data.Income;
+            if (type != MiningFacilityType.AsteroidMiner) return data.Income;
             int spots = 0;
             foreach (ICaptureSiteDirectory directory in _sites)
                 foreach (ICaptureSite site in directory.Sites)
                     if (site.Kind == CaptureSiteKind.Mining) spots++;
-            return spots == 0 ? data.Income : MiningPool.GetSpotIncome(_roster.Players.Count, spots);
+            if (spots == 0) return data.Income;
+            if (_game.GameMode != GameMode.Survival) return MiningPool.GetSpotIncome(_roster.Players.Count, spots);
+            int defenders = 0;
+            foreach (PlayerSlot player in _roster.Players)
+                if (player.Id == owner || _roster.IsAllied(owner, player.Id)) defenders++;
+            return MiningPool.GetSurvivalSpotIncome(defenders, spots);
         }
     }
 }

@@ -9,5 +9,12 @@ namespace EmpireAtWar.Models.Economy
         public const float PER_PLAYER = 200f;
 
         public static float GetSpotIncome(int playerCount, int spotCount) => PER_PLAYER * playerCount / spotCount;
+
+        /// <summary>
+        /// Survival: the defenders hold the whole ring, so it pays them what half a skirmish map pays each side twice
+        /// over: <see cref="PER_PLAYER"/> × 2 per defender, shared by the ring's spots (team shares are split later).
+        /// </summary>
+        public static float GetSurvivalSpotIncome(int defenderCount, int spotCount) =>
+            PER_PLAYER * 2f * defenderCount / spotCount;
     }
 }

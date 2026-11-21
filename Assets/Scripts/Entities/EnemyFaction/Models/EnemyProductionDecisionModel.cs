@@ -11,7 +11,8 @@ namespace EmpireAtWar.Entities.EnemyFaction.Models
         Defense = 3,
         Level = 4,
         Research = 5,
-        SecondStation = 6
+        SecondStation = 6,
+        SecondStationLevel = 7
     }
 
     public readonly struct EnemyProductionSnapshot

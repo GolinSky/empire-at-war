@@ -6,6 +6,8 @@ namespace EmpireAtWar.Services.Enemy
     {
         /// <summary>A station upgrade is building; another cannot be bought until it completes.</summary>
         bool IsUpgradingStation { get; }
+        /// <summary>A second-station upgrade is building; the next one waits until it completes.</summary>
+        bool IsUpgradingSecondStation => false;
         bool HasActiveProduction => false;
         bool PriorityConstructionPending { get; set; }
 

@@ -47,6 +47,7 @@ namespace EmpireAtWar.Tests.Editor
         private readonly RecoveryPolicyStub _recovery = new RecoveryPolicyStub();
         private const float HELD_ZONE_RADIUS = 10f;
         private ZoneSourceStub _zoneSource;
+        private BaseAccessStub _baseAccess;
         private EntityLocator _entities;
         private PlayerRoster _zoneRoster;
         private long _nextEntityId;
@@ -57,13 +58,17 @@ namespace EmpireAtWar.Tests.Editor
             _recovery.IsActive = false;
             _recovery.HasAnchor = false;
             _recovery.Safe = true;
-            _root = new GameObject(nameof(EnemyStructurePlacementServiceTests));
+            _recovery.Threat = null;
+            _root =new GameObject(nameof(EnemyStructurePlacementServiceTests));
             _map = new MapStub();
             _zones = new ZonesStub();
             _zoneSource = new ZoneSourceStub();
             _entities = new EntityLocator();
             _zoneRoster = TestPlayers.CreateDuel();
             _nextEntityId = 1;
+            Transform home = new GameObject("Home station").transform;
+            home.SetParent(_root.transform);
+            _baseAccess = new BaseAccessStub(_map, new BaseEntityStub(_nextEntityId++, home));
             _stationPrefab = CreatePrefab(Vector3.one * 10f);
             _structurePrefab = CreatePrefab(Vector3.one * (32f / Mathf.Sqrt(3f)));
             _enemyStructurePlacementService = CreateService();
@@ -85,8 +90,8 @@ namespace EmpireAtWar.Tests.Editor
                 zones: _zones, spawnRule: spawnRule, structureClearance: structureClearance,
                 vision: vision, areas: _areas,
                 owner: roster.Get(TestPlayers.Enemy), stationPrefab: _stationPrefab,
-                productionAccess: new SelfProductionAccess(TestPlayers.Enemy, new StationRegistry(new EntityLocator()),
-                    roster), recovery: _recovery, zoneSource: _zoneSource, world: new AiWorldSnapshot(_entities),
+                productionAccess: _baseAccess, recovery: _recovery, zoneSource: _zoneSource,
+                world: new AiWorldSnapshot(_entities),
                 factionModel: new EnemyFactionModel(null, CreateRoster()), relations: roster);
         }
 
@@ -133,6 +138,7 @@ namespace EmpireAtWar.Tests.Editor
             public bool HasAnchor { get; set; }
             public bool Safe { get; set; } = true;
             public Vector3 Anchor { get; set; }
+            public Vector3? Threat { get; set; }
             public string DeferredReason => "noAnchor";
             public bool TryGetBuildAnchor(out Vector3 position) { position = Anchor; return HasAnchor; }
             public bool IsPlacementSafe(Vector3 position, float clearance) => Safe;
@@ -140,6 +146,7 @@ namespace EmpireAtWar.Tests.Editor
             {
                 snapshot.Clear();
                 if (!Safe) snapshot.Add(0f, 0f, 100000f);
+                if (Threat is Vector3 threat) snapshot.Add(threat.x, threat.z, 50f);
             }
             public float GetNearestHostileDistance(Vector3 position) => float.PositiveInfinity;
             public void CopySafeAlliedZoneBounds(List<Bounds> bounds) => bounds.Clear();
@@ -467,6 +474,137 @@ namespace EmpireAtWar.Tests.Editor
                 Id = id;
                 Transform = transform;
                 Type = type;
+            }
+
+            public IHardPointModel[] GetShipUnits(HardPointType hardPointType) => Array.Empty<IHardPointModel>();
+
+            public bool TryGetFacade<TFacade>(out TFacade entityFacade) where TFacade : IEntityFacade
+            {
+                if (this is TFacade facade)
+                {
+                    entityFacade = facade;
+                    return true;
+                }
+                entityFacade = default;
+                return false;
+            }
+
+            public TFacade GetFacade<TFacade>() where TFacade : IEntityFacade
+            {
+                if (TryGetFacade(out TFacade facade)) return facade;
+                throw new InvalidOperationException($"Entity {Id} has no {typeof(TFacade).Name}.");
+            }
+        }
+
+        [Test]
+        public void LostMainStation_PlacementFollowsTheLivingSecondStationAndAvoidsTheWreck()
+        {
+            _map.SetBounds(-1500f, 1500f);
+            _map.Station = new Vector3(-600f, 0f, -600f);
+            Assert.That(_enemyStructurePlacementService.TryGetPosition(out _), Is.True);
+            Transform second = new GameObject("Second station").transform;
+            second.SetParent(_root.transform);
+            second.position = new Vector3(600f, 0f, 600f);
+            _baseAccess.Base.IsDestroyed = true;
+            _baseAccess.Base = new BaseEntityStub(_nextEntityId++, second);
+            _baseAccess.FollowMap = false;
+
+            Assert.That(_enemyStructurePlacementService.TryGetPosition(out Vector3 position), Is.True);
+            Assert.That(Vector3.Distance(position, second.position), Is.LessThan(Vector3.Distance(position, _map.Station)));
+            Assert.That(_enemyStructurePlacementService.CanPlaceMiner, Is.False, "The turtle after a base loss pauses miners.");
+        }
+
+        [Test]
+        public void LostBaseArea_IsClosedToPlacementForTheBattle()
+        {
+            _map.SetBounds(-1500f, 1500f);
+            _map.Station = new Vector3(-600f, 0f, -600f);
+            Assert.That(_enemyStructurePlacementService.TryGetPosition(out _), Is.True);
+            Transform second = new GameObject("Second station").transform;
+            second.SetParent(_root.transform);
+            // The new base stands inside the old one's closed area: nothing is placed around it there.
+            second.position = _map.Station + new Vector3(150f, 0f, 0f);
+            _baseAccess.Base.IsDestroyed = true;
+            _baseAccess.Base = new BaseEntityStub(_nextEntityId++, second);
+            _baseAccess.FollowMap = false;
+
+            bool found = _enemyStructurePlacementService.TryGetPosition(out Vector3 position);
+            Assert.That(found, Is.True, "The map-wide search still finds a point outside the closed area.");
+            Assert.That(Vector3.Distance(position, _map.Station), Is.GreaterThan(400f));
+        }
+
+        [Test]
+        public void NoLivingBase_SearchesNothing()
+        {
+            _baseAccess.Base.IsDestroyed = true;
+
+            Assert.That(_enemyStructurePlacementService.TryGetPosition(out _), Is.False);
+            Assert.That(_enemyStructurePlacementService.TryGetSecondStationPosition(out _), Is.False);
+            Assert.That(_enemyStructurePlacementService.CanPlaceMiner, Is.False);
+        }
+
+        [Test]
+        public void HostileNearTheBase_PausesMiners_AndPlacementFacesAwayFromIt()
+        {
+            _map.SetBounds(-1500f, 1500f);
+            _map.Station = Vector3.zero;
+            Assert.That(_enemyStructurePlacementService.CanPlaceMiner, Is.True);
+            _recovery.Threat = new Vector3(500f, 0f, 0f);
+
+            Assert.That(_enemyStructurePlacementService.CanPlaceMiner, Is.False);
+            Assert.That(_enemyStructurePlacementService.TryGetPosition(out Vector3 position), Is.True);
+            Assert.That(position.x, Is.LessThanOrEqualTo(0f), "Miners go on the half of the base away from hostiles.");
+        }
+
+        private sealed class BaseAccessStub : IProductionAccess
+        {
+            private readonly MapStub _map;
+            public BaseEntityStub Base { get; set; }
+            /// <summary>The base stands at the map's station slot, wherever a test moves it.</summary>
+            public bool FollowMap { get; set; } = true;
+            public PlayerId ProductionHost => TestPlayers.Enemy;
+            public bool CanProduce => !Base.IsDestroyed;
+            public bool HasHostBase => CanProduce;
+
+            public BaseAccessStub(MapStub map, BaseEntityStub productionBase)
+            {
+                _map = map;
+                Base = productionBase;
+            }
+
+            public bool TryGetProductionBase(out IEntity productionBase)
+            {
+                productionBase = CanProduce ? Base : null;
+                if (CanProduce && FollowMap) Base.Transform.position = _map.Station;
+                return CanProduce;
+            }
+        }
+
+        private sealed class BaseEntityStub : IEntity, IHealthModelObserver, IEntityTransformFacade
+        {
+            public event Action OnDestroy { add { } remove { } }
+            public event Action OnValueChanged { add { } remove { } }
+
+            public long Id { get; }
+            public Transform Transform { get; }
+            public IHealthModelObserver HealthModel => this;
+            public PlayerId Owner => TestPlayers.Enemy;
+            public ShipClass ShipClass => ShipClass.Structure;
+            public IReadOnlyList<IReadOnlyHardPointModel> HardPointModels => Array.Empty<IReadOnlyHardPointModel>();
+            public float Hull => 1f;
+            public float HullPercentage => 1f;
+            public float Shields => 0f;
+            public float ShieldPercentage => 0f;
+            public bool IsDestroyed { get; set; }
+            public bool IsLostShieldGenerator => false;
+            public bool HasUnits => !IsDestroyed;
+            public bool HasLiveHardPoints => true;
+            public bool HasShields => false;
+
+            public BaseEntityStub(long id, Transform transform)
+            {
+                Id = id;
+                Transform = transform;
             }
 
             public IHardPointModel[] GetShipUnits(HardPointType hardPointType) => Array.Empty<IHardPointModel>();

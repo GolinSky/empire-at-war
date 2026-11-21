@@ -125,6 +125,20 @@ namespace EmpireAtWar.Tests.Editor
             Assert.That(perMember, Is.EqualTo(MiningPool.PER_PLAYER).Within(0.0001f));
         }
 
+        [TestCase(1, 6)]
+        [TestCase(2, 8)]
+        [TestCase(3, 12)]
+        public void SurvivalPool_PaysEachDefenderTheSameForTheWholeRing(int defenders, int spots)
+        {
+            // The defenders hold the whole ring and split each spot's income between them.
+            float perDefender = MiningPool.GetSurvivalSpotIncome(defenders, spots) * spots / defenders;
+            float skirmishHalfMap = MiningPool.GetSpotIncome(2, 8) * 4f;
+
+            Assert.That(perDefender, Is.EqualTo(MiningPool.GetSurvivalSpotIncome(1, 6) * 6f).Within(0.0001f));
+            Assert.That(perDefender, Is.EqualTo(2f * skirmishHalfMap).Within(0.0001f),
+                "The whole ring pays a defender what the whole skirmish map would.");
+        }
+
         [Test]
         public void SecondStation_RaisesIncomeWhileItStands()
         {

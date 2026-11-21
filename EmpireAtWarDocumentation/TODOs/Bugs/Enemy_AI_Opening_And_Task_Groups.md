@@ -1,27 +1,101 @@
 ---
 category: Bugs
-status: done
+status: in-progress
 created: 2026-11-19
 follows: "[[TODOs/Bugs/Enemy_AI_Economy_Strategy]]"
-reopened: 2026-11-20
-completed: 2026-11-20
-acceptance: pending-user
+reopened: 2026-11-21
 ---
 # Enemy AI Opening and Task Groups
 
-## Status (2026-11-20, round 7 implemented)
+## Status (2026-11-21, W1–W13 implemented)
+- W1–W7 and W9–W13 implemented and compiled; tests ran on the user's request (see "Open work — implementation notes"). Still open: **W8 user review** of the role flags (AI does not read them yet) and **W14** (Jenkins release build + Editor battle, user gates).
+- Rounds are history. Everything still to do is in **Open work** below.
+- Rounds 1–7, the Rebellion balance changes, the economy normalization and the compact AI log are implemented and committed.
+- Tests run green on the user's request: full EditMode 4,451 / 4,451 (2026-11-20 18:56); `EnemyAi` 587, `Economy` 137, `Core` 169, `GameFlow` 220, `Navigation` 387, `BattleInput` 447 (2026-11-21).
+- Not verified in a battle: round 7, Rebellion balance, economy normalization, attack-move rework, squadron rework, compact log. They wait for the same playtest → [[TODOs/User_Acceptance_Queue]].
+
+## Decisions (user, 2026-11-21)
+- **Capture wings:** cheapest fighter first. Interceptors are also bought when the money is there: decided in battle from money left after the mandatory bill, no fixed credit threshold. Reason: interceptors are faster and use a second build queue.
+- **Rebellion levels 4–5 damage / prices:** ignored here; the user cut prices in another task.
+- **Survival mining:** normalize like skirmish.
+- **Opening battle asteroid:** any hostile unit in the zone triggers it (as built). Closed.
+- **Attack-move capture pull-back:** fix now.
+- **Abilities:** the AI uses the auto-ability system for every ability; no AI rules of its own.
+- **Ship choice:** role labels per ship (flags) so the AI picks by role and ship class, not by price alone.
+- **Second station:** build it early (income bonus, buffed station).
+- **Ships die fast (median life 44 s):** dropped from this plan; the user balances durability (stations and platforms already buffed).
+- **Numeric order-rate gate:** removed. No hard-coded orders-per-minute limit.
+- **Spawn telemetry:** one merged `notOpen` counter accepted; the "raise wing vision" fallback is closed (149 / 151 spawn attempts succeeded).
+- **W10 and W11:** accepted (stall by site changes; keep the attack target).
+- **Tests:** only relation and wiring tests; no tuned values (commit `271d02d4c`, `AGENTS.md` "Never pin tuned balance values").
+
+## Explanations asked for (2026-11-21)
+- **Stall measure.** Agreed: a zone force that changes no site owner for 120 s leaves. Built: it leaves when the zone's *structure picture* (own structures, hostile statics, held flag) is unchanged for 120 s. Difference: killing a satellite the enemy rebuilds counts as progress in the built version, so a siege like 23:11 (satellite 15 rebuilt within 1 s each time) never counts as stalled. → W10.
+- **Order re-issue.** Agreed: re-send only when the target or point changes. Built: an order that has *ended* is re-sent at once (three order-repair tests need it). Measured 17:44: that path sent 2 of 2,127 AI ship orders → harmless. The churn is elsewhere: 1,427 orders (67 %) are `Attack` re-targets from the executor; `None` orders: executor 67, commander 53. Median 8 orders per ship-minute. → W11.
+- **Why an orders-per-minute gate existed.** Battle 13:11: ships got `Attack` → `None` loops and sat idle 30+ s after spawning; each new order resets aim, facing and the combat hold. The number was a proxy for "ships are re-ordered before they act". Replaced by W11's rule (keep the target), no numeric limit.
+- **Surplus buying.** Agreed: "money above 2 × the unit being saved for → also buy an affordable ship". A unit being saved for is unaffordable by definition, so it was built as: after a purchase with money ≥ 2 × its price, buy one more ship in the same cycle, from level 2. Fired 5 times in 17:44. It is not what limits spending: with 48,000–57,000 banked (18:01–19:01) the AI stood at 118–120 of 120 unit capacity. No change planned.
+- **Why no bomber rule was decided.** G8 only added the `raidSkip` row and deferred the rule to "after the next battle"; nobody acted on the 17:44 rows. They say: `noBombers` 10, `noKnownMine` 5, `notWinnable` 5, `holding` 2 → the AI mostly has no bombers and knows no mine, because bombers are bought only for mines it has seen. → W9.
+
+## Open work (all findings; 2026-11-21)
+### P0
+- [x] **W1 Second station levels up.** `EnemyProductionStrategy.TryBuySecondStationLevel`: station stands ∧ level < main level ∧ none queued ∧ affordable ∧ nothing mandatory pending → buy, one at a time; after the main station falls its upgrades rank before ships. `EnemyFactionController`: accept the request, real build time, `SecondStationLevelModel.CompleteLevelUpgrade()`, refund when the station dies. (was L1–L3)
+- [x] **W2 Second station early.** From level 2 its price is reserved before ships (like the level-upgrade reserve), so "buy what fights now" cannot starve it (17:44: bought 6:36). Bonus today: +25 % station income.
+- [x] **W3 Placement follows the living base.** `EnemyStructurePlacementService.GetStationCenter()` → `IProductionAccess.TryGetProductionBase`; no living base → no miner, platform-ring or second-station search. A destroyed own station closes station radius + 400 around the wreck for the battle. Miners: none while a known hostile ship is within 1,000 of the base or the turtle runs; then one per 10 s on the side away from the hostiles. (was L9–L11)
+- [x] **W4 Wing commander and the squadron rework.** `ISquadron.IsEngaging`; `IssueOrder` skips the capture-hold `MoveTo` and the bomber-hold, station-defence and home attack-moves while the wing is engaged within its idle leash; a wing pulled > 120 from an uncontested spot returns by `MoveTo`. Beacon `MoveTo` stays unconditional. (was L5–L6)
+- [x] **W5 Capture pull-back (attack-move).** `EnemyTaskForceExecutor.ExecuteCapture`: the 5 s "stalled" pull-back applies only to a ship that has not been inside the circle since its order; ships that arrived and went out to fight are bounded by the leash only.
+- [x] **W6 Wing purchase.** `TrySelectSquadron`: capture wings = cheapest `Fighter`-class type until the capture-wing target is filled. An interceptor wing is added in parallel (own pipeline) when money − pending mandatory costs (miners, level reserve, satellites, mines, W2) ≥ its price. Elite fighters and extra interceptors only through `TrySelectCounterUnit`. (was L7)
+- [x] **W7 Abilities fully on the auto system.** Lock S-Foils, Replenish Wingmen, Lucky Shot and Gravity Well get an auto role or `IShipAbilityAutoUseRule`, used by player auto-power and AI alike. Delete `ShipAbilityAiUse`, the AI target picking in `EnemyShipAbilityController` and `AbilityUseChance` / `AbilityTargetPrecision`; the controller only runs `AutoPowerDecider` for AI ships.
+  - Consequence: difficulty no longer changes ability use. Player auto-power also gains these four abilities.
+
+### P1
+- [ ] **W8 Ship role labels.**
+  - `[Flags] enum ShipRole` on ship data. Proposed flags: `Balanced`, `Brawler` (durable for its class), `Dps`, `Fragile`, `Fast`, `Slow`, `Carrier`, `MissileSpecialist` (hull damage), `IonSpecialist` (shield damage), `AntiStrikecraft`, `Artillery`, `Support`.
+  - Examples (user): Venator = `Carrier | Balanced`; Recusant = `Dps | Fast | Fragile`; Victory I = `MissileSpecialist | Slow | Fragile`.
+  - AI: pick the need (answer hostile hull / shields / wings / carriers) → candidates with the matching role inside the tier span → then price. Replaces price-led choice (Peleset over Recusant) and the J3 value exemption.
+  - Validation tests (relations, not values): `Carrier` ⇒ hangar bays > 0; `MissileSpecialist` / `IonSpecialist` ⇒ that weapon family is the largest share of its loadout; `Fast` / `Slow` ⇒ above / below its class median speed; `Brawler` / `Fragile` ⇒ above / below its class median durability; every ship has ≥ 1 flag.
+  - Open inside this step: the user reviews the flag list and the per-ship assignment (≈ 77 ships) before the AI reads them.
+- [x] **W9 Bomber raids.** A hostile-owned mining site counts as a raid target without having been seen (site ownership is shown on the map; verify it is public to players, else keep the sight rule). Bombers are bought for such sites (cap 3 per site stays) and raid together with their group's fighters. `notWinnable` → wait for the group, never go alone.
+- [x] **W10 Stall by result as agreed.** `IsStalledByResult`: no site in the zone changed to the AI's team for 120 s → zone marked like a retreat. Destroyed or rebuilt statics do not count. Held zones under attack stay exempt. Accepted by the user 2026-11-21 (replaces the built measure).
+- [x] **W11 Keep the attack target.** `EnemyTaskForceExecutor` EngageLocal: a ship keeps its `Attack` target until it is destroyed, cloaked or out of reach; a new target only then. No numeric gate. Accepted by the user 2026-11-21.
+- [x] **W12 Survival mining normalized.** Survival mine income = `MiningPool.PER_PLAYER` × 2 × defenders / ring spots (the defenders hold the whole "map"), split between defenders. Small solo (6 spots) 67 per spot; Medium 2 defenders (8 spots) 50 each per spot; whole ring = 400 per defender in every setup.
+
+### P2
+- [x] **W13 Tests, relations only.** Second-station upgrade bought / not above main / refunded; placement origin follows the living base, nothing inside the closed circle; no order to an engaged wing near its point; capture pull-back only before first entry; capture-wing choice (fighter first, interceptor with spare money); every ability has an auto rule; role-flag validation (W8); survival pool pays the same per defender for the whole ring. Old gaps: turtle orders, route defenders, patrol wing and beacon, lone wing, bomber hold, station platform ring, cheapest platform for a small fleet, tier floor. (was L4, L8, L12)
+- [ ] **W14 Verification still owed.** Compile the compact AI log with release defines (next Jenkins player build) and read one host-side file. One Editor battle for the attack-move risks: station defenders that never settle against a moving attacker; losses on the approach.
+
+### Open work — implementation notes (2026-11-21)
+- [x] W1 `EnemyProductionStrategy.IsSecondStationLevelDue` / `TryBuySecondStationLevel` (after miners, priority income research and a due level; before combat research, platforms, ships). `EnemyFactionController` accepts `SecondStationLevelUnitRequest` (stands, next level, < main level, one at a time via `IsUpgradingSecondStation`), real build time, `CompleteLevelUpgrade()`, refund on `BuiltChanged(false)`. Restored upgrades keep their time left. Telemetry: `purchase` category `SecondStationLevel`; `station` row `secondLevel=`.
+- [x] W2 second station bought at 1 × price; while wanted and unaffordable its price is held before ships/platforms/combat research (`GetSecondStationReserve`); same hold for second-station upgrades once it is the base.
+- [x] W3 `EnemyStructurePlacementService.TryGetStationCenter` → living base of the host; none → no search. Lost base (polled: tracked base destroyed) closes station radius + 400 for the battle. `CanPlaceMiner`: no hostile placement threat within 1,000 of the base, not within `TURTLE_SECONDS` of a loss. Lost miners rebought one per 10 s (`MINER_REBUY_INTERVAL`); station-ring search uses the half away from the hostile centroid.
+- [x] W4 `ISquadron.IsEngaging` + `IdleLeashRadius`; `EnemyWingOrderRules.KeepsFight` skips station-defence, bomber-hold, capture and home orders for an engaged wing inside its leash; `ReturnsByMove`: a wing that reached an uncontested hold returns by `MoveTo`. Beacon unchanged.
+- [x] W5 `EnemyTaskForceExecutor._captureEntered`: the 5 s stall pull-back only for ships never inside the circle.
+- [x] W6 `TrySelectSquadron(captureWing)`: cheapest `Fighter` (interceptor only if no fighter); interceptors and elite fighters never in the rotation. `TryBuyParallelInterceptor`: one interceptor on its own pipeline while capture wings are missing, when money − (missing miners, due level, second-station reserves) ≥ price, no priority construction pending.
+- [x] W7 `LockSFoilsSettings` (auto-use: travelling; new `IShipAbilityAutoStopRule`: stop when not travelling), `ReplenishWingmenSettings` and `LuckyShotSettings` auto-use rules (targeted rules take `AutoPowerCombatSnapshot.FindTarget`), Gravity Well role Engage. `AutoPowerDecider` gets a cancel callback (`ShipAbilityService.TryRequestCancel` for players). `ShipAbilityAiUse`, `aiUse`, `AbilityUseChance`, `AbilityTargetPrecision`, `AbilityDecisionInterval` deleted; `EnemyShipAbilityController` only runs the decider.
+- [ ] W8 `ShipRole` flags + `ShipData.roles`; first proposal written to all 77 ships by `Tools/Empire At War/Units/Ships/Propose Ship Roles` (`ShipRoleRules`: durability ±15 %, speed ±10 %, guns +15 % vs class median; loadout shares). Matches Recusant; Venator came out Fragile (user: Balanced), Victory I Balanced (user: Fragile). **User reviews flags; AI choice by role not wired.**
+- [x] W9 site ownership is not public (minimap shows last seen owner) → sight rule kept. Mine and satellite raids take the group's fighters along; bombers never raid alone.
+- [x] W10 `EnemyZoneObjective.OpenSites` (sites not owned by the team); stall when no site turned to the team (fewer open sites or newly held) for 120 s (`IsStallProgress`).
+- [x] W11 `EnemyAttackTargetRules.KeepsTarget` (destroyed / cloaked / beyond 1.5 × weapon range + target radius) for EngageLocal strike attacks.
+- [x] W12 `MiningPool.GetSurvivalSpotIncome` = 200 × 2 × defenders / ring spots; whole ring = 400 per defender.
+- [x] W13 tests: `EnemyOrderRulesTests` (new), `ShipRoleValidationTests` (new, Ships), placement (4 new), controller second-station upgrade, strategy W1/W6, `EnemyShipAbilityControllerTests` rewritten, catalog "every ability has a role or rule", survival pool.
+- Verification 2026-11-21 (EditMode, standard, no explicit): EnemyAi 596/596, Abilities 231/231 (after fixing a factory-test clash), Economy 141/141, Ships 327/327, Squadrons 232/232, Core 169/169, GameFlow 221/221, Balance 70/72 — 2 failures from `d181ed8e6`, not this work: `ShipFactions_DoNotShareShieldRegenTierTables` (Republic Victory/Tector use Empire ship data, Empire Quasar Fire uses Rebellion data) and `Grid_ShowsEveryTableAndTierAndEditsDraft` (no draft change on cell edit).
+- Reusable guidance: none extracted yet; rules live in code docs (`EnemyWingOrderRules`, `EnemyAttackTargetRules`, `ShipRoleRules`).
+
+### Closed or ignored (no work)
+- Rebellion levels 4–5 balance (ignored, other task). Ship life gate (user balances). Opening asteroid trigger (any unit, accepted). Spawn telemetry counter (accepted). Wing vision fallback (closed). Surplus buying (explained, kept). Republic ARC-170 / V-Wing at level 5 (balance owner, not this plan). "Held zone with no site left" risk (fixed by E3c in round 5).
+
+## Status history (2026-11-20, round 7 implemented)
 - Round-6 playtest played 17:44 (Rebellion AI vs Empire). User: start as good as before; Rebellion ship selection awful. Reopened and closed again the same day.
-- Round 7 (J1, J2) implemented and compiled 2026-11-20, uncommitted. Notes → "Round 7" at the end. Tests updated, not run (local override).
+- Round 7 (J1–J3) implemented 2026-11-20 and committed. Notes → "Round 7". Tests ran green later (see Status).
 - Acceptance → round-7 playtest gates (user; [[TODOs/User_Acceptance_Queue]]). A failed gate reopens this plan.
 - Round 6 (G1–G11) implemented and compiled 2026-11-20, commit `9d0f57830`. Notes → "Round 6 — implementation notes".
 - Round 5 (E1–E12) implemented 2026-11-20, commit `59a2c0776`; playtest 15:48: start and early mid-game perfect, mid-to-late bad.
 - Process (user): implement the whole round first, then one playtest.
-- Rebellion vs Empire battle still not played.
+- Rebellion (AI) vs Empire was played 2026-11-20 17:44.
 
 ## Outcome of rounds 1–4 (closed 2026-11-20, reopened the same day)
 - All scope implemented across rounds 1–4 (A1–A7, B1–B9, C1–C7, D1–D5, I18, I19). `EnemyAi` EditMode 561/561.
 - Gate battle played 13:11 → failed (see Evidence — battle 2026-11-20 13:11).
-- Known risk, not verified: a held zone with no candidate site left gives its zone group nothing to capture.
+- The "held zone with no candidate site" risk was fixed in round 5 (E3c).
 - Reusable guidance → [[Architecture/Enemy_AI_Objectives]] (sections "Wing capture round 2" and "Rounds 3–4").
 
 ## Goal
@@ -715,7 +789,7 @@ Files: `…/BattleTelemetry/Loading_20261120_174422_ai.csv`, `_ai_orders.csv`, `
 - **K4 (P1) Ships die fast.** 177 ships, median life 44 s; 145 spawned within 900 of home, 96 died there. Fleet advantage 0.07–0.38 from 3:00 to 15:00.
 - **K5 (P2) Bombers.** `raidSkip`: noBombers 10, noKnownMine 5, notWinnable 5, holding 2 (22 rows only).
 
-## Round 7 (2026-11-20; implemented, compiled, tests not run)
+## Round 7 (2026-11-20; implemented, committed; tests green 2026-11-20 18:56)
 - [x] **J1 (K1) Tier span.** `EnemyProductionStrategy.IsShipTierAllowed`: a ship is bought only when its `AvailableLevel` ≥ station level − `SHIP_TIER_SPAN` (1). `GetShipTierFloor` lowers the floor until a ship type exists in the span. A critical station takes any ship that arrives in time. Level-1 corvette rule unchanged.
   - Rebellion at level 5 → levels 4–5 only (Bothan 4,800, MC80 Justice 5,000, Mon Cal 8,000, Remonda 9,000, Endurance 10,000, Nebula 12,000, Mediator 15,000, MC80 Independence 20,000).
   - With buy-now and no candidate paid for yet, nothing is ordered until the cheapest allowed ship is paid for (≈ 10 s at 500 /s).
@@ -762,16 +836,16 @@ Source: every faction ship through `UnitCombatProfileCatalog` (the AI's own numb
   - Same price, different role: MC75 vs MC80 Freedom (5,500): durability 14,300 vs 38,000, hull DPS 845 vs 305. Corellian Battlecruiser vs MC30c (3,500): hull DPS 230 vs 403.
 - Effect on the AI: J1 (levels 4–5 only at station level 5) barred Rebellion from its four best ships.
 
-### J3 (implemented, compiled, tests not run)
+### J3 (implemented, committed; `EnemyAi` 587 / 587 on 2026-11-20)
 - [x] `IsShipTierAllowed`: a ship below the tier floor stays buyable while its value per credit is strictly above every available ship of the span (`GetBestSpanValuePerCredit`). Rebellion at level 5 keeps MC80 Freedom, MC75, Liberator, MC30c; Nebulon-B, CD-273, MC50 stay excluded. Empire and Republic: no ship qualifies (best value is in the span).
 - Tests reviewed, no change: fixtures use a uniform value per credit, so the strict comparison never exempts a ship. Not covered: the exemption itself.
 - Data not touched: prices, levels and stats are the user's balance work (unsaved Editor edits were in progress).
 
-### Balance changes (user decision 2026-11-20, applied, uncommitted)
+### Balance changes (user decision 2026-11-20, applied, committed)
 - [x] MC80 Freedom: level 3 → 4 (`RebellionFaction.asset`).
 - [x] MC80b Remonda: price 9,000 → 6,500.
 - [x] Nebula: price 12,000 → 9,000.
-- [ ] Not decided: Rebellion levels 4–5 hull DPS / prices. With the Freedom at level 4 the best level-4 value is 790.
+- Ignored (user, 2026-11-21): Rebellion levels 4–5 hull DPS / prices; prices were cut in another task.
 - Survival mode (`SurvivalWaveData.asset`): a wave holds every ship of its level and below; each tier's quantities sum to 2 × the largest tier size of any faction. The Freedom move changed tier 3 from 7 to 6 ships (sum 14 → 12) and tier 4 from 6 to 7 (sum 12 → 14) for every faction.
   - Rebellion: Freedom removed from wave 3; stays in waves 4–5 with quantity 2.
   - Republic: Arquitens 7 → 6, Heavy Dreadnought 6 → 5, Tector 2 → 4.
@@ -781,7 +855,7 @@ Source: every faction ship through `UnitCombatProfileCatalog` (the AI's own numb
 - Tests: `SurvivalGameplayTests.AuthoredWaves_IncludeEveryUnlockedShipWithEqualTierCounts` reads both assets, so no test code changed; its rules were re-checked by script against the saved data → valid. No other test pins these levels or prices. EditMode not run (`GameFlow`, `Economy`, `EnemyAi` are the categories to run).
 
 
-## Economy normalization (2026-11-21; user decision, implemented, compiled, tests not run)
+## Economy normalization (2026-11-21; user decision, implemented, commit `c2b80479f`; `Economy` 137, `Core` 169, `GameFlow` 220 green)
 ### Problem (user, after 4 online games)
 - Income exploded in 2v2 and on big maps; mining zones stopped mattering; station buffs possibly too strong.
 - Wanted: the same economy progression on every map size and player count.
@@ -802,8 +876,98 @@ Source: every faction ship through `UnitCombatProfileCatalog` (the AI's own numb
 ### Implementation
 - `MiningPool` (`Entities/Economy/Model`): `GetSpotIncome(playerCount, spotCount)`.
 - `MiningFacilityFactory.GetIncome`: `AsteroidMiner` → pool share from `IPlayerRoster.Players.Count` and the `Mining` sites of `ICaptureSiteDirectory`; passed to `MiningFacilityInstaller` as `income`.
-- Edge: Survival → data income (its mining ring is not normalized). No mining spot on the map → data income. Station miners and Tibanna stations → data income.
+- Edge: Survival → data income today; to be normalized (user decision 2026-11-21) → W12. No mining spot on the map → data income. Station miners and Tibanna stations → data income.
 - Edge: spot pay examples: Small 1v1 50; Large 1v1 33; Small 2v2 80 (40 per ally); Large 4v4 73 (18 per ally).
 - Tests: added `MiningPool_PaysTheSamePerPlayerForTheSameShareOfTheMap` (5 setups). Reviewed, no change: `StationIncome_…` and `SecondStation_…` (relations only), `RealEntityCompositionTests` (uses `StationIncome.Get`; asteroid mine without sites → data income).
 - Verification: `unity recompile` → 0 errors. EditMode not run.
 - Open (user playtest): 2v2 and a Large map; income per player should match Small 1v1 for the same map share.
+
+
+## Second station never levels up (2026-11-21; user report, confirmed in source)
+### Finding
+- The AI cannot upgrade its second station at all. It is not forgotten: it is rejected.
+  - `EnemyProductionStrategy` never builds a `SecondStationLevelUnitRequest`; only `FactionUi.CreateSecondLevelUnit` (human) does.
+  - `EnemyFactionController.Purchase` rejects it (`purchaseRejected`); `ExecuteBuild` drops it.
+- Evidence, battle 17:44: second station `entity=213` took over at 15:30 with `hull=72000;shields=48000` (level 1) and still had level-1 values at 20:45; destroyed 22:13 (≈ 90 s of fire). The main station at level 5 had `hull=252000;shields=201600`.
+- Same in battle 13:11: `entity=221;hull=72000;shields=48000`.
+- Existing support the fix can reuse: `SecondStationLevelModel` (level, `CompleteLevelUpgrade`, `ResetForNewStation`), `AiProductionSaveSource` (saves `SecondStationLevel`), `AiStationLevelReplicatedState` (replicates it), `StationLevelData.GetSecondStationLevelFactionData`.
+
+### Values (`StationLevelData.asset`)
+| Upgrade | Price | Build time |
+|---|---|---|
+| Level 2 | 2,000 | 80 s |
+| Level 3 | 3,200 | 120 s |
+| Level 4 | 4,000 | 180 s |
+| Level 5 | 5,500 | 220 s |
+- Total 14,700 credits, 600 s when bought back to back.
+
+## Round 8 — plan (2026-11-21; superseded by "Open work" W1, W13)
+- [ ] **L1 Purchase rule.** `EnemyProductionStrategy.TryBuySecondStationLevel`: second station stands ∧ its level < main station level ∧ no second-station upgrade queued ∧ money ≥ price ∧ no mandatory satellite or mine pending ∧ station not critical → buy. One upgrade at a time.
+  - Order in `EvaluateProduction`: after miners and a due main level, before combat research and ships.
+  - Main station lost → the second station is the base: its upgrade ranks before ships up to the level the main station had.
+- [ ] **L2 Processor.** `EnemyFactionController`: accept the request in `Purchase` (delete the reject), build it with its real build time on its own pipeline id, and on completion call `SecondStationLevelModel.CompleteLevelUpgrade()` in `ExecuteBuild`.
+  - Second station destroyed while an upgrade is queued → refund and remove the request (as the human `FactionService` does).
+  - New second station → level 1 (`ResetForNewStation`, already called by the factory path; verify for the AI).
+- [ ] **L3 Telemetry.** `purchase` row with category `SecondStationLevel`; `station` row gains `secondLevel=`. Add both to the compact release log.
+- [ ] **L4 Tests (`EnemyAi`).** Buys when the second station stands below the main level; not without a second station; never above the main level; one at a time; completion raises the level; station lost → refund. Relations only, no prices pinned.
+- Avoid: upgrading the second station past the main one (money better spent on the fleet); a zero build time (the human pays the time).
+
+### Round 8 playtest gate (user)
+- Second station bought → its first upgrade bought ≤ 30 s after it is placed (money allowing); it reaches the main station's level, or is ≤ 1 level behind when the main station falls.
+
+
+## Squadron rework check (2026-11-21; source read, no battle)
+Changes checked: [[Done/Bugs/Squadron_Idle_And_Guard_Engagement]] (`cc6bd2f23`), [[Done/Bugs/Fighter_Interceptor_Rebalance]] (`4262fc9e4`), attack-move rework (`012594726`).
+- Live values: `SquadronData.GuardRadius` 250 (31 assets), `squadronGuardEngageRadius` 400, `squadronLeashFactor` 1.3 → idle leash 325, guard leash 520.
+
+### Adapts without change
+- Wing ratings and counters: `UnitCombatProfileCatalog` reads weapons and the damage matrix → new interceptor bolts and hulls are picked up.
+- Cheap-wing rule (`EnemyWingPricing.CHEAP_WING_PRICE` 300): Empire (TIE Fighter 275) and CIS (Vulture 180, Belbullab 300) stay "cheap" → opening cap 6, 2 wings on the nearer outer zone. Rebellion and Republic stay at cap 4.
+- Station-defence, raid and scout wings: attack-move arrival search is now 250 (was 70) → they find attackers they used to miss.
+- Idle wings return to their post after a fight (`ResumeCourse` → `FlyTo(LoiterCenter)`) → wings left without an order no longer drift.
+- Hunt is unchanged.
+
+### Problems
+- **N1 (P1) The commander interrupts idle fights every 3 s.** `EnemySquadronCommander.IssueOrder` runs for every wing each `DECISION_INTERVAL` 3 s. A wing whose order completed is idle; idle wings now engage within 250. The next pass re-issues the order (order is `None`, so `Matches` fails) → `Disengage()`.
+  - Capture hold (`MoveTo` within `HOLD_ENTRY_SCALE` × spot radius = 120): engage → pulled back ≤ 3 s later → engage again. Before, idle reach was 70 ≈ the 60 circle, so this was rare.
+  - Wing chased > 120 from the spot → the pass sends `AttackMoveTo(spot)`: it flies back without fighting (new attack-move), then engages under the attack-move order, which has no leash → leaves the circle for the whole fight.
+  - Bomber hold, station defence and "home" attack-moves: same re-issue once per new contact.
+  - Spawn beacon (`MoveTo(beacon)` every pass): the pull-back is wanted there.
+- **N2 (P1) Price-blind wing rotation.** `TrySelectSquadron` picks the type with the fewest copies, then the cheapest. Interceptors now cost 1.4–2.0 × the fighter (A-Wing 1,050 vs X-Wing 750; TIE Interceptor 550 vs TIE Fighter 275; Belbullab 300 vs Vulture 180; V-Wing 750 vs V-19 450).
+  - Rebellion opening, 4 wings: 3,600 instead of 3,000 for fighters only. Empire, 6 wings: 2,475 vs 1,650.
+  - The rotation also reaches TIE Brute 425, Avenger 525, Defender 1,000 once unlocked.
+  - Rebalance result: at equal credits fighters beat interceptors; capture wings need presence and hull, not interceptor bolts.
+  - Conflicts with the user rule of 2026-11-19 "first buys: fighter + interceptor wings" → needs a user decision.
+- **N3 (P2) Escorts react closer.** Carrier wings on Guard engage within max(guarded radius + 250, 400) instead of 800 and drop targets past 520. `ESCORT_THREAT_RADIUS` 2,000 still assigns them early. Bombers that release outside 400 of the ship are answered later. Not verified in battle.
+- **N4 (P2) Republic unlock levels.** Live data: ARC-170 and V-Wing at level 5 → a Republic AI opens with V-19 only (450) plus bombers. Outside this plan; noted for the balance owner.
+
+## Round 8 additions (squadron follow-ups; superseded by "Open work" W4, W6, W13)
+- [ ] **L5 (N1) No re-issue into a fight.** `ISquadron` exposes `IsEngaging`. `IssueOrder` skips the capture-hold `MoveTo`, the bomber-hold, station-defence and home attack-moves while the wing is engaged and within the idle leash (`GuardRadius` × `SquadronLeashFactor`) of its point. The idle leash then brings the wing back to its post by itself. The beacon `MoveTo` stays unconditional.
+- [ ] **L6 (N1) Capture hold stays a hold.** A wing pulled > 120 from an uncontested spot returns by `MoveTo`, not `AttackMoveTo`, so it cannot leave on an unleashed attack-move.
+- [ ] **L7 (N2) Wing choice by job.** Capture wings: cheapest available `Fighter`-class wing. Interceptors and elite fighters only through `TrySelectCounterUnit` (known hostile bombers or fighters). **User decision needed** (replaces "fighter + interceptor first").
+- [ ] **L8 Tests (`EnemyAi`).** Engaged wing near its point gets no new order; idle unengaged wing does; wing far from its hold spot gets `MoveTo`; capture-wing choice ignores a dearer interceptor; counter choice still buys it against known bombers.
+- N3: no change; check escorts in the next Editor battle (`_squadrons.csv`).
+
+
+## Structures placed around the destroyed base (2026-11-21; user report, confirmed in source and log)
+### Finding
+- `EnemyStructurePlacementService.GetStationCenter()` = `_mapModel.GetStationPosition(ProductionHost)` → the main station's **map slot**, alive or not. It is the origin for miners (`SearchPlacement`, line 362), the station platform ring (177), the second-station ring (283) and the map-wide fallback (408).
+- After the main station falls the second station builds, but every search still starts at the dead base.
+- Destroyed positions block only `DESTROYED_POSITION_EXCLUSION_RADIUS` 32 around each wreck, newest 10.
+
+### Evidence — battle 17:44 (main station (−1118, −1139) lost ≈ 15:23; second station at (−1630, −1616))
+| Time | Bought | Where | From dead base | From second station |
+|---|---|---|---|---|
+| 15:23–15:27 | 5 miners | (1114…1436, −926…−1141), owned SE zone | 2,233–2,563 | 2,785–3,142 |
+| 16:24–16:50 | 5 miners | (−1142…−1775, −1651…−1756) | 592–880 | 148–501 |
+| 18:40 / 19:01 | Golan III 12,000 + Empress 10,000 | (−1118, −786), (−1314, −846), `source=stationRing` | ≈ 350 | ≈ 980 |
+| 19:28 / 20:04 | 2 miners | (−1455, −651), (−1352, −542) | 592 / 640 | 981 / 1,109 |
+- 12 miners (12,000 credits) and 22,000 of platforms after the base fell; the first 5 miners were lost within a minute (rebought 16:24).
+- Miners are rebought at once whenever the count is below target (`MiningFacilityCount < MiningFacilityTarget`), with hostiles 970–1,320 from the chosen points.
+
+## Round 8 additions (placement after a station loss; superseded by "Open work" W3, W13)
+- [ ] **L9 Origin = living base.** `GetStationCenter()` → position of `IProductionAccess.TryGetProductionBase` (the station that builds now). No living base of the host → no miner, platform-ring or second-station search.
+- [ ] **L10 Lost-base area is closed.** A destroyed own station closes a circle of its station radius + 400 around the wreck for miners and platforms for the rest of the battle (replaces the 32 exclusion for stations only).
+- [ ] **L11 Miner rebuy rule.** No miner purchase while a known hostile ship is within 1,000 of the living base, or while the turtle after a station loss runs (180 s). Then one miner per 10 s, placed on the half of the base ring away from the known hostile centroid.
+- [ ] **L12 Tests (`EnemyAi`).** Miner origin follows the second station after the main one dies; no placement inside the closed circle; no miner purchase with a hostile ship near the base; platform ring surrounds the living base.
+- Avoid: the map slot as "home" after the station is gone; refilling the miner count while the base is under fire.

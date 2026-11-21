@@ -3,6 +3,7 @@ using EmpireAtWar.Models.Players;
 using System.Collections.Generic;
 using EmpireAtWar.Controllers.Factions;
 using EmpireAtWar.Components.Ship.Health;
+using EmpireAtWar.Entities.BaseEntity;
 using EmpireAtWar.Entities.BaseEntity.EntityFacades;
 using EmpireAtWar.Services.Stations;
 using EmpireAtWar.Entities.DefendPlatform;
@@ -11,6 +12,7 @@ using EmpireAtWar.Entities.EnemyFaction.Models.Combat;
 using EmpireAtWar.Entities.EnemyFaction.Models.Intel;
 using EmpireAtWar.Entities.Units;
 using EmpireAtWar.Entities.MiningFacility;
+using EmpireAtWar.Entities.SpaceStation;
 using EmpireAtWar.Entities.Squadrons;
 using EmpireAtWar.Models.Economy;
 using EmpireAtWar.Models.Factions;
@@ -44,6 +46,7 @@ namespace EmpireAtWar.Services.Enemy
         private const float SURPLUS_SHIP_FACTOR = 2f;
         /// <summary>Ships more than this many levels below the station level are no longer bought.</summary>
         private const int SHIP_TIER_SPAN = 1;
+        private const float MINER_REBUY_INTERVAL = 10f;
 
         private readonly IEnemyPurchaseProcessor _purchaseProcessor;
         private readonly IUnitRequestFactory _requestFactory;
@@ -65,6 +68,7 @@ namespace EmpireAtWar.Services.Enemy
         private readonly EnemyStationPressureTracker _stationPressure;
         private readonly EnemyAiScheduler _scheduler;
         private readonly IEnemySquadronCommander _squadrons;
+        private readonly SecondStationLevelModel _secondStation;
 
         private EnemyAiScheduler.WorkHandle _workHandle;
 
@@ -82,6 +86,8 @@ namespace EmpireAtWar.Services.Enemy
         private string _savingUnit = "";
         private float _savingSince = -1f;
         private float _patrolWingRetryAt = float.NegativeInfinity;
+        private int _peakMiningCount;
+        private float _nextMinerRebuyTime = float.NegativeInfinity;
 
         public float DefenseReserve { get; private set; }
         public bool PriorityConstructionPending
@@ -119,8 +125,10 @@ namespace EmpireAtWar.Services.Enemy
             PlayerSlot owner,
             EnemyStationPressureTracker stationPressure,
             EnemyAiScheduler scheduler,
-            IEnemySquadronCommander squadrons)
+            IEnemySquadronCommander squadrons,
+            SecondStationLevelModel secondStation)
         {
+            _secondStation = secondStation;
             _squadrons = squadrons;
             _scheduler = scheduler;
             _owner = owner;
@@ -198,7 +206,12 @@ namespace EmpireAtWar.Services.Enemy
             bool canPlaceStructure = _enemyStructurePlacementService.TryGetPosition(out _);
             bool hasMiningSelection = TrySelectMiningFacility(
                 out KeyValuePair<MiningFacilityType, FactionData> mining);
-            bool hasMiningOption = canPlaceStructure && hasMiningSelection;
+            // Lost miners come back one per MINER_REBUY_INTERVAL, and none while the base is threatened or after its loss.
+            bool isMinerRebuy = miningFacilityCount < _peakMiningCount;
+            bool minerAllowed = _enemyStructurePlacementService.CanPlaceMiner &&
+                                (!isMinerRebuy || BattleClock.CurrentElapsed >= _nextMinerRebuyTime);
+            _peakMiningCount = Math.Max(_peakMiningCount, miningFacilityCount);
+            bool hasMiningOption = canPlaceStructure && hasMiningSelection && minerAllowed;
             bool canBuildMining = hasMiningOption && IsAffordable(mining.Value);
             // A small fleet takes the cheapest platform: a big one would cost it the ships of its opening.
             bool hasDefenseSelection = TrySelectDefense(shipCount < SAVING_MIN_SHIPS,
@@ -222,7 +235,7 @@ namespace EmpireAtWar.Services.Enemy
                 !hasSquadronRoom || !critical && canOrderShips && _decisionModel.NeedsMinimumFleet(shipCount),
                 hasSquadronRoom, buyNow, out counterId, out counterData);
             bool hasSquadronFallback = !hasCounter && (needsCaptureWings || !critical && !canOrderShips) &&
-                                       TrySelectSquadron(shipCount, out squadron) &&
+                                       TrySelectSquadron(shipCount, out squadron, needsCaptureWings) &&
                                        IsAffordable(squadron.Value);
             // Under station pressure money buys what can fight now; saving for a capital loses the station.
             bool hasShip = hasDefenseShip ||
@@ -292,6 +305,12 @@ namespace EmpireAtWar.Services.Enemy
                 EnemyFactionModel.MINIMUM_ASSAULT_CAPITALS * cheapestCapital + (levelData?.Price ?? 0f) + (incomeTier?.FactionData.Price ?? 0f);
 
             if (TryBuySecondStation(critical)) return;
+            bool secondStationLevelDue = IsSecondStationLevelDue(critical, out FactionData secondLevelData);
+            // From level 2 the second station's price is held before ships, like a due station level, so buying what
+            // fights now cannot starve it; after the main station falls the second station's upgrades are held the same way.
+            float secondStationReserve = GetSecondStationReserve(critical);
+            if (secondStationReserve <= 0f && secondStationLevelDue && IsSecondStationTheBase())
+                secondStationReserve = secondLevelData.Price;
 
             if (!canResearchPriorityIncome && !_stationPressure.IsStationCritical && TryBuyScout(shipCount,
                     hasMiningSelection && miningFacilityCount < miningFacilityTarget,
@@ -323,6 +342,14 @@ namespace EmpireAtWar.Services.Enemy
                 _stationPressure.IsStationCritical,
                 canResearchPriorityIncome);
             EnemyProductionCategory category = _decisionModel.Evaluate(snapshot);
+            // A second-station upgrade follows miners, priority income research and a due station level, and comes
+            // before combat research, platforms and ships.
+            if (secondStationLevelDue && IsAffordable(secondLevelData) &&
+                category is not (EnemyProductionCategory.Mining or EnemyProductionCategory.Level) &&
+                !(category == EnemyProductionCategory.Research && canResearchIncome) &&
+                !(category == EnemyProductionCategory.None && _decisionModel.IsLevelDue(snapshot)) &&
+                TryBuySecondStationLevel(secondLevelData, critical))
+                return;
             if (!_purchaseProcessor.IsUpgradingStation && _purchaseProcessor.HasActiveProduction &&
                 !critical && category is (EnemyProductionCategory.Ship or EnemyProductionCategory.Defense) &&
                 (PriorityConstructionPending || _decisionModel.IsLevelDue(snapshot) ||
@@ -332,6 +359,14 @@ namespace EmpireAtWar.Services.Enemy
             {
                 DefenseReserve = levelData.Price;
                 TrackSaving($"Level{_factionModel.CurrentLevel + 1}");
+            }
+            if (secondStationReserve > 0f && !_decisionModel.NeedsMinimumFleet(shipCount) &&
+                (category is EnemyProductionCategory.Ship or EnemyProductionCategory.Defense ||
+                 category == EnemyProductionCategory.Research && !canResearchIncome))
+            {
+                DefenseReserve = secondStationReserve;
+                TrackSaving(secondStationLevelDue ? $"SecondStationLevel{_secondStation.CurrentLevel + 1}" : "SecondStation");
+                return;
             }
             if (category == EnemyProductionCategory.Ship && _factionModel.CurrentLevel >= 4 &&
                 _stateProvider.CurrentState is (EnemyStrategicState.Consolidate or EnemyStrategicState.AssaultBase or
@@ -350,7 +385,7 @@ namespace EmpireAtWar.Services.Enemy
                                   !_decisionModel.NeedsMinimumFleet(shipCount) &&
                                   (_factionModel.CurrentLevel < 4 || !combatChoice.IsShip ||
                                    !_factionModel.IsAssaultCapital(combatChoice.ShipType, _profileCatalog.Get(combatChoice).ShipClass)) &&
-                                  TrySelectSquadron(shipCount, out squadron) &&
+                                  TrySelectSquadron(shipCount, out squadron, needsCaptureWings) &&
                                   IsAffordable(squadron.Value));
             // Satellites and mines on captured sites are paid before any ship and any extra wing; only missing capture
             // wings keep being bought meanwhile.
@@ -381,8 +416,14 @@ namespace EmpireAtWar.Services.Enemy
                 _ => throw new ArgumentOutOfRangeException(nameof(category))
             };
 
+            // Miners still missing, a due station level and the second station's reserve come before an interceptor.
+            float mandatoryCosts = secondStationReserve +
+                (secondStationLevelDue ? secondLevelData.Price : 0f) +
+                (_decisionModel.IsLevelDue(snapshot) ? levelData.Price : 0f) +
+                (hasMiningSelection ? Math.Max(0, miningFacilityTarget - miningFacilityCount) * mining.Value.Price : 0f);
             if (request == null)
             {
+                if (needsCaptureWings) TryBuyParallelInterceptor(shipCount, mandatoryCosts);
                 return;
             }
 
@@ -414,11 +455,14 @@ namespace EmpireAtWar.Services.Enemy
                 TryBuySurplusShip(moneyBefore, request.FactionData);
             if (category == EnemyProductionCategory.Defense)
                 _nextDefenseBuildTime = BattleClock.CurrentElapsed + DEFENSE_BUILD_INTERVAL;
+            if (category == EnemyProductionCategory.Mining && isMinerRebuy)
+                _nextMinerRebuyTime = BattleClock.CurrentElapsed + MINER_REBUY_INTERVAL;
             if (category == EnemyProductionCategory.Research && !canResearchIncome)
                 _nextCombatResearchTime = BattleClock.CurrentElapsed + COMBAT_RESEARCH_INTERVAL;
+            if (needsCaptureWings) TryBuyParallelInterceptor(shipCount, mandatoryCosts);
         }
 
-        /// <summary>From level 2, once money reaches twice its price and no mandatory satellite or mine waits.</summary>
+        /// <summary>From level 2, once its price is paid and no mandatory satellite or mine waits.</summary>
         private bool TryBuySecondStation(bool critical)
         {
             float now = BattleClock.CurrentElapsed;
@@ -427,7 +471,7 @@ namespace EmpireAtWar.Services.Enemy
                 !_productionAccess.HasHostBase || !critical && PriorityConstructionPending)
                 return false;
             FactionData data = _factionModel.SecondStationData;
-            if (_economyModel.Money < data.Price * (critical ? 1f : 2f) ||
+            if (_economyModel.Money < data.Price ||
                 !CanReserve<SecondStationUnitRequest>(SecondStationUnitRequest.REQUEST_ID, data)) return false;
             _nextStationPlacementCheck = now + STATION_PLACEMENT_RETRY_SECONDS;
             if (!_enemyStructurePlacementService.TryGetSecondStationPosition(out _)) return false;
@@ -439,6 +483,52 @@ namespace EmpireAtWar.Services.Enemy
                 critical, 0f, _stationPressure.EstimatedTimeToLossSeconds);
             return true;
         }
+
+        /// <summary>
+        /// Price of the second station while it is wanted (level 2+, none built, own base standing, nothing mandatory
+        /// pending) but not yet affordable; 0 otherwise.
+        /// </summary>
+        private float GetSecondStationReserve(bool critical)
+        {
+            if (critical || _factionModel.CurrentLevel < 2 || _factionModel.AdditionalStationsBuilt != 0 ||
+                _productionAccess.ProductionHost != _owner.Id || !_productionAccess.HasHostBase ||
+                PriorityConstructionPending)
+                return 0f;
+            FactionData data = _factionModel.SecondStationData;
+            return IsAffordable(data) ||
+                   !CanReserve<SecondStationUnitRequest>(SecondStationUnitRequest.REQUEST_ID, data) ? 0f : data.Price;
+        }
+
+        /// <summary>
+        /// The second station stands below the main station's level and no upgrade of it builds. While the main station
+        /// stands, a critical station or a pending satellite or mine comes first.
+        /// </summary>
+        private bool IsSecondStationLevelDue(bool critical, out FactionData data)
+        {
+            data = null;
+            if (!_secondStation.IsBuilt || _secondStation.CurrentLevel >= _factionModel.CurrentLevel ||
+                _productionAccess.ProductionHost != _owner.Id || _purchaseProcessor.IsUpgradingSecondStation)
+                return false;
+            if ((critical || PriorityConstructionPending) && !IsSecondStationTheBase()) return false;
+            data = _factionModel.GetSecondStationLevelFactionData(_secondStation.CurrentLevel);
+            return data != null;
+        }
+
+        private bool TryBuySecondStationLevel(FactionData data, bool critical)
+        {
+            UnitRequest request = _requestFactory.ConstructSecondStationLevelRequest(data, _secondStation.CurrentLevel);
+            if (!_purchaseProcessor.CanQueue(request.Id, data.MaxCount)) return false;
+            _purchaseProcessor.Purchase(request);
+            EnemyAiTelemetry.RecordPurchase(_owner.Id, _owner.Faction, _stateProvider.CurrentState,
+                EnemyProductionCategory.SecondStationLevel, false, request.Id, data.Price, _economyModel.Money,
+                critical, 0f, _stationPressure.EstimatedTimeToLossSeconds);
+            return true;
+        }
+
+        /// <summary>The main station fell and the second station is the host's production base.</summary>
+        private bool IsSecondStationTheBase() =>
+            _secondStation.IsBuilt && _productionAccess.TryGetProductionBase(out IEntity productionBase) &&
+            productionBase.Owner == _owner.Id && productionBase.TryGetFacade(out ISecondStationFacade _);
 
         private int GetMiningFacilityTarget()
         {
@@ -871,7 +961,7 @@ namespace EmpireAtWar.Services.Enemy
                 canPlaceStructure ||
                 CountReservedSquadrons() > 0 ||
                 !_enemyStructurePlacementService.TryGetScoutTarget(out _) ||
-                !TrySelectSquadron(shipCount, out KeyValuePair<SquadronType, FactionData> scout) ||
+                !TrySelectSquadron(shipCount, out KeyValuePair<SquadronType, FactionData> scout, captureWing: true) ||
                 !IsAffordable(scout.Value))
             {
                 return false;
@@ -885,12 +975,6 @@ namespace EmpireAtWar.Services.Enemy
             return true;
         }
 
-        /// <summary>
-        /// Picks a wing while <see cref="HasSquadronRoom"/>: fighters and interceptors first, the type with the fewest
-        /// copies so two types build side by side, then the cheapest. Bombers only once a hostile mine is known to
-        /// raid (at most <see cref="BOMBERS_PER_HOSTILE_MINE"/> per mine), or when no other type is available. Hero
-        /// wings are never picked here.
-        /// </summary>
         /// <summary>
         /// From level 2 the patrol is a fighter or interceptor wing. When no wing can be spared, the cheapest one is
         /// bought outside the wing cap; one order per <see cref="PATROL_WING_RETRY_SECONDS"/> while it builds.
@@ -918,14 +1002,30 @@ namespace EmpireAtWar.Services.Enemy
             return true;
         }
 
+        /// <summary>
+        /// Picks a wing while <see cref="HasSquadronRoom"/>: the cheapest <see cref="ShipClass.Fighter"/> wing (the
+        /// cheapest interceptor when the faction has no fighter yet). Outside the capture wings, bombers rotate in once
+        /// a hostile mine is known to raid (at most <see cref="BOMBERS_PER_HOSTILE_MINE"/> per mine), and any bomber is
+        /// the last choice. Interceptors come from <see cref="TryBuyParallelInterceptor"/>; elite fighters and extra
+        /// interceptors only as counters. Hero wings are never picked here.
+        /// </summary>
         private bool TrySelectSquadron(
             int shipCount,
-            out KeyValuePair<SquadronType, FactionData> selected)
+            out KeyValuePair<SquadronType, FactionData> selected,
+            bool captureWing = false)
         {
             selected = default;
             if (!HasSquadronRoom(shipCount))
             {
                 return false;
+            }
+
+            bool hasFighter = TrySelectCheapestWing(ShipClass.Fighter, out KeyValuePair<SquadronType, FactionData> fighter) ||
+                              TrySelectCheapestWing(ShipClass.Interceptor, out fighter);
+            if (captureWing && hasFighter)
+            {
+                selected = fighter;
+                return true;
             }
 
             bool found = false;
@@ -945,7 +1045,9 @@ namespace EmpireAtWar.Services.Enemy
                 }
 
                 ShipClass wingClass = _profileCatalog.Get(UnitTypeId.Squadron(option.Key)).ShipClass;
-                if (wingClass == ShipClass.HeroStrikecraft || wingClass == ShipClass.Bomber && bombersWanted && !bomberRoom)
+                bool isCheapFighter = hasFighter && option.Key == fighter.Key;
+                if (wingClass == ShipClass.HeroStrikecraft || wingClass == ShipClass.Bomber && bombersWanted && !bomberRoom ||
+                    wingClass != ShipClass.Bomber && hasFighter && !isCheapFighter)
                     continue;
                 bool isBomber = wingClass == ShipClass.Bomber && !bombersWanted;
                 int count = _unitLimitModel.GetReservedCount<SquadronUnitRequest>(option.Key.ToString());
@@ -963,6 +1065,41 @@ namespace EmpireAtWar.Services.Enemy
             }
 
             return found;
+        }
+
+        /// <summary>The cheapest available wing of <paramref name="wingClass"/> that can be queued now.</summary>
+        private bool TrySelectCheapestWing(ShipClass wingClass, out KeyValuePair<SquadronType, FactionData> selected)
+        {
+            selected = default;
+            bool found = false;
+            foreach (KeyValuePair<SquadronType, FactionData> option in _factionModel.SquadronFactionData)
+            {
+                if (_profileCatalog.Get(UnitTypeId.Squadron(option.Key)).ShipClass != wingClass ||
+                    !IsAvailable(option.Value) ||
+                    !CanReserve<SquadronUnitRequest>(option.Key.ToString(), option.Value) ||
+                    found && option.Value.Price >= selected.Value.Price) continue;
+                selected = option;
+                found = true;
+            }
+            return found;
+        }
+
+        /// <summary>
+        /// While capture wings are missing, one interceptor wing builds beside them on its own pipeline when the money
+        /// left after the mandatory bill (<paramref name="mandatoryCosts"/>) pays for it. Nothing is added while a
+        /// satellite or mine on a captured site waits.
+        /// </summary>
+        private void TryBuyParallelInterceptor(int shipCount, float mandatoryCosts)
+        {
+            if (PriorityConstructionPending || _stationPressure.IsStationCritical || !HasSquadronRoom(shipCount) ||
+                !TrySelectCheapestWing(ShipClass.Interceptor, out KeyValuePair<SquadronType, FactionData> interceptor) ||
+                _purchaseProcessor.GetQueueRemainingTime(interceptor.Key.ToString()) > 0f ||
+                _economyModel.Money - mandatoryCosts < interceptor.Value.Price)
+                return;
+            EnemyAiTelemetry.RecordEvent(_owner.Id, _owner.Faction, "parallelInterceptor",
+                FormattableString.Invariant(
+                    $"unit={interceptor.Key};cost={interceptor.Value.Price};money={_economyModel.Money:F1};mandatory={mandatoryCosts:F1}"));
+            _purchaseProcessor.Purchase(_requestFactory.ConstructUnitRequest(interceptor.Value, interceptor.Key));
         }
 
         /// <summary>

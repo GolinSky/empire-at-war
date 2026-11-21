@@ -39,7 +39,8 @@ namespace EmpireAtWar.Services.ShipAbilities
             _battle = battle;
             _abilities = abilities;
             _tuning = catalog.AutoPower;
-            _decider = new AutoPowerDecider(abilities, combat, autoUse, _tuning, abilities.TryRequestActivation);
+            _decider = new AutoPowerDecider(abilities, combat, autoUse, _tuning, abilities.TryRequestActivation,
+                abilities.TryRequestCancel);
             _abilities.ManualAction += HandleManualAction;
             _entities.EntityRemoved += HandleRemoved;
         }

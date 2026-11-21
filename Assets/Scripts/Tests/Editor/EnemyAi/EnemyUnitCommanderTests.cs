@@ -1095,6 +1095,8 @@ namespace EmpireAtWar.Tests.Editor
             public IHealthModelObserver HealthModel { get; } = new FakeHealthModel(null);
             public UnitTypeId UnitTypeId => UnitTypeId.Squadron(SquadronType.Vulture);
             public Vector3 WorldPosition => Vector3.zero;
+            public bool IsEngaging => false;
+            public float IdleLeashRadius => 0f;
             public FakeSquadron(long id, PlayerId owner) { Id = id; Owner = owner; }
             public void Guard(IEntity friendly, Vector3 offset) => OrdersReceived++;
             public void AttackMoveTo(Vector3 position) => OrdersReceived++;

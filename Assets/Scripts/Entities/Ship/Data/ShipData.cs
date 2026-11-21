@@ -97,5 +97,10 @@ namespace EmpireAtWar.Entities.Ship.Data
         [Tooltip("Baked by Tools/AI/Bake Weapon Loadouts from the view prefab's WeaponComponent hardpoints.")]
         [SerializeField] private List<WeaponLoadoutEntry> weaponLoadout = new List<WeaponLoadoutEntry>();
         public IReadOnlyList<WeaponLoadoutEntry> WeaponLoadout => weaponLoadout;
+
+        [Header("AI Roles")]
+        [Tooltip("Proposed by Tools/AI/Propose Ship Roles from class medians and the weapon loadout; reviewed by hand.")]
+        [SerializeField] private ShipRole roles;
+        public ShipRole Roles => roles;
     }
 }

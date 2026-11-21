@@ -211,6 +211,14 @@ namespace EmpireAtWar.Services.ShipAbilities
             return true;
         }
 
+        /// <summary>Automatic end of a player's lasting ability, through the player command path like a press.</summary>
+        public bool TryRequestCancel(IShipAbilityFacade caster, ShipAbilityId id)
+        {
+            if (!CanCancel(caster, id)) return false;
+            _requestExecution(new[] { caster.Entity }, id, null, true, true);
+            return true;
+        }
+
         private bool CanCancel(IShipAbilityFacade caster, ShipAbilityId id) =>
             TryFindSlot(caster, id, out ShipAbilitySlot slot) &&
             slot.CanCancel;

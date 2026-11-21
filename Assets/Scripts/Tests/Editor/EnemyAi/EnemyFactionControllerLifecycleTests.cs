@@ -913,7 +913,8 @@ namespace EmpireAtWar.Tests.Editor
 
                 controller.RestorePendingBuild(request, 30f);
                 Assert.That(limits.CurrentUnitCapacity, Is.EqualTo(1));
-                controller.Advance(upgrade ? 0f : 30f);
+                // A restored upgrade keeps its build time; with no second station it is refunded when it completes.
+                controller.Advance(30f);
                 if (upgrade)
                 {
                     Assert.That(wallet.RefundCount, Is.EqualTo(1));
@@ -931,6 +932,59 @@ namespace EmpireAtWar.Tests.Editor
                 controller.Advance(30f);
                 Assert.That(wallet.RefundCount, Is.Zero);
                 Assert.That(controller.PendingBuilds, Has.Count.EqualTo(1));
+            }
+            finally { UnityEngine.Object.DestroyImmediate(data); }
+        }
+
+        // W1: the AI upgrades its second station with the real build time, never past the main station's level, one
+        // upgrade at a time, and gets the money back when the station dies first.
+        [TestCase(false)]
+        [TestCase(true)]
+        public void SecondStationUpgrade_BuildsBelowTheMainLevel_AndIsRefundedWhenTheStationFalls(bool stationFalls)
+        {
+            var data = ScriptableObject.CreateInstance<ReinforcementData>();
+            try
+            {
+                var upgrade = new FactionData();
+                SetBackingField(upgrade, nameof(FactionData.MaxCount), 1);
+                SetBackingField(upgrade, nameof(FactionData.BuildTime), 10);
+                var wallet = new TrackingWallet();
+                var model = new EnemyFactionModel(null, null) { CurrentLevel = 2 };
+                var secondStation = new SecondStationLevelModel { IsBuilt = true };
+                var controller = new EnemyFactionController(aiState: new IdleAiState(), model: model, shipFactory: null,
+                    miningFacilityFactory: null, defendPlatformFactory: null, research: null,
+                    economyProvider: new TrackingEconomyProvider(), wallet: wallet, shipSpawnPoints: null,
+                    unitLimitModel: new EnemyUnitLimitModel(), reinforcementData: data,
+                    enemyStructurePlacementService: new UnavailableStructurePlacement(),
+                    productionAccess: new OperationalProductionAccess(), squadronLauncher: null,
+                    squadronCommander: null, owner: TestPlayers.CreateDuel().Get(TestPlayers.Enemy),
+                    playerRegistry: new PlayerRegistry(), stationFactory: null, profiles: null,
+                    secondStation: secondStation, forwardAnchors: NoForwardSpawnAnchors.Instance);
+                controller.Initialize();
+
+                controller.Purchase(new SecondStationLevelUnitRequest(upgrade, 1));
+                controller.Purchase(new SecondStationLevelUnitRequest(upgrade, 1));
+                Assert.That(wallet.SpendCount, Is.EqualTo(1), "One second-station upgrade at a time.");
+                Assert.That(controller.IsUpgradingSecondStation, Is.True);
+
+                if (stationFalls)
+                {
+                    secondStation.HandleLost();
+                    Assert.That(wallet.RefundCount, Is.EqualTo(1));
+                    Assert.That(controller.PendingBuilds, Is.Empty);
+                    controller.LateDispose();
+                    return;
+                }
+
+                controller.Advance(upgrade.BuildTime - 1f);
+                Assert.That(secondStation.CurrentLevel, Is.EqualTo(1), "The upgrade takes its build time.");
+                controller.Advance(1f);
+                Assert.That(secondStation.CurrentLevel, Is.EqualTo(2));
+                Assert.That(controller.IsUpgradingSecondStation, Is.False);
+
+                controller.Purchase(new SecondStationLevelUnitRequest(upgrade, 2));
+                Assert.That(wallet.SpendCount, Is.EqualTo(1), "Never past the main station's level.");
+                controller.LateDispose();
             }
             finally { UnityEngine.Object.DestroyImmediate(data); }
         }

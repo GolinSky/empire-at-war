@@ -6,6 +6,7 @@ using EmpireAtWar.Entities.EnemyFaction.Models;
 using EmpireAtWar.Services.UnitOrders;
 using EmpireAtWar.Ship;
 using UnityEngine;
+using EmpireAtWar.Entities.BaseEntity;
 using GameEntity = EmpireAtWar.Entities.BaseEntity.IEntity;
 using EmpireAtWar.Entities.BaseEntity.Orders;
 using EmpireAtWar.Entities.BaseEntity.EntityFacades;
@@ -65,6 +66,8 @@ namespace EmpireAtWar.Services.Enemy
         private readonly Dictionary<IShipEntity, (float Distance, float ImprovedAt)> _captureApproaches =
             new Dictionary<IShipEntity, (float, float)>();
         private readonly Dictionary<IShipEntity, Vector3> _captureEscortPoints = new Dictionary<IShipEntity, Vector3>();
+        /// <summary>Ships that have been inside the capture circle since the current capture target was set.</summary>
+        private readonly HashSet<IShipEntity> _captureEntered = new HashSet<IShipEntity>();
         private Vector3? _retreatAnchor;
         private Vector3? _guardPosition;
         public string ActionReason { get; private set; } = "";
@@ -116,6 +119,7 @@ namespace EmpireAtWar.Services.Enemy
                 _assignedShips.Clear();
                 _rallyAnchors.Clear();
                 _captureApproaches.Clear();
+                _captureEntered.Clear();
                 _hasCaptureTarget = false;
                 _defenseStation = null;
                 _defensePoints.Clear();
@@ -136,6 +140,7 @@ namespace EmpireAtWar.Services.Enemy
             foreach (IShipEntity ship in _captureApproaches.Keys)
                 if (!context.Receivers.ContainsKey(ship)) _lostShips.Add(ship);
             foreach (IShipEntity ship in _lostShips) _captureApproaches.Remove(ship);
+            _captureEntered.RemoveWhere(ship => !context.Receivers.ContainsKey(ship));
             _lostShips.Clear();
             foreach (IShipEntity ship in _strikeTargets.Keys)
                 if (!context.Receivers.ContainsKey(ship)) _lostShips.Add(ship);
@@ -184,14 +189,15 @@ namespace EmpireAtWar.Services.Enemy
             if (target == null || context.Snapshot.LocalAdvantage >
                 EnemyAiDifficultyProfile.Get(context.Snapshot.Difficulty).RetreatAdvantage)
             {
-                IssueAttackOrHunt(context, decision.CommittedShipCount, target, allowHunt: false, assemble: false);
+                IssueAttackOrHunt(context, decision.CommittedShipCount, target, allowHunt: false, assemble: false,
+                    keepTargets: true);
                 return;
             }
 
             _body.AddRange(context.Ships);
             _strikeShips.Clear();
             _strikeShips.AddRange(context.Ships);
-            IssueStrikeAttack(context, target);
+            IssueStrikeAttack(context, target, keepTargets: true);
         }
 
         private void ExecuteSiteGuard(EnemyStrategicContext context, List<IShipEntity> excluded = null)
@@ -378,6 +384,7 @@ namespace EmpireAtWar.Services.Enemy
             {
                 _assignedShips.Clear();
                 _captureApproaches.Clear();
+                _captureEntered.Clear();
                 _captureEscortPoints.Clear();
             }
             _captureTarget = context.CaptureTarget;
@@ -466,9 +473,13 @@ namespace EmpireAtWar.Services.Enemy
                     approach = (distance, now);
                     _captureApproaches[ship] = approach;
                 }
+                if (distance <= radius) _captureEntered.Add(ship);
                 float leash = Math.Max(FleetCohesion.RADIUS, radius + ship.NavigationRadius * 2f);
                 bool diverted = distance > approach.Distance + leash;
-                bool stalled = distance > radius && now - approach.ImprovedAt >= CAPTURE_APPROACH_STALL_SECONDS;
+                // Only a ship that never reached the circle is stalled; one that arrived and went out to fight is
+                // bounded by the leash alone.
+                bool stalled = !_captureEntered.Contains(ship) && distance > radius &&
+                               now - approach.ImprovedAt >= CAPTURE_APPROACH_STALL_SECONDS;
                 if (sameTarget && !wasEscort && ship.CurrentOrder == UnitOrderType.AttackMove && (diverted || stalled))
                 {
                     // Stay in combat posture: an attack-move to the circle edge, never a Move that ignores hostiles.
@@ -607,7 +618,7 @@ namespace EmpireAtWar.Services.Enemy
 
         private void IssueAttackOrHunt(EnemyStrategicContext context,
             int committed, GameEntity target, bool allowHunt = true, bool assemble = true,
-            IReadOnlyList<IShipEntity> eligibleShips = null)
+            IReadOnlyList<IShipEntity> eligibleShips = null, bool keepTargets = false)
         {
             int count = Math.Min(committed, context.Ships.Count);
             if (target == null && !allowHunt)
@@ -662,7 +673,7 @@ namespace EmpireAtWar.Services.Enemy
                     if (!targeted || !_attackForce.IsScreen(ship) || IsCarrier(context, ship)) _strikeShips.Add(ship);
                     else _supportShips.Add(ship);
                 foreach (IShipEntity ship in _supportShips) _strikeTargets.Remove(ship);
-                if (target != null) IssueStrikeAttack(context, target);
+                if (target != null) IssueStrikeAttack(context, target, keepTargets);
                 else
                 {
                     _strikeTargets.Clear();
@@ -712,9 +723,11 @@ namespace EmpireAtWar.Services.Enemy
 
         /// <summary>
         /// Attack orders go only to strike ships whose target, slot or active order changed. Re-sending an identical
-        /// attack resets the ship's approach and makes its weapons re-sort their candidates.
+        /// attack resets the ship's approach and makes its weapons re-sort their candidates. With
+        /// <paramref name="keepTargets"/> a ship keeps attacking its own target until that one is destroyed, cloaked or
+        /// out of reach (<see cref="EnemyAttackTargetRules.KeepsTarget"/>).
         /// </summary>
-        private void IssueStrikeAttack(EnemyStrategicContext context, GameEntity target)
+        private void IssueStrikeAttack(EnemyStrategicContext context, GameEntity target, bool keepTargets = false)
         {
             List<Vector3> offsets = BattleOffsets(_strikeShips, _strikeShips.Count, target, out bool rebuilt);
             ApplyCarrierStandoff(context, target, offsets);
@@ -723,8 +736,11 @@ namespace EmpireAtWar.Services.Enemy
             for (int i = 0; i < _strikeShips.Count; i++)
             {
                 IShipEntity ship = _strikeShips[i];
-                if (!rebuilt && ship.CurrentOrder == UnitOrderType.Attack &&
-                    _strikeTargets.TryGetValue(ship, out GameEntity previous) && previous == target) continue;
+                GameEntity previous = null;
+                bool attacking = ship.CurrentOrder == UnitOrderType.Attack &&
+                                 _strikeTargets.TryGetValue(ship, out previous) && previous != null;
+                if (attacking && !rebuilt && previous == target) continue;
+                if (attacking && keepTargets && previous != target && KeepsTarget(context, ship, previous)) continue;
                 _strikeTargets[ship] = target;
                 receivers.Add(context.Receivers[ship]);
                 receiverOffsets.Add(offsets[i]);
@@ -761,6 +777,17 @@ namespace EmpireAtWar.Services.Enemy
                     ? footprint.NavigationRadius : 0f;
                 offsets[i] = side.normalized * (targetRadius + ship.NavigationRadius + weaponRange);
             }
+        }
+
+        private static bool KeepsTarget(EnemyStrategicContext context, IShipEntity ship, GameEntity target)
+        {
+            // A destroyed or cloaked target is dropped before its position is read.
+            if (target.HealthModel.IsDestroyed || target.IsCloaked()) return false;
+            float weaponRange = context.Receivers[ship].GetFacade<IUnitCombatObserverFacade>().WeaponRange;
+            float targetRadius = target.TryGetFacade(out INavigationFootprintFacade footprint)
+                ? footprint.NavigationRadius : 0f;
+            return EnemyAttackTargetRules.KeepsTarget(false, false, ship.WorldPosition,
+                target.GetFacade<IEntityTransformFacade>().Transform.position, weaponRange + targetRadius);
         }
 
         /// <summary>A ship whose hangar can still launch or still has squadrons out.</summary>

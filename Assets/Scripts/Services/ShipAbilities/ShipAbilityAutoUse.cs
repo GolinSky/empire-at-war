@@ -16,5 +16,8 @@ namespace EmpireAtWar.Services.ShipAbilities
 
         public bool ShouldActivate(IShipAbilityFacade caster, ShipAbilityDefinition definition) =>
             definition.Settings is IShipAbilityAutoUseRule rule && rule.ShouldAutoActivate(_dependencies, caster);
+
+        public bool ShouldStop(IShipAbilityFacade caster, ShipAbilityDefinition definition) =>
+            definition.Settings is IShipAbilityAutoStopRule rule && rule.ShouldAutoStop(_dependencies, caster);
     }
 }

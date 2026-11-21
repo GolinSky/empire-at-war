@@ -56,9 +56,9 @@ namespace EmpireAtWar.Services.Enemy
         private readonly EnemyZoneEvaluator _evaluator = new EnemyZoneEvaluator();
         private readonly Dictionary<string, float> _belowEvenSince = new Dictionary<string, float>();
         private readonly List<string> _staleSieges = new List<string>();
-        // Per zone with a force: the zone's site signature and since when it is unchanged.
-        private readonly Dictionary<string, (int Signature, float Since)> _flipWatch =
-            new Dictionary<string, (int, float)>();
+        // Per zone with a force: its open sites and hold at the last check, and since when no site turned to the team.
+        private readonly Dictionary<string, (int OpenSites, bool Held, float Since)> _flipWatch =
+            new Dictionary<string, (int, bool, float)>();
         private int _stationCount = -1;
         private float _turtleUntil = float.NegativeInfinity;
         private string _retreatedZoneId;
@@ -268,19 +268,20 @@ namespace EmpireAtWar.Services.Enemy
         }
 
         /// <summary>
-        /// A zone force stalls by result when no site in its zone changed hands (own structures, hostile armed
-        /// structures and the hold all unchanged) for <see cref="STALL_NO_FLIP_SECONDS"/>.
+        /// A zone force stalls by result when no site in its zone turned to the team for
+        /// <see cref="STALL_NO_FLIP_SECONDS"/>. Destroyed or rebuilt structures are no progress.
         /// </summary>
         private bool IsStalledByResult(string zoneId, EnemyZoneObjective zone, float now)
         {
-            int signature = zone.OwnStructures * 4096 + zone.StaticDefenders * 2 + (zone.IsHeld ? 1 : 0);
-            if (!_flipWatch.TryGetValue(zoneId, out var watch) || watch.Signature != signature)
-            {
-                _flipWatch[zoneId] = (signature, now);
-                return false;
-            }
-            return now - watch.Since >= STALL_NO_FLIP_SECONDS;
+            bool watched = _flipWatch.TryGetValue(zoneId, out var watch);
+            bool progress = !watched || IsStallProgress(watch.OpenSites, watch.Held, zone.OpenSites, zone.IsHeld);
+            _flipWatch[zoneId] = (zone.OpenSites, zone.IsHeld, progress ? now : watch.Since);
+            return !progress && now - watch.Since >= STALL_NO_FLIP_SECONDS;
         }
+
+        /// <summary>A site turned to the team since the last check: fewer open sites, or the zone newly held.</summary>
+        public static bool IsStallProgress(int previousOpenSites, bool previouslyHeld, int openSites, bool held) =>
+            openSites < previousOpenSites || held && !previouslyHeld;
 
         private Vector3 GetPoolCentre()
         {
