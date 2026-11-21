@@ -40,6 +40,7 @@ verification: Checked faction roster entries, 7-tier warship class ladder, 27
 - Vulture: `Fighter` with `13` members, each `44` hull and `0` shields. Base combined hull `572`, cruise/combat speed `43.2/48` units/s, and `13` baked weapon mounts (one laser per fighter).
 - Endurance: three hangar bays with `8` reserve and `2` maximum active squadrons each.
 - Combat classes (`ShipClass`): Fighter (`0`), Bomber (`1`), Interceptor (`7`), HeroStrikecraft (`9`), Corvette (`2`), Frigate (`3`), Cruiser (`8`), HeavyCruiser (`10`), Capital (`4`), BattleCruiser (`5`), Dreadnought (`11`), Structure (`6`). They select matrix/bias behavior; a display-name phrase does not define a new class.
+- Fighter vs interceptor roles, Empire squadron rules and elite exemptions (TIE Avenger, Punisher, Defender, Darth Vader) → [[GameDesign/Combat]]; tuning record → [[Done/Bugs/Fighter_Interceptor_Rebalance]].
 - Warship class ladder (2026-11-17): `Corvette → Frigate → Cruiser → HeavyCruiser → Capital → BattleCruiser → Dreadnought`. `NebulonB` resized from 300 m (`31.5` units) to 600 m (`63.0` units, `Cruiser`).
 - 2026-11-17 warship class and matching `ShieldRegenTier` reassignments (`Cruiser`/`Frigate`/`HeavyCruiser`/`Capital`/`BattleCruiser`/`Dreadnought`; unlisted ships retain prior class and `ShieldRegenTier`):
   - `Frigate`: `Carrack` (from `Corvette`), `AcclamatorAssault` (from `Cruiser`).

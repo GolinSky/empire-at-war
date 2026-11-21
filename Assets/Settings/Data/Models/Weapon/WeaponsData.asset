@@ -1301,7 +1301,7 @@ MonoBehaviour:
     scope: 2
     faction: 0
     unit: Belbullab22
-    damageMultiplier: 0.4166667
+    damageMultiplier: 0.7333
     reloadMultiplier: 1
     rangeMultiplier: 1
     reason: Belbullab22 squadron rebalance damage target.
@@ -2071,7 +2071,7 @@ MonoBehaviour:
     scope: 2
     faction: 3
     unit: TIEInterceptor
-    damageMultiplier: 2.1
+    damageMultiplier: 4.8
     reloadMultiplier: 1
     rangeMultiplier: 1
     reason: 'Previous battery: TIEInterceptor squadron rebalance damage target. Consolidated
@@ -2091,7 +2091,7 @@ MonoBehaviour:
     scope: 2
     faction: 0
     unit: VWing
-    damageMultiplier: 2.85
+    damageMultiplier: 7.3
     reloadMultiplier: 1
     rangeMultiplier: 1
     reason: 'Previous battery: VWing squadron rebalance damage target. Consolidated
@@ -2111,7 +2111,7 @@ MonoBehaviour:
     scope: 2
     faction: 2
     unit: AWing
-    damageMultiplier: 5.7
+    damageMultiplier: 10.9
     reloadMultiplier: 1
     rangeMultiplier: 1
     reason: 'Previous battery: AWing squadron rebalance damage target. Consolidated
@@ -2441,8 +2441,8 @@ MonoBehaviour:
     scope: 2
     faction: 3
     unit: TIEDefender
-    damageMultiplier: 4.8
-    reloadMultiplier: 1
+    damageMultiplier: 9.6
+    reloadMultiplier: 0.67
     rangeMultiplier: 1
     reason: 'Previous battery: TIE Defender dogfight damage per cannon. Consolidated
       fighter weapon channel; damage per shot includes the former battery (4x).'

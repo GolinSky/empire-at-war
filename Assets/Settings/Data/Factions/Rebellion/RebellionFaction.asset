@@ -439,16 +439,16 @@ MonoBehaviour:
       value:
         matchups: {fileID: 11400000, guid: 5b8d183986aa6104291623ddd0143550, type: 2}
         displayName: A-Wing
-        description: Four fast A-Wing interceptors with 133 hull and 30 shields each.
-          Their interceptor lasers are most effective against bombers. Each surviving
-          craft regenerates 0.33 shield HP/s.
+        description: Four fast A-Wing interceptors with 166 hull and 38 shields each.
+          Their interceptor lasers destroy fighters and bombers. Each surviving craft
+          regenerates 0.33 shield HP/s.
         role: Interceptor / Anti-bomber
         iconKey: 524d65b06058f0a428ee3d2a9b9b78e9:21300000
         isHero: 0
         <Name>k__BackingField: A-Wing Interceptor Squadron
         <MaxCount>k__BackingField: 10
         <AvailableLevel>k__BackingField: 1
-        <Price>k__BackingField: 850
+        <Price>k__BackingField: 1050
         <BuildTime>k__BackingField: 6
         <UnitCapacity>k__BackingField: 1
         <Icon>k__BackingField: {fileID: 21300000, guid: 524d65b06058f0a428ee3d2a9b9b78e9,
@@ -457,7 +457,7 @@ MonoBehaviour:
       value:
         matchups: {fileID: 11400000, guid: b16f510db75b93c4ab4d86f98ed96103, type: 2}
         displayName: X-Wing
-        description: 'Five Rebel multirole fighters, each with 170 hull, 48 shields,
+        description: 'Five Rebel multirole fighters, each with 213 hull, 60 shields,
           0.33/s shield regeneration, four laser cannons and one proton torpedo launcher.
           Torpedoes deal 32 damage per fighter with a 5-second reload. Intercept
           bombers, dogfight fighters, escort bombers and scout. Lock S-Foils closes
@@ -469,7 +469,7 @@ MonoBehaviour:
         <Name>k__BackingField: T-65 X-Wing Squadron
         <MaxCount>k__BackingField: 10
         <AvailableLevel>k__BackingField: 1
-        <Price>k__BackingField: 800
+        <Price>k__BackingField: 750
         <BuildTime>k__BackingField: 15
         <UnitCapacity>k__BackingField: 1
         <Icon>k__BackingField: {fileID: 21300000, guid: ea53c8c126651444aaedb6d6761e02b3,

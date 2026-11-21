@@ -60,14 +60,14 @@ MonoBehaviour:
   abilities: 03000000
   hangarBays:
   - squadronType: 200
-    reserve: 0
-    maxActive: 0
+    reserve: 3
+    maxActive: 1
   - squadronType: 201
     reserve: 3
     maxActive: 1
   - squadronType: 202
-    reserve: 3
-    maxActive: 1
+    reserve: 0
+    maxActive: 0
   - squadronType: 203
     reserve: 3
     maxActive: 1

@@ -389,7 +389,7 @@ MonoBehaviour:
     damage:
       fighter: 1.5
       bomber: 1.5
-      interceptor: 1.75
+      interceptor: 1.5
       corvette: 0.15
       frigate: 0.08
       cruiser: 0.05
@@ -418,22 +418,22 @@ MonoBehaviour:
     shieldPiercing: 0
   - damageType: 14
     damage:
-      fighter: 1
-      bomber: 2.5
+      fighter: 1.5
+      bomber: 1.5
       interceptor: 1.5
-      corvette: 0.1
-      frigate: 0.05
-      cruiser: 0.03
-      heavyCruiser: 0.025
-      capital: 0.02
-      battleCruiser: 0.015
-      dreadnought: 0.01
-      structure: 0.02
+      corvette: 0.048
+      frigate: 0.024
+      cruiser: 0.0143
+      heavyCruiser: 0.0119
+      capital: 0.0095
+      battleCruiser: 0.0071
+      dreadnought: 0.0048
+      structure: 0.0095
       heroStrikecraft: 0.3
     accuracy:
-      fighter: 0.75
-      bomber: 0.9
-      interceptor: 0.8
+      fighter: 0.8
+      bomber: 0.85
+      interceptor: 0.75
       corvette: 0.9
       frigate: 0.95
       cruiser: 0.975
@@ -444,7 +444,7 @@ MonoBehaviour:
       structure: 1
       heroStrikecraft: 0.4
     vsShield: 0.5
-    shipShieldMultiplier: 0.4
+    shipShieldMultiplier: 0.19
     squadronShieldMultiplier: 1
     shieldPiercing: 0
   - damageType: 15

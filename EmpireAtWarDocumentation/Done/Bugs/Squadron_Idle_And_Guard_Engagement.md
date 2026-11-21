@@ -88,7 +88,7 @@ acceptance: pending-user
 - Enemy AI escorts share the 400 guard radius (no split). Row updated in [[TODOs/Bugs/Enemy_AI_And_Faction_Balance]] (the 800 row lives there, not in `Enemy_AI_Objectives`). `FleetCohesion` uses ship guard settings → unaffected.
 - Tests: 6 cases added in `SquadronTargetSelectorTests` (idle leash in/out, idle kill → post, guard leash in/out, guarding bomber keeps the carrier's target). No other test reads `GuardRadius` or the 800 value. Unity compile passed; tests not run (local override).
 - Reusable guidance: none — leash values are tuning, recorded here.
-- Assets edited through Unity `SerializedObject` while [[TODOs/Bugs/Fighter_Interceptor_Rebalance]] had uncommitted edits in the same squadron assets; only the `GuardRadius` line was committed.
+- Assets edited through Unity `SerializedObject` while [[Done/Bugs/Fighter_Interceptor_Rebalance]] had uncommitted edits in the same squadron assets; only the `GuardRadius` line was committed.
 
 ## Open (user)
 

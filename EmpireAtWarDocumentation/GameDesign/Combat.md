@@ -92,7 +92,9 @@ verification: Reviewed affected source and regression fixtures. Unity 6000.4.7f1
 
 ### Squadron roles and hero strikecraft (2026-11-10)
 
-- Roles: Interceptor guns → bombers; Fighter guns → interceptors (and bombers, weaker than interceptors).
+- Roles (2026-11-21): `FighterLaser` and `InterceptorLaser` rows are equal vs Fighter/Bomber/Interceptor; interceptors win through bigger bolts and kill fighters and bombers faster. Fighters are cheaper, slower, tougher.
+- Per faction: interceptor bolt > fighter bolt; fighter hull + shields > interceptor; fighter speed < interceptor; interceptor price > fighter price (`WeaponTaxonomyTests`).
+- Empire squadrons: fastest per role, strong weapons, no shields and low hull (TIE Avenger, Punisher, Defender, Darth Vader exempt).
 - Survivability vs lasers/PD: Fighter toughest; Interceptor hard to hit but fragile; Bomber easiest to kill.
 - Interceptor class (`ShipClass.Interceptor`) → `TIEInterceptor`, `AWing`, `VWing`, `Belbullab22`. Each uses a unit-scoped weapon definition in the `InterceptorLaser` family (`24`).
 - The 29 carriers audited in the original rebalance cover Fighter, Bomber and Interceptor; later roster coverage remains under review. Automatic launch selection rotates across eligible bays. Each launch spends one unit of battle stock, including the initial launch.
@@ -111,8 +113,8 @@ verification: Reviewed affected source and regression fixtures. Unity 6000.4.7f1
 | Turbolaser family baseline | `16` damage, `3` shots, `0.2 s` spacing, `4 s` reload, `450` range before multipliers |
 | Laser damage matrix | Fighter `2×`/acc `0.7`; Bomber `2.5×`/`0.9`; Interceptor `2.5×`/`0.55`; Hero `0.5×`/`0.4`; Capital `0.25×`; shields `0.5×` |
 | PointDefense matrix | Fighter `2×`/acc `0.75`; Bomber `2.5×`/`0.95`; Interceptor `2.5×`/`0.65`; Hero `0.5×`/`0.45` |
-| FighterLaser damage matrix | Fighter `1.5×`/`0.8`; Bomber `1.5×`/`0.85`; Interceptor `1.75×`/`0.75`; Hero `0.3×`/`0.4`; Capital `0.03×`; shields `0.5×` |
-| InterceptorLaser matrix (`14`) | Fighter `1×`/`0.75`; Bomber `2.5×`/`0.9`; Interceptor `1.5×`/`0.8`; Hero `0.3×`/`0.4`; Corvette `0.1×`; ship shields `0.5 × 0.4` |
+| FighterLaser damage matrix | Fighter `1.5×`/`0.8`; Bomber `1.5×`/`0.85`; Interceptor `1.5×`/`0.75`; Hero `0.3×`/`0.4`; Capital `0.03×`; shields `0.5×` |
+| InterceptorLaser matrix (`14`) | Fighter `1.5×`/`0.8`; Bomber `1.5×`/`0.85`; Interceptor `1.5×`/`0.75`; Hero `0.3×`/`0.4`; Corvette `0.048×`; Capital `0.0095×`; ship shields `0.5 × 0.19` (large-ship values ÷2.1 to offset bigger bolts) |
 | HeroLaser matrix (`15`) | Fighter/Bomber `2×`/`0.95`; Interceptor `2×`/`0.9`; Hero `1×`/`0.8`; Corvette `0.4×`; Frigate `0.25×`; Capital `0.1×`; ship shields `0.5 × 0.6` |
 | Ion damage matrix | Shields `3×`; ordinary ship/structure hull `0.1×`; strikecraft hull `0×`; non-piercing |
 | ProtonTorpedo matrix | Shield-piercing; `HeavyCruiser` `1.1875×`, `Capital` `1.25×`, `BattleCruiser` `1.5×`, `Dreadnought` `1.75×` |

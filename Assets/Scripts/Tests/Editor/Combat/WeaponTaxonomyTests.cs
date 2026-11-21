@@ -5,6 +5,7 @@ using EmpireAtWar.Components.AttackComponent;
 using EmpireAtWar.Components.Ship.Health;
 using EmpireAtWar.Components.Weapon;
 using EmpireAtWar.Entities.Ship.Data;
+using EmpireAtWar.Entities.Squadrons;
 using EmpireAtWar.Entities.Squadrons.Data;
 using EmpireAtWar.Editor.AI;
 using EmpireAtWar.Models.Factions;
@@ -116,21 +117,55 @@ namespace EmpireAtWar.Tests.Editor
         }
 
         [Test]
-        public void SquadronRoles_InterceptorsCounterBombers_FightersCounterInterceptors()
+        public void SquadronRoles_FighterAndInterceptorLasersShareStrikecraftRows()
         {
             DamageMatrixData matrix = AssetDatabase.LoadAssetAtPath<DamageMatrixData>(MATRIX);
             float Effectiveness(DamageType gun, ShipClass target) =>
                 matrix.GetDamageMultiplier(gun, target) * matrix.GetAccuracy(gun, target);
 
-            Assert.That(Effectiveness(DamageType.InterceptorLaser, ShipClass.Bomber),
-                Is.GreaterThan(Effectiveness(DamageType.FighterLaser, ShipClass.Bomber)));
-            Assert.That(Effectiveness(DamageType.FighterLaser, ShipClass.Interceptor),
-                Is.GreaterThan(Effectiveness(DamageType.InterceptorLaser, ShipClass.Fighter)));
+            foreach (ShipClass strikecraft in new[] { ShipClass.Fighter, ShipClass.Bomber, ShipClass.Interceptor })
+            {
+                Assert.That(matrix.GetDamageMultiplier(DamageType.InterceptorLaser, strikecraft),
+                    Is.EqualTo(matrix.GetDamageMultiplier(DamageType.FighterLaser, strikecraft)), strikecraft.ToString());
+                Assert.That(matrix.GetAccuracy(DamageType.InterceptorLaser, strikecraft),
+                    Is.EqualTo(matrix.GetAccuracy(DamageType.FighterLaser, strikecraft)), strikecraft.ToString());
+            }
             foreach (DamageType gun in new[] { DamageType.Laser, DamageType.PointDefense })
             {
                 Assert.That(Effectiveness(gun, ShipClass.Fighter), Is.LessThan(Effectiveness(gun, ShipClass.Bomber)));
                 Assert.That(matrix.GetAccuracy(gun, ShipClass.Interceptor), Is.LessThan(matrix.GetAccuracy(gun, ShipClass.Fighter)));
             }
+        }
+
+        [TestCase(SquadronType.XWing, SquadronType.AWing)]
+        [TestCase(SquadronType.ARC170, SquadronType.VWing)]
+        [TestCase(SquadronType.V19Torrent, SquadronType.VWing)]
+        [TestCase(SquadronType.TIEFighter, SquadronType.TIEInterceptor)]
+        [TestCase(SquadronType.TIEBrute, SquadronType.TIEInterceptor)]
+        [TestCase(SquadronType.TIEAvenger, SquadronType.TIEInterceptor)]
+        [TestCase(SquadronType.Vulture, SquadronType.Belbullab22)]
+        public void SquadronRoles_InterceptorsHitHarder_FightersAreTougherSlowerAndCheaper(
+            SquadronType fighterType, SquadronType interceptorType)
+        {
+            WeaponsData weapons = Weapons;
+            FactionCatalog catalog = AssetDatabase.LoadAssetAtPath<FactionCatalog>(FACTIONS + "/Shared/FactionCatalog.asset");
+            SquadronData fighter = LoadSquadron(fighterType);
+            SquadronData interceptor = LoadSquadron(interceptorType);
+            Assert.That(fighter.ShipClass, Is.EqualTo(ShipClass.Fighter));
+            Assert.That(interceptor.ShipClass, Is.EqualTo(ShipClass.Interceptor));
+            float Bolt(SquadronData data) => data.WeaponLoadout
+                .Select(entry => weapons.GetProfile(entry.WeaponType))
+                .Where(profile => profile.DamageType is DamageType.FighterLaser or DamageType.InterceptorLaser)
+                .Max(profile => profile.Damage);
+            int Price(SquadronType type) =>
+                catalog.Factions.Single(faction => faction.Squadrons.ContainsKey(type)).Squadrons[type].Price;
+
+            Assert.That(Bolt(interceptor), Is.GreaterThan(Bolt(fighter)));
+            Assert.That(fighter.MemberHull + fighter.MemberShields,
+                Is.GreaterThan(interceptor.MemberHull + interceptor.MemberShields));
+            Assert.That(fighter.CruiseSpeed, Is.LessThan(interceptor.CruiseSpeed));
+            Assert.That(fighter.CombatSpeed, Is.LessThan(interceptor.CombatSpeed));
+            Assert.That(Price(interceptorType), Is.GreaterThan(Price(fighterType)));
         }
 
         [Test]
@@ -427,6 +462,9 @@ namespace EmpireAtWar.Tests.Editor
 
             return owners.ToDictionary(pair => pair.Key, pair => pair.Value.ToArray());
         }
+
+        private static SquadronData LoadSquadron(SquadronType type) =>
+            AssetDatabase.LoadAssetAtPath<SquadronData>($"Assets/Settings/Data/Squadron/{type}SquadronData.asset");
 
         private static IEnumerable<T> LoadAll<T>(string folder = "Assets/Settings/Data") where T : UnityEngine.Object =>
             AssetDatabase.FindAssets("t:" + typeof(T).Name, new[] { folder })

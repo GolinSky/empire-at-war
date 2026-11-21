@@ -20,6 +20,10 @@ created: "2026-10-29\r"
 - [ ] [[Done/Features/Group_Attack_Speed_Matching_Plan]] — In battle, attack with a Venator + its squadrons: confirm the fighters stay with the ships until the attack zone, then fly their own passes.
 - [ ] [[Done/Features/Group_Attack_Speed_Matching_Plan]] — Run `BattleInput` and `Squadrons` EditMode categories (`UnitOrderServiceTests`, `FighterFlightTests`) when authorized; compile passed.
 
+## Fighter and Interceptor Rebalance
+
+- [ ] [[Done/Bugs/Fighter_Interceptor_Rebalance]] — In battle: interceptors beat same-faction fighters 1v1 and shred bombers; fighters still worth buying (equal credits); faster TIEs keep escort/attack-run timing; X-Wing vs TIE Avenger close; TIE Defender beats any Rebel squadron; Gladiator launches TIE Fighters; V-Wing (`1.22×`) not too strong vs ships.
+
 ## Squadron Engagement
 
 - [ ] [[Done/Bugs/Squadron_Idle_And_Guard_Engagement]] — In battle: an idle hero squadron attacks enemies ~250 u away and flies back to its post after the fight; a guarding squadron breaks off a chase ~520 u from its ship; bombers still follow the carrier's target. Run `Squadrons` when authorized; compile passed.

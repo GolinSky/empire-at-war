@@ -366,8 +366,8 @@ MonoBehaviour:
           Four dual medium turbolasers, two concussion missile launchers and two
           point defense lasers. Deploys 2 fighter squadrons, 1 interceptor squadron,
           2 bomber squadrons at once. Carries 15 total squadron launches, including
-          the initial deployment. Fighter complement: one TIE Brute and one TIE Avenger
-          squadron; bombers: one TIE Bomber and one TIE Punisher squadron.'
+          the initial deployment. Fighter complement: one TIE Fighter and one TIE
+          Brute squadron; bombers: one TIE Bomber and one TIE Punisher squadron.'
         role: Capital / Assault carrier
         iconKey: f38f2a09297bc734d89c94affa2d83f6:21300000
         isHero: 0
@@ -438,7 +438,7 @@ MonoBehaviour:
         <Name>k__BackingField: TIE Fighter Squadron
         <MaxCount>k__BackingField: 10
         <AvailableLevel>k__BackingField: 1
-        <Price>k__BackingField: 300
+        <Price>k__BackingField: 275
         <BuildTime>k__BackingField: 10
         <UnitCapacity>k__BackingField: 1
         <Icon>k__BackingField: {fileID: 21300000, guid: 7c8d76c748665eb4f8c008d83b753703,
@@ -466,7 +466,7 @@ MonoBehaviour:
       value:
         matchups: {fileID: 11400000, guid: c5df0907ae25f944fa8027342b0f745c, type: 2}
         displayName: TIE Avenger
-        description: Ten TIE Avengers. Each fighter has 64 hull, 12 shields, two
+        description: Ten TIE Avengers. Each fighter has 78 hull, 12 shields, two
           light repeating lasers and two concussion-missile launchers. Boost Weapon
           Power halves weapon reload and time between shots and halves speed and
           shield regeneration for 7 s. Recovers in 50 s. Weapons are not separately
@@ -477,7 +477,7 @@ MonoBehaviour:
         <Name>k__BackingField: TIE Avenger Squadron
         <MaxCount>k__BackingField: 10
         <AvailableLevel>k__BackingField: 3
-        <Price>k__BackingField: 550
+        <Price>k__BackingField: 525
         <BuildTime>k__BackingField: 10
         <UnitCapacity>k__BackingField: 1
         <Icon>k__BackingField: {fileID: 21300000, guid: 3ebf9b17840b8ee4daae27c4f063d4af,
@@ -486,15 +486,15 @@ MonoBehaviour:
       value:
         matchups: {fileID: 11400000, guid: 606a86b08cc7a5e4eb247e01d41aa404, type: 2}
         displayName: TIE Interceptor
-        description: Eight fast TIE Interceptors, each with 53 hull and four laser
-          cannons. Carrier interceptor.
+        description: Eight fast TIE Interceptors, each with 50 hull and four laser
+          cannons. Carrier interceptor that destroys fighters and bombers.
         role: Interceptor / Anti-bomber
         iconKey: 64e95301a26b2ca498bc930f9eae7727:21300000
         isHero: 0
         <Name>k__BackingField: TIE Interceptor Squadron
         <MaxCount>k__BackingField: 10
         <AvailableLevel>k__BackingField: 1
-        <Price>k__BackingField: 450
+        <Price>k__BackingField: 550
         <BuildTime>k__BackingField: 8
         <UnitCapacity>k__BackingField: 1
         <Icon>k__BackingField: {fileID: 21300000, guid: 64e95301a26b2ca498bc930f9eae7727,
@@ -511,7 +511,7 @@ MonoBehaviour:
         <Name>k__BackingField: TIE Brute Squadron
         <MaxCount>k__BackingField: 10
         <AvailableLevel>k__BackingField: 1
-        <Price>k__BackingField: 450
+        <Price>k__BackingField: 425
         <BuildTime>k__BackingField: 7
         <UnitCapacity>k__BackingField: 1
         <Icon>k__BackingField: {fileID: 21300000, guid: 2dc8ad80492076941aae35ba3ce7c2aa,
@@ -558,7 +558,7 @@ MonoBehaviour:
       value:
         matchups: {fileID: 11400000, guid: 848c7b1e5e8642d0bdc648dc0c28b681, type: 2}
         displayName: TIE Defender
-        description: Three shielded elite fighters. Each has 105 hull, 50 shields,
+        description: Three shielded elite fighters. Each has 420 hull, 200 shields,
           four laser cannons and a proton torpedo launcher. Torpedoes deal 72 damage
           per fighter before target modifiers and can fire once per attack run.
         role: Elite multirole fighter
