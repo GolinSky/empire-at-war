@@ -29,10 +29,18 @@ namespace EmpireAtWar.Editor.Balance
             EnumField order = new EnumField("Order by", state.CompareSort)
             {
                 name = "compare-order",
-                tooltip = "Ascending order using draft values; Health and Shield are per member for squadrons, DPS is the base estimate. Drag cards to switch to Manual."
+                tooltip = "Order using draft values; Health and Shield are per member for squadrons, DPS is the base estimate. Drag cards to switch to Manual."
             };
             order.RegisterValueChangedCallback(evt => controller.SortCompare((BalanceCompareSort)evt.newValue));
             heading.Add(order);
+            Button direction = new Button(controller.ToggleCompareDirection)
+            {
+                name = "compare-direction",
+                text = state.CompareDescending ? "↓ Desc" : "↑ Asc",
+                tooltip = "Toggle ascending / descending order. Units missing the stat stay last."
+            };
+            direction.SetEnabled(state.CompareSort != BalanceCompareSort.Manual);
+            heading.Add(direction);
             AddPicker(panel, heading, registry, controller, units.Count == 0);
 
             ScrollView scroll = new ScrollView { viewDataKey = "balance-compare-scroll" };

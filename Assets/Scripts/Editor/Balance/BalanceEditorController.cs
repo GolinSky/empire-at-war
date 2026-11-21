@@ -156,6 +156,12 @@ namespace EmpireAtWar.Editor.Balance
             _redraw();
         }
 
+        public void ToggleCompareDirection()
+        {
+            State.CompareDescending = !State.CompareDescending;
+            _redraw();
+        }
+
         // Called while building the comparison: applies the chosen order and drops selections of removed cards.
         public void PrepareCompare(BalanceRegistration registry)
         {

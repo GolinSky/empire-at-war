@@ -1,4 +1,5 @@
 using System;
+using System.Collections.Generic;
 using System.Globalization;
 using System.Linq;
 using EmpireAtWar.Components.Ship.Health;
@@ -14,10 +15,10 @@ namespace EmpireAtWar.Editor.Balance
             if (state.CompareSort == BalanceCompareSort.Dps)
             {
                 using BalanceDpsEstimator estimator = new BalanceDpsEstimator(registry);
-                state.Pins = units.OrderBy(unit => Dps(estimator.Estimate(unit, state.Draft))).Select(unit => unit.Id).ToList();
+                state.Pins = Order(units, unit => Dps(estimator.Estimate(unit, state.Draft)), state.CompareDescending);
                 return;
             }
-            state.Pins = units.OrderBy(unit => state.CompareSort switch
+            state.Pins = Order(units, unit => state.CompareSort switch
             {
                 BalanceCompareSort.Price => Value(unit, registry, state, "Price"),
                 BalanceCompareSort.HeightLevel => Value(unit, registry, state, "HeightTier", "Height"),
@@ -28,7 +29,15 @@ namespace EmpireAtWar.Editor.Balance
                 BalanceCompareSort.BuildTime => Value(unit, registry, state, "BuildTime"),
                 BalanceCompareSort.Speed => Value(unit, registry, state, "Speed", "CruiseSpeed"),
                 _ => throw new InvalidOperationException("Unknown comparison order: " + state.CompareSort)
-            }).Select(unit => unit.Id).ToList();
+            }, state.CompareDescending);
+        }
+
+        // Units without the stat (positive infinity) stay last in both directions.
+        private static List<string> Order(List<BalanceUnit> units, Func<BalanceUnit, double> key, bool descending)
+        {
+            var keyed = units.Select(unit => (unit, value: key(unit))).OrderBy(entry => double.IsPositiveInfinity(entry.value));
+            var ordered = descending ? keyed.ThenByDescending(entry => entry.value) : keyed.ThenBy(entry => entry.value);
+            return ordered.Select(entry => entry.unit.Id).ToList();
         }
 
         private static double Dps(BalanceDpsEstimate estimate) => estimate.HasValue ? estimate.Value : double.PositiveInfinity;

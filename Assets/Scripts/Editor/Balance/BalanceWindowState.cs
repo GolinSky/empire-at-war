@@ -28,6 +28,7 @@ namespace EmpireAtWar.Editor.Balance
         public string CompareFaction = "";
         public string CompareClass = "";
         public BalanceCompareSort CompareSort;
+        public bool CompareDescending;
         public bool ComparePickerOpen;
         public bool ShowDetails;
         public List<BalanceScrollPosition> ScrollPositions = new List<BalanceScrollPosition>();

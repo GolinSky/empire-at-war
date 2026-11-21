@@ -46,6 +46,10 @@ namespace EmpireAtWar.Tests.Editor
                 BalanceWindowState state = new BalanceWindowState { Pins = new List<string> { "missing", "2", "1", "0" }, CompareSort = sort };
                 BalanceCompareOrder.Sort(registry, state);
                 Assert.That(state.Pins, Is.EqualTo(new[] { "0", "1", "2", "missing" }));
+                state.CompareDescending = true;
+                BalanceCompareOrder.Sort(registry, state);
+                Assert.That(state.Pins, Is.EqualTo(new[] { "2", "1", "0", "missing" }), "Descending keeps missing stats last.");
+                state.CompareDescending = false;
                 BalanceField field = registry.Fields[registry.Units[2].Fields[stat]];
                 state.Draft.Set(field.Snapshot(), "0");
                 BalanceCompareOrder.Sort(registry, state);

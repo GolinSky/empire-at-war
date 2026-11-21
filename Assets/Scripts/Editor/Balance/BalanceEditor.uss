@@ -88,6 +88,7 @@
 .balance-compare-title { font-size: 17px; -unity-font-style: bold; margin-right: 12px; }
 #compare-order { margin-left: 14px; width: 230px; flex-shrink: 0; }
 #compare-order > .unity-base-field__label { min-width: 55px; }
+#compare-direction { width: 64px; flex-shrink: 0; }
 #compare-drag-handle { width: 20px; flex-shrink: 0; -unity-text-align: middle-center; color: var(--balance-accent); }
 .balance-dragging { opacity: 0.5; }
 .balance-drop-before { border-left-width: 2px; border-left-color: var(--balance-accent); }
