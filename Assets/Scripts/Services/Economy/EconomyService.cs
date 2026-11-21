@@ -88,16 +88,13 @@ namespace EmpireAtWar.Services.Economy
             {
                 _model.AddMoney(_commonIncome);
             }
-#if UNITY_EDITOR || DEVELOPMENT_BUILD
             if (!_isRunning || _followsHost) return;
             _telemetryIn -= Time.deltaTime;
             if (_telemetryIn > 0f) return;
             _telemetryIn = TELEMETRY_SECONDS;
             RecordEconomy();
-#endif
         }
 
-#if UNITY_EDITOR || DEVELOPMENT_BUILD
         private void RecordEconomy()
         {
             var sources = new SortedDictionary<string, (int Count, float Income)>();
@@ -113,7 +110,6 @@ namespace EmpireAtWar.Services.Economy
                 text.Append(System.FormattableString.Invariant($"{source.Key}x{source.Value.Count}:{source.Value.Income:F1} "));
             EmpireAtWar.Services.Enemy.EnemyAiTelemetry.RecordEvent(_owner, _slot.Faction, "economy", text.ToString());
         }
-#endif
 
         public bool TrySpend(UnitRequest unitRequest)
         {

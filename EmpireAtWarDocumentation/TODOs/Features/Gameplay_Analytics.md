@@ -115,3 +115,19 @@ session context  game_version (Application.version), graphics_tier, os  (UGS sta
 - Phase 2 match events done 2026-11-02 (code); end-to-end check in UGS Event Browser is Phase 4.
 - Phase 3 performance sampling done 2026-11-02 (code).
 - Next: Phase 4 (user links UGS project, define schemas, dashboards, dev-build event check, `Tooling/Analytics` guidance note).
+
+
+## Local AI battle log in release builds (2026-11-21, implemented, not compiled, uncommitted)
+- Why: 4 online games on build `0.1.73` (2026-11-20 evening) left only wing counts in `Player.log`; AI decisions could not be analysed.
+- `EnemyAiTelemetry` now compiles into release builds in compact mode (`_compact` = not Editor and not development build).
+- File: `persistentDataPath/BattleTelemetry/<scene>_<time>_ai.csv`, same header as the dev log. Local only; nothing is sent, so analytics consent does not apply.
+- Written where the AI runs: the host in online games. A connected player gets only its own `economy` rows.
+- Compact rows: `purchase`, `satellite`, `zoneOwner`, `deployment` (+ blocked / forced / emergency), `economy`, `station`, `siteBuild`, `placement`, `placementDeferred`, `recoveryMode`, `surplusShip`, `spawnBeacon`, `patrolWing`, `wingZoneLeft`, `raidSkip`; one `sample` and one `zoneAlloc` per AI every `COMPACT_INTERVAL` 15 s.
+- Dropped in release: `counter-selection`, `production-wait`, `placement-search`, `objectiveSwitch`, `zoneEval`, `wingAssignment`, `spawnAttempt`, per-ship detail in samples.
+- Retention: newest `COMPACT_FILE_LIMIT` 20 `*_ai.csv` files.
+- Disk error (`IOException`, `UnauthorizedAccessException`) → one warning, log off for the run; the AI tick is not interrupted.
+- Guards removed so the rows exist in release: `EconomyService.RecordEconomy`, `EnemyShipTaskGroupPlanner.RecordAllocation` (+ `_lastAllocation`).
+- Still dev-only: `captureBlocked`, `defensePlacementBlocked`, ship orders, squadron and damage telemetry.
+- Edge: `zoneAlloc` is written on change and throttled to 15 s, so a change inside the window appears with the next change.
+- Verification: Editor was closed → not compiled. Release-define compile only on the next Jenkins player build. Tests: none reference `EnemyAiTelemetry`; none added (file writer, play mode only).
+- TODO: compile in the Editor; confirm one host-side file after the next release build; expected size ≈ 100–200 KB per 25-minute match.

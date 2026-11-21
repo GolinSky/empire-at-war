@@ -63,9 +63,7 @@ namespace EmpireAtWar.Services.Enemy
         private float _turtleUntil = float.NegativeInfinity;
         private string _retreatedZoneId;
         private float _retreatedUntil;
-#if UNITY_EDITOR || DEVELOPMENT_BUILD
         private string _lastAllocation;
-#endif
 
         public IReadOnlyList<EnemyShipTaskGroup> Groups => _groups;
         /// <summary>Where the reserve gathers; new ships are sent here. Null before the first allocation.</summary>
@@ -397,7 +395,6 @@ namespace EmpireAtWar.Services.Enemy
         /// <summary>One <c>zoneAlloc</c> row whenever the split of ships over zones changes.</summary>
         private void RecordAllocation(IReadOnlyList<EnemyZoneObjective> zones, Vector3 home, bool behind)
         {
-#if UNITY_EDITOR || DEVELOPMENT_BUILD
             var text = new System.Text.StringBuilder();
             int gather = _allocator.GatherZone;
             Vector3 staging = _contextBuilder.ReserveStagingPoint ?? home;
@@ -415,7 +412,6 @@ namespace EmpireAtWar.Services.Enemy
             if (allocation == _lastAllocation) return;
             _lastAllocation = allocation;
             _pool.RecordZoneAllocation(allocation);
-#endif
         }
 
         internal static ReinforcementZonePresenter GetCentre(IReadOnlyList<ReinforcementZonePresenter> zones)
