@@ -1456,18 +1456,25 @@ namespace EmpireAtWar.Tests.Movement
         }
 
         [Test]
-        public void EngineTrails_EmitOnlyAfterHyperspaceArrival()
+        public void EngineTrails_StayHiddenDuringJumpAndStartFreshOnArrival()
         {
             GameObject ship = new GameObject("Trail arrival");
             try
             {
                 ShipMoveComponent component = CreateReadyComponent(ship, out _, isReady: false);
                 TrailRenderer trail = CreateEngineTrail(ship, 1f);
-                SetPrivateField(component, "_enginePlumes", new ShipEnginePlumes(new[] { trail }, 10f));
-                Assert.That(trail.emitting, Is.False);
+                trail.emitting = true; // e.g. a pooled hull that was flying before release
+                var plumes = new ShipEnginePlumes(new[] { trail }, 10f);
+                SetPrivateField(component, "_enginePlumes", plumes);
+                plumes.Stop();
+                Assert.That(trail.emitting, Is.False, "No trail points during the jump.");
+                Assert.That(trail.enabled, Is.False, "Nothing is drawn during the jump.");
+                Assert.That(trail.positionCount, Is.Zero);
                 typeof(ShipMoveComponent).GetMethod("FinishHyperSpaceJump",
                     BindingFlags.Instance | BindingFlags.NonPublic).Invoke(component, null);
+                Assert.That(trail.enabled, Is.True);
                 Assert.That(trail.emitting, Is.True);
+                Assert.That(trail.positionCount, Is.Zero, "The trail starts fresh at the landing point.");
             }
             finally { Object.DestroyImmediate(ship); }
         }

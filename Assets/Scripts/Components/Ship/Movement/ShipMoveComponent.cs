@@ -184,8 +184,8 @@ namespace EmpireAtWar.Components.Ship.Movement
             _motion.RouteDisplayChanged += HandleRouteDisplayChanged;
             _modifiers.Changed += HandleModifiersChanged;
             _enginePlumes = new ShipEnginePlumes(enginePlumes, Model.UndamagedSpeed);
-            _enginePlumes.SetEmitting(false);
-            _enginePlumes.Clear();
+            // Off until the jump lands: the jump moves the hull hundreds of units in seconds.
+            _enginePlumes.Stop();
             // The spawner already validated this point; the ship lands exactly where it was placed.
             Quaternion rotation = _spawnPose.HasRotation ? _spawnPose.Rotation : _stationFacingService.GetRotation(_owner);
             Model.ConfigureSpawnPose(_startPosition.ToNumerics(), rotation.ToNumerics());
@@ -196,7 +196,7 @@ namespace EmpireAtWar.Components.Ship.Movement
                 _shipNavigationService.Register(this, Model.HyperSpacePosition.ToUnity());
                 _isNavigationRegistered = true;
                 Model.Arrive(Model.HyperSpacePosition);
-                _enginePlumes.SetEmitting(true);
+                _enginePlumes.Start();
             }
             else
             {
@@ -240,6 +240,7 @@ namespace EmpireAtWar.Components.Ship.Movement
                 _isNavigationRegistered = false;
             }
             _visionService.Unregister(transform);
+            _enginePlumes.Stop();
             _motion.Release();
             _motion.RouteDisplayChanged -= HandleRouteDisplayChanged;
         }
@@ -469,7 +470,7 @@ namespace EmpireAtWar.Components.Ship.Movement
         private void FinishHyperSpaceJump()
         {
             _shipSpawnClearance.ReleaseLanding(this);
-            _enginePlumes.SetEmitting(true);
+            _enginePlumes.Start();
             HyperSpaceCompleted?.Invoke();
             NumericsVector3? queued = Model.FinishArrival();
             if (queued.HasValue && !_modifiers.IsAnchored) QueuePlan(queued.Value.ToUnity(), false);

@@ -25,14 +25,26 @@ namespace EmpireAtWar.Components.Ship.Movement
             }
         }
 
-        public void SetEmitting(bool isEmitting)
+        /// <summary>Hides the trails and drops their points (spawn, hyperspace jump, release).</summary>
+        public void Stop()
         {
-            foreach (TrailRenderer plume in _plumes) plume.emitting = isEmitting;
+            foreach (TrailRenderer plume in _plumes)
+            {
+                plume.emitting = false;
+                plume.Clear();
+                plume.enabled = false;
+            }
         }
 
-        public void Clear()
+        /// <summary>Starts fresh trails at the current position, discarding anything recorded before.</summary>
+        public void Start()
         {
-            foreach (TrailRenderer plume in _plumes) plume.Clear();
+            foreach (TrailRenderer plume in _plumes)
+            {
+                plume.Clear();
+                plume.enabled = true;
+                plume.emitting = true;
+            }
         }
     }
 }

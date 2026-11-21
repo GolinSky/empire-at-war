@@ -45,7 +45,7 @@ ShipEnginePlumeSetup.Apply(prefabPath,
 
 - Parent: `ShipMoveComponent.bodyTransform` (follows bank; survives model reimport). Instance scale stays 1; width = `widthMultiplier` (View-aligned width ignores Transform scale).
 - `new ShipEnginePlumes(trails, Model.UndamagedSpeed)` in `Initialize()` sets `time = min(14w / pace, 1.5 s)`, `minVertexDistance = pace × time / 9` (≈9 segments, CR70: 1.5).
-- Spawn → `emitting = false` + `Clear()`. Hyperspace finish or save restore → `emitting = true`. Stop/ion/anchor need no code: no movement → no new points, trail shrinks over `time`.
+- `ShipEnginePlumes.Stop()` (spawn, `Release()`) → `emitting = false`, `Clear()`, renderer `enabled = false`. `Start()` (hyperspace finish, save restore) → `Clear()`, enable, emit. User saw long streaks during jumps (2026-11-21) with emission-only gating → trails are now fully disabled through the jump and cleared on landing. Stop/ion/anchor need no code: no movement → no new points, trail shrinks over `time`.
 - Engine damage → slower ship → shorter trail. Fog uses `forceRenderingOff`, independent of emission.
 - CR70 check: 14 × 0.95 / 50 = 0.266 s ≈ approved 0.26 s.
 
