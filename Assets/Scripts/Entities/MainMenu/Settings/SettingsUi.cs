@@ -44,6 +44,7 @@ namespace EmpireAtWar.Entities.MainMenu.Settings
         [SerializeField] private SettingsDropdownRow squadModifierRow;
         [SerializeField] private SettingsToggleRow autoPowerAbilitiesRow;
         [SerializeField] private SettingsToggleRow showHintsRow;
+        [SerializeField] private SettingsToggleRow showFpsRow;
         [SerializeField] private Button resetHintsButton;
         [SerializeField] private SettingsToggleRow shareUsageDataRow;
         [Tooltip("Inactive row cloned once per rebindable binding into its parent.")]
@@ -133,6 +134,7 @@ namespace EmpireAtWar.Entities.MainMenu.Settings
             squadModifierRow.Render(_model.SquadModifier);
             autoPowerAbilitiesRow.Render(_model.AutoPowerAbilities);
             showHintsRow.Render(_model.ShowHints);
+            showFpsRow.Render(_model.ShowFps);
             shareUsageDataRow.Render(_model.ShareUsageData);
 
             RenderKeyBindings();
@@ -197,6 +199,8 @@ namespace EmpireAtWar.Entities.MainMenu.Settings
             autoPowerAbilitiesRow.ValueChanged += _presenter.SetAutoPowerAbilities;
             showHintsRow.Initialize();
             showHintsRow.ValueChanged += _presenter.SetShowHints;
+            showFpsRow.Initialize();
+            showFpsRow.ValueChanged += _presenter.SetShowFps;
             resetHintsButton.onClick.AddListener(_presenter.ResetHints);
             shareUsageDataRow.Initialize();
             shareUsageDataRow.ValueChanged += _presenter.SetShareUsageData;
@@ -249,6 +253,8 @@ namespace EmpireAtWar.Entities.MainMenu.Settings
             autoPowerAbilitiesRow.ValueChanged -= _presenter.SetAutoPowerAbilities;
             showHintsRow.ValueChanged -= _presenter.SetShowHints;
             showHintsRow.Dispose();
+            showFpsRow.ValueChanged -= _presenter.SetShowFps;
+            showFpsRow.Dispose();
             resetHintsButton.onClick.RemoveListener(_presenter.ResetHints);
             autoPowerAbilitiesRow.Dispose();
             shareUsageDataRow.ValueChanged -= _presenter.SetShareUsageData;

@@ -300,6 +300,8 @@ namespace EmpireAtWar.Entities.MainMenu.Settings
 
         public void SetShowHints(bool isOn) => _draftEditor.SetShowHints(isOn);
 
+        public void SetShowFps(bool isOn) => _draftEditor.SetShowFps(isOn);
+
         public void ResetHints() => _hintProgress.Reset();
 
         public void SetShareUsageData(bool isOn) => _draftEditor.SetShareUsageData(isOn);
@@ -381,6 +383,7 @@ namespace EmpireAtWar.Entities.MainMenu.Settings
                     "Zoom speed" => $"Camera zoom speed: {_model.ZoomSpeed:0.#}.",
                     "Edge scrolling" => $"Move the camera at screen edges. Currently {(_model.EdgeScrolling ? "On" : "Off")}.",
                     "Show tutorial hints" => $"Show short in-match hints for controls and new situations. Currently {(_model.ShowHints ? "On" : "Off")}.",
+                    "Show FPS counter" => $"Show the frames-per-second counter during battle. Currently {(_model.ShowFps ? "On" : "Off")}.",
                     "Reset hints" => "Show every hint again from the next match. Applies immediately.",
                     "Ships use power abilities automatically" =>"Automatically use eligible ship power abilities. Individual selection pauses new automatic starts; running abilities keep their ordinary duration and cooldown.",
                     "Share gameplay statistics" => $"Send gameplay statistics such as match results and performance. Crash diagnostics are collected separately. Currently {(_model.ShareUsageData ? "On" : "Off")}.",

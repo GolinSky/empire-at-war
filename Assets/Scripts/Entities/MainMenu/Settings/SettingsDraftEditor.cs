@@ -93,7 +93,7 @@ namespace EmpireAtWar.Entities.MainMenu.Settings
                 camera.EdgeScrolling,
                 camera.InvertZoom);
             _model.SetSquadModifier(new SettingsChoice(SQUAD_MODIFIER_LABELS, (int)Draft.Input.ControlGroupModifier, true));
-            _model.SetGameplay(Draft.Gameplay.AutoPowerAbilities, Draft.Gameplay.ShowHints);
+            _model.SetGameplay(Draft.Gameplay.AutoPowerAbilities, Draft.Gameplay.ShowHints, Draft.Gameplay.ShowFps);
             _model.SetPrivacy(Draft.Privacy.ShareUsageData);
             _model.SetDirty(_settingsService.IsDirty);
         }
@@ -228,6 +228,12 @@ namespace EmpireAtWar.Entities.MainMenu.Settings
         public void SetShowHints(bool isOn)
         {
             Draft.Gameplay.ShowHints = isOn;
+            Refresh();
+        }
+
+        public void SetShowFps(bool isOn)
+        {
+            Draft.Gameplay.ShowFps = isOn;
             Refresh();
         }
 

@@ -44,6 +44,18 @@ namespace EmpireAtWar.Tests.Editor
         }
 
         [Test]
+        public void ShowFps_DefaultsOnAndExplicitFalseSurvivesClone()
+        {
+            Assert.That(SettingsData.FromJson("{\"gameplay\":{}}").Gameplay.ShowFps, Is.True);
+
+            SettingsData disabled = SettingsData.FromJson("{\"gameplay\":{\"showFps\":false}}");
+
+            Assert.That(disabled.Gameplay.ShowFps, Is.False);
+            Assert.That(disabled.Clone().Gameplay.ShowFps, Is.False);
+            Assert.That(disabled.Matches(SettingsData.FromJson("{}")), Is.False);
+        }
+
+        [Test]
         public void FromJson_IgnoresUnknownFields()
         {
             SettingsData data = SettingsData.FromJson(

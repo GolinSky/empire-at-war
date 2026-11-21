@@ -33,6 +33,7 @@ namespace EmpireAtWar.Entities.MainMenu.Settings
 
         bool AutoPowerAbilities { get; }
         bool ShowHints { get; }
+        bool ShowFps { get; }
         bool ShareUsageData { get; }
 
         IReadOnlyList<KeyBindingRowState> Bindings { get; }

@@ -131,6 +131,20 @@ namespace EmpireAtWar.Tests.Editor
         }
 
         [Test]
+        public void SetShowFps_ChangesDraftAndModelOnly()
+        {
+            _editor.Open();
+            Assert.That(_model.ShowFps, Is.True);
+
+            _editor.SetShowFps(false);
+
+            Assert.That(_settingsService.Draft.Gameplay.ShowFps, Is.False);
+            Assert.That(_model.ShowFps, Is.False);
+            Assert.That(_model.IsDirty, Is.True);
+            Assert.That(_settingsService.Saved.Gameplay.ShowFps, Is.True);
+        }
+
+        [Test]
         public void BorderlessResolution_RemainsEditableAndRefreshRateIsReadOnly()
         {
             _editor.Open();

@@ -49,6 +49,8 @@ namespace EmpireAtWar.Entities.MainMenu.Settings
 
         void SetShowHints(bool isOn);
 
+        void SetShowFps(bool isOn);
+
         /// <summary>Forgets which hints were seen; applies at once, from the next match.</summary>
         void ResetHints();
 
