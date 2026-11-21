@@ -20,7 +20,7 @@ MonoBehaviour:
           weaponType: 16
           displayName: 
           damageType: 8
-          damage: 15000
+          damage: 30000
           shotsPerSalvo: 3
           shotInterval: 0.5
           reload: 0
@@ -50,7 +50,7 @@ MonoBehaviour:
           weaponType: 17
           displayName: 
           damageType: 9
-          damage: 300
+          damage: 600
           shotsPerSalvo: 10
           shotInterval: 0.1
           reload: 0
@@ -80,7 +80,7 @@ MonoBehaviour:
           weaponType: 18
           displayName: 
           damageType: 10
-          damage: 6000
+          damage: 12000
           shotsPerSalvo: 1
           shotInterval: 0
           reload: 0
@@ -102,5 +102,5 @@ MonoBehaviour:
           shieldRegenMultiplier: 1
           damageTakenMultiplier: 1
         stunnedTargetDamageMultiplier: 0.5
-        areaDamage: 1000
+        areaDamage: 2000
         areaRadius: 30
