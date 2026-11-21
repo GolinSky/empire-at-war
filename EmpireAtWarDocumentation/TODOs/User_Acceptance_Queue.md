@@ -557,3 +557,9 @@ created: "2026-10-29\r"
 - [ ] [[Done/Features/Ship_Engine_Plume_Rollout_Plan]] — In battle: check engine trails on CR70, ISD I/II, Tector and Executor (grow from 0 when departing, bend in turns, fade on stop, none during hyperspace, hidden by fog; capital turn-in-place linger acceptable?); spot-check other ships for trails starting off the nozzle.
 - [ ] [[Done/Features/Ship_Engine_Plume_Rollout_Plan]] — Battle capture with many ships moving: plume draw calls and transparent overdraw.
 - [ ] [[Done/Features/Ship_Engine_Plume_Rollout_Plan]] — Run `Ships` (`ShipEnginePlumePrefabTests`) and `Navigation` (`ShipNavigationServiceTests`) when authorized; compile passed, tests not run.
+
+## Map Satellite Pads
+
+- [ ] [[Done/Features/Map_Satellite_Pad_Expansion]] — Confirm decisions: old Skirmish (Full) saves no longer load; free pads only inside lane corridors.
+- [ ] [[Done/Features/Map_Satellite_Pad_Expansion]] — In a fresh Skirmish: check 4 home pads per station, 4 pads per outer relay, 8 main pads, free pads on routes (2/6/10); AI satellite spending/squadron spread; performance on Large 8-player.
+- [ ] [[Done/Features/Map_Satellite_Pad_Expansion]] — Run `Map`, `MapGeneration` (explicit), `GameFlow`, `EnemyAi`, `Capture` when authorized; compile passed, tests not run.

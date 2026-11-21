@@ -24,6 +24,7 @@ namespace EmpireAtWar.Entities.Map.Generation
         private readonly AsteroidFieldBuilder _asteroidFieldBuilder;
         private readonly HazardPlacer _hazardPlacer;
         private readonly SealedSpaceFiller _sealedSpaceFiller;
+        private readonly FreeSatellitePlacer _freeSatellitePlacer;
 
         public MapLayoutGenerator(MapGenerationSettings settings, MapFeatureRadii radii)
         {
@@ -35,6 +36,7 @@ namespace EmpireAtWar.Entities.Map.Generation
             _asteroidFieldBuilder = new AsteroidFieldBuilder(settings);
             _hazardPlacer = new HazardPlacer(settings, _pointOfInterestPlacer);
             _sealedSpaceFiller = new SealedSpaceFiller(settings);
+            _freeSatellitePlacer = new FreeSatellitePlacer(settings, _pointOfInterestPlacer);
         }
 
         public MapLayout Generate(
@@ -87,7 +89,8 @@ namespace EmpireAtWar.Entities.Map.Generation
         {
             List<MapNode> nodes = new List<MapNode>();
             string fairnessDetail = string.Empty;
-            int stationFailures = 0, pointFailures = 0, obstacleFailures = 0, fairnessFailures = 0, hazardFailures = 0;
+            int stationFailures = 0, pointFailures = 0, obstacleFailures = 0, fairnessFailures = 0, hazardFailures = 0,
+                freePadFailures = 0;
             bool hasAllies = false;
             for (int i = 0; i < players.Count; i++)
             for (int j = i + 1; j < players.Count; j++)
@@ -169,6 +172,12 @@ namespace EmpireAtWar.Entities.Map.Generation
                 List<FieldVolume> reserved = new List<FieldVolume>();
                 if (!size.IsArchetypeLayout && !blocker.TryReserve(size, stations, nodes, lanes, hazards, out reserved))
                     continue;
+                // Free pads join the nodes before fields grow, so fields, fills and decorations clear around them.
+                if (!_freeSatellitePlacer.TryPlace(size, stations, nodes, lanes, hazards, reserved, hazardSeed))
+                {
+                    freePadFailures++;
+                    continue;
+                }
                 List<AsteroidField> fields = _asteroidFieldBuilder.Build(size, stations, nodes, lanes, random,
                     hazards, out FieldDensity density);
                 if (!size.IsArchetypeLayout)
@@ -197,7 +206,7 @@ namespace EmpireAtWar.Entities.Map.Generation
             throw new InvalidOperationException(
                 $"{mapSize} {size.Archetype} {players.Count}-player seed {hazardSeed} layout failed after {attempts} attempts: " +
                 $"stations={stationFailures}, points={pointFailures}, obstacle={obstacleFailures}, " +
-                $"fairness={fairnessFailures}, hazards={hazardFailures}. " +
+                $"fairness={fairnessFailures}, hazards={hazardFailures}, freePads={freePadFailures}. " +
                 $"Last points: {_pointOfInterestPlacer.LastFailure}. {fairnessDetail}");
         }
 

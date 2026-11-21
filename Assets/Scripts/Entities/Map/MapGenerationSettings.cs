@@ -48,6 +48,8 @@ namespace EmpireAtWar.Entities.Map
         [field: SerializeField, Min(1)] public int MainZoneMiningCount { get; private set; } = 4;
         [field: SerializeField, Min(1)] public int MainZoneSatelliteCount { get; private set; } = 6;
         [field: SerializeField, Min(1)] public int AdditionalZoneSatelliteCount { get; private set; } = 2;
+        [field: SerializeField, Min(1), Tooltip("Satellite pads around each station, beside its home mine.")]
+        public int HomeSatelliteCount { get; private set; } = 4;
         [field: SerializeField, Range(0f, 0.5f), Tooltip("Share of the map side kept free of the planet at every border.")]
         public float PlanetBorderInset { get; private set; } = 0.25f;
         [field: FormerlySerializedAs("<ExtraRoadChance>k__BackingField"), SerializeField, Range(0f, 1f)]

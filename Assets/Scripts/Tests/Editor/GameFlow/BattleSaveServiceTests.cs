@@ -619,9 +619,10 @@ namespace EmpireAtWar.Tests.Editor
         {
             MapSizeSettings size = mapSettings.GetSize(definition.Map.Size)
                 .ForArchetype(mapSettings.Profiles.Get(definition.Map.Planet), definition.Slots.Count);
-            int count = definition.Slots.Count * 2 + mapSettings.MainZoneMiningCount +
-                mapSettings.MainZoneSatelliteCount + 2 * size.AdditionalZonePairCount *
-                (1 + mapSettings.AdditionalZoneSatelliteCount);
+            int count = definition.Slots.Count * (1 + mapSettings.HomeSatelliteCount) +
+                mapSettings.MainZoneMiningCount + mapSettings.MainZoneSatelliteCount +
+                2 * size.AdditionalZonePairCount * (1 + mapSettings.AdditionalZoneSatelliteCount) +
+                size.FreeSatelliteCount;
             var sites = new CaptureSiteSave[count];
             for (int i = 0; i < count; i++)
                 sites[i] = CaptureSiteSave.Create(PlayerId.None, CaptureSiteState.Neutral, PlayerId.None, 0f, SiteFacilityType.Mining, 0f, 0L);

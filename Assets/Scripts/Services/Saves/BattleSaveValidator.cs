@@ -172,9 +172,10 @@ namespace EmpireAtWar.Services.Saves
                     expectedSites = SurvivalLayoutGenerator.GetSiteCount(size, false);
                 }
                 else if (definition.Map.Type == MapType.Full)
-                    expectedSites = definition.Slots.Count * 2 + _mapSettings.MainZoneMiningCount +
-                        _mapSettings.MainZoneSatelliteCount + 2 * size.AdditionalZonePairCount *
-                        (1 + _mapSettings.AdditionalZoneSatelliteCount);
+                    expectedSites = definition.Slots.Count * (1 + _mapSettings.HomeSatelliteCount) +
+                        _mapSettings.MainZoneMiningCount + _mapSettings.MainZoneSatelliteCount +
+                        2 * size.AdditionalZonePairCount * (1 + _mapSettings.AdditionalZoneSatelliteCount) +
+                        size.FreeSatelliteCount;
             }
             if (save.CaptureSites.Length != expectedSites)
                 throw new InvalidDataException($"Saved {save.CaptureSites.Length} capture sites; the map has {expectedSites}.");

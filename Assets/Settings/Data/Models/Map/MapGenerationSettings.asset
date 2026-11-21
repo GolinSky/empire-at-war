@@ -25,6 +25,7 @@ MonoBehaviour:
         <AdditionalZoneStationDistance>k__BackingField: 1100
         <StationCornerJitter>k__BackingField: 180
         <SurvivalMiningSiteCount>k__BackingField: 6
+        <FreeSatelliteCount>k__BackingField: 2
         <HazardCount>k__BackingField: 2
         <HazardLengthShare>k__BackingField: {x: 0.35, y: 0.5}
         <HazardHalfWidthShare>k__BackingField: {x: 0.03, y: 0.065}
@@ -57,6 +58,7 @@ MonoBehaviour:
         <AdditionalZoneStationDistance>k__BackingField: 1300
         <StationCornerJitter>k__BackingField: 240
         <SurvivalMiningSiteCount>k__BackingField: 8
+        <FreeSatelliteCount>k__BackingField: 6
         <HazardCount>k__BackingField: 4
         <HazardLengthShare>k__BackingField: {x: 0.35, y: 0.5}
         <HazardHalfWidthShare>k__BackingField: {x: 0.03, y: 0.065}
@@ -89,6 +91,7 @@ MonoBehaviour:
         <AdditionalZoneStationDistance>k__BackingField: 1500
         <StationCornerJitter>k__BackingField: 360
         <SurvivalMiningSiteCount>k__BackingField: 12
+        <FreeSatelliteCount>k__BackingField: 10
         <HazardCount>k__BackingField: 6
         <HazardLengthShare>k__BackingField: {x: 0.35, y: 0.5}
         <HazardHalfWidthShare>k__BackingField: {x: 0.03, y: 0.065}
@@ -341,8 +344,9 @@ MonoBehaviour:
   <SatelliteFootprintRadius>k__BackingField: 60
   <MainZoneMiningRadiusShare>k__BackingField: 0.5
   <MainZoneMiningCount>k__BackingField: 4
-  <MainZoneSatelliteCount>k__BackingField: 6
-  <AdditionalZoneSatelliteCount>k__BackingField: 2
+  <MainZoneSatelliteCount>k__BackingField: 8
+  <AdditionalZoneSatelliteCount>k__BackingField: 4
+  <HomeSatelliteCount>k__BackingField: 4
   <PlanetBorderInset>k__BackingField: 0.25
   <ExtraLaneChance>k__BackingField: 0.35
   <LaneBend>k__BackingField: 0.2

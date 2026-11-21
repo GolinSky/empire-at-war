@@ -2,9 +2,10 @@
 type: engineering-reference
 system:
   - map-generation
-verified: 2026-11-13
-verification: Legacy Open Field fingerprints and quick/exhaustive generation
-  sweeps passed; archetype branch documented separately in Map_Archetypes.
+verified: 2026-11-21
+verification: "Satellite pad expansion: Unity compile 0 errors; scripted
+  generation of 7 planets × every size/roster × seeds 0,7,19 (315 layouts)
+  succeeded. EditMode tests not run (local override)."
 ---
 # Map Generation
 
@@ -18,13 +19,24 @@ verification: Legacy Open Field fingerprints and quick/exhaustive generation
 ### Legacy Open Field placement
 
 - Main relay: exact `PlanarGeometry.GetCenter(size.Bounds)`, range `540`; ordinary/default/additional range `270`.
-- Main mines: 4 at `MainZone × MainZoneMiningRadiusShare` = `270`, 90° apart. Main satellites stay outside capture range; opposite ring nodes have real `Mirror` indices.
+- Main mines: `MainZoneMiningCount` (4) at `MainZone × MainZoneMiningRadiusShare` = `270`. Main pads: `MainZoneSatelliteCount` (8) at `270 + 120 + 60 + 20` = `470`, inside the `540` capture range; phase `turn + 360 / (2 × count)` (`22.5°`) → nearest pad↔mine ≈`243`. Opposite ring nodes have real `Mirror` indices.
 - Opposite stations share a mirrored random corner offset and the larger station footprint inset; each home mine/pad uses its own station radius + own footprint + `15` units.
 - Outward jitter reserves `(pairedStationRadius + maxSiteRadius + 15) × cos(15°) + maxSiteRadius` from each border for the central behind orientation. With radius396/site120, maximum outward shift is ≈183 on Medium/Large; configured inward jitter remains240/360.
 - Main mine/satellite ring counts must be even and ≥2; invalid values throw before an asymmetric ring is built.
 - Home sites prefer the corner behind the station, then front only when behind candidates do not fit. `IsHomeSite` excludes asteroid pockets; bounds use footprint only. Field clearing includes one raster cell of spill margin.
-- Additional relay groups: mirrored edge-band candidates, station exclusion, main-distance exclusion, opposite nearest-team halves. Group members share a `PointId`.
-- Counts stay unchanged; changing generation changes old saved-seed geometry without triggering the count validator. Fresh Skirmish acceptance is required.
+- Home sites: 1 mine + `HomeSatelliteCount` (4) pads on the station ring `station.Radius + 60 + 15`. Pads fan from the old pad angle away from the mine in `max(20°, chord ≥ 2 × 60)` steps (Rebel radius `261` → ≈`21.6°`); first clear candidates win, else next side/orientation. All share `PointId` = station index, `IsHomeSite`.
+- Additional relay groups: mirrored edge-band candidates, station exclusion, main-distance exclusion, opposite nearest-team halves. Group members share a `PointId`. Pads: `AdditionalZoneSatelliteCount` (4) evenly on a `200` ring → outer edge `260` < `270`.
+- Site count (`BattleSaveValidator.ValidateMapCounts`): `Slots × (1 + HomeSatelliteCount) + MainMining + MainSatellite + 2 × pairs × (1 + AdditionalSatellite) + size.FreeSatelliteCount`. Count changes make old Full saves fail to load (accepted 2026-11-21).
+
+### Free satellite pads
+
+- `FreeSatellitePlacer`; count `MapSizeSettings.FreeSatelliteCount` = 2 / 6 / 10 (S/M/L); must be even (odd throws). Exact count or the layout attempt fails (`freePads=` in the failure message).
+- Runs after lanes are final (`LaneObstacleRouter`, legacy `MainLineBlocker.TryReserve`), before `AsteroidFieldBuilder.Build` → fields, fills and decorations clear around the pads.
+- Candidate: random lane, `25–75 %` progress, lateral offset ≤ `MinLaneWidth / 2 − 60 − ZoneClearance` (corridors pinch to `MinLaneWidth`, not `LaneWidth`). Best of 16 valid by distance to every node and station.
+- Checks: `PointOfInterestPlacer.IsClear`, ≥ `AdditionalZoneStationDistance` from every station, reserved main-line walls, hazard `SignedDistance > radius + CellSize`, inside a lane corridor.
+- Mirrored rosters (outer relays with a real `Mirror`) → point-mirrored pairs; else independent pads.
+- Own RNG `hazardSeed ^ 0x46524545` → layout RNG unchanged. Unique `PointId` per pad after the last relay id; AI treats a free point as a mine-less relay point.
+- Free pads are not lane endpoints; tests detect them as satellite points without a mine and check corridor containment instead.
 
 ### Battle area access
 

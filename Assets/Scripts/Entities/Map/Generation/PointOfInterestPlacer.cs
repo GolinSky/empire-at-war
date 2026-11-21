@@ -15,6 +15,8 @@ namespace EmpireAtWar.Entities.Map.Generation
         public const float MINING_SITE_SPACING_SHARE = 0.25f;
         private const float MIRROR_TOLERANCE = 1f;
         internal const float HOME_SITE_GAP = 15f;
+        private const float HOME_PAD_STEP = 20f;
+        private const float FULL_TURN = 360f;
 
         private readonly MapGenerationSettings _settings;
         private readonly MapFeatureRadii _radii;
@@ -185,18 +187,15 @@ namespace EmpireAtWar.Entities.Map.Generation
                         float turn = (orientation - 1) * 30f;
                         float spread = size.IsArchetypeLayout ? 60f : 30f;
                         Vector3 mineDirection = Quaternion.Euler(0f, turn - spread, 0f) * direction;
-                        Vector3 padDirection = Quaternion.Euler(0f, turn + spread, 0f) * direction;
                         Vector3 origin = new Vector3(station.Position.x, 0f, station.Position.z);
                         MapNode mine = new MapNode(MapNodeKind.MiningSite,
                             origin + mineDirection * (station.Radius + _radii.MiningSite + HOME_SITE_GAP),
                             PlayerId.None, _radii.MiningSite, i) { IsHomeSite = true };
-                        MapNode pad = new MapNode(MapNodeKind.SatelliteSite,
-                            origin + padDirection * (station.Radius + _settings.SatelliteFootprintRadius + HOME_SITE_GAP),
-                            PlayerId.None, _settings.SatelliteFootprintRadius, i) { IsHomeSite = true };
-                        if (size.IsArchetypeLayout &&
-                            (!StationAreaClearance.HasEnemyClearance(mine, size, stations, players) ||
-                             !StationAreaClearance.HasEnemyClearance(pad, size, stations, players))) continue;
-                        placed = TryAddGroup(new[] { mine, pad }, size, stations, nodes);
+                        if (size.IsArchetypeLayout && !StationAreaClearance.HasEnemyClearance(mine, size, stations, players))
+                            continue;
+                        if (!TryAddGroup(new[] { mine }, size, stations, nodes)) continue;
+                        placed = TryAddHomePads(size, stations, players, origin, direction, turn + spread, i, nodes);
+                        if (!placed) nodes.RemoveAt(nodes.Count - 1);
                     }
                 }
                 if (!placed)
@@ -212,6 +211,30 @@ namespace EmpireAtWar.Entities.Map.Generation
                         nodes[i].Mirror = j;
             }
             return true;
+        }
+
+        // Fans pads around the station ring from the first pad angle, away from the home mine.
+        private bool TryAddHomePads(MapSizeSettings size, IReadOnlyList<MapStation> stations,
+            IReadOnlyList<PlayerSlot> players, Vector3 origin, Vector3 direction, float firstAngle,
+            int stationIndex, List<MapNode> nodes)
+        {
+            float padRadius = _settings.SatelliteFootprintRadius;
+            float distance = stations[stationIndex].Radius + padRadius + HOME_SITE_GAP;
+            float step = Mathf.Max(HOME_PAD_STEP,
+                2f * Mathf.Asin(Mathf.Min(1f, padRadius / distance)) * Mathf.Rad2Deg + 1f);
+            int first = nodes.Count;
+            for (float angle = 0f; angle < FULL_TURN && nodes.Count - first < _settings.HomeSatelliteCount; angle += step)
+            {
+                MapNode pad = new MapNode(MapNodeKind.SatelliteSite,
+                    origin + Quaternion.Euler(0f, firstAngle + angle, 0f) * direction * distance,
+                    PlayerId.None, padRadius, stationIndex) { IsHomeSite = true };
+                if (size.IsArchetypeLayout && !StationAreaClearance.HasEnemyClearance(pad, size, stations, players))
+                    continue;
+                if (IsClear(pad, size, stations, nodes)) nodes.Add(pad);
+            }
+            if (nodes.Count - first == _settings.HomeSatelliteCount) return true;
+            nodes.RemoveRange(first, nodes.Count - first);
+            return false;
         }
 
         private static void PairWithMirroredStations(IReadOnlyList<MapStation> stations,

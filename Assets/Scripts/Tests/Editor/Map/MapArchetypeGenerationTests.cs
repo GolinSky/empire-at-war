@@ -5,6 +5,7 @@ using EmpireAtWar.Entities.CaptureSites;
 using EmpireAtWar.Entities.EnemyFaction.Models;
 using EmpireAtWar.Entities.Map;
 using EmpireAtWar.Entities.Map.Generation;
+using EmpireAtWar.Entities.Map.Hazards;
 using EmpireAtWar.Entities.Planet;
 using EmpireAtWar.Models.Factions;
 using EmpireAtWar.Models.Players;
@@ -76,19 +77,27 @@ namespace EmpireAtWar.Tests.Editor
                                     _settings.GetStationRadius(other.Faction)), context);
                 }
                 for (int home = 0; home < count; home++)
-                    Assert.That(layout.Sites.Count(site => site.PointId == home), Is.EqualTo(2),
-                        context + " home mine and satellite");
+                    Assert.That(layout.Sites.Count(site => site.PointId == home),
+                        Is.EqualTo(1 + _settings.HomeSatelliteCount), context + " home mine and satellites");
                 foreach (ZoneSpot zone in layout.Zones)
                 {
                     AssertInside(layout, zone.Center, context);
                     AssertEndpoint(layout, zone.Center, context);
                 }
+                MapSizeSettings size = _settings.GetSize(mapSize);
+                PlanetMapProfileEntry profile = _settings.Profiles.Get(planet);
+                if (profile.Archetype.Kind != MapArchetypeKind.OpenField || count > 4)
+                    size = size.ForArchetype(profile, count);
                 foreach (SiteSpot site in layout.Sites)
                 {
                     AssertInside(layout, site.Center, context);
-                    AssertEndpoint(layout, site.Center, context);
+                    if (IsFreePad(layout, site))
+                        AssertFreePad(layout, site, size, players, context);
+                    else
+                        AssertEndpoint(layout, site.Center, context);
                 }
-                MapSizeSettings size = _settings.GetSize(mapSize);
+                Assert.That(layout.Sites.Count(site => IsFreePad(layout, site)), Is.EqualTo(size.FreeSatelliteCount),
+                    context + " free pads");
                 float clearance = (Mathf.Min(size.MinLaneWidth, size.PocketEntranceWidth) - size.FieldCellSize) * 0.5f;
                 float minimumClearance = float.PositiveInfinity;
                 foreach (AsteroidField field in layout.Fields)
@@ -189,6 +198,32 @@ namespace EmpireAtWar.Tests.Editor
         {
             Assert.That(point.x, Is.InRange(layout.SizeRange.Min.x, layout.SizeRange.Max.x), context);
             Assert.That(point.z, Is.InRange(layout.SizeRange.Min.y, layout.SizeRange.Max.y), context);
+        }
+
+        // Every relay and home point owns a mine; a satellite point without one is a free lane pad.
+        private static bool IsFreePad(MapLayout layout, SiteSpot site) =>
+            site.Kind == CaptureSiteKind.Satellite &&
+            !layout.Sites.Any(other => other.PointId == site.PointId && other.Kind == CaptureSiteKind.Mining);
+
+        private void AssertFreePad(MapLayout layout, SiteSpot site, MapSizeSettings size,
+            IReadOnlyList<PlayerSlot> players, string context)
+        {
+            Assert.That(site.Owner, Is.EqualTo(PlayerId.None), context + " free pad owner");
+            Assert.That(layout.Sites.Count(other => other.PointId == site.PointId), Is.EqualTo(1),
+                context + " free pad point id");
+            float corridor = size.MinLaneWidth * 0.5f - _settings.SatelliteFootprintRadius - _settings.ZoneClearance;
+            Assert.That(layout.Lanes.Min(lane => PlanarGeometry.DistanceToPolyline(site.Center, lane.Points)),
+                Is.LessThanOrEqualTo(Mathf.Max(0f, corridor) + 1f), context + " free pad corridor");
+            foreach (PlayerSlot player in players)
+                Assert.That(PlanarGeometry.Distance(site.Center, layout.GetStationPosition(player.Id)),
+                    Is.GreaterThanOrEqualTo(size.AdditionalZoneStationDistance), context + " free pad station");
+            foreach (HazardShape hazard in layout.Hazards)
+                Assert.That(hazard.SignedDistance(site.Center), Is.GreaterThan(_settings.SatelliteFootprintRadius),
+                    context + " free pad hazard");
+            foreach (AsteroidField field in layout.Fields)
+            foreach (FieldVolume volume in field.Volumes)
+                Assert.That(PlanarGeometry.Distance(site.Center, volume.Center), Is.GreaterThan(volume.Radius),
+                    context + " free pad inside a field");
         }
 
         private static void AssertEndpoint(MapLayout layout, Vector3 point, string context)

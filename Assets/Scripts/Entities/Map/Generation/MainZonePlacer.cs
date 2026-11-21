@@ -45,11 +45,12 @@ namespace EmpireAtWar.Entities.Map.Generation
             float miningDistance = _radii.MainZone * _settings.MainZoneMiningRadiusShare;
             AddRing(group, position, pointId, MapNodeKind.MiningSite, _settings.MainZoneMiningCount,
                 miningDistance, _radii.MiningSite, turn);
-            // Pads ring the mines just inside the relay's capture area.
+            // Pads ring the mines just inside the relay's capture area, offset half a pad step from the mines.
             float satelliteDistance = miningDistance + _radii.MiningSite +
                 _settings.SatelliteFootprintRadius + _settings.ZoneClearance;
             AddRing(group, position, pointId, MapNodeKind.SatelliteSite, _settings.MainZoneSatelliteCount,
-                satelliteDistance, _settings.SatelliteFootprintRadius, turn + FULL_TURN / 12f);
+                satelliteDistance, _settings.SatelliteFootprintRadius,
+                turn + FULL_TURN / (2f * _settings.MainZoneSatelliteCount));
             return group;
         }
 

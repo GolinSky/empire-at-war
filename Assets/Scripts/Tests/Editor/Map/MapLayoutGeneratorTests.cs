@@ -95,8 +95,8 @@ namespace EmpireAtWar.Tests.Editor
                     node.Kind == MapNodeKind.MiningSite).ToArray();
                 MapNode[] mainPads = nodes.Where(node => node.PointId == main.PointId &&
                     node.Kind == MapNodeKind.SatelliteSite).ToArray();
-                Assert.That(mainMines.Length, Is.EqualTo(4), context);
-                Assert.That(mainPads.Length, Is.EqualTo(6), context);
+                Assert.That(mainMines.Length, Is.EqualTo(_settings.MainZoneMiningCount), context);
+                Assert.That(mainPads.Length, Is.EqualTo(_settings.MainZoneSatelliteCount), context);
                 foreach (MapNode mine in mainMines)
                 {
                     Assert.That(PlanarGeometry.Distance(mine.Center, main.Center),
@@ -104,7 +104,8 @@ namespace EmpireAtWar.Tests.Editor
                     Assert.That(miningRadius + mine.Radius, Is.LessThan(_radii.MainZone), context);
                     float nearest = mainMines.Where(other => other != mine)
                         .Min(other => PlanarGeometry.Distance(mine.Center, other.Center));
-                    Assert.That(nearest, Is.EqualTo(Mathf.Sqrt(2f) * miningRadius).Within(TOLERANCE), context);
+                    Assert.That(nearest, Is.EqualTo(2f * miningRadius *
+                        Mathf.Sin(Mathf.PI / mainMines.Length)).Within(TOLERANCE), context);
                     Assert.That(nearest, Is.GreaterThan(2f * mine.Radius), context);
                 }
                 foreach (MapNode pad in mainPads)
@@ -115,7 +116,10 @@ namespace EmpireAtWar.Tests.Editor
                         _settings.ZoneClearance).Within(TOLERANCE), context);
                     float nearest = mainPads.Where(other => other != pad)
                         .Min(other => PlanarGeometry.Distance(pad.Center, other.Center));
-                    Assert.That(nearest, Is.EqualTo(radius).Within(TOLERANCE), context);
+                    Assert.That(nearest, Is.EqualTo(2f * radius * Mathf.Sin(Mathf.PI / mainPads.Length))
+                        .Within(TOLERANCE), context);
+                    Assert.That(mainMines.Min(mine => PlanarGeometry.Distance(pad.Center, mine.Center)),
+                        Is.GreaterThanOrEqualTo(pad.Radius + _radii.MiningSite), context);
                 }
                 MapNode[] additional = nodes.Where(node => node.Kind == MapNodeKind.CapturableZone &&
                     node != main).ToArray();
@@ -137,7 +141,7 @@ namespace EmpireAtWar.Tests.Editor
                         node.Kind == MapNodeKind.MiningSite), Is.EqualTo(1), context);
                     MapNode[] zonePads = nodes.Where(node => node.PointId == zone.PointId &&
                         node.Kind == MapNodeKind.SatelliteSite).ToArray();
-                    Assert.That(zonePads.Length, Is.EqualTo(2), context);
+                    Assert.That(zonePads.Length, Is.EqualTo(_settings.AdditionalZoneSatelliteCount), context);
                     foreach (MapNode pad in zonePads)
                     {
                         float padDistance = PlanarGeometry.Distance(pad.Center, zone.Center);
@@ -145,9 +149,11 @@ namespace EmpireAtWar.Tests.Editor
                         Assert.That(padDistance, Is.EqualTo(_radii.MiningSite + pad.Radius +
                             _settings.ZoneClearance).Within(TOLERANCE), context);
                     }
-                    Assert.That(PlanarGeometry.Distance(zonePads[0].Center, zonePads[1].Center),
-                        Is.EqualTo(2f * (_radii.MiningSite + zonePads[0].Radius + _settings.ZoneClearance))
-                            .Within(TOLERANCE), context);
+                    float spread = _radii.MiningSite + zonePads[0].Radius + _settings.ZoneClearance;
+                    foreach (MapNode pad in zonePads)
+                        Assert.That(zonePads.Where(other => other != pad)
+                                .Min(other => PlanarGeometry.Distance(pad.Center, other.Center)),
+                            Is.EqualTo(2f * spread * Mathf.Sin(Mathf.PI / zonePads.Length)).Within(TOLERANCE), context);
                     Assert.That(GetNearestTeam(zone.Center, stations, players),
                         Is.Not.EqualTo(GetNearestTeam(nodes[zone.Mirror].Center, stations, players)), context);
                 }
@@ -156,7 +162,7 @@ namespace EmpireAtWar.Tests.Editor
                 Assert.That(homeMines.Length, Is.EqualTo(stations.Length), context);
                 foreach (MapNode mine in homeMines)
                     Assert.That(nodes.Count(node => node.PointId == mine.PointId &&
-                        node.Kind == MapNodeKind.SatelliteSite), Is.EqualTo(1), context);
+                        node.Kind == MapNodeKind.SatelliteSite), Is.EqualTo(_settings.HomeSatelliteCount), context);
                 HashSet<MapNode> homeForStations = new HashSet<MapNode>();
                 foreach (MapStation station in stations)
                 {
@@ -631,8 +637,10 @@ namespace EmpireAtWar.Tests.Editor
 
                         Assert.That(layout.Zones.Count, Is.EqualTo(1 + 2 * size.AdditionalZonePairCount + 2));
                         Assert.That(layout.Sites.Count, Is.EqualTo(
-                            4 + _settings.MainZoneMiningCount + _settings.MainZoneSatelliteCount +
-                            2 * size.AdditionalZonePairCount * (1 + _settings.AdditionalZoneSatelliteCount)));
+                            2 * (1 + _settings.HomeSatelliteCount) + _settings.MainZoneMiningCount +
+                            _settings.MainZoneSatelliteCount +
+                            2 * size.AdditionalZonePairCount * (1 + _settings.AdditionalZoneSatelliteCount) +
+                            size.FreeSatelliteCount));
                     }
                 }
             }
@@ -757,10 +765,29 @@ namespace EmpireAtWar.Tests.Editor
                 Assert.That(IsLaneEndpoint(layout, zone.Center), Is.True, $"Zone at {zone.Center} has no lane.");
             }
 
+            float corridor = Mathf.Max(0f,
+                size.MinLaneWidth * 0.5f - _settings.SatelliteFootprintRadius - _settings.ZoneClearance) + 1f;
             foreach (SiteSpot site in layout.Sites)
             {
-                Assert.That(IsLaneEndpoint(layout, site.Center), Is.True, $"Site at {site.Center} has no lane.");
+                // Free pads sit inside a lane corridor instead of ending a lane.
+                bool freePad = site.Kind == CaptureSiteKind.Satellite && !layout.Sites.Any(other =>
+                    other.PointId == site.PointId && other.Kind == CaptureSiteKind.Mining);
+                bool connected = freePad
+                    ? layout.Lanes.Any(lane => PlanarGeometry.DistanceToPolyline(site.Center, lane.Points) <= corridor)
+                    : IsLaneEndpoint(layout, site.Center);
+                Assert.That(connected, Is.True, $"Site at {site.Center} has no lane.");
             }
+        }
+
+        [Test]
+        public void FreeSatellitePads_RejectOddCount()
+        {
+            MapSizeSettings size = JsonUtility.FromJson<MapSizeSettings>("{\"<FreeSatelliteCount>k__BackingField\":3}");
+            FreeSatellitePlacer placer = new FreeSatellitePlacer(_settings, new PointOfInterestPlacer(_settings, _radii));
+            InvalidOperationException error = Assert.Throws<InvalidOperationException>(() => placer.TryPlace(size,
+                Array.Empty<MapStation>(), new List<MapNode>(), Array.Empty<MapLane>(), Array.Empty<HazardShape>(),
+                Array.Empty<FieldVolume>(), 0));
+            Assert.That(error.Message, Does.Contain("even count"));
         }
 
         [Test]
@@ -945,15 +972,16 @@ namespace EmpireAtWar.Tests.Editor
 
         // The baseline includes the visual rocks retained by RockScatter's 50% density reduction.
         // Medium/Large team-game baselines include allied corners pulled together along their shared edge.
-        [TestCase(MapSize.Small, 0, "837F1346CC804CB650F4E2868B1D7AB598B186EDC4D400B6DFB909DAE7CB9A51")]
-        [TestCase(MapSize.Small, 7, "EC8EED3B752471C3CFAF57279C8032C7E83FCDD273017DFB641D0D31FCF92881")]
-        [TestCase(MapSize.Small, 19, "649500F3872F930D696A0EFBF43FBBFEAB4ABAD4909024724C616B7150E60548")]
-        [TestCase(MapSize.Medium, 0, "F413D46600C8ADC736D206A8C90C33D380FFB259BDF6D9794C1C0B2342BFE542")]
-        [TestCase(MapSize.Medium, 7, "9B40482F1099F8CDDBE8D495F5D53243565913AA75DFEC1B29E40C22411DB6E9")]
-        [TestCase(MapSize.Medium, 19, "CB0BC872D62C4439B83538BE296753AACB1199807E69C5DD2CFD8F3C0D794809")]
-        [TestCase(MapSize.Large, 0, "13734DC0EADF3A3479F932D11B0202B781B41C5E5C963386479B11ED6C65C840")]
-        [TestCase(MapSize.Large, 7, "AD5842B970EEEE6B0195790EDA8A23E212D675393B2CC8156D5A053CF6B578C4")]
-        [TestCase(MapSize.Large, 19, "E86BA965CA2FD047C6A8FE451FE04995E6BC0F7B68619253CF7C0D80ACE6CF07")]
+        // Baselines include 4 home pads per station, 8 main pads, 4 pads per outer relay and free lane pads.
+        [TestCase(MapSize.Small, 0, "26D258B45665B5580BBD5FA46DD72EDB54EFB3AB41048E4134D84508C67E04A5")]
+        [TestCase(MapSize.Small, 7, "D94F472D0D4335FEF9153DFDF5D3108B887A0901A1D2D4F0BB42EE3A7466AFF5")]
+        [TestCase(MapSize.Small, 19, "D95D485C8E3E6F276A24B6DD40CE2EA0ED3C9AF98982484C985144AF5E534948")]
+        [TestCase(MapSize.Medium, 0, "BED7E9F95F6D4760EB0442CD929376442815F6B5DC4A295117A5CC9E3D6492D1")]
+        [TestCase(MapSize.Medium, 7, "95C641253D045D1535350C62F4C516743A37B60CFCAC3ACEB4A8DF9E91773086")]
+        [TestCase(MapSize.Medium, 19, "862D84D6537B601C9C4967C9503B25659EEBD9CD5242BE44725E9310497A9BC8")]
+        [TestCase(MapSize.Large, 0, "5BBAF4D846E16EF0475F9E5CB6676C143B2BCC99AAC3A19D67598B34C549200A")]
+        [TestCase(MapSize.Large, 7, "BCC00BA6C08C515F6D026BADF7BCBDA0B355112FEF35260CB3AD959BD66ADD5F")]
+        [TestCase(MapSize.Large, 19, "A5BAF84AFCE7B3323B76868753AA4F0C25C4BD5702D507519ED48D76143AF9A0")]
         public void OpenField_MatchesGeometryBaseline(MapSize mapSize, int seed, string expected)
         {
             MapLayout layout = _generator.Generate(mapSize, TestPlayers.CreateTeamGame().Players,
