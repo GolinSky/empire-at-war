@@ -316,7 +316,7 @@ namespace EmpireAtWar.Tests.Editor
 
         [TestCase(true)]
         [TestCase(false)]
-        public void LuckyShot_WindsUpThenOnlyAuthorityHitsOnceAndRecoversForSixtySeconds(bool authority)
+        public void LuckyShot_WindsUpThenOnlyAuthorityHitsOnceAndRecovers(bool authority)
         {
             var relations = TestPlayers.CreateDuel();
             var vision = new VisionService(relations, fogEnabled: false);
@@ -349,7 +349,7 @@ namespace EmpireAtWar.Tests.Editor
                 Assert.That(ability.SurvivesCasterDeath, Is.False);
                 AbilitySlotSave windingUp = AbilitySlotSave.From(caster.Slots[0]);
                 Assert.That(windingUp.State, Is.EqualTo(ShipAbilityState.Recovering));
-                Assert.That(windingUp.TimeLeft, Is.EqualTo(60f + settings.Windup * 0.5f +
+                Assert.That(windingUp.TimeLeft, Is.EqualTo(definition.RecoveryDelay + settings.Windup * 0.5f +
                     100f / settings.Projectile.ProjectileSpeed).Within(0.001f));
                 service.Advance(settings.Windup * 0.5f);
                 shot = (ShotEffect)typeof(LuckyShotAbility)
@@ -358,7 +358,7 @@ namespace EmpireAtWar.Tests.Editor
                 Assert.That(targetHealth.DamageReceived, Is.Zero, "Launch is not impact.");
                 Assert.That(ability.SurvivesCasterDeath, Is.True);
                 AbilitySlotSave inFlight = AbilitySlotSave.From(caster.Slots[0]);
-                Assert.That(inFlight.TimeLeft, Is.EqualTo(60f + 100f / settings.Projectile.ProjectileSpeed)
+                Assert.That(inFlight.TimeLeft, Is.EqualTo(definition.RecoveryDelay + 100f / settings.Projectile.ProjectileSpeed)
                     .Within(0.001f));
                 var loaded = new FakeCommand(definition, muzzle.transform, ShipAbilityId.LuckyShot);
                 var restoredService = new ShipAbilityService(new FakeFactory(), relations, vision);
@@ -367,15 +367,15 @@ namespace EmpireAtWar.Tests.Editor
                 Assert.That(loaded.Slots[0].TimeLeft, Is.EqualTo(inFlight.TimeLeft));
                 restoredService.Clear();
                 service.Advance(100f / settings.Projectile.ProjectileSpeed + 0.01f);
-                Assert.That(targetHealth.DamageReceived, Is.EqualTo(authority ? 8000f : 0f));
+                Assert.That(targetHealth.DamageReceived, Is.EqualTo(authority ? settings.Damage : 0f));
                 if (authority) Assert.That(targetHealth.LastDamageType, Is.EqualTo(DamageType.PrecisionStrike));
                 Assert.That(caster.Slots[0].State, Is.EqualTo(ShipAbilityState.Recovering));
-                Assert.That(caster.Slots[0].TimeLeft, Is.EqualTo(60f));
-                service.Advance(59f);
+                Assert.That(caster.Slots[0].TimeLeft, Is.EqualTo(definition.RecoveryDelay));
+                service.Advance(definition.RecoveryDelay - 1f);
                 Assert.That(caster.Slots[0].State, Is.EqualTo(ShipAbilityState.Recovering));
                 service.Advance(1f);
                 Assert.That(caster.Slots[0].State, Is.EqualTo(ShipAbilityState.Ready));
-                Assert.That(targetHealth.DamageReceived, Is.EqualTo(authority ? 8000f : 0f));
+                Assert.That(targetHealth.DamageReceived, Is.EqualTo(authority ? settings.Damage : 0f));
             }
             finally
             {

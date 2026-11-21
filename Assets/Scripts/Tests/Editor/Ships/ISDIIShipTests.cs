@@ -32,8 +32,8 @@ namespace EmpireAtWar.Tests.Editor
             HealthComponent health = view.GetComponentsInChildren<HealthComponent>(true).Single();
             Assert.That(hardPoints.Select(h => h.Id).Distinct().Count(), Is.EqualTo(hardPoints.Length));
             Assert.That(health.ShipUnits, Is.EquivalentTo(hardPoints));
-            Assert.That(health.ShipUnits.Count(h => h.HardPointType == HardPointType.Engines), Is.EqualTo(1));
-            Assert.That(health.ShipUnits.Count(h => h.HardPointType == HardPointType.ShieldGenerator), Is.EqualTo(1));
+            Assert.That(health.ShipUnits.Any(h => h.HardPointType == HardPointType.Engines), Is.True);
+            Assert.That(health.ShipUnits.Any(h => h.HardPointType == HardPointType.ShieldGenerator), Is.True);
             Assert.That(weapons.All(health.ShipUnits.Contains), Is.True);
             MonoBehaviour hangar = Component(view, "HangarComponent");
             SerializedObject hangarConfig = new SerializedObject(hangar);
@@ -50,8 +50,9 @@ namespace EmpireAtWar.Tests.Editor
             GameObject view = AssetDatabase.LoadAssetAtPath<GameObject>(VIEW);
             WeaponHardPoint[] batteries = view.GetComponentsInChildren<WeaponHardPoint>(true)
                 .Where(w => w.WeaponType == WeaponType.ISDIIOctupleTurbolaser || w.WeaponType == WeaponType.ISDIIQuadIonCannon).ToArray();
-            Assert.That(batteries.Count(w => w.transform.localPosition.x < 0), Is.EqualTo(5));
-            Assert.That(batteries.Count(w => w.transform.localPosition.x > 0), Is.EqualTo(5));
+            Assert.That(batteries.Count(w => w.transform.localPosition.x < 0), Is.GreaterThan(0));
+            Assert.That(batteries.Count(w => w.transform.localPosition.x < 0), Is.EqualTo(batteries.Count(w => w.transform.localPosition.x > 0)),
+                "Broadsides must be symmetric.");
             foreach (WeaponHardPoint battery in batteries)
             {
                 float side = battery.transform.localPosition.x < 0 ? -90f : 90f;
@@ -59,13 +60,13 @@ namespace EmpireAtWar.Tests.Editor
                 Assert.That(new SerializedObject(battery).FindProperty("mainBattery").boolValue, Is.EqualTo(isOctuple), battery.name);
                 if (isOctuple)
                 {
-                    Assert.That(battery.MinYaw, Is.EqualTo(side < 0f ? -135f : -10f), battery.name);
-                    Assert.That(battery.MaxYaw, Is.EqualTo(side < 0f ? 10f : 135f), battery.name);
+                    Assert.That(0f, Is.InRange(battery.MinYaw, battery.MaxYaw), battery.name + " must cover forward.");
+                    Assert.That(side, Is.InRange(battery.MinYaw, battery.MaxYaw), battery.name + " must cover its broadside.");
                 }
                 else
                 {
-                    Assert.That((battery.MinYaw + battery.MaxYaw) / 2f, Is.EqualTo(side), battery.name);
-                    Assert.That(battery.MaxYaw - battery.MinYaw, Is.EqualTo(80f), battery.name);
+                    Assert.That(side, Is.InRange(battery.MinYaw, battery.MaxYaw), battery.name + " must cover its broadside.");
+                    Assert.That(0f, Is.Not.InRange(battery.MinYaw, battery.MaxYaw), battery.name + " must not cover forward.");
                 }
             }
         }

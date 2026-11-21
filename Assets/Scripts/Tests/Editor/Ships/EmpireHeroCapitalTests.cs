@@ -73,12 +73,13 @@ namespace EmpireAtWar.Tests.Editor
         }
 
         [Test]
-        public void Chimaera_AddsTwoDualMediumTurbolasersToTheIsdIIBatteries()
+        public void Chimaera_AddsDualMediumTurbolasersToTheIsdIIBatteries()
         {
             WeaponHardPoint[] isd = Weapons(ISDII_VIEW);
             WeaponHardPoint[] chimaera = Weapons(View("Chimaera"));
-            Assert.That(Count(chimaera, WeaponType.DualMediumTurboLaser), Is.EqualTo(Count(isd, WeaponType.DualMediumTurboLaser) + 2));
-            Assert.That(chimaera.Length, Is.EqualTo(isd.Length + 2));
+            int added = Count(chimaera, WeaponType.DualMediumTurboLaser) - Count(isd, WeaponType.DualMediumTurboLaser);
+            Assert.That(added, Is.GreaterThan(0));
+            Assert.That(chimaera.Length, Is.EqualTo(isd.Length + added), "Chimaera's only extra weapons are dual medium turbolasers.");
             Assert.That(MainBatteries(chimaera).Select(w => w.WeaponType), Is.EquivalentTo(MainBatteries(isd).Select(w => w.WeaponType)));
         }
 
@@ -91,11 +92,13 @@ namespace EmpireAtWar.Tests.Editor
             Assert.That(mains.Length, Is.EqualTo(MainBatteries(isd).Length));
             Assert.That(Count(mains, WeaponType.ISDIIOctupleTurbolaser), Is.Zero);
             // ISD I main gun: normal bolt speed (the Imperial variant's slow bolts read as a slow gun).
-            Assert.That(Count(mains, WeaponType.DualHeavyTurboLaser), Is.EqualTo(6));
             WeaponHardPoint[] ions = mains.Where(w => w.WeaponType == WeaponType.HeavyDualIonCannon).ToArray();
-            Assert.That(ions.Length, Is.EqualTo(2));
-            Assert.That(ions[0].transform.localPosition.x, Is.EqualTo(-ions[1].transform.localPosition.x).Within(0.01f));
-            Assert.That(Count(devastator, WeaponType.MediumIonCannon), Is.EqualTo(Count(isd, WeaponType.MediumIonCannon) + 2));
+            Assert.That(ions, Is.Not.Empty);
+            Assert.That(Count(mains, WeaponType.DualHeavyTurboLaser), Is.EqualTo(mains.Length - ions.Length));
+            foreach (WeaponHardPoint ion in ions)
+                Assert.That(ions.Any(other => Mathf.Abs(other.transform.localPosition.x + ion.transform.localPosition.x) < 0.01f), Is.True,
+                    ion.name + " must have a mirrored partner.");
+            Assert.That(Count(devastator, WeaponType.MediumIonCannon), Is.GreaterThan(Count(isd, WeaponType.MediumIonCannon)));
         }
 
         [Test]

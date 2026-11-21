@@ -27,7 +27,7 @@ namespace EmpireAtWar.Tests.Editor
             foreach (var faction in catalog.Factions)
             {
                 var configured = data.Factions.Single(entry => entry.Faction == faction.FactionType);
-                Assert.That(configured.Waves.Count, Is.EqualTo(5));
+                Assert.That(configured.Waves.Count, Is.EqualTo(SurvivalModel.WAVE_COUNT));
                 foreach (var wave in configured.Waves)
                 {
                     Assert.That(wave.SpawnGroupCount, Is.InRange(1, 4));

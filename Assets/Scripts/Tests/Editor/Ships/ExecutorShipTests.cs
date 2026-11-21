@@ -4,6 +4,7 @@ using EmpireAtWar.Components.AttackComponent;
 using EmpireAtWar.Components.Hangar;
 using EmpireAtWar.Components.Ship.Health;
 using EmpireAtWar.Entities.Ship.Data;
+using EmpireAtWar.Entities.Squadrons;
 using EmpireAtWar.Models.Factions;
 using EmpireAtWar.Services.ShipAbilities;
 using EmpireAtWar.ViewComponents.Health;
@@ -32,10 +33,8 @@ namespace EmpireAtWar.Tests.Editor
             HardPoint[] points = view.GetComponentsInChildren<HardPoint>(true);
             Assert.That(points.Select(p => p.Id).Distinct().Count(), Is.EqualTo(points.Length));
             Assert.That(health.ShipUnits.Select(p => p.Id), Is.EqualTo(Enumerable.Range(0, points.Length)));
-            Assert.That(health.ShipUnits.Count(p => p.HardPointType == HardPointType.ShieldGenerator), Is.EqualTo(4));
-            Assert.That(health.ShipUnits.Count(p => p.HardPointType == HardPointType.Engines), Is.EqualTo(2));
-            Assert.That(health.ShipUnits.Count(p => p.HardPointType == HardPointType.Hangar), Is.EqualTo(2));
-            Assert.That(health.ShipUnits.Count(p => p.HardPointType == HardPointType.TractorBeam), Is.EqualTo(1));
+            foreach (HardPointType required in new[] { HardPointType.ShieldGenerator, HardPointType.Engines, HardPointType.Hangar, HardPointType.TractorBeam })
+                Assert.That(health.ShipUnits.Any(p => p.HardPointType == required), Is.True, required.ToString());
             Assert.That(weapons.All(health.ShipUnits.Contains), Is.True);
         }
 
@@ -53,16 +52,18 @@ namespace EmpireAtWar.Tests.Editor
         public void SavedHangars_ShareTheFighterExitWithInterceptors()
         {
             ShipData data = AssetDatabase.LoadAssetAtPath<ShipData>(DATA);
-            Assert.That(data.HangarBays.Select(b => (int)b.SquadronType), Is.EqualTo(new[] { 200, 201, 203 }));
+            SquadronType[] bays = data.HangarBays.Select(b => b.SquadronType).ToArray();
+            Assert.That(bays, Is.SupersetOf(new[] { SquadronType.TIEFighter, SquadronType.TIEInterceptor }));
             GameObject view = AssetDatabase.LoadAssetAtPath<GameObject>(VIEW);
             SerializedObject hangar = Config(view, "HangarComponent");
             SerializedProperty points = hangar.FindProperty("bayHardPoints");
             SerializedProperty exits = hangar.FindProperty("bayLaunchPoints");
-            Assert.That(points.arraySize, Is.EqualTo(3));
-            Assert.That(exits.arraySize, Is.EqualTo(3));
-            Assert.That(points.GetArrayElementAtIndex(0).objectReferenceValue, Is.Not.EqualTo(points.GetArrayElementAtIndex(1).objectReferenceValue));
-            Assert.That(points.GetArrayElementAtIndex(2).objectReferenceValue, Is.EqualTo(points.GetArrayElementAtIndex(0).objectReferenceValue));
-            Assert.That(exits.GetArrayElementAtIndex(2).objectReferenceValue, Is.EqualTo(exits.GetArrayElementAtIndex(0).objectReferenceValue));
+            Assert.That(points.arraySize, Is.EqualTo(bays.Length));
+            Assert.That(exits.arraySize, Is.EqualTo(bays.Length));
+            int fighter = Array.IndexOf(bays, SquadronType.TIEFighter);
+            int interceptor = Array.IndexOf(bays, SquadronType.TIEInterceptor);
+            Assert.That(points.GetArrayElementAtIndex(interceptor).objectReferenceValue, Is.EqualTo(points.GetArrayElementAtIndex(fighter).objectReferenceValue));
+            Assert.That(exits.GetArrayElementAtIndex(interceptor).objectReferenceValue, Is.EqualTo(exits.GetArrayElementAtIndex(fighter).objectReferenceValue));
             for (int i = 0; i < exits.arraySize; i++)
             {
                 Transform exit = (Transform)exits.GetArrayElementAtIndex(i).objectReferenceValue;

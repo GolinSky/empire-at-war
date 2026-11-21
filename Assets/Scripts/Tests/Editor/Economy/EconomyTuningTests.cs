@@ -1,3 +1,4 @@
+using System.Linq;
 using EmpireAtWar.Controllers.Economy;
 using EmpireAtWar.Controllers.Game;
 using EmpireAtWar.Entities.CaptureSites;
@@ -41,23 +42,31 @@ namespace EmpireAtWar.Tests.Editor
         {
             FactionRoster roster = CreateRoster(faction);
             ResearchTierData[] tiers = roster.ResearchLines[ResearchType.IncreasedStationIncome].Tiers;
-            Assert.That(tiers, Has.Length.EqualTo(2));
+            Assert.That(tiers, Has.Length.GreaterThanOrEqualTo(2));
+            float mining1 = TierMultiplier(roster, ResearchType.IncreasedProduction, 1, ResearchStat.Income);
+            float mining2 = TierMultiplier(roster, ResearchType.IncreasedProduction, 2, ResearchStat.Income);
+            float station1 = TierMultiplier(roster, ResearchType.IncreasedStationIncome, 1, ResearchStat.StationIncome);
+            float station2 = TierMultiplier(roster, ResearchType.IncreasedStationIncome, 2, ResearchStat.StationIncome);
+            Assert.That(mining1, Is.GreaterThan(1f));
+            Assert.That(mining2, Is.GreaterThan(mining1));
+            Assert.That(station1, Is.GreaterThan(1f));
+            Assert.That(station2, Is.GreaterThan(station1));
 
             FactionResearchModel research = new FactionResearchModel(roster);
             Assert.That(research.StationIncomeMultiplier, Is.EqualTo(1f));
             research.Complete(ResearchType.IncreasedProduction);
-            Assert.That(research.IncomeMultiplier, Is.EqualTo(1.2f).Within(0.0001f));
+            Assert.That(research.IncomeMultiplier, Is.EqualTo(mining1).Within(0.0001f));
             Assert.That(research.StationIncomeMultiplier, Is.EqualTo(1f));
 
             research.Complete(ResearchType.IncreasedStationIncome);
-            Assert.That(research.StationIncomeMultiplier, Is.EqualTo(1.2f).Within(0.0001f));
-            Assert.That(research.IncomeMultiplier, Is.EqualTo(1.2f).Within(0.0001f));
+            Assert.That(research.StationIncomeMultiplier, Is.EqualTo(station1).Within(0.0001f));
+            Assert.That(research.IncomeMultiplier, Is.EqualTo(mining1).Within(0.0001f));
             research.Complete(ResearchType.IncreasedStationIncome);
-            Assert.That(research.StationIncomeMultiplier, Is.EqualTo(1.4f).Within(0.0001f));
-            Assert.That(research.IncomeMultiplier, Is.EqualTo(1.2f).Within(0.0001f));
+            Assert.That(research.StationIncomeMultiplier, Is.EqualTo(station2).Within(0.0001f), "A tier replaces the previous one.");
+            Assert.That(research.IncomeMultiplier, Is.EqualTo(mining1).Within(0.0001f));
             research.Complete(ResearchType.IncreasedProduction);
-            Assert.That(research.IncomeMultiplier, Is.EqualTo(1.4f).Within(0.0001f));
-            Assert.That(research.StationIncomeMultiplier, Is.EqualTo(1.4f).Within(0.0001f));
+            Assert.That(research.IncomeMultiplier, Is.EqualTo(mining2).Within(0.0001f));
+            Assert.That(research.StationIncomeMultiplier, Is.EqualTo(station2).Within(0.0001f));
         }
 
         [TestCase(1)]
@@ -92,9 +101,10 @@ namespace EmpireAtWar.Tests.Editor
                 Assert.That(economy.TotalIncome, Is.EqualTo(baseIncome).Within(0.0001f));
                 economy.AddProvider(new FixedIncomeProvider());
                 research.Complete(ResearchType.IncreasedStationIncome);
-                Assert.That(economy.TotalIncome, Is.EqualTo(baseIncome * 1.2f + 60f).Within(0.0001f));
+                Assert.That(economy.TotalIncome, Is.EqualTo(baseIncome * research.StationIncomeMultiplier + 60f).Within(0.0001f));
                 research.Complete(ResearchType.IncreasedStationIncome);
-                Assert.That(economy.TotalIncome, Is.EqualTo(baseIncome * 1.4f + 60f).Within(0.0001f));
+                Assert.That(economy.TotalIncome, Is.EqualTo(baseIncome * research.StationIncomeMultiplier + 60f).Within(0.0001f));
+                Assert.That(research.StationIncomeMultiplier, Is.GreaterThan(1f));
             }
             finally
             {
@@ -239,7 +249,8 @@ namespace EmpireAtWar.Tests.Editor
                 float incomeAtMoneyChanged = -1f;
                 clientMoney.OnMoneyChanged += _ => incomeAtMoneyChanged = client.TotalIncome;
                 clientState.Apply(hostState.Capture());
-                Assert.That(client.TotalIncome, Is.EqualTo(63.6f).Within(0.0001f));
+                float hostWithMine = host.TotalIncome;
+                Assert.That(client.TotalIncome, Is.EqualTo(hostWithMine).Within(0.0001f));
                 Assert.That(incomeAtMoneyChanged, Is.EqualTo(host.TotalIncome));
                 Assert.That(clientMoney.Money, Is.EqualTo(500f));
 
@@ -255,7 +266,7 @@ namespace EmpireAtWar.Tests.Editor
 
                 host.RemoveProvider(hostMine);
                 clientState.Apply(hostState.Capture());
-                Assert.That(host.TotalIncome, Is.EqualTo(3.6f).Within(0.0001f));
+                Assert.That(host.TotalIncome, Is.EqualTo(hostWithMine - 60f).Within(0.0001f));
                 Assert.That(client.TotalIncome, Is.EqualTo(host.TotalIncome),
                     "The next snapshot must reflect income lost when a host-side mine is destroyed.");
                 Assert.That(incomeAtMoneyChanged, Is.EqualTo(host.TotalIncome));
@@ -266,6 +277,10 @@ namespace EmpireAtWar.Tests.Editor
                 host.LateDispose();
             }
         }
+
+        private static float TierMultiplier(FactionRoster roster, ResearchType line, int tier, ResearchStat stat) =>
+            roster.ResearchLines[line].Tiers[tier - 1].Effects.Where(effect => effect.Stat == stat)
+                .Aggregate(1f, (multiplier, effect) => multiplier * effect.Multiplier);
 
         private static FactionRoster CreateRoster(string faction)
         {

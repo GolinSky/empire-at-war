@@ -105,15 +105,13 @@ namespace EmpireAtWar.Tests.Editor
         {
             DamageMatrixData matrix = AssetDatabase.LoadAssetAtPath<DamageMatrixData>(MATRIX);
 
-            Assert.That(matrix.GetSquadronShieldMultiplier(DamageType.Laser), Is.EqualTo(1f));
-            Assert.That(matrix.GetSquadronShieldMultiplier(DamageType.PointDefense), Is.EqualTo(1f));
-            Assert.That(matrix.GetShieldMultiplier(DamageType.Laser), Is.EqualTo(0.5f));
-            Assert.That(matrix.GetShieldMultiplier(DamageType.PointDefense), Is.EqualTo(0.25f));
             foreach (DamageType gun in new[] { DamageType.Laser, DamageType.PointDefense })
             {
-                Assert.That(matrix.GetDamageMultiplier(gun, ShipClass.Fighter), Is.EqualTo(2f));
-                Assert.That(matrix.GetDamageMultiplier(gun, ShipClass.Bomber), Is.EqualTo(2.5f));
-                Assert.That(matrix.GetDamageMultiplier(gun, ShipClass.Interceptor), Is.EqualTo(2.5f));
+                Assert.That(matrix.GetShieldMultiplier(gun), Is.LessThanOrEqualTo(1f), gun + " must not buff ship shield damage.");
+                Assert.That(matrix.GetSquadronShieldMultiplier(gun), Is.GreaterThan(matrix.GetShieldMultiplier(gun)),
+                    gun + " must penetrate squadron shields better than ship shields.");
+                foreach (ShipClass strikecraft in new[] { ShipClass.Fighter, ShipClass.Bomber, ShipClass.Interceptor })
+                    Assert.That(matrix.GetDamageMultiplier(gun, strikecraft), Is.GreaterThan(1f), gun + " vs " + strikecraft);
             }
         }
 

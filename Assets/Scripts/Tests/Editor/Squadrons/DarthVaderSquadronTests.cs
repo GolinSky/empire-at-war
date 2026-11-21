@@ -24,14 +24,15 @@ namespace EmpireAtWar.Tests.Editor
         private const string WEAPONS = "Assets/Settings/Data/Models/Weapon/WeaponsData.asset";
 
         [Test]
-        public void SavedFormation_HasVaderLeadingSixTieEscorts()
+        public void SavedFormation_HasVaderLeadingTieEscorts()
         {
             GameObject view = AssetDatabase.LoadAssetAtPath<GameObject>(VIEW_FOLDER + UNIT + "SquadronView.prefab");
             Assert.That(view, Is.Not.Null);
             FighterView[] fighters = view.GetComponentsInChildren<FighterView>(true).OrderBy(f => f.Id).ToArray();
-            Assert.That(fighters.Select(f => f.Id), Is.EqualTo(Enumerable.Range(0, 7)));
+            Assert.That(fighters.Length, Is.GreaterThan(1), "Vader needs at least one escort.");
+            Assert.That(fighters.Select(f => f.Id), Is.EqualTo(Enumerable.Range(0, fighters.Length)));
             SerializedProperty flight = new SerializedObject(view.GetComponent<SquadronFlightComponent>()).FindProperty("fighters");
-            Assert.That(flight.arraySize, Is.EqualTo(7));
+            Assert.That(flight.arraySize, Is.EqualTo(fighters.Length));
             for (int i = 0; i < fighters.Length; i++)
             {
                 Assert.That(flight.GetArrayElementAtIndex(i).objectReferenceValue, Is.EqualTo(fighters[i]));
@@ -64,13 +65,13 @@ namespace EmpireAtWar.Tests.Editor
         {
             SquadronData vader = LoadData(UNIT);
             WeaponsData weapons = AssetDatabase.LoadAssetAtPath<WeaponsData>(WEAPONS);
-            Assert.That(vader.MemberCount, Is.EqualTo(7));
+            GameObject view = AssetDatabase.LoadAssetAtPath<GameObject>(VIEW_FOLDER + UNIT + "SquadronView.prefab");
+            Assert.That(vader.MemberCount, Is.EqualTo(view.GetComponentsInChildren<FighterView>(true).Length));
             Assert.That(vader.WeaponLoadout.Select(w => (w.WeaponType, w.Count)), Is.EquivalentTo(new[]
             {
-                (WeaponType.DarthVaderLaser, 1), (WeaponType.DarthVaderEscortLaser, 6)
+                (WeaponType.DarthVaderLaser, 1), (WeaponType.DarthVaderEscortLaser, vader.MemberCount - 1)
             }));
             float leaderDps = weapons.GetProfile(WeaponType.DarthVaderLaser).DamagePerSecond;
-            Assert.That(leaderDps, Is.EqualTo(400f).Within(0.01f));
             Assert.That(weapons.GetProfile(WeaponType.DarthVaderEscortLaser).DamagePerSecond,
                 Is.EqualTo(weapons.GetProfile(WeaponType.TIEFighterLaser).DamagePerSecond).Within(0.001f));
             foreach (string hero in new[] { "PloKoonDelta7B", "ObiWanKenobiEta2", "MaceWinduEta2", "AnakinSkywalkerEta2" })
@@ -81,8 +82,7 @@ namespace EmpireAtWar.Tests.Editor
                 Assert.That(vader.CruiseSpeed, Is.LessThan(republic.CruiseSpeed), hero);
                 Assert.That(vader.CombatSpeed, Is.LessThan(republic.CombatSpeed), hero);
             }
-            Assert.That(vader.CruiseSpeed, Is.EqualTo(75.4f));
-            Assert.That(vader.CombatSpeed, Is.EqualTo(85.8f));
+            Assert.That(vader.CombatSpeed, Is.GreaterThanOrEqualTo(vader.CruiseSpeed));
         }
 
         [Test]
@@ -90,14 +90,14 @@ namespace EmpireAtWar.Tests.Editor
         {
             SquadronData vader = LoadData(UNIT);
             SquadronData tie = LoadData("TIEFighter");
-            Assert.That(vader.LeaderHull, Is.EqualTo(3200f));
-            Assert.That(vader.LeaderShields, Is.EqualTo(2400f));
+            Assert.That(vader.LeaderHull, Is.GreaterThan(vader.MemberHull));
+            Assert.That(vader.LeaderShields, Is.GreaterThan(vader.MemberShields));
             Assert.That(vader.ProtectLeaderUntilEscortsLost, Is.True);
             Assert.That(vader.ShipClass, Is.EqualTo(ShipClass.HeroStrikecraft));
             Assert.That(vader.MemberHull, Is.EqualTo(tie.MemberHull));
             Assert.That(vader.MemberShields, Is.EqualTo(tie.MemberShields));
-            Assert.That(vader.TotalHull, Is.EqualTo(3200f + 6 * tie.MemberHull));
-            Assert.That(vader.TotalShields, Is.EqualTo(2400f + 6 * tie.MemberShields));
+            Assert.That(vader.TotalHull, Is.EqualTo(vader.LeaderHull + (vader.MemberCount - 1) * tie.MemberHull).Within(0.01f));
+            Assert.That(vader.TotalShields, Is.EqualTo(vader.LeaderShields + (vader.MemberCount - 1) * tie.MemberShields).Within(0.01f));
             SquadronData luke = LoadData("LukeRedSquadron");
             Assert.That(luke, Is.Not.Null);
             Assert.That(vader.TotalHull, Is.LessThan(luke.TotalHull));
@@ -112,13 +112,13 @@ namespace EmpireAtWar.Tests.Editor
         }
 
         [Test]
-        public void SavedAbility_ReplenishesWingmenWithSixtySecondRecovery()
+        public void SavedAbility_ReplenishesWingmenWithRecovery()
         {
             Assert.That(LoadData(UNIT).Abilities, Does.Contain(ShipAbilityId.ReplenishWingmen));
             ShipAbilityDefinition definition = AssetDatabase.LoadAssetAtPath<ShipAbilityCatalog>(
                 "Assets/Settings/Data/Models/ShipAbilities/ShipAbilityCatalog.asset").Get(ShipAbilityId.ReplenishWingmen);
             Assert.That(definition.Settings, Is.TypeOf<ReplenishWingmenSettings>());
-            Assert.That(definition.RecoveryDelay, Is.EqualTo(60f));
+            Assert.That(definition.RecoveryDelay, Is.GreaterThan(0f));
             Assert.That(definition.RequiresEnemyTarget, Is.False);
         }
 

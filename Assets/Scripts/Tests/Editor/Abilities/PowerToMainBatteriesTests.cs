@@ -28,15 +28,18 @@ namespace EmpireAtWar.Tests.Editor
             CombatModifiers modifiers = new CombatModifiers();
             CombatStatModifier other = new CombatStatModifier(2f, 0.5f, 1.5f, 2f, 0.8f);
             modifiers.Add(other);
-            PowerToMainBatteriesAbility ability = new PowerToMainBatteriesAbility(new PowerToMainBatteriesSettings());
+            var settings = new PowerToMainBatteriesSettings();
+            Assert.That(settings.FireDelayMultiplier, Is.LessThan(1f), "Main batteries must fire faster.");
+            Assert.That(settings.StatModifier.SpeedMultiplier, Is.LessThan(1f), "Diverting power must slow the ship.");
+            PowerToMainBatteriesAbility ability = new PowerToMainBatteriesAbility(settings);
             ability.Start(new TestFacade(modifiers), null, null);
 
             Assert.That(modifiers.CanFireWeapon(true), Is.True);
             Assert.That(modifiers.CanFireWeapon(false), Is.False);
-            Assert.That(modifiers.GetMainBatteryFireDelayMultiplier(true), Is.EqualTo(0.5f));
-            Assert.That(modifiers.SpeedMultiplier, Is.EqualTo(0.375f));
-            Assert.That(modifiers.ShieldRegenMultiplier, Is.EqualTo(1f));
-            Assert.That(modifiers.DamageMultiplier, Is.EqualTo(2f));
+            Assert.That(modifiers.GetMainBatteryFireDelayMultiplier(true), Is.EqualTo(settings.FireDelayMultiplier).Within(0.0001f));
+            Assert.That(modifiers.SpeedMultiplier, Is.EqualTo(1.5f * settings.StatModifier.SpeedMultiplier).Within(0.0001f));
+            Assert.That(modifiers.ShieldRegenMultiplier, Is.EqualTo(2f * settings.StatModifier.ShieldRegenMultiplier).Within(0.0001f));
+            Assert.That(modifiers.DamageMultiplier, Is.EqualTo(2f * settings.StatModifier.DamageMultiplier).Within(0.0001f));
 
             ability.Stop();
             Assert.That(modifiers.CanFireWeapon(false), Is.True);

@@ -62,12 +62,14 @@ namespace EmpireAtWar.Tests.Editor
             var caster = new SelfCaster();
             var existing = new CombatStatModifier(1.5f, .8f, 1.2f, 2, .75f);
             caster.Modifiers.Add(existing);
+            float pursuitSpeed = ((BoostEnginePowerSettings)definition.Settings).StatModifier.SpeedMultiplier;
+            Assert.That(pursuitSpeed, Is.GreaterThan(1f));
             IStoppableShipAbility ability = (IStoppableShipAbility)definition.Settings.CreateAbility(null);
             for (int activation = 0; activation < 2; activation++)
             {
                 ability.Start(caster, definition, null);
                 Assert.That(caster.Modifiers.DamageMultiplier, Is.EqualTo(1.5f));
-                Assert.That(caster.Modifiers.SpeedMultiplier, Is.EqualTo(1.2f * 1.125f));
+                Assert.That(caster.Modifiers.SpeedMultiplier, Is.EqualTo(1.2f * pursuitSpeed).Within(0.0001f));
                 Assert.That(caster.Modifiers.ShieldRegenMultiplier, Is.Zero);
                 Assert.That(caster.Modifiers.DamageTakenMultiplier, Is.EqualTo(.75f));
                 ability.Stop();

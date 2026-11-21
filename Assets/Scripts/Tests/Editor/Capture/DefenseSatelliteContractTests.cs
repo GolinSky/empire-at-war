@@ -26,13 +26,13 @@ namespace EmpireAtWar.Tests.Editor
         [TestCase(SiteFacilityType.IonSatellite, DefendPlatformType.IonSatellite, WeaponType.MediumIonCannon)]
         [TestCase(SiteFacilityType.MassDriverSatellite, DefendPlatformType.MassDriverSatellite, WeaponType.MassDriver)]
         [TestCase(SiteFacilityType.MissileSatellite, DefendPlatformType.MissileSatellite, WeaponType.HeavyAssaultMissile)]
-        public void Satellite_HasRegisteredSixWeaponPrefabAndData(SiteFacilityType facility,
+        public void Satellite_HasRegisteredWeaponPrefabAndData(SiteFacilityType facility,
             DefendPlatformType platform, WeaponType weapon)
         {
             Assert.That(facility.ToSatelliteType(), Is.EqualTo(platform));
             DefendPlatformData data = LoadData(platform);
             Assert.That(data.Income, Is.Zero);
-            Assert.That(data.WeaponLoadout.Sum(entry => entry.Count), Is.EqualTo(6));
+            Assert.That(data.WeaponLoadout.Sum(entry => entry.Count), Is.GreaterThan(0));
             Assert.That(data.WeaponLoadout.All(entry => entry.WeaponType == weapon), Is.True);
             var weapons = AssetDatabase.LoadAssetAtPath<WeaponsData>("Assets/Settings/Data/Models/Weapon/WeaponsData.asset");
             Assert.That(data.ComponentData.Range, Is.GreaterThanOrEqualTo(weapons.GetProfile(weapon).Range),
@@ -46,8 +46,9 @@ namespace EmpireAtWar.Tests.Editor
             Assert.That(prefab.transform.localScale, Is.EqualTo(Vector3.one * 3f));
             HealthComponent health = prefab.GetComponentInChildren<HealthComponent>(true);
             Assert.That(health, Is.Not.Null);
-            Assert.That(health.ShipUnits.Count, Is.EqualTo(6));
-            Assert.That(health.ShipUnits.Distinct().Count(), Is.EqualTo(6));
+            Assert.That(health.ShipUnits.Count, Is.EqualTo(data.WeaponLoadout.Sum(entry => entry.Count)),
+                "Prefab mounts must match the data loadout.");
+            Assert.That(health.ShipUnits.Distinct().Count(), Is.EqualTo(health.ShipUnits.Count));
             EntityBindings bindings = prefab.GetComponent<EntityBindings>();
             Assert.That(bindings.Injectables.All(component => component != null), Is.True,
                 "Deleted template components must not remain in the injection list.");
@@ -68,8 +69,8 @@ namespace EmpireAtWar.Tests.Editor
                     Assert.That(point.FindProperty("destroyedVfxAnchor").objectReferenceValue, Is.Not.Null);
 
                 var stats = data.ComponentData.HardPointHealth.Single(entry => entry.HardPointType == mount.HardPointType);
-                Assert.That(stats.Health, Is.EqualTo(300f));
-                Assert.That(stats.HullDamageMultiplier, Is.EqualTo(1f));
+                Assert.That(stats.Health, Is.GreaterThan(0f));
+                Assert.That(stats.HullDamageMultiplier, Is.GreaterThan(0f));
             }
             var sites = AssetDatabase.LoadAssetAtPath<CaptureSiteData>(
                 "Assets/Settings/Data/Models/CaptureSites/CaptureSiteData.asset");

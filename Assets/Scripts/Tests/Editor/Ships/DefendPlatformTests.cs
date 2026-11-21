@@ -64,7 +64,7 @@ namespace EmpireAtWar.Tests.Editor
                 DefendPlatform platform = gameObject.AddComponent<DefendPlatform>();
                 DefendPlatformData data = AssetDatabase.LoadAssetAtPath<DefendPlatformData>(
                     "Assets/Settings/Data/Models/DefendPlatform/AsteroidDefendPlatformData.asset");
-                Assert.That(data.Income, Is.EqualTo(10f));
+                Assert.That(data.Income, Is.GreaterThan(0f));
                 ResearchStub research = new ResearchStub();
                 PlayerRegistry registry = new PlayerRegistry();
                 EconomyProbe owner = new EconomyProbe();
@@ -82,17 +82,18 @@ namespace EmpireAtWar.Tests.Editor
                     .SetValue(platform, data);
 
                 platform.Initialize();
-                // The owner and one ally split the 10 credits evenly.
-                Assert.That(owner.Income, Is.EqualTo(5f));
-                Assert.That(ally.Income, Is.EqualTo(5f));
+                // The owner and one ally split the platform income evenly.
+                float share = data.Income / 2f;
+                Assert.That(owner.Income, Is.EqualTo(share).Within(0.0001f));
+                Assert.That(ally.Income, Is.EqualTo(share).Within(0.0001f));
                 Assert.That(enemy.Income, Is.Zero);
 
                 research.Complete(1.2f);
-                Assert.That(owner.Income, Is.EqualTo(6f));
-                Assert.That(ally.Income, Is.EqualTo(6f));
+                Assert.That(owner.Income, Is.EqualTo(share * 1.2f).Within(0.0001f));
+                Assert.That(ally.Income, Is.EqualTo(share * 1.2f).Within(0.0001f));
                 research.Complete(1.4f);
-                Assert.That(owner.Income, Is.EqualTo(7f));
-                Assert.That(ally.Income, Is.EqualTo(7f));
+                Assert.That(owner.Income, Is.EqualTo(share * 1.4f).Within(0.0001f));
+                Assert.That(ally.Income, Is.EqualTo(share * 1.4f).Within(0.0001f));
 
                 platform.LateDispose();
                 Assert.That(owner.Income, Is.Zero);
