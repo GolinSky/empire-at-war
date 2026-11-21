@@ -51,7 +51,9 @@ namespace EmpireAtWar.Services.Enemy
                     continue;
                 }
 
-                force.Add(_catalog.Get(entry.UnitTypeId), entry.Hull, entry.Shields, entry.OffenseScale);
+                UnitCombatProfile profile = _catalog.Get(entry.UnitTypeId);
+                force.Add(profile, entry.Hull, entry.Shields, entry.OffenseScale,
+                    GetShieldRegen(profile, entry.Entity.HealthModel));
                 if (unitCounts != null)
                 {
                     unitCounts.TryGetValue(entry.UnitTypeId, out int count);
@@ -63,17 +65,21 @@ namespace EmpireAtWar.Services.Enemy
         public void AddUnit(ForceComposition force, GameEntity entity)
         {
             IHealthModelObserver health = entity.HealthModel;
-            force.Add(_catalog.Get(entity.GetFacade<IUnitTypeFacade>().UnitTypeId),
-                health.Hull, health.Shields, GetOffenseScale(health));
+            UnitCombatProfile profile = _catalog.Get(entity.GetFacade<IUnitTypeFacade>().UnitTypeId);
+            force.Add(profile, health.Hull, health.Shields, GetOffenseScale(health), GetShieldRegen(profile, health));
         }
 
         /// <summary>Adds a satellite or defend platform at its current health, rated by its platform type.</summary>
         public void AddStructure(ForceComposition force, GameEntity structure)
         {
             IHealthModelObserver health = structure.HealthModel;
-            force.Add(_catalog.GetPlatform(structure.GetFacade<IDefendPlatformTypeFacade>().Type),
-                health.Hull, health.Shields, GetOffenseScale(health));
+            UnitCombatProfile profile = _catalog.GetPlatform(structure.GetFacade<IDefendPlatformTypeFacade>().Type);
+            force.Add(profile, health.Hull, health.Shields, GetOffenseScale(health), GetShieldRegen(profile, health));
         }
+
+        /// <summary>A unit that lost its shield generator regenerates nothing.</summary>
+        public static float GetShieldRegen(UnitCombatProfile profile, IHealthModelObserver health) =>
+            health.IsLostShieldGenerator ? 0f : profile.ShieldRegen;
 
         /// <summary>Counts live carrier wings and usable empty slots; records deployed ship counts for pending purchases.</summary>
         public int CountHangarSquadrons(PlayerId owner, Dictionary<UnitTypeId, int> liveShips)

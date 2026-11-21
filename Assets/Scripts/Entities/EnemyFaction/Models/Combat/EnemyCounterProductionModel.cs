@@ -101,7 +101,8 @@ namespace EmpireAtWar.Entities.EnemyFaction.Models.Combat
             {
                 if (!target.IsStrikecraft() || hostile.Hull(target) <= 0f) continue;
                 time += CombatMatchup.TimeToDestroyClass(hostile.Hull(target), hostile.Shields(target),
-                    own.HullDps(target), own.ShieldDps(target), own.PiercingDps(target));
+                    own.HullDps(target), own.ShieldDps(target), own.PiercingDps(target),
+                    hostile.ShieldRegenPerUnit(target), hostile.HullRepairPerUnit(target));
             }
             return time;
         }

@@ -8,6 +8,7 @@ using EmpireAtWar.Entities.EnemyFaction.Models.Objectives;
 using EmpireAtWar.Models.Players;
 using EmpireAtWar.Presenters.ReinforcementZones;
 using EmpireAtWar.Services.ReinforcementZones;
+using EmpireAtWar.Services.Repair;
 using EmpireAtWar.Services.Saves;
 using EmpireAtWar.Services.Vision;
 using UnityEngine;
@@ -131,6 +132,7 @@ namespace EmpireAtWar.Services.Enemy
                 objective.OwnSupport.Clear();
                 int ownStructures = AddOwnArmedStructures(objective.OwnSupport, centre, 2f * _radii[area]);
                 AddOwnWings(objective.OwnSupport, centre, 2f * _radii[area]);
+                AddAlliedRepairSources(objective.OwnSupport, _world, _roster, _owner, centre);
                 bool held = ownStructures > 0 || zone != null && !zone.Owner.IsNone && _roster.IsAllied(_owner, zone.Owner);
                 bool isCentre = zone != null && zone.IsMain;
                 bool ownSide = IsOwnSide(centre);
@@ -217,6 +219,64 @@ namespace EmpireAtWar.Services.Enemy
             return count;
         }
 
+        /// <summary>Adds every living armed structure of the team within <paramref name="reach"/> of <paramref name="centre"/>.</summary>
+        public static void AddAlliedArmedStructures(ForceComposition force, AiWorldSnapshot world, IPlayerRoster roster,
+            ForceCompositionBuilder forces, PlayerId owner, Vector3 centre, float reach)
+        {
+            IReadOnlyList<AiWorldSnapshot.Entry> structures = world.RaidStructures;
+            for (int i = 0; i < structures.Count; i++)
+            {
+                AiWorldSnapshot.Entry entry = structures[i];
+                if (!roster.IsAllied(owner, entry.Owner) || entry.Entity.HealthModel.IsDestroyed ||
+                    !entry.Entity.TryGetFacade(out IStructureKindFacade structure) ||
+                    structure.Kind != StructureKind.DefendPlatform ||
+                    PlanarDistance(entry.Position, centre) > reach) continue;
+                forces.AddStructure(force, entry.Entity);
+            }
+        }
+
+        /// <summary>
+        /// Adds the known hostile repairers whose repair radius covers <paramref name="centre"/>: they heal the hostile
+        /// side of a fight there. Seen once, a repairer stays counted while it stands, like an armed structure.
+        /// </summary>
+        public static void AddHostileRepairSources(ForceComposition force, AiWorldSnapshot world, IPlayerRoster roster,
+            IVisionService vision, HostileIntelModel intel, PlayerId owner, Vector3 centre)
+        {
+            IReadOnlyList<AiWorldSnapshot.Entry> structures = world.RaidStructures;
+            for (int i = 0; i < structures.Count; i++)
+            {
+                AiWorldSnapshot.Entry entry = structures[i];
+                if (!roster.IsHostile(owner, entry.Owner) || !TryGetRepairerCovering(entry, centre, out RepairProfile profile))
+                    continue;
+                if (vision.IsVisible(owner, entry.Entity)) intel.RememberStructure(entry.Id);
+                else if (!intel.IsStructureKnown(entry.Id)) continue;
+                force.AddRepairSource(profile.FractionPerTick / profile.Interval, profile.MaxHealersPerTarget);
+            }
+        }
+
+        /// <summary>Adds the team's working repairers whose repair radius covers <paramref name="centre"/>.</summary>
+        public static void AddAlliedRepairSources(ForceComposition force, AiWorldSnapshot world, IPlayerRoster roster,
+            PlayerId owner, Vector3 centre)
+        {
+            IReadOnlyList<AiWorldSnapshot.Entry> structures = world.RaidStructures;
+            for (int i = 0; i < structures.Count; i++)
+            {
+                AiWorldSnapshot.Entry entry = structures[i];
+                if (!roster.IsAllied(owner, entry.Owner) || !TryGetRepairerCovering(entry, centre, out RepairProfile profile))
+                    continue;
+                force.AddRepairSource(profile.FractionPerTick / profile.Interval, profile.MaxHealersPerTarget);
+            }
+        }
+
+        private static bool TryGetRepairerCovering(AiWorldSnapshot.Entry entry, Vector3 centre, out RepairProfile profile)
+        {
+            profile = null;
+            if (entry.Entity.HealthModel.IsDestroyed || !entry.Entity.TryGetFacade(out IRepairSourceFacade source) ||
+                !source.CanRepair || PlanarDistance(entry.Position, centre) > source.Profile.Radius) return false;
+            profile = source.Profile;
+            return true;
+        }
+
         /// <summary>
         /// Adds this AI's living armed structures within <paramref name="reach"/> of the zone centre and returns how many.
         /// </summary>
@@ -270,6 +330,7 @@ namespace EmpireAtWar.Services.Enemy
             float reach = ZONE_DEFENDER_MARGIN + radius;
             _defenderRadiusSquared = reach * reach;
             _picture.BuildKnownFromConfident(defenders, _includeDefender);
+            AddHostileRepairSources(defenders, _world, _roster, _vision, _intel, _owner, centre);
             return AddArmedStructures(defenders, _world, _roster, _vision, _forceBuilder, _intel, _owner, centre,
                 2f * radius + STATIC_DEFENSE_REACH);
         }

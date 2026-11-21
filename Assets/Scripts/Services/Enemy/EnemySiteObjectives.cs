@@ -34,6 +34,7 @@ namespace EmpireAtWar.Services.Enemy
         private readonly IVisionService _vision;
         // Hostile satellites seen once: they cannot move, so they stay targets while they stand.
         private readonly HashSet<long> _knownSatellites = new HashSet<long>();
+        private readonly Dictionary<int, int> _pointSites = new Dictionary<int, int>();
 
         public EnemySiteObjectives(ICaptureSiteDirectory sites, ICaptureSitePresence presence, CaptureSiteData data,
             IPlayerRoster players, PlayerSlot owner, AiWorldSnapshot world, IVisionService vision)
@@ -57,9 +58,12 @@ namespace EmpireAtWar.Services.Enemy
 
         public void AddStrategicObjectives(List<EnemyCaptureObjective> objectives, HostileIntelModel intel)
         {
+            CountPointSites();
             for (int i = 0; i < _sites.Sites.Count; i++)
             {
                 ICaptureSite site = _sites.Sites[i];
+                // A free pad (a point of its own on a lane) is work for wings, never for the ship fleet.
+                if (IsFreePad(site)) continue;
                 // Satellite pads are defended by their own guns and squadrons; they never pull the ship fleet.
                 bool threatened = site.Kind != CaptureSiteKind.Satellite && IsThreatened(i, site, intel, Time.time);
                 long? blockingFacilityId = null;
@@ -96,6 +100,20 @@ namespace EmpireAtWar.Services.Enemy
                     isMine: isMine, blockingFacilityId: blockingFacilityId, hostileStrength: strength.Hostile));
             }
         }
+
+        private void CountPointSites()
+        {
+            _pointSites.Clear();
+            foreach (ICaptureSite site in _sites.Sites)
+            {
+                _pointSites.TryGetValue(site.PointId, out int count);
+                _pointSites[site.PointId] = count + 1;
+            }
+        }
+
+        /// <summary>A satellite pad that is the only site of its point.</summary>
+        private bool IsFreePad(ICaptureSite site) =>
+            site.Kind == CaptureSiteKind.Satellite && _pointSites[site.PointId] == 1;
 
         /// <summary>A known, standing hostile satellite on the pad; its id and remaining hull plus shields.</summary>
         private bool TryFindHostileSatellite(ICaptureSite site, out long id, out float durability)

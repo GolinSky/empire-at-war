@@ -13,6 +13,7 @@ using EmpireAtWar.Entities.EnemyFaction.Models.Objectives;
 using EmpireAtWar.Entities.Game;
 using EmpireAtWar.Entities.SpaceStation;
 using EmpireAtWar.Services.ReinforcementZones;
+using EmpireAtWar.Services.Repair;
 using EmpireAtWar.Ship;
 using UnityEngine;
 using GameEntity = EmpireAtWar.Entities.BaseEntity.IEntity;
@@ -191,6 +192,8 @@ namespace EmpireAtWar.Services.Enemy
         private float _routeDefenderSkip;
         /// <summary>Hostile satellites come before the relay: order inside a hostile zone is satellites → relay → pads.</summary>
         private const float HOSTILE_SATELLITE_FIRST_BONUS = 2000f;
+        /// <summary>A hostile repair satellite that heals other hostile structures falls before them.</summary>
+        private const float HOSTILE_REPAIRER_FIRST_BONUS = 3000f;
         private const float BASE_EXCLUSION_MARGIN = 900f;
         private float _hostileEconomyPressure = 1f;
         private readonly Dictionary<TeamId, int> _enemyTeamZones = new Dictionary<TeamId, int>();
@@ -1100,6 +1103,22 @@ namespace EmpireAtWar.Services.Enemy
                 ? _raidTarget : closest;
         }
 
+        /// <summary>The facility is a working hostile repairer with another hostile armed structure inside its radius.</summary>
+        private bool IsRepairerCoveringHostileStructure(long facilityId)
+        {
+            if (!_entityLocator.TryGetEntity(facilityId, out GameEntity facility) ||
+                !facility.TryGetFacade(out IRepairSourceFacade repairer) || !repairer.CanRepair) return false;
+            IReadOnlyList<AiWorldSnapshot.Entry> structures = _worldSnapshot.RaidStructures;
+            for (int i = 0; i < structures.Count; i++)
+            {
+                AiWorldSnapshot.Entry entry = structures[i];
+                if (entry.Id != facilityId &&
+                    EnemyZoneObjectiveCollector.IsArmedHostileStructure(entry, _playerRoster, _vision, _owner.Id) &&
+                    PlanarDistance(entry.Position, repairer.Position) <= repairer.Profile.Radius) return true;
+            }
+            return false;
+        }
+
         private bool HostileReachesFirst(Vector3 origin, Vector3 position, float now)
         {
             float ownDistance = PlanarDistance(origin, position);
@@ -1303,7 +1322,10 @@ namespace EmpireAtWar.Services.Enemy
                 bool hostileRelay = candidate.Kind == EnemyCaptureObjectiveType.ReinforcementZone &&
                     !candidate.Owner.IsNone && _playerRoster.IsHostile(_owner.Id, candidate.Owner);
                 bool hostileSatellite = candidate.BlockingFacilityId.HasValue && !candidate.IsMine;
-                _rankedCaptures.Add(new RankedCapture(candidate, hostileSatellite ? priority + HOSTILE_SATELLITE_FIRST_BONUS :
+                bool hostileRepairer = hostileSatellite && IsRepairerCoveringHostileStructure(candidate.BlockingFacilityId.Value);
+                _rankedCaptures.Add(new RankedCapture(candidate,
+                    hostileRepairer ? priority + HOSTILE_REPAIRER_FIRST_BONUS :
+                    hostileSatellite ? priority + HOSTILE_SATELLITE_FIRST_BONUS :
                     hostileRelay ? priority + HOSTILE_RELAY_FIRST_BONUS : priority, i));
                 _zoneCandidates.Add(candidate);
                 _zonePriorities.Add(priority);
@@ -2155,12 +2177,18 @@ namespace EmpireAtWar.Services.Enemy
             return weaponRange > 0f && distance <= stationRadius + hostileRadius + weaponRange;
         }
 
-        /// <summary>Own ships and squadrons within <paramref name="radius"/> of <paramref name="center"/> (ground plane).</summary>
+        /// <summary>
+        /// Allied ships, squadrons and armed structures within <paramref name="radius"/> of <paramref name="center"/>
+        /// (ground plane), healed by the allied repairers covering the centre.
+        /// </summary>
         private void BuildOwnNear(ForceComposition force, Vector3 center, float radius)
         {
             _nearbyCenter = center;
             _nearbyRadiusSquared = radius * radius;
             _forceBuilder.Build(force, _includeNearbyOwn);
+            EnemyZoneObjectiveCollector.AddAlliedArmedStructures(force, _worldSnapshot, _playerRoster, _forceBuilder,
+                _owner.Id, center, radius);
+            EnemyZoneObjectiveCollector.AddAlliedRepairSources(force, _worldSnapshot, _playerRoster, _owner.Id, center);
         }
 
         private bool IncludeNearbyOwn(GameEntity entity)
@@ -2171,7 +2199,11 @@ namespace EmpireAtWar.Services.Enemy
             return offset.sqrMagnitude <= _nearbyRadiusSquared;
         }
 
-        /// <summary>Hostile ships and squadrons within <paramref name="radius"/> of <paramref name="center"/> (ground plane).</summary>
+        /// <summary>
+        /// Known hostile ships, squadrons and armed structures within <paramref name="radius"/> of <paramref name="center"/>
+        /// (ground plane), healed by the known hostile repairers covering the centre. Without the structures a fight
+        /// under hostile platforms reads as even.
+        /// </summary>
         private void BuildHostilesNear(ForceComposition force, Vector3 center, float radius)
         {
             float radiusSquared = radius * radius;
@@ -2181,6 +2213,10 @@ namespace EmpireAtWar.Services.Enemy
                 offset.y = 0f;
                 return offset.sqrMagnitude <= radiusSquared;
             });
+            EnemyZoneObjectiveCollector.AddArmedStructures(force, _worldSnapshot, _playerRoster, _vision, _forceBuilder,
+                _intel, _owner.Id, center, radius);
+            EnemyZoneObjectiveCollector.AddHostileRepairSources(force, _worldSnapshot, _playerRoster, _vision, _intel,
+                _owner.Id, center);
         }
 
         private GameEntity FindClosestEntity(Predicate<GameEntity> hasRole, Predicate<PlayerId> includeOwner, Vector3 origin)

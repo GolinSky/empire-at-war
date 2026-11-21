@@ -75,9 +75,18 @@ namespace EmpireAtWar.Services.Enemy
         }
 
         /// <param name="captureRadius">Capture circle of a satellite pad; a wing inside it captures the pad.</param>
+        /// <remarks>
+        /// A pad inside the capture circle of a pad already added is taken by the same wing, so it is no target of its
+        /// own: overlapping pads (home ring, relay rings) count once, and more pads never ask for more wings.
+        /// </remarks>
         public void AddTarget(Vector3 target, bool threatened = false, bool isSatellitePad = false, bool isMine = false,
             float captureRadius = 0f)
         {
+            if (isSatellitePad && TryFindCoveringPad(target, captureRadius, out Vector3 covering))
+            {
+                if (threatened) _threatened.Add(covering);
+                return;
+            }
             _targets[target] = 0;
             if (threatened) _threatened.Add(target);
             if (isSatellitePad)
@@ -86,6 +95,19 @@ namespace EmpireAtWar.Services.Enemy
                 _padRadius[target] = captureRadius;
             }
             if (isMine) _mines.Add(target);
+        }
+
+        private bool TryFindCoveringPad(Vector3 pad, float captureRadius, out Vector3 covering)
+        {
+            foreach (Vector3 added in _satellitePads)
+            {
+                float radius = Mathf.Min(captureRadius, _padRadius[added]);
+                if (PlanarDistanceSquared(added, pad) > radius * radius) continue;
+                covering = added;
+                return true;
+            }
+            covering = default;
+            return false;
         }
 
         /// <summary>A mining site, captured or not: wings landing inside <paramref name="radius"/> take it and the pads in reach.</summary>

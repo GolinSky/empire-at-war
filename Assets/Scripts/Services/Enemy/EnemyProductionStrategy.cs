@@ -636,10 +636,15 @@ namespace EmpireAtWar.Services.Enemy
                     IsShipTierAllowed(option.Value, unitId), hasSquadronRoom, requireAffordable);
             }
 
+            // Bombers fight beside ships: with no own ship to go with they only wait at a hold and die there.
+            bool hasOwnShips = HasLiveShips();
             foreach (KeyValuePair<SquadronType, FactionData> option in _factionModel.SquadronFactionData)
             {
-                AddCounterOption<SquadronUnitRequest>(UnitTypeId.Squadron(option.Key), option.Key.ToString(),
-                    option.Value, !shipsOnly && hasSquadronRoom, hasSquadronRoom, requireAffordable);
+                UnitTypeId squadronId = UnitTypeId.Squadron(option.Key);
+                bool bomber = _profileCatalog.Get(squadronId).ShipClass == ShipClass.Bomber;
+                AddCounterOption<SquadronUnitRequest>(squadronId, option.Key.ToString(),
+                    option.Value, !shipsOnly && hasSquadronRoom && (hasOwnShips || !bomber), hasSquadronRoom,
+                    requireAffordable);
             }
 
             if (!_counterModel.TrySelect(_ownForce, _hostileForce, _candidates, out int index,
@@ -759,9 +764,9 @@ namespace EmpireAtWar.Services.Enemy
             return found;
         }
 
+        /// <summary>Queue wait + build time, plus travel to the station threat when one is known.</summary>
         private float GetArrivalSeconds(UnitTypeId unitTypeId, FactionData data)
         {
-            if (!_stationPressure.IsStationCritical) return 0f;
             float travel = 0f;
             if (_stationPressure.HasThreatPosition &&
                 _productionAccess.TryGetProductionBase(out var productionBase))
@@ -1214,9 +1219,22 @@ namespace EmpireAtWar.Services.Enemy
                 _research.GetCompletedTiers(researchType) + 1);
         }
 
+        /// <remarks>
+        /// A ship type with a build already waiting behind the one in production is not bought again (one in
+        /// production, none waiting): the money goes to another type or to the unit being saved for.
+        /// </remarks>
+        /// <summary>The last force build counted at least one living own ship.</summary>
+        private bool HasLiveShips()
+        {
+            foreach (KeyValuePair<UnitTypeId, int> pair in _liveUnitCounts)
+                if (pair.Key.IsShip && pair.Value > 0) return true;
+            return false;
+        }
+
         private bool CanReserve<TRequest>(string requestId, FactionData data, bool ignoreUsedCapacity = false)
         {
             return _purchaseProcessor.CanQueue(requestId, data.MaxCount) &&
+                (typeof(TRequest) != typeof(ShipUnitRequest) || !_purchaseProcessor.HasWaitingBuild(requestId)) &&
                 _unitLimitModel.GetReservedCount<TRequest>(requestId) < data.MaxCount &&
                 data.UnitCapacity <= _reinforcementData.MaxUnitCapacity -
                     (ignoreUsedCapacity ? 0 : _unitLimitModel.CurrentUnitCapacity);

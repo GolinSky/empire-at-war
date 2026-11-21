@@ -7,7 +7,9 @@ reopened: 2026-11-21
 ---
 # Enemy AI Opening and Task Groups
 
-## Status (2026-11-21, W1–W13 implemented)
+## Status (2026-11-21 late evening, W15–W22 implemented)
+- **W15–W22 implemented and compiled (Editor recompile clean, 0 console errors). Tests written, not run (local override).** → "Open work — implementation notes (W15–W22)".
+- Battle 16:04 (first on W1–W13 code): AI lost; causes → W15–W22. Not verified in a battle yet → [[TODOs/User_Acceptance_Queue]].
 - W1–W7 and W9–W13 implemented and compiled; tests ran on the user's request (see "Open work — implementation notes"). Still open: **W8 user review** of the role flags (AI does not read them yet) and **W14** (Jenkins release build + Editor battle, user gates).
 - Rounds are history. Everything still to do is in **Open work** below.
 - Rounds 1–7, the Rebellion balance changes, the economy normalization and the compact AI log are implemented and committed.
@@ -63,6 +65,35 @@ reopened: 2026-11-21
 - [x] **W13 Tests, relations only.** Second-station upgrade bought / not above main / refunded; placement origin follows the living base, nothing inside the closed circle; no order to an engaged wing near its point; capture pull-back only before first entry; capture-wing choice (fighter first, interceptor with spare money); every ability has an auto rule; role-flag validation (W8); survival pool pays the same per defender for the whole ring. Old gaps: turtle orders, route defenders, patrol wing and beacon, lone wing, bomber hold, station platform ring, cheapest platform for a small fleet, tier floor. (was L4, L8, L12)
 - [ ] **W14 Verification still owed.** Compile the compact AI log with release defines (next Jenkins player build) and read one host-side file. One Editor battle for the attack-move risks: station defenders that never settle against a moving attacker; losses on the approach.
 
+### P0 — battle 16:04 (2026-11-21, implemented the same day)
+- [x] **W15 Shield regeneration in the strength math.**
+  - `UnitCombatProfile` gains `ShieldRegen` (per second: `ShieldRegenerateValue / ShieldRegenerateDelay` from ship / squadron / platform data). `ForceComposition` sums it and the unit count per class.
+  - `CombatMatchup.TimeToDestroyClass`: shield damage that counts = `shieldDps − regen of one unit of the class` (focus fire meets one unit's regeneration at a time; class average = regen sum / units). Result ≤ 0 → shields never fall → only piercing damage counts, else `MAX_TIME`.
+  - Reaches every user of `Advantage` / `TimeToDestroy` at once: fleet and local advantage, zone `required`, station time-to-loss, counter-selection.
+  - `GetCombatValue` (value per credit, J3 exemption): durability = hull + shields + regen × the unit's own kill window is out of scope; keep, re-check after W8.
+  - Own unit with a lost shield generator → regen 0 (live health); hostile sightings use the profile value.
+- [x] **W16 Repair in the strength math.**
+  - a) A known hostile repair source (`IRepairSourceFacade`; today `RepairSatellite`) within its `RepairProfile.Radius` of a rated fight lowers the hull damage that counts: `FractionPerTick / Interval` × max hull, on at most `MaxTargets` units. Own repair sources the same for the own side.
+  - b) A known hostile repair satellite is the first structure target of a force that fights inside its radius (raid-structure list already holds it).
+  - c) **AI builds repair satellites (user: yes, 2026-11-21).** `EnemyDefenseSnapshotBuilder.LoadOptions` stops skipping `SiteFacilityType.RepairSatellite`. It has no weapons, so the damage-profile scoring cannot pick it → own rule in the pad choice:
+    - at most one per pad group (`PointId`);
+    - only when the group already holds ≥ 1 armed satellite (built or constructing) and has ≥ 2 pads;
+    - only where something of the team stands inside `RepairProfile.Radius` (400) of the pad: station, platform, mine or another satellite;
+    - single-pad points (free pads of [[Done/Features/Map_Satellite_Pad_Expansion]]) never get one.
+    - With the pad expansion: home 4 pads → 3 armed + 1 repair beside the station; outer zone 4 → 3 + 1; main zone 8 → 7 + 1.
+- [x] **W17 Platforms and satellites in local fights.** `BuildHostilesNear` adds known armed hostile structures (reuse `EnemyZoneObjectiveCollector.AddArmedStructures`); `BuildOwnNear` adds own platforms. Zone ratings already count them; `localAdvantage`, `baseThreat` and `fleetAdvantage` do not, so EngageLocal reads a fight under hostile platforms as even.
+- [x] **W18 No stacking in the build queue.** A ship type with a build already *waiting* (bought, not in production) is not bought again; the money goes to another type or to the unit being saved for. `GetArrivalSeconds` returns the real wait (`GetQueueRemainingTime` + build time) always, not only when the station is critical. No number: the rule is "one in production + none waiting per type".
+- [x] **W19 Bombers that cannot raid.** 34 Hyena bought, 0 raids, 41 lost (34 at the own base / own zone). They come from counter-selection (answer to capitals), then wait at the raid hold. A bomber wing with no raid (`noKnownMine`, `holding`, `notWinnable`) attacks the ship target of its group's fight instead of holding; `TrySelectCounterUnit` buys bombers only while the group has ships to go with. **Accepted by the user 2026-11-21.**
+- [x] **W20 Retarget reason in telemetry.** `ai_orders` `issued` row for `Attack` gets `retarget=dead|cloaked|outOfReach|new`. Needed to prove W11: 194 of 608 retargets left a living ship; the log cannot say why.
+- [x] **W22 Ready for more satellite pads** ([[Done/Features/Map_Satellite_Pad_Expansion]], status `done` 2026-11-21: home 1 → 4, outer zone 2 → 4, main zone 6 → 8, free lane pads 2 / 6 / 10 with a unique `PointId` each; ≈ 2.5 × pads).
+  - W17 becomes mandatory first: a zone can hold 8 hostile satellites; without them the local rating is wrong by more than today.
+  - Satellite spending: "Fill owned pad" / "Hold the zone with satellites" must not outbid ships. Rule: one satellite build waiting at a time (same idea as W18); pads filled in the order threatened point → home → held zone → free pad.
+  - Free pads: each is its own defence point with 0 mines → check `EnemyDefenseSnapshotBuilder._sitesByPoint`, `EnemySiteObjectives` and `EnemySquadronCaptureAssignments` accept a point without a mine; a free pad is a capture-wing target, never a ship-force objective.
+  - Capture-wing target count must not grow with the pad count (`GetCaptureWingTarget`): wings per contested *point*, not per pad.
+  - Home pads overlap in capture range (500) → one wing takes all 4; count them as one target.
+  - Order: implement with or right after the pad plan; the review points are also listed in its step 7.
+- [x] **W21 Tests (relations only).** Repair satellite chosen only into a group with an armed satellite and ≥ 2 pads, never twice per group, never on a single-pad point; capture-wing target equal for a point with 2 and with 4 pads. Regen ≥ shield damage → shields never rated as breakable; more regen → lower advantage; repair source in radius → lower advantage; local advantage falls when a known hostile platform is added; a type with a waiting build is not chosen; bomber wing without raid gets the group's ship target.
+
 ### Open work — implementation notes (2026-11-21)
 - [x] W1 `EnemyProductionStrategy.IsSecondStationLevelDue` / `TryBuySecondStationLevel` (after miners, priority income research and a due level; before combat research, platforms, ships). `EnemyFactionController` accepts `SecondStationLevelUnitRequest` (stands, next level, < main level, one at a time via `IsUpgradingSecondStation`), real build time, `CompleteLevelUpgrade()`, refund on `BuiltChanged(false)`. Restored upgrades keep their time left. Telemetry: `purchase` category `SecondStationLevel`; `station` row `secondLevel=`.
 - [x] W2 second station bought at 1 × price; while wanted and unaffordable its price is held before ships/platforms/combat research (`GetSecondStationReserve`); same hold for second-station upgrades once it is the base.
@@ -80,8 +111,42 @@ reopened: 2026-11-21
 - Verification 2026-11-21 (EditMode, standard, no explicit): EnemyAi 596/596, Abilities 231/231 (after fixing a factory-test clash), Economy 141/141, Ships 327/327, Squadrons 232/232, Core 169/169, GameFlow 221/221, Balance 70/72 — 2 failures from `d181ed8e6`, not this work: `ShipFactions_DoNotShareShieldRegenTierTables` (Republic Victory/Tector use Empire ship data, Empire Quasar Fire uses Rebellion data) and `Grid_ShowsEveryTableAndTierAndEditsDraft` (no draft change on cell edit).
 - Reusable guidance: none extracted yet; rules live in code docs (`EnemyWingOrderRules`, `EnemyAttackTargetRules`, `ShipRoleRules`).
 
+### Open work — implementation notes (W15–W22, 2026-11-21)
+- [x] W15 `UnitCombatProfile.ShieldRegen` (ship/platform: `ShieldRegenerateValue / ShieldRegenerateDelay`; squadron: × `MemberCount`). `ForceComposition` sums regen, units and max hull per class; `ShieldRegenPerUnit(class)`. `CombatMatchup.TimeToDestroyClass(…, shieldRegen, hullRepair)`: net shield dps ≤ 0 → piercing only, else `MAX_TIME`. `TimeToDestroy` passes the defender's per-unit regen and repair; also `EnemyCounterProductionModel.StrikecraftClearSeconds`, `EnemyDefenseStrategy.GetFit`. `ForceCompositionBuilder.GetShieldRegen`: lost shield generator → 0. Single-target `TimeToDestroyTarget` callers keep regen 0 (optional param).
+- [x] W16a `ForceComposition.AddRepairSource(fractionPerSecond, healersPerTarget)`; `RepairFractionPerSecond` = rate × min(sources, healers); `HullRepairPerUnit` = that × class max hull / units, never strikecraft. `EnemyZoneObjectiveCollector.AddHostileRepairSources` (known: visible or remembered, `CanRepair`, centre inside `Radius`) / `AddAlliedRepairSources` → zone defenders, zone own support, local fights.
+- [x] W16b `EnemyStrategicContextBuilder`: a hostile repair satellite with another hostile armed structure inside its radius ranks `HOSTILE_REPAIRER_FIRST_BONUS` (3000) > satellites (2000) > relay (1000).
+- [x] W16c `LoadOptions` loads the repair option (`_repairRadius` from `DefendPlatformData.RepairProfile`). `EnemyDefensePad.PointPads`, `HasTeamStructureInRepairRange`. `EnemyDefenseStrategy.TrySelectRepair` (money − reserve; `CanTakeRepairSatellite`: no hostiles, ≥ 2 pads, ≥ 1 armed, team structure in reach, none yet); controller order: mandatory → mine → repair → scored → fill. Mandatory and scored counts use `CountArmed` (repair excluded); scored never picks repair.
+- [x] W17 `BuildHostilesNear` + `AddArmedStructures` + hostile repairers; `BuildOwnNear` + `AddAlliedArmedStructures` (allied platforms/satellites) + allied repairers. `baseThreat` / `fleetAdvantage` unchanged.
+- [x] W18 `IEnemyPurchaseProcessor.HasWaitingBuild` → `EnemyBuildQueue.CountUnfinished(id) > 1`; `CanReserve<ShipUnitRequest>` refuses a type with a waiting build (max 1 in production + 1 waiting). `GetArrivalSeconds` always returns queue + build (+ travel when a threat position is known); only critical paths read it.
+- [x] W19 `EnemySquadronCommander.HoldIdleBombers`: a bomber without raid/escort attacks the visible hostile ship nearest it that an own ship has an `Attack` order on (`_bomberStrikes`), else holds as before. `TrySelectCounterUnit`: bomber-class squadrons only while a live own ship exists.
+- [x] W20 `ShipOrderTelemetry.Detail` scope + `detail` column (last). `IssueStrikeAttack` groups receivers by reason: `retarget=new|slot|dead|cloaked|outOfReach`.
+- [x] W22 `IsZonePoint` needs ≥ 2 pads when mineless; `EnemyDefensePad.IsFreePad` (0 mines, 1 pad) never mandatory; `IsHomePad` (own station ≤ 1000). Priority: threatened 1000 → home 100 → centre 20 / zone 10 → mining point → free −1. `EnemySiteConstructionController`: no satellite start while an own satellite is `Constructing` (`reason=oneWaiting`). `EnemySiteObjectives`: a satellite alone at its `PointId` is no ship objective (still a wing target). `EnemySquadronCaptureAssignments.AddTarget`: a pad inside an added pad's capture circle merges into it. `GetCaptureWingTarget` already counts zones, not pads → no change.
+- [x] W21 tests (not run): `CombatMatchupTests` (+9, `Combat`), `EnemyDefenseStrategyTests` (+10; `BuildNext` fixtures now pass an empty `PadDirectory`), `EnemySquadronCaptureAssignmentsTests` (+3), `EnemyFactionControllerLifecycleTests` (+1, `CountUnfinished`), `EnemyUnitCommanderTests` (+3: free pad, bomber strike target ×2; `FakeEntity` gains `IUnitOrderObserverFacade`; two fixtures give their lone pad a point partner). Not covered: the W18 purchase path end to end, W16b ranking, W20 rows.
+- Verification: Editor recompile clean 3×; tests not run (local override). Categories to run: `EnemyAi`, `Combat`.
+- Risks to watch in the next battle: W17 makes groups near hostile satellites withdraw sooner; W22 one-at-a-time slows opening zone satellites.
+
 ### Closed or ignored (no work)
 - Rebellion levels 4–5 balance (ignored, other task). Ship life gate (user balances). Opening asteroid trigger (any unit, accepted). Spawn telemetry counter (accepted). Wing vision fallback (closed). Surplus buying (explained, kept). Republic ARC-170 / V-Wing at level 5 (balance owner, not this plan). "Held zone with no site left" risk (fixed by E3c in round 5).
+
+## Evidence — battle 2026-11-21 16:04 (UltraHard Small 1v1, Separatist AI vs Republic human, 30,000 start, code `02fc12c9a` dirty with regen tiers raised, 1,702 s)
+- Files: `Loading_20261121_160414_ai.csv`, `_ai_orders.csv`, `_squadrons.csv`, `Battle_20261121_160509.csv`, `Battle_20261121_160417_map.csv`.
+- Result: AI main station lost 21:08, second station 26:00. AI lost 134 ships (median life 86 s) and 153 wings; Republic lost ≈ 50 ships.
+- Income was not the cause: AI 407–544 per s vs player 283–460 until 10:00.
+
+### Faults
+- **Shield regeneration unknown to the AI.** 77 % of the AI's damage ended in shields (2,859,611 shield / 873,656 hull); Republic's share 58 %. Secutor: 629,288 shield loss vs 76,009 hull, 1 lost (shields 30,000 → refilled ≈ 20 times). Regen tiers raised in the working copy: capital 216 → 600 per s, heavy cruiser 117 → 300, cruiser 90 → 175. `UnitCombatProfile` = hull + shields + dps; `CombatMatchup` treats shields as a one-time pool. → W15.
+- **Repair unknown to the AI.** `RepairService`: 0.5 % max hull per s per repairer, 10 targets, 2 repairers per target. No AI code reads it; the AI does not target or build repair satellites. → W16.
+- **Platforms missing from local fights.** `BuildHostilesNear` / `BuildOwnNear` use unit sightings only. 0–8 min: 22 of 27 lost ships died at the centre while the zone rating said `Assemble` (defenders 34, statics 13, advantage 0.58) and the local rating said 1.1–2.4 → EngageLocal. Likely cause, not proven per ship. → W17.
+- **Build queue clogged.** 34 Diamonds (2,500 each, 85,000 credits) bought 1:30–7:00, each the moment money reached 2,500 (`candidates=1`). Same-type builds run one at a time → last Diamond delivered 17:22; 17 still waiting at 10:00. Waiting builds hold unit capacity: 116–120 / 120 with 9–15 ships alive, money unspent 28,011 (12:00) and 34,436 (18:01) while the station fell. Round-7 gate "capacity < 100 with < 15 ships alive" failed. `GetArrivalSeconds` returns 0 unless the station is critical. → W18.
+- **Bombers never raided.** `raidSkip`: `noBombers` 16, `noKnownMine` 9, `notWinnable` 5, `holding` 4; `raids=0` in all 246 `wingAssignment` rows (up to 12 wings `@raid`). → W19.
+- **Retargets.** `Attack` 900 of 1,345 AI ship orders (67 %, as before W11); 608 retargets: old target dead 293, not a ship 121, **still alive 194** (reason not logged). → W20.
+
+### W1–W13 against this log
+- W1 ✓ second-station upgrades 3:01, 4:21, 6:55, 10:28 → level 5. W2 ✓ bought 1:27 (17:44 battle: 6:36).
+- W3 ✓ platform after the base loss placed on the second station's ring (21:09, 509 from the wreck). Miners: none rebought 19:30–28:00 (income 350 → 70); hostiles stood at the base the whole time → rule may be right, not verified.
+- W6 ✓ Vulture wings (cheapest fighter), 2 parallel interceptors at 0:00–0:05 (`mandatory=7000 / 3000`).
+- W9 ✗ no raid (above). W11 partly (above).
+- W4, W5, W7, W10: no row in this log proves or disproves them. W12: Survival not played.
 
 ## Status history (2026-11-20, round 7 implemented)
 - Round-6 playtest played 17:44 (Rebellion AI vs Empire). User: start as good as before; Rebellion ship selection awful. Reopened and closed again the same day.

@@ -748,6 +748,50 @@ namespace EmpireAtWar.Tests.Editor
             }
         }
 
+        // W19: a bomber wing with no raid attacks the hostile ship its own ships fight instead of holding.
+        [TestCase(true)]
+        [TestCase(false)]
+        public void IdleBombers_TakeTheShipTargetOfTheOwnShipFight(bool shipsAttacking)
+        {
+            GameObject ownView = new GameObject("Own ship");
+            GameObject hostileView = new GameObject("Hostile ship");
+            try
+            {
+                hostileView.transform.position = Vector3.right * 400f;
+                PlayerRoster roster = TestPlayers.CreateDuel();
+                PlayerSlot owner = roster.Get(TestPlayers.Enemy);
+                var locator = new EntityLocator();
+                var hostile = new FakeEntity(new FakeHealthModel(hostileView.transform), TestPlayers.Human, 41);
+                var ownShip = new FakeEntity(new FakeHealthModel(ownView.transform), TestPlayers.Enemy, 40)
+                {
+                    CurrentOrder = shipsAttacking ? UnitOrderType.Attack : UnitOrderType.None,
+                    AttackTarget = shipsAttacking ? hostile : null
+                };
+                locator.AddEntity(hostile);
+                locator.AddEntity(ownShip);
+                UnitCombatProfileCatalog catalog = VenatorCatalog();
+                var snapshot = new AiWorldSnapshot(locator);
+                var battleState = new ReplayNotifier<BattleState>(BattleState.Running);
+                var commander = new EnemySquadronCommander(Array.Empty<IEnemyCaptureObjectiveSource>(),
+                    new ZoneSource(roster), locator, roster, new ForceCompositionBuilder(locator, catalog, snapshot),
+                    catalog, new ScoutPlacement(), new TeamIntelRegistry(), owner, null, null, battleState, snapshot,
+                    new EnemyAiScheduler(battleState), new VisionService(roster, fogEnabled: false));
+                MethodInfo find = typeof(EnemySquadronCommander).GetMethod("TryFindShipFightTarget",
+                    BindingFlags.Instance | BindingFlags.NonPublic);
+                object[] arguments = { Vector3.zero, null };
+
+                bool found = (bool)find.Invoke(commander, arguments);
+
+                Assert.That(found, Is.EqualTo(shipsAttacking));
+                Assert.That(arguments[1], shipsAttacking ? Is.SameAs(hostile) : Is.Null);
+            }
+            finally
+            {
+                UnityEngine.Object.DestroyImmediate(ownView);
+                UnityEngine.Object.DestroyImmediate(hostileView);
+            }
+        }
+
         [TestCase(true)]
         [TestCase(false)]
         public void WingGroups_HeldHomeZoneUnderAttackIsDefended_ElseTheGroupNeverSharesAZone(bool attacked)
@@ -1035,7 +1079,10 @@ namespace EmpireAtWar.Tests.Editor
                 locator.AddEntity(satellite);
                 var site = new CaptureSiteStub(Vector3.zero)
                     { Kind = CaptureSiteKind.Satellite, Owner = TestPlayers.Human, FacilityState = CaptureSiteState.Operational };
-                var sites = new SiteSource(site);
+                // A second pad of the same point: a pad alone at its point is a free lane pad, never a ship objective.
+                var partner = new CaptureSiteStub(Vector3.right * 200f)
+                    { Kind = CaptureSiteKind.Satellite, Owner = TestPlayers.Enemy, FacilityState = CaptureSiteState.Operational };
+                var sites = new SiteSource(site, partner);
                 CaptureSiteData data = AssetDatabase.LoadAssetAtPath<CaptureSiteData>(
                     "Assets/Settings/Data/Models/CaptureSites/CaptureSiteData.asset");
                 var vision = new VisionService(roster, fogEnabled: false);
@@ -1050,6 +1097,26 @@ namespace EmpireAtWar.Tests.Editor
                 Assert.That(objective.IsMine, Is.False, "Ships rank a blocking non-mine facility before the relay.");
             }
             finally { UnityEngine.Object.DestroyImmediate(view); }
+        }
+
+        // W22: a free lane pad (the only site of its point) is work for wings, never a ship-force objective.
+        [Test]
+        public void SiteObjectives_FreePadIsNoShipObjectiveButAWingTarget()
+        {
+            PlayerRoster roster = TestPlayers.CreateDuel();
+            var sites = new SiteSource(new CaptureSiteStub(Vector3.zero) { Kind = CaptureSiteKind.Satellite, PointId = 9 });
+            CaptureSiteData data = AssetDatabase.LoadAssetAtPath<CaptureSiteData>(
+                "Assets/Settings/Data/Models/CaptureSites/CaptureSiteData.asset");
+            var source = new EnemySiteObjectives(sites, sites, data, roster, roster.Get(TestPlayers.Enemy),
+                new AiWorldSnapshot(new EntityLocator()), new VisionService(roster, fogEnabled: false));
+            var objectives = new List<EnemyCaptureObjective>();
+            var assignments = new EnemySquadronCaptureAssignments();
+
+            source.AddStrategicObjectives(objectives, new HostileIntelModel());
+            source.AddSquadronTargets(assignments, new HostileIntelModel());
+
+            Assert.That(objectives, Is.Empty);
+            Assert.That(assignments.HasTargets, Is.True);
         }
 
         // Turbolaser satellites barely hurt strikecraft; quad laser satellites shred them.
@@ -2728,7 +2795,8 @@ namespace EmpireAtWar.Tests.Editor
             CaptureSiteStub mine = new CaptureSiteStub(Vector3.right * 100f)
             {
                 Owner = hasUnownedLocalMine ? PlayerId.None : TestPlayers.Enemy,
-                PointId = hasUnownedLocalMine ? 0 : 1
+                // Same point as the pad: a pad alone at its point is a free lane pad, never a ship objective (W22).
+                PointId = 0
             };
             SiteSource sites = new SiteSource(mine,
                 new CaptureSiteStub(Vector3.right * 10f) { Kind = CaptureSiteKind.Satellite });
@@ -3920,9 +3988,11 @@ namespace EmpireAtWar.Tests.Editor
 
         private sealed class FakeEntity : IEntity, ICombatModifiersFacade, IUnitTypeFacade, IMiningFacilityFacade,
             INavigationFootprintFacade, IUnitCombatObserverFacade, IStationDurabilityFacade, IPlayerBaseFacade, ISecondStationFacade,
-            IStructureKindFacade, IDefendPlatformTypeFacade
+            IStructureKindFacade, IDefendPlatformTypeFacade, IUnitOrderObserverFacade
         {
             public DefendPlatformType Type { get; set; } = DefendPlatformType.TurbolaserSatellite;
+            public UnitOrderType CurrentOrder { get; set; } = UnitOrderType.None;
+            public IEntity AttackTarget { get; set; }
             public bool IsUnit { get; set; } = true;
             public bool IsDefendPlatform { get; set; }
             public StructureKind Kind => StructureKind.DefendPlatform;

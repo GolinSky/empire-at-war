@@ -31,7 +31,7 @@ namespace EmpireAtWar.Entities.EnemyFaction.Models
             bool found = false;
             foreach (EnemyDefensePad pad in snapshot.Pads)
             {
-                if (pad.HasHostiles || pad.Existing.Count >= ZONE_SATELLITES)
+                if (pad.HasHostiles || CountArmed(pad) >= ZONE_SATELLITES)
                     continue;
                 float bestFit = 0f;
                 foreach (EnemyDefenseOption option in snapshot.Options)
@@ -42,7 +42,7 @@ namespace EmpireAtWar.Entities.EnemyFaction.Models
                 float spendable = snapshot.Money - (urgent ? 0f : snapshot.ProductionReserve);
                 foreach (EnemyDefenseOption option in snapshot.Options)
                 {
-                    if (option.Cost > spendable) continue;
+                    if (option.Type == SiteFacilityType.RepairSatellite || option.Cost > spendable) continue;
                     float affordability = 1f - option.Cost / Math.Max(1f, spendable + snapshot.IncomePerSecond * HORIZON);
                     int copies = 0;
                     foreach (SiteFacilityType existing in pad.Existing)
@@ -102,8 +102,65 @@ namespace EmpireAtWar.Entities.EnemyFaction.Models
             return found;
         }
 
+        /// <summary>
+        /// One repair satellite per pad group with money beyond the production reserve: only into a point with at least
+        /// two pads that already holds an armed satellite (built or constructing), and only where a team structure stands
+        /// within its reach. A single-pad point never gets one. It has no weapons, so the scored choice never picks it.
+        /// </summary>
+        public bool TrySelectRepair(EnemyDefenseSnapshot snapshot, out EnemyDefenseChoice choice)
+        {
+            choice = default;
+            if (!TryGetOption(snapshot, SiteFacilityType.RepairSatellite, out EnemyDefenseOption repair) ||
+                repair.Cost > snapshot.Money - snapshot.ProductionReserve) return false;
+            bool found = false;
+            foreach (EnemyDefensePad pad in snapshot.Pads)
+            {
+                if (!CanTakeRepairSatellite(pad)) continue;
+                float score = GetPointPriority(pad);
+                if (found && score <= choice.Score) continue;
+                choice = new EnemyDefenseChoice(pad.SiteIndex, repair.Type, score, repair.Cost,
+                    "Repair satellite beside armed satellites");
+                found = true;
+            }
+            return found;
+        }
+
+        public static bool CanTakeRepairSatellite(EnemyDefensePad pad) =>
+            !pad.HasHostiles && pad.PointPads >= 2 && pad.HasTeamStructureInRepairRange && CountArmed(pad) >= 1 &&
+            !Contains(pad.Existing, SiteFacilityType.RepairSatellite);
+
+        /// <summary>Weapon satellites of the pad's point, built or constructing; a repair satellite is not one.</summary>
+        public static int CountArmed(EnemyDefensePad pad)
+        {
+            int armed = 0;
+            foreach (SiteFacilityType existing in pad.Existing)
+                if (existing != SiteFacilityType.RepairSatellite) armed++;
+            return armed;
+        }
+
+        private static bool Contains(IReadOnlyList<SiteFacilityType> types, SiteFacilityType type)
+        {
+            foreach (SiteFacilityType existing in types)
+                if (existing == type) return true;
+            return false;
+        }
+
+        private static bool TryGetOption(EnemyDefenseSnapshot snapshot, SiteFacilityType type, out EnemyDefenseOption found)
+        {
+            foreach (EnemyDefenseOption option in snapshot.Options)
+            {
+                if (option.Type != type) continue;
+                found = option;
+                return true;
+            }
+            found = default;
+            return false;
+        }
+
+        /// <summary>Threatened point → home → held zone (centre first) → mining point → free pad.</summary>
         private static float GetPointPriority(EnemyDefensePad pad) =>
-            (pad.IsCentrePad ? 20f : pad.IsZonePad ? 10f : 0f) + pad.ProtectedMineShare;
+            (pad.IsThreatened ? 1000f : 0f) + (pad.IsHomePad ? 100f : 0f) +
+            (pad.IsCentrePad ? 20f : pad.IsZonePad ? 10f : 0f) + pad.ProtectedMineShare - (pad.IsFreePad ? 1f : 0f);
 
         public bool HasMandatoryPad(EnemyDefenseSnapshot snapshot)
         {
@@ -112,8 +169,8 @@ namespace EmpireAtWar.Entities.EnemyFaction.Models
             return false;
         }
 
-        private static bool NeedsMandatorySatellite(EnemyDefensePad pad) => !pad.HasHostiles &&
-            pad.Existing.Count < (pad.IsZonePad ? ZONE_SATELLITES : MINING_POINT_SATELLITES);
+        private static bool NeedsMandatorySatellite(EnemyDefensePad pad) => !pad.HasHostiles && !pad.IsFreePad &&
+            CountArmed(pad) < (pad.IsZonePad ? ZONE_SATELLITES : MINING_POINT_SATELLITES);
 
         // Turbolaser by default; quad laser when squadrons dominate; missile or mass driver once money is plentiful.
         private static bool TryPickType(EnemyDefenseSnapshot snapshot, EnemyDefensePad pad, out EnemyDefenseOption picked)
@@ -189,12 +246,14 @@ namespace EmpireAtWar.Entities.EnemyFaction.Models
                 float shields = snapshot.Hostile.Shields(target);
                 float durability = hull + shields;
                 if (durability <= 0f) continue;
+                float regen = snapshot.Hostile.ShieldRegenPerUnit(target);
+                float repair = snapshot.Hostile.HullRepairPerUnit(target);
                 float ownTime = CombatMatchup.TimeToDestroyClass(hull, shields, snapshot.Own.HullDps(target),
-                    snapshot.Own.ShieldDps(target), snapshot.Own.PiercingDps(target));
+                    snapshot.Own.ShieldDps(target), snapshot.Own.PiercingDps(target), regen, repair);
                 float combinedTime = CombatMatchup.TimeToDestroyClass(hull, shields,
                     snapshot.Own.HullDps(target) + option.Profile.HullDps(target),
                     snapshot.Own.ShieldDps(target) + option.Profile.ShieldDps(target),
-                    snapshot.Own.PiercingDps(target) + option.Profile.PiercingDps(target));
+                    snapshot.Own.PiercingDps(target) + option.Profile.PiercingDps(target), regen, repair);
                 float ownDps = ownTime >= CombatMatchup.MAX_TIME ? 0f : durability / Math.Max(0.001f, ownTime);
                 float combinedDps = combinedTime >= CombatMatchup.MAX_TIME ? 0f : durability / Math.Max(0.001f, combinedTime);
                 float dps = Math.Max(0f, combinedDps - ownDps);

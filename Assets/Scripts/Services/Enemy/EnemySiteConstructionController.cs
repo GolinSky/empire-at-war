@@ -16,7 +16,8 @@ namespace EmpireAtWar.Services.Enemy
 {
     /// <summary>
     /// Builds mines on safe owned sites as soon as affordable, and the required satellites (three per zone, one per mining point) without waiting for a fleet.
-    /// Money beyond the production reserve then fills every remaining empty owned pad.
+    /// Money beyond the production reserve then buys one repair satellite per armed pad group and fills every remaining
+    /// empty owned pad.
     /// A mining spot gets a battle asteroid instead of a mine when its zone needs firepower: a known hostile ship or
     /// <see cref="HELD_ATTACK_WINGS"/> hostile wings are in the held zone, the zone was lost and retaken, or a hostile
     /// is inside it in the first <see cref="OPENING_SECONDS"/>. At most one battle asteroid per zone.
@@ -107,13 +108,22 @@ namespace EmpireAtWar.Services.Enemy
                         : $"kind=battleAsteroid;started={built};reason={reason}");
                 return;
             }
-            if (!mandatorySatellite && (_defense.TrySelectScored(snapshot, out var optional) ||
+            if (!mandatorySatellite && (_defense.TrySelectRepair(snapshot, out var optional) ||
+                                        _defense.TrySelectScored(snapshot, out optional) ||
                                         _defense.TrySelectFill(snapshot, out optional)))
                 StartSatellite(snapshot, optional);
         }
 
         private bool StartSatellite(EnemyDefenseSnapshot snapshot, EnemyDefenseChoice choice)
         {
+            // One satellite under construction at a time: pads never outbid ships, and more pads (≈ 2.5 × after the
+            // pad expansion) would otherwise drain the money as soon as each is captured.
+            if (HasSatelliteUnderConstruction())
+            {
+                EnemyAiTelemetry.RecordEvent(_owner.Id, _owner.Faction, "siteBuild",
+                    $"kind=satellite;started=False;site={choice.SiteIndex};reason=oneWaiting");
+                return false;
+            }
             if (IsPadWaiting(choice.SiteIndex, BattleClock.CurrentElapsed))
             {
                 EnemyAiTelemetry.RecordEvent(_owner.Id, _owner.Faction, "siteBuild",
@@ -173,6 +183,14 @@ namespace EmpireAtWar.Services.Enemy
                 if (sighting.UnitTypeId.IsShip) return true;
                 if (sighting.UnitTypeId.IsSquadron && ++wings >= HELD_ATTACK_WINGS) return true;
             }
+            return false;
+        }
+
+        internal bool HasSatelliteUnderConstruction()
+        {
+            foreach (ICaptureSite site in _sites.Sites)
+                if (site.Kind == CaptureSiteKind.Satellite && site.Owner == _owner.Id &&
+                    site.State == CaptureSiteState.Constructing) return true;
             return false;
         }
 

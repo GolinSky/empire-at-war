@@ -73,7 +73,8 @@ namespace EmpireAtWar.Services.Enemy
                 hangar.RemoveRange(data.HangarMaxActive, hangar.Count - data.HangarMaxActive);
 
             return UnitCombatProfileFactory.Create(data.ShipClass, data.Hull, data.Shields,
-                data.WeaponLoadout, _weaponsData, _damageMatrix, hangar);
+                data.WeaponLoadout, _weaponsData, _damageMatrix, hangar,
+                shieldRegen: data.ShieldRegenerateValue / data.ShieldRegenerateDelay);
         }
 
         /// <summary>A satellite or platform rated from its weapon loadout: turbolasers hurt wings little, quad lasers a lot.</summary>
@@ -83,7 +84,8 @@ namespace EmpireAtWar.Services.Enemy
             DefendPlatformData data = _assetService.Load<DefendPlatformData>(DefendPlatformAssets.GetDataName(type));
             profile = UnitCombatProfileFactory.Create(data.ComponentData.ShipClass, data.ComponentData.Hull,
                 data.ComponentData.Shields, data.WeaponLoadout, _weaponsData, _damageMatrix,
-                Array.Empty<UnitCombatProfile>());
+                Array.Empty<UnitCombatProfile>(),
+                shieldRegen: data.ComponentData.ShieldRegenerateValue / data.ComponentData.ShieldRegenerateDelay);
             _platformProfiles.Add(type, profile);
             return profile;
         }
@@ -107,7 +109,8 @@ namespace EmpireAtWar.Services.Enemy
                 data.TotalHull,
                 data.TotalShields,
                 data.WeaponLoadout, _weaponsData, _damageMatrix,
-                Array.Empty<UnitCombatProfile>(), data.WarheadDamageMultiplier, data.WarheadReloadMultiplier);
+                Array.Empty<UnitCombatProfile>(), data.WarheadDamageMultiplier, data.WarheadReloadMultiplier,
+                data.ShieldRegenerateValue * data.MemberCount / data.ShieldRegenerateDelay);
         }
     }
 }

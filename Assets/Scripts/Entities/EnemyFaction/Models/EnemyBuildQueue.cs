@@ -77,6 +77,15 @@ namespace EmpireAtWar.Entities.EnemyFaction.Models
             return remaining;
         }
 
+        /// <summary>Builds of the ID still in production or waiting for it (completed, held ships excluded).</summary>
+        public int CountUnfinished(string requestId)
+        {
+            int count = 0;
+            foreach (EnemyPendingBuild build in _builds)
+                if (build.Request.Id == requestId && build.TimeLeft > 0f) count++;
+            return count;
+        }
+
         public void ReserveExternalPipeline(string requestId) => _externalPipelines.Add(requestId);
 
         public void ReleaseExternalPipeline(string requestId) => _externalPipelines.Remove(requestId);

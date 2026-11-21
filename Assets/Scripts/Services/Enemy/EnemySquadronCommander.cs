@@ -111,6 +111,8 @@ namespace EmpireAtWar.Services.Enemy
         private float _beaconUntil;
         private readonly List<Vector3> _seenShips = new List<Vector3>();
         private readonly List<ISquadron> _idleBombers = new List<ISquadron>();
+        // Bombers without a raid attack the ship their team's ships are fighting.
+        private readonly Dictionary<ISquadron, IEntity> _bomberStrikes = new Dictionary<ISquadron, IEntity>();
         // Bombers without a winnable mine hold at the centre of the nearest own held zone.
         private readonly Dictionary<ISquadron, Vector3> _bomberHolds = new Dictionary<ISquadron, Vector3>();
         /// <summary>Uncontested hold spots each wing has reached since it was sent there.</summary>
@@ -462,6 +464,12 @@ namespace EmpireAtWar.Services.Enemy
             if (squadron == _patrolWing)
             {
                 IssuePatrolOrder(squadron);
+                return;
+            }
+
+            if (_bomberStrikes.TryGetValue(squadron, out IEntity strike) && !strike.HealthModel.IsDestroyed)
+            {
+                _entityLocator.GetEntity(squadron.EntityId).GetFacade<IAttackFacade>().Attack(strike, Vector3.zero, null);
                 return;
             }
 
@@ -874,6 +882,7 @@ namespace EmpireAtWar.Services.Enemy
             _captureAssignments.BeginAssignment();
             _captureSquadrons.Clear();
             _bomberHolds.Clear();
+            _bomberStrikes.Clear();
             Vector3 home = GetHome();
             AssignGroup(_centreGroup, home);
             foreach (EnemyWingGroup group in _outerGroups) AssignGroup(group, home);
@@ -945,10 +954,21 @@ namespace EmpireAtWar.Services.Enemy
                 home, _addWingForce, spread: group == _centreGroup);
         }
 
-        /// <summary>Bombers without a winnable mine or satellite hold at the centre of the nearest own held zone
-        /// (home when none is held) instead of joining a fight on a defended pad.</summary>
+        /// <summary>
+        /// Bombers without a raid (no known mine, holding, not winnable) attack the hostile ship nearest them that own
+        /// ships are attacking. With no such ship fight they hold at the centre of the nearest own held zone (home when
+        /// none is held) instead of joining a fight on a defended pad.
+        /// </summary>
         private void HoldIdleBombers(Vector3 home)
         {
+            if (_idleBombers.Count == 0) return;
+            for (int i = _idleBombers.Count - 1; i >= 0; i--)
+            {
+                ISquadron bomber = _idleBombers[i];
+                if (!TryFindShipFightTarget(bomber.WorldPosition, out IEntity target)) continue;
+                _bomberStrikes[bomber] = target;
+                _idleBombers.RemoveAt(i);
+            }
             if (_idleBombers.Count == 0) return;
             Vector3 hold = home;
             float nearest = float.PositiveInfinity;
@@ -961,6 +981,30 @@ namespace EmpireAtWar.Services.Enemy
                 hold = ToVector(ToPoint(zone.Center));
             }
             foreach (ISquadron bomber in _idleBombers) _bomberHolds[bomber] = hold;
+        }
+
+        /// <summary>The visible hostile ship nearest <paramref name="origin"/> that an own ship has an attack order on.</summary>
+        private bool TryFindShipFightTarget(Vector3 origin, out IEntity target)
+        {
+            target = null;
+            float nearest = float.PositiveInfinity;
+            IReadOnlyList<AiWorldSnapshot.Entry> owned = _worldSnapshot.GetOwnedUnits(_owner.Id);
+            for (int i = 0; i < owned.Count; i++)
+            {
+                AiWorldSnapshot.Entry entry = owned[i];
+                if (!entry.UnitTypeId.IsShip || entry.Entity.HealthModel.IsDestroyed) continue;
+                IUnitOrderObserverFacade orders = entry.Entity.GetFacade<IUnitOrderObserverFacade>();
+                IEntity attacked = orders.AttackTarget;
+                if (orders.CurrentOrder != UnitOrderType.Attack || attacked == null || attacked.HealthModel.IsDestroyed ||
+                    !_playerRoster.IsHostile(_owner.Id, attacked.Owner) ||
+                    !attacked.TryGetFacade(out IUnitTypeFacade type) || !type.UnitTypeId.IsShip ||
+                    !_vision.IsVisible(_owner.Id, attacked)) continue;
+                float distance = PlanarDistanceSquared(attacked.GetFacade<IEntityTransformFacade>().Transform.position, origin);
+                if (distance >= nearest) continue;
+                nearest = distance;
+                target = attacked;
+            }
+            return target != null;
         }
 
         /// <summary>
@@ -1261,6 +1305,7 @@ namespace EmpireAtWar.Services.Enemy
                     group.ZoneDeaths.Add(Time.time);
             if (squadron == _patrolWing) ReleasePatrolWing("lost");
             _bomberHolds.Remove(squadron);
+            _bomberStrikes.Remove(squadron);
             _reachedHolds.Remove(squadron);
             squadron.Released -= _squadrons[squadron].ReleaseHandler;
             _squadrons.Remove(squadron);

@@ -16,10 +16,10 @@ namespace EmpireAtWar.Entities.EnemyFaction.Models.Combat
         public const float MAX_ADVANTAGE = 100f;
 
         public static float TimeToDestroyTarget(ForceComposition attacker, ShipClass target, float hull,
-            float shields, StructureKind? kind)
+            float shields, StructureKind? kind, float shieldRegen = 0f)
         {
             (float hullDps, float shieldDps, float piercingDps) = attacker.DamageRates(target, kind);
-            return TimeToDestroyClass(hull, shields, hullDps, shieldDps, piercingDps);
+            return TimeToDestroyClass(hull, shields, hullDps, shieldDps, piercingDps, shieldRegen);
         }
 
         /// <summary>
@@ -47,7 +47,9 @@ namespace EmpireAtWar.Entities.EnemyFaction.Models.Combat
                     shields,
                     attacker.HullDps(target),
                     attacker.ShieldDps(target),
-                    attacker.PiercingDps(target));
+                    attacker.PiercingDps(target),
+                    defender.ShieldRegenPerUnit(target),
+                    defender.HullRepairPerUnit(target));
                 if (time >= MAX_TIME)
                 {
                     continue;
@@ -90,29 +92,41 @@ namespace EmpireAtWar.Entities.EnemyFaction.Models.Combat
 
         /// <summary>
         /// Shields absorb shield-blocked weapons while piercing weapons already strip the hull;
-        /// once shields fall, every weapon hits the hull.
+        /// once shields fall, every weapon hits the hull. Focus fire meets one unit's shield regeneration and hull
+        /// repair at a time: <paramref name="shieldRegen"/> and <paramref name="hullRepair"/> are per unit and second.
+        /// Shield damage at or below the regeneration never breaks the shields, so only piercing damage counts.
         /// </summary>
         public static float TimeToDestroyClass(
             float hull,
             float shields,
             float hullDps,
             float shieldDps,
-            float piercingDps)
+            float piercingDps,
+            float shieldRegen = 0f,
+            float hullRepair = 0f)
         {
-            if (shields <= 0f || shieldDps <= 0f)
+            float netPiercing = piercingDps - hullRepair;
+            float netShieldDps = shieldDps - shieldRegen;
+            float fullHullDps = hullDps + piercingDps - hullRepair;
+            if (shields <= 0f || netShieldDps <= 0f)
             {
-                float dps = shields > 0f ? piercingDps : hullDps + piercingDps;
+                float dps = shields > 0f ? netPiercing : fullHullDps;
                 return dps > 0f ? Math.Min(MAX_TIME, hull / dps) : MAX_TIME;
             }
 
-            float shieldTime = shields / shieldDps;
-            if (piercingDps * shieldTime >= hull)
+            float shieldTime = shields / netShieldDps;
+            if (netPiercing * shieldTime >= hull)
             {
-                return hull / piercingDps;
+                return hull / netPiercing;
             }
 
-            float remainingHull = hull - piercingDps * shieldTime;
-            return Math.Min(MAX_TIME, shieldTime + remainingHull / (hullDps + piercingDps));
+            if (fullHullDps <= 0f)
+            {
+                return MAX_TIME;
+            }
+
+            float remainingHull = hull - Math.Max(0f, netPiercing) * shieldTime;
+            return Math.Min(MAX_TIME, shieldTime + remainingHull / fullHullDps);
         }
     }
 }

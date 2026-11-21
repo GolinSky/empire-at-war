@@ -29,6 +29,8 @@ namespace EmpireAtWar.Services.Enemy
         private const float CAPTURE_APPROACH_STALL_SECONDS = 5f;
 
         private readonly IUnitOrderService _unitOrderService;
+        private readonly Dictionary<string, (List<GameEntity> Receivers, List<Vector3> Offsets)> _retargetReceivers =
+            new Dictionary<string, (List<GameEntity>, List<Vector3>)>();
         private GameEntity _battleTarget;
         private GameEntity _defenseStation;
         private const float INTERCEPT_DISTANCE = 1500f;
@@ -731,8 +733,7 @@ namespace EmpireAtWar.Services.Enemy
         {
             List<Vector3> offsets = BattleOffsets(_strikeShips, _strikeShips.Count, target, out bool rebuilt);
             ApplyCarrierStandoff(context, target, offsets);
-            List<GameEntity> receivers = new List<GameEntity>();
-            List<Vector3> receiverOffsets = new List<Vector3>();
+            _retargetReceivers.Clear();
             for (int i = 0; i < _strikeShips.Count; i++)
             {
                 IShipEntity ship = _strikeShips[i];
@@ -742,10 +743,29 @@ namespace EmpireAtWar.Services.Enemy
                 if (attacking && !rebuilt && previous == target) continue;
                 if (attacking && keepTargets && previous != target && KeepsTarget(context, ship, previous)) continue;
                 _strikeTargets[ship] = target;
-                receivers.Add(context.Receivers[ship]);
-                receiverOffsets.Add(offsets[i]);
+                string reason = GetRetargetReason(attacking ? previous : null, target, keepTargets);
+                if (!_retargetReceivers.TryGetValue(reason, out var group))
+                    _retargetReceivers[reason] = group = (new List<GameEntity>(), new List<Vector3>());
+                group.Receivers.Add(context.Receivers[ship]);
+                group.Offsets.Add(offsets[i]);
             }
-            if (receivers.Count > 0) _unitOrderService.IssueAttack(receivers, target, receiverOffsets);
+            // One order per reason, so each ai_orders row says why the ship changed target (W20).
+            foreach (KeyValuePair<string, (List<GameEntity> Receivers, List<Vector3> Offsets)> group in _retargetReceivers)
+                using (ShipOrderTelemetry.Detail("retarget=" + group.Key))
+                    _unitOrderService.IssueAttack(group.Value.Receivers, target, group.Value.Offsets);
+        }
+
+        /// <summary>
+        /// dead | cloaked | outOfReach (the kept target was dropped), slot (same target, new formation), new (no target
+        /// before, or the state does not keep targets).
+        /// </summary>
+        private static string GetRetargetReason(GameEntity previous, GameEntity target, bool keepTargets)
+        {
+            if (previous == null) return "new";
+            if (previous == target) return "slot";
+            if (previous.HealthModel.IsDestroyed) return "dead";
+            if (previous.IsCloaked()) return "cloaked";
+            return keepTargets ? "outOfReach" : "new";
         }
 
         /// <summary>

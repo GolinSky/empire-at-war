@@ -156,7 +156,7 @@ namespace EmpireAtWar.Tests.Editor
         {
             var strategy = new EnemyDefenseStrategy();
             var construction = new ConstructionStub(true);
-            var controller = new EnemySiteConstructionController(null, null, construction,
+            var controller = new EnemySiteConstructionController(new PadDirectory(), null, construction,
                 TestPlayers.CreateDuel().Get(TestPlayers.Enemy), null, strategy, null, null, null, null, null);
             var snapshot = Snapshot(new ForceComposition(), 5000f, 2000f, HeldCentrePad(5));
 
@@ -190,7 +190,7 @@ namespace EmpireAtWar.Tests.Editor
             var strategy = new EnemyDefenseStrategy();
             var construction = new ConstructionStub(satelliteCanStart);
             var roster = TestPlayers.CreateDuel();
-            var controller = new EnemySiteConstructionController(null, null, construction,
+            var controller = new EnemySiteConstructionController(new PadDirectory(), null, construction,
                 roster.Get(TestPlayers.Enemy), null, strategy, null, null, null, null, null);
             var centre = new EnemyDefensePad(2, 0f, 0.5f, float.PositiveInfinity, false, false,
                 Array.Empty<SiteFacilityType>(), isCentrePad: true);
@@ -208,7 +208,7 @@ namespace EmpireAtWar.Tests.Editor
             var strategy = new EnemyDefenseStrategy();
             var construction = new ConstructionStub(true);
             var roster = TestPlayers.CreateDuel();
-            var controller = new EnemySiteConstructionController(null, null, construction,
+            var controller = new EnemySiteConstructionController(new PadDirectory(), null, construction,
                 roster.Get(TestPlayers.Enemy), null, strategy, null, null, null, null, null);
             var snapshot = Snapshot(Force(ShipClass.Cruiser, 5000f, 15000f), 2000f, 0f,
                 Pad(threatened: true, existing: new[] { SiteFacilityType.TurbolaserSatellite }));
@@ -263,12 +263,141 @@ namespace EmpireAtWar.Tests.Editor
             Assert.That(controller.IsPadWaiting(0, 80f), Is.False);
         }
 
+        // W16c: one repair satellite per pad group, beside armed satellites.
+        [Test]
+        public void RepairSatellite_GoesIntoAPointWithAnArmedSatelliteAndTwoPads()
+        {
+            var pad = RepairPad(existing: new[] { SiteFacilityType.TurbolaserSatellite });
+
+            Assert.That(new EnemyDefenseStrategy().TrySelectRepair(RepairSnapshot(pad), out var choice), Is.True);
+            Assert.That(choice.Type, Is.EqualTo(SiteFacilityType.RepairSatellite));
+            Assert.That(choice.SiteIndex, Is.EqualTo(pad.SiteIndex));
+        }
+
+        [Test]
+        public void RepairSatellite_NeverWithoutAnArmedSatelliteInThePoint()
+        {
+            Assert.That(new EnemyDefenseStrategy().TrySelectRepair(RepairSnapshot(RepairPad(
+                existing: Array.Empty<SiteFacilityType>())), out _), Is.False);
+        }
+
+        [Test]
+        public void RepairSatellite_NeverTwiceInOnePoint()
+        {
+            Assert.That(new EnemyDefenseStrategy().TrySelectRepair(RepairSnapshot(RepairPad(existing: new[]
+                { SiteFacilityType.TurbolaserSatellite, SiteFacilityType.RepairSatellite })), out _), Is.False);
+        }
+
+        [Test]
+        public void RepairSatellite_NeverOnASinglePadPoint()
+        {
+            Assert.That(new EnemyDefenseStrategy().TrySelectRepair(RepairSnapshot(RepairPad(pointPads: 1,
+                existing: new[] { SiteFacilityType.TurbolaserSatellite })), out _), Is.False);
+        }
+
+        [Test]
+        public void RepairSatellite_NeedsATeamStructureInItsReach()
+        {
+            Assert.That(new EnemyDefenseStrategy().TrySelectRepair(RepairSnapshot(RepairPad(structureInReach: false,
+                existing: new[] { SiteFacilityType.TurbolaserSatellite })), out _), Is.False);
+        }
+
+        [Test]
+        public void RepairSatellite_IsNeverTheScoredChoice()
+        {
+            var strategy = new EnemyDefenseStrategy();
+            var snapshot = RepairSnapshot(RepairPad(threatened: true, existing: new[] { SiteFacilityType.TurbolaserSatellite }),
+                Force(ShipClass.Cruiser, 5000f, 15000f));
+
+            Assert.That(strategy.TrySelectScored(snapshot, out var choice), Is.True);
+            Assert.That(choice.Type, Is.Not.EqualTo(SiteFacilityType.RepairSatellite));
+        }
+
+        [Test]
+        public void Mandatory_ARepairSatelliteDoesNotCountAsAnArmedSatellite()
+        {
+            var zone = new EnemyDefensePad(3, 0f, 0.5f, float.PositiveInfinity, false, false, new[]
+            {
+                SiteFacilityType.TurbolaserSatellite, SiteFacilityType.TurbolaserSatellite, SiteFacilityType.RepairSatellite
+            }, isZonePad: true, pointPads: 4);
+
+            Assert.That(new EnemyDefenseStrategy().TrySelectMandatory(RepairSnapshot(zone), out var choice), Is.True);
+            Assert.That(choice.Type, Is.Not.EqualTo(SiteFacilityType.RepairSatellite));
+        }
+
+        // W22: free lane pads are never required and are filled last; one satellite builds at a time.
+        [Test]
+        public void FreePad_IsNeverMandatory()
+        {
+            var free = new EnemyDefensePad(4, 0f, 0.5f, float.PositiveInfinity, false, false,
+                Array.Empty<SiteFacilityType>(), isFreePad: true);
+
+            Assert.That(new EnemyDefenseStrategy().TrySelectMandatory(Snapshot(new ForceComposition(), 5000f, 0f, free), out _),
+                Is.False);
+        }
+
+        [Test]
+        public void Fill_TakesAHeldZonePadBeforeAFreePadAndAHomePadBeforeBoth()
+        {
+            var free = new EnemyDefensePad(4, 0f, 0.5f, float.PositiveInfinity, false, false,
+                Array.Empty<SiteFacilityType>(), isFreePad: true);
+            var zone = HeldCentrePad(5);
+            var home = new EnemyDefensePad(6, 0f, 0.1f, float.PositiveInfinity, false, false,
+                new[] { SiteFacilityType.TurbolaserSatellite }, pointPads: 4, isHomePad: true);
+            var strategy = new EnemyDefenseStrategy();
+
+            Assert.That(strategy.TrySelectFill(Pads(free, zone), out var zoneFirst), Is.True);
+            Assert.That(zoneFirst.SiteIndex, Is.EqualTo(5));
+            Assert.That(strategy.TrySelectFill(Pads(free, zone, home), out var homeFirst), Is.True);
+            Assert.That(homeFirst.SiteIndex, Is.EqualTo(6));
+        }
+
+        [Test]
+        public void Construction_StartsNoSatelliteWhileAnotherIsUnderConstruction()
+        {
+            var construction = new ConstructionStub(true);
+            var building = new PadSite { Owner = TestPlayers.Enemy, State = CaptureSiteState.Constructing };
+            var controller = new EnemySiteConstructionController(new PadDirectory(building), null, construction,
+                TestPlayers.CreateDuel().Get(TestPlayers.Enemy), null, new EnemyDefenseStrategy(), null, null, null, null, null);
+            var snapshot = Snapshot(new ForceComposition(), 5000f, 0f, new EnemyDefensePad(5, 0f, 0.5f,
+                float.PositiveInfinity, false, false, Array.Empty<SiteFacilityType>(), isZonePad: true, pointPads: 4));
+
+            Assert.That(controller.HasSatelliteUnderConstruction(), Is.True);
+            controller.BuildNext(snapshot, mineSite: -1, mandatorySatellite: true);
+
+            Assert.That(construction.Started, Is.Empty);
+        }
+
+        private EnemyDefenseSnapshot Pads(params EnemyDefensePad[] pads) =>
+            new EnemyDefenseSnapshot(5000f, 5f, 0f, default, new ForceComposition(), new ForceComposition(), pads, _options);
+
+        private EnemyDefenseSnapshot RepairSnapshot(EnemyDefensePad pad, ForceComposition hostile = null)
+        {
+            WeaponsData weapons = AssetDatabase.LoadAssetAtPath<WeaponsData>("Assets/Settings/Data/Models/Weapon/WeaponsData.asset");
+            DamageMatrixData matrix = AssetDatabase.LoadAssetAtPath<DamageMatrixData>("Assets/Settings/Data/Models/Weapon/DamageMatrixData.asset");
+            var options = new List<EnemyDefenseOption>(_options)
+            {
+                new EnemyDefenseOption(SiteFacilityType.RepairSatellite, 500f, UnitCombatProfileFactory.Create(
+                    ShipClass.Structure, 1000f, 1000f, Array.Empty<WeaponLoadoutEntry>(), weapons, matrix,
+                    Array.Empty<UnitCombatProfile>()), 0f)
+            };
+            hostile ??= new ForceComposition();
+            return new EnemyDefenseSnapshot(5000f, 5f, 0f,
+                new EnemyStrategicSnapshot(default, EnemyAiDifficulty.Medium, 3, hostile.UnitCount, 0, 1f, 0f, false, true, true),
+                new ForceComposition(), hostile, new[] { pad }, options);
+        }
+
+        private static EnemyDefensePad RepairPad(SiteFacilityType[] existing, int pointPads = 4,
+            bool structureInReach = true, bool threatened = false) =>
+            new EnemyDefensePad(8, 0f, 0.5f, float.PositiveInfinity, false, threatened, existing,
+                isZonePad: true, pointPads: pointPads, hasTeamStructureInRepairRange: structureInReach);
+
         private sealed class PadDirectory : ICaptureSiteDirectory
         {
             public event Action SitesChanged { add { } remove { } }
             public IReadOnlyList<ICaptureSite> Sites { get; }
 
-            public PadDirectory(ICaptureSite site) => Sites = new[] { site };
+            public PadDirectory(params ICaptureSite[] sites) => Sites = sites;
         }
 
         private sealed class PadSite : ICaptureSite
@@ -276,7 +405,7 @@ namespace EmpireAtWar.Tests.Editor
             public CaptureSiteKind Kind => CaptureSiteKind.Satellite;
             public int PointId => 0;
             public PlayerId Owner { get; set; }
-            public CaptureSiteState State => CaptureSiteState.Owned;
+            public CaptureSiteState State { get; set; } = CaptureSiteState.Owned;
             public SiteFacilityType FacilityType => SiteFacilityType.TurbolaserSatellite;
             public float CaptureProgress => 0f;
             public float ConstructionProgress => 0f;

@@ -443,6 +443,43 @@ namespace EmpireAtWar.Tests.Editor
             for (int i = 0; i < count; i++) force.AddNew(profile, false);
         }
 
+        // W22: pads inside each other's capture circle are one wing target, so more pads never ask for more wings.
+        [TestCase(2)]
+        [TestCase(4)]
+        public void OverlappingPads_AreOneTargetWhateverTheirCount(int pads)
+        {
+            var assignments = new EnemySquadronCaptureAssignments();
+            for (int i = 0; i < pads; i++)
+            {
+                float angle = i * Mathf.PI * 2f / pads;
+                assignments.AddTarget(new Vector3(Mathf.Cos(angle), 0f, Mathf.Sin(angle)) * 200f,
+                    isSatellitePad: true, captureRadius: PAD_RADIUS);
+            }
+            var wings = new[] { new Squadron(Vector3.zero), new Squadron(Vector3.zero), new Squadron(Vector3.zero) };
+
+            assignments.Assign(wings);
+
+            var targets = new HashSet<Vector3>();
+            foreach (Squadron wing in wings)
+                if (assignments.TryGetTarget(wing, out Vector3 target)) targets.Add(target);
+            Assert.That(targets.Count, Is.EqualTo(1));
+        }
+
+        [Test]
+        public void PadsBeyondEachOthersCaptureCircle_StaySeparateTargets()
+        {
+            var assignments = new EnemySquadronCaptureAssignments();
+            assignments.AddTarget(Vector3.right * 470f, isSatellitePad: true, captureRadius: PAD_RADIUS);
+            assignments.AddTarget(Vector3.left * 470f, isSatellitePad: true, captureRadius: PAD_RADIUS);
+            var wings = new[] { new Squadron(Vector3.zero), new Squadron(Vector3.zero) };
+
+            assignments.Assign(wings);
+
+            assignments.TryGetTarget(wings[0], out Vector3 first);
+            assignments.TryGetTarget(wings[1], out Vector3 second);
+            Assert.That(first, Is.Not.EqualTo(second));
+        }
+
         private sealed class Squadron : ISquadron
         {
             public event Action Released { add { } remove { } }

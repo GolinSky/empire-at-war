@@ -367,6 +367,124 @@ namespace EmpireAtWar.Tests.Editor
                 candidate == _favored ? 3f : 1f;
         }
 
+        // W15: shield regeneration in the strength math.
+        [Test]
+        public void ShieldRegenAtOrAboveShieldDamage_ShieldsAreNeverBroken()
+        {
+            Assert.That(CombatMatchup.TimeToDestroyClass(1000f, 500f, 50f, 50f, 0f, shieldRegen: 50f),
+                Is.EqualTo(CombatMatchup.MAX_TIME), "Without piercing damage the unit cannot be destroyed.");
+            Assert.That(CombatMatchup.TimeToDestroyClass(1000f, 500f, 50f, 50f, 10f, shieldRegen: 80f),
+                Is.EqualTo(1000f / 10f).Within(1e-3f), "Only piercing damage counts.");
+        }
+
+        [Test]
+        public void ShieldRegenBelowShieldDamage_SlowsTheKill()
+        {
+            float plain = CombatMatchup.TimeToDestroyClass(1000f, 500f, 50f, 50f, 0f);
+            float regenerating = CombatMatchup.TimeToDestroyClass(1000f, 500f, 50f, 50f, 0f, shieldRegen: 25f);
+
+            Assert.That(regenerating, Is.GreaterThan(plain));
+            Assert.That(regenerating, Is.LessThan(CombatMatchup.MAX_TIME));
+        }
+
+        [Test]
+        public void MoreShieldRegen_LowersTheAdvantage()
+        {
+            UnitCombatProfile frigate = Profile(ShipClass.Frigate, 1000f, 500f, (ShipClass.Frigate, 20f));
+            ForceComposition own = Force(frigate, frigate);
+
+            float none = CombatMatchup.Advantage(own, Force(Regenerating(frigate, 0f)));
+            float some = CombatMatchup.Advantage(own, Force(Regenerating(frigate, 5f)));
+            float more = CombatMatchup.Advantage(own, Force(Regenerating(frigate, 15f)));
+
+            Assert.That(some, Is.LessThan(none));
+            Assert.That(more, Is.LessThan(some));
+        }
+
+        [Test]
+        public void ShieldRegen_IsRatedPerUnitOfTheClass()
+        {
+            UnitCombatProfile frigate = Regenerating(Profile(ShipClass.Frigate, 1000f, 500f), 6f);
+            ForceComposition force = Force(frigate, frigate, frigate);
+
+            Assert.That(force.ShieldRegenPerUnit(ShipClass.Frigate), Is.EqualTo(frigate.ShieldRegen).Within(1e-4f),
+                "Focus fire meets one unit's regeneration at a time.");
+        }
+
+        [Test]
+        public void LostShieldGenerator_AddsNoRegen()
+        {
+            UnitCombatProfile frigate = Regenerating(Profile(ShipClass.Frigate, 1000f, 500f), 6f);
+            ForceComposition force = new ForceComposition();
+            force.Add(frigate, frigate.Hull, 0f, 1f, 0f);
+
+            Assert.That(force.ShieldRegenPerUnit(ShipClass.Frigate), Is.Zero);
+        }
+
+        // W16a: repair in the strength math.
+        [Test]
+        public void RepairSourceCoveringTheHostile_LowersTheAdvantage()
+        {
+            UnitCombatProfile frigate = Profile(ShipClass.Frigate, 1000f, 500f, (ShipClass.Frigate, 20f));
+            ForceComposition own = Force(frigate, frigate);
+            ForceComposition repaired = Force(frigate);
+            repaired.AddRepairSource(0.005f, 2);
+
+            Assert.That(CombatMatchup.Advantage(own, repaired), Is.LessThan(CombatMatchup.Advantage(own, Force(frigate))));
+        }
+
+        [Test]
+        public void RepairSources_StackOnlyUpToTheHealersPerTarget()
+        {
+            ForceComposition force = Force(Profile(ShipClass.Frigate, 1000f, 500f));
+            force.AddRepairSource(0.005f, 2);
+            float one = force.RepairFractionPerSecond;
+            force.AddRepairSource(0.005f, 2);
+            float two = force.RepairFractionPerSecond;
+            force.AddRepairSource(0.005f, 2);
+
+            Assert.That(two, Is.EqualTo(2f * one).Within(1e-6f));
+            Assert.That(force.RepairFractionPerSecond, Is.EqualTo(two).Within(1e-6f));
+        }
+
+        [Test]
+        public void Repair_NeverHealsStrikecraft()
+        {
+            ForceComposition force = Force(Profile(ShipClass.Fighter, 100f, 0f), Profile(ShipClass.Frigate, 1000f, 500f));
+            force.AddRepairSource(0.005f, 2);
+
+            Assert.That(force.HullRepairPerUnit(ShipClass.Fighter), Is.Zero);
+            Assert.That(force.HullRepairPerUnit(ShipClass.Frigate), Is.GreaterThan(0f));
+        }
+
+        // W17: a known hostile platform counts in a local fight.
+        [Test]
+        public void KnownHostilePlatform_LowersTheLocalAdvantage()
+        {
+            UnitCombatProfile frigate = Profile(ShipClass.Frigate, 1000f, 500f, (ShipClass.Frigate, 20f));
+            UnitCombatProfile platform = Profile(ShipClass.Structure, 3000f, 1000f, (ShipClass.Frigate, 30f));
+            ForceComposition own = Force(frigate, frigate);
+            ForceComposition withPlatform = Force(frigate);
+            withPlatform.AddNew(platform, false);
+
+            Assert.That(CombatMatchup.Advantage(own, withPlatform), Is.LessThan(CombatMatchup.Advantage(own, Force(frigate))));
+        }
+
+        private static UnitCombatProfile Regenerating(UnitCombatProfile unit, float regen)
+        {
+            float[] hullDps = new float[ForceComposition.ClassSlots];
+            float[] shieldDps = new float[ForceComposition.ClassSlots];
+            float[] piercingDps = new float[ForceComposition.ClassSlots];
+            foreach (ShipClass target in ForceComposition.Classes)
+            {
+                hullDps[(int)target] = unit.HullDps(target);
+                shieldDps[(int)target] = unit.ShieldDps(target);
+                piercingDps[(int)target] = unit.PiercingDps(target);
+            }
+            return new UnitCombatProfile(unit.ShipClass, unit.Hull, unit.Shields, hullDps, shieldDps, piercingDps,
+                Array.Empty<UnitCombatProfile>(), regen);
+        }
+
         private static ForceComposition Force(params UnitCombatProfile[] units)
         {
             ForceComposition force = new ForceComposition();

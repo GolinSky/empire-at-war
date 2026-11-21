@@ -74,6 +74,23 @@ namespace EmpireAtWar.Tests.Editor
             Assert.That(queue.Builds[0].TimeLeft, Is.EqualTo(22f));
         }
 
+        // W18: builds of one type run one at a time; the second is waiting, a held finished ship is not.
+        [Test]
+        public void CountUnfinished_CountsBuildsInProductionAndWaitingButNotFinishedOnes()
+        {
+            var queue = new EnemyBuildQueue();
+            var data = new FactionData();
+            var first = new ShipUnitRequest(data, ShipType.Tector);
+            var second = new ShipUnitRequest(data, ShipType.Tector);
+            queue.Add(first, 5f);
+            queue.Add(second, 5f);
+
+            Assert.That(queue.CountUnfinished(first.Id), Is.EqualTo(2));
+            queue.Advance(5f, _ => { }, minimumReadyCombatUnits: int.MaxValue);
+            Assert.That(queue.CountUnfinished(first.Id), Is.EqualTo(1), "The finished ship is held, not waiting.");
+            Assert.That(queue.Builds, Has.Count.EqualTo(2));
+        }
+
         [Test]
         public void Reserve_WaitsWithoutTaskAndReleasesAllReadyUnitsForDefense()
         {

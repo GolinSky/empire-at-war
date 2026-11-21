@@ -104,6 +104,7 @@ namespace EmpireAtWar.Entities.EnemyFaction.Controllers
              _productionAccess.ProductionHost == Owner && _productionAccess.HasHostBase) &&
             _builds.CanAdd(requestId, maxCount);
         public float GetQueueRemainingTime(string requestId) => _builds.GetRemainingTime(requestId);
+        public bool HasWaitingBuild(string requestId) => _builds.CountUnfinished(requestId) > 1;
 
         public void ReserveExternalPipeline(string requestId) => _builds.ReserveExternalPipeline(requestId);
 

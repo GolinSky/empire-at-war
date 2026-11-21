@@ -14,6 +14,12 @@ namespace EmpireAtWar.Services.Enemy
         bool CanQueue(string requestId, int maxCount);
         float GetQueueRemainingTime(string requestId);
 
+        /// <summary>
+        /// A paid build of this ID waits behind the one in production. Builds of one ID run one at a time, so another
+        /// purchase would only hold money and unit capacity until the queue reaches it.
+        /// </summary>
+        bool HasWaitingBuild(string requestId) => false;
+
         void ReserveExternalPipeline(string requestId);
         void ReleaseExternalPipeline(string requestId);
 

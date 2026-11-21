@@ -23,12 +23,16 @@ namespace EmpireAtWar.Entities.EnemyFaction.Models.Combat
         public float Hull { get; }
         public float Shields { get; }
 
+        /// <summary>Shield points restored per second at full strength (regeneration value / delay).</summary>
+        public float ShieldRegen { get; }
+
         /// <summary>Squadrons the unit fields at the same time from its hangar.</summary>
         public IReadOnlyList<UnitCombatProfile> Hangar { get; }
 
         /// <param name="hullDps">Hull damage per second of shield-blocked weapons, indexed by <see cref="ShipClass"/>.</param>
         /// <param name="shieldDps">Shield damage per second of the same weapons, indexed by <see cref="ShipClass"/>.</param>
         /// <param name="piercingDps">Hull damage per second of shield-piercing weapons, indexed by <see cref="ShipClass"/>.</param>
+        /// <param name="shieldRegen">Shield points restored per second.</param>
         public UnitCombatProfile(
             ShipClass shipClass,
             float hull,
@@ -36,11 +40,13 @@ namespace EmpireAtWar.Entities.EnemyFaction.Models.Combat
             float[] hullDps,
             float[] shieldDps,
             float[] piercingDps,
-            IReadOnlyList<UnitCombatProfile> hangar)
+            IReadOnlyList<UnitCombatProfile> hangar,
+            float shieldRegen = 0f)
         {
             ShipClass = shipClass;
             Hull = hull;
             Shields = shields;
+            ShieldRegen = shieldRegen;
             _hullDps = hullDps;
             _shieldDps = shieldDps;
             _piercingDps = piercingDps;
