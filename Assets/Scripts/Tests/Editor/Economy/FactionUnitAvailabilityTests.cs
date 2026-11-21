@@ -169,6 +169,15 @@ namespace EmpireAtWar.Tests.Editor
                 var menus = hud.ProductionMenus;
                 var serializedMenus = new SerializedObject(menus);
                 var popup = (RectTransform)serializedMenus.FindProperty("popup").objectReferenceValue;
+                var buffRow = (RectTransform)serializedMenus.FindProperty("researchBuffs").objectReferenceValue;
+                ResearchBuffIcon[] buffs = buffRow.GetComponentsInChildren<ResearchBuffIcon>(true)
+                    .Where(buff => buff.gameObject.activeSelf).ToArray();
+                Assert.That(buffs.Length, Is.EqualTo(research.ResearchTypes.Count));
+                var productionBuff = new SerializedObject(buffs.Single(buff =>
+                    ((Image)new SerializedObject(buff).FindProperty("icon").objectReferenceValue).sprite ==
+                    roster.ResearchLines[ResearchType.IncreasedProduction].Tiers[0].FactionData.Icon));
+                var productionTier = (TMP_Text)productionBuff.FindProperty("tier").objectReferenceValue;
+                Assert.That(productionTier.text, Is.EqualTo("–"));
                 float initialPopupHeight = popup.rect.height;
                 var researchButton = (Button)serializedMenus.FindProperty("researchButton").objectReferenceValue;
                 var structuresButton = (Button)serializedMenus.FindProperty("structuresButton").objectReferenceValue;
@@ -179,6 +188,9 @@ namespace EmpireAtWar.Tests.Editor
                 menus.Initialize();
                 menus.SetAvailable(true);
                 researchButton.onClick.Invoke();
+                Assert.That(buffRow.gameObject.activeSelf, Is.True);
+                Assert.That(menus.ResearchCards.anchoredPosition.y,
+                    Is.LessThanOrEqualTo(buffRow.anchoredPosition.y - buffRow.rect.height));
                 var researchGrid = menus.ResearchCards.GetComponent<GridLayoutGroup>();
                 int rows = Mathf.CeilToInt((float)researchCards.Length / researchGrid.constraintCount);
                 float requiredHeight = researchGrid.padding.vertical +
@@ -188,6 +200,7 @@ namespace EmpireAtWar.Tests.Editor
                 Assert.That(researchMarker.activeSelf, Is.False);
                 Assert.That(structuresMarker.activeSelf, Is.True);
                 structuresButton.onClick.Invoke();
+                Assert.That(buffRow.gameObject.activeSelf, Is.False);
                 Assert.That(popup.rect.height, Is.EqualTo(initialPopupHeight).Within(0.01f));
                 Assert.That(structuresMarker.activeSelf, Is.False);
                 menus.Close();
@@ -195,6 +208,7 @@ namespace EmpireAtWar.Tests.Editor
                 Assert.That(researchMarker.activeSelf || structuresMarker.activeSelf, Is.False);
 
                 research.Complete(ResearchType.IncreasedProduction);
+                Assert.That(productionTier.text, Is.EqualTo("I"));
                 Assert.That(researchMarker.activeSelf, Is.False, "The next tier is still locked.");
                 model.CompleteLevelUpgrade();
                 var unlockedTier = menus.ResearchCards.GetComponentsInChildren<FactionUnitUi>(true)

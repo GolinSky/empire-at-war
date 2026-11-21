@@ -1,4 +1,5 @@
 using System.Linq;
+using EmpireAtWar.Components.Construction;
 using EmpireAtWar.Controllers.Economy;
 using EmpireAtWar.Controllers.Game;
 using EmpireAtWar.Entities.CaptureSites;
@@ -102,6 +103,8 @@ namespace EmpireAtWar.Tests.Editor
                 economy.AddProvider(new FixedIncomeProvider());
                 research.Complete(ResearchType.IncreasedStationIncome);
                 Assert.That(economy.TotalIncome, Is.EqualTo(baseIncome * research.StationIncomeMultiplier + 60f).Within(0.0001f));
+                Assert.That(economy.IncomeBreakdown.StationResearchBonus,
+                    Is.EqualTo(baseIncome * (research.StationIncomeMultiplier - 1f)).Within(0.0001f));
                 research.Complete(ResearchType.IncreasedStationIncome);
                 Assert.That(economy.TotalIncome, Is.EqualTo(baseIncome * research.StationIncomeMultiplier + 60f).Within(0.0001f));
                 Assert.That(research.StationIncomeMultiplier, Is.GreaterThan(1f));
@@ -235,36 +238,56 @@ namespace EmpireAtWar.Tests.Editor
         [Category("Networking")]
         public void ClientIncome_UsesHostSnapshotsDespiteLocalProviderAndResearchChanges()
         {
+            const float FACILITY_BASE_INCOME = 60f;
             FactionRoster roster = CreateRoster("Empire");
             StationLevelData levels = Load<StationLevelData>(SHARED_PATH + "StationLevelData.asset");
             EconomyData data = Load<EconomyData>("Assets/Settings/Data/Economy/EconomyData.asset");
-            var owner = TestPlayers.CreateDuel().Get(TestPlayers.Human);
+            var players = TestPlayers.CreateTeamGame();
+            var owner = players.Get(TestPlayers.Human);
+            var ally = players.Get(TestPlayers.Ally);
+            var hostRegistry = new PlayerRegistry();
             var hostResearch = new FactionResearchModel(roster);
+            var allyResearch = new FactionResearchModel(roster);
             var clientResearch = new FactionResearchModel(roster);
             var hostMoney = new EconomyModel(data, 500f);
             var clientMoney = new EconomyModel(data, 100f);
             var host = new EconomyService(hostMoney, data, new BattleStateNotifier(),
-                new PlayerRegistry(), owner, hostResearch);
+                hostRegistry, owner, hostResearch);
+            var allyEconomy = new EconomyService(new EconomyModel(data, 500f), data, new BattleStateNotifier(),
+                hostRegistry, ally, allyResearch);
             var client = new EconomyService(clientMoney, data, new BattleStateNotifier(),
                 new PlayerRegistry(), owner, clientResearch);
             var hostState = new PlayerEconomyReplicatedState(new ReplicatedStateRegistry(), null, owner,
                 hostMoney, host, new PlayerFactionModel(levels, roster), null, hostResearch, null, roster, levels);
             var clientState = new PlayerEconomyReplicatedState(new ReplicatedStateRegistry(), null, owner,
                 clientMoney, client, new PlayerFactionModel(levels, roster), null, clientResearch, null, roster, levels);
+            var mineObject = new GameObject("Allied mine");
+            var construction = mineObject.AddComponent<ConstructionComponent>();
+            var constructionEditor = new SerializedObject(construction);
+            constructionEditor.FindProperty("renderers").arraySize = 0;
+            constructionEditor.ApplyModifiedPropertiesWithoutUndo();
+            construction.Begin(0f);
+            var hostMine = new TeamIncomeSource(FACILITY_BASE_INCOME, construction, allyResearch,
+                players, hostRegistry, ally.Id);
             host.Initialize();
+            allyEconomy.Initialize();
             client.Initialize();
             client.FollowHost();
             try
             {
-                // The client may lack an allied mine's research or a newly replicated station's income.
-                var hostMine = new FixedIncomeProvider();
-                host.AddProvider(hostMine);
+                hostMine.Register();
                 hostResearch.Complete(ResearchType.IncreasedStationIncome);
+                allyResearch.Complete(ResearchType.IncreasedProduction);
                 float incomeAtMoneyChanged = -1f;
                 clientMoney.OnMoneyChanged += _ => incomeAtMoneyChanged = client.TotalIncome;
                 clientState.Apply(hostState.Capture());
                 float hostWithMine = host.TotalIncome;
+                float facilityShare = FACILITY_BASE_INCOME / 2f;
+                float researchBonus = facilityShare * (allyResearch.IncomeMultiplier - 1f);
                 Assert.That(client.TotalIncome, Is.EqualTo(hostWithMine).Within(0.0001f));
+                Assert.That(client.IncomeBreakdown, Is.EqualTo(host.IncomeBreakdown));
+                Assert.That(client.IncomeBreakdown.Facilities, Is.EqualTo(facilityShare + researchBonus).Within(0.0001f));
+                Assert.That(client.IncomeBreakdown.FacilityResearchBonus, Is.EqualTo(researchBonus).Within(0.0001f));
                 Assert.That(incomeAtMoneyChanged, Is.EqualTo(host.TotalIncome));
                 Assert.That(clientMoney.Money, Is.EqualTo(500f));
 
@@ -274,21 +297,27 @@ namespace EmpireAtWar.Tests.Editor
                 client.RemoveProvider(clientMine);
                 Assert.That(client.TotalIncome, Is.EqualTo(host.TotalIncome),
                     "Local provider and research changes must not overwrite the host's income.");
+                Assert.That(client.IncomeBreakdown, Is.EqualTo(host.IncomeBreakdown));
                 client.Tick();
                 Assert.That(clientMoney.Money, Is.EqualTo(500f), "A client must not pay income locally.");
                 Assert.That(clientMoney.IncomeTimeLeft, Is.Zero);
 
-                host.RemoveProvider(hostMine);
+                hostMine.Release();
                 clientState.Apply(hostState.Capture());
-                Assert.That(host.TotalIncome, Is.EqualTo(hostWithMine - 60f).Within(0.0001f));
+                Assert.That(host.TotalIncome, Is.EqualTo(hostWithMine - facilityShare - researchBonus).Within(0.0001f));
                 Assert.That(client.TotalIncome, Is.EqualTo(host.TotalIncome),
                     "The next snapshot must reflect income lost when a host-side mine is destroyed.");
+                Assert.That(client.IncomeBreakdown.Facilities, Is.Zero);
+                Assert.That(client.IncomeBreakdown.FacilityResearchBonus, Is.Zero);
                 Assert.That(incomeAtMoneyChanged, Is.EqualTo(host.TotalIncome));
             }
             finally
             {
                 client.LateDispose();
+                hostMine.Release();
+                allyEconomy.LateDispose();
                 host.LateDispose();
+                Object.DestroyImmediate(mineObject);
             }
         }
 

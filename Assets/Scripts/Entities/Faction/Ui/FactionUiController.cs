@@ -255,10 +255,18 @@ namespace EmpireAtWar.Entities.Faction.Ui
 
         private void HandleTooltipHover(object key, TooltipAnchor anchor, object source)
         {
-            UnitRequest request = (UnitRequest)key;
-            _tooltips.Show(source, request.Id, anchor,
-                () => _isTooltipActive && ((TooltipTrigger)source).isActiveAndEnabled,
-                () => BuildTooltip(request));
+            var trigger = (TooltipTrigger)source;
+            FactionProductionMenus menus = _productionMenusProvider.ProductionMenus;
+            bool isResearchLauncher = trigger == menus.ResearchTooltip;
+            _tooltips.Show(source, key is UnitRequest request ? request.Id : key, anchor,
+                () => _isTooltipActive && trigger.isActiveAndEnabled &&
+                      !(isResearchLauncher && menus.IsOpen && menus.ResearchCards.gameObject.activeSelf),
+                () => isResearchLauncher ? ResearchTooltipContent.BuildSummary(_roster, _research) : key switch
+                {
+                    UnitRequest unit => BuildTooltip(unit),
+                    ResearchType type => ResearchTooltipContent.BuildLine(_roster, _research, type),
+                    _ => throw new ArgumentOutOfRangeException(nameof(key))
+                });
         }
 
         private TooltipContent BuildTooltip(UnitRequest request)

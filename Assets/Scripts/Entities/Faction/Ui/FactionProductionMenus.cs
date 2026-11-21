@@ -1,6 +1,7 @@
 using System;
 using System.Collections.Generic;
 using EmpireAtWar.Components.Ui;
+using EmpireAtWar.Components.Ui.Tooltip;
 using EmpireAtWar.Controllers.Factions;
 using TMPro;
 using UnityEngine;
@@ -17,6 +18,9 @@ namespace EmpireAtWar.Entities.Faction.Ui
         [SerializeField] private Button closeButton;
         [SerializeField] private RectTransform popup;
         [SerializeField] private RectTransform researchCards;
+        [SerializeField] private RectTransform researchBuffs;
+        [SerializeField] private ResearchBuffIcon researchBuffTemplate;
+        [SerializeField] private TooltipTrigger researchTooltip;
         [SerializeField] private RectTransform structureCards;
         [SerializeField] private TMP_Text title;
 
@@ -25,6 +29,7 @@ namespace EmpireAtWar.Entities.Faction.Ui
         private float _popupChromeHeight;
 
         public RectTransform ResearchCards => researchCards;
+        public TooltipTrigger ResearchTooltip => researchTooltip;
         public RectTransform StructureCards => structureCards;
         public bool IsOpen => popup.gameObject.activeSelf;
         public event Action<bool> OpenChanged;
@@ -49,6 +54,8 @@ namespace EmpireAtWar.Entities.Faction.Ui
         }
 
         public void SetPopupParent(Transform parent) => popup.SetParent(parent, false);
+
+        public ResearchBuffIcon CreateResearchBuff() => Instantiate(researchBuffTemplate, researchBuffs);
 
         public void SetAvailable(bool available)
         {
@@ -99,7 +106,9 @@ namespace EmpireAtWar.Entities.Faction.Ui
 
             title.text = research ? "Research" : "Structures";
             RectTransform cards = research ? researchCards : structureCards;
-            popup.SetSizeWithCurrentAnchors(RectTransform.Axis.Vertical, _popupChromeHeight + cards.rect.height);
+            float buffHeight = research ? researchBuffs.rect.height : 0f;
+            popup.SetSizeWithCurrentAnchors(RectTransform.Axis.Vertical, _popupChromeHeight + cards.rect.height + buffHeight);
+            researchBuffs.gameObject.SetActive(research);
             researchCards.gameObject.SetActive(research);
             structureCards.gameObject.SetActive(!research);
             if (research) _research.Acknowledge(researchAttention);

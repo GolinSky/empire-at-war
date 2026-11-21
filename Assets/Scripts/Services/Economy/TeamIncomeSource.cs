@@ -19,6 +19,9 @@ namespace EmpireAtWar.Controllers.Economy
         public float Income => _economies.Count == 0 || _construction.IsConstructing
             ? 0f : _baseIncome * _research.IncomeMultiplier / _economies.Count;
 
+        public float BaseIncomeShare => _economies.Count == 0 || _construction.IsConstructing
+            ? 0f : _baseIncome / _economies.Count;
+
         public TeamIncomeSource(float baseIncome, ConstructionComponent construction,
             IFactionResearchModelObserver research, IPlayerRoster roster, IPlayerRegistry players, PlayerId owner)
         {

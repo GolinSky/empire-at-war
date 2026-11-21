@@ -2,10 +2,12 @@ using System.Collections.Generic;
 using EmpireAtWar.Controllers.Economy;
 using EmpireAtWar.Controllers.Factions;
 using EmpireAtWar.Controllers.Game;
+using EmpireAtWar.Entities.EnemyFaction.Controllers;
 using EmpireAtWar.Models.Economy;
 using EmpireAtWar.Models.Factions;
 using EmpireAtWar.Models.Players;
 using EmpireAtWar.Mvc;
+using EmpireAtWar.Services.Factions;
 using EmpireAtWar.Services.Player;
 using UnityEngine;
 using VContainer;
@@ -32,12 +34,16 @@ namespace EmpireAtWar.Services.Economy
 
         private float _commonIncome;
         private float _replicatedIncome;
+        private (float Facilities, float StationResearchBonus, float FacilityResearchBonus) _incomeBreakdown;
+        private (float Facilities, float StationResearchBonus, float FacilityResearchBonus) _replicatedBreakdown;
         // Income is paid only while the battle runs, never during loading.
         private bool _isRunning;
         private bool _followsHost;
 
         public float Income => DEFAULT_INCOME * _research.StationIncomeMultiplier;
         public float TotalIncome => _followsHost ? _replicatedIncome : _commonIncome;
+        public (float Facilities, float StationResearchBonus, float FacilityResearchBonus) IncomeBreakdown =>
+            _followsHost ? _replicatedBreakdown : _incomeBreakdown;
 
         public EconomyService(
             EconomyModel model,
@@ -80,7 +86,11 @@ namespace EmpireAtWar.Services.Economy
         /// <summary>Online client: income is paid on the host; credits are replicated.</summary>
         public void FollowHost() => _followsHost = true;
 
-        public void ApplyReplicatedIncome(float income) => _replicatedIncome = income;
+        public void ApplyReplicatedIncome(float income, float facilities, float stationResearchBonus, float facilityResearchBonus)
+        {
+            _replicatedIncome = income;
+            _replicatedBreakdown = (facilities, stationResearchBonus, facilityResearchBonus);
+        }
 
         public void Tick()
         {
@@ -156,9 +166,21 @@ namespace EmpireAtWar.Services.Economy
         private void CalculateBaseIncome()
         {
             _commonIncome = 0;
+            _incomeBreakdown = default;
+            float stationMultiplier = _research.StationIncomeMultiplier;
             foreach (IIncomeProvider provider in _incomeProviders)
             {
-                _commonIncome += provider.Income;
+                float income = provider.Income;
+                _commonIncome += income;
+                if (provider is TeamIncomeSource facility)
+                {
+                    _incomeBreakdown.Facilities += income;
+                    _incomeBreakdown.FacilityResearchBonus += income - facility.BaseIncomeShare;
+                }
+                else if (stationMultiplier != 1f && (provider == this || provider is FactionService or EnemyFactionController))
+                {
+                    _incomeBreakdown.StationResearchBonus += income - income / stationMultiplier;
+                }
             }
         }
     }

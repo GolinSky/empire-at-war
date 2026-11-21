@@ -30,6 +30,7 @@ namespace EmpireAtWar.Entities.Faction.Ui
             new List<FactionUnitUi>();
         private readonly Dictionary<ResearchType, FactionUnitUi> _researchUnitsUi =
             new Dictionary<ResearchType, FactionUnitUi>();
+        private readonly Dictionary<ResearchType, ResearchBuffIcon> _researchBuffs = new();
         private (FactionUnitUi Station, FactionUnitUi Research) _levelCards;
         private (FactionUnitUi Station, FactionUnitUi Research) _secondLevelCards;
         private SecondStationLevelModel _secondStation;
@@ -107,8 +108,16 @@ namespace EmpireAtWar.Entities.Faction.Ui
             CreateSecondLevelUnit();
 
             foreach (ResearchType researchType in _research.ResearchTypes)
-            {
                 CreateResearchUnit(researchType);
+
+            tooltipHover.Register(_productionMenus.ResearchTooltip);
+            foreach (ResearchType researchType in _research.ResearchTypes.OrderByDescending(ResearchGroup.IsEconomy))
+            {
+                ResearchBuffIcon buff = _productionMenus.CreateResearchBuff();
+                _researchBuffs.Add(researchType, buff);
+                RefreshResearchBuff(researchType);
+                tooltipHover.Register(buff.TooltipTrigger);
+                buff.gameObject.SetActive(true);
             }
 
             _model.OnSelectionTypeChanged += HandleSelectionChanged;
@@ -133,6 +142,15 @@ namespace EmpireAtWar.Entities.Faction.Ui
             _secondStation.BuiltChanged -= HandleSecondStationBuiltChanged;
             _research.OnResearchCompleted -= UpdateResearchUnit;
             _productionMenus.Close();
+            tooltipHover.Unregister(_productionMenus.ResearchTooltip);
+            foreach (ResearchBuffIcon buff in _researchBuffs.Values)
+            {
+                tooltipHover.Unregister(buff.TooltipTrigger);
+                buff.gameObject.SetActive(false);
+                if (Application.isPlaying) Destroy(buff.gameObject);
+                else DestroyImmediate(buff.gameObject);
+            }
+            _researchBuffs.Clear();
             if (_contentLayout != null) _contentLayout.DetachContent();
             _isInitialized = false;
         }
@@ -255,7 +273,15 @@ namespace EmpireAtWar.Entities.Faction.Ui
             unitUi.Destroy();
 
             CreateResearchUnit(researchType);
+            RefreshResearchBuff(researchType);
             RefreshUnitVisibility(_model.SelectionType);
+        }
+
+        private void RefreshResearchBuff(ResearchType type)
+        {
+            int count = _research.GetCompletedTiers(type);
+            ResearchTierData tier = _roster.ResearchLines[type].Tiers[Math.Max(0, count - 1)];
+            _researchBuffs[type].Render(type, tier.FactionData.Icon, count);
         }
 
         private void CreateLevelUnit()

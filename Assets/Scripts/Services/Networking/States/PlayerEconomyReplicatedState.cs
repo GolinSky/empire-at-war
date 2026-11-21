@@ -48,21 +48,29 @@ namespace EmpireAtWar.Services.Networking.States
 
         public override PlayerId Audience => _owner.Id;
 
-        public override string Capture() => JsonUtility.ToJson(new Snapshot
+        public override string Capture()
         {
-            Money = _economy.Money,
-            TotalIncome = _economyService.TotalIncome,
-            IncomeTimeLeft = _economy.IncomeTimeLeft,
-            Production = _faction.QueuedItems
-                .Select(item => UnitRequestSave.From(item.UnitRequest, item.RemainingBuildTime)).ToArray(),
-            Reservations = _faction.PurchaseReservations.Select(request => UnitRequestSave.From(request)).ToArray(),
-            Research = ResearchSave.CaptureAll(_research)
-        });
+            var breakdown = _economyService.IncomeBreakdown;
+            return JsonUtility.ToJson(new Snapshot
+            {
+                Money = _economy.Money,
+                TotalIncome = _economyService.TotalIncome,
+                FacilityIncome = breakdown.Facilities,
+                StationResearchBonus = breakdown.StationResearchBonus,
+                FacilityResearchBonus = breakdown.FacilityResearchBonus,
+                IncomeTimeLeft = _economy.IncomeTimeLeft,
+                Production = _faction.QueuedItems
+                    .Select(item => UnitRequestSave.From(item.UnitRequest, item.RemainingBuildTime)).ToArray(),
+                Reservations = _faction.PurchaseReservations.Select(request => UnitRequestSave.From(request)).ToArray(),
+                Research = ResearchSave.CaptureAll(_research)
+            });
+        }
 
         public override void Apply(string json)
         {
             Snapshot snapshot = JsonUtility.FromJson<Snapshot>(json);
-            _economyService.ApplyReplicatedIncome(snapshot.TotalIncome);
+            _economyService.ApplyReplicatedIncome(snapshot.TotalIncome, snapshot.FacilityIncome,
+                snapshot.StationResearchBonus, snapshot.FacilityResearchBonus);
             _economy.Restore(snapshot.Money, snapshot.IncomeTimeLeft);
             ResearchSave.RestoreAll(snapshot.Research, _research);
             _faction.ReplaceQueue(snapshot.Production.Select(item =>
@@ -81,6 +89,9 @@ namespace EmpireAtWar.Services.Networking.States
         {
             public float Money;
             public float TotalIncome;
+            public float FacilityIncome;
+            public float StationResearchBonus;
+            public float FacilityResearchBonus;
             public float IncomeTimeLeft;
             public UnitRequestSave[] Production;
             public UnitRequestSave[] Reservations;
