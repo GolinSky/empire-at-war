@@ -72,7 +72,7 @@ MonoBehaviour:
         <Name>k__BackingField: Mon Calamari Star Cruiser / MC80
         <MaxCount>k__BackingField: 10
         <AvailableLevel>k__BackingField: 4
-        <Price>k__BackingField: 8000
+        <Price>k__BackingField: 6500
         <BuildTime>k__BackingField: 55
         <UnitCapacity>k__BackingField: 8
         <Icon>k__BackingField: {fileID: 21300000, guid: b95f55f2e2f204f42a94f0c44c5baa85,
@@ -280,7 +280,7 @@ MonoBehaviour:
         <Name>k__BackingField: Liberator Cruiser
         <MaxCount>k__BackingField: 3
         <AvailableLevel>k__BackingField: 3
-        <Price>k__BackingField: 4200
+        <Price>k__BackingField: 4000
         <BuildTime>k__BackingField: 30
         <UnitCapacity>k__BackingField: 5
         <Icon>k__BackingField: {fileID: 21300000, guid: 1583a68acc7d9f9488c947c5470db384,
@@ -303,7 +303,7 @@ MonoBehaviour:
         <Name>k__BackingField: Nebula Star Destroyer
         <MaxCount>k__BackingField: 3
         <AvailableLevel>k__BackingField: 5
-        <Price>k__BackingField: 9000
+        <Price>k__BackingField: 10000
         <BuildTime>k__BackingField: 65
         <UnitCapacity>k__BackingField: 10
         <Icon>k__BackingField: {fileID: 21300000, guid: 0884e62f660956f45a6dc8ef863d13cc,
@@ -325,7 +325,7 @@ MonoBehaviour:
         <Name>k__BackingField: Bothan Assault Cruiser
         <MaxCount>k__BackingField: 3
         <AvailableLevel>k__BackingField: 4
-        <Price>k__BackingField: 4800
+        <Price>k__BackingField: 4200
         <BuildTime>k__BackingField: 35
         <UnitCapacity>k__BackingField: 5
         <Icon>k__BackingField: {fileID: 21300000, guid: 60f458712418dd74393a49293c347c81,
@@ -346,7 +346,7 @@ MonoBehaviour:
         <Name>k__BackingField: Endurance Fleet Carrier
         <MaxCount>k__BackingField: 3
         <AvailableLevel>k__BackingField: 4
-        <Price>k__BackingField: 10000
+        <Price>k__BackingField: 7000
         <BuildTime>k__BackingField: 65
         <UnitCapacity>k__BackingField: 10
         <Icon>k__BackingField: {fileID: 21300000, guid: 937b502e2d2d8684ca9920ab2b5d9a0d,
@@ -386,7 +386,7 @@ MonoBehaviour:
         <Name>k__BackingField: MC80 Freedom
         <MaxCount>k__BackingField: 3
         <AvailableLevel>k__BackingField: 4
-        <Price>k__BackingField: 5500
+        <Price>k__BackingField: 4500
         <BuildTime>k__BackingField: 45
         <UnitCapacity>k__BackingField: 8
         <Icon>k__BackingField: {fileID: 21300000, guid: f20def5849b5bd649bb2e04331267807,
