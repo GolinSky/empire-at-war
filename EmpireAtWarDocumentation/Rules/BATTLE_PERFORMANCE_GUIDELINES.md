@@ -76,6 +76,7 @@ tags:
 
 - `ParticleRecoveryBuilder` converts nine known shared materials; eight use `EmpireAtWar/Vfx/Particle Legacy Unlit`, double-multiply uses standard URP settings.
 - Compatibility shader preserves legacy premultiply vertex-alpha multiplication and alpha/additive output-alpha clamping; retain texture transform, tint, queue and soft-particle behavior.
+- Bolt prefabs (`Projectile`, `DualProjectile`, `QuadProjectile`): renderer `minParticleSize` 0.003 (viewport fraction) keeps far-zoom bolts visible. Editor render, FOV 60, 1080p, medium bolt (3×1.5): 1600 u → 4 px at 0.48 brightness without the floor, 12 px at full brightness with it; 400 u unchanged. 0.004 already enlarges close-up bolts (40 → 50 px). Clamp applies to Stretch billboards. 2026-11-22.
 - `FogOfWarSystem.Update` schedules the write; `LateUpdate` completes it before texture Apply. `FogVisibilityGridModel` completes pending work before direct access and disposal.
 - A synchronous grid read between scheduling/upload forces completion and can reduce worker overlap; preserve correctness and measure callers before changing scheduling.
 
