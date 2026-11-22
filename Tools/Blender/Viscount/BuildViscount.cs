@@ -31,6 +31,8 @@ public static class ViscountBuilder
     private const string DONOR_MATCHUPS = "Assets/Settings/Data/Tooltip/Matchups/MC80IndependenceMatchups.asset";
     private const string REGEN_TIERS = "Assets/Settings/Data/Ship/Rebellion/RebellionShipShieldRegenTiersData.asset";
     private const string SHIP_LIT = "EmpireAtWar/Ship Lit";
+    // Side-circle masks come from TeamMask.cs; partial strength keeps the original paint visible.
+    private const float TEAM_MASK_STRENGTH = 0.6f;
     private const int DONOR_SHIP_TYPE = 305; // MC80Independence
     private const int MON_CAL_CRUISER = 302;
     private const float RING_VISIBLE_FRACTION = 1038f / 1254f;
@@ -183,7 +185,7 @@ public static class ViscountBuilder
                     material.EnableKeyword("_NORMALMAP");
                 }
                 material.SetTexture("_TeamMaskMap", Texture(v, baseStem + "_TeamMask"));
-                material.SetFloat("_TeamMaskStrength", 1f);
+                material.SetFloat("_TeamMaskStrength", TEAM_MASK_STRENGTH);
                 material.SetFloat("_TeamLiveryStrength", 0f);
                 material.SetFloat("_Smoothness", 0.25f);
                 material.SetFloat("_Metallic", 0.1f);
