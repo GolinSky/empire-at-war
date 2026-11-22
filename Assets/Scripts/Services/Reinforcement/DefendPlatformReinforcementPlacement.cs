@@ -36,18 +36,18 @@ namespace EmpireAtWar.Services.Reinforcement
             _platformType = platformType;
         }
 
-        // Structures keep their fixed spawn rotation.
-        public bool IsRotatable => false;
+        // Platforms turn like ships so their weapon arcs can face the threat.
+        public bool IsRotatable => true;
 
         public UnitSpawnView CreatePreview() => _previewFactory.Create(_previewPrefab, Quaternion.identity);
 
-        public Quaternion GetAutoFacing(Vector3 position) => throw new System.NotSupportedException();
+        public Quaternion GetAutoFacing(Vector3 position) => _previewFactory.GetEnemyFacing(position);
 
         public bool IsPositionValid(Vector3 position, Quaternion rotation) => _spawnRule.CanSpawnStructure(_owner, position);
 
         public void Spawn(Vector3 position, Quaternion rotation)
         {
-            DefendPlatformEntity platform = _defendPlatformFactory.Create(_owner, _platformType, position);
+            DefendPlatformEntity platform = _defendPlatformFactory.Create(_owner, _platformType, position, rotation);
             platform.OnRelease += () =>
                 _playerFactionModel.ReleaseStructure<DefendPlatformUnitRequest>(_platformType.ToString());
         }

@@ -26,14 +26,22 @@ namespace EmpireAtWar.Entities.DefendPlatform
         public virtual DefendPlatform Create(PlayerId owner, DefendPlatformType type, Vector3 position, float? buildDuration = null) =>
             Create(owner, type, position, _ids.GenerateUniqueId(), buildDuration);
 
+        /// <summary>Creates a platform at a player-chosen heading, e.g. a placed reinforcement.</summary>
+        public DefendPlatform Create(PlayerId owner, DefendPlatformType type, Vector3 position, Quaternion rotation) =>
+            Create(owner, type, position, rotation, _ids.GenerateUniqueId(), null);
+
         /// <summary>Creates a platform with a known id, e.g. one restored from a save.</summary>
-        public DefendPlatform Create(PlayerId owner, DefendPlatformType type, Vector3 position, long entityId, float? buildDuration = null)
+        public DefendPlatform Create(PlayerId owner, DefendPlatformType type, Vector3 position, long entityId, float? buildDuration = null) =>
+            Create(owner, type, position, Quaternion.identity, entityId, buildDuration);
+
+        private DefendPlatform Create(PlayerId owner, DefendPlatformType type, Vector3 position, Quaternion rotation,
+            long entityId, float? buildDuration)
         {
             DefendPlatformData data = Assets.Load<DefendPlatformData>(DefendPlatformAssets.GetDataName(type));
             float buildTime = buildDuration ?? (type == DefendPlatformType.BattleAsteroid
                 ? Assets.Load<CaptureSiteData>(nameof(CaptureSiteData)).GetCost(SiteFacilityType.BattleAsteroid).BuildTime
                 : _catalog.Get(type).BuildTime);
-            return Spawn(Assets.LoadComponent<DefendPlatform>(DefendPlatformAssets.GetViewName(type)), position, Quaternion.identity,
+            return Spawn(Assets.LoadComponent<DefendPlatform>(DefendPlatformAssets.GetViewName(type)), position, rotation,
                 (builder, view) => new DefendPlatformInstaller(view, data, _localPlayer, owner, entityId, position, type, buildTime).Install(builder));
         }
     }
