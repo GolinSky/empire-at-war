@@ -1327,6 +1327,9 @@ namespace EmpireAtWar.Tests.Editor
                     .Create(slot.Id, DefendPlatformType.Xq6, origin + Vector3.forward * 300f), player, slot);
                 AssertDecoratedHealth(platform, platform.Container.Resolve<DefendPlatformData>().ComponentData);
                 AssertRepairable(platform, true);
+                Assert.That(platform.Container.Resolve<IEntity>().TryGetFacade(out IRepairSourceFacade platformRepair), Is.True,
+                    "The XQ6 repairs allies like the repair satellite.");
+                Assert.That(platformRepair.Profile, Is.SameAs(platform.Container.Resolve<DefendPlatformData>().RepairProfile));
                 EntityLifetimeScope asteroidPlatform = AssertEntity(player.Container.Resolve<DefendPlatformFactory>()
                     .Create(slot.Id, DefendPlatformType.BattleAsteroid, origin + Vector3.forward * 350f), player, slot);
                 AssertDecoratedHealth(asteroidPlatform, asteroidPlatform.Container.Resolve<DefendPlatformData>().ComponentData);

@@ -40,3 +40,5 @@ MonoBehaviour:
   weaponLoadout: []
   <Wreck>k__BackingField: {fileID: 11400000, guid: 427df8b52e6483249a37b927dc540dbd,
     type: 2}
+  <RepairProfile>k__BackingField: {fileID: 11400000, guid: b7f49e7a7539544499858aea3bcc79df,
+    type: 2}

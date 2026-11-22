@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using System.Linq;
 using EmpireAtWar.Controllers.Economy;
 using EmpireAtWar.Models.Factions;
 using EmpireAtWar.Models.Players;
@@ -7,6 +8,7 @@ using System.Reflection;
 using EmpireAtWar.Components.AttackComponent;
 using EmpireAtWar.Components.Combat;
 using EmpireAtWar.Components.Construction;
+using EmpireAtWar.Components.Repair;
 using EmpireAtWar.Components.Ship.Health;
 using EmpireAtWar.Entities.BaseEntity;
 using EmpireAtWar.Entities.DefendPlatform;
@@ -53,6 +55,23 @@ namespace EmpireAtWar.Tests.Editor
                 UnityEngine.Object.DestroyImmediate(gameObject);
                 UnityEngine.Object.DestroyImmediate(data);
             }
+        }
+
+        [Test]
+        public void Xq6_HasARepairProfileAndAHiddenRangeRing()
+        {
+            DefendPlatformData data = AssetDatabase.LoadAssetAtPath<DefendPlatformData>(
+                $"Assets/Settings/Data/Models/DefendPlatform/{DefendPlatformAssets.GetDataName(DefendPlatformType.Xq6)}.asset");
+            Assert.That(data.RepairProfile, Is.Not.Null, "The repair profile enables XQ6 healing.");
+
+            var prefab = AssetDatabase.LoadAssetAtPath<GameObject>(
+                $"Assets/Prefabs/Models/DefendStation/{DefendPlatformAssets.GetViewName(DefendPlatformType.Xq6)}.prefab");
+            EntityBindings bindings = prefab.GetComponent<EntityBindings>();
+            Assert.That(bindings.Injectables.All(component => component != null), Is.True);
+            RepairRangeView ring = bindings.Injectables.OfType<RepairRangeView>().Single();
+            var renderer = (MeshRenderer)new SerializedObject(ring).FindProperty("ring").objectReferenceValue;
+            Assert.That(renderer, Is.Not.Null);
+            Assert.That(renderer.enabled, Is.False, "The range shows only while the platform is selected.");
         }
 
         [Test]
