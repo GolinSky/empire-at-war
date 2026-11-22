@@ -21,6 +21,8 @@ namespace EmpireAtWar.Services.Saves
         [SerializeField] private HangarSave hangar;
         [SerializeField] private float constructionProgress = 1f;
         [SerializeField] private float constructionBuildTime;
+        // World yaw in degrees; saves written before it existed load at 0, the old fixed heading.
+        [SerializeField] private float yaw;
 
         public long Id => id;
         public PlayerId Owner => new PlayerId(owner);
@@ -29,6 +31,7 @@ namespace EmpireAtWar.Services.Saves
         public MiningFacilityType MiningFacilityType => (MiningFacilityType)type;
         public DefendPlatformType DefendPlatformType => (DefendPlatformType)type;
         public Vector3 Position => position;
+        public Quaternion Rotation => Quaternion.Euler(0f, yaw, 0f);
         public UnitHealthSave Health => health;
         public float ConstructionProgress => constructionProgress;
         public float ConstructionBuildTime => constructionBuildTime;
@@ -45,6 +48,12 @@ namespace EmpireAtWar.Services.Saves
         {
             constructionProgress = progress;
             constructionBuildTime = buildTime;
+            return this;
+        }
+
+        public StructureSave WithRotation(Quaternion rotation)
+        {
+            yaw = rotation.eulerAngles.y;
             return this;
         }
 

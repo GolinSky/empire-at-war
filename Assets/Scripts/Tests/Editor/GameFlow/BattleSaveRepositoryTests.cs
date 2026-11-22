@@ -39,7 +39,7 @@ namespace EmpireAtWar.Tests.Editor
             BattleSave save = BattleSave.Create(template.Header, template.Setup, template.Camera,
                 Array.Empty<UnitSave>(), new[] { StructureSave.Create(42L, new PlayerId(0),
                     StructureKind.DefendPlatform, (int)platform, new Vector3(80f, 0f, 120f),
-                    UnitHealthSave.ForShip(0.6f, 0.8f, hardPoints)) });
+                    UnitHealthSave.ForShip(0.6f, 0.8f, hardPoints)).WithRotation(Quaternion.Euler(0f, 135f, 0f)) });
             save.CaptureSites = new[]
             {
                 CaptureSiteSave.Create(new PlayerId(0), CaptureSiteState.Owned, PlayerId.None, 0f, type, 0f, 0L),
@@ -50,6 +50,7 @@ namespace EmpireAtWar.Tests.Editor
             BattleSave restored = _repository.Load(GameMode.Skirmish, BattleSaveSlot.Quicksave);
             Assert.That(restored.Structures[0].DefendPlatformType, Is.EqualTo(platform));
             Assert.That(restored.Structures[0].Id, Is.EqualTo(42L));
+            Assert.That(Quaternion.Angle(restored.Structures[0].Rotation, Quaternion.Euler(0f, 135f, 0f)), Is.LessThan(0.01f));
             Assert.That(restored.Structures[0].Health.Hull, Is.EqualTo(0.6f));
             Assert.That(restored.Structures[0].Health.Shields, Is.EqualTo(0.8f));
             CollectionAssert.AreEqual(hardPoints, restored.Structures[0].Health.HardPoints);

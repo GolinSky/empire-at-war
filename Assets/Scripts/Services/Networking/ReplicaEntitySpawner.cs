@@ -78,7 +78,7 @@ namespace EmpireAtWar.Services.Networking
                     break;
                 case StructureKind.DefendPlatform:
                     _factories.SpawnRestoredDefendPlatform(structure.Owner, structure.DefendPlatformType,
-                        structure.Position, structure.Id, structure.ConstructionBuildTime);
+                        structure.Position, structure.Rotation, structure.Id, structure.ConstructionBuildTime);
                     break;
                 default:
                     throw new ArgumentOutOfRangeException(nameof(structure), structure.Kind, "Unknown structure kind.");

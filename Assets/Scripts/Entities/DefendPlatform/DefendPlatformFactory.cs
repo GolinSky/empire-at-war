@@ -34,7 +34,8 @@ namespace EmpireAtWar.Entities.DefendPlatform
         public DefendPlatform Create(PlayerId owner, DefendPlatformType type, Vector3 position, long entityId, float? buildDuration = null) =>
             Create(owner, type, position, Quaternion.identity, entityId, buildDuration);
 
-        private DefendPlatform Create(PlayerId owner, DefendPlatformType type, Vector3 position, Quaternion rotation,
+        /// <summary>Creates a platform with a known id and heading, e.g. one restored from a save or the host.</summary>
+        public DefendPlatform Create(PlayerId owner, DefendPlatformType type, Vector3 position, Quaternion rotation,
             long entityId, float? buildDuration)
         {
             DefendPlatformData data = Assets.Load<DefendPlatformData>(DefendPlatformAssets.GetDataName(type));

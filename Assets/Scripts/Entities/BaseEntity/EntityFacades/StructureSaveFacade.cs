@@ -33,7 +33,7 @@ namespace EmpireAtWar.Entities.BaseEntity.EntityFacades
         }
 
         public StructureSave Capture() => StructureSave.Create(_entityId, _owner, _kind, _type, _viewTransform.position,
-            CaptureHealth());
+            CaptureHealth()).WithRotation(_viewTransform.rotation);
 
         public UnitHealthSave CaptureHealth() =>
             UnitHealthSave.ForShip(_health.HullPercentage, _health.ShieldPercentage,

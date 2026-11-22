@@ -62,7 +62,7 @@ namespace EmpireAtWar.Services.Battle
             _players[owner].MiningFacilities.Create(owner, type, position, entityId, buildDuration);
 
         public DefendPlatformEntity SpawnRestoredDefendPlatform(PlayerId owner, DefendPlatformType type, Vector3 position,
-            long entityId, float buildDuration) =>
-            _players[owner].DefendPlatforms.Create(owner, type, position, entityId, buildDuration);
+            Quaternion rotation, long entityId, float buildDuration) =>
+            _players[owner].DefendPlatforms.Create(owner, type, position, rotation, entityId, buildDuration);
     }
 }

@@ -120,7 +120,8 @@ namespace EmpireAtWar.Services.Saves
                     break;
                 case StructureKind.DefendPlatform:
                     context.DefendPlatforms.Add(structure.Id, _spawner.SpawnRestoredDefendPlatform(structure.Owner,
-                        structure.DefendPlatformType, structure.Position, structure.Id, structure.ConstructionBuildTime));
+                        structure.DefendPlatformType, structure.Position, structure.Rotation, structure.Id,
+                        structure.ConstructionBuildTime));
                     break;
                 default:
                     throw new ArgumentOutOfRangeException(nameof(structure), structure.Kind, "Unknown structure kind.");
