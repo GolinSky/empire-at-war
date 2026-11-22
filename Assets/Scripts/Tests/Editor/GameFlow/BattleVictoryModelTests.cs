@@ -202,6 +202,31 @@ namespace EmpireAtWar.Tests.Editor
         }
 
         [Test]
+        public void EnemyBasesDown_OnlyAfterEveryEnemyStationFalls()
+        {
+            BattleVictoryModel model = new BattleVictoryModel();
+            model.Evaluate(BattleVictoryCondition.DestroyEnemyFleet, TeamStates(true, true, true, true), HUMAN_TEAM);
+            Assert.That(model.AreEnemyBasesDown(HUMAN_TEAM), Is.False);
+
+            model.Evaluate(BattleVictoryCondition.DestroyEnemyFleet, TeamStates(true, false, true, true), HUMAN_TEAM);
+            Assert.That(model.AreEnemyBasesDown(HUMAN_TEAM), Is.False, "One enemy station still stands.");
+
+            model.Evaluate(BattleVictoryCondition.DestroyEnemyFleet, TeamStates(true, false, true, false), HUMAN_TEAM);
+            Assert.That(model.AreEnemyBasesDown(HUMAN_TEAM), Is.True);
+            Assert.That(model.AreEnemyBasesDown(ENEMY_TEAM), Is.False);
+        }
+
+        [Test]
+        public void EnemyBasesDown_FalseWhenEnemyStationWasNeverSeen()
+        {
+            BattleVictoryModel model = new BattleVictoryModel();
+
+            model.Evaluate(BattleVictoryCondition.DestroyEnemyFleet, TeamStates(true, false, true, false), HUMAN_TEAM);
+
+            Assert.That(model.AreEnemyBasesDown(HUMAN_TEAM), Is.False);
+        }
+
+        [Test]
         public void FleetCondition_ReserveKeepsPlayerAliveUntilLastUnitIsConsumed()
         {
             ReinforcementModel reserve = new ReinforcementModel(null);

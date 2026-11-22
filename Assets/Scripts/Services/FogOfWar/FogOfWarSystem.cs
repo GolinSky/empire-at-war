@@ -159,6 +159,13 @@ namespace EmpireAtWar.Services.FogOfWar
 
         private void UpdateFogTargets()
         {
+            if (_visionService.IsFogLifted(_localPlayer.Id))
+            {
+                // One circle reaching past the corners clears the whole mask.
+                _grid.QueueReveal(_grid.Resolution / 2, _grid.Resolution / 2, _grid.Resolution);
+                return;
+            }
+
             foreach (OwnedCircle source in _visionService.Sources)
             {
                 // Allies share vision, so their sources reveal the local fog too.

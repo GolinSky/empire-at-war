@@ -14,6 +14,7 @@ namespace EmpireAtWar.Entities.Game
     {
         private readonly HashSet<PlayerId> _observedBases = new HashSet<PlayerId>();
         private readonly HashSet<TeamId> _survivingTeams = new HashSet<TeamId>();
+        private readonly HashSet<TeamId> _teamsWithEnemyBasesDown = new HashSet<TeamId>();
 
         /// <summary>Players whose station has been seen alive; only they can be defeated by losing it.</summary>
         public IReadOnlyCollection<PlayerId> ObservedBases => _observedBases;
@@ -22,6 +23,9 @@ namespace EmpireAtWar.Entities.Game
 
         /// <summary>Teams still in the battle after the last <see cref="EvaluateTeams"/>.</summary>
         public IReadOnlyCollection<TeamId> SurvivingTeams => _survivingTeams;
+
+        /// <summary>True after the last <see cref="EvaluateTeams"/> when every opposing station seen alive has fallen.</summary>
+        public bool AreEnemyBasesDown(TeamId team) => _teamsWithEnemyBasesDown.Contains(team);
 
         public BattleOutcome Evaluate(
             BattleVictoryCondition victoryCondition,
@@ -75,7 +79,38 @@ namespace EmpireAtWar.Entities.Game
                 }
             }
 
+            _teamsWithEnemyBasesDown.Clear();
+            foreach (PlayerBattleState player in players)
+            {
+                if (EnemyBasesDown(player.Team, players))
+                {
+                    _teamsWithEnemyBasesDown.Add(player.Team);
+                }
+            }
+
             return _survivingTeams;
+        }
+
+        // Opponents whose station was never seen (survival waves) do not count.
+        private bool EnemyBasesDown(TeamId team, IReadOnlyList<PlayerBattleState> players)
+        {
+            bool anyEnemyBase = false;
+            foreach (PlayerBattleState player in players)
+            {
+                if (player.Team == team || !_observedBases.Contains(player.Player))
+                {
+                    continue;
+                }
+
+                if (player.IsBaseAlive)
+                {
+                    return false;
+                }
+
+                anyEnemyBase = true;
+            }
+
+            return anyEnemyBase;
         }
 
         // A player counts only after its station was seen alive, so a slow first spawn is not a defeat.

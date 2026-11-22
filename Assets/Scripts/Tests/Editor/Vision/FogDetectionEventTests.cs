@@ -250,6 +250,7 @@ namespace EmpireAtWar.Tests.Editor
             public event Action<PlayerId, long, bool> RevealChanged { add { } remove { } }
             public bool Visible;
             public bool FogEnabled => true;
+            public bool IsFogLifted(PlayerId viewer) => false;
             public float FiringRevealSeconds => 5f;
             public bool IsRevealed(PlayerId viewer, long entityId) => false;
             public IReadOnlyList<OwnedCircle> Sources => Array.Empty<OwnedCircle>();

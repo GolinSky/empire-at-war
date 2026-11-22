@@ -36,6 +36,23 @@ namespace EmpireAtWar.Tests.Editor
         }
 
         [Test]
+        public void SetFogLifted_ViewerSeesEverything_OthersStillFogged()
+        {
+            Vector3 farAway = new Vector3(5000f, 0f, 5000f);
+
+            _vision.SetFogLifted(TestPlayers.Human, true);
+
+            Assert.That(_vision.IsFogLifted(TestPlayers.Human), Is.True);
+            Assert.That(_vision.IsVisible(TestPlayers.Human, farAway), Is.True);
+            Assert.That(_vision.IsAreaVisible(TestPlayers.Human, farAway, 1f), Is.True);
+            Assert.That(_vision.IsVisible(TestPlayers.Enemy, farAway), Is.False);
+
+            _vision.SetFogLifted(TestPlayers.Human, false);
+
+            Assert.That(_vision.IsVisible(TestPlayers.Human, farAway), Is.False);
+        }
+
+        [Test]
         public void IsVisible_IgnoresHeight()
         {
             _vision.Register(TestPlayers.Human, CreateSource(new Vector3(0f, -300f, 0f)), 100f);

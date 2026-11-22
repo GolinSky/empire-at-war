@@ -17,6 +17,9 @@ namespace EmpireAtWar.Services.Vision
 
         bool FogEnabled { get; }
 
+        /// <summary>False while fog hides the map from this viewer; true when fog is off or lifted for it.</summary>
+        bool IsFogLifted(PlayerId viewer);
+
         float FiringRevealSeconds { get; }
 
         IReadOnlyList<OwnedCircle> Sources { get; }

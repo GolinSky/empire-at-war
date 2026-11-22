@@ -180,7 +180,7 @@ namespace EmpireAtWar.Views.SpawnArea
         private void Redraw()
         {
             using var redraw = REDRAW_MARKER.Auto();
-            if (_vision.FogEnabled)
+            if (!_vision.IsFogLifted(_team))
             {
                 _grid.Clear();
                 foreach (OwnedCircle source in _vision.Sources)

@@ -227,6 +227,7 @@ namespace EmpireAtWar.Tests.Editor
             public bool IsRevealed(PlayerId viewer, long entityId) => false;
             public bool Visible;
             public bool FogEnabled => true;
+            public bool IsFogLifted(PlayerId viewer) => false;
             public IReadOnlyList<OwnedCircle> Sources => Array.Empty<OwnedCircle>();
             public void Register(PlayerId owner, Transform source, float radius) { }
             public void Unregister(Transform source) { }

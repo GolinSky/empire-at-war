@@ -654,6 +654,7 @@ namespace EmpireAtWar.Tests.Editor
             public bool IsVisible(PlayerId viewer, IVisionFootprintFacade footprint) { Reads++; return true; }
             public void Reveal(PlayerId viewer, long entityId, float duration) => throw new NotSupportedException();
             public bool FogEnabled => true;
+            public bool IsFogLifted(PlayerId viewer) => false;
             public IReadOnlyList<OwnedCircle> Sources => throw new NotSupportedException();
             public void Register(PlayerId owner, Transform source, float radius) => throw new NotSupportedException();
             public void Unregister(Transform source) => throw new NotSupportedException();

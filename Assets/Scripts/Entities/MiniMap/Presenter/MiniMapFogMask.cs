@@ -85,6 +85,12 @@ namespace EmpireAtWar.Presenters.MiniMap
 
         private void UpdateTargets()
         {
+            if (_vision.IsFogLifted(_localPlayer.Id))
+            {
+                _grid.QueueReveal(RESOLUTION / 2, RESOLUTION / 2, RESOLUTION);
+                return;
+            }
+
             foreach (OwnedCircle source in _vision.Sources)
             {
                 if (!_localPlayer.IsFriendly(source.Owner)) continue;

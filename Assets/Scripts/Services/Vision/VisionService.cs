@@ -16,6 +16,7 @@ namespace EmpireAtWar.Services.Vision
         private readonly Dictionary<long, Dictionary<PlayerId, float>> _reveals =
             new Dictionary<long, Dictionary<PlayerId, float>>();
         private readonly List<VisionReveal> _expired = new List<VisionReveal>();
+        private readonly HashSet<PlayerId> _liftedViewers = new HashSet<PlayerId>();
 
         public event Action<PlayerId, long, bool> RevealChanged;
         public bool FogEnabled { get; }
@@ -33,22 +34,31 @@ namespace EmpireAtWar.Services.Vision
             _time = time;
         }
 
+        public bool IsFogLifted(PlayerId viewer) => !FogEnabled || _liftedViewers.Contains(viewer);
+
+        /// <summary>A lifted viewer sees the whole map, for example once every enemy station has fallen.</summary>
+        public void SetFogLifted(PlayerId viewer, bool lifted)
+        {
+            if (lifted) _liftedViewers.Add(viewer);
+            else _liftedViewers.Remove(viewer);
+        }
+
         public void Register(PlayerId owner, Transform source, float radius) =>
             _sources.Register(owner, source, radius);
 
         public void Unregister(Transform source) => _sources.Unregister(source);
 
         public bool IsVisible(PlayerId viewer, Vector3 position) =>
-            !FogEnabled || _sources.AnyContains(position, 0f, _relations, viewer, true);
+            IsFogLifted(viewer) || _sources.AnyContains(position, 0f, _relations, viewer, true);
 
         public bool IsVisible(PlayerId viewer, IVisionFootprintFacade footprint)
         {
-            if (!FogEnabled || IsRevealed(viewer, footprint.EntityId)) return true;
+            if (IsFogLifted(viewer) || IsRevealed(viewer, footprint.EntityId)) return true;
             return _sources.AnyIntersects(footprint.WorldHull, footprint.WorldBounds, _relations, viewer);
         }
 
         public bool IsAreaVisible(PlayerId viewer, Vector3 position, float radius) =>
-            !FogEnabled || _sources.AnyContains(position, radius, _relations, viewer, true);
+            IsFogLifted(viewer) || _sources.AnyContains(position, radius, _relations, viewer, true);
 
         public void Reveal(PlayerId viewer, long entityId, float duration)
         {
