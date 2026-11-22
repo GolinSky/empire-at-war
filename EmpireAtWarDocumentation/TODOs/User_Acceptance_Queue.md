@@ -10,6 +10,10 @@ created: "2026-10-29\r"
 - [ ] [[Done/Features/Repair_Feature_Plan]] — In battle: build a Repair Satellite on a captured satellite pad; check the model/scale on the pad, the radius ring when selected, that damaged own/allied ships and structures in range regain hull + live hardpoints (not shields, not destroyed hardpoints), and that it stops while ion-disabled. Tune `0.5 %/s`, radius `400`, `10` targets, `2` per target, cost `500`. Decide on ship repair beams.
 - [ ] [[Done/Features/Repair_Feature_Plan]] — Run `Health`, `Capture`, `Core`, `GameFlow`, `Audio` EditMode categories when explicitly authorized; compile passed, tests not run.
 
+## Engine Hardpoints
+
+- [ ] [[Done/Bugs/Invincible_Single_Engine_Slowdown]] — In battle: destroy one engine on Invincible and Secutor → speed 25 → 20 (not 10); check the 3 engine plumes sit on Invincible's nozzles; load an old save with either ship. Run `Ships`, `Health`, `GameFlow` when authorized; compile passed, tests not run.
+
 ## Online Skirmish Lobby
 
 - [ ] [[Done/Bugs/Online_Skirmish_Join_Slot_Race]] — Run authored regression coverage in `Networking`, `GameFlow` and `Ui` when explicitly authorized; source review and Unity compilation passed. User declined reproduction as a prerequisite.

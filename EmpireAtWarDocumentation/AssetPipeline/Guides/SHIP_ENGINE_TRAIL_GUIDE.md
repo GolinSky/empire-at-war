@@ -77,6 +77,7 @@ ShipEnginePlumeSetup.Apply(prefabPath,
 - Prefab variants inherit base trails and `enginePlumes` (Chimaera, Devastator ← `ISDIIShipView`). A variant that overrides `FogVisibilityComponent.renderers` must re-add them after every base rebuild (Chimaera fixed twice on 2026-11-20).
 - Changing the shared prefab's renderer type drops instance references → rerun `Apply` on every ship, then fix variant fog lists.
 - Tests compare with `GetCorrespondingObjectFromOriginalSource`; a variant's direct source is the base view's instance.
+- Scaled ship roots (Invincible, Recusant Dreadnought: root scale 0.6635): pass nozzles in **root space** (unscaled mesh coordinates). Invincible plumes were saved at 0.6635 × their nozzle positions, inside the hull (fixed 2026-11-22 → [[Done/Bugs/Invincible_Single_Engine_Slowdown]]); Recusant Dreadnought still shows the same offset.
 - Capital length: 14 × width. If ISD/Executor read too long in game, change `LENGTH_PER_WIDTH` in `ShipEnginePlumes` for all ships.
 
 ## Files

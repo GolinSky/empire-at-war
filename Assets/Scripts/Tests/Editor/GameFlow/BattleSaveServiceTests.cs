@@ -335,6 +335,8 @@ namespace EmpireAtWar.Tests.Editor
 
         [TestCase(ShipType.CD273, FactionType.Rebellion, 10, 6)]
         [TestCase(ShipType.DHOmni, FactionType.Separatist, 4, 10)]
+        [TestCase(ShipType.Invincible, FactionType.Separatist, 30, 2)]
+        [TestCase(ShipType.Secutor, FactionType.Republic, 46, 1)]
         public void Validator_MigratesAppendedHardpointsOnceAndPreservesExistingDamage(
             ShipType shipType, FactionType faction, int legacyCount, int addedCount)
         {

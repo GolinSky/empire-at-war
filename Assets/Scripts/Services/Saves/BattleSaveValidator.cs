@@ -38,6 +38,10 @@ namespace EmpireAtWar.Services.Saves
         private const int DH_OMNI_HARDPOINT_COUNT = 14;
         private const int LEGACY_INTERDICTOR_HARDPOINT_COUNT = 23;
         private const int INTERDICTOR_HARDPOINT_COUNT = 24;
+        private const int LEGACY_INVINCIBLE_HARDPOINT_COUNT = 30;
+        private const int INVINCIBLE_HARDPOINT_COUNT = 32;
+        private const int LEGACY_SECUTOR_HARDPOINT_COUNT = 46;
+        private const int SECUTOR_HARDPOINT_COUNT = 47;
 
         private readonly IAssetService _assets;
         private readonly MapGenerationSettings _mapSettings;
@@ -295,6 +299,8 @@ namespace EmpireAtWar.Services.Saves
                     ShipType.CD273 => (LEGACY_CD273_HARDPOINT_COUNT, CD273_HARDPOINT_COUNT),
                     ShipType.DHOmni => (LEGACY_DH_OMNI_HARDPOINT_COUNT, DH_OMNI_HARDPOINT_COUNT),
                     ShipType.InterdictorStarDestroyer => (LEGACY_INTERDICTOR_HARDPOINT_COUNT, INTERDICTOR_HARDPOINT_COUNT),
+                    ShipType.Invincible => (LEGACY_INVINCIBLE_HARDPOINT_COUNT, INVINCIBLE_HARDPOINT_COUNT),
+                    ShipType.Secutor => (LEGACY_SECUTOR_HARDPOINT_COUNT, SECUTOR_HARDPOINT_COUNT),
                     _ => (0, 0)
                 };
                 if (legacyCount > 0 && health?.HardPoints?.Length == legacyCount &&

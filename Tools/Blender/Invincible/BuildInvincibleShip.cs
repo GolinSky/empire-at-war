@@ -8,6 +8,7 @@ using UnityEditor;
 using UnityEngine;
 using EmpireAtWar.Editor;
 using EmpireAtWar.Editor.Rendering;
+using EmpireAtWar.Components.Ship.Health;
 using EmpireAtWar.ViewComponents.Health;
 
 public static class BuildInvincibleShip
@@ -21,6 +22,8 @@ public static class BuildInvincibleShip
     const string WRECK_DATA = "Assets/Settings/Data/Models/Wrecks/Separatist/InvincibleWreckData.asset";
     const string PREVIEW = "Assets/Prefabs/Ui/Reinforcement/InvincibleReinforcementView.prefab";
     const float SIZE_RATIO = 39f / 14f;
+    // Starboard side nozzle glow disc in ship-root space; port mirrors it. One engine hardpoint per visible engine.
+    static readonly Vector3 SIDE_ENGINE = new Vector3(12.68f, -21.87f, -149.79f);
 
     public static string Main()
     {
@@ -125,6 +128,20 @@ public static class BuildInvincibleShip
                 mapping.Add(new {id = 28 + i, name = point.name, source = mount.name,
                     position = Values(root.transform.InverseTransformPoint(point.transform.position))});
             }
+            var engine = systems.Single(p => p.HardPointType == HardPointType.Engines);
+            var sideEngines = new[] {-1f, 1f}.Select((side, i) =>
+            {
+                var point = Components<HardPoint>(UnityEngine.Object.Instantiate(engine.gameObject, body)).Single();
+                point.name = side < 0 ? "Engines_Port" : "Engines_Starboard";
+                point.transform.position = root.transform.TransformPoint(new Vector3(SIDE_ENGINE.x * side, SIDE_ENGINE.y, SIDE_ENGINE.z));
+                int id = 28 + systems.Length + i;
+                var config = new SerializedObject(point);
+                config.FindProperty("<Id>k__BackingField").intValue = id;
+                Save(config);
+                FitAnchor(point, root.transform, points);
+                mapping.Add(new {id, name = point.name, source = "Lights", position = Values(root.transform.InverseTransformPoint(point.transform.position))});
+                return (HardPoint)point;
+            }).ToArray();
             var hangar = Config(root, "HangarComponent");
             var launch = (Transform)hangar.FindProperty("launchPoint").objectReferenceValue;
             var hangarRoot = ((MonoBehaviour)hangar.targetObject).transform;
@@ -133,7 +150,7 @@ public static class BuildInvincibleShip
             launch.localPosition = new Vector3(0, bounds.min.y - 4, bounds.max.z + 10);
             launch.localRotation = Quaternion.identity;
             launch.localScale = Vector3.one;
-            var allPoints = allWeapons.Cast<HardPoint>().Concat(systems).OrderBy(p => p.Id).ToArray();
+            var allPoints = allWeapons.Cast<HardPoint>().Concat(systems).Concat(sideEngines).OrderBy(p => p.Id).ToArray();
             Assign(health, "<ShipUnits>k__BackingField", allPoints);
             Assign(weaponComponent, "hardPoints", allWeapons.ToArray());
             var renderState = Component(root, "UnitRenderStateComponent");
@@ -186,7 +203,7 @@ public static class BuildInvincibleShip
         BuildPreview(bounds);
         AssetDatabase.SaveAssets();
         File.WriteAllText(TASK + "GameplayBounds.json", JsonConvert.SerializeObject(new {size = Values(bounds.size), center = Values(bounds.center), bottom, top, radius, ratio = SIZE_RATIO}, Formatting.Indented));
-        return "Saved Invincible: 10000 hull, 6000 shields, 28 weapons plus shield/engine/hangar; own fitted shield, wreck and placement preview.";
+        return "Saved Invincible: 10000 hull, 6000 shields, 28 weapons plus shield, 3 engines, hangar; own fitted shield, wreck and placement preview.";
     }
 
     static void BuildPreview(Bounds bounds)
