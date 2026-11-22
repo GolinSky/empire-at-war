@@ -66,6 +66,9 @@ namespace EmpireAtWar.Services.Player
             return _research[owner];
         }
 
+        public bool TryGetResearch(PlayerId owner, out IFactionResearchModelObserver research) =>
+            _research.TryGetValue(owner, out research);
+
         public void UnregisterSiteBuilder(PlayerId owner)
         {
             _siteBuilders.Remove(owner);

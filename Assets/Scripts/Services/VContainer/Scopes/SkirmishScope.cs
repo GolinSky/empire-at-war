@@ -211,6 +211,7 @@ namespace EmpireAtWar.Services.VContainer
             builder.Register<HarmonicBombEffects>(Lifetime.Singleton).AsImplementedInterfaces().AsSelf();
             builder.Register<HarmonicBombService>(Lifetime.Singleton).AsImplementedInterfaces().AsSelf();
             builder.Register<RepairService>(Lifetime.Singleton).AsImplementedInterfaces().AsSelf();
+            builder.Register<FieldRepairService>(Lifetime.Singleton).AsImplementedInterfaces().AsSelf();
             builder.Register<GravityWellEffects>(Lifetime.Singleton).AsImplementedInterfaces().AsSelf()
                 .WithParameter(cameraService.SceneCamera);
             builder.Register<ShipAbilityDependencies>(Lifetime.Singleton);

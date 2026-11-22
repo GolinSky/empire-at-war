@@ -10,5 +10,6 @@ namespace EmpireAtWar.Models.Factions
         ReinforcedStructures = 5,
         IncreasedStationIncome = 6,
         OrbitalWeapons = 7,
+        FieldRepairs = 8,
     }
 }

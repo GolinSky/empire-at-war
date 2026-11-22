@@ -54,6 +54,9 @@ namespace EmpireAtWar.Services.Player
 
         IFactionResearchModelObserver GetResearch(PlayerId owner);
 
+        /// <summary>False for owners without a faction, such as neutral units.</summary>
+        bool TryGetResearch(PlayerId owner, out IFactionResearchModelObserver research);
+
         IEnemyStationCheat GetAiStationCheat(PlayerId owner);
 
         /// <summary>Purchased units waiting for deployment; builds still in production do not count.</summary>

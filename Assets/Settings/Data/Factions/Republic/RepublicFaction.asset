@@ -995,6 +995,27 @@ MonoBehaviour:
             <Icon>k__BackingField: {fileID: 21300000, guid: 632f1f446bdb46678c7eeeced2c6917d,
               type: 3}
           effects: []
+    - key: 8
+      value:
+        tiers:
+        - factionData:
+            matchups: {fileID: 0}
+            displayName: Field Repairs
+            description: Ships slowly repair their hull (1% per second) after 10
+              seconds without taking damage or engaging a target. Stacks with other
+              repairs.
+            role: Research
+            iconKey: d846cedf6810ffb4ea05703dbeeee74c:21300000
+            isHero: 0
+            <Name>k__BackingField: Field Repairs
+            <MaxCount>k__BackingField: 1
+            <AvailableLevel>k__BackingField: 3
+            <Price>k__BackingField: 15000
+            <BuildTime>k__BackingField: 100
+            <UnitCapacity>k__BackingField: 0
+            <Icon>k__BackingField: {fileID: 21300000, guid: d846cedf6810ffb4ea05703dbeeee74c,
+              type: 3}
+          effects: []
   miningFacilities: 00000000
   defendPlatforms: 000000000200000003000000
   superWeapons: 000000000100000002000000
