@@ -60,5 +60,54 @@ namespace EmpireAtWar.Tests.Editor
                 UnityEngine.Object.DestroyImmediate(root);
             }
         }
+
+        [Test]
+        public void MeasureModel_IncludesRootScale()
+        {
+            GameObject root = new GameObject("Preview");
+            GameObject visual = GameObject.CreatePrimitive(PrimitiveType.Cube);
+            try
+            {
+                visual.transform.SetParent(root.transform, false);
+                visual.transform.localPosition = new Vector3(0f, 4f, 0f);
+                Bounds unscaled = ShipReinforcementPreviewSync.MeasureModel(root.transform);
+
+                root.transform.localScale = Vector3.one * 0.25f;
+                Bounds scaled = ShipReinforcementPreviewSync.MeasureModel(root.transform);
+
+                Assert.That(ShipReinforcementPreviewSync.IsMatch(scaled, unscaled), Is.False);
+                Assert.That(scaled.size.x, Is.EqualTo(unscaled.size.x * 0.25f).Within(0.0001f));
+                Assert.That(scaled.center.y, Is.EqualTo(unscaled.center.y * 0.25f).Within(0.0001f));
+            }
+            finally
+            {
+                UnityEngine.Object.DestroyImmediate(root);
+            }
+        }
+
+        [Test]
+        public void Fit_MovesAndScalesPreviewOntoShipHull_UnderScaledRoot()
+        {
+            GameObject root = new GameObject("Preview");
+            GameObject visual = GameObject.CreatePrimitive(PrimitiveType.Cube);
+            try
+            {
+                root.transform.localScale = Vector3.one * 0.3f;
+                visual.transform.SetParent(root.transform, false);
+                visual.transform.localPosition = new Vector3(1f, 2f, 3f);
+                visual.transform.localScale = new Vector3(2f, 1f, 4f);
+                Bounds before = ShipReinforcementPreviewSync.MeasureModel(root.transform);
+                Bounds target = new Bounds(new Vector3(0f, -5f, 0f), before.size * 1.5f);
+
+                ShipReinforcementPreviewSync.Fit(root.transform, before, target);
+
+                Assert.That(ShipReinforcementPreviewSync.IsMatch(
+                    ShipReinforcementPreviewSync.MeasureModel(root.transform), target), Is.True);
+            }
+            finally
+            {
+                UnityEngine.Object.DestroyImmediate(root);
+            }
+        }
     }
 }

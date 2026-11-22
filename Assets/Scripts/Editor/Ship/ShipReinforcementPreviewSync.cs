@@ -70,13 +70,16 @@ namespace EmpireAtWar.Editor
         }
 
         /// <summary>Scales every visual about the preview's hull center, then moves it onto the target hull center.
-        /// Returns the uniform scale applied.</summary>
+        /// Returns the uniform scale applied. Bounds are in <see cref="MeasureModel"/> units (root scale included).</summary>
         public static float Fit(Transform root, Bounds current, Bounds target)
         {
             float scale = target.size.magnitude / current.size.magnitude;
+            Vector3 toChildUnits = new Vector3(1f / root.localScale.x, 1f / root.localScale.y, 1f / root.localScale.z);
+            Vector3 currentCenter = Vector3.Scale(current.center, toChildUnits);
+            Vector3 targetCenter = Vector3.Scale(target.center, toChildUnits);
             foreach (Transform visual in root)
             {
-                visual.localPosition = target.center + (visual.localPosition - current.center) * scale;
+                visual.localPosition = targetCenter + (visual.localPosition - currentCenter) * scale;
                 visual.localScale *= scale;
             }
 
@@ -104,8 +107,9 @@ namespace EmpireAtWar.Editor
                    (preview.size - ship.size).magnitude <= tolerance;
         }
 
-        /// <summary>Bounds of the hull meshes in the root's local space; the root's own pose is ignored because
-        /// placement overwrites it. Previews keep parts the ship toggles at runtime, so active state is ignored.
+        /// <summary>Bounds of the hull meshes in the root's local space, multiplied by the root's own scale: spawning
+        /// keeps the prefab root scale, while placement overwrites its position and rotation, so those are ignored.
+        /// Previews keep parts the ship toggles at runtime, so active state is ignored.
         /// The ship's shield bubble and flat glow cards have no preview counterpart and are excluded.</summary>
         public static Bounds MeasureModel(Transform root)
         {
@@ -123,7 +127,8 @@ namespace EmpireAtWar.Editor
                     Mathf.Max(extents.x, extents.y, extents.z) * FLAT_MESH_RATIO)
                     continue;
 
-                Matrix4x4 toRoot = root.worldToLocalMatrix * renderer.transform.localToWorldMatrix;
+                Matrix4x4 toRoot = Matrix4x4.Scale(root.localScale) * root.worldToLocalMatrix *
+                                   renderer.transform.localToWorldMatrix;
                 for (int corner = 0; corner < 8; corner++)
                 {
                     Vector3 point = toRoot.MultiplyPoint3x4(mesh.center + Vector3.Scale(mesh.extents, new Vector3(
