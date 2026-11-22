@@ -569,5 +569,4 @@ created: "2026-10-29\r"
 ## Map Outer Zones
 
 - [ ] [[Done/Features/Map_Outer_Zone_Reduction]] — In a fresh Skirmish (Medium and Large, 2 and 6–8 players): outer relays spread far apart and far from the main relay; AI still captures and defends them; economy feel with fewer neutral mines.
-- [ ] [[Done/Features/Map_Outer_Zone_Reduction]] — Decide: old Small Skirmish saves load onto the new geometry (count unchanged) → accept, or bump the save version.
 - [ ] [[Done/Features/Map_Outer_Zone_Reduction]] — Run `Map`, `MapGeneration` (explicit), `GameFlow`, `EnemyAi` when authorized; compile passed, 630 scripted layouts passed, tests not run.
