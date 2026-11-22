@@ -11,6 +11,7 @@ using EmpireAtWar.Entities.BaseEntity;
 using EmpireAtWar.Entities.BaseEntity.Orders;
 using EmpireAtWar.Components.Weapon;
 using EmpireAtWar.ViewComponents.Weapon;
+using EmpireAtWar.ViewComponents.Health;
 using EmpireAtWar.Entities.Ship.Abilities;
 using EmpireAtWar.Entities.Ship.EntityFacades;
 using EmpireAtWar.Models.Health;
@@ -448,7 +449,129 @@ namespace EmpireAtWar.Tests.Editor
         [TearDown]
         public void TearDown()
         {
+            // A fired wave's view is a scene root; Release uses Destroy, which edit mode refuses.
+            foreach (IonPulseView view in UnityEngine.Object.FindObjectsByType<IonPulseView>(FindObjectsSortMode.None))
+                UnityEngine.Object.DestroyImmediate(view.gameObject);
             if (_targetView != null) UnityEngine.Object.DestroyImmediate(_targetView);
+        }
+
+        [Test]
+        public void IonPulse_AuthorityFires_ServiceRaisesFiredOnceWithWaveGeometry()
+        {
+            FakeCommand caster = CreateIonPulseCaster(out FakeCommand target);
+            IonPulseSettings settings = CreateIonPulseSettings();
+            var relations = TestPlayers.CreateDuel();
+            var ability = new IonPulseAbility(settings, new EntityLocator(), relations, new OfflineSession(TestPlayers.Human));
+            var service = new ShipAbilityService(new SingleAbilityFactory(ability), relations,
+                new VisionService(relations, fogEnabled: false));
+            var fires = new List<(IShipAbilityFacade Caster, ShipAbilityId Id, ShipAbilityFire Fire)>();
+            service.Fired += (firedCaster, id, fire) => fires.Add((firedCaster, id, fire));
+            Assert.That(service.TryActivate(caster, ShipAbilityId.BoostEnginePower, target.Entity), Is.True);
+
+            service.Advance(0.1f);
+            service.Advance(0.1f);
+
+            Assert.That(fires.Count, Is.EqualTo(1));
+            Assert.That(fires[0].Caster, Is.SameAs(caster));
+            Assert.That(fires[0].Id, Is.EqualTo(ShipAbilityId.BoostEnginePower));
+            // The starboard cannon sits at +X; the target lies dead to starboard on the same plane.
+            Vector3 cannon = Vector3.right;
+            Vector3 toTarget = target.FakeHealth.Transform.position - cannon;
+            Assert.That(fires[0].Fire.Origin, Is.EqualTo(cannon));
+            Assert.That(fires[0].Fire.Direction, Is.EqualTo(toTarget.normalized));
+            Assert.That(fires[0].Fire.Rise, Is.Zero);
+            Assert.That(fires[0].Fire.Range,
+                Is.EqualTo(Mathf.Max(caster.Slots[0].Definition.Range, toTarget.magnitude + settings.WaveThickness)));
+            Assert.That(caster.IsAbilityFacing, Is.False);
+        }
+
+        [Test]
+        public void IonPulse_ReplicaAlignedToTarget_WaitsForHostFire()
+        {
+            FakeCommand caster = CreateIonPulseCaster(out FakeCommand target);
+            var ability = new IonPulseAbility(CreateIonPulseSettings(), new EntityLocator(), TestPlayers.CreateDuel(),
+                new OnlineSession(false, TestPlayers.Human));
+            int fired = 0;
+            ability.Fired += fire => fired++;
+
+            ability.Start(caster, caster.Slots[0].Definition, target.Entity);
+            ability.Advance(0.1f);
+            ability.Advance(0.1f);
+
+            Assert.That(fired, Is.Zero);
+            Assert.That(ability.SurvivesCasterDeath, Is.False);
+            Assert.That(ability.IsComplete, Is.False);
+            Assert.That(caster.IsAbilityFacing, Is.False);
+            Assert.That(FindFiredIonPulseView(), Is.Null);
+        }
+
+        [Test]
+        public void IonPulse_ReplicaFireReplica_PlaysHostGeometryOnlyWhileActive()
+        {
+            FakeCommand caster = CreateIonPulseCaster(out FakeCommand target);
+            IonPulseSettings settings = CreateIonPulseSettings();
+            var relations = TestPlayers.CreateDuel();
+            var ability = new IonPulseAbility(settings, new EntityLocator(), relations,
+                new OnlineSession(false, TestPlayers.Human));
+            var service = new ShipAbilityService(new SingleAbilityFactory(ability), relations,
+                new VisionService(relations, fogEnabled: false));
+            int fired = 0;
+            ability.Fired += fire => fired++;
+            // A host shot that points away from where this client would aim on its own.
+            var hostFire = new ShipAbilityFire(new Vector3(0f, 0f, 5f), Vector3.forward, 0f, 500f);
+
+            service.FireReplica(caster, ShipAbilityId.BoostEnginePower, hostFire);
+            Assert.That(FindFiredIonPulseView(), Is.Null);
+
+            service.ActivateReplica(caster, ShipAbilityId.BoostEnginePower, target.Entity);
+            service.FireReplica(caster, ShipAbilityId.BoostEnginePower, hostFire);
+            service.Advance(0.1f);
+
+            Assert.That(ability.SurvivesCasterDeath, Is.True);
+            Assert.That(fired, Is.Zero);
+            IonPulseView view = FindFiredIonPulseView();
+            Assert.That(view, Is.Not.Null);
+            Vector3 expected = hostFire.Origin + hostFire.Direction * Mathf.Min(hostFire.Range, settings.WaveSpeed * 0.1f);
+            Assert.That(Vector3.Distance(view.transform.position, expected), Is.LessThan(0.001f));
+        }
+
+        private FakeCommand CreateIonPulseCaster(out FakeCommand target)
+        {
+            _targetView = new GameObject("Ion pulse participants");
+            Transform targetTransform = new GameObject("Ion pulse target").transform;
+            targetTransform.SetParent(_targetView.transform);
+            // Dead to starboard: the starboard cannon is already aligned and fires on the first advance.
+            targetTransform.position = Vector3.right * 100f;
+            var caster = new FakeCommand(new ShipAbilityDefinition(), _targetView.transform);
+            target = new FakeCommand(new ShipAbilityDefinition(), targetTransform, entityId: 2);
+            caster.FakeHealth.Units = new IHardPointModel[] { new IonCannonStub() };
+            return caster;
+        }
+
+        // A working view prefab, parented under the participants root so only fired copies are scene roots.
+        private IonPulseSettings CreateIonPulseSettings()
+        {
+            const BindingFlags PRIVATE_INSTANCE = BindingFlags.Instance | BindingFlags.NonPublic;
+            GameObject prefab = new GameObject("Ion pulse view prefab");
+            prefab.transform.SetParent(_targetView.transform);
+            IonPulseView view = prefab.AddComponent<IonPulseView>();
+            GameObject stun = new GameObject("Ion pulse stun field");
+            stun.transform.SetParent(prefab.transform);
+            IonStunView stunView = stun.AddComponent<IonStunView>();
+            typeof(IonStunView).GetField("shimmer", PRIVATE_INSTANCE).SetValue(stunView, stun.AddComponent<MeshRenderer>());
+            typeof(IonStunView).GetField("arcs", PRIVATE_INSTANCE).SetValue(stunView, new LineRenderer[0]);
+            typeof(IonPulseView).GetField("wave", PRIVATE_INSTANCE).SetValue(view, prefab.AddComponent<LineRenderer>());
+            typeof(IonPulseView).GetField("ionStunField", PRIVATE_INSTANCE).SetValue(view, stunView);
+            var settings = new IonPulseSettings();
+            typeof(IonPulseSettings).GetField("viewPrefab", PRIVATE_INSTANCE).SetValue(settings, view);
+            return settings;
+        }
+
+        private static IonPulseView FindFiredIonPulseView()
+        {
+            foreach (IonPulseView view in UnityEngine.Object.FindObjectsByType<IonPulseView>(FindObjectsSortMode.None))
+                if (view.transform.parent == null) return view;
+            return null;
         }
 
         [Test]
@@ -537,7 +660,8 @@ namespace EmpireAtWar.Tests.Editor
             FakeCommand caster = new FakeCommand(new ShipAbilityDefinition(), _targetView.transform);
             FakeCommand target = new FakeCommand(new ShipAbilityDefinition(), targetTransform);
             caster.FakeHealth.Units = new IHardPointModel[] { new IonCannonStub() };
-            IonPulseAbility ability = new IonPulseAbility(new IonPulseSettings(), new EntityLocator(), TestPlayers.CreateDuel());
+            IonPulseAbility ability = new IonPulseAbility(new IonPulseSettings(), new EntityLocator(), TestPlayers.CreateDuel(),
+                new OfflineSession(TestPlayers.Human));
             Assert.That(new IonPulseSettings().CanTarget(caster, target.Entity), Is.True);
             ability.Start(caster, caster.Slots[0].Definition, target.Entity);
             ability.Advance(0.1f);

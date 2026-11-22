@@ -735,7 +735,7 @@ namespace EmpireAtWar.Tests.Editor
                 health.ShipUnits = new List<HardPoint>();
                 health.Initialize();
                 Assert.That(model.Shields, Is.EqualTo(SHIELDS));
-                IonPulseAbility ability = new IonPulseAbility(new IonPulseSettings(), null, null);
+                IonPulseAbility ability = new IonPulseAbility(new IonPulseSettings(), null, null, null);
 
                 typeof(IonPulseAbility).GetMethod("Disable", PRIVATE_INSTANCE)
                     .Invoke(ability, new object[] { modifiers });

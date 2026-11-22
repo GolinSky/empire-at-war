@@ -343,6 +343,7 @@
 
 ### Bugs
 
+- [x] **Ion Pulse: no wave on online clients (client re-decided cannon side and fire moment)** → [[Done/Bugs/Ion_Pulse_Client_No_Wave|Ion Pulse Client No Wave]] — Completed 2026-11-22: host sends `ShipAbilityFireMessage` with the wave geometry; client replicas never aim or fire on their own. Compile clean; 3 `Abilities` tests added, not run. Open: cooldown rule for a pulse that never fired → [[TODOs/User_Acceptance_Queue]].
 - [x] **Fighter and interceptor rebalance (equal matrix rows, stronger interceptor bolts, tougher fighters)** → [[Done/Bugs/Fighter_Interceptor_Rebalance|Fighter and Interceptor Rebalance]] — Completed 2026-11-21: matrix rows 13/14 equal vs strikecraft, interceptor bolts ×2–2.5 (A-Wing 10.9, V-Wing 7.3 after tuning), new prices (Belbullab kept 300), Empire squadron speeds, Rebel X/A-Wing ×1.25, Avenger hull 78, Defender buff, Gladiator TIE Fighter bay. DuelSim extended; compile clean; tests updated, not run → [[TODOs/User_Acceptance_Queue]].
 - [x] **Squadron faction balance after gun consolidation and bay rotation** → [[Done/Bugs/Squadron_Faction_Balance|Squadron Faction Balance]]
   - Completed 2026-11-19. Model-tuned stats (DuelSim): strength follows price, X-Wing ≈ 2.7 TIE squadrons in a row (retuned 2026-11-19 after the salvo-targeting model fix); torpedo volleys follow price; Rebel station → X-Wing 2/6; Vader escorts follow TIE. Tests not run; battle check → [[TODOs/User_Acceptance_Queue]].

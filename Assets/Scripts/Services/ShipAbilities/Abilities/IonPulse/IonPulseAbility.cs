@@ -1,3 +1,4 @@
+using System;
 using System.Collections.Generic;
 using EmpireAtWar.Components.Combat;
 using EmpireAtWar.Components.Ship.Health;
@@ -7,14 +8,17 @@ using EmpireAtWar.Models.Health;
 using EmpireAtWar.Models.Players;
 using EmpireAtWar.ViewComponents.Weapon;
 using UnityEngine;
+using Object = UnityEngine.Object;
 
 namespace EmpireAtWar.Services.ShipAbilities.Abilities
 {
-    public sealed class IonPulseAbility : IAdvancingShipAbility, ITargetedShipAbility, IShipAbilityInterruptionPolicy
+    public sealed class IonPulseAbility : IAdvancingShipAbility, ITargetedShipAbility, IShipAbilityInterruptionPolicy,
+        IFiringShipAbility
     {
         private readonly IonPulseSettings _settings;
         private readonly IEntityLocator _entities;
         private readonly IPlayerRelations _relations;
+        private readonly IMatchSession _session;
         private readonly List<(CombatModifiers Modifiers, CombatModifierHandle Applied, float Remaining)> _stuns =
             new List<(CombatModifiers, CombatModifierHandle, float)>();
         private readonly HashSet<IEntity> _hits = new HashSet<IEntity>();
@@ -34,16 +38,21 @@ namespace EmpireAtWar.Services.ShipAbilities.Abilities
         private float _range;
         private bool _cancelled;
 
+        /// <summary>Authority only: the wave left the cannon. Online clients play it through <see cref="FireReplica"/>.</summary>
+        public event Action<ShipAbilityFire> Fired;
+
         public bool IsComplete => _cancelled || (_model.HasFired &&
             _model.WaveComplete && _stuns.Count == 0);
         public bool SurvivesCasterDeath => _model.HasFired;
         public bool SurvivesHazardSuppression => _model.HasFired;
 
-        public IonPulseAbility(IonPulseSettings settings, IEntityLocator entities, IPlayerRelations relations)
+        public IonPulseAbility(IonPulseSettings settings, IEntityLocator entities, IPlayerRelations relations,
+            IMatchSession session)
         {
             _settings = settings;
             _entities = entities;
             _relations = relations;
+            _session = session;
         }
 
         public void Start(IShipAbilityFacade caster, ShipAbilityDefinition definition, IEntity target)
@@ -55,7 +64,14 @@ namespace EmpireAtWar.Services.ShipAbilities.Abilities
             _range = definition.Range;
             _model = new IonPulseModel(_settings.WaveSpeed);
             _facing = caster.Entity.GetFacade<IAbilityFacingFacade>();
-            _facing.BeginAbilityFacing();
+            // A client replica follows the host's hull and waits for the host's fire; it never turns or aims.
+            if (_session.IsAuthority) _facing.BeginAbilityFacing();
+        }
+
+        public void FireReplica(ShipAbilityFire fire)
+        {
+            if (_model.HasFired) return;
+            Fire(fire);
         }
 
         public void Advance(float deltaTime)
@@ -74,7 +90,7 @@ namespace EmpireAtWar.Services.ShipAbilities.Abilities
                 _stuns.RemoveAt(i);
             }
             _model.Advance(deltaTime);
-            if (!_model.HasFired)
+            if (!_model.HasFired && _session.IsAuthority)
             {
                 // A target lost mid-turn (destroyed or cloaked) keeps its last seen position as the aim point.
                 if (!_target.HealthModel.IsDestroyed && !_target.IsCloaked())
@@ -93,16 +109,17 @@ namespace EmpireAtWar.Services.ShipAbilities.Abilities
                 float side = CannonSide(ship, _cannon);
                 _facing.FaceAbility(Quaternion.AngleAxis(-90f * side, Vector3.up) * bearing);
                 if (Vector3.Angle(ship.right * side, bearing) > _settings.AlignmentTolerance) return;
-                _origin = _cannon.Position;
-                Vector3 toTarget = targetPosition - _origin;
+                Vector3 origin = _cannon.Position;
+                Vector3 toTarget = targetPosition - origin;
                 toTarget.y = 0f;
-                _direction = toTarget.normalized;
                 // Malevolence flies on the Deep tier; the wave climbs from the cannon to reach the target's height.
-                _rise = (targetPosition.y - _origin.y) / Mathf.Max(toTarget.magnitude, 1f);
+                float rise = (targetPosition.y - origin.y) / Mathf.Max(toTarget.magnitude, 1f);
                 // A station's center can lie past the ability range; the wave must still reach it.
-                _model.Fire(Mathf.Max(_range, toTarget.magnitude + _settings.WaveThickness));
+                var fire = new ShipAbilityFire(origin, toTarget.normalized, rise,
+                    Mathf.Max(_range, toTarget.magnitude + _settings.WaveThickness));
                 _facing.EndAbilityFacing();
-                _view = Object.Instantiate(_settings.ViewPrefab);
+                Fire(fire);
+                Fired?.Invoke(fire);
             }
             if (_view == null) return;
             Vector3 path = _direction + Vector3.up * _rise;
@@ -130,7 +147,7 @@ namespace EmpireAtWar.Services.ShipAbilities.Abilities
 
         public void Stop()
         {
-            _facing.EndAbilityFacing();
+            if (_session.IsAuthority) _facing.EndAbilityFacing();
             if (_view != null)
             {
                 _view.Release();
@@ -142,6 +159,15 @@ namespace EmpireAtWar.Services.ShipAbilities.Abilities
                 stun.Modifiers.RemoveIonPulseDisable();
             }
             _stuns.Clear();
+        }
+
+        private void Fire(ShipAbilityFire fire)
+        {
+            _origin = fire.Origin;
+            _direction = fire.Direction;
+            _rise = fire.Rise;
+            _model.Fire(fire.Range);
+            _view = Object.Instantiate(_settings.ViewPrefab);
         }
 
         private void Disable(CombatModifiers modifiers)

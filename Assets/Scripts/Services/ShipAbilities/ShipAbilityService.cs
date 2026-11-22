@@ -36,6 +36,8 @@ namespace EmpireAtWar.Services.ShipAbilities
         /// <summary>Any ability start (players and AI); the online host relays it to clients.</summary>
         public event Action<IShipAbilityFacade, ShipAbilityId, IEntity> Activated;
         public event Action<IShipAbilityFacade, ShipAbilityId> Canceled;
+        /// <summary>A running ability fired (authority only); the online host relays it so clients play the same shot.</summary>
+        public event Action<IShipAbilityFacade, ShipAbilityId, ShipAbilityFire> Fired;
         public event Action<ShipAbilitySlot> StateChanged;
 
         public bool IsWaitingForTarget { get; private set; }
@@ -325,6 +327,14 @@ namespace EmpireAtWar.Services.ShipAbilities
             if (TryFindSlot(caster, id, out ShipAbilitySlot slot) && slot.State == ShipAbilityState.Active) Stop(slot);
         }
 
+        /// <summary>Online client: the host's running ability fired. Dropped when this slot is not running it.</summary>
+        public void FireReplica(IShipAbilityFacade caster, ShipAbilityId id, ShipAbilityFire fire)
+        {
+            if (TryFindSlot(caster, id, out ShipAbilitySlot slot) && slot.State == ShipAbilityState.Active &&
+                slot.RunningAbility is IFiringShipAbility firing)
+                firing.FireReplica(fire);
+        }
+
         public void RestoreReplicaState(IShipAbilityFacade caster, ShipAbilityId id, ShipAbilityState state,
             float timeLeft, IEntity target)
         {
@@ -357,6 +367,8 @@ namespace EmpireAtWar.Services.ShipAbilities
                 concentrateFire.Start(caster, target, automatic, issueOrders: !replica);
             else
                 ability.Start(caster, slot.Definition, target);
+            // Abilities are single-use objects, so the handler leaves with the ability.
+            if (ability is IFiringShipAbility firing) firing.Fired += fire => Fired?.Invoke(caster, slot.Id, fire);
             slot.Activate(ability);
             _running.Add(slot);
             StateChanged?.Invoke(slot);

@@ -35,6 +35,7 @@ verification: Source and fixtures reviewed, Unity recompiled, two assets
 - Both `ShipAbilityService` constructors require an injected `IVisionService`. Standalone callers explicitly select fog behavior.
 - A remote replacement request indicates intent. Launch and cooldown acceptance depend on host readiness. Fighter Reinforcements has a catalog entry and currently has no stock ship assignment.
 - The runner owns `Ready → Active → Recovering → Ready`. Completion-only effects are polled. Advancing effects tick and can complete in the same frame. Replica baselines follow host state transitions.
+- Replicated fire: an ability whose fire moment depends on pose (`IFiringShipAbility`, e.g. Ion Pulse) fires only on the authority. Host → `ShipAbilityService.Fired` → `ShipAbilityFireMessage` → client `FireReplica`. Client replicas never aim, turn or fire on their own. Why: client pose lags 150 ms / ±5°, so a local decision can pick another cannon or never align. See [[Done/Bugs/Ion_Pulse_Client_No_Wave]].
 - Launched Ion Shot and fired Ion Pulse can survive caster death and hazard suppression. The two policies are independent. Ion-disable behavior remains effect-specific for completable effects.
 
 ## Files

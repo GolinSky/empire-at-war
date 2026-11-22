@@ -35,6 +35,6 @@ namespace EmpireAtWar.Services.ShipAbilities.Abilities
         public bool CanTarget(IShipAbilityFacade caster, IEntity target) => !target.HealthModel.ShipClass.IsStrikecraft();
 
         public override IShipAbility CreateAbility(ShipAbilityDependencies dependencies) =>
-            new IonPulseAbility(this, dependencies.Entities, dependencies.Relations);
+            new IonPulseAbility(this, dependencies.Entities, dependencies.Relations, dependencies.Session);
     }
 }

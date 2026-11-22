@@ -34,6 +34,7 @@ namespace EmpireAtWar.Services.Networking
             NetworkClient.RegisterHandler<OrderFeedbackMessage>(ReceiveOrderFeedback);
             NetworkClient.RegisterHandler<AttackTargetMessage>(OnAttack);
             NetworkClient.RegisterHandler<ShipAbilityEventMessage>(OnAbility);
+            NetworkClient.RegisterHandler<ShipAbilityFireMessage>(OnAbilityFire);
             NetworkClient.RegisterHandler<WeaponTargetMessage>(OnWeaponTarget);
         }
 
@@ -42,6 +43,7 @@ namespace EmpireAtWar.Services.Networking
             NetworkClient.UnregisterHandler<OrderFeedbackMessage>();
             NetworkClient.UnregisterHandler<AttackTargetMessage>();
             NetworkClient.UnregisterHandler<ShipAbilityEventMessage>();
+            NetworkClient.UnregisterHandler<ShipAbilityFireMessage>();
             NetworkClient.UnregisterHandler<WeaponTargetMessage>();
         }
 
@@ -87,6 +89,13 @@ namespace EmpireAtWar.Services.Networking
 
             if (_entities.TryGetEntity(message.TargetId, out IEntity target))
                 weapon.AddTarget(target, message.AttackType, message.HardPointId, message.HardPointType);
+        }
+
+        public void OnAbilityFire(ShipAbilityFireMessage message)
+        {
+            if (_entities.TryGetEntity(message.CasterId, out IEntity casterEntity) &&
+                casterEntity.TryGetFacade(out IShipAbilityFacade caster))
+                _abilities.FireReplica(caster, message.Ability, message.Fire);
         }
 
         public void OnAbility(ShipAbilityEventMessage message)

@@ -17,6 +17,8 @@ created: "2026-10-29\r"
 ## Online Battle
 
 - [ ] [[Done/Bugs/Ship_Ability_Event_Destroyed_Caster]] — Host a battle; confirm no `Not entity found` in `Player.log`. `Abilities` test added, not run.
+- [ ] [[Done/Bugs/Ion_Pulse_Client_No_Wave]] — 2 machines: client casts Ion Pulse at a target dead ahead right after the Malevolence lands ×5 → wave on both each time; host casts → client sees the wave; stun arcs on client. Run `Abilities` when authorized; compile passed, tests not run.
+- [ ] [[Done/Bugs/Ion_Pulse_Client_No_Wave]] — Decide: a new order during the pre-fire turn cancels the pulse with the full 60 s cooldown (current) or with no cooldown.
 
 ## Group Attack Pace
 

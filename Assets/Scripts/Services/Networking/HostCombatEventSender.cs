@@ -13,7 +13,7 @@ using Mirror;
 namespace EmpireAtWar.Services.Networking
 {
     /// <summary>
-    /// Host: relays attack targets and ability starts/cancels (players and AI) so clients aim their weapons and
+    /// Host: relays attack targets and ability starts/fires/cancels (players and AI) so clients aim their weapons and
     /// play abilities like the host. Accepted order feedback goes only to its issuer. Damage stays on the host.
     /// </summary>
     public sealed class HostCombatEventSender : IInitializable, ILateDisposable
@@ -29,6 +29,7 @@ namespace EmpireAtWar.Services.Networking
         private readonly Queue<(long Sequence, OrderFeedbackMessage Message)> _pendingOrders = new Queue<(long, OrderFeedbackMessage)>();
         private readonly Queue<(long Sequence, AttackTargetMessage Message)> _pendingAttacks = new Queue<(long, AttackTargetMessage)>();
         private readonly Queue<(long Sequence, ShipAbilityEventMessage Message)> _pendingAbilities = new Queue<(long, ShipAbilityEventMessage)>();
+        private readonly Queue<(long Sequence, ShipAbilityFireMessage Message)> _pendingFires = new Queue<(long, ShipAbilityFireMessage)>();
 
         public HostCombatEventSender(UnitOrderService orders, ShipAbilityService abilities, OnlineMatchService online,
             NetworkTickService ticks, IEntityLocator entities)
@@ -47,6 +48,7 @@ namespace EmpireAtWar.Services.Networking
             _orders.AttackIssued += OnAttack;
             _abilities.Activated += OnActivated;
             _abilities.Canceled += OnCanceled;
+            _abilities.Fired += OnFired;
             _abilities.StateChanged += OnAbilityStateChanged;
         }
 
@@ -56,10 +58,12 @@ namespace EmpireAtWar.Services.Networking
             _pendingOrders.Clear();
             _pendingAttacks.Clear();
             _pendingAbilities.Clear();
+            _pendingFires.Clear();
             _orders.OrderIssued -= OnOrder;
             _orders.AttackIssued -= OnAttack;
             _abilities.Activated -= OnActivated;
             _abilities.Canceled -= OnCanceled;
+            _abilities.Fired -= OnFired;
             _abilities.StateChanged -= OnAbilityStateChanged;
         }
 
@@ -98,6 +102,12 @@ namespace EmpireAtWar.Services.Networking
                 var pending = _pendingAbilities.Dequeue();
                 Send(pending.Message, pending.Sequence);
             }
+            // After the activations: a fire right after its start must reach a client that already runs the ability.
+            while (_pendingFires.Count > 0)
+            {
+                var pending = _pendingFires.Dequeue();
+                Send(pending.Message, pending.Sequence);
+            }
             while (_pendingOrders.Count > 0)
             {
                 var pending = _pendingOrders.Dequeue();
@@ -134,6 +144,20 @@ namespace EmpireAtWar.Services.Networking
                 CasterId = caster.EntityId,
                 Ability = id,
                 TargetId = target == null ? NO_TARGET : target.Id
+            }));
+        }
+
+        private void OnFired(IShipAbilityFacade caster, ShipAbilityId id, ShipAbilityFire fire)
+        {
+            if (!_online.HasBegun) return;
+            _pendingFires.Enqueue((_events.Next(), new ShipAbilityFireMessage
+            {
+                CasterId = caster.EntityId,
+                Ability = id,
+                Origin = fire.Origin,
+                Direction = fire.Direction,
+                Rise = fire.Rise,
+                Range = fire.Range
             }));
         }
 
