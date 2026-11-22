@@ -13,6 +13,7 @@ namespace EmpireAtWar.Components.Ship.Movement
         private readonly float _rotationSpeed;
         private readonly float _rampTime;
         private readonly float[] _speedLimits;
+        private readonly float[] _turnSpeedLimits;
         private readonly float[] _pieceStartTimes;
         private readonly float _startDistance;
         private readonly float _initialSpeed;
@@ -39,6 +40,7 @@ namespace EmpireAtWar.Components.Ship.Movement
             _acceleration = (_paused ? _initialSpeed : maxSpeed) / rampTime;
             int count = route.Pieces.Count;
             _speedLimits = new float[count];
+            _turnSpeedLimits = new float[count];
             _pieceStartTimes = new float[count];
             float[] boundary = ArrayPool<float>.Shared.Rent(count + 1);
             try
@@ -63,8 +65,9 @@ namespace EmpireAtWar.Components.Ship.Movement
             for (int i = 0; i < count; i++)
             {
                 float curvature = Mathf.Abs(route.Pieces[i].Curvature);
-                _speedLimits[i] = curvature == 0f ? maxSpeed :
-                    Mathf.Min(maxSpeed, rotationSpeed * Mathf.Deg2Rad / curvature);
+                _turnSpeedLimits[i] = curvature == 0f ? float.PositiveInfinity :
+                    rotationSpeed * Mathf.Deg2Rad / curvature;
+                _speedLimits[i] = Mathf.Min(maxSpeed, _turnSpeedLimits[i]);
                 boundary[i] = i == 0 ? _speedLimits[i] : Mathf.Min(_speedLimits[i - 1], _speedLimits[i]);
                 if (route.RequiresTurnAtPiece(i)) boundary[i] = 0f;
                 if (route.GetPieceStartDistance(i) <= _startDistance) first = i;
@@ -108,6 +111,8 @@ namespace EmpireAtWar.Components.Ship.Movement
         }
 
         public float GetSpeedLimit(int pieceIndex) => _speedLimits[pieceIndex];
+        /// <summary>Fastest speed at which the hull can follow the piece exactly; ignores the route speed cap.</summary>
+        public float GetTurnSpeedLimit(int pieceIndex) => _turnSpeedLimits[pieceIndex];
         public float GetPieceStartTime(int pieceIndex) => _pieceStartTimes[pieceIndex];
 
         public void EvaluateTime(float time, ref int phaseIndex, out float distance, out float speed)

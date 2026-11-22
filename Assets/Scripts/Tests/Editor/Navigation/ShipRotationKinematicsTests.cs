@@ -84,6 +84,60 @@ namespace EmpireAtWar.Tests.Movement
             }
         }
 
+        [TestCase(0.25f)]
+        [TestCase(0.6f)]
+        public void RouteSpeed_ReductionOnArcStaysOnCurveWithoutStopping(float coefficient)
+        {
+            GameObject root = new GameObject("Turning ship");
+            GameObject body = new GameObject("Body");
+            body.transform.SetParent(root.transform);
+            ShipMovementTweenPlayer motion = new ShipMovementTweenPlayer(root.transform,
+                body.transform, root.AddComponent<LineRenderer>(), Ease.Linear);
+            try
+            {
+                const float speed = 10f;
+                const float rotation = 90f;
+                // Planned arcs are sized from top speed, so the ship turns at its full rate.
+                float curvature = rotation * Mathf.Deg2Rad / speed;
+                ShipRoutePiece arc = ShipRoutePiece.Arc(Vector3.zero, Vector3.forward,
+                    Mathf.PI / curvature, curvature);
+                ShipRoute route = new ShipRoute(new[]
+                {
+                    arc, ShipRoutePiece.Line(arc.End, arc.End + arc.EndTangent * 300f)
+                });
+                motion.PlayPath(new ShipNavigationPlan(route, route.Pieces[1].End,
+                    null, 0f, 100f), speed, rotation, rotation, 0f, null);
+                for (int i = 0; i < 40; i++) motion.Tick(0.05f);
+                float beforeSpeed = motion.CurrentSpeed;
+                Assert.That(Vector3.Dot(root.transform.position - arc.End, arc.EndTangent),
+                    Is.LessThan(0f), "The ship must still be on the arc when the cap drops.");
+
+                motion.SetRouteSpeed(speed * coefficient);
+
+                bool reachedLine = false;
+                for (int i = 0; i < 400 && !reachedLine; i++)
+                {
+                    motion.Tick(0.05f);
+                    Assert.That(motion.CurrentSpeed, Is.GreaterThan(speed * coefficient * 0.99f),
+                        $"Frame {i}: the ship must not brake below the new cap.");
+                    Assert.That(Vector3.Angle(root.transform.forward,
+                        motion.CurrentPathTangent.Value), Is.LessThan(0.01f),
+                        $"Frame {i}: the hull must stay locked on the curve.");
+                    reachedLine = Vector3.Dot(root.transform.position - arc.End, arc.EndTangent) > 1f;
+                }
+                Assert.That(reachedLine, Is.True);
+                Assert.That(motion.CurrentSpeed, Is.LessThan(beforeSpeed));
+                // A low cap may need part of the outgoing line to finish braking.
+                for (int i = 0; i < 400; i++) motion.Tick(0.05f);
+                Assert.That(motion.CurrentSpeed, Is.LessThanOrEqualTo(speed * coefficient + 0.001f));
+            }
+            finally
+            {
+                motion.Release();
+                Object.DestroyImmediate(root);
+            }
+        }
+
         [Test]
         public void RouteSpeed_ZeroPausesAndPositiveSpeedResumesTheOrder()
         {

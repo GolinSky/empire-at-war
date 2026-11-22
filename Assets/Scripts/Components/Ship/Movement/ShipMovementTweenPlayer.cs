@@ -284,10 +284,12 @@ namespace EmpireAtWar.Components.Ship.Movement
             _currentPathTangent = routeTangent;
             if (!_isTurningToRoute)
             {
+                // Only the turn rate decides whether the hull can stay on the curve. A lower
+                // route speed cap brakes the ship through the profile while it stays locked on.
                 if (recoveringHeading ||
-                    _currentSpeed > _speedProfile.GetSpeedLimit(_pieceIndex) + Mathf.Epsilon)
+                    _currentSpeed > _speedProfile.GetTurnSpeedLimit(_pieceIndex) + Mathf.Epsilon)
                 {
-                    // Keep recovery after crossing the speed limit; a speed cap does not
+                    // Keep recovery after crossing the turn limit; slowing down does not
                     // establish heading alignment. Brake to rest so even a tight arc can align.
                     StepRotation(routeTangent, deltaTime);
                     _isRecoveringHeading = Vector3.Angle(_rootTransform.forward,

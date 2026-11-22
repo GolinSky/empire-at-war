@@ -19,6 +19,8 @@ namespace EmpireAtWar.Services.ShipNavigation
         [ReadOnly] public NativeParallelMultiHashMap<int, int> DiskBuckets;
         public NavMeshBuckets Layout;
         public NativeList<ShipRouteCircle> Circles;
+        /// <summary>Start circle turning the other way; radius 0 when there is none.</summary>
+        public ShipRouteCircle AlternateStart;
         public NativeList<ShipRoutePiece> Pieces;
         public NativeReference<int> Failure;
         public float2 Start;
@@ -36,9 +38,11 @@ namespace EmpireAtWar.Services.ShipNavigation
                 circle.Next = i + 1 < Circles.Length ? i + 1 : -1;
                 Circles[i] = circle;
             }
-            CheckStart();
+            // Only the first check may switch turn direction: later repairs insert circles
+            // for the chosen start's legs, which would not fit the other direction.
+            CheckStart(true);
             if (!RepairTangents()) return;
-            if (CheckStart() && !RepairTangents()) return;
+            if (CheckStart(false) && !RepairTangents()) return;
             Emit();
         }
 
@@ -203,12 +207,14 @@ namespace EmpireAtWar.Services.ShipNavigation
             return true;
         }
 
-        private bool CheckStart()
+        private bool CheckStart(bool allowAlternate)
         {
             // Only the heading-constrained start can leave the funnel corridor. If its
-            // bounded check fails, replace that start circle with the safe funnel apex.
+            // bounded check fails, try the other turn direction once, then replace the
+            // start circle with the safe funnel apex.
             ShipRouteCircle first = Circles[0];
-            if (first.Radius > 0f)
+            bool changed = false;
+            while (first.Radius > 0f)
             {
                 bool hasTangent = ShipRouteGeometry.Tangent(first, Circles[first.Next], out float2 exit, out float2 entry);
                 float sweep = ShipRouteGeometry.Sweep(Start - first.Center, exit - first.Center, first.Sign);
@@ -221,13 +227,24 @@ namespace EmpireAtWar.Services.ShipNavigation
                     ShipRouteGeometry.FindBlocker(leg, Disks, DiskBuckets, Layout,
                         -1, Circles[first.Next].DiskIndex, Escape) >= 0)
                 {
+                    if (allowAlternate && AlternateStart.Radius > 0f)
+                    {
+                        first.Center = AlternateStart.Center;
+                        first.Radius = AlternateStart.Radius;
+                        first.Sign = AlternateStart.Sign;
+                        AlternateStart.Radius = 0f;
+                        Circles[0] = first;
+                        changed = true;
+                        continue;
+                    }
                     first.Center = Start;
                     first.Radius = 0f;
                     Circles[0] = first;
                     return true;
                 }
+                return changed;
             }
-            return false;
+            return changed;
         }
 
         private int InsertAfter(int index, ShipRouteCircle circle)

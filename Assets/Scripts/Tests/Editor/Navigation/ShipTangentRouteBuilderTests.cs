@@ -339,6 +339,20 @@ namespace EmpireAtWar.Tests.Editor
                     "No arc on this route needs to sweep more than half a turn.");
         }
 
+        [TestCase(1f)]
+        [TestCase(-1f)]
+        public void ShorterStartTurnLeavesMap_StartTurnsTheOtherWayWithoutStopping(float mirror)
+        {
+            // The destination is behind and slightly towards the near map edge. The shorter
+            // turn swings past that edge, so the start must use the longer turn direction
+            // instead of stopping to turn in place.
+            ShipRoute route = BuildAndAssert(Array.Empty<RadarContact>(), 100f,
+                new Vector3(85f * mirror, 0f, 0f), new Vector3(88f * mirror, 0f, -40f), Vector3.forward);
+            Assert.That(Vector3.Angle(Vector3.forward, route.InitialTangent), Is.LessThan(1f),
+                "The route must start along the current heading.");
+            Assert.That(route.Pieces[0].Curvature, Is.Not.EqualTo(0f));
+        }
+
         private static ShipRoute BuildAndAssert(RadarContact[] obstacles, float mapHalfSize,
             Vector3 start, Vector3 end, Vector3 forward, IHazardSource[] hazards = null)
         {

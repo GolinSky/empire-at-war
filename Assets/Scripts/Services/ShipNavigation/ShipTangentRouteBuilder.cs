@@ -103,6 +103,9 @@ namespace EmpireAtWar.Services.ShipNavigation
             }
             circles.Add(new ShipRouteCircle(goal, 0f, 1));
             bool directEscape = allowEscape && first == 0;
+            // The longer turn direction is kept as a fallback: if the shorter start arc is
+            // blocked, the ship turns the other way instead of stopping to turn in place.
+            ShipRouteCircle alternateStart = default;
             if (first == 0 && math.distancesq(start, goal) > ShipRouteGeometry.EPSILON)
             {
                 // Try both turn directions; turning towards the first corner's wrap side
@@ -112,7 +115,13 @@ namespace EmpireAtWar.Services.ShipNavigation
                 for (int sign = -1; sign <= 1; sign += 2)
                 {
                     if (!TryStartCircle(graph, start, direction, circles[1], sign, turnRadius, directEscape,
-                            out ShipRouteCircle circle, out float length) || length >= shortest) continue;
+                            out ShipRouteCircle circle, out float length)) continue;
+                    if (length >= shortest)
+                    {
+                        alternateStart = circle;
+                        continue;
+                    }
+                    if (circles[0].Radius > 0f) alternateStart = circles[0];
                     shortest = length;
                     circles[0] = circle;
                 }
@@ -122,8 +131,8 @@ namespace EmpireAtWar.Services.ShipNavigation
             var job = new ShipTangentRouteJob
             {
                 Disks = graph.Disks, DiskBuckets = graph.DiskBuckets, Layout = graph.Layout,
-                Circles = circles, Pieces = pieces, Failure = failure, Start = start, Height = height,
-                Escape = directEscape, RepairMetrics = repairMetrics
+                Circles = circles, AlternateStart = alternateStart, Pieces = pieces, Failure = failure,
+                Start = start, Height = height, Escape = directEscape, RepairMetrics = repairMetrics
             };
             job.Run();
             if (failure.Value != ShipTangentRouteJob.FAILURE_NONE)
