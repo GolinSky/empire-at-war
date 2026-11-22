@@ -1,5 +1,12 @@
 fileFormatVersion: 2
 guid: a65ceb7f048033d448bed45de619e759
+AssetOrigin:
+  serializedVersion: 1
+  productId: 323124
+  packageName: Class Diagram Generator
+  packageVersion: 2.3.1
+  assetPath: Assets/ClassDiagramGenerator/Resources/Icon 160x160 - Diagram Generator.png
+  uploadId: 908576
 TextureImporter:
   internalIDToNameTable: []
   externalObjects: {}
@@ -115,10 +122,3 @@ TextureImporter:
   userData: 
   assetBundleName: 
   assetBundleVariant: 
-AssetOrigin:
-  serializedVersion: 1
-  productId: 323124
-  packageName: Class Diagram Generator
-  packageVersion: 2.3.1
-  assetPath: Assets/ClassDiagramGenerator/Resources/Icon 160x160 - Diagram Generator.png
-  uploadId: 908576

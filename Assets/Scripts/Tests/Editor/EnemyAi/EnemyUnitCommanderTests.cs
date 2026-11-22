@@ -1542,7 +1542,7 @@ namespace EmpireAtWar.Tests.Editor
         }
 
         [Test]
-        public void CaptureZone_CommitsFastestShipAndStopsOnlyBusyRemainder()
+        public void CaptureZone_CommitsFastestShipAndRemainderGuardsTheBody()
         {
             FakeShip slow = new FakeShip(id: 1, position: Vector3.zero) { NavigationSpeed = 1f,
                 CurrentOrder = UnitOrderType.Attack };
@@ -1555,8 +1555,45 @@ namespace EmpireAtWar.Tests.Editor
 
             Assert.That(orders.Calls[0].Action, Is.EqualTo(UnitActionId.AttackMove));
             Assert.That(orders.Calls[0].Receivers[0].Id, Is.EqualTo(fast.EntityId));
-            Assert.That(orders.Calls[1].Action, Is.EqualTo(UnitActionId.Stop));
-            Assert.That(orders.Calls[1].Receivers[0].Id, Is.EqualTo(slow.EntityId));
+            // W31: an uncommitted ship is never left on order None; without a gather point it guards the body.
+            Assert.That(orders.Calls.Any(call => call.Action == UnitActionId.Stop), Is.False);
+            Assert.That(orders.Calls.Single(call => call.Receivers.Any(r => r.Id == slow.EntityId)).Action,
+                Is.EqualTo(UnitActionId.Guard));
+        }
+
+        [Test]
+        public void CaptureZone_UncommittedShipHoldsAtTheGatherPoint()
+        {
+            FakeShip slow = new FakeShip(id: 1, position: Vector3.zero) { NavigationSpeed = 1f };
+            FakeShip fast = new FakeShip(id: 2, position: Vector3.right) { NavigationSpeed = 4f };
+            FakeOrderService orders = new FakeOrderService();
+            Vector3 gather = new Vector3(-400f, 0f, 300f);
+            EnemyStrategicContext context = Context(new IShipEntity[] { slow, fast }, guardPosition: gather);
+
+            new EnemyTaskForceExecutor(orders).Execute(new EnemyStrategicDecision(
+                state: EnemyStrategicState.CaptureZone, committedShipCount: 1, reason: "test"), context);
+
+            var hold = orders.Calls.Single(call => call.Receivers.Any(r => r.Id == slow.EntityId));
+            Assert.That(hold.Action, Is.EqualTo(UnitActionId.AttackMove));
+            Assert.That(hold.Point, Is.EqualTo(gather));
+        }
+
+        [Test]
+        public void CaptureZone_ZoneForceCommitsEveryShip()
+        {
+            FakeShip slow = new FakeShip(id: 1, position: Vector3.zero) { NavigationSpeed = 1f };
+            FakeShip fast = new FakeShip(id: 2, position: Vector3.right) { NavigationSpeed = 4f };
+            FakeOrderService orders = new FakeOrderService();
+            EnemyStrategicContext context = Context(new IShipEntity[] { slow, fast });
+            context.IsZoneForce = true;
+
+            new EnemyTaskForceExecutor(orders).Execute(new EnemyStrategicDecision(
+                state: EnemyStrategicState.CaptureZone, committedShipCount: 1, reason: "test"), context);
+
+            // The allocator sized the zone force; the commit ratio does not trim it again (W31).
+            Assert.That(orders.Calls.Where(call => call.Action == UnitActionId.AttackMove)
+                .SelectMany(call => call.Receivers).Select(r => r.Id),
+                Is.EquivalentTo(new[] { slow.EntityId, fast.EntityId }));
         }
 
         [Test]
@@ -2321,6 +2358,8 @@ namespace EmpireAtWar.Tests.Editor
                 foreach (ReinforcementZonePresenter zone in zones.Zones)
                     zone.Restore(owner.Id, PlayerId.None, 0f, false);
                 var pressure = new EnemyStationPressureTracker();
+                // Critical by time-to-loss (W36): a durability share alone no longer counts.
+                pressure.Update(station.Id, 100f, 100f, 0f, visibleThreatId: 99);
                 pressure.Update(station.Id, 40f, 100f, 1f, visibleThreatId: 99);
                 var range = new Vector2Range();
                 Type rangeType = range.GetType().BaseType;
@@ -3016,7 +3055,8 @@ namespace EmpireAtWar.Tests.Editor
             planner.Reconcile(reinforced);
             planner.Allocate(reinforced, new HashSet<string>(), stationPressure: false);
 
-            Assert.That(planner.Groups.Single(group => group.IsCaptureDetachment).Ships, Is.EquivalentTo(reinforced));
+            // W23: a zone with one defender is cleared, so its force is trimmed to the nearest ship that wins.
+            Assert.That(planner.Groups.Single(group => group.IsCaptureDetachment).Ships, Is.EqualTo(new[] { strong }));
         }
 
         [Test]
@@ -3052,7 +3092,9 @@ namespace EmpireAtWar.Tests.Editor
             var (planner, builder, _, weak, strong, _) = AllocationPlanner(defended: false);
             var pressure = (EnemyStationPressureTracker)typeof(EnemyStrategicContextBuilder)
                 .GetField("_stationPressure", BindingFlags.Instance | BindingFlags.NonPublic).GetValue(builder);
-            pressure.Update(1, 40f, 100f, 0f, visibleThreatId: 9);
+            // Critical by time-to-loss: a durability share alone no longer makes a station critical (W36).
+            pressure.Update(1, 100f, 100f, 0f, visibleThreatId: 9);
+            pressure.Update(1, 40f, 100f, 1f, visibleThreatId: 9);
             Assert.That(pressure.IsStationCritical, Is.True);
             IShipEntity[] ships = { weak, strong };
             planner.Reconcile(ships, stationPressure: true);
@@ -3619,7 +3661,8 @@ namespace EmpireAtWar.Tests.Editor
             AiWorldSnapshot snapshot = null)
         {
             snapshot ??= new AiWorldSnapshot(entities);
-            catalog ??= new UnitCombatProfileCatalog(null, null, null, null);
+            // The team picture rates every sighted ship cluster (W37), so the default catalog profiles the Venator.
+            catalog ??= VenatorCatalog();
             zones ??= new ZoneSource(roster);
             return new EnemyStrategicContextBuilder(ships, reinforcementZones, captureSources, entities, game, roster,
                 new ForceCompositionBuilder(entities, catalog, snapshot), intel, vision, owner, production, hazards, zones,

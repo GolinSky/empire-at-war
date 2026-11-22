@@ -460,6 +460,8 @@ namespace EmpireAtWar.Tests.Editor
         {
             FakeCommand caster = CreateIonPulseCaster(out FakeCommand target);
             IonPulseSettings settings = CreateIonPulseSettings();
+            // The service checks the slot's settings (required ion cannon) before it starts the ability.
+            SetField(caster.Slots[0].Definition, "settings", settings);
             var relations = TestPlayers.CreateDuel();
             var ability = new IonPulseAbility(settings, new EntityLocator(), relations, new OfflineSession(TestPlayers.Human));
             var service = new ShipAbilityService(new SingleAbilityFactory(ability), relations,
@@ -1518,10 +1520,13 @@ namespace EmpireAtWar.Tests.Editor
             public void Stop() => StopCount++;
         }
 
-        private sealed class IonCannonStub : IHardPointModel
+        private sealed class IonCannonStub : IHardPointModel, IReadOnlyHardPointModel
         {
             public event Action OnHardPointHealthChanged { add { } remove { } }
             public event Action OnDestroyed { add { } remove { } }
+            public event Action OnDestroyedByDamage { add { } remove { } }
+            public bool IsInstalled => true;
+            public float HullDamageMultiplier => 1f;
             public HardPointType HardPointType => HardPointType.IonPulseCannon;
             public float HealthPercentage => 1f;
             public int Id { get; set; }
@@ -1635,7 +1640,8 @@ namespace EmpireAtWar.Tests.Editor
 
             public event Action OnValueChanged { add { } remove { } }
 
-            public IReadOnlyList<IReadOnlyHardPointModel> HardPointModels => Array.Empty<HardPointModel>();
+            // Units that are also health hardpoints count for an ability's required subsystem (Ion Pulse cannon).
+            public IReadOnlyList<IReadOnlyHardPointModel> HardPointModels => System.Linq.Enumerable.ToArray(System.Linq.Enumerable.OfType<IReadOnlyHardPointModel>(Units));
             public float Hull => 1f;
             public ShipClass ShipClass { get; set; } = ShipClass.Capital;
             public bool HasLiveHardPoints => true;

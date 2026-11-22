@@ -42,13 +42,17 @@ namespace EmpireAtWar.Components.Weapon
             return byRange[byRange.Count - 1].range;
         }
 
-        public static float EffectiveDamagePerSecond(WeaponProfile weapon, ShipClass targetClass, DamageMatrixData matrix)
+        public static float EffectiveDamagePerSecond(WeaponProfile weapon, ShipClass targetClass, DamageMatrixData matrix) =>
+            EffectiveDamagePerSecond(weapon, targetClass, matrix.GetAccuracy(weapon.DamageType, targetClass),
+                matrix.GetDamageMultiplier(weapon.DamageType, targetClass));
+
+        /// <summary>Same formula with the matrix accuracy and hull damage multiplier given directly, e.g. from a balance draft.</summary>
+        public static float EffectiveDamagePerSecond(WeaponProfile weapon, ShipClass targetClass, float accuracy,
+            float damageMultiplier)
         {
             if (weapon.StrikecraftOnly && !targetClass.IsStrikecraft()) return 0f;
-            float hitChance = Mathf.Min(1f, matrix.GetAccuracy(weapon.DamageType, targetClass) *
-                                            weapon.GetAccuracyBias(targetClass));
-            return weapon.DamagePerSecond * hitChance * matrix.GetDamageMultiplier(weapon.DamageType, targetClass) *
-                   weapon.GetDamageBias(targetClass);
+            float hitChance = Mathf.Min(1f, accuracy * weapon.GetAccuracyBias(targetClass));
+            return weapon.DamagePerSecond * hitChance * damageMultiplier * weapon.GetDamageBias(targetClass);
         }
     }
 }

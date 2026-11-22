@@ -475,7 +475,7 @@ MonoBehaviour:
         isToggle: 0
         requiresEnemyTarget: 0
         range: 900
-        autoPower: 4
+        autoPower: 0
         settings:
           rid: 2035977070347550801
   autoPower:

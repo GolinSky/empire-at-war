@@ -268,6 +268,9 @@ bpy.ops.import_scene.fbx(
 - `export_isd_i.py` geometry check uses an absolute 0.001 limit; float32 spacing near 8,000 units is ~0.001. Scale the limit for very large hulls (Viscount Dreadnought: 0.005).
 - Donor `BodyPivot` can carry the donor's own scale (MC80 Independence ≈ 1.81×). Reset body position/rotation/scale before instantiating a new visual, or the hull length is wrong.
 - `ShipReinforcementPreviewPostprocessor` logs KeyNotFound when a new view is saved before `ReinforcementData` registration; register, then run `ShipReinforcementPreviewSync.Sync`.
+- Source textures with no team alpha → inverted-alpha `_TeamMask` is all white → whole hull recolored. Check mask coverage after staging (MC80 hull masks ≈ 6–12%).
+- Decision: one solid circle per hull side, `_TeamMaskStrength` 0.6; engines/hangars/dishes empty. Avoid: repeated ring stripes (user: too many stripes).
+- Paint in ship space, not UV space: `Tools/Blender/Viscount/TeamMask.cs` rasterizes UV triangles, each texel takes its hull point's value (side circle radius 0.125 × hull height, centre 0.15 × height up and 0.05 × length forward, outboard faces only `|normal.x| ≥ 0.3`, 4 px seam dilation). Worn paint: ragged edge 0.1 R, value-noise chips (threshold 0.25 centre → 0.52 rim), grime keeps ≥ 0.6 paint on dark albedo. Noise in circle-local (y, z), so both sides match. Chip threshold 0.3 → 0.62 lost the circle shape; 0.16 → 0.4 read as clean paint. Works across many UV islands; mirrored halves sharing UVs stay consistent.
 - Reference: [[Done/Features/Viscount_Import]], tooling `Tools/Blender/Viscount/`.
 
 ### Hero fighter import evidence — 2026-11-16

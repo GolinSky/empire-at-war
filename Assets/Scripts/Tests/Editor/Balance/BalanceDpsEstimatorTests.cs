@@ -2,6 +2,8 @@ using System.Collections.Generic;
 using System.Globalization;
 using System.Linq;
 using EmpireAtWar.Components.AttackComponent;
+using EmpireAtWar.Components.Ship.Health;
+using EmpireAtWar.Components.Weapon;
 using EmpireAtWar.Editor.Balance;
 using NUnit.Framework;
 using UnityEditor;
@@ -61,6 +63,40 @@ namespace EmpireAtWar.Tests.Editor
             Assert.That(multipliers.Select(field => field.Read()), Is.EqualTo(multipliers.Select(field =>
                 saved.GetDefinition((WeaponType)int.Parse(field.Stat.Split('/')[1])).DamageMultiplier
                     .ToString("R", CultureInfo.InvariantCulture))), "The preview must not write the asset.");
+        }
+
+        [Test]
+        public void EstimateAgainst_MatchesRuntimeEffectiveDamage_AndFollowsDraftMatrix()
+        {
+            BalanceRegistration registry = BalanceInventory.BuildCombat();
+            BalanceUnit unit = registry.Units.First(entry => entry.Kind == BalanceUnitKind.Ship && entry.Mounts.Any());
+            List<WeaponType> mounted = unit.Mounts.Distinct().SelectMany(registry.FieldsFor)
+                .Where(field => !field.SharedMountSource && field.Stat == "WeaponType")
+                .Select(field => (WeaponType)int.Parse(field.Read(), CultureInfo.InvariantCulture)).ToList();
+            WeaponsData weapons = registry.Resolve<WeaponsData>();
+            DamageMatrixData matrix = registry.Resolve<DamageMatrixData>();
+            const ShipClass TARGET = ShipClass.Capital;
+            double expected = mounted.Sum(type =>
+                (double)WeaponEngagementRange.EffectiveDamagePerSecond(weapons.GetProfile(type), TARGET, matrix));
+
+            using (BalanceDpsEstimator estimator = new BalanceDpsEstimator(registry))
+            {
+                BalanceDpsEstimate saved = estimator.EstimateAgainst(unit, new BalanceDraft(), TARGET);
+                Assert.That(saved.HasValue, Is.True, saved.Problem);
+                Assert.That(saved.Value, Is.EqualTo(expected).Within(expected * 1e-5 + 1e-5));
+
+                // Doubling the hull damage multiplier of every mounted damage type doubles damage against that class.
+                List<BalanceField> multipliers = mounted.Select(type => weapons.GetProfile(type).DamageType).Distinct()
+                    .Select(damageType => registry.Fields.Values.Single(field =>
+                        field.Stat == "matrix/" + (int)damageType + "/damage/" + TARGET))
+                    .ToList();
+                BalanceDraft draft = new BalanceDraft();
+                draft.SetMany(multipliers.Select(field => field.Snapshot()).ToList(),
+                    multipliers.Select(field => (double.Parse(field.Read(), CultureInfo.InvariantCulture) * 2)
+                        .ToString("R", CultureInfo.InvariantCulture)).ToList());
+                BalanceDpsEstimate doubled = estimator.EstimateAgainst(unit, draft, TARGET);
+                Assert.That(doubled.Value, Is.EqualTo(saved.Value * 2).Within(saved.Value * 1e-5 + 1e-5));
+            }
         }
 
         [Test]

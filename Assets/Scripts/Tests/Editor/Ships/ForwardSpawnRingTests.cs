@@ -68,6 +68,18 @@ namespace EmpireAtWar.Tests.Editor
         }
 
         [Test]
+        public void CrowdedRing_TriesTheWideRingInTheSameCall()
+        {
+            // Every point of the near ring has a hull on it (W40); the wide ring is clear.
+            Assert.That(ForwardSpawnRing.TryFind(new[] { UNIT }, Vector3.zero, _ => true,
+                point => (point - UNIT).magnitude > ForwardSpawnRing.RADIUS + 1f,
+                out Vector3 position, out ForwardSpawnAttempt attempt), Is.True);
+
+            Assert.That((position - UNIT).magnitude, Is.EqualTo(ForwardSpawnRing.WIDE_RADIUS).Within(0.01f));
+            Assert.That(attempt.NotClear, Is.EqualTo(ForwardSpawnRing.POINTS));
+        }
+
+        [Test]
         public void AllPointsFail_ReturnsFalseAfterAtMostThreeUnits()
         {
             var units = new List<Vector3> { UNIT, UNIT * 2f, UNIT * 3f, UNIT * 4f };

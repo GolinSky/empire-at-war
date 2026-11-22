@@ -1,3 +1,4 @@
+using EmpireAtWar.Components.Ship.Health;
 using EmpireAtWar.Entities.EnemyFaction.Models.Combat;
 using UnityEngine;
 
@@ -18,6 +19,9 @@ namespace EmpireAtWar.Services.Enemy
         public ArmadaAssetKind AssetKind { get; internal set; }
         public Vector3 AssetPosition { get; internal set; }
         public bool ThreatensAsset => AssetKind != ArmadaAssetKind.None;
+        /// <summary>Capital, battlecruiser and dreadnought ships in the group.</summary>
+        public float CapitalShips => Strength.Units(ShipClass.Capital) + Strength.Units(ShipClass.BattleCruiser) +
+            Strength.Units(ShipClass.Dreadnought);
 
         internal Vector3 SampleCentre { get; set; }
         internal float SampleTime { get; set; }

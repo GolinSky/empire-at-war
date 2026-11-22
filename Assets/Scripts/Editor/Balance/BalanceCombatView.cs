@@ -70,11 +70,12 @@ namespace EmpireAtWar.Editor.Balance
             BalanceDraftUsage usage = new BalanceDraftUsage(registry, state.Draft);
             using (BalanceDpsEstimator estimator = new BalanceDpsEstimator(registry))
                 foreach (BalanceUnit unit in units)
-                    Card(grid, unit, estimator.Estimate(unit, state.Draft), registry, controller, usage);
+                    Card(grid, unit, estimator.Estimate(unit, state.Draft), estimator.DescribeAgainstClasses(unit, state.Draft),
+                        registry, controller, usage);
         }
 
-        private static void Card(VisualElement grid, BalanceUnit unit, BalanceDpsEstimate dps, BalanceRegistration registry, BalanceEditorController controller,
-            BalanceDraftUsage usage)
+        private static void Card(VisualElement grid, BalanceUnit unit, BalanceDpsEstimate dps, string dpsVsClass,
+            BalanceRegistration registry, BalanceEditorController controller, BalanceDraftUsage usage)
         {
             VisualElement slot = new VisualElement { userData = unit.Id };
             slot.AddToClassList("balance-compare-slot");
@@ -103,6 +104,9 @@ namespace EmpireAtWar.Editor.Balance
             Label dpsLabel = new Label("Base DPS · " + dps);
             dpsLabel.AddToClassList("balance-muted");
             card.Add(dpsLabel);
+            Label vsClassLabel = new Label("DPS vs class · " + dpsVsClass) { tooltip = BalanceDpsEstimator.VS_CLASS_FORMULA };
+            vsClassLabel.AddToClassList("balance-muted");
+            card.Add(vsClassLabel);
             Label hardpoints = new Label("Hardpoints (" + unit.Mounts.Distinct().Count() + ")");
             hardpoints.AddToClassList("balance-compare-section");
             card.Add(hardpoints);

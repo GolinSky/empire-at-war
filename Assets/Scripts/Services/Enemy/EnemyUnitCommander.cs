@@ -54,6 +54,8 @@ namespace EmpireAtWar.Services.Enemy
         /// <summary>The team holds an outer zone; until then finished ships deploy one at a time.</summary>
         bool HoldsOuterZone => true;
         bool TryGetReinforcementRally(out Vector3 rally, out bool defendHome);
+        /// <summary>The relay a rally landing would pick may take an assault capital (W38).</summary>
+        bool IsCapitalRallySafe(Vector3 rally) => true;
         void FillDefenseDeploymentThreats(PlacementThreatSnapshot threats) =>
             throw new InvalidOperationException("This AI does not provide station-defense deployment threats.");
     }
@@ -132,6 +134,8 @@ namespace EmpireAtWar.Services.Enemy
 
         public void FillDefenseDeploymentThreats(PlacementThreatSnapshot threats) =>
             _contextBuilder.FillDefenseDeploymentThreats(threats);
+
+        public bool IsCapitalRallySafe(Vector3 rally) => _contextBuilder.IsCapitalRallySafe(rally);
 
         public bool TryGetReinforcementRally(out Vector3 rally, out bool defendHome)
         {

@@ -2,6 +2,7 @@ using System;
 using System.Collections.Generic;
 using System.Globalization;
 using System.Linq;
+using EmpireAtWar.Components.Ship.Health;
 using UnityEngine.UIElements;
 
 namespace EmpireAtWar.Editor.Balance
@@ -145,7 +146,12 @@ namespace EmpireAtWar.Editor.Balance
             EditableStat(summary, unit, registry, controller, squadron ? "Hull / member" : "Hull HP", "Hull", "MemberHull");
             EditableStat(summary, unit, registry, controller, squadron ? "Shield / member" : "Shield", "Shields", "MemberShields");
             using (BalanceDpsEstimator estimator = new BalanceDpsEstimator(registry))
+            {
                 Stat(summary, "Base DPS · estimate", estimator.Estimate(unit, draft).ToString());
+                foreach (ShipClass targetClass in BalanceDpsEstimator.DisplayedClasses)
+                    Stat(summary, "DPS vs " + targetClass, estimator.EstimateAgainst(unit, draft, targetClass).ToString(),
+                        "Read-only draft value. " + BalanceDpsEstimator.VS_CLASS_FORMULA);
+            }
             Stat(summary, "Speed", Value(unit, registry, draft, "Speed", "CruiseSpeed"));
         }
 
@@ -182,7 +188,7 @@ namespace EmpireAtWar.Editor.Balance
             return "N/A";
         }
 
-        private static void Stat(VisualElement panel, string title, string value)
+        private static void Stat(VisualElement panel, string title, string value, string tooltip = null)
         {
             VisualElement card = new VisualElement();
             card.AddToClassList("balance-stat");
@@ -192,7 +198,7 @@ namespace EmpireAtWar.Editor.Balance
             Label number = new Label(value);
             number.AddToClassList("balance-stat-value");
             card.Add(number);
-            card.tooltip = "Read-only draft value. " + BalanceDpsEstimator.FORMULA
+            card.tooltip = tooltip ?? "Read-only draft value. " + BalanceDpsEstimator.FORMULA
                 + " Excludes accuracy, target modifiers, firing arcs, abilities, movement and projectile travel.";
             panel.Add(card);
         }

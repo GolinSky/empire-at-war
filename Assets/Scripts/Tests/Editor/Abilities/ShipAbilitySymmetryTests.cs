@@ -140,7 +140,7 @@ namespace EmpireAtWar.Tests.Editor
             EntityLocator entities = new EntityLocator();
             IPlayerRelations relations = TestPlayers.CreateDuel();
             var dependencies = new ShipAbilityDependencies(entities, relations, null, null, null, null,
-                new VisionService(relations, fogEnabled: false), new OfflineSession(TestPlayers.Human), null, null);
+                new VisionService(relations, fogEnabled: false), new OfflineSession(TestPlayers.Human), null, null, null);
             ShipAbilityService service = new ShipAbilityService(new ShipAbilityFactory(dependencies), relations,
                 new VisionService(relations, fogEnabled: false));
             ShipAbilityDefinition definition = new ShipAbilityDefinition();
@@ -273,7 +273,7 @@ namespace EmpireAtWar.Tests.Editor
             GravityWellSettings wellSettings = new GravityWellSettings();
             GravityWellEffects effects = CreateWellEffects(relations, wellSettings, out GameObject wellPrefab);
             var dependencies = new ShipAbilityDependencies(new EntityLocator(), relations, null, null, null, null,
-                new VisionService(relations, fogEnabled: false), new OfflineSession(TestPlayers.Human), areas, effects);
+                new VisionService(relations, fogEnabled: false), new OfflineSession(TestPlayers.Human), areas, effects, null);
             var service = new ShipAbilityService(new ShipAbilityFactory(dependencies), relations,
                 new VisionService(relations, fogEnabled: false));
             ShipAbilityDefinition definition = new ShipAbilityDefinition();

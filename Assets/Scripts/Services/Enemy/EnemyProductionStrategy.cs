@@ -42,6 +42,8 @@ namespace EmpireAtWar.Services.Enemy
         private const float NON_COMPETING_RESEARCH_SHARE = 0.25f;
         private const float PATROL_WING_RETRY_SECONDS = 60f;
         private const int SAVING_MIN_SHIPS = 10;
+        /// <summary>Priority penalty (lower builds first) for a ship that does not fit the free unit capacity.</summary>
+        private const float NO_FIT_SAVING_PRIORITY_SCALE = 2f;
         private const float SAVING_MIN_ADVANTAGE = 1f;
         private const float SURPLUS_SHIP_FACTOR = 2f;
         /// <summary>Ships more than this many levels below the station level are no longer bought.</summary>
@@ -76,6 +78,8 @@ namespace EmpireAtWar.Services.Enemy
         private readonly ForceComposition _hostileForce = new ForceComposition();
         private readonly Dictionary<UnitTypeId, int> _liveUnitCounts = new Dictionary<UnitTypeId, int>();
         private readonly List<ProductionCandidate> _candidates = new List<ProductionCandidate>();
+        private readonly List<(KeyValuePair<ShipType, FactionData> Option, float Arrival, float PerCredit, float PerSlot)>
+            _criticalShips = new List<(KeyValuePair<ShipType, FactionData>, float, float, float)>();
         private readonly List<UnitTypeId> _candidateIds = new List<UnitTypeId>();
         private readonly List<FactionData> _candidateData = new List<FactionData>();
 
@@ -84,6 +88,8 @@ namespace EmpireAtWar.Services.Enemy
         private float _nextDefenseBuildTime;
         private float _nextStationPlacementCheck;
         private string _savingUnit = "";
+        /// <summary>The last evaluation's ship choice was affordable but blocked by the unit cap (W34 b).</summary>
+        private bool _capacityBlocked;
         private float _savingSince = -1f;
         private float _patrolWingRetryAt = float.NegativeInfinity;
         private int _peakMiningCount;
@@ -219,6 +225,8 @@ namespace EmpireAtWar.Services.Enemy
 
             KeyValuePair<SquadronType, FactionData> squadron = default;
             KeyValuePair<ShipType, FactionData> ship = default;
+            _stationPressure.DefenderArrivalSeconds = _stationPressure.HasPressure
+                ? GetQuickestDefenderArrival() : float.PositiveInfinity;
             bool critical = _stationPressure.IsStationCritical;
             bool canOrderShips = CanOrderAnyShip();
             // A threatened station saves for the best ship that still arrives in time. It never falls back to
@@ -262,6 +270,9 @@ namespace EmpireAtWar.Services.Enemy
                     FormattableString.Invariant($"critical=True;etaSeconds=Infinity;timeToLoss={_stationPressure.EstimatedTimeToLossSeconds:F1};") +
                     "reason=no affordable combat unit can arrive before station loss");
             }
+            _capacityBlocked = shipBlockedByCapacity;
+            bool choiceFits = hasShipOption && FitsRemainingCapacity(shipChoice);
+            // A big ship that does not fit yet may still be saved for: it is built for the fleet after the next losses.
             bool savingForShip = !critical && hasShipOption && !canBuildShip;
             if (savingForShip)
                 TrackSaving(combatChoice.ToString());
@@ -269,8 +280,12 @@ namespace EmpireAtWar.Services.Enemy
             if (hasShipOption && !canBuildShip)
             {
                 string waitReason = !IsAffordable(shipChoice) ? "saving" : "capacity";
+                // Capacity rows name the best ship that fits and can be paid now ("none" when nothing fits).
+                string bestFit = !choiceFits && canOrderShips &&
+                    TrySelectShip(shipCount, out KeyValuePair<ShipType, FactionData> fitting, requireAffordable: true)
+                    ? fitting.Key.ToString() : "none";
                 EnemyAiTelemetry.RecordEvent(_owner.Id, _owner.Faction, "production-wait",
-                    FormattableString.Invariant($"unit={combatChoice};capacity={_unitLimitModel.CurrentUnitCapacity}/{_reinforcementData.MaxUnitCapacity};required={shipChoice.UnitCapacity};cost={shipChoice.Price};money={_economyModel.Money:F1};critical={_stationPressure.IsStationCritical};etaSeconds={GetArrivalSeconds(combatChoice, shipChoice):F1};timeToLoss={_stationPressure.EstimatedTimeToLossSeconds:F1};saving={_savingUnit};savingFor={savingForSeconds:F1};reason={waitReason}"));
+                    FormattableString.Invariant($"unit={combatChoice};capacity={_unitLimitModel.CurrentUnitCapacity}/{_reinforcementData.MaxUnitCapacity};required={shipChoice.UnitCapacity};cost={shipChoice.Price};money={_economyModel.Money:F1};critical={_stationPressure.IsStationCritical};criticalCause={_stationPressure.CriticalCause};etaSeconds={GetArrivalSeconds(combatChoice, shipChoice):F1};timeToLoss={_stationPressure.EstimatedTimeToLossSeconds:F1};saving={_savingUnit};savingFor={savingForSeconds:F1};fits={choiceFits};bestFit={bestFit};reason={waitReason}"));
             }
             FactionData levelData = CanUpgradeStation ? _factionModel.GetCurrentLevelFactionData() : null;
             if (levelData != null &&
@@ -720,6 +735,10 @@ namespace EmpireAtWar.Services.Enemy
             selected = default;
             bool found = false;
             float bestPriority = float.MaxValue;
+            _criticalShips.Clear();
+            KeyValuePair<ShipType, FactionData> bestPerSlot = default;
+            float bestSlotValue = 0f;
+            int dearest = 0;
             foreach (KeyValuePair<ShipType, FactionData> option
                      in _factionModel.ShipFactionData)
             {
@@ -751,13 +770,25 @@ namespace EmpireAtWar.Services.Enemy
                     option.Value.UnitCapacity,
                     option.Value.MaxCount,
                     combatValuePerCredit);
+                // Saving for a ship that does not fit the free capacity stays allowed (dreadnoughts, battlecruisers
+                // are built for the future), at a lower priority than ships that fit (W34, user 2026-11-22).
+                if (!FitsRemainingCapacity(option.Value)) priority *= NO_FIT_SAVING_PRIORITY_SCALE;
                 if (_stationPressure.IsStationCritical)
                 {
                     if (combatValuePerCredit <= 0f) continue;
                     float arrival = GetArrivalSeconds(unitType, option.Value);
                     if (float.IsPositiveInfinity(arrival) || !(arrival <= _stationPressure.EstimatedTimeToLossSeconds))
                         continue;
-                    priority = Math.Max(1f, arrival) / combatValuePerCredit;
+                    _criticalShips.Add((option, arrival, combatValuePerCredit,
+                        _profileCatalog.Get(unitType).GetCombatValue() / Math.Max(1, option.Value.UnitCapacity)));
+                    continue;
+                }
+                float perSlot = _profileCatalog.Get(unitType).GetCombatValue() / Math.Max(1, option.Value.UnitCapacity);
+                dearest = Math.Max(dearest, option.Value.Price);
+                if (perSlot > bestSlotValue)
+                {
+                    bestPerSlot = option;
+                    bestSlotValue = perSlot;
                 }
                 if (!found || priority < bestPriority ||
                     priority == bestPriority && option.Value.Price < selected.Value.Price)
@@ -768,7 +799,59 @@ namespace EmpireAtWar.Services.Enemy
                 }
             }
 
+            if (_stationPressure.IsStationCritical) return TrySelectCriticalShip(out selected);
+            // At the unit cap with money for the dearest candidate, a freed slot goes to the best value per slot (W34 b).
+            if (found && _capacityBlocked && bestSlotValue > 0f && _economyModel.Money >= dearest)
+                selected = bestPerSlot;
             return found;
+        }
+
+        /// <summary>
+        /// Among ships that arrive before the station falls: those inside the tier span when any arrives in time.
+        /// With money for the dearest of them, the best combat value per capacity slot wins (the cap, not money,
+        /// limits the fleet); otherwise arrival time per combat value per credit, as before (W35).
+        /// </summary>
+        private bool TrySelectCriticalShip(out KeyValuePair<ShipType, FactionData> selected)
+        {
+            selected = default;
+            if (_criticalShips.Count == 0) return false;
+            int floor = GetShipTierFloor();
+            bool anyInSpan = false;
+            foreach (var candidate in _criticalShips)
+                anyInSpan |= candidate.Option.Value.AvailableLevel >= floor;
+            int dearest = 0;
+            foreach (var candidate in _criticalShips)
+                if (!anyInSpan || candidate.Option.Value.AvailableLevel >= floor)
+                    dearest = Math.Max(dearest, candidate.Option.Value.Price);
+            bool bySlot = _economyModel.Money >= dearest;
+            float best = float.MaxValue;
+            bool found = false;
+            foreach (var candidate in _criticalShips)
+            {
+                if (anyInSpan && candidate.Option.Value.AvailableLevel < floor) continue;
+                float priority = bySlot ? -candidate.PerSlot : Math.Max(1f, candidate.Arrival) / candidate.PerCredit;
+                if (found && (priority > best || priority == best &&
+                        candidate.Option.Value.Price >= selected.Value.Price)) continue;
+                selected = candidate.Option;
+                best = priority;
+                found = true;
+            }
+            _criticalShips.Clear();
+            return found;
+        }
+
+        /// <summary>Arrival time of the quickest affordable ship that fits the free capacity (W36 critical rule).</summary>
+        private float GetQuickestDefenderArrival()
+        {
+            float quickest = float.PositiveInfinity;
+            foreach (KeyValuePair<ShipType, FactionData> option in _factionModel.ShipFactionData)
+            {
+                UnitTypeId unitType = UnitTypeId.Ship(option.Key);
+                if (!IsAvailable(option.Value) || !IsAffordable(option.Value) || !FitsRemainingCapacity(option.Value) ||
+                    !IsShipClassAllowed(unitType) || _profileCatalog.Get(unitType).GetCombatValue() <= 0f) continue;
+                quickest = Math.Min(quickest, GetArrivalSeconds(unitType, option.Value));
+            }
+            return quickest;
         }
 
         /// <summary>Queue wait + build time, plus travel to the station threat when one is known.</summary>

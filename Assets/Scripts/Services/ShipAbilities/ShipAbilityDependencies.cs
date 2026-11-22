@@ -2,6 +2,7 @@ using EmpireAtWar.Components.AttackComponent;
 using EmpireAtWar.Components.Weapon;
 using EmpireAtWar.Entities.BaseEntity;
 using EmpireAtWar.Models.Players;
+using EmpireAtWar.Services.ReinforcementZones;
 using EmpireAtWar.Services.ShipAbilities.Abilities;
 using EmpireAtWar.Services.SpawnBlocking;
 using EmpireAtWar.Services.Vision;
@@ -21,11 +22,13 @@ namespace EmpireAtWar.Services.ShipAbilities
         public IMatchSession Session { get; }
         public IBattleAreaWriter BattleAreas { get; }
         public GravityWellEffects GravityWells { get; }
+        /// <summary>Relays, for auto-use rules that read who holds them (Interdict).</summary>
+        public IReinforcementZoneSource Zones { get; }
 
         public ShipAbilityDependencies(IEntityLocator entities, IPlayerRelations relations,
             ImpactEffectPresenter impactPresenter, WeaponsData weaponsData, BoltFlightBatch boltFlights,
             HarmonicBombService harmonicBombs, IVisionService vision, IMatchSession session,
-            IBattleAreaWriter battleAreas, GravityWellEffects gravityWells)
+            IBattleAreaWriter battleAreas, GravityWellEffects gravityWells, IReinforcementZoneSource zones)
         {
             Entities = entities;
             Relations = relations;
@@ -37,6 +40,7 @@ namespace EmpireAtWar.Services.ShipAbilities
             Session = session;
             BattleAreas = battleAreas;
             GravityWells = gravityWells;
+            Zones = zones;
         }
     }
 }

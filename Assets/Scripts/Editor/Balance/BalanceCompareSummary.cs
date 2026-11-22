@@ -22,8 +22,13 @@ namespace EmpireAtWar.Editor.Balance
             BalanceCompareSelection.Bind(grid, controller);
 
             List<BalanceDpsEstimate> dps;
+            List<BalanceDpsEstimate[]> dpsVsClass;
             using (BalanceDpsEstimator estimator = new BalanceDpsEstimator(registry))
+            {
                 dps = units.Select(unit => estimator.Estimate(unit, draft)).ToList();
+                dpsVsClass = units.Select(unit => BalanceDpsEstimator.DisplayedClasses
+                    .Select(targetClass => estimator.EstimateAgainst(unit, draft, targetClass)).ToArray()).ToList();
+            }
             double ceiling = dps.Where(estimate => estimate.HasValue).Select(estimate => estimate.Value).Append(1).Max();
             BalanceDraftUsage usage = new BalanceDraftUsage(registry, draft);
             float[] maxima = DURABILITY
@@ -34,14 +39,15 @@ namespace EmpireAtWar.Editor.Balance
                     .Max())
                 .ToArray();
             for (int i = 0; i < units.Count; i++)
-                Card(grid, units[i], dps[i], ceiling, maxima, registry, controller, usage, unitsTab);
+                Card(grid, units[i], dps[i], dpsVsClass[i], ceiling, maxima, registry, controller, usage, unitsTab);
 
             BalanceCompareSelection.Update(grid, controller.State);
             Label assumptions = Text(panel, "Draft values · DPS is an AI estimate before accuracy, target modifiers, firing arcs and abilities.", "balance-compare-assumptions");
-            assumptions.tooltip = BalanceDpsEstimator.FORMULA + " This estimate does not simulate projectile travel, movement, interception or target switching.";
+            assumptions.tooltip = BalanceDpsEstimator.FORMULA + " " + BalanceDpsEstimator.VS_CLASS_FORMULA + " This estimate does not simulate projectile travel, movement, interception or target switching.";
         }
 
-        private static void Card(VisualElement grid, BalanceUnit unit, BalanceDpsEstimate dps, double ceiling, float[] maxima,
+        private static void Card(VisualElement grid, BalanceUnit unit, BalanceDpsEstimate dps, BalanceDpsEstimate[] dpsVsClass,
+            double ceiling, float[] maxima,
             BalanceRegistration registry, BalanceEditorController controller, BalanceDraftUsage usage, bool unitsTab)
         {
             BalanceDraft draft = controller.State.Draft;
@@ -104,6 +110,8 @@ namespace EmpireAtWar.Editor.Balance
                 bar.AddToClassList("balance-dps-meter");
                 card.Add(bar);
             }
+            for (int i = 0; i < dpsVsClass.Length; i++)
+                Metric(card, "DPS vs " + BalanceDpsEstimator.DisplayedClasses[i], dpsVsClass[i].ToString(), "dmg/s");
 
             int count = unit.Mounts.Distinct().Count();
             Button hardpoints = new Button { text = "View hardpoints (" + count + ")", name = "compare-view-hardpoints" };

@@ -70,6 +70,8 @@ namespace EmpireAtWar.Services.Enemy
         private readonly Dictionary<IShipEntity, Vector3> _captureEscortPoints = new Dictionary<IShipEntity, Vector3>();
         /// <summary>Ships that have been inside the capture circle since the current capture target was set.</summary>
         private readonly HashSet<IShipEntity> _captureEntered = new HashSet<IShipEntity>();
+        /// <summary>Gather point each uncommitted main-force ship was last sent to (W31).</summary>
+        private readonly Dictionary<IShipEntity, Vector3> _holdPoints = new Dictionary<IShipEntity, Vector3>();
         private Vector3? _retreatAnchor;
         private Vector3? _guardPosition;
         public string ActionReason { get; private set; } = "";
@@ -91,6 +93,9 @@ namespace EmpireAtWar.Services.Enemy
 
         /// <summary>Ships committed with the main body by the last offensive order; 0 for other states.</summary>
         public int BodyCount => _body.Count;
+
+        /// <summary>Ships committed with the main body by the last order (W32 local rating origin).</summary>
+        public IReadOnlyList<IShipEntity> Body => _body;
 
         /// <summary>Committed ships still rallying to the main body after the last offensive order.</summary>
         public int RallyingCount => _stragglers.Count;
@@ -122,6 +127,7 @@ namespace EmpireAtWar.Services.Enemy
                 _rallyAnchors.Clear();
                 _captureApproaches.Clear();
                 _captureEntered.Clear();
+                _holdPoints.Clear();
                 _hasCaptureTarget = false;
                 _defenseStation = null;
                 _defensePoints.Clear();
@@ -374,7 +380,9 @@ namespace EmpireAtWar.Services.Enemy
             _captureShips.Sort((a, b) => a.NavigationRadius != b.NavigationRadius
                 ? a.NavigationRadius.CompareTo(b.NavigationRadius)
                 : b.NavigationSpeed.CompareTo(a.NavigationSpeed));
-            int count = Math.Min(decision.CommittedShipCount, _captureShips.Count);
+            // A zone force was sized by the allocator; trimming it again by the commit ratio left ships idle (W31).
+            int count = context.IsZoneForce ? _captureShips.Count :
+                Math.Min(decision.CommittedShipCount, _captureShips.Count);
             EnemyCaptureObjective objective = context.CaptureObjective;
             bool sameObjective = objective == null ? _captureObjective == null :
                 _captureObjective != null && objective.Id == _captureObjective.Id &&
@@ -396,6 +404,7 @@ namespace EmpireAtWar.Services.Enemy
             if (count >= 6 && _body.Count * 4 < count * 3)
             {
                 RallyBody(context, anchor);
+                HoldUncommitted(context, _captureShips, count, anchor);
                 ActionReason = $"Assembling capture force: {_body.Count}/{count} ships in the body.";
                 return;
             }
@@ -519,7 +528,48 @@ namespace EmpireAtWar.Services.Enemy
             _assignedShips.Clear();
             _assignedShips.UnionWith(_body);
             RallyStragglers(context, anchor);
-            StopRemaining(context, _captureShips, count);
+            HoldUncommitted(context, _captureShips, count, anchor);
+        }
+
+        /// <summary>
+        /// Main-force ships outside the committed share hold at the group's gather point (attack-move), or guard the
+        /// body's anchor when the group has none: never order <c>None</c> away from a hold point (W31).
+        /// </summary>
+        private void HoldUncommitted(EnemyStrategicContext context, IReadOnlyList<IShipEntity> ships, int start,
+            IShipEntity anchor)
+        {
+            _lostShips.Clear();
+            foreach (IShipEntity ship in _holdPoints.Keys)
+                if (!context.Receivers.ContainsKey(ship)) _lostShips.Add(ship);
+            foreach (IShipEntity ship in _lostShips) _holdPoints.Remove(ship);
+            for (int i = 0; i < start; i++) _holdPoints.Remove(ships[i]);
+            if (start >= ships.Count) return;
+            if (!context.GuardPosition.HasValue)
+            {
+                _supportShips.Clear();
+                for (int i = start; i < ships.Count; i++)
+                {
+                    _holdPoints.Remove(ships[i]);
+                    _supportShips.Add(ships[i]);
+                }
+                GuardSupport(context, _supportShips, anchor);
+                return;
+            }
+            Vector3 point = context.GuardPosition.Value;
+            List<GameEntity> receivers = null;
+            for (int i = start; i < ships.Count; i++)
+            {
+                IShipEntity ship = ships[i];
+                _rallyAnchors.Remove(ship);
+                bool holding = _holdPoints.TryGetValue(ship, out Vector3 previous) &&
+                    (previous - point).sqrMagnitude <= CAPTURE_TARGET_EPSILON_SQUARED &&
+                    (ship.CurrentOrder == UnitOrderType.AttackMove ||
+                     ship.CurrentOrder is UnitOrderType.None or UnitOrderType.Attack &&
+                     PlanarDistance(ship.WorldPosition, point) <= FleetCohesion.RADIUS);
+                _holdPoints[ship] = point;
+                if (!holding) (receivers ??= new List<GameEntity>()).Add(context.Receivers[ship]);
+            }
+            if (receivers != null) _unitOrderService.IssueAttackMove(receivers, point);
         }
 
         /// <param name="attackTarget">Hostile unit of an Attack marker; null attacks-moves to the point.</param>

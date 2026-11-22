@@ -75,6 +75,35 @@ namespace EmpireAtWar.Tests.Editor
         }
 
         [Test]
+        public void StrippedShieldsWithLongTimeToLoss_AreNotCritical()
+        {
+            // Durability far below half, losing slowly: a siege, not a station about to fall (W36).
+            var tracker = new EnemyStationPressureTracker();
+            tracker.Update(1, 300f, 1000f, 0f, 2);
+            tracker.Update(1, 299f, 1000f, 1f, 2);
+            Assert.That(tracker.HasPressure, Is.True);
+            Assert.That(tracker.DurabilityFraction, Is.LessThan(0.5f));
+            Assert.That(tracker.IsStationCritical, Is.False);
+        }
+
+        [Test]
+        public void Critical_FollowsTheDefenderArrivalTime()
+        {
+            var tracker = new EnemyStationPressureTracker();
+            tracker.Update(1, 1000f, 1000f, 0f, 2);
+            tracker.Update(1, 900f, 1000f, 1f, 2);
+            float timeToLoss = tracker.EstimatedTimeToLossSeconds;
+
+            tracker.DefenderArrivalSeconds = timeToLoss;
+            Assert.That(tracker.IsStationCritical, Is.True, "Falls before twice the defender's arrival.");
+            Assert.That(tracker.CriticalCause, Is.EqualTo("arrival"));
+
+            tracker.DefenderArrivalSeconds = timeToLoss * 0.25f;
+            Assert.That(tracker.IsStationCritical, Is.False, "A defender arrives well before the loss.");
+            Assert.That(tracker.CriticalCause, Is.EqualTo("none"));
+        }
+
+        [Test]
         public void NewStationClearsPriorDamageAndKnownThreat()
         {
             var tracker = new EnemyStationPressureTracker();

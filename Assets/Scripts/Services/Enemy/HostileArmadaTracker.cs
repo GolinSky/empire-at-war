@@ -6,8 +6,8 @@ using UnityEngine;
 namespace EmpireAtWar.Services.Enemy
 {
     /// <summary>
-    /// Groups known hostile ships into armadas: ships within <see cref="LINK_RADIUS"/> of another ship of the group
-    /// belong to it. A group of at least <see cref="MIN_SHIPS"/> ships is an armada. Its heading comes from the movement
+    /// Groups known hostile ships: ships within <see cref="LINK_RADIUS"/> of another ship of the group belong to it.
+    /// Whether a group is an armada depends on who looks at it (<see cref="IsArmada"/>). Its heading comes from the movement
     /// of its centre between samples; the asset it threatens is the nearest team asset within
     /// <see cref="THREAT_REACH"/> of where it stands or will stand after <see cref="LOOKAHEAD_SECONDS"/>.
     /// </summary>
@@ -15,8 +15,12 @@ namespace EmpireAtWar.Services.Enemy
     {
         /// <summary>One engagement radius: twice the common ship weapon range (500).</summary>
         public const float LINK_RADIUS = 1000f;
-        /// <summary>Fewer ships are a patrol or a raid, not the hostile main force.</summary>
-        public const int MIN_SHIPS = 6;
+        /// <summary>A lone ship is a defender or a raider, never an armada: a single zone guard must not switch on late-game rules.</summary>
+        public const int MIN_SHIPS = 2;
+        /// <summary>A group with this many capital-class ships is an armada whatever the own fleet (W37).</summary>
+        public const int MIN_CAPITAL_SHIPS = 2;
+        /// <summary>A group the own fleet does not beat by this ratio is an armada (W37).</summary>
+        public const float OUTMATCH_RATIO = 2f;
         /// <summary>An armada this close to an asset's edge, now or after the look-ahead, threatens it.</summary>
         public const float THREAT_REACH = 1000f;
         public const float LOOKAHEAD_SECONDS = 20f;
@@ -52,7 +56,6 @@ namespace EmpireAtWar.Services.Enemy
                 _members.Clear();
                 for (int i = start; i < ships.Count; i++)
                     if (_group[i] == start) _members.Add(i);
-                if (_members.Count < MIN_SHIPS) continue;
                 HostileArmada armada = NextArmada();
                 Vector3 sum = Vector3.zero;
                 foreach (int ship in _members)
@@ -68,6 +71,15 @@ namespace EmpireAtWar.Services.Enemy
             }
             _spare.AddRange(_previous);
         }
+
+        /// <summary>
+        /// A group of at least <see cref="MIN_SHIPS"/> ships is an armada by strength, not by count: it holds
+        /// <see cref="MIN_CAPITAL_SHIPS"/> capital-class ships, or the own fleet's advantage over it is below
+        /// <see cref="OUTMATCH_RATIO"/>. Human fleets of 4–5 capitals were never armadas under the old six-ship count.
+        /// </summary>
+        public static bool IsArmada(HostileArmada group, float fleetAdvantage) =>
+            group.Strength.UnitCount >= MIN_SHIPS &&
+            (group.CapitalShips >= MIN_CAPITAL_SHIPS || fleetAdvantage < OUTMATCH_RATIO);
 
         /// <summary>Single-linkage groups: <see cref="_group"/>[i] is the lowest index of ship i's group.</summary>
         private void Group(IReadOnlyList<Vector3> ships)

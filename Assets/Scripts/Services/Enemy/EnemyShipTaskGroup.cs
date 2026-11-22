@@ -43,6 +43,8 @@ namespace EmpireAtWar.Services.Enemy
 
         public void Evaluate(ISet<string> reservedObjectives, float now)
         {
+            ContextBuilder.CommittedBody = Executor.Body;
+            ContextBuilder.AssaultUnderWay = _hasDecision && Decision.State == EnemyStrategicState.AssaultBase;
             Context = ContextBuilder.Build(Ships, reservedObjectives, preferStrategicObjectives: IsMainForce,
                 unbuiltMinesOnly: _unbuiltMinesOnly);
             if (Context.Snapshot.HasCaptureTarget)

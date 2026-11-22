@@ -190,6 +190,7 @@ namespace EmpireAtWar.Entities.EnemyFaction.Models.Combat
             UnitCount = 0;
         }
 
+        public float Units(ShipClass shipClass) => _units[(int)shipClass];
         public float Hull(ShipClass shipClass) => _hull[(int)shipClass];
         public float Shields(ShipClass shipClass) => _shields[(int)shipClass];
         public float HullDps(ShipClass target) => _hullDps[(int)target];

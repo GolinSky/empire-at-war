@@ -10,7 +10,10 @@ namespace EmpireAtWar.Services.Enemy
         private const float DAMAGE_WINDOW_SECONDS = 5f;
         private const float SUSTAINED_DAMAGE_SECONDS = 3f;
         private const float QUIET_SECONDS = 30f;
-        private const float CRITICAL_FRACTION = 0.5f;
+        /// <summary>Critical time-to-loss while no affordable defender is known.</summary>
+        private const float FALLBACK_CRITICAL_SECONDS = 120f;
+        /// <summary>Critical when the station falls within this many defender arrival times (W36).</summary>
+        private const float CRITICAL_ARRIVAL_FACTOR = 2f;
         private readonly Queue<(float Time, float Loss)> _losses = new Queue<(float, float)>();
         private long _stationId;
         private float _durability;
@@ -24,8 +27,22 @@ namespace EmpireAtWar.Services.Enemy
         public bool HasPressure { get; private set; }
         public float DurabilityFraction => _maximumDurability > 0f ? _durability / _maximumDurability : 1f;
         public float EstimatedTimeToLossSeconds { get; private set; } = float.PositiveInfinity;
-        public bool IsStationCritical => HasPressure &&
-            (DurabilityFraction < CRITICAL_FRACTION || EstimatedTimeToLossSeconds < 120f);
+        /// <summary>
+        /// Arrival time (queue + build + travel) of the quickest affordable defender; infinity when none is known.
+        /// Set by production each evaluation.
+        /// </summary>
+        public float DefenderArrivalSeconds { get; set; } = float.PositiveInfinity;
+        /// <summary>
+        /// The station is about to fall: its time-to-loss is below twice the arrival time of the quickest affordable
+        /// defender (<see cref="FALLBACK_CRITICAL_SECONDS"/> while none is known). No durability share: stripped
+        /// shields stay near 0 for a whole siege and made a slow siege read as critical for 19 min (W36).
+        /// </summary>
+        public bool IsStationCritical => HasPressure && EstimatedTimeToLossSeconds < CriticalTimeToLossSeconds;
+        public float CriticalTimeToLossSeconds => float.IsPositiveInfinity(DefenderArrivalSeconds)
+            ? FALLBACK_CRITICAL_SECONDS : CRITICAL_ARRIVAL_FACTOR * DefenderArrivalSeconds;
+        /// <summary>Why the station is critical, for telemetry: <c>arrival</c>, <c>fallback</c> or <c>none</c>.</summary>
+        public string CriticalCause => !IsStationCritical ? "none" :
+            float.IsPositiveInfinity(DefenderArrivalSeconds) ? "fallback" : "arrival";
         public float LastDamageTime { get; private set; } = float.NegativeInfinity;
         public bool HasThreatPosition { get; private set; }
         public float ThreatX { get; private set; }

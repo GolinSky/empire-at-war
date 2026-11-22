@@ -281,6 +281,17 @@ namespace EmpireAtWar.Entities.EnemyFaction.Controllers
             AdvanceBuilds(deltaTime, defendHome);
         }
 
+        /// <summary>True when an unlocked assault capital fits the free unit capacity.</summary>
+        private bool AssaultCapitalFits()
+        {
+            int free = _reinforcementData.MaxUnitCapacity - _unitLimitModel.CurrentUnitCapacity;
+            foreach (KeyValuePair<ShipType, FactionData> ship in Model.ShipFactionData)
+                if (ship.Value.AvailableLevel <= Model.CurrentLevel && ship.Value.UnitCapacity <= free &&
+                    Model.IsAssaultCapital(ship.Key, _profiles.Get(UnitTypeId.Ship(ship.Key)).ShipClass))
+                    return true;
+            return false;
+        }
+
         private void AdvanceBuilds(float deltaTime, bool defendHome)
         {
             bool assault = !defendHome && _aiState.CurrentState == EnemyStrategicState.AssaultBase;
@@ -292,7 +303,8 @@ namespace EmpireAtWar.Entities.EnemyFaction.Controllers
                     build.Request is ShipUnitRequest ship && Model.IsAssaultCapital(ship.Key,
                         _profiles.Get(UnitTypeId.Ship(ship.Key)).ShipClass));
                 if (hasHeldReserve && hasCapitalBuilding) _assaultWavePlanUntil = Time.time + ASSAULT_WAVE_INTERVAL;
-                Model.HasAssaultReinforcementPlan = hasCapitalBuilding &&
+                // At the unit cap no assault capital fits, so there is nothing to wait for: the plan counts as met (W33).
+                Model.HasAssaultReinforcementPlan = !AssaultCapitalFits() || hasCapitalBuilding &&
                     (hasHeldReserve || assault && Time.time < _assaultWavePlanUntil);
             }
             bool holdReserve = _productionAccess.CanProduce && (defendHome || _aiState.HoldFinishedReinforcements);
@@ -459,9 +471,7 @@ namespace EmpireAtWar.Entities.EnemyFaction.Controllers
         {
             position = default;
             anchor = "none";
-            // Assault capitals unlock at level 4; the class is read only for those.
-            bool capital = ship.FactionData.AvailableLevel >= 4 &&
-                           Model.IsAssaultCapital(ship.Key, _profiles.Get(UnitTypeId.Ship(ship.Key)).ShipClass);
+            bool capital = IsAssaultCapital(ship);
             if (!_forwardAnchors.Collect(task, _landedShips, capital, _anchors, out Vector3 awayFrom))
             {
                 EnemyAiTelemetry.RecordEvent(_owner.Id, _owner.Faction, "spawnAttempt",
@@ -477,6 +487,10 @@ namespace EmpireAtWar.Entities.EnemyFaction.Controllers
                 $"unit={ship.Id};units={_anchors.Count};points={attempt.Points};notOpen={attempt.NotOpen};notClear={attempt.NotClear};found={found};anchor={anchor}");
             return found;
         }
+
+        // Assault capitals unlock at level 4; the class is read only for those.
+        private bool IsAssaultCapital(ShipUnitRequest ship) => ship.FactionData.AvailableLevel >= 4 &&
+            Model.IsAssaultCapital(ship.Key, _profiles.Get(UnitTypeId.Ship(ship.Key)).ShipClass);
 
         private bool TryTierDSpawn(PlayerId home, ShipType shipType, out Vector3 position) =>
             _shipSpawnPoints.TryGetStationSpawnPosition(home, shipType, out position) ||
@@ -558,6 +572,7 @@ namespace EmpireAtWar.Entities.EnemyFaction.Controllers
                     bool forced;
                     bool emergency;
                     string anchor;
+                    bool anchorContested = false;
                     if (_defenseLandings.Remove(shipUnitRequest, out var landing))
                     {
                         _shipSpawnPoints.ReleaseDefenseLanding(shipUnitRequest);
@@ -581,9 +596,13 @@ namespace EmpireAtWar.Entities.EnemyFaction.Controllers
                         if (hasRally && defendHome)
                             _aiState.FillDefenseDeploymentThreats(_defenseDeploymentThreats);
                         // No forward point: the held relay or station search runs in the same tick.
-                        foundPosition = TryFindShipSpawnPosition(home, shipUnitRequest.Key, hasRally, defendHome, rally,
-                            heldSeconds, out position, out tier, out forced, out emergency);
-                        anchor = defendHome ? "rear" : "relayOrStation";
+                        // An assault capital lands at a relay only when it is held, uncontested and clear of hostile
+                        // ships; else at home (the forward search beside the body already ran) (W38).
+                        anchorContested = hasRally && !defendHome && !_aiState.IsCapitalRallySafe(rally);
+                        bool capitalHome = anchorContested && IsAssaultCapital(shipUnitRequest);
+                        foundPosition = TryFindShipSpawnPosition(home, shipUnitRequest.Key, hasRally && !capitalHome,
+                            defendHome, rally, heldSeconds, out position, out tier, out forced, out emergency);
+                        anchor = defendHome ? "rear" : capitalHome ? "homeCapital" : "relayOrStation";
                     }
                     if (!foundPosition)
                     {
@@ -612,7 +631,7 @@ namespace EmpireAtWar.Entities.EnemyFaction.Controllers
                                 $"unit={shipUnitRequest.Id};rally={rally};spawn={position};tier={tier};heldSeconds={heldSeconds:F1}"));
                     EnemyAiTelemetry.RecordEvent(_owner.Id, _owner.Faction, "deployment",
                         FormattableString.Invariant(
-                            $"unit={shipUnitRequest.Id};homeDefense={defendHome};rally={rally};spawn={position};tier={tier};anchor={anchor};heldSeconds={heldSeconds:F1}"));
+                            $"unit={shipUnitRequest.Id};homeDefense={defendHome};rally={rally};spawn={position};tier={tier};anchor={anchor};anchorContested={anchorContested};heldSeconds={heldSeconds:F1}"));
                     _builds.ClearDeploymentBlock(shipUnitRequest);
                     Track(_shipFactory.Create(Owner, shipUnitRequest.Key, position), shipUnitRequest);
                     _landedShips.Add(position);

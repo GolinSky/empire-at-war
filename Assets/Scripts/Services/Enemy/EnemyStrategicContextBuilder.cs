@@ -72,6 +72,12 @@ namespace EmpireAtWar.Services.Enemy
         public float EconomyPressure { get; }
         public int HeldShips { get; }
         public int TeamHeldZones { get; }
+        /// <summary>The group was sent to one zone by the allocator, which already sized it: it commits every ship.</summary>
+        public bool IsZoneForce { get; set; }
+        /// <summary><c>canAssault</c> parts of this build (W43 telemetry).</summary>
+        public string AssaultGate { get; set; } = "";
+        /// <summary>Where the local fight was rated: <c>body</c>, <c>all</c> or <c>death</c> (W43 telemetry).</summary>
+        public string LocalOrigin { get; set; } = "all";
 
         public EnemyStrategicContext(
             IReadOnlyList<IShipEntity> ships,
@@ -144,6 +150,19 @@ namespace EmpireAtWar.Services.Enemy
         public bool IsReserve { get; set; }
         /// <summary>Where the reserve gathers for the next zone; null when every zone is served.</summary>
         public Vector3? ReserveStagingPoint { get; set; }
+        /// <summary>
+        /// Ships the group's executor committed with its body on the last order. The local fight is rated around
+        /// them, so idle or straggling group ships do not pull the rating away from the fight (W32).
+        /// </summary>
+        public IReadOnlyList<IShipEntity> CommittedBody { get; set; }
+        /// <summary>The group's last decision was <see cref="EnemyStrategicState.AssaultBase"/>.</summary>
+        public bool AssaultUnderWay { get; set; }
+        /// <summary><c>canAssault</c> parts of the last build, for the decision row (W43).</summary>
+        public string AssaultGate { get; private set; } = "";
+        /// <summary>Fleet advantage that keeps an assault under way when its opening conditions lapse (W33).</summary>
+        public const float ASSAULT_KEEP_ADVANTAGE = 2f;
+        /// <summary>Where the last local rating was centred: <c>body</c>, <c>all</c> or <c>death</c> (telemetry).</summary>
+        public string LocalOriginSource { get; private set; } = "all";
         private Vector3 _strategicCenter;
 
 #if UNITY_EDITOR || DEVELOPMENT_BUILD
@@ -257,6 +276,39 @@ namespace EmpireAtWar.Services.Enemy
         public bool RecoveryActive => _recovery.IsActive;
         public bool StationCritical => _stationPressure.IsStationCritical;
 
+        /// <summary>A known hostile ship this close to a relay makes it no landing point for a capital (W38).</summary>
+        public const float CAPITAL_LANDING_SAFE_RADIUS = 1000f;
+
+        /// <summary>
+        /// The allied relay nearest <paramref name="rally"/> (the one a rally landing picks unless a station is nearer)
+        /// takes a capital only when it is held by the team, uncontested and no known hostile ship stands within
+        /// <see cref="CAPITAL_LANDING_SAFE_RADIUS"/> of it. Executor 1 landed alone at a relay being lost (W38).
+        /// </summary>
+        public bool IsCapitalRallySafe(Vector3 rally)
+        {
+            float nearest = float.MaxValue;
+            ReinforcementZonePresenter relay = null;
+            foreach (ReinforcementZonePresenter zone in _zones.Zones)
+            {
+                if (zone.Owner.IsNone || !_playerRoster.IsAllied(_owner.Id, zone.Owner)) continue;
+                float distance = PlanarDistance(zone.Center, rally);
+                if (distance >= nearest) continue;
+                nearest = distance;
+                relay = zone;
+            }
+            if (relay == null) return true;
+            foreach (AiWorldSnapshot.Entry station in _worldSnapshot.Bases)
+                if (_playerRoster.IsAllied(_owner.Id, station.Owner) && PlanarDistance(station.Position, rally) <= nearest)
+                    return true;
+            if (relay.IsContested) return false;
+            _teamPicture.EnsureRefreshed(Time.time);
+            foreach (HostileSighting sighting in _teamPicture.ConfidentSightings)
+                if (sighting.UnitTypeId.IsShip &&
+                    PlanarDistance(ToVector(sighting.Position), relay.Center) <= CAPITAL_LANDING_SAFE_RADIUS)
+                    return false;
+            return true;
+        }
+
         public bool TryGetDefendedStation(out Vector3 position)
         {
             position = default;
@@ -321,6 +373,18 @@ namespace EmpireAtWar.Services.Enemy
         private string _lastArmadaResponse;
         private readonly ForceComposition _localThreatForce = new ForceComposition();
         private readonly ForceComposition _localOwnForce = new ForceComposition();
+        private readonly ForceComposition _deathThreatForce = new ForceComposition();
+        private readonly ForceComposition _deathOwnForce = new ForceComposition();
+        /// <summary>Last known position of each group ship, to find where a group ship died (W32).</summary>
+        private readonly Dictionary<long, Vector3> _lastShipPositions = new Dictionary<long, Vector3>();
+        private readonly List<long> _goneShipIds = new List<long>();
+        private readonly HashSet<IShipEntity> _committedBodySet = new HashSet<IShipEntity>();
+        private Vector3 _lastDeathPosition;
+        private float _lastDeathTime = float.NegativeInfinity;
+        /// <summary>A group ship death re-rates the local fight at its position for this long (W32).</summary>
+        private const float DEATH_RERATE_SECONDS = 10f;
+        /// <summary>Death this close to the body centre is already inside its local rating.</summary>
+        private const float DEATH_RERATE_MIN_DISTANCE = 200f;
 
         public EnemyStrategicContextBuilder(
             IShipService shipService,
@@ -677,7 +741,9 @@ namespace EmpireAtWar.Services.Enemy
                     EnemyStrategicState.AssaultBase or EnemyStrategicState.DefendBase or EnemyStrategicState.RetreatValue))
                 foreach (HostileArmada candidate in _teamPicture.Armadas)
                 {
-                    if (!candidate.ThreatensAsset) continue;
+                    if (!candidate.ThreatensAsset ||
+                        !HostileArmadaTracker.IsArmada(candidate, CombatMatchup.Advantage(_ownForce, candidate.Strength)))
+                        continue;
                     float value = RateAgainstArmada(_ownForce, candidate, now);
                     if (value >= advantage) continue;
                     armada = candidate;
@@ -689,7 +755,11 @@ namespace EmpireAtWar.Services.Enemy
                 return null;
             }
             bool intercept = advantage >= EnemyAiDifficultyProfile.Get(_owner.Difficulty).RetreatAdvantage;
+            // A response is kept for ARMADA_RESPONSE_HOLD_SECONDS: gather and intercept flipped every 3–40 s (W37).
+            if (_armadaMarker != null && now - _armadaResponseSince < ARMADA_RESPONSE_HOLD_SECONDS)
+                intercept = _armadaMarker.Type == TacticalMarkerType.Attack;
             TacticalMarkerType type = intercept ? TacticalMarkerType.Attack : TacticalMarkerType.Defend;
+            if (_armadaMarker == null || _armadaMarker.Type != type) _armadaResponseSince = now;
             Vector3 point = intercept ? armada.Centre : armada.AssetPosition;
             // Each new point re-orders every ship: keep it while the armada moves less than one weapon range.
             if (_armadaMarker == null || _armadaMarker.Type != type ||
@@ -705,6 +775,9 @@ namespace EmpireAtWar.Services.Enemy
         }
 
         private const long ARMADA_MARKER_ID = -200L;
+        /// <summary>Shortest time an intercept or gather answer stands before it may flip (W37).</summary>
+        private const float ARMADA_RESPONSE_HOLD_SECONDS = 15f;
+        private float _armadaResponseSince = float.NegativeInfinity;
         /// <summary>The intercept point follows the armada only once it moved this far: one common weapon range.</summary>
         private const float ARMADA_REPOINT_DISTANCE = 500f;
 
@@ -746,7 +819,9 @@ namespace EmpireAtWar.Services.Enemy
             float advantage = float.PositiveInfinity;
             foreach (HostileArmada armada in _teamPicture.Armadas)
             {
-                if (!armada.ThreatensAsset) continue;
+                if (!armada.ThreatensAsset ||
+                    !HostileArmadaTracker.IsArmada(armada, CombatMatchup.Advantage(_fleetForce, armada.Strength)))
+                    continue;
                 float value = RateAgainstArmada(_fleetForce, armada, now);
                 if (value >= advantage) continue;
                 worst = armada;
@@ -889,16 +964,16 @@ namespace EmpireAtWar.Services.Enemy
 #if UNITY_EDITOR || DEVELOPMENT_BUILD
             }
 #endif
+            Vector3 localOrigin;
 #if UNITY_EDITOR || DEVELOPMENT_BUILD
             using (FORCE_BUILDS_MARKER.Auto())
             {
 #endif
-            BuildHostilesNear(_localThreatForce, origin, LOCAL_ENGAGEMENT_RADIUS);
-            BuildOwnNear(_localOwnForce, origin, LOCAL_ENGAGEMENT_RADIUS);
+            localOrigin = BuildLocalForces(ownShips, origin, now);
 #if UNITY_EDITOR || DEVELOPMENT_BUILD
             }
 #endif
-            _localThreat = FindLocalThreat(origin, now);
+            _localThreat = FindLocalThreat(localOrigin, now);
 #if UNITY_EDITOR || DEVELOPMENT_BUILD
             using (FIND_RAID_TARGET_MARKER.Auto())
             {
@@ -966,10 +1041,16 @@ namespace EmpireAtWar.Services.Enemy
 
             bool hasDecisiveSurplus = _faction.HasAssaultSurplus && fleetRaw >= 2f &&
                 assaultInvestment >= 2f * unseenInvestment;
+            // An assault under way is not dropped for a hostile force the fleet still outmatches 2 : 1 (W33).
+            bool keepsAssault = AssaultUnderWay && fleetRaw >= ASSAULT_KEEP_ADVANTAGE;
+            bool assaultPlanned = _faction.HasAssaultReinforcementPlan && fleetRaw >= 1f &&
+                (hasZoneMajority || hasDecisiveSurplus);
             bool canAssault = preferStrategicObjectives && (centre == null || securedCentre) &&
                 !_stationPressure.HasPressure && ownBase != null && _productionAccess.HasHostBase &&
                 _assaultCapitals.Count >= EnemyFactionModel.MINIMUM_ASSAULT_CAPITALS &&
-                _faction.HasAssaultReinforcementPlan && fleetRaw >= 1f && (hasZoneMajority || hasDecisiveSurplus);
+                (assaultPlanned || keepsAssault);
+            AssaultGate = FormattableString.Invariant(
+                $"capitals={_assaultCapitals.Count};reinforcementPlan={_faction.HasAssaultReinforcementPlan};zoneMajority={hasZoneMajority};decisiveSurplus={hasDecisiveSurplus};keep={keepsAssault};canAssault={canAssault}");
             bool canHunt = enemyFleetTarget != null && (!securedCentre || canAssault) &&
                 !IsNearHostileBase(enemyFleetTarget.GetFacade<IEntityTransformFacade>().Transform.position);
             _advantageSmoother.Sample(localRaw, fleetRaw, now,
@@ -1063,7 +1144,12 @@ namespace EmpireAtWar.Services.Enemy
                 unseenInvestment: unseenInvestment,
                 economyPressure: _hostileEconomyPressure,
                 heldShips: _faction.HeldShips,
-                teamHeldZones: teamHeldZones);
+                teamHeldZones: teamHeldZones)
+            {
+                IsZoneForce = AssignedZoneId != null,
+                AssaultGate = AssaultGate,
+                LocalOrigin = LocalOriginSource
+            };
         }
 
         /// <summary>
@@ -2168,6 +2254,72 @@ namespace EmpireAtWar.Services.Enemy
             _formationPositions.Clear();
             for (int i = 0; i < ships.Count; i++) _formationPositions.Add(ToPoint(ships[i].WorldPosition));
             return FleetCohesion.IsTogether(_formationPositions, FleetCohesion.RADIUS);
+        }
+
+        /// <summary>
+        /// Rates the local fight around the committed body (fallback: every group ship). A group ship that died in the
+        /// last <see cref="DEATH_RERATE_SECONDS"/> away from that centre re-rates the fight at its last position; the
+        /// worse rating wins, so a group losing ships never reads as having no local threat (W32).
+        /// </summary>
+        private Vector3 BuildLocalForces(IReadOnlyList<IShipEntity> ownShips, Vector3 fleetCenter, float now)
+        {
+            Vector3 origin = fleetCenter;
+            LocalOriginSource = "all";
+            if (_groupScoped)
+            {
+                TrackGroupDeaths(ownShips, now);
+                if (CommittedBody != null && CommittedBody.Count > 0)
+                {
+                    _committedBodySet.Clear();
+                    for (int i = 0; i < CommittedBody.Count; i++) _committedBodySet.Add(CommittedBody[i]);
+                    _formationPositions.Clear();
+                    for (int i = 0; i < ownShips.Count; i++)
+                        if (_committedBodySet.Contains(ownShips[i]))
+                            _formationPositions.Add(ToPoint(ownShips[i].WorldPosition));
+                    if (_formationPositions.Count > 0)
+                    {
+                        float x = 0f;
+                        float z = 0f;
+                        foreach (FormationPoint point in _formationPositions)
+                        {
+                            x += point.X;
+                            z += point.Z;
+                        }
+                        origin = ToVector(new FormationPoint(x / _formationPositions.Count, z / _formationPositions.Count));
+                        LocalOriginSource = "body";
+                    }
+                }
+            }
+            BuildHostilesNear(_localThreatForce, origin, LOCAL_ENGAGEMENT_RADIUS);
+            BuildOwnNear(_localOwnForce, origin, LOCAL_ENGAGEMENT_RADIUS);
+            if (!_groupScoped || now - _lastDeathTime > DEATH_RERATE_SECONDS ||
+                PlanarDistance(origin, _lastDeathPosition) <= DEATH_RERATE_MIN_DISTANCE) return origin;
+            BuildHostilesNear(_deathThreatForce, _lastDeathPosition, LOCAL_ENGAGEMENT_RADIUS);
+            if (_deathThreatForce.IsEmpty) return origin;
+            BuildOwnNear(_deathOwnForce, _lastDeathPosition, LOCAL_ENGAGEMENT_RADIUS);
+            if (!_localThreatForce.IsEmpty && CombatMatchup.Advantage(_deathOwnForce, _deathThreatForce) >=
+                CombatMatchup.Advantage(_localOwnForce, _localThreatForce)) return origin;
+            _localThreatForce.CopyFrom(_deathThreatForce);
+            _localOwnForce.CopyFrom(_deathOwnForce);
+            LocalOriginSource = "death";
+            return _lastDeathPosition;
+        }
+
+        private void TrackGroupDeaths(IReadOnlyList<IShipEntity> ownShips, float now)
+        {
+            _goneShipIds.Clear();
+            foreach (long id in _lastShipPositions.Keys)
+                if (!_ownShipIds.Contains(id)) _goneShipIds.Add(id);
+            foreach (long id in _goneShipIds)
+            {
+                if (!_entityLocator.TryGetEntity(id, out GameEntity entity) || entity.HealthModel.IsDestroyed)
+                {
+                    _lastDeathPosition = _lastShipPositions[id];
+                    _lastDeathTime = now;
+                }
+                _lastShipPositions.Remove(id);
+            }
+            for (int i = 0; i < ownShips.Count; i++) _lastShipPositions[ownShips[i].EntityId] = ownShips[i].WorldPosition;
         }
 
         private static FormationPoint CalculateFleetCenter(IReadOnlyList<IShipEntity> ships)

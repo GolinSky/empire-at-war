@@ -4,6 +4,7 @@ using System.Globalization;
 using System.IO;
 using System.Text;
 using EmpireAtWar.Entities.EnemyFaction.Models;
+using EmpireAtWar.Entities.BaseEntity.Orders;
 using EmpireAtWar.Entities.BaseEntity.EntityFacades;
 using EmpireAtWar.Models.Factions;
 using EmpireAtWar.Models.Players;
@@ -129,6 +130,17 @@ namespace EmpireAtWar.Services.Enemy
                 "; localRaw={0:F3}; localSmoothed={1:F3}; fleetSmoothed={2:F3}; stateHeldSeconds={3:F1}; recoveryMode={4}",
                 snapshot.LocalRaw, snapshot.LocalAdvantage, snapshot.FleetAdvantage,
                 context == null ? 0f : context.StateHeldSeconds, snapshot.RecoveryMode);
+            if (context != null)
+            {
+                // Round 9 (W43): assault gate parts, critical cause, idle group ships, local rating origin.
+                int idleShips = 0;
+                foreach (var ship in context.Ships)
+                    if (ship.CurrentOrder == UnitOrderType.None) idleShips++;
+                details += string.Format(CultureInfo.InvariantCulture,
+                    "; {0}; critical={1}; idleShips={2}; localOrigin={3}", context.AssaultGate,
+                    context.StationPressure == null ? "none" : context.StationPressure.CriticalCause, idleShips,
+                    context.LocalOrigin);
+            }
             if (context != null && !_compact)
             {
                 EnemyCaptureObjective objective = context.CaptureObjective;
