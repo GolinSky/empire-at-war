@@ -69,6 +69,7 @@ namespace EmpireAtWar.Services.Economy
             _battleState.AddObserver(this);
             // Registered so allied mining facilities can pay into this economy too.
             _playerRegistry.RegisterEconomy(_owner, this);
+            _playerRegistry.RegisterResearch(_owner, _research);
         }
 
         public void LateDispose()
@@ -76,6 +77,7 @@ namespace EmpireAtWar.Services.Economy
             _research.OnResearchCompleted -= HandleResearchCompleted;
             _battleState.RemoveObserver(this);
             _playerRegistry.UnregisterEconomy(_owner);
+            _playerRegistry.UnregisterResearch(_owner);
         }
 
         public void UpdateState(BattleState state)

@@ -20,7 +20,7 @@ MonoBehaviour:
           weaponType: 16
           displayName: 
           damageType: 8
-          damage: 30000
+          damage: 340
           shotsPerSalvo: 3
           shotInterval: 0.5
           reload: 0
@@ -29,6 +29,7 @@ MonoBehaviour:
           interceptable: 0
           shotPrefab: {fileID: 4236977079676118448, guid: ac79a52f5e9501e42ae04d889fb5a607,
             type: 3}
+          beamPrefab: {fileID: 0}
           projectileSpeed: 0
           color: {r: 0.35, g: 0.85, b: 1, a: 1}
           size: {x: 36, y: 3, z: 3}
@@ -41,7 +42,15 @@ MonoBehaviour:
           speedMultiplier: 0.001
           shieldRegenMultiplier: 0
           damageTakenMultiplier: 1
+          shotIntervalMultiplier: 0
         stunnedTargetDamageMultiplier: 1
+        researchDamage:
+        - 1750
+        - 6700
+        - 28400
+        - 50000
+        - 270000
+        researchAreaDamage: []
         areaDamage: 0
         areaRadius: 0
     - key: 1
@@ -50,7 +59,7 @@ MonoBehaviour:
           weaponType: 17
           displayName: 
           damageType: 9
-          damage: 600
+          damage: 720
           shotsPerSalvo: 10
           shotInterval: 0.1
           reload: 0
@@ -59,6 +68,7 @@ MonoBehaviour:
           interceptable: 0
           shotPrefab: {fileID: 6462505677978586642, guid: 59849b416528995498064655e1f43bac,
             type: 3}
+          beamPrefab: {fileID: 0}
           projectileSpeed: 650
           color: {r: 1, g: 0.95, b: 0.75, a: 1}
           size: {x: 3.6, y: 3.6, z: 3.6}
@@ -71,7 +81,15 @@ MonoBehaviour:
           speedMultiplier: 1
           shieldRegenMultiplier: 1
           damageTakenMultiplier: 1
+          shotIntervalMultiplier: 0
         stunnedTargetDamageMultiplier: 0.5
+        researchDamage:
+        - 810
+        - 2800
+        - 12650
+        - 22500
+        - 242000
+        researchAreaDamage: []
         areaDamage: 0
         areaRadius: 0
     - key: 2
@@ -80,7 +98,7 @@ MonoBehaviour:
           weaponType: 18
           displayName: 
           damageType: 10
-          damage: 12000
+          damage: 4600
           shotsPerSalvo: 1
           shotInterval: 0
           reload: 0
@@ -89,6 +107,7 @@ MonoBehaviour:
           interceptable: 0
           shotPrefab: {fileID: 7024622963710226239, guid: 482c282e2e1cf0c4482a04dcbcf91f9f,
             type: 3}
+          beamPrefab: {fileID: 0}
           projectileSpeed: 220
           color: {r: 0.45, g: 1, b: 0.25, a: 1}
           size: {x: 90, y: 90, z: 90}
@@ -101,6 +120,19 @@ MonoBehaviour:
           speedMultiplier: 1
           shieldRegenMultiplier: 1
           damageTakenMultiplier: 1
+          shotIntervalMultiplier: 0
         stunnedTargetDamageMultiplier: 0.5
-        areaDamage: 2000
+        researchDamage:
+        - 6900
+        - 25800
+        - 88000
+        - 150000
+        - 2020000
+        researchAreaDamage:
+        - 1150
+        - 4300
+        - 14700
+        - 25000
+        - 337000
+        areaDamage: 770
         areaRadius: 30

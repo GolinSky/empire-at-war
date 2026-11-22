@@ -9,7 +9,9 @@ using EmpireAtWar.Entities.BaseEntity;
 using EmpireAtWar.Entities.BaseEntity.EntityFacades;
 using EmpireAtWar.Entities.SuperWeapons;
 using EmpireAtWar.Models.Health;
+using EmpireAtWar.Models.Factions;
 using EmpireAtWar.Services.Audio;
+using EmpireAtWar.Services.Player;
 using EmpireAtWar.Services.UnitExplosion;
 using EmpireAtWar.ViewComponents.Weapon;
 using UnityEngine;
@@ -28,6 +30,7 @@ namespace EmpireAtWar.Services.SuperWeapons
     public sealed class SuperWeaponFireService : ISuperWeaponFireService, ITickable, ILateDisposable
     {
         private readonly IPlayerRelations _relations;
+        private readonly IPlayerRegistry _players;
         private readonly IEntityLocator _entities;
         private readonly ISuperWeaponOrigin _origin;
 
@@ -60,7 +63,9 @@ namespace EmpireAtWar.Services.SuperWeapons
                 SuperWeaponSalvo salvo = _salvos[i];
                 if (!rebuiltIds.Contains(salvo.Target.Id)) continue;
                 SuperWeaponSalvo moved = new SuperWeaponSalvo(salvo.Type, _entities.GetEntity(salvo.Target.Id),
-                    salvo.Profile, salvo.Origin) { ShotsFired = salvo.ShotsFired, NextShotTime = salvo.NextShotTime };
+                    salvo.Profile, salvo.Origin) {
+                    ShotsFired = salvo.ShotsFired, NextShotTime = salvo.NextShotTime, ResearchTier = salvo.ResearchTier
+                };
                 moved.ImpactTimes.AddRange(salvo.ImpactTimes);
                 _salvos[i] = moved;
             }
@@ -84,13 +89,14 @@ namespace EmpireAtWar.Services.SuperWeapons
         }
 
         public SuperWeaponFireService(IEntityLocator entities, ISuperWeaponOrigin origin,
-            IPlayerRelations relations, SuperWeaponData data,
+            IPlayerRelations relations, IPlayerRegistry players, SuperWeaponData data,
             ImpactEffectPresenter impactPresenter, IUnitExplosionService unitExplosions,
             BoltFlightBatch boltFlights, IAudioService audioService,
             ShipSfxData sfxData, ShipSfxSources sfxSources)
         {
             _boltFlights = boltFlights;
             _relations = relations;
+            _players = players;
             _data = data;
             _impactPresenter = impactPresenter;
             _unitExplosions = unitExplosions;
@@ -139,7 +145,10 @@ namespace EmpireAtWar.Services.SuperWeapons
             GameObject origin = new GameObject($"{type}Origin");
             origin.transform.SetPositionAndRotation(originPosition,
                 Quaternion.LookRotation(targetPosition - originPosition));
-            _salvos.Add(new SuperWeaponSalvo(type, target, _data.GetProfile(type), origin.transform));
+            _salvos.Add(new SuperWeaponSalvo(type, target, _data.GetProfile(type), origin.transform)
+            {
+                ResearchTier = _players.GetResearch(issuer).GetCompletedTiers(ResearchType.OrbitalWeapons)
+            });
             Fired?.Invoke(issuer, type, target);
         }
 
@@ -200,7 +209,7 @@ namespace EmpireAtWar.Services.SuperWeapons
             _audioService.PlayOneShot(_weaponSource, sound.GetClip(), sound.Volume);
             ShotEffect shot = Object.Instantiate(profile.Weapon.ShotPrefab);
             shot.PrepareImpact(_impactPresenter, salvo.Target.HealthModel, profile.Weapon.DamageType,
-                profile.Weapon.Damage, profile.ImpactSize, true);
+                profile.GetDamage(salvo.ResearchTier), profile.ImpactSize, true);
             Transform target = salvo.Target.GetFacade<IEntityTransformFacade>().Transform;
             float travelTime = shot.Fire(salvo.Origin, target, target, Vector3.zero, profile.Weapon, _boltFlights);
             shot.RetireAfterCompletion();
@@ -222,7 +231,7 @@ namespace EmpireAtWar.Services.SuperWeapons
                 _unitExplosions.Spawn(explosionPosition, profile.ImpactSize);
             }
 
-            ApplyDamage(target, profile.Weapon.Damage, profile);
+            ApplyDamage(target, profile.GetDamage(salvo.ResearchTier), profile);
             if (!target.HealthModel.IsDestroyed && profile.StunDuration > 0f &&
                 target.TryGetFacade(out ICombatModifiersFacade combat))
             {
@@ -231,11 +240,11 @@ namespace EmpireAtWar.Services.SuperWeapons
 
             if (profile.AreaDamage > 0f)
             {
-                ApplyAreaDamage(target, impactPosition, profile);
+                ApplyAreaDamage(target, impactPosition, profile, profile.GetAreaDamage(salvo.ResearchTier));
             }
         }
 
-        private void ApplyAreaDamage(IEntity target, Vector3 center, SuperWeaponProfile profile)
+        private void ApplyAreaDamage(IEntity target, Vector3 center, SuperWeaponProfile profile, float areaDamage)
         {
             // Damage can release entities, so the locator must not be enumerated while it is applied.
             _areaTargets.Clear();
@@ -251,7 +260,7 @@ namespace EmpireAtWar.Services.SuperWeapons
 
             foreach (IEntity entity in _areaTargets)
             {
-                if (!entity.HealthModel.IsDestroyed) ApplyDamage(entity, profile.AreaDamage, profile);
+                if (!entity.HealthModel.IsDestroyed) ApplyDamage(entity, areaDamage, profile);
             }
         }
 

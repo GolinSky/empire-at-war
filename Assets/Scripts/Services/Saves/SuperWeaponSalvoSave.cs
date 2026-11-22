@@ -16,6 +16,7 @@ namespace EmpireAtWar.Services.Saves
         [SerializeField] private int shotsFired;
         [SerializeField] private float nextShotTime;
         [SerializeField] private float[] impactTimes;
+        [SerializeField] private int researchTier;
 
         public SuperWeaponType Type => type;
         public long TargetId => targetId;
@@ -28,7 +29,8 @@ namespace EmpireAtWar.Services.Saves
             originRotation = salvo.Origin.rotation,
             shotsFired = salvo.ShotsFired,
             nextShotTime = salvo.NextShotTime,
-            impactTimes = salvo.ImpactTimes.ToArray()
+            impactTimes = salvo.ImpactTimes.ToArray(),
+            researchTier = salvo.ResearchTier
         };
 
         public SuperWeaponSalvo Restore(IEntityLocator entities, SuperWeaponData data)
@@ -39,7 +41,8 @@ namespace EmpireAtWar.Services.Saves
             SuperWeaponSalvo salvo = new SuperWeaponSalvo(type, target, data.GetProfile(type), origin.transform)
             {
                 ShotsFired = shotsFired,
-                NextShotTime = nextShotTime
+                NextShotTime = nextShotTime,
+                ResearchTier = researchTier
             };
             salvo.ImpactTimes.AddRange(impactTimes);
             return salvo;

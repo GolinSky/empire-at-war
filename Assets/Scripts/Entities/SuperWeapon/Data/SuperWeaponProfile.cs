@@ -20,6 +20,12 @@ namespace EmpireAtWar.Entities.SuperWeapons
         [Tooltip("Damage multiplier against targets disabled by a superweapon, so disable-then-strike combos stay weak.")]
         [SerializeField, Range(0f, 1f)] private float stunnedTargetDamageMultiplier = 1f;
 
+        [Header("Research")]
+        [Tooltip("Damage per shot after Orbital Weapons research tier 1..N. Element 0 is tier 1; tier 0 uses the weapon damage.")]
+        [SerializeField] private float[] researchDamage = Array.Empty<float>();
+        [Tooltip("Area damage after Orbital Weapons research tier 1..N. Element 0 is tier 1; tier 0 uses Area Damage.")]
+        [SerializeField] private float[] researchAreaDamage = Array.Empty<float>();
+
         [Header("Area")]
         [Tooltip("Damage dealt around the impact to the target's side. Zero disables the effect.")]
         [SerializeField] private float areaDamage;
@@ -33,5 +39,10 @@ namespace EmpireAtWar.Entities.SuperWeapons
         public float StunnedTargetDamageMultiplier => stunnedTargetDamageMultiplier;
         public float AreaDamage => areaDamage;
         public float AreaRadius => areaRadius;
+
+        public float GetDamage(int researchTier) => researchTier == 0 ? weapon.Damage : researchDamage[researchTier - 1];
+
+        public float GetAreaDamage(int researchTier) =>
+            researchTier == 0 || areaDamage <= 0f ? areaDamage : researchAreaDamage[researchTier - 1];
     }
 }

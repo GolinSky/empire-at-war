@@ -9,5 +9,6 @@ namespace EmpireAtWar.Models.Factions
         ImprovedDefenses = 4,
         ReinforcedStructures = 5,
         IncreasedStationIncome = 6,
+        OrbitalWeapons = 7,
     }
 }

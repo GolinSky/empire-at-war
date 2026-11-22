@@ -1,5 +1,6 @@
 using EmpireAtWar.Controllers.Economy;
 using EmpireAtWar.Entities.EnemyFaction.Controllers;
+using EmpireAtWar.Models.Factions;
 using EmpireAtWar.Models.Players;
 using EmpireAtWar.Models.Reinforcement;
 using EmpireAtWar.Services.CaptureSites;
@@ -29,6 +30,8 @@ namespace EmpireAtWar.Services.Player
 
         void RegisterEconomy(PlayerId owner, IEconomyProvider economy);
 
+        void RegisterResearch(PlayerId owner, IFactionResearchModelObserver research);
+
         void UnregisterSiteBuilder(PlayerId owner);
 
         void UnregisterAiStationCheat(PlayerId owner);
@@ -39,6 +42,8 @@ namespace EmpireAtWar.Services.Player
 
         void UnregisterEconomy(PlayerId owner);
 
+        void UnregisterResearch(PlayerId owner);
+
         ISiteFacilityBuilder GetSiteBuilder(PlayerId owner);
 
         IStationSpawner GetStationSpawner(PlayerId owner);
@@ -46,6 +51,8 @@ namespace EmpireAtWar.Services.Player
         ISquadronPrewarmer GetSquadronPrewarmer(PlayerId owner);
 
         IEconomyProvider GetEconomy(PlayerId owner);
+
+        IFactionResearchModelObserver GetResearch(PlayerId owner);
 
         IEnemyStationCheat GetAiStationCheat(PlayerId owner);
 

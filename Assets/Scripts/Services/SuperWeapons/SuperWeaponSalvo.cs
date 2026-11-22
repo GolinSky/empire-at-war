@@ -12,6 +12,8 @@ namespace EmpireAtWar.Services.SuperWeapons
         public SuperWeaponProfile Profile { get; }
         public IEntity Target { get; }
         public Transform Origin { get; }
+        /// <summary>Completed Orbital Weapons research tiers of the firing player when the salvo was fired.</summary>
+        public int ResearchTier { get; set; }
         public List<float> ImpactTimes { get; } = new List<float>();
         public int ShotsFired { get; set; }
         public float NextShotTime { get; set; }

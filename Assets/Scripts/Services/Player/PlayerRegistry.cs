@@ -1,6 +1,7 @@
 using System.Collections.Generic;
 using EmpireAtWar.Controllers.Economy;
 using EmpireAtWar.Entities.EnemyFaction.Controllers;
+using EmpireAtWar.Models.Factions;
 using EmpireAtWar.Models.Players;
 using EmpireAtWar.Models.Reinforcement;
 using EmpireAtWar.Services.CaptureSites;
@@ -22,6 +23,8 @@ namespace EmpireAtWar.Services.Player
             new Dictionary<PlayerId, ISquadronPrewarmer>();
         private readonly Dictionary<PlayerId, IEconomyProvider> _economies =
             new Dictionary<PlayerId, IEconomyProvider>();
+        private readonly Dictionary<PlayerId, IFactionResearchModelObserver> _research =
+            new Dictionary<PlayerId, IFactionResearchModelObserver>();
 
         public void RegisterSiteBuilder(PlayerId owner, ISiteFacilityBuilder builder)
         {
@@ -46,6 +49,21 @@ namespace EmpireAtWar.Services.Player
         public void RegisterEconomy(PlayerId owner, IEconomyProvider economy)
         {
             _economies.Add(owner, economy);
+        }
+
+        public void RegisterResearch(PlayerId owner, IFactionResearchModelObserver research)
+        {
+            _research.Add(owner, research);
+        }
+
+        public void UnregisterResearch(PlayerId owner)
+        {
+            _research.Remove(owner);
+        }
+
+        public IFactionResearchModelObserver GetResearch(PlayerId owner)
+        {
+            return _research[owner];
         }
 
         public void UnregisterSiteBuilder(PlayerId owner)

@@ -265,6 +265,11 @@ MonoBehaviour:
     m_ReadOnly: 0
     m_SerializedLabels: []
     FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 632f1f446bdb46678c7eeeced2c6917d
+    m_Address: Assets/Art/Textures/Ui/Icons/Research/OrbitalWeaponsIcon.png
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
   - m_GUID: 6475693b4e9a23943aa6f6d43d698437
     m_Address: Assets/Art/Textures/Ui/Icons/SquadronIcon/Belbullab22Icon.png
     m_ReadOnly: 0

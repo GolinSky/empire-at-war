@@ -25,6 +25,7 @@ using EmpireAtWar.Models.Factions;
 using EmpireAtWar.Services.Enemy;
 using EmpireAtWar.Services.Audio;
 using EmpireAtWar.Services.Input;
+using PlayerRegistry = EmpireAtWar.Services.Player.PlayerRegistry;
 using EmpireAtWar.Services.PlayerCommands;
 using EmpireAtWar.Services.Popups;
 using EmpireAtWar.Services.Saves;
@@ -154,6 +155,33 @@ namespace EmpireAtWar.Tests.Editor
                 UnityEngine.Object.DestroyImmediate(stationView);
                 UnityEngine.Object.DestroyImmediate(scout);
             }
+        }
+
+        [TestCase(SuperWeaponType.IonCannon)]
+        [TestCase(SuperWeaponType.HypervelocityGun)]
+        [TestCase(SuperWeaponType.PlasmaCannon)]
+        public void ResearchDamage_CoversEveryOrbitalResearchTierAndGrows(SuperWeaponType type)
+        {
+            SuperWeaponProfile profile = LoadData().GetProfile(type);
+            int checkedLines = 0;
+            foreach (string guid in AssetDatabase.FindAssets("t:FactionDefinition"))
+            {
+                FactionDefinition faction = AssetDatabase.LoadAssetAtPath<FactionDefinition>(
+                    AssetDatabase.GUIDToAssetPath(guid));
+                Assert.That(faction.ResearchLines.TryGetValue(ResearchType.OrbitalWeapons, out ResearchLineData line),
+                    Is.True, $"{faction.name} has no Orbital Weapons research.");
+                checkedLines++;
+                for (int tier = 1; tier <= line.Tiers.Length; tier++)
+                {
+                    Assert.That(profile.GetDamage(tier), Is.GreaterThan(profile.GetDamage(tier - 1)),
+                        $"{faction.name} {type} tier {tier}");
+                    if (profile.AreaDamage > 0f)
+                        Assert.That(profile.GetAreaDamage(tier), Is.GreaterThan(profile.GetAreaDamage(tier - 1)),
+                            $"{faction.name} {type} area tier {tier}");
+                }
+            }
+
+            Assert.That(checkedLines, Is.GreaterThan(0));
         }
 
         [Test]
@@ -371,7 +399,7 @@ namespace EmpireAtWar.Tests.Editor
                 .SetValue(sources, new[] { audioSource });
             ShipSfxData sfx = AssetDatabase.LoadAssetAtPath<ShipSfxData>(
                 "Assets/Settings/Data/Models/Audio/ShipSfxData.asset");
-            return new SuperWeaponFireService(entities, null, TestPlayers.CreateTeamGame(), data,
+            return new SuperWeaponFireService(entities, null, TestPlayers.CreateTeamGame(), new PlayerRegistry(), data,
                 new ImpactEffectPresenter(null, null), unitExplosions ?? new RecordingUnitExplosions(),
                 boltFlights, audioService, sfx, sources);
         }

@@ -51,7 +51,7 @@ namespace EmpireAtWar.Entities.Faction.Ui
             string status = count == tiers.Length
                 ? "Highest tier completed."
                 : $"Next tier requires station level {tiers[count].FactionData.AvailableLevel}.";
-            return new TooltipContent(tier.FactionData.Name, stats: stats, description: string.Join("\n", scope),
+            return new TooltipContent(tier.FactionData.Name, stats: stats, description: scope.Count == 0 ? tier.FactionData.Description : string.Join("\n", scope),
                 iconKey: tier.FactionData.IconKey, subtitle: count == 0 ? "Unresearched · Tier I preview" : "Active upgrade",
                 status: status);
         }
