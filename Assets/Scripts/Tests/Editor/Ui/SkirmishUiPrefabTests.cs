@@ -229,6 +229,7 @@ namespace EmpireAtWar.Tests.Editor
         }
 
         [UnityTest]
+        [Category("EditorPlayMode"), Explicit("Enters Play Mode; run with --filter-type category --filter EditorPlayMode --include-explicit true")]
         public IEnumerator OccupantPopup_RosterChangeRejectsOldChoicesAndPreservesFreshKick()
         {
             yield return new EnterPlayMode();

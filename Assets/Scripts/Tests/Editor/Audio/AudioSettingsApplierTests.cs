@@ -10,6 +10,7 @@ using UnityEngine.TestTools;
 namespace EmpireAtWar.Tests.Editor
 {
     [Category("Audio")]
+    [Category("EditorPlayMode"), Explicit("Enters Play Mode; run with --filter-type category --filter EditorPlayMode --include-explicit true")]
     public sealed class AudioSettingsApplierTests
     {
         private AudioMixer _mixer;

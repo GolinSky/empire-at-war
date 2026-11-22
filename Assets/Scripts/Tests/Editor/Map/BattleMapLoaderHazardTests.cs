@@ -18,6 +18,7 @@ using UnityEngine.TestTools;
 namespace EmpireAtWar.Tests.Editor
 {
     [Category("Map")]
+    [Category("EditorPlayMode"), Explicit("Enters Play Mode; run with --filter-type category --filter EditorPlayMode --include-explicit true")]
     public sealed class BattleMapLoaderHazardTests
     {
         private const double LOAD_TIMEOUT_SECONDS = 60d;

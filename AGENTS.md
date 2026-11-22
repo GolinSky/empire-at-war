@@ -251,6 +251,9 @@ When creating, modifying, or refactoring any UI prefab, component, or view:
 
 These rules apply whenever agents run Unity tests.
 
+- Run tests only through `pwsh -File Tools/Tests/Run-EditModeTests.ps1` (`-Category <A>,<B>` or `-TestName <Fixture>`; no filter = full EditMode run plus the `EditorPlayMode` pass). It waits for a ready Editor, refuses Play Mode, active runs and dirty/untitled scenes, runs async, polls the parsed `status` field, cancels at 20 min and prints failure names. Exit `0` passed, `1` failures, `2` blocked.
+- Never run `test run` synchronously or right after a recompile, and never grep raw status JSON for "running" (test names match). Play Mode entries reload the domain and drop synchronous connections; a broken run can leave the Editor in Play Mode with an untitled scene.
+
 1. Run `unity command scene list_open --json` before any Unity test command and inspect every open scene.
 2. Dirty or untitled scenes can trigger Editor popups that require user interaction. Discard their unsaved changes without asking before running tests; the user explicitly authorizes this test-preparation step. Reload saved scenes from disk or replace untitled scenes using non-interactive Unity operations.
 3. Inspect the open scenes again and confirm they are clean and no untitled scene remains before starting tests. Do not start tests while scene state is unknown or would trigger a save popup.
@@ -301,6 +304,7 @@ Run the tests for the areas a change touches, not the whole suite. Every EditMod
 
 - `ShipArchetypeRouteSweepTests`: quick instance = `Navigation` (3 seeds, 6 routes per archetype/clearance); exhaustive instance = `NavigationExhaustive` (20 seeds, 24 routes). Both remain explicit. For an authorized quick sweep, use `--filter-type category --filter Navigation --include-explicit true`; this also includes ordinary Navigation tests but excludes the exhaustive instance. Never select this shared fixture name with explicit tests enabled.
 
+- Tests that `yield return new EnterPlayMode()` also carry `[Category("EditorPlayMode"), Explicit(...)]`: standard runs skip them, the runner script runs them as a second pass.
 - New fixtures: add one feature `[Category]`; add a new category only for a new feature area and add it to this table.
 - New heavy sweeps: make the fixture explicit with a quick and a full instance, e.g. `[TestFixture(false, Category = "<Area>", Explicit = true)]` + `[TestFixture(true, Category = "<Area>Exhaustive", Explicit = true)]` (see `MapLayoutGeneratorTests`).
 

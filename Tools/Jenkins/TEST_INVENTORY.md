@@ -49,6 +49,9 @@ Counts are fixture source files carrying a category in the class header. A file 
 - `Map/MapLayoutGeneratorTests.cs`: quick `MapGeneration` and exhaustive `MapExhaustive` fixture instances; both explicit.
 - `Map/MapArchetypeGenerationTests.cs`: quick `MapGeneration` and exhaustive `MapExhaustive` fixture instances; both explicit.
 - `Navigation/ShipArchetypeRouteSweepTests.cs`: quick `Navigation` and exhaustive `NavigationExhaustive` fixture instances; both explicit.
+- `EditorPlayMode` (explicit): tests that `yield return new EnterPlayMode()` from EditMode. Each Play Mode entry reloads the domain mid-run, so standard runs exclude them; `Tools/Tests/Run-EditModeTests.ps1` runs them as a separate second pass.
+  - Whole fixtures: `Audio/AudioSettingsApplierTests.cs`, `Map/BattleMapLoaderHazardTests.cs`.
+  - Single tests: `MusicServiceTests.Tick_AdvancesBetweenStreamedBattleTracks`, `LoadingUiIsolationTests.LoadingCircleRotatesWhileGameTimeIsPaused`, `SkirmishUiPrefabTests.OccupantPopup_RosterChangeRejectsOldChoicesAndPreservesFreshKick`, `SteamInviteUiPrefabTests.FriendPicker_CoveringCollapsesDropdownImmediatelyAndPreservesSelection`.
 - `MapGeneration` also appears on a non-explicit fixture; category membership alone does not imply an explicit test.
 - Follow `AGENTS.md` for execution authorization and exact category selection. Inventory does not authorize running tests.
 
