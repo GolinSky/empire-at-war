@@ -1,6 +1,7 @@
 using System.Collections.Generic;
 using EmpireAtWar.Entities.DefendPlatform;
 using EmpireAtWar.Entities.MiningFacility;
+using EmpireAtWar.Entities.Ship.Data;
 using EmpireAtWar.Entities.Squadrons;
 using EmpireAtWar.Entities.SuperWeapons;
 using EmpireAtWar.Mvc;
@@ -22,6 +23,10 @@ namespace EmpireAtWar.Models.Factions
         [SerializeField] private DefendPlatformType[] defendPlatforms;
         [SerializeField] private SuperWeaponType[] superWeapons;
 
+        [Header("Ship Roles")]
+        [Tooltip("What the whole fleet shares against the other factions (e.g. Slow, Dps); ship flags compare within the faction.")]
+        [SerializeField] private ShipRole shipMarks;
+
         public FactionType FactionType => factionType;
         public Dictionary<ShipType, FactionData> Ships => ships.Dictionary;
         public Dictionary<SquadronType, FactionData> Squadrons => squadrons.Dictionary;
@@ -29,5 +34,6 @@ namespace EmpireAtWar.Models.Factions
         public IReadOnlyList<MiningFacilityType> MiningFacilities => miningFacilities;
         public IReadOnlyList<DefendPlatformType> DefendPlatforms => defendPlatforms;
         public IReadOnlyList<SuperWeaponType> SuperWeapons => superWeapons;
+        public ShipRole ShipMarks => shipMarks;
     }
 }

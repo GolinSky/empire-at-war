@@ -3,16 +3,18 @@ using System.Linq;
 using System.Text;
 using EmpireAtWar.Components.AttackComponent;
 using EmpireAtWar.Entities.Ship.Data;
+using EmpireAtWar.Models.Factions;
 using UnityEditor;
 using UnityEngine;
 
 namespace EmpireAtWar.Editor
 {
     /// <summary>
-    /// Writes a first role proposal (<see cref="ShipRoleRules.Propose"/>) into every ship data asset, for review by
-    /// hand. Overwrites the current roles, so run it only for a fresh proposal.
+    /// Writes a role proposal (<see cref="ShipRoleRules.Propose"/>) into every ship data asset and the faction marks
+    /// (<see cref="ShipRoleRules.ProposeFactionMarks"/>) into every faction definition, for review by hand. Overwrites the
+    /// current roles, so run it only for a fresh proposal.
     /// </summary>
-    [EditorToolInfo("Propose AI ship roles from class medians and weapon loadouts (overwrites current roles).")]
+    [EditorToolInfo("Propose AI ship roles within each faction and class, and faction marks (overwrites current roles).")]
     public static class ShipRoleProposal
     {
         private const string WEAPONS_PATH = "Assets/Settings/Data/Models/Weapon/WeaponsData.asset";
@@ -21,23 +23,34 @@ namespace EmpireAtWar.Editor
         public static string ProposeAll()
         {
             WeaponsData weapons = AssetDatabase.LoadAssetAtPath<WeaponsData>(WEAPONS_PATH);
-            List<ShipData> ships = AssetDatabase.FindAssets("t:ShipData")
-                .Select(guid => AssetDatabase.LoadAssetAtPath<ShipData>(AssetDatabase.GUIDToAssetPath(guid)))
-                .ToList();
+            List<ShipRoleEntry> roster = ShipRoleRoster.Load();
             var report = new StringBuilder();
-            foreach (ShipData ship in ships)
+            foreach (string guid in AssetDatabase.FindAssets("t:" + nameof(FactionDefinition)))
             {
-                List<ShipData> classMates = ships.Where(mate => mate.ShipClass == ship.ShipClass).ToList();
-                ShipRole roles = ShipRoleRules.Propose(ship, classMates, weapons);
-                var serialized = new SerializedObject(ship);
-                serialized.FindProperty("roles").intValue = (int)roles;
-                serialized.ApplyModifiedPropertiesWithoutUndo();
-                EditorUtility.SetDirty(ship);
-                report.AppendLine($"{ship.name} ({ship.ShipClass}): {roles}");
+                FactionDefinition faction =
+                    AssetDatabase.LoadAssetAtPath<FactionDefinition>(AssetDatabase.GUIDToAssetPath(guid));
+                List<ShipRoleEntry> fleet = roster.Where(entry => entry.Faction == faction.FactionType).ToList();
+                ShipRole marks = ShipRoleRules.ProposeFactionMarks(fleet, roster);
+                Write(faction, "shipMarks", marks);
+                report.AppendLine($"{faction.FactionType} marks: {marks}");
+            }
+            foreach (ShipRoleEntry entry in roster.Where(entry => entry.IsOwner))
+            {
+                ShipRole roles = ShipRoleRules.Propose(entry, ShipRoleRoster.ClassMates(roster, entry), weapons);
+                Write(entry.Ship, "roles", roles);
+                report.AppendLine($"{entry.Faction} {entry.Ship.name} ({entry.Ship.ShipClass}): {roles}");
             }
             AssetDatabase.SaveAssets();
-            Debug.Log($"[ShipRoleProposal] {ships.Count} ships.\n{report}");
+            Debug.Log($"[ShipRoleProposal] {roster.Count(entry => entry.IsOwner)} ships.\n{report}");
             return report.ToString();
+        }
+
+        private static void Write(Object asset, string property, ShipRole value)
+        {
+            var serialized = new SerializedObject(asset);
+            serialized.FindProperty(property).intValue = (int)value;
+            serialized.ApplyModifiedPropertiesWithoutUndo();
+            EditorUtility.SetDirty(asset);
         }
     }
 }

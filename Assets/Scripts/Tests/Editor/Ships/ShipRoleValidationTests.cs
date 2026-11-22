@@ -3,37 +3,43 @@ using System.Linq;
 using EmpireAtWar.Components.AttackComponent;
 using EmpireAtWar.Editor;
 using EmpireAtWar.Entities.Ship.Data;
+using EmpireAtWar.Models.Factions;
 using NUnit.Framework;
 using UnityEditor;
 
 namespace EmpireAtWar.Tests.Editor
 {
-    /// <summary>Each role flag on ship data agrees with the data it stands for; no tuned value is pinned.</summary>
+    /// <summary>
+    /// Each role flag on ship data agrees with the data it stands for, compared within the ship's own faction and class
+    /// (every faction's when that class is too small);
+    /// each faction mark agrees with the faction's fleet against the others. No tuned value is pinned.
+    /// </summary>
     [Category("Ships")]
     public sealed class ShipRoleValidationTests
     {
         private const string WEAPONS_PATH = "Assets/Settings/Data/Models/Weapon/WeaponsData.asset";
 
-        private List<ShipData> _ships;
+        private List<ShipRoleEntry> _roster;
+        private List<ShipRoleEntry> _owners;
         private WeaponsData _weapons;
 
         [OneTimeSetUp]
         public void LoadShips()
         {
             _weapons = AssetDatabase.LoadAssetAtPath<WeaponsData>(WEAPONS_PATH);
-            _ships = AssetDatabase.FindAssets("t:ShipData")
-                .Select(guid => AssetDatabase.LoadAssetAtPath<ShipData>(AssetDatabase.GUIDToAssetPath(guid)))
-                .ToList();
-            Assert.That(_ships, Is.Not.Empty);
+            _roster = ShipRoleRoster.Load();
+            _owners = _roster.Where(entry => entry.IsOwner).ToList();
+            Assert.That(_owners, Is.Not.Empty);
         }
 
-        private IEnumerable<ShipData> ClassMates(ShipData ship) => _ships.Where(mate => mate.ShipClass == ship.ShipClass);
+        private List<ShipRoleEntry> ClassMates(ShipRoleEntry entry) => ShipRoleRoster.ClassMates(_roster, entry);
 
         [Test]
         public void EveryShip_HasARole_AndOneDurabilityFlag()
         {
-            foreach (ShipData ship in _ships)
+            foreach (ShipRoleEntry entry in _owners)
             {
+                ShipData ship = entry.Ship;
                 Assert.That(ship.Roles, Is.Not.EqualTo(ShipRole.None), ship.name);
                 int durabilityFlags = new[] { ShipRole.Balanced, ShipRole.Brawler, ShipRole.Fragile }
                     .Count(flag => ship.Roles.HasFlag(flag));
@@ -43,47 +49,105 @@ namespace EmpireAtWar.Tests.Editor
         }
 
         [Test]
-        public void Carrier_HasHangarBays()
+        public void Carrier_HasEnoughHangarBays()
         {
-            foreach (ShipData ship in _ships.Where(ship => ship.Roles.HasFlag(ShipRole.Carrier)))
-                Assert.That(ship.HangarBays.Count, Is.GreaterThan(0), ship.name);
+            foreach (ShipRoleEntry entry in _owners)
+                Assert.That(entry.Ship.Roles.HasFlag(ShipRole.Carrier), Is.EqualTo(ShipRoleRules.IsCarrier(entry.Ship)),
+                    $"{entry.Ship.name}: {entry.Ship.HangarBays.Count} bays");
+        }
+
+        [Test]
+        public void ClassMates_HaveEnoughShipsForAMedian()
+        {
+            foreach (ShipRoleEntry entry in _owners)
+                Assert.That(ClassMates(entry), Has.Count.GreaterThanOrEqualTo(ShipRoleRoster.MIN_CLASS_MATES),
+                    $"{entry.Ship.name} ({entry.Ship.ShipClass})");
+        }
+
+        [Test]
+        public void Support_HasASupportAbility()
+        {
+            foreach (ShipRoleEntry entry in _owners.Where(entry => entry.Ship.Roles.HasFlag(ShipRole.Support)))
+                Assert.That(ShipRoleRules.HasSupportAbility(entry.Ship), Is.True, entry.Ship.name);
         }
 
         [Test]
         public void WeaponSpecialists_CarryThatFamilyAsTheLargestShare()
         {
-            foreach (ShipData ship in _ships)
+            foreach (ShipRoleEntry entry in _owners)
             {
+                ShipData ship = entry.Ship;
                 if (ship.Roles.HasFlag(ShipRole.MissileSpecialist))
                     Assert.That(ShipRoleRules.IsLargestShare(ship, _weapons, ShipRoleRules.MissileFamilies), Is.True,
                         ship.name);
                 if (ship.Roles.HasFlag(ShipRole.IonSpecialist))
-                    Assert.That(ShipRoleRules.IsLargestShare(ship, _weapons, ShipRoleRules.IonFamilies), Is.True,
-                        ship.name);
+                    Assert.That(ShipRoleRules.IsIonSpecialist(ship, _weapons), Is.True, ship.name);
+                int largestGroups = new[]
+                    {
+                        ShipRoleRules.MissileFamilies, ShipRoleRules.IonFamilies, ShipRoleRules.AntiStrikecraftFamilies
+                    }
+                    .Count(group => ShipRoleRules.IsLargestShare(ship, _weapons, group));
+                Assert.That(largestGroups, Is.LessThanOrEqualTo(1), ship.name);
             }
         }
 
         [Test]
-        public void FastAndSlow_AreAboveAndBelowTheClassMedianSpeed()
+        public void FastAndSlow_AreAboveAndBelowTheFactionClassMedianSpeed()
         {
-            foreach (ShipData ship in _ships)
+            foreach (ShipRoleEntry entry in _owners)
             {
-                float median = ShipRoleRules.Median(ClassMates(ship).Select(mate => mate.Speed));
-                if (ship.Roles.HasFlag(ShipRole.Fast)) Assert.That(ship.Speed, Is.GreaterThan(median), ship.name);
-                if (ship.Roles.HasFlag(ShipRole.Slow)) Assert.That(ship.Speed, Is.LessThan(median), ship.name);
+                float median = ShipRoleRules.Median(ClassMates(entry).Select(mate => mate.Ship.Speed));
+                if (entry.Ship.Roles.HasFlag(ShipRole.Fast))
+                    Assert.That(entry.Ship.Speed, Is.GreaterThan(median), entry.Ship.name);
+                if (entry.Ship.Roles.HasFlag(ShipRole.Slow))
+                    Assert.That(entry.Ship.Speed, Is.LessThan(median), entry.Ship.name);
             }
         }
 
         [Test]
-        public void BrawlerAndFragile_AreAboveAndBelowTheClassMedianDurability()
+        public void BrawlerAndFragile_AreAboveAndBelowTheFactionClassMedianDurabilityPerCredit()
         {
-            foreach (ShipData ship in _ships)
+            foreach (ShipRoleEntry entry in _owners)
             {
-                float median = ShipRoleRules.Median(ClassMates(ship).Select(ShipRoleRules.Durability));
-                if (ship.Roles.HasFlag(ShipRole.Brawler))
-                    Assert.That(ShipRoleRules.Durability(ship), Is.GreaterThan(median), ship.name);
-                if (ship.Roles.HasFlag(ShipRole.Fragile))
-                    Assert.That(ShipRoleRules.Durability(ship), Is.LessThan(median), ship.name);
+                float median = ShipRoleRules.Median(ClassMates(entry).Select(ShipRoleRules.DurabilityPerCredit));
+                if (entry.Ship.Roles.HasFlag(ShipRole.Brawler))
+                    Assert.That(ShipRoleRules.DurabilityPerCredit(entry), Is.GreaterThan(median), entry.Ship.name);
+                if (entry.Ship.Roles.HasFlag(ShipRole.Fragile))
+                    Assert.That(ShipRoleRules.DurabilityPerCredit(entry), Is.LessThan(median), entry.Ship.name);
+            }
+        }
+
+        [Test]
+        public void AntiCapital_DealsMoreDamageToCapitalsThanTheFactionClassMedian()
+        {
+            foreach (ShipRoleEntry entry in _owners.Where(entry => entry.Ship.Roles.HasFlag(ShipRole.AntiCapital)))
+            {
+                float median = ShipRoleRules.Median(ClassMates(entry)
+                    .Select(mate => ShipRoleRules.CapitalDamage(mate.Ship, _weapons)));
+                Assert.That(ShipRoleRules.CapitalDamage(entry.Ship, _weapons), Is.GreaterThan(median), entry.Ship.name);
+            }
+        }
+
+        [Test]
+        public void FactionMarks_AgreeWithTheFleetAgainstEveryFaction()
+        {
+            foreach (string guid in AssetDatabase.FindAssets("t:" + nameof(FactionDefinition)))
+            {
+                FactionDefinition faction =
+                    AssetDatabase.LoadAssetAtPath<FactionDefinition>(AssetDatabase.GUIDToAssetPath(guid));
+                List<ShipRoleEntry> fleet = _roster.Where(entry => entry.Faction == faction.FactionType).ToList();
+                if (fleet.Count == 0) continue;
+                ShipRole marks = faction.ShipMarks;
+                string name = faction.FactionType.ToString();
+                Assert.That(marks.HasFlag(ShipRole.Fast) && marks.HasFlag(ShipRole.Slow), Is.False, name);
+                float speed = ShipRoleRules.AverageRatio(fleet, _roster, entry => entry.Ship.Speed);
+                float durability = ShipRoleRules.AverageRatio(fleet, _roster, entry => ShipRoleRules.Durability(entry.Ship));
+                float guns = ShipRoleRules.AverageRatio(fleet, _roster, entry => ShipRoleRules.GunCount(entry.Ship));
+                if (marks.HasFlag(ShipRole.Fast)) Assert.That(speed, Is.GreaterThan(1f), name);
+                if (marks.HasFlag(ShipRole.Slow)) Assert.That(speed, Is.LessThan(1f), name);
+                if (marks.HasFlag(ShipRole.Brawler)) Assert.That(durability, Is.GreaterThan(1f), name);
+                if (marks.HasFlag(ShipRole.Fragile)) Assert.That(durability, Is.LessThan(1f), name);
+                if (marks.HasFlag(ShipRole.Dps)) Assert.That(guns, Is.GreaterThan(1f), name);
             }
         }
     }
