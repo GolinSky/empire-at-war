@@ -116,7 +116,7 @@ verification: Reviewed affected source and regression fixtures. Unity 6000.4.7f1
 | FighterLaser damage matrix | Fighter `1.5×`/`0.8`; Bomber `1.5×`/`0.85`; Interceptor `1.5×`/`0.75`; Hero `0.3×`/`0.4`; Capital `0.03×`; shields `0.5×` |
 | InterceptorLaser matrix (`14`) | Fighter `1.5×`/`0.8`; Bomber `1.5×`/`0.85`; Interceptor `1.5×`/`0.75`; Hero `0.3×`/`0.4`; Corvette `0.048×`; Capital `0.0095×`; ship shields `0.5 × 0.19` (large-ship values ÷2.1 to offset bigger bolts) |
 | HeroLaser matrix (`15`) | Fighter/Bomber `2×`/`0.95`; Interceptor `2×`/`0.9`; Hero `1×`/`0.8`; Corvette `0.4×`; Frigate `0.25×`; Capital `0.1×`; ship shields `0.5 × 0.6` |
-| Ion damage matrix | Shields `4.2×` (2026-11-22: was `3×`, scaled +40% to match Rebel regen tiers); ordinary ship/structure hull `0.25×` (was `0.1×`); strikecraft hull `0×`; non-piercing |
+| Ion damage matrix | Shields `3.3×` (2026-11-22: was `3×`, briefly `4.2×`; 4.2× stripped an ISD II in ~14 s from one MC80 Freedom, 3.3× → ~20 s); ordinary ship/structure hull `0.25×` (was `0.1×`); strikecraft hull `0×`; non-piercing |
 | ProtonTorpedo matrix | Shield-piercing; `HeavyCruiser` `1.1875×`, `Capital` `1.25×`, `BattleCruiser` `1.5×`, `Dreadnought` `1.75×` |
 | Warship class ladder | `Corvette → Frigate → Cruiser → HeavyCruiser → Capital → BattleCruiser → Dreadnought`; `HeavyCruiser` matrix interpolates `Cruiser`–`Capital`, `BattleCruiser` keeps prior `HeavyCapital`, `Dreadnought` steps beyond (`Laser` `0.15×`, `Turbolaser` `0.7×`, `HeroLaser` `0.05×`) |
 | Weapon caliber biases | `Light` dmg `1/1/0.95/0.925/0.9/0.85/0.8` (acc `1`); `Medium` dmg `0.85/1/.../1` (acc `0.85/1/.../1`); `Heavy` dmg `0.6/0.95/1.1/1.175/1.25/1.35/1.45` (acc `0.55/0.85/0.95/0.975/1/1/1`) |

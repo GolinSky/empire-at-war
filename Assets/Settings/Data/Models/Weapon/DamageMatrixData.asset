@@ -164,7 +164,7 @@ MonoBehaviour:
       dreadnought: 1
       structure: 1
       heroStrikecraft: 0.05
-    vsShield: 4.2
+    vsShield: 3.3
     shipShieldMultiplier: 1
     squadronShieldMultiplier: 1
     shieldPiercing: 0
