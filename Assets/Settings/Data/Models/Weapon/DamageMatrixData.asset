@@ -364,8 +364,8 @@ MonoBehaviour:
       cruiser: 0.8
       heavyCruiser: 0.7
       capital: 0.6
-      battleCruiser: 1
-      dreadnought: 1
+      battleCruiser: 0.6
+      dreadnought: 0.6
       structure: 0.5
       heroStrikecraft: 0.1
     accuracy:

@@ -45,11 +45,11 @@ MonoBehaviour:
           shotIntervalMultiplier: 0
         stunnedTargetDamageMultiplier: 1
         researchDamage:
+        - 900
         - 1750
-        - 6700
-        - 28400
-        - 50000
-        - 270000
+        - 2700
+        - 4000
+        - 5500
         researchAreaDamage: []
         areaDamage: 0
         areaRadius: 0
@@ -84,11 +84,11 @@ MonoBehaviour:
           shotIntervalMultiplier: 0
         stunnedTargetDamageMultiplier: 0.5
         researchDamage:
-        - 810
-        - 2800
-        - 12650
-        - 22500
-        - 242000
+        - 900
+        - 1250
+        - 1650
+        - 2100
+        - 2650
         researchAreaDamage: []
         areaDamage: 0
         areaRadius: 0
@@ -123,16 +123,16 @@ MonoBehaviour:
           shotIntervalMultiplier: 0
         stunnedTargetDamageMultiplier: 0.5
         researchDamage:
-        - 6900
-        - 25800
-        - 88000
-        - 150000
-        - 2020000
+        - 7000
+        - 10000
+        - 15000
+        - 20000
+        - 25000
         researchAreaDamage:
         - 1150
-        - 4300
-        - 14700
-        - 25000
-        - 337000
+        - 1650
+        - 2500
+        - 3300
+        - 4200
         areaDamage: 770
         areaRadius: 30
