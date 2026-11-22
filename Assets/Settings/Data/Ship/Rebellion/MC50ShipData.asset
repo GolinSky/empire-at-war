@@ -73,7 +73,7 @@ MonoBehaviour:
     type: 2}
   <ShipClass>k__BackingField: 8
   <Hull>k__BackingField: 5460
-  <Shields>k__BackingField: 5200
+  <Shields>k__BackingField: 5900
   shieldRegenTiers: {fileID: 11400000, guid: 44b427ab8d3b478397680d1181fc7fea, type: 2}
   <ShieldRegenTier>k__BackingField: 2
   <ShieldRegenMultiplier>k__BackingField: 1
@@ -88,7 +88,7 @@ MonoBehaviour:
   weaponLoadout:
   - weaponType: 3
     count: 2
-  - weaponType: 5
+  - weaponType: 90
     count: 4
   - weaponType: 14
     count: 2

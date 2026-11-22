@@ -59,13 +59,13 @@ MonoBehaviour:
       value:
         matchups: {fileID: 11400000, guid: 061d31c86b87ab34ca40a0d06290c8a5, type: 2}
         displayName: MC80
-        description: Heavy Rebel capital ship with 14,000 hull, 13,000 shields and
-          238/s shield regeneration. Eight heavy turbolaser, four heavy quad turbolaser,
-          four dual heavy turbolaser, two dual medium turbolaser and two heavy ion
-          cannon batteries, four point-defense guns and targetable engines. No targetable
-          shield generator. Boost Shield Power quadruples shield regeneration, reduces
-          speed by 45% and reduces weapon damage by 5% for 15 s. Recovers in 40 s.
-          Strong against frigates; vulnerable to bombers.
+        description: Heavy Rebel capital ship with 15,000 hull, 16,500 shields and
+          238/s shield regeneration. Twelve dual heavy turbolaser, four heavy quad
+          turbolaser, two dual medium turbolaser and two heavy ion cannon batteries,
+          four point-defense guns and targetable engines. No targetable shield generator.
+          Boost Shield Power quadruples shield regeneration, reduces speed by 45%
+          and reduces weapon damage by 5% for 15 s. Recovers in 40 s. Strong against
+          frigates; vulnerable to bombers.
         role: Capital ship / Anti-frigate
         iconKey: b95f55f2e2f204f42a94f0c44c5baa85:21300000
         isHero: 0
@@ -206,10 +206,10 @@ MonoBehaviour:
       value:
         matchups: {fileID: 11400000, guid: aab75532e06aee940b3c4562d0ec7ccb, type: 2}
         displayName: MC50
-        description: General-purpose medium cruiser with two heavy turbolasers, four
-          medium dual turbolasers, two medium ion cannons, four laser cannons and
-          two point-defense lasers. Boost Weapon Power halves weapon reload and time
-          between shots and halves speed and shield regeneration for 7 s. Recovers
+        description: General-purpose medium cruiser with two dual heavy turbolasers,
+          four medium quad turbolasers, two medium ion cannons, four laser cannons
+          and two point-defense lasers. Boost Weapon Power halves weapon reload and
+          time between shots and halves speed and shield regeneration for 7 s. Recovers
           in 50 s.
         role: General-purpose combat ship
         iconKey: db3ba52ed373c8242844c936a9497696:21300000
@@ -227,11 +227,11 @@ MonoBehaviour:
         matchups: {fileID: 11400000, guid: 22624456adb3ee948b528edb11a07f6e, type: 2}
         displayName: Assault Frigate II
         description: General-purpose combat frigate for fleet escort and medium-range
-          combat. Four medium turbolasers, two light quad turbolasers, four heavy
-          laser cannons and two point-defense lasers. Boost Shield Power quadruples
-          shield regeneration, reduces speed by 45% and reduces weapon damage by
-          5% for 15 s. Recovers in 40 s. Strong against corvettes and frigates; limited
-          against heavy capitals.
+          combat. Four medium quad turbolasers, two light quad turbolasers, four
+          heavy dual laser cannons and two point-defense lasers. Boost Shield Power
+          quadruples shield regeneration, reduces speed by 45% and reduces weapon
+          damage by 5% for 15 s. Recovers in 40 s. Strong against corvettes and frigates;
+          limited against heavy capitals.
         role: Fleet escort / Medium-range combat
         iconKey: ae063a7eec8a5af4696394f297681415:21300000
         isHero: 0
@@ -268,9 +268,9 @@ MonoBehaviour:
         matchups: {fileID: 11400000, guid: 30f4f94da51a19c43af1cb27ccdc0a47, type: 2}
         displayName: Liberator
         description: Battlecarrier with 9,750 hull and 10,920 shields. Four heavy
-          turbolasers, two medium dual turbolasers, four medium ion cannons and two
-          point defense lasers. Boost Weapon Power halves weapon reload and time
-          between shots and halves speed and shield regeneration for 7 s. Recovers
+          triple turbolasers, two medium dual turbolasers, four medium ion cannons
+          and two point defense lasers. Boost Weapon Power halves weapon reload and
+          time between shots and halves speed and shield regeneration for 7 s. Recovers
           in 50 s. Deploys 2 fighter squadrons, 1 interceptor squadron, 2 bomber
           squadrons at once. Carries 15 total squadron launches, including the initial
           deployment.
@@ -289,8 +289,9 @@ MonoBehaviour:
       value:
         matchups: {fileID: 11400000, guid: a13432fff1b87cd4b8353d2823b041ea, type: 2}
         displayName: Nebula
-        description: Heavy frontline star destroyer. Eight dual heavy turbolasers,
-          six medium turbolasers, four medium ion cannons, two assault concussion
+        description: Heavy frontline star destroyer with 18,000 hull and 17,500 shields.
+          Eight heavy quad turbolasers, eight dual heavy turbolasers, six medium
+          quad turbolasers, four medium dual ion cannons, two assault concussion
           launchers and four point defense lasers. Boost Weapon Power halves weapon
           reload and time between shots and halves speed and shield regeneration
           for 7 s. Recovers in 50 s. Deploys 1 fighter squadron, 1 interceptor squadron,
@@ -355,12 +356,11 @@ MonoBehaviour:
         matchups: {fileID: 0}
         displayName: Justice
         description: Mon Calamari capital carrier with 13,800 hull and 15,400 shields.
-          Four medium dual turbolasers, four light dual ion cannons, six medium turbolasers
-          and eight medium lasers. Boost Shield Power quadruples shield regeneration,
-          reduces speed by 45% and reduces weapon damage by 5% for 15 s. Recovers
-          in 40 s. Deploys 2 fighter squadrons, 1 interceptor squadron, 2 bomber
-          squadrons at once. Carries 15 total squadron launches, including the initial
-          deployment.
+          Ten medium dual turbolasers, four medium dual ion cannons and eight medium
+          lasers. Boost Shield Power quadruples shield regeneration, reduces speed
+          by 45% and reduces weapon damage by 5% for 15 s. Recovers in 40 s. Deploys
+          2 fighter squadrons, 1 interceptor squadron, 2 bomber squadrons at once.
+          Carries 15 total squadron launches, including the initial deployment.
         role: Capital carrier / Squadron support
         iconKey: 610b88b3ef1d84c40a8468e8780db2b4:21300000
         isHero: 0
@@ -376,10 +376,10 @@ MonoBehaviour:
       value:
         matchups: {fileID: 0}
         displayName: Freedom
-        description: Rebel brawler with four heavy dual ion cannons, six medium dual
-          turbolasers, six turbolasers and four heavy turbolasers. Boost Shield Power
-          boosts shield regeneration. Deploys 1 bomber squadron at once. Carries
-          2 total squadron launches, including the initial deployment.
+        description: Rebel ion specialist with four heavy triple ion cannons, six
+          medium dual ion cannons, six medium dual turbolasers and four heavy turbolasers.
+          Boost Shield Power boosts shield regeneration. Deploys 1 bomber squadron
+          at once. Carries 2 total squadron launches, including the initial deployment.
         role: Capital ship / Shield disabler
         iconKey: f20def5849b5bd649bb2e04331267807:21300000
         isHero: 0
@@ -417,7 +417,7 @@ MonoBehaviour:
       value:
         matchups: {fileID: 0}
         displayName: Remonda
-        description: Mon Calamari battleship with 19,000 hull and 18,000 shields.
+        description: Mon Calamari battleship with 20,000 hull and 21,000 shields.
           Boost Shield Power quadruples shield regeneration, reduces speed by 45%
           and reduces weapon damage by 5% for 15 s. Recovers in 40 s. Deploys 1 fighter
           squadron, 1 bomber squadron at once. Carries 4 total squadron launches,
