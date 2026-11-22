@@ -45,10 +45,10 @@ MonoBehaviour:
           shotIntervalMultiplier: 0
         stunnedTargetDamageMultiplier: 1
         researchDamage:
-        - 900
-        - 1750
-        - 2700
-        - 4000
+        - 1200
+        - 2500
+        - 5000
+        - 10000
         - 280000
         researchAreaDamage: []
         areaDamage: 0
