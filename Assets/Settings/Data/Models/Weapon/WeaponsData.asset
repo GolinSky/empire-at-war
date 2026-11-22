@@ -733,11 +733,11 @@ MonoBehaviour:
     scope: 0
     faction: 0
     unit: 
-    damageMultiplier: 0.5
+    damageMultiplier: 2
     reloadMultiplier: 1
     rangeMultiplier: 1
-    reason: Shared heavy laser beam damage reduced by half; Executor uses its separate
-      ability profile.
+    reason: Shared heavy laser beam damage raised 4x (0.5 to 2); Executor uses its
+      separate ability profile.
     overrideVisual: 0
     shotPrefab: {fileID: 0}
     beamPrefab: {fileID: 0}
