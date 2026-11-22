@@ -450,7 +450,7 @@ namespace EmpireAtWar.Tests.Editor
         public void TearDown()
         {
             // A fired wave's view is a scene root; Release uses Destroy, which edit mode refuses.
-            foreach (IonPulseView view in UnityEngine.Object.FindObjectsByType<IonPulseView>(FindObjectsSortMode.None))
+            foreach (IonPulseView view in UnityEngine.Object.FindObjectsByType<IonPulseView>())
                 UnityEngine.Object.DestroyImmediate(view.gameObject);
             if (_targetView != null) UnityEngine.Object.DestroyImmediate(_targetView);
         }
@@ -569,7 +569,7 @@ namespace EmpireAtWar.Tests.Editor
 
         private static IonPulseView FindFiredIonPulseView()
         {
-            foreach (IonPulseView view in UnityEngine.Object.FindObjectsByType<IonPulseView>(FindObjectsSortMode.None))
+            foreach (IonPulseView view in UnityEngine.Object.FindObjectsByType<IonPulseView>())
                 if (view.transform.parent == null) return view;
             return null;
         }
