@@ -5,9 +5,9 @@ namespace EmpireAtWar.Components.Weapon
 {
     public static class SiegeDamage
     {
-        private const float DREADNOUGHT_MULTIPLIER = 2.5f;
-        private const float BATTLE_CRUISER_MULTIPLIER = 2f;
-        private const float CAPITAL_MULTIPLIER = 1.5f;
+        private const float DREADNOUGHT_MULTIPLIER = 5f;
+        private const float BATTLE_CRUISER_MULTIPLIER = 4f;
+        private const float CAPITAL_MULTIPLIER = 3f;
 
         public static float GetMultiplier(ShipClass attackerClass, StructureKind? targetKind)
         {

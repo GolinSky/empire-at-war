@@ -35,7 +35,7 @@ verification: Reviewed affected source and regression fixtures. Unity 6000.4.7f1
 - Contact-limited HeavyCapital siege approach uses own radius + live structure hull envelope + 1 unit; the hold gate adds another 1 unit. The pathfinder retains its own obstacle and hull-span clearance checks.
 - Executor, Rebel L5 sample: old/new centre standoff 1455.4/1299.8 units; best reachable main-battery nominal DPS 176–219/307–483 across eight station orientations. Re-sample with actual hardpoint positions when checking another layout or station upgrade.
 - Facing samples 2° yaw steps around the hull pivot. Eligible flagged batteries score first using planar reach and the target selector's parent-local yaw. Use secondary coverage only when the main batteries have no firing solution.
-- Siege damage ×1.5 applies to eligible HeavyCapital mounted fire and impact reservations before tick splitting. Nominal profile DPS is unchanged; hit chance, armor, shields, abilities and in-flight limits still affect delivery.
+- Siege damage (Dreadnought ×5, BattleCruiser ×4, Capital ×3; `SiegeDamage`) applies to eligible mounted fire and impact reservations before tick splitting. Nominal profile DPS is unchanged; hit chance, armor, shields, abilities and in-flight limits still affect delivery.
 
 ### Artillery engagement
 

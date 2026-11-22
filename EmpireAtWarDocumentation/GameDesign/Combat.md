@@ -57,7 +57,7 @@ verification: Reviewed affected source and regression fixtures. Unity 6000.4.7f1
 
 ### Capital siege and hull facing
 
-- `Dreadnought` mounted weapons deal ×1.5 damage and `BattleCruiser` mounted weapons deal ×1.2 damage against the main station, second station and every defense platform (`SiegeDamage.GetMultiplier`). `Capital`, `HeavyCruiser` and smaller classes deal ×1.0. Mining facilities, other targets and direct-damage abilities retain their existing damage rules.
+- `Dreadnought` mounted weapons deal ×5 damage, `BattleCruiser` ×4 and `Capital` ×3 against the main station, second station and every defense platform (`SiegeDamage.GetMultiplier`). `HeavyCruiser` and smaller classes deal ×1.0. Mining facilities, other targets and direct-damage abilities retain their existing damage rules.
 - Apply the factor before the shield/hull calculation and the damage tick split. Caliber, research, mitigation, shield piercing and hardpoint overflow still apply.
 - Stationary attacking ships favor the smallest sampled turn with the most usable main-battery mounts, using live mount and hardpoint positions. Eligible headings keep the attack target ahead. When no main battery has a solution, score surviving secondaries, then point the bow at the target if no mount can fire. Navigation controls heading during travel.
 - Contact-limited `BattleCruiser` and `Dreadnought` ships approach eligible structures to navigation hull contact plus 1 unit. The station uses its live hull envelope and the hold gate adds a further 1-unit tolerance.

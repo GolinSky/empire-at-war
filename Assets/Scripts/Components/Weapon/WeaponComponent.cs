@@ -1110,7 +1110,8 @@ namespace EmpireAtWar.Components.Weapon
             IEntity target = attackData.TargetEntity;
             float damage = profile.Damage * profile.GetDamageBias(attackData.TargetClass) *
                            _modifiers.GetDamageMultiplier(target);
-            if ((_attackerClass == ShipClass.BattleCruiser || _attackerClass == ShipClass.Dreadnought) &&
+            if ((_attackerClass == ShipClass.Capital || _attackerClass == ShipClass.BattleCruiser ||
+                 _attackerClass == ShipClass.Dreadnought) &&
                 target.TryGetFacade(out IStructureKindFacade structure))
                 damage *= SiegeDamage.GetMultiplier(_attackerClass, structure.Kind);
             int ticks = Mathf.Max(1, Mathf.CeilToInt(damageDuration / DAMAGE_TICK_INTERVAL));
