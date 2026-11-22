@@ -53,7 +53,7 @@ MonoBehaviour:
   <Wreck>k__BackingField: {fileID: 11400000, guid: 7e17438c27d051c48b2fb41bc405d259,
     type: 2}
   <ShipClass>k__BackingField: 2
-  <Hull>k__BackingField: 600
+  <Hull>k__BackingField: 1200
   <Shields>k__BackingField: 600
   shieldRegenTiers: {fileID: 11400000, guid: 13e8b17936074345b03019b205c57d90, type: 2}
   <ShieldRegenTier>k__BackingField: 0
