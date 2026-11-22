@@ -49,7 +49,7 @@ MonoBehaviour:
         - 1750
         - 2700
         - 4000
-        - 5500
+        - 280000
         researchAreaDamage: []
         areaDamage: 0
         areaRadius: 0
