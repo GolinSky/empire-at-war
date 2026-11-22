@@ -116,6 +116,14 @@ Plan maintenance is part of the task. When creating, executing, or completing a 
 - Use direct `unity` commands for project, Editor, build, package, and diagnostic operations.
 - For interactive Editor automation through MCP, use the official Unity CLI bridge (`unity mcp`) backed by `com.unity.pipeline`; do not use the legacy Coplay/mcp-for-unity server.
 
+## Diagrams
+
+- Draw a UML diagram when explaining existing structure or proposing a change across 3+ types; skip it for one-class edits.
+- `unity command diagram_generate --paths "<folder or .cs>[,…]" --name <name> --open rider|editor|browser|none` → class diagram from code. Narrow `--paths` when `typeCount` exceeds ~40.
+- `unity command diagram_render --puml <file> --open …` → renders any agent-written `.puml`. `unity command diagram_open --name <name> --target …` → reopens one.
+- Output: `Logs/Diagrams/<name>/<name>.puml|svg|png` (gitignored). Renderer: local `Tools/PlantUml` jar only; never send diagram text to the public PlantUML server.
+- Proposed changes: mark `<<new>> #palegreen`, `<<changed>> #orange`, `<<removed>> #lightgray`. Read the PNG before showing it. Details: vault `Tooling/Diagrams`.
+
 ## Code Navigation: Serena
 
 - Serena MCP is configured only for this repository in `.codex/config.toml`. Never install or register Serena in user/global Codex configuration.

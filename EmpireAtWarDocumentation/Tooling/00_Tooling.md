@@ -18,6 +18,7 @@ updated: 2026-11-16
 - [[Tooling/GameDesign_Tools]] — Balance Editor and Battle Simulator entrypoints.
 - [[Tooling/Battle_Telemetry]] — damage, AI decision, ship order and squadron CSVs.
 - [[Tooling/Crash_Reporting]] — Unity Diagnostics ownership, reporting and verification.
+- [[Tooling/Diagrams]] — UML generation/render CLI commands, preview targets, change-preview convention.
 - `Tools/EditorHub/README.md` — Editor Hub and tool inventory.
 - `Tools/Serena/README.md` — live C# navigation; exact checkout backend.
 - `Tools/Graphify/README.md` — indexing scope, status and recovery.

@@ -2,9 +2,11 @@
 
 Static source inventory: **2026-11-14**. No tests were run.
 
+Writing rules (no tuned-value assertions, relational patterns): vault `Rules/TEST_GUIDELINES`.
+
 ## Scope and counts
 
-- `Assets/Scripts/Tests/Editor`: **311 fixture source files** named `*Tests.cs`; compiled into the predefined Editor assembly (no local `.asmdef`).
+- `Assets/Scripts/Tests/Editor`: **313 fixture source files** named `*Tests.cs`; compiled into the predefined Editor assembly (no local `.asmdef`).
 - `Assets/Scripts/Tests`: **345 C# files** total, including support classes, benchmark implementations, and fixture wrappers.
 - Benchmark coverage: two abstract test bases, instantiated by four concrete Editor/player fixture wrappers in two separate assemblies.
 - Tooling coverage: five Python test modules and three PowerShell regression scripts.
@@ -23,7 +25,7 @@ Counts are fixture source files carrying a category in the class header. A file 
 | `BattleInput` | 31 |
 | `Capture` | 11 |
 | `Combat` | 25 |
-| `Core` | 26 |
+| `Core` | 27 |
 | `Economy` | 12 |
 | `EnemyAi` | 19 |
 | `GameFlow` | 17 |
@@ -187,7 +189,7 @@ All paths below are relative to `Assets/Scripts/Tests/Editor/`.
 - [WeaponTaxonomyTests.cs](../../Assets/Scripts/Tests/Editor/Combat/WeaponTaxonomyTests.cs)
 - [WeaponTurnRateTests.cs](../../Assets/Scripts/Tests/Editor/Combat/WeaponTurnRateTests.cs)
 
-### Core (25)
+### Core (27)
 
 - [AddressableHandleLoaderTests.cs](../../Assets/Scripts/Tests/Editor/Core/AddressableHandleLoaderTests.cs)
 - [AssetMappingContextMenuTests.cs](../../Assets/Scripts/Tests/Editor/Core/AssetMappingContextMenuTests.cs)
@@ -196,6 +198,7 @@ All paths below are relative to `Assets/Scripts/Tests/Editor/`.
 - [BattlePerformanceCaptureReportTests.cs](../../Assets/Scripts/Tests/Editor/Core/BattlePerformanceCaptureReportTests.cs)
 - [BuildInfoTests.cs](../../Assets/Scripts/Tests/Editor/Core/BuildInfoTests.cs)
 - [CachedAssetServiceTests.cs](../../Assets/Scripts/Tests/Editor/Core/CachedAssetServiceTests.cs)
+- [DiagramToolingTests.cs](../../Assets/Scripts/Tests/Editor/Core/DiagramToolingTests.cs)
 - [EntityBindingsTests.cs](../../Assets/Scripts/Tests/Editor/Core/EntityBindingsTests.cs)
 - [EntityComponentLifecycleTests.cs](../../Assets/Scripts/Tests/Editor/Core/EntityComponentLifecycleTests.cs)
 - [EntityFactoryLifecycleTests.cs](../../Assets/Scripts/Tests/Editor/Core/EntityFactoryLifecycleTests.cs)
@@ -209,6 +212,7 @@ All paths below are relative to `Assets/Scripts/Tests/Editor/`.
 - [RealEntityCompositionTests.cs](../../Assets/Scripts/Tests/Editor/Core/RealEntityCompositionTests.cs)
 - [SceneDataTests.cs](../../Assets/Scripts/Tests/Editor/Core/SceneDataTests.cs)
 - [SerializedReferenceTests.cs](../../Assets/Scripts/Tests/Editor/Core/SerializedReferenceTests.cs)
+- [ShipClassExtensionsTests.cs](../../Assets/Scripts/Tests/Editor/Core/ShipClassExtensionsTests.cs)
 - [SlowTickServiceTests.cs](../../Assets/Scripts/Tests/Editor/Core/SlowTickServiceTests.cs)
 - [TestCategoryCoverageTests.cs](../../Assets/Scripts/Tests/Editor/Core/TestCategoryCoverageTests.cs)
 - [UniqueIdGeneratorTests.cs](../../Assets/Scripts/Tests/Editor/Core/UniqueIdGeneratorTests.cs)

@@ -35,14 +35,14 @@ namespace ClassDiagramGenerator
 
         private DiagramExportFormat _exportFormat = DiagramExportFormat.PlantUmlFile;
         private string _lastDiagramUrl = string.Empty;
-        private string _outputPath = "Assets/ClassDiagramGeneratorOutput/ClassDiagram.puml";
+        private string _outputPath = "Assets/Sandbox/Diagrams/ClassDiagram.puml";
         private string _status = "Ready.";
         private string _scriptSearch = string.Empty;
         private bool _scriptsScanned;
         private bool _includeAssociations = true;
 
         private DefaultAsset _importDiagramAsset;
-        private string _skeletonOutputPath = "Assets/ClassDiagramGeneratorOutput/GeneratedScripts";
+        private string _skeletonOutputPath = "Assets/Sandbox/Diagrams/GeneratedScripts";
         private bool _skipExistingFiles = true;
 
         private Vector2 _outerScroll;

@@ -47,6 +47,11 @@ created: "2026-10-29\r"
 
 - [ ] [[Done/Refactoring/ISDIII_Thranta_Removal]] — Run `Ships`, `Health`, `Navigation`, `Combat`, `GameFlow`, `Ui`, `Audio` EditMode categories when authorized; source review and Unity compilation passed.
 
+## Diagram Tooling
+
+- [ ] [[Done/Tooling/PlantUml_Diagram_Tooling]] — Run `unity command diagram_generate --paths "Assets/Scripts/Services/Enemy" --name enemy_ai --open rider`; confirm the plantuml4idea preview in Rider, then `diagram_open --name enemy_ai --target browser` and `--target editor` (zoom/pan); `Tools/Diagram Generator` window still shows its icons.
+- [ ] [[Done/Tooling/PlantUml_Diagram_Tooling]] — Run `Core` EditMode category (`DiagramToolingTests`) when authorized; compile passed, tests not run.
+
 ## Rules
 
 - One line per user-only gate (in-game, listening, visual, tests on request) of a closed plan; policy → root `AGENTS.md` Plan Lifecycle step 4.

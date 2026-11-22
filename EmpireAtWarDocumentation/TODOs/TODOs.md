@@ -449,6 +449,9 @@
 
 ### Tooling
 
+- [x] **PlantUML diagram tooling (move generator to ThirdParty, CLI commands, local render, Rider/Editor/browser preview)** → [[Done/Tooling/PlantUml_Diagram_Tooling|PlantUML Diagram Tooling]]; [[Done/Tooling/PlantUml_Diagram_Tooling - Research|Research]]
+  - Completed 2026-11-22: package in `Assets/ThirdParty`, pinned MIT `plantuml.jar` 1.2026.10, `diagram_generate`/`diagram_render`/`diagram_open`, `DiagramPreviewWindow`, guide [[Tooling/Diagrams]]. Compile clean, commands verified; `Core` tests not run. Rider/browser viewing in acceptance queue.
+
 - [x] **Update Unity Pipeline package 0.6.0-exp.1 → 1.0.0 and CLI 1.0.0 → 1.0.1** → [[Done/Tooling/Unity_Pipeline_1_0_Update|Unity Pipeline 1.0 Update]]
   - Completed 2026-11-20: package + CLI updated, compile clean, AGENTS.md 1.0 command section, `GEMINI.md` added, worker/PS1 + ~80 docs swept; smoke commands passed. Tests not run. Jenkins build gate in acceptance queue.
 
