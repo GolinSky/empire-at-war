@@ -19,5 +19,6 @@
 - Placement: [[Architecture/PROJECT_ORGANIZATION]].
 - UI: [[Rules/UI_CODE_BUILD_GUIDE]] (code, event ownership), [[Rules/UI_UX_GUIDELINES]] (visual rules), [[Architecture/UI_REFACTORING_PLAYBOOK]] (migration).
 - Jobs/Burst: [[Rules/UNITY_JOBS_AND_THREADING_RULES]].
+- Tests: [[Rules/TEST_GUIDELINES]] (no tuned-value assertions; relational patterns).
 - Documentation placement and flags: [[Rules/DOCUMENTATION_ORGANIZATION]], [[Rules/NOTE_FLAGS]].
 - Task routing (root `AGENTS.md` Engineering Guidance Routing): [[AssetPipeline/Guides/ADDRESSABLES_BUNDLE_GUIDE]], [[Rules/BATTLE_PERFORMANCE_GUIDELINES]].
