@@ -542,10 +542,16 @@ MonoBehaviour:
         quantity: 1
       - isSquadron: 0
         unitId: 305
-        quantity: 6
+        quantity: 4
       - isSquadron: 0
         unitId: 330
-        quantity: 7
+        quantity: 4
+      - isSquadron: 0
+        unitId: 331
+        quantity: 3
+      - isSquadron: 0
+        unitId: 332
+        quantity: 2
       - isSquadron: 0
         unitId: 326
         quantity: 2

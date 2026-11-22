@@ -580,9 +580,10 @@ namespace EmpireAtWar.Tests.Editor
             runtime.TickAt(1f);
             runtime.Abilities.Press(new[] { runtime.Caster }, runtime.Shields.Id);
             Assert.That(runtime.Shields.State, Is.EqualTo(ShipAbilityState.Active));
+            // A second press is still a manual action, but owners may end only toggles; the boost runs its full time.
             runtime.Abilities.Press(new[] { runtime.Caster }, runtime.Shields.Id);
-            Assert.That(runtime.Shields.State, Is.EqualTo(ShipAbilityState.Recovering));
-            Assert.That(runtime.Shields.TimeLeft, Is.EqualTo(runtime.Shields.Definition.RecoveryDelay));
+            Assert.That(runtime.Shields.State, Is.EqualTo(ShipAbilityState.Active));
+            Assert.That(runtime.Shields.TimeLeft, Is.EqualTo(runtime.Shields.Definition.Duration));
 
             runtime.Select(runtime.Caster);
             runtime.TickAt(1.5f);

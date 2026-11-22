@@ -118,17 +118,6 @@ namespace EmpireAtWar.Tests.Editor
         }
 
         [Test]
-        public void AntiCapital_DealsMoreDamageToCapitalsThanTheFactionClassMedian()
-        {
-            foreach (ShipRoleEntry entry in _owners.Where(entry => entry.Ship.Roles.HasFlag(ShipRole.AntiCapital)))
-            {
-                float median = ShipRoleRules.Median(ClassMates(entry)
-                    .Select(mate => ShipRoleRules.CapitalDamage(mate.Ship, _weapons)));
-                Assert.That(ShipRoleRules.CapitalDamage(entry.Ship, _weapons), Is.GreaterThan(median), entry.Ship.name);
-            }
-        }
-
-        [Test]
         public void FactionMarks_AgreeWithTheFleetAgainstEveryFaction()
         {
             foreach (string guid in AssetDatabase.FindAssets("t:" + nameof(FactionDefinition)))

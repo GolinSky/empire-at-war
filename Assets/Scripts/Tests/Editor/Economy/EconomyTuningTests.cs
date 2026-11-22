@@ -1,4 +1,5 @@
 using System.Linq;
+using System.Reflection;
 using EmpireAtWar.Components.Construction;
 using EmpireAtWar.Controllers.Economy;
 using EmpireAtWar.Controllers.Game;
@@ -263,9 +264,10 @@ namespace EmpireAtWar.Tests.Editor
                 clientMoney, client, new PlayerFactionModel(levels, roster), null, clientResearch, null, roster, levels);
             var mineObject = new GameObject("Allied mine");
             var construction = mineObject.AddComponent<ConstructionComponent>();
-            var constructionEditor = new SerializedObject(construction);
-            constructionEditor.FindProperty("renderers").arraySize = 0;
-            constructionEditor.ApplyModifiedPropertiesWithoutUndo();
+            // AddComponent leaves the serialized array null; resizing a null array to 0 through SerializedObject
+            // is a no-op, so assign the empty renderer list directly.
+            typeof(ConstructionComponent).GetField("renderers", BindingFlags.Instance | BindingFlags.NonPublic)
+                .SetValue(construction, new Renderer[0]);
             construction.Begin(0f);
             var hostMine = new TeamIncomeSource(FACILITY_BASE_INCOME, construction, allyResearch,
                 players, hostRegistry, ally.Id);

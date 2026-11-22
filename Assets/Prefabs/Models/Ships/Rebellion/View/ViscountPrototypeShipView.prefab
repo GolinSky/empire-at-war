@@ -4297,7 +4297,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::EmpireAtWar.Components.Ship.Selection.SelectionComponent
   selectionRoot: {fileID: 6421249621682836270}
   selectedRenderer: {fileID: 6031340143721163335}
-  ringSize: {x: 437.63147, y: 437.63147}
+  ringSize: {x: 241.2392, y: 241.2392}
 --- !u!114 &905498400102155206
 MonoBehaviour:
   m_ObjectHideFlags: 0

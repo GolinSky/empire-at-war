@@ -30,7 +30,7 @@ namespace EmpireAtWar.Tests.Editor
         {
             IReadOnlyList<string> scripts = DiagramSourceCollector.Collect(new[] { Path.Combine(_root, "Folder") });
 
-            Assert.That(scripts, Has.Count.EqualTo(2));
+            Assert.That(scripts.Count, Is.EqualTo(2));
             Assert.That(scripts, Has.All.EndsWith(".cs"));
             Assert.That(scripts, Has.None.Contains("\\"));
         }
@@ -44,7 +44,7 @@ namespace EmpireAtWar.Tests.Editor
                 folder, Path.Combine(folder, "A.cs"), Path.Combine(_root, "C.cs")
             });
 
-            Assert.That(scripts, Has.Count.EqualTo(3));
+            Assert.That(scripts.Count, Is.EqualTo(3));
         }
 
         [Test]

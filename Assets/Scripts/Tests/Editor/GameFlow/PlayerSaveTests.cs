@@ -345,7 +345,13 @@ namespace EmpireAtWar.Tests.Editor
             EconomyModel economy = new EconomyModel(null, startingMoney);
             SuperWeaponModel model = new SuperWeaponModel();
             var pressure = new EnemyStationPressureTracker();
-            if (!priorityConstruction) pressure.Update(1, 400f, 1000f, 0f, 2);
+            if (!priorityConstruction)
+            {
+                // Critical by time-to-loss: durability share alone no longer makes the station critical (W36).
+                pressure.Update(1, 1000f, 1000f, 0f, 2);
+                pressure.Update(1, 900f, 1000f, 1f, 2);
+                Assert.That(pressure.IsStationCritical, Is.True);
+            }
             var purchases = new QueuePurchaseProcessor { PriorityConstructionPending = priorityConstruction };
             EnemySuperWeaponController controller = new EnemySuperWeaponController(
                 null, null, null, new ProductionAccess { CanProduce = true }, model, faction, economy,

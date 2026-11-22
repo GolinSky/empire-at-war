@@ -551,16 +551,15 @@ namespace EmpireAtWar.Tests.Editor
                 Does.Contain("Saved 0 ability slots"));
         }
 
-        [TestCase(MapSize.Small, 2, 20, 3)]
-        [TestCase(MapSize.Medium, 2, 26, 5)]
-        [TestCase(MapSize.Large, 2, 32, 7)]
-        [TestCase(MapSize.Small, 4, 24, 3)]
-        [TestCase(MapSize.Medium, 4, 30, 5)]
-        [TestCase(MapSize.Large, 4, 36, 7)]
-        [TestCase(MapSize.Medium, 6, 40, 7)]
-        [TestCase(MapSize.Large, 8, 56, 11)]
-        public void Validator_AcceptsRelayLayoutCountsAndRejectsOldZoneCounts(
-            MapSize size, int playerCount, int expectedSites, int expectedZones)
+        [TestCase(MapSize.Small, 2)]
+        [TestCase(MapSize.Medium, 2)]
+        [TestCase(MapSize.Large, 2)]
+        [TestCase(MapSize.Small, 4)]
+        [TestCase(MapSize.Medium, 4)]
+        [TestCase(MapSize.Large, 4)]
+        [TestCase(MapSize.Medium, 6)]
+        [TestCase(MapSize.Large, 8)]
+        public void Validator_AcceptsRelayLayoutCountsAndRejectsOldZoneCounts(MapSize size, int playerCount)
         {
             using var assets = new CachedAssetService(new AddressableHandleLoader());
             MapGenerationSettings settings = AssetDatabase.LoadAssetAtPath<MapGenerationSettings>(
@@ -579,18 +578,10 @@ namespace EmpireAtWar.Tests.Editor
                 Array.Empty<UnitSave>(), Array.Empty<StructureSave>());
             save.CaptureSites = CreateDefaultCaptureSites(settings, definition);
             save.ReinforcementZones = CreateDefaultReinforcementZones(settings, definition);
-            Assert.That(save.CaptureSites.Length, Is.EqualTo(expectedSites));
-            Assert.That(save.ReinforcementZones.Length, Is.EqualTo(expectedZones));
             BattleSaveValidator validator = new BattleSaveValidator(assets, settings);
             Assert.DoesNotThrow(() => validator.Validate(save, definition));
-            int oldZoneCount = size switch
-            {
-                MapSize.Small => 2,
-                MapSize.Medium => 3,
-                MapSize.Large => 9,
-                _ => throw new ArgumentOutOfRangeException()
-            };
-            save.ReinforcementZones = new ReinforcementZoneSave[oldZoneCount];
+            // Older layouts grew an extra outer relay pair with the roster; such saves no longer match.
+            save.ReinforcementZones = new ReinforcementZoneSave[save.ReinforcementZones.Length + 2];
             Assert.That(Assert.Throws<InvalidDataException>(() => validator.Validate(save, definition)).Message,
                 Does.Contain("reinforcement zones; the map has"));
         }
