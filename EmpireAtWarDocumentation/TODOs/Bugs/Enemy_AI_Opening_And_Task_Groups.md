@@ -8,7 +8,7 @@ reopened: 2026-11-21
 # Enemy AI Opening and Task Groups
 
 ## Status (2026-11-21 late evening, W15–W22 implemented)
-- **W15–W22 implemented and compiled (Editor recompile clean, 0 console errors). Tests written, not run (local override).** → "Open work — implementation notes (W15–W22)".
+- **W15–W22 implemented and compiled. Tests green 2026-11-22: `EnemyAi` 613/613, `Combat` 329/329.** → "Open work — implementation notes (W15–W22)".
 - Battle 16:04 (first on W1–W13 code): AI lost; causes → W15–W22. Not verified in a battle yet → [[TODOs/User_Acceptance_Queue]].
 - W1–W7 and W9–W13 implemented and compiled; tests ran on the user's request (see "Open work — implementation notes"). Still open: **W8 user review** of the role flags (AI does not read them yet) and **W14** (Jenkins release build + Editor battle, user gates).
 - Rounds are history. Everything still to do is in **Open work** below.
@@ -122,7 +122,7 @@ reopened: 2026-11-21
 - [x] W20 `ShipOrderTelemetry.Detail` scope + `detail` column (last). `IssueStrikeAttack` groups receivers by reason: `retarget=new|slot|dead|cloaked|outOfReach`.
 - [x] W22 `IsZonePoint` needs ≥ 2 pads when mineless; `EnemyDefensePad.IsFreePad` (0 mines, 1 pad) never mandatory; `IsHomePad` (own station ≤ 1000). Priority: threatened 1000 → home 100 → centre 20 / zone 10 → mining point → free −1. `EnemySiteConstructionController`: no satellite start while an own satellite is `Constructing` (`reason=oneWaiting`). `EnemySiteObjectives`: a satellite alone at its `PointId` is no ship objective (still a wing target). `EnemySquadronCaptureAssignments.AddTarget`: a pad inside an added pad's capture circle merges into it. `GetCaptureWingTarget` already counts zones, not pads → no change.
 - [x] W21 tests (not run): `CombatMatchupTests` (+9, `Combat`), `EnemyDefenseStrategyTests` (+10; `BuildNext` fixtures now pass an empty `PadDirectory`), `EnemySquadronCaptureAssignmentsTests` (+3), `EnemyFactionControllerLifecycleTests` (+1, `CountUnfinished`), `EnemyUnitCommanderTests` (+3: free pad, bomber strike target ×2; `FakeEntity` gains `IUnitOrderObserverFacade`; two fixtures give their lone pad a point partner). Not covered: the W18 purchase path end to end, W16b ranking, W20 rows.
-- Verification: Editor recompile clean 3×; tests not run (local override). Categories to run: `EnemyAi`, `Combat`.
+- Verification 2026-11-22 (EditMode, standard, no explicit, on the user's request): `EnemyAi` 613/613, `Combat` 329/329. First `EnemyAi` run 611/613: W19 blocked bombers for a critical station (`CriticalStation_BuysSquadronOnlyWhenItCanArriveInTime`) → fixed: critical station counts as "ships to go with" (station-defence wings fly to the station).
 - Risks to watch in the next battle: W17 makes groups near hostile satellites withdraw sooner; W22 one-at-a-time slows opening zone satellites.
 
 ### Closed or ignored (no work)

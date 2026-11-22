@@ -637,7 +637,8 @@ namespace EmpireAtWar.Services.Enemy
             }
 
             // Bombers fight beside ships: with no own ship to go with they only wait at a hold and die there.
-            bool hasOwnShips = HasLiveShips();
+            // A critical station is the exception: its defence wings fly to the station, not to a hold.
+            bool hasOwnShips = HasLiveShips() || _stationPressure.IsStationCritical;
             foreach (KeyValuePair<SquadronType, FactionData> option in _factionModel.SquadronFactionData)
             {
                 UnitTypeId squadronId = UnitTypeId.Squadron(option.Key);
