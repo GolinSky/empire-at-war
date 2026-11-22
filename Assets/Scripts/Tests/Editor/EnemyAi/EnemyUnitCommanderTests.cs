@@ -2992,10 +2992,13 @@ namespace EmpireAtWar.Tests.Editor
 
             planner.Allocate(ships, new HashSet<string>(), stationPressure: false);
 
-            EnemyShipTaskGroup force = planner.Groups.Single();
-            Assert.That(force.IsCaptureDetachment, Is.True, "No ship waits in an idle reserve.");
+            EnemyShipTaskGroup force = planner.Groups.Single(group => group.IsCaptureDetachment);
             Assert.That(force.ContextBuilder.AssignedZoneId, Is.EqualTo("zone:0"));
-            Assert.That(force.Ships, Is.EquivalentTo(ships), "Ships beyond the force the zone needs join it.");
+            Assert.That(planner.Groups.SelectMany(group => group.Ships), Is.EquivalentTo(ships),
+                "Every ship has a task in the cycle it arrives.");
+            // The zone has one defender left: ships beyond the force it needs stay with the main force.
+            Assert.That(planner.Groups.Where(group => !group.IsCaptureDetachment), Is.All.Matches<EnemyShipTaskGroup>(
+                group => group.IsMainForce));
             Assert.That(orders.Calls, Is.Empty, "Allocation itself must not issue orders.");
         }
 

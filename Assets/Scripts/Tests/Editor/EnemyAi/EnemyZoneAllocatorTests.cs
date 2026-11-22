@@ -38,15 +38,87 @@ namespace EmpireAtWar.Tests.Editor
         }
 
         [Test]
-        public void Allocate_FreeZonesGetOneShipEachBeforeAnyGetsASecond()
+        public void Allocate_FreeZonesGetOneShipEach_TheRestStaysWithTheMainForce()
         {
             EnemyZoneObjective[] zones = { Zone("a"), Zone("b") };
 
             List<int> assignment = Allocate(new EnemyZoneAllocator(), zones, ships: 3);
 
-            Assert.That(assignment.Count(target => target == 0), Is.GreaterThanOrEqualTo(1));
-            Assert.That(assignment.Count(target => target == 1), Is.GreaterThanOrEqualTo(1));
-            Assert.That(assignment, Has.None.EqualTo(RESERVE));
+            Assert.That(assignment.Count(target => target == 0), Is.EqualTo(1));
+            Assert.That(assignment.Count(target => target == 1), Is.EqualTo(1));
+            Assert.That(assignment.Count(target => target == RESERVE), Is.EqualTo(1),
+                "A zone with no armed hostile needs a capture detachment, not more ships.");
+        }
+
+        [Test]
+        public void Allocate_ClearedZoneKeepsOnlyItsNearestShip()
+        {
+            EnemyZoneObjective zone = Zone("cleared", defenders: EnemyZoneAllocator.CLEARED_DEFENDERS);
+
+            List<int> assignment = Allocate(new EnemyZoneAllocator(), new[] { zone }, ships: 5, current: 0);
+
+            Assert.That(assignment[0], Is.EqualTo(0), "The nearest ship stays as the detachment.");
+            Assert.That(assignment.Skip(1), Is.All.EqualTo(RESERVE));
+        }
+
+        [Test]
+        public void Allocate_ClearedZoneHeldByOwnWingsNeedsNoShip()
+        {
+            EnemyZoneObjective kept = Zone("kept");
+            AddWings(kept.OwnSupport, 1);
+            EnemyZoneObjective free = Zone("free");
+            AddWings(free.OwnSupport, 1);
+            var allocator = new EnemyZoneAllocator();
+
+            List<int> released = Allocate(allocator, new[] { kept }, ships: 3, current: 0);
+            List<int> unsent = Allocate(new EnemyZoneAllocator(), new[] { free }, ships: 3);
+
+            Assert.That(released, Is.All.EqualTo(RESERVE));
+            Assert.That(allocator.GatherZone, Is.EqualTo(RESERVE), "A zone the wings hold is no gathering target.");
+            Assert.That(unsent, Is.All.EqualTo(RESERVE));
+        }
+
+        [Test]
+        public void Allocate_LeanZones_ZoneForceKeepsTheSmallestWinningGroup()
+        {
+            EnemyZoneObjective zone = Zone("defended", defenders: 3);
+            var evaluator = new EnemyZoneEvaluator();
+
+            List<int> lean = Allocate(new EnemyZoneAllocator { LeanZones = true }, new[] { zone }, ships: 6, current: 0);
+            List<int> normal = Allocate(new EnemyZoneAllocator(), new[] { zone }, ships: 6, current: 0);
+
+            int kept = lean.Count(target => target == 0);
+            var keptForce = new ForceComposition();
+            AddShips(keptForce, kept);
+            var smaller = new ForceComposition();
+            AddShips(smaller, kept - 1);
+            Assert.That(evaluator.Assess(zone, keptForce, EnemyZoneEvaluator.COMMIT_ADVANTAGE).Verdict,
+                Is.EqualTo(EnemyZoneVerdict.Go));
+            Assert.That(evaluator.Assess(zone, smaller, EnemyZoneEvaluator.COMMIT_ADVANTAGE).Verdict,
+                Is.Not.EqualTo(EnemyZoneVerdict.Go), "One ship fewer would no longer win.");
+            Assert.That(lean.Count(target => target == RESERVE), Is.EqualTo(6 - kept), "The rest joins the main force.");
+            Assert.That(normal, Is.All.EqualTo(0), "Outside the late-game situation the force is unchanged.");
+        }
+
+        [Test]
+        public void Allocate_LeanZones_LeftoversStayWithTheMainForce()
+        {
+            EnemyZoneObjective zone = Zone("defended", defenders: 3);
+
+            List<int> lean = Allocate(new EnemyZoneAllocator { LeanZones = true }, new[] { zone }, ships: 5);
+
+            Assert.That(lean.Count(target => target == RESERVE), Is.GreaterThan(0));
+            Assert.That(lean.Count(target => target == 0), Is.GreaterThan(0));
+        }
+
+        [Test]
+        public void Allocate_LeanZones_HeldZoneUnderAttackKeepsItsWholeForce()
+        {
+            EnemyZoneObjective zone = Zone("held", defenders: 3, held: true, ownStructures: 1);
+
+            List<int> lean = Allocate(new EnemyZoneAllocator { LeanZones = true }, new[] { zone }, ships: 6, current: 0);
+
+            Assert.That(lean, Is.All.EqualTo(0));
         }
 
         [Test]
@@ -262,6 +334,15 @@ namespace EmpireAtWar.Tests.Editor
             zone.Reset(id, centre, ownSide, priority, 30f, 0, denyReason, threatened, held, ownStructures);
             AddShips(zone.Defenders, defenders);
             return zone;
+        }
+
+        private static void AddWings(ForceComposition force, int wings)
+        {
+            float[] rates = new float[ForceComposition.ClassSlots];
+            for (int i = 0; i < rates.Length; i++) rates[i] = 10f;
+            var profile = new UnitCombatProfile(ShipClass.Fighter, 200f, 0f, rates, rates,
+                new float[ForceComposition.ClassSlots], Array.Empty<UnitCombatProfile>());
+            for (int i = 0; i < wings; i++) force.AddNew(profile, false);
         }
 
         // Equal ships on both sides: N ships against M defenders is an N / M advantage.

@@ -312,6 +312,13 @@ namespace EmpireAtWar.Services.Enemy
         private readonly ForceComposition _focusTeamForce = new ForceComposition();
         private readonly ForceComposition _combinedStrikeForce = new ForceComposition();
         private readonly ForceComposition _baseThreatForce = new ForceComposition();
+        private readonly ForceComposition _stationDefenders = new ForceComposition();
+        private readonly ForceComposition _fleetForce = new ForceComposition();
+        private readonly ForceComposition _armadaTeamStrength = new ForceComposition();
+        private readonly ForceComposition _outmatchingArmada = new ForceComposition();
+        private Predicate<HostileSighting> _includeStationThreat;
+        private TacticalMarker _armadaMarker;
+        private string _lastArmadaResponse;
         private readonly ForceComposition _localThreatForce = new ForceComposition();
         private readonly ForceComposition _localOwnForce = new ForceComposition();
 
@@ -616,20 +623,140 @@ namespace EmpireAtWar.Services.Enemy
             _teamPicture.Cooperation.IsReservedByAlly(_owner.Id, GetExpansionReservationId(zone));
 
         /// <summary>
-        /// A Defend request for an allied AI station when this player's main force is the team's nearest available
-        /// responder and the approach is safe; null otherwise.
+        /// A Defend request for an allied AI station under pressure when this player's main force is free (no station
+        /// pressure of its own) and every answering allied main force together with the station's defenders beats the
+        /// attackers (<see cref="TeamAiCooperation.TryGetDefenseAssignment"/>); recovery does not block it. Null otherwise.
         /// </summary>
-        public TacticalMarker SelectAllyDefenseRequest(bool recovering)
+        public TacticalMarker SelectAllyDefenseRequest()
         {
-            if (recovering || _stationPressure.HasPressure ||
-                !_teamPicture.Cooperation.TryGetDefenseAssignment(_owner.Id, Time.time, out PlayerId requester, out Vector3 station) ||
-                !IsMarkerApproachSafe(station)) return null;
+            if (_stationPressure.HasPressure ||
+                !_teamPicture.Cooperation.TryGetDefenseAssignment(_owner.Id, Time.time,
+                    EnemyAiDifficultyProfile.Get(_owner.Difficulty).RetreatAdvantage, out PlayerId requester,
+                    out Vector3 station)) return null;
             long id = -100L - requester.Index;
             if (_allyDefenseMarker == null || _allyDefenseMarker.Id != id ||
                 (_allyDefenseMarker.Point - station).sqrMagnitude > 1f)
                 _allyDefenseMarker = new TacticalMarker(id, TacticalMarkerType.Defend, requester, _owner.Team, station,
                     -1, Time.time, Time.time + TeamAiCooperation.STALE_SECONDS);
             return _allyDefenseMarker;
+        }
+
+        /// <summary>
+        /// A team station is under pressure, or a hostile armada threatens a team station or held zone. Zone forces then
+        /// keep only what they need and the rest stays with the main force. Set by <see cref="AssessStation"/>.
+        /// </summary>
+        public bool LateGameSituation { get; private set; }
+
+        /// <summary>A station of this AI or of an allied AI is under pressure. Set by <see cref="AssessStation"/>.</summary>
+        public bool TeamStationPressure { get; private set; }
+
+        /// <summary>
+        /// Copies the armada that threatens a team asset and outmatches the whole own fleet with the available allied
+        /// main forces, while no team station is under pressure; false when there is none. Production answers it.
+        /// </summary>
+        public bool TryCopyOutmatchingArmada(ForceComposition armada)
+        {
+            if (_outmatchingArmada.IsEmpty) return false;
+            armada.CopyFrom(_outmatchingArmada);
+            return true;
+        }
+
+        /// <summary>
+        /// The main force's answer to the most dangerous armada that threatens a team station or held zone: an Attack
+        /// toward it when the main force, the available allied main forces and the armed structures at the threatened
+        /// asset reach the retreat advantage; else a Defend at the asset, where the force gathers under its platforms.
+        /// Null under own station pressure, while hunting, assaulting, defending or retreating, or with no such armada.
+        /// </summary>
+        public TacticalMarker SelectArmadaResponse(EnemyStrategicState planned, out string reason)
+        {
+            reason = null;
+            float now = Time.time;
+            HostileArmada armada = null;
+            float advantage = float.PositiveInfinity;
+            if (!_stationPressure.HasPressure && _ownShips.Count > 0 && planned is not (EnemyStrategicState.HuntFleet or
+                    EnemyStrategicState.AssaultBase or EnemyStrategicState.DefendBase or EnemyStrategicState.RetreatValue))
+                foreach (HostileArmada candidate in _teamPicture.Armadas)
+                {
+                    if (!candidate.ThreatensAsset) continue;
+                    float value = RateAgainstArmada(_ownForce, candidate, now);
+                    if (value >= advantage) continue;
+                    armada = candidate;
+                    advantage = value;
+                }
+            if (armada == null)
+            {
+                RecordArmadaResponse("response=none");
+                return null;
+            }
+            bool intercept = advantage >= EnemyAiDifficultyProfile.Get(_owner.Difficulty).RetreatAdvantage;
+            TacticalMarkerType type = intercept ? TacticalMarkerType.Attack : TacticalMarkerType.Defend;
+            Vector3 point = intercept ? armada.Centre : armada.AssetPosition;
+            // Each new point re-orders every ship: keep it while the armada moves less than one weapon range.
+            if (_armadaMarker == null || _armadaMarker.Type != type ||
+                PlanarDistance(_armadaMarker.Point, point) > ARMADA_REPOINT_DISTANCE)
+                _armadaMarker = new TacticalMarker(ARMADA_MARKER_ID, type, _owner.Id, _owner.Team, point, -1, now,
+                    now + TeamAiCooperation.STALE_SECONDS);
+            reason = intercept
+                ? "Intercept: the team beats the armada that threatens its " + armada.AssetKind + "."
+                : "Gather: an armada stronger than the team threatens its " + armada.AssetKind + "; hold under its platforms.";
+            RecordArmadaResponse(FormattableString.Invariant(
+                $"response={(intercept ? "intercept" : "gather")};asset={armada.AssetKind};assetAt=({armada.AssetPosition.x:F0} {armada.AssetPosition.z:F0});armadaShips={armada.Ships};advantage={advantage:F2}"));
+            return _armadaMarker;
+        }
+
+        private const long ARMADA_MARKER_ID = -200L;
+        /// <summary>The intercept point follows the armada only once it moved this far: one common weapon range.</summary>
+        private const float ARMADA_REPOINT_DISTANCE = 500f;
+
+        // Own force, the available allied main forces and the team's armed structures at the threatened asset.
+        private float RateAgainstArmada(ForceComposition own, HostileArmada armada, float now)
+        {
+            _armadaTeamStrength.CopyFrom(own);
+            _teamPicture.Cooperation.AddAvailableAlliedStrength(_armadaTeamStrength, _owner.Id, now);
+            EnemyZoneObjectiveCollector.AddAlliedArmedStructures(_armadaTeamStrength, _worldSnapshot, _playerRoster,
+                _forceBuilder, _owner.Id, armada.AssetPosition, LOCAL_ENGAGEMENT_RADIUS);
+            return CombatMatchup.Advantage(_armadaTeamStrength, armada.Strength);
+        }
+
+        // One armadaResponse row per change of response or asset; ship count and advantage drift without a new row.
+        private void RecordArmadaResponse(string details)
+        {
+            int cut = details.IndexOf(";armadaShips=", StringComparison.Ordinal);
+            string key = cut < 0 ? details : details.Substring(0, cut);
+            if (key == _lastArmadaResponse) return;
+            bool first = _lastArmadaResponse == null;
+            _lastArmadaResponse = key;
+            if (first && cut < 0) return;
+            EnemyAiTelemetry.RecordEvent(_owner.Id, _owner.Faction, "armadaResponse", details);
+        }
+
+        /// <summary>
+        /// Late-game situation for this cycle: team station pressure, or an armada threatening a team asset. The
+        /// armada that outmatches the whole own fleet with the allied main forces is kept for production.
+        /// </summary>
+        private void UpdateArmadaSituation(IReadOnlyList<IShipEntity> ships, float now)
+        {
+            bool teamPressure = _stationPressure.HasPressure || _teamPicture.Cooperation.HasDefenseRequest(now);
+            TeamStationPressure = teamPressure;
+            _fleetForce.Clear();
+            foreach (IShipEntity ship in ships)
+                if (_entityLocator.TryGetEntity(ship.EntityId, out GameEntity entity) && !entity.HealthModel.IsDestroyed &&
+                    entity.HealthModel.HasUnits) _forceBuilder.AddUnit(_fleetForce, entity);
+            HostileArmada worst = null;
+            float advantage = float.PositiveInfinity;
+            foreach (HostileArmada armada in _teamPicture.Armadas)
+            {
+                if (!armada.ThreatensAsset) continue;
+                float value = RateAgainstArmada(_fleetForce, armada, now);
+                if (value >= advantage) continue;
+                worst = armada;
+                advantage = value;
+            }
+            LateGameSituation = teamPressure || worst != null;
+            _outmatchingArmada.Clear();
+            if (!teamPressure && worst != null &&
+                advantage < EnemyAiDifficultyProfile.Get(_owner.Difficulty).RetreatAdvantage)
+                _outmatchingArmada.CopyFrom(worst.Strength);
         }
 
         private bool IsCaptureReserved(string objectiveId) =>
@@ -649,10 +776,17 @@ namespace EmpireAtWar.Services.Enemy
             Vector3 origin = ToVector(CalculateFleetCenter(ships));
             GameEntity ownBase = FindOwnBase(origin);
             BuildBaseThreat(ownBase);
-            if (ownBase != null && _stationPressure.IsStationCritical)
-                _teamPicture.Cooperation.RequestDefense(_owner.Id,
-                    ownBase.GetFacade<IEntityTransformFacade>().Transform.position, now);
+            // Allies are asked from the first station pressure on: stations fall too fast to wait until critical.
+            if (ownBase != null && _stationPressure.HasPressure)
+            {
+                Vector3 station = ownBase.GetFacade<IEntityTransformFacade>().Transform.position;
+                _includeStationThreat ??= sighting => _stationThreats.Contains(sighting.EntityId);
+                _forceBuilder.BuildKnown(_baseThreatForce, _intel, now, _includeStationThreat);
+                BuildOwnNear(_stationDefenders, station, LOCAL_ENGAGEMENT_RADIUS);
+                _teamPicture.Cooperation.RequestDefense(_owner.Id, station, now, _baseThreatForce, _stationDefenders);
+            }
             else _teamPicture.Cooperation.ClearDefense(_owner.Id);
+            UpdateArmadaSituation(ships, now);
             _groupScoped = false;
             _ownShips.Clear();
             _ownShips.AddRange(ships);

@@ -20,6 +20,11 @@ namespace EmpireAtWar.Services.Enemy
         public EnemyStrategicContext Context { get; private set; }
         public EnemyStrategicDecision Decision { get; private set; }
         public bool HasMarkerRequest { get; private set; }
+        /// <summary>
+        /// The main force answers an allied station's defense request or a hostile armada: the allocator leaves its
+        /// ships alone until the answer ends.
+        /// </summary>
+        public bool IsAnsweringTeam { get; private set; }
         public float RecoveryStartedAt { get; private set; } = -1f;
         public float NoViableCaptureSince { get; internal set; } = -1f;
         /// <summary>A station was lost: only defend or gather until the turtle time ends (no raid, capture or move out).</summary>
@@ -58,16 +63,23 @@ namespace EmpireAtWar.Services.Enemy
                 ContextBuilder.AlliedMarkers.SelectRequest(Context, Context.Snapshot.RecoveryMode);
             if (request != null && request.Type != TacticalMarkerType.Retreat &&
                 !ContextBuilder.IsMarkerApproachSafe(request.Point)) request = null;
+            string requestReason = null;
             if (request == null && IsMainForce)
-                request = ContextBuilder.SelectAllyDefenseRequest(Context.Snapshot.RecoveryMode);
+            {
+                request = ContextBuilder.SelectAllyDefenseRequest();
+                if (request != null) requestReason = "Answering an allied station under pressure.";
+            }
+            if (request == null && IsMainForce)
+                request = ContextBuilder.SelectArmadaResponse(next.State, out requestReason);
             if (Turtle && request != null && request.Type != TacticalMarkerType.Retreat) request = null;
+            IsAnsweringTeam = request != null && requestReason != null;
             if (Turtle && next.State is not (EnemyStrategicState.DefendBase or EnemyStrategicState.Hold or
                     EnemyStrategicState.RebuildFleet or EnemyStrategicState.RetreatValue))
                 next = new EnemyStrategicDecision("Turtle: a station was lost; the fleet gathers at home.",
                     EnemyStrategicState.Hold, Ships.Count);
             if (request != null)
             {
-                next = new EnemyStrategicDecision($"Accepted allied {request.Type} request.",
+                next = new EnemyStrategicDecision(requestReason ?? $"Accepted allied {request.Type} request.",
                     request.Type == TacticalMarkerType.Retreat ? EnemyStrategicState.RetreatValue :
                     EnemyStrategicState.Hold, Ships.Count);
             }
@@ -90,7 +102,7 @@ namespace EmpireAtWar.Services.Enemy
                 Executor.ExecuteMarker(request,
                     ContextBuilder.AlliedMarkers != null &&
                     ContextBuilder.AlliedMarkers.TryGetAttackTarget(request, out var attackTarget) ? attackTarget : null,
-                    Context);
+                    Context, requestReason);
             else if (IsMainForce && Decision.State == EnemyStrategicState.Hold && !Context.Snapshot.IsRegrouped)
                 Executor.Rally(Context);
             else if (execute) Executor.Execute(Decision, Context, now);

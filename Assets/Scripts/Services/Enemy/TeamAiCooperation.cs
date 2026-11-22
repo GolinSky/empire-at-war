@@ -17,6 +17,7 @@ namespace EmpireAtWar.Services.Enemy
         private readonly Dictionary<PlayerId, HashSet<string>> _reservations = new Dictionary<PlayerId, HashSet<string>>();
         private readonly Dictionary<PlayerId, Strike> _strikes = new Dictionary<PlayerId, Strike>();
         private readonly Dictionary<PlayerId, DefenseRequest> _defenseRequests = new Dictionary<PlayerId, DefenseRequest>();
+        private readonly ForceComposition _combined = new ForceComposition();
 
         public PlayerId FocusEnemy { get; set; }
 
@@ -73,25 +74,62 @@ namespace EmpireAtWar.Services.Enemy
             }
         }
 
-        public void RequestDefense(PlayerId owner, Vector3 station, float now) =>
-            _defenseRequests[owner] = new DefenseRequest(station, now);
+        /// <summary>Adds every other ally's fresh, available main force whatever its focus: they meet an armada together.</summary>
+        public void AddAvailableAlliedStrength(ForceComposition target, PlayerId player, float now)
+        {
+            foreach (KeyValuePair<PlayerId, Strike> pair in _strikes)
+                if (pair.Key != player && IsAvailable(pair.Value, now)) target.Add(pair.Value.Force);
+        }
+
+        /// <summary>
+        /// Asks the team for help at <paramref name="station"/>: sent from the first station pressure on.
+        /// <paramref name="attackers"/> are the known hostiles at the station, <paramref name="defenders"/> the team's
+        /// units and armed structures already there; null counts as none.
+        /// </summary>
+        public void RequestDefense(PlayerId owner, Vector3 station, float now, ForceComposition attackers = null,
+            ForceComposition defenders = null)
+        {
+            if (!_defenseRequests.TryGetValue(owner, out DefenseRequest request))
+            {
+                request = new DefenseRequest();
+                _defenseRequests.Add(owner, request);
+            }
+            request.Station = station;
+            request.RequestedAt = now;
+            request.Attackers.Clear();
+            request.Defenders.Clear();
+            if (attackers != null) request.Attackers.CopyFrom(attackers);
+            if (defenders != null) request.Defenders.CopyFrom(defenders);
+        }
 
         public void ClearDefense(PlayerId owner) => _defenseRequests.Remove(owner);
 
-        /// <summary>
-        /// True when <paramref name="responder"/>'s main force is the nearest fresh, available allied main force
-        /// to a fresh defense request from another ally. Only one ally answers each request.
-        /// </summary>
-        public bool TryGetDefenseAssignment(PlayerId responder, float now, out PlayerId requester, out Vector3 station)
+        /// <summary>True while any ally has a fresh defense request: a team station is under pressure.</summary>
+        public bool HasDefenseRequest(float now)
         {
             foreach (KeyValuePair<PlayerId, DefenseRequest> request in _defenseRequests)
-            {
-                if (request.Key == responder || now - request.Value.RequestedAt > STALE_SECONDS) continue;
-                if (FindNearestResponder(request.Key, request.Value.Station, now) != responder) continue;
-                requester = request.Key;
-                station = request.Value.Station;
-                return true;
-            }
+                if (now - request.Value.RequestedAt <= STALE_SECONDS) return true;
+            return false;
+        }
+
+        /// <summary>
+        /// True when <paramref name="responder"/> has a fresh, available main force and a fresh request from another
+        /// ally can be won by everyone who answers: the defenders at the station plus every available allied main
+        /// force reach <paramref name="minimumAdvantage"/> over the attackers. Every such main force answers, so two
+        /// weak fleets go together instead of one staying away.
+        /// </summary>
+        public bool TryGetDefenseAssignment(PlayerId responder, float now, float minimumAdvantage,
+            out PlayerId requester, out Vector3 station)
+        {
+            if (_strikes.TryGetValue(responder, out Strike own) && IsAvailable(own, now))
+                foreach (KeyValuePair<PlayerId, DefenseRequest> request in _defenseRequests)
+                {
+                    if (request.Key == responder || now - request.Value.RequestedAt > STALE_SECONDS ||
+                        !CanWin(request.Key, request.Value, now, minimumAdvantage)) continue;
+                    requester = request.Key;
+                    station = request.Value.Station;
+                    return true;
+                }
             requester = PlayerId.None;
             station = default;
             return false;
@@ -104,26 +142,17 @@ namespace EmpireAtWar.Services.Enemy
             _defenseRequests.Remove(player);
         }
 
-        private PlayerId FindNearestResponder(PlayerId requester, Vector3 station, float now)
+        private bool CanWin(PlayerId requester, DefenseRequest request, float now, float minimumAdvantage)
         {
-            PlayerId nearest = PlayerId.None;
-            float nearestDistance = float.MaxValue;
+            if (request.Attackers.IsEmpty) return true;
+            _combined.CopyFrom(request.Defenders);
             foreach (KeyValuePair<PlayerId, Strike> pair in _strikes)
-            {
-                Strike strike = pair.Value;
-                if (pair.Key == requester || !strike.Available || strike.Force.IsEmpty ||
-                    now - strike.PublishedAt > STALE_SECONDS) continue;
-                Vector3 offset = strike.Center - station;
-                offset.y = 0f;
-                float distance = offset.sqrMagnitude;
-                if (distance < nearestDistance || distance == nearestDistance && !nearest.IsNone && pair.Key.Index < nearest.Index)
-                {
-                    nearest = pair.Key;
-                    nearestDistance = distance;
-                }
-            }
-            return nearest;
+                if (pair.Key != requester && IsAvailable(pair.Value, now)) _combined.Add(pair.Value.Force);
+            return CombatMatchup.Advantage(_combined, request.Attackers) >= minimumAdvantage;
         }
+
+        private static bool IsAvailable(Strike strike, float now) =>
+            strike.Available && !strike.Force.IsEmpty && now - strike.PublishedAt <= STALE_SECONDS;
 
         private HashSet<string> GetReservations(PlayerId player)
         {
@@ -144,16 +173,12 @@ namespace EmpireAtWar.Services.Enemy
             public float PublishedAt;
         }
 
-        private readonly struct DefenseRequest
+        private sealed class DefenseRequest
         {
-            public readonly Vector3 Station;
-            public readonly float RequestedAt;
-
-            public DefenseRequest(Vector3 station, float requestedAt)
-            {
-                Station = station;
-                RequestedAt = requestedAt;
-            }
+            public readonly ForceComposition Attackers = new ForceComposition();
+            public readonly ForceComposition Defenders = new ForceComposition();
+            public Vector3 Station;
+            public float RequestedAt;
         }
     }
 }

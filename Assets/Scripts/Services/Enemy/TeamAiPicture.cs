@@ -19,6 +19,8 @@ namespace EmpireAtWar.Services.Enemy
     {
         private const float THREAT_RADIUS = 1000f;
         private const float THREAT_RADIUS_SQUARED = THREAT_RADIUS * THREAT_RADIUS;
+        /// <summary>A station's own size, added to the armada threat reach around it.</summary>
+        private const float STATION_ASSET_RADIUS = 500f;
 
         private readonly IPlayerRoster _roster;
         private readonly IReinforcementZoneSource _zones;
@@ -31,6 +33,11 @@ namespace EmpireAtWar.Services.Enemy
         private readonly Dictionary<long, ForceComposition> _structureThreats = new Dictionary<long, ForceComposition>();
         private readonly Dictionary<string, ForceComposition> _objectiveThreats = new Dictionary<string, ForceComposition>();
         private readonly List<ForceComposition> _pooledForces = new List<ForceComposition>();
+        private readonly HostileArmadaTracker _armadas = new HostileArmadaTracker();
+        private readonly List<Vector3> _armadaShips = new List<Vector3>();
+        private readonly List<int> _armadaSightings = new List<int>();
+        private readonly List<ArmadaAsset> _armadaAssets = new List<ArmadaAsset>();
+        private readonly Action<int, ForceComposition> _addArmadaShip;
 
         private int _usedPoolCount;
         private int _lastRefreshFrame = -1;
@@ -41,6 +48,8 @@ namespace EmpireAtWar.Services.Enemy
         public TeamAiCooperation Cooperation { get; } = new TeamAiCooperation();
         public IReadOnlyList<HostileSighting> ConfidentSightings => _confidentSightings;
         public IReadOnlyList<EnemyCaptureObjective> BaseCaptureObjectives => _baseCaptureObjectives;
+        /// <summary>Hostile armadas from the confident ship sightings, refreshed with the picture.</summary>
+        public IReadOnlyList<HostileArmada> Armadas => _armadas.Armadas;
 
         public TeamAiPicture(
             TeamId team,
@@ -58,6 +67,7 @@ namespace EmpireAtWar.Services.Enemy
             _zones = zones;
             _catalog = catalog;
             _worldSnapshot = worldSnapshot;
+            _addArmadaShip = AddArmadaShip;
         }
 
         public void SetRepresentativePlayer(PlayerId player)
@@ -136,6 +146,34 @@ namespace EmpireAtWar.Services.Enemy
                 BuildThreatNear(threat, objective.Position, radius * radius);
                 _objectiveThreats[objective.Id] = threat;
             }
+
+            RefreshArmadas(now);
+        }
+
+        private void RefreshArmadas(float now)
+        {
+            _armadaShips.Clear();
+            _armadaSightings.Clear();
+            for (int i = 0; i < _confidentSightings.Count; i++)
+            {
+                if (!_confidentSightings[i].UnitTypeId.IsShip) continue;
+                _armadaShips.Add(ToVector(_confidentSightings[i].Position));
+                _armadaSightings.Add(i);
+            }
+            _armadaAssets.Clear();
+            foreach (AiWorldSnapshot.Entry station in _worldSnapshot.Bases)
+                if (_roster.IsAllied(RepresentativePlayer, station.Owner))
+                    _armadaAssets.Add(new ArmadaAsset(station.Position, STATION_ASSET_RADIUS, ArmadaAssetKind.Station));
+            foreach (ReinforcementZonePresenter zone in _zones.Zones)
+                if (!zone.Owner.IsNone && _roster.IsAllied(RepresentativePlayer, zone.Owner))
+                    _armadaAssets.Add(new ArmadaAsset(zone.Center, zone.Radius, ArmadaAssetKind.HeldZone));
+            _armadas.Update(_armadaShips, _addArmadaShip, _armadaAssets, now);
+        }
+
+        private void AddArmadaShip(int index, ForceComposition force)
+        {
+            HostileSighting sighting = _confidentSightings[_armadaSightings[index]];
+            force.Add(_catalog.Get(sighting.UnitTypeId), sighting.Hull, sighting.Shields, sighting.OffenseScale);
         }
 
         public bool TryGetStructureThreat(long entityId, out ForceComposition threat) =>

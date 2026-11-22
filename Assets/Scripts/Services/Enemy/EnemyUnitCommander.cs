@@ -6,6 +6,7 @@ using System.Collections.Generic;
 using EmpireAtWar.Components.Movement.Formation;
 using EmpireAtWar.Entities.BaseEntity;
 using EmpireAtWar.Entities.EnemyFaction.Models;
+using EmpireAtWar.Entities.EnemyFaction.Models.Combat;
 using EmpireAtWar.Entities.Game;
 using EmpireAtWar.Services.ReinforcementZones;
 using EmpireAtWar.Services.UnitOrders;
@@ -41,6 +42,13 @@ namespace EmpireAtWar.Services.Enemy
         int ActiveShipCount { get; }
         bool HoldFinishedReinforcements => false;
         bool IsStationCritical => false;
+        /// <summary>A station of this AI or of an allied AI is under pressure.</summary>
+        bool HasTeamStationPressure => false;
+        /// <summary>
+        /// Copies the hostile armada that threatens a team asset and outmatches the team's fleet while no team station is
+        /// under pressure; false when there is none.
+        /// </summary>
+        bool TryCopyOutmatchingArmada(ForceComposition armada) => false;
         /// <summary>Outer zones this AI's ships may take; 0 for AIs that do not expand.</summary>
         int EligibleExpansionZoneCount => 0;
         /// <summary>The team holds an outer zone; until then finished ships deploy one at a time.</summary>
@@ -119,6 +127,8 @@ namespace EmpireAtWar.Services.Enemy
         public int EligibleExpansionZoneCount => _taskGroups.EligibleExpansionZoneCount;
         public bool HoldsOuterZone => _contextBuilder.HoldsOuterZone();
         public bool IsStationCritical => _contextBuilder.StationCritical;
+        public bool HasTeamStationPressure => _contextBuilder.TeamStationPressure;
+        public bool TryCopyOutmatchingArmada(ForceComposition armada) => _contextBuilder.TryCopyOutmatchingArmada(armada);
 
         public void FillDefenseDeploymentThreats(PlacementThreatSnapshot threats) =>
             _contextBuilder.FillDefenseDeploymentThreats(threats);

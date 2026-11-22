@@ -178,28 +178,32 @@ namespace EmpireAtWar.Services.Enemy
             return _hasPlacement;
         }
 
-        public bool TryGetDefensePosition(bool allowExtra, out Vector3 position)
+        public bool TryGetDefensePosition(bool allowExtra, out Vector3 position) =>
+            TryGetDefensePosition(allowExtra, false, out position);
+
+        public bool TryGetDefensePosition(bool allowExtra, bool firstOnly, out Vector3 position)
         {
             PrepareSearch();
             _world.EnsureCurrent();
             // The home station ring first, then every held zone gets its first platform before any zone gets another.
             _placementSource = "stationRing";
-            if (TryGetStationRingPosition(out position)) return true;
+            if (TryGetStationRingPosition(firstOnly, out position)) return true;
             _placementSource = "heldZone";
-            for (int platforms = 0; platforms < MAX_ZONE_PLATFORMS; platforms++)
+            int maxPlatforms = firstOnly ? 1 : MAX_ZONE_PLATFORMS;
+            for (int platforms = 0; platforms < maxPlatforms; platforms++)
                 if (TryGetZonePosition(platforms, allowExtra, out position)) return true;
             RecordDefenseBlocked(allowExtra);
             position = default;
             return false;
         }
 
-        /// <summary>Platforms ringing the home station: one from level 2, two from level 4.</summary>
-        private bool TryGetStationRingPosition(out Vector3 position)
+        /// <summary>Platforms ringing the home station: one from level 2, two from level 4 (one with <paramref name="firstOnly"/>).</summary>
+        private bool TryGetStationRingPosition(bool firstOnly, out Vector3 position)
         {
             position = default;
             if (!_productionAccess.HasHostBase || _productionAccess.ProductionHost != _owner.Id) return false;
             int level = _factionModel.CurrentLevel;
-            int wanted = level >= STATION_SECOND_PLATFORM_LEVEL ? 2 : level >= STATION_PLATFORM_LEVEL ? 1 : 0;
+            int wanted = level >= STATION_SECOND_PLATFORM_LEVEL && !firstOnly ? 2 : level >= STATION_PLATFORM_LEVEL ? 1 : 0;
             if (!TryGetStationCenter(out Vector3 station)) return false;
             float radius = GetStationRadius();
             if (CountPlatforms(station, GetFirstRingRadius(radius) + RING_COUNT * RING_SPACING) >= wanted)

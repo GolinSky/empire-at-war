@@ -14,6 +14,13 @@ namespace EmpireAtWar.Services.Enemy
         /// <summary>A held zone without a defend platform; <paramref name="allowExtra"/> also accepts a defended zone below its platform limit.</summary>
         bool TryGetDefensePosition(bool allowExtra, out Vector3 position) => TryGetPosition(out position);
 
+        /// <summary>
+        /// As <see cref="TryGetDefensePosition(bool, out Vector3)"/>; with <paramref name="firstOnly"/> only the first
+        /// platform of the station ring or of a held zone is placed.
+        /// </summary>
+        bool TryGetDefensePosition(bool allowExtra, bool firstOnly, out Vector3 position) =>
+            TryGetDefensePosition(allowExtra, out position);
+
         bool TryGetSecondStationPosition(out Vector3 position)
         {
             position = default;

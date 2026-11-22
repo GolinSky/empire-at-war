@@ -141,6 +141,7 @@ namespace EmpireAtWar.Services.Enemy
                 }
                 bool behind = _pool.IsBehindOnZones();
                 _allocator.StrongEconomy = _pool.HasStrongEconomy();
+                _allocator.LeanZones = _contextBuilder.LateGameSituation;
                 _allocator.WeakTarget = SelectWeakTarget(zones, now);
                 _allocator.Allocate(zones, _poolForces, _current, _distance, behind, _assignment);
                 if (stationPressure)
@@ -317,14 +318,15 @@ namespace EmpireAtWar.Services.Enemy
         }
 
         /// <summary>
-        /// Ships the allocator may move: every zone force, and the reserve unless it defends the station or assaults
-        /// the base. False when there is none.
+        /// Ships the allocator may move: every zone force, and the reserve unless it defends the station, assaults the
+        /// base or answers an allied station or a hostile armada. False when there is none.
         /// </summary>
         private bool CollectPool(IReadOnlyList<IShipEntity> ships)
         {
             _poolShips.Clear();
             _poolForces.Clear();
-            bool reserveBusy = _reserve.Decision.State is EnemyStrategicState.AssaultBase or EnemyStrategicState.DefendBase;
+            bool reserveBusy = _reserve.Decision.State is EnemyStrategicState.AssaultBase or EnemyStrategicState.DefendBase ||
+                _reserve.IsAnsweringTeam;
             foreach (IShipEntity ship in ships)
             {
                 if (_reserve.Ships.Contains(ship) && (reserveBusy || ship.CurrentOrder == UnitOrderType.Retreat))

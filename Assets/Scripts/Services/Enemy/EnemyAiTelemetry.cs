@@ -18,7 +18,8 @@ namespace EmpireAtWar.Services.Enemy
     /// Writes persistentDataPath/BattleTelemetry/&lt;scene&gt;_&lt;time&gt;_ai.csv every few seconds and starts a new file on
     /// every scene load. Editor and development builds write every row: decisions when they change, sampled every
     /// few seconds in between. Release builds write the compact log: purchases, deployments, economy, ownership and
-    /// station rows, one state sample and one allocation row per AI every <see cref="COMPACT_INTERVAL"/> seconds,
+    /// station rows, armada responses, one state sample, one allocation row and one production-wait row per AI every
+    /// <see cref="COMPACT_INTERVAL"/> seconds,
     /// and keep only the newest <see cref="COMPACT_FILE_LIMIT"/> files. The file stays on the machine that runs the AI.
     /// </summary>
     public static class EnemyAiTelemetry
@@ -42,11 +43,14 @@ namespace EmpireAtWar.Services.Enemy
         {
             "deployment", "deploymentBlocked", "deploymentForced", "deploymentEmergency", "economy", "station",
             "siteBuild", "placement", "placementDeferred", "recoveryMode", "surplusShip", "spawnBeacon", "patrolWing",
-            "wingZoneLeft", "raidSkip", "captureBlocked", "zoneOwner", "zoneAlloc"
+            "wingZoneLeft", "raidSkip", "captureBlocked", "zoneOwner", "zoneAlloc", "production-wait", "armadaResponse"
         };
 
+        /// <summary>Compact kinds written at most once per AI every <see cref="COMPACT_INTERVAL"/> seconds.</summary>
+        private static readonly HashSet<string> _throttledKinds = new HashSet<string> { "zoneAlloc", "production-wait" };
+
         private static readonly StringBuilder _lines = new StringBuilder();
-        private static readonly Dictionary<PlayerId, float> _nextAllocation = new Dictionary<PlayerId, float>();
+        private static readonly Dictionary<(PlayerId, string), float> _nextAllocation = new Dictionary<(PlayerId, string), float>();
         private static readonly Dictionary<PlayerId, float> _nextSample = new Dictionary<PlayerId, float>();
         private static readonly Dictionary<PlayerId, string> _lastObjective = new Dictionary<PlayerId, string>();
         private static readonly Dictionary<(PlayerId, Entities.CaptureSites.SiteFacilityType), int> _satelliteCounts = new();
@@ -176,10 +180,10 @@ namespace EmpireAtWar.Services.Enemy
             if (_compact)
             {
                 if (!_compactKinds.Contains(kind)) return;
-                if (kind == "zoneAlloc")
+                if (_throttledKinds.Contains(kind))
                 {
-                    if (_nextAllocation.TryGetValue(player, out float next) && Time.time < next) return;
-                    _nextAllocation[player] = Time.time + COMPACT_INTERVAL;
+                    if (_nextAllocation.TryGetValue((player, kind), out float next) && Time.time < next) return;
+                    _nextAllocation[(player, kind)] = Time.time + COMPACT_INTERVAL;
                 }
             }
             string[] columns = new string[20];

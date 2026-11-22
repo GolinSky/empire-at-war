@@ -523,8 +523,9 @@ namespace EmpireAtWar.Services.Enemy
         }
 
         /// <param name="attackTarget">Hostile unit of an Attack marker; null attacks-moves to the point.</param>
+        /// <param name="reason">Action reason; null for a marker an ally placed.</param>
         public void ExecuteMarker(TacticalMarker marker,
-            GameEntity attackTarget, EnemyStrategicContext context)
+            GameEntity attackTarget, EnemyStrategicContext context, string reason = null)
         {
             // A unit target is chased by its own order, so its movement does not need fresh orders.
             if (_markerId != marker.Id || attackTarget == null && (_markerPoint - marker.Point).sqrMagnitude > 1f)
@@ -542,7 +543,7 @@ namespace EmpireAtWar.Services.Enemy
                 receivers.Add(context.Receivers[ship]);
             }
             if (receivers.Count == 0) return;
-            ActionReason = $"Accepted allied {marker.Type} request.";
+            ActionReason = reason ?? $"Accepted allied {marker.Type} request.";
             context.OrderDestination = marker.Point;
             switch (marker.Type)
             {

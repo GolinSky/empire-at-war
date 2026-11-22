@@ -7,7 +7,9 @@ reopened: 2026-11-21
 ---
 # Enemy AI Opening and Task Groups
 
-## Status (2026-11-21 late evening, W15–W22 implemented)
+## Status (2026-11-22, W23–W28 and W30 implemented; W29 blocked by W8)
+- **W23–W28 and W30 implemented and compiled (0 errors) 2026-11-22. Tests written, not run (local override).** → "Open work — implementation notes (W23–W30)". W29 waits for the W8 flag review; W28 cause fix waits for the next host log.
+- **Online 2v2 of 2026-11-21 20:13 (build `fa7d138ad`, v0.1.75: W1–W13 + pad expansion, without W15–W22): both AIs lost.** User: opening, early-mid and mid game are great; late-mid and end game the AI is tied to zones, ignores the hostile armada and its ally. Log confirms → "Evidence — online match 2026-11-21 20:13" and **W23–W30** (planned, not started). W15–W22 are still untested by the user.
 - **W15–W22 implemented and compiled. Tests green 2026-11-22: `EnemyAi` 613/613, `Combat` 329/329.** → "Open work — implementation notes (W15–W22)".
 - Battle 16:04 (first on W1–W13 code): AI lost; causes → W15–W22. Not verified in a battle yet → [[TODOs/User_Acceptance_Queue]].
 - W1–W7 and W9–W13 implemented and compiled; tests ran on the user's request (see "Open work — implementation notes"). Still open: **W8 user review** of the role flags (AI does not read them yet) and **W14** (Jenkins release build + Editor battle, user gates).
@@ -94,6 +96,30 @@ reopened: 2026-11-21
   - Order: implement with or right after the pad plan; the review points are also listed in its step 7.
 - [x] **W21 Tests (relations only).** Repair satellite chosen only into a group with an armed satellite and ≥ 2 pads, never twice per group, never on a single-pad point; capture-wing target equal for a point with 2 and with 4 pads. Regen ≥ shield damage → shields never rated as breakable; more regen → lower advantage; repair source in radius → lower advantage; local advantage falls when a known hostile platform is added; a type with a waiting build is not chosen; bomber wing without raid gets the group's ship target.
 
+### P0 — late game (online match 20:13; 2026-11-22, W23–W28 and W30 implemented)
+- User rule (2026-11-22): **do not change the opening, early-mid and mid game.** The new rules switch on by situation (a hostile armada exists, a team station is under pressure, a zone has no armed defender left), never by clock.
+- [x] **W23 A zone takes only the force it needs.** `EnemyShipTaskGroupPlanner`: a zone force = the smallest group whose advantage over the zone's known defenders + statics passes the zone's `required`; the rest of the pool stays with the main force. A zone with no armed hostile left (defenders 0–1, statics 0–1) keeps a capture detachment only (wings first, ships only if no wing is free). Today the whole pool goes: 22:32 `zone:0:ships13:defenders1:statics1`.
+- [x] **W24 Help the ally in time.** `TeamAiCooperation` / `SelectAllyDefenseRequest`:
+  - request at first station pressure (`HasPressure`), not only when the station is critical (stations fall faster after the 2026-11-22 durability nerf);
+  - `recoveryMode` no longer blocks the answer (Player3 was in recovery 15:14–35:11 → could never answer);
+  - every allied main force without station pressure of its own answers, not only the nearest; its zone detachments (W23) stay;
+  - the answer is rated against the attackers at the ally's station together with the ally's force and station (combined strength), so two weak fleets go together instead of one staying away.
+- [x] **W25 Know the hostile armada.** `TeamAiPicture`: group confident hostile ship sightings into armadas (ships within one engagement radius of each other): centre, strength (`ForceComposition`), heading from the centre's movement between refreshes, and the team asset it moves toward or stands at (station, held zone, mine group).
+  - New main-force objective **Intercept**: an armada that threatens a team station or held zone is the main force's target when team strength at the meeting point (own + answering allies + statics there, W17) reaches the retreat advantage; else the force gathers at the threatened asset under its platforms instead of holding the centre.
+  - An armada that leaves a zone releases the zone force to W23 size at once.
+  - `HuntFleet` stays for a clearly stronger fleet; Intercept is the even / weaker case that is missing today (states seen in 40 min: no `HuntFleet`, no `AssaultBase`).
+- [x] **W26 Build the armada before committing (late game).** (scoped: see notes) While a hostile armada outmatches the main force and no team station is under pressure: new ships gather at the staging point (`reserve`) until the team's combined strength passes, then go as one. Counter-selection rates candidates against that armada, not against every sighting. No trickle of single ships into it.
+- [x] **W27 Platforms never outbid the fleet.** A platform is bought only when (a) the ship choice is blocked by the unit cap, or (b) it is the first platform of a station ring / held zone. Not while a team station is under pressure and a ship can still be bought. Player3: 153,000 credits on 24 platforms (7 Empress, 6 Golan III), 44,000 of it 20:00–24:00 with one ship bought while the ally's base fell.
+- [ ] **W28 Late-game money must be explained and spent.** (logging done; cause fix after the next host log) Bank 46,000–93,000 (28:00–32:00) with 8–14 ships alive. The compact log cannot say why: add `production-wait` to `_compactKinds` (one row per AI per `COMPACT_INTERVAL`). Compact `purchase` rows are also incomplete (deployments exceed purchases for 8 ship types; `surplusShip` buys write no `purchase` row) → write one. Then fix the cause from the next host log.
+- [ ] **W29 Unit choice by role (wires W8).** See "How the AI picks a unit" below. Critical-station buying drops the tier floor and ranks by arrival time → Player3 bought 11 Nebulon-B, 6 MC50 and 7 MC30c at level 5 (28:00–36:00). With roles: under pressure prefer `Brawler` / `AntiStrikecraft` / what answers the attackers inside the tier span; cheap low-tier ships only when nothing in the span arrives before the loss. **Blocked by the user's W8 flag review.**
+- [x] **W30 Tests (relations only).** (written, not run) Zone force not larger than needed; empty zone → detachment only; ally answers at pressure and in recovery; armada grouping (two clusters → two armadas; heading toward the nearer asset); Intercept chosen when combined strength passes, gather otherwise; platform not chosen while a ship is affordable and a station is pressed; `production-wait` in the compact kinds.
+
+### How the AI picks a unit (answer, source 2026-11-22)
+- Not by price alone. `EnemyCounterProductionModel.TrySelect`: score = (gain in advantage against the known hostile force when one such unit is added) ÷ (price share of the money, or slot share of the free unit cap, whichever is larger) × designer class matchup preference ÷ √(owned of that type + 1).
+- Filters before scoring: station level and one below (`SHIP_TIER_SPAN`), plus any lower ship with better value per credit (J3); affordable only, unless the fleet has ≥ 10 ships and beats the known enemy (then it may save); no type with a build waiting (W18, new); a critical station drops the level filter and ranks by arrival time.
+- Why it reads as "level and price": a small or losing fleet may not save, so only the affordable ships compete, and gain per credit favours cheap hulls. The fleet was rated weaker than the enemy for all 40 minutes (0.04–0.87) → it never saved for a better ship.
+- **Role labels (W8): the 77 ship assets carry proposed `ShipRole` flags; the AI does not read them.** Used only by the Editor proposal tool and `ShipRoleValidationTests`. Wiring waits for the user's flag review (→ W29).
+
 ### Open work — implementation notes (2026-11-21)
 - [x] W1 `EnemyProductionStrategy.IsSecondStationLevelDue` / `TryBuySecondStationLevel` (after miners, priority income research and a due level; before combat research, platforms, ships). `EnemyFactionController` accepts `SecondStationLevelUnitRequest` (stands, next level, < main level, one at a time via `IsUpgradingSecondStation`), real build time, `CompleteLevelUpgrade()`, refund on `BuiltChanged(false)`. Restored upgrades keep their time left. Telemetry: `purchase` category `SecondStationLevel`; `station` row `secondLevel=`.
 - [x] W2 second station bought at 1 × price; while wanted and unaffordable its price is held before ships/platforms/combat research (`GetSecondStationReserve`); same hold for second-station upgrades once it is the base.
@@ -125,6 +151,17 @@ reopened: 2026-11-21
 - Verification 2026-11-22 (EditMode, standard, no explicit, on the user's request): `EnemyAi` 613/613, `Combat` 329/329. First `EnemyAi` run 611/613: W19 blocked bombers for a critical station (`CriticalStation_BuysSquadronOnlyWhenItCanArriveInTime`) → fixed: critical station counts as "ships to go with" (station-defence wings fly to the station).
 - Risks to watch in the next battle: W17 makes groups near hostile satellites withdraw sooner; W22 one-at-a-time slows opening zone satellites.
 
+### Open work — implementation notes (W23–W30, 2026-11-22)
+- [x] W23 `EnemyZoneAllocator.IsCleared` (not threatened, defenders ≤ 1, statics ≤ 1 = `CLEARED_DEFENDERS`) → `Trim` releases the farthest ships while the rest stays a Go: 1 ship, 0 when own wings in `OwnSupport` beat what is left (`IsWingHeld`; such a zone gets no ship and is no gather zone). `LeanZones` (set from `EnemyStrategicContextBuilder.LateGameSituation`) trims every zone the same way except a held zone under attack. Leftovers join a cleared or lean zone only while its force is not yet a Go → the rest stays in the reserve (main force).
+- [x] W24 `AssessStation` requests at `HasPressure` with the known attackers and `BuildOwnNear` at the station. `TeamAiCooperation.TryGetDefenseAssignment(responder, now, minimumAdvantage, …)`: every fresh available main force answers when defenders + all available allied main forces reach the difficulty `RetreatAdvantage` over the attackers. `SelectAllyDefenseRequest()` no longer takes `recovering` and no longer runs the approach-safety check (combined rating replaces it).
+- [x] W25 `HostileArmadaTracker` (in `TeamAiPicture.Refresh`): single-linkage over confident ship sightings, `LINK_RADIUS` 1000, `MIN_SHIPS` 6; heading from centre movement over ≥ 2 s; asset = nearest team station (radius 500) or held zone within 1000 of the centre 20 s ahead. Main force: `SelectArmadaResponse` → Attack marker at the armada (team = main force + `AddAvailableAlliedStrength` + allied platforms at the asset ≥ `RetreatAdvantage`) or Defend marker at the asset (gather). Skipped under own pressure and in HuntFleet / AssaultBase / DefendBase / RetreatValue. Point kept until the armada moves > 500. `EnemyShipTaskGroup.IsAnsweringTeam` → the allocator leaves the reserve alone. Telemetry `armadaResponse` (compact).
+- [x] W26 scoped to armadas that threaten a team asset (user rule: no change to opening–mid game): such an armada outmatching own fleet + allies with no team station pressure → `TryCopyOutmatchingArmada` → counter-selection rates against it; main force gathers at the asset (W25 Defend); lean zones keep new ships in the reserve. Not built: holding the main force for an outmatching armada that threatens nothing.
+- [x] W27 `firstPlatformsOnly` while a ship option exists and is not capacity-blocked → `TryGetDefensePosition(allowExtra, firstOnly)`: ring 1, zones only their first. No platform while `HasTeamStationPressure` and a ship can be bought.
+- [ ] W28 `production-wait` and `armadaResponse` in `_compactKinds`; `production-wait` and `zoneAlloc` one row per AI per 15 s. `RecordPurchase` rows for surplus ship, scout, patrol wing, parallel interceptor. Open: read the next host log, fix the cause.
+- [x] W30 tests (not run): `HostileArmadaTrackerTests` (new: two clusters, small group, heading → asset), `TeamAiCooperationTests` (every ally answers, combined strength, any-focus allied strength, `HasDefenseRequest`), `EnemyZoneAllocatorTests` (+5: cleared keeps nearest, wing-held needs none, lean smallest group, lean leftovers, held under attack kept; "free zones" test now expects the third ship in the reserve), `EnemyStructurePlacementServiceTests` (+1 first-only), `EnemyUnitCommanderTests.Allocation_EveryShipGetsATaskInTheCycleItArrives` (one-defender zone: extra ships stay main force). Not covered: `SelectArmadaResponse` / intercept vs gather and the platform-under-pressure block end to end.
+- Risks to watch: cleared zones (≤ 1 defender) now keep one ship from the mid game on; `MIN_SHIPS` 6 decides when lean zones / intercept switch on; W27 also limits the centre's second platform while ships can be bought.
+- Reusable guidance: none extracted; rules live in code docs (`EnemyZoneAllocator`, `HostileArmadaTracker`, `TeamAiCooperation`).
+
 ### Closed or ignored (no work)
 - Rebellion levels 4–5 balance (ignored, other task). Ship life gate (user balances). Opening asteroid trigger (any unit, accepted). Spawn telemetry counter (accepted). Wing vision fallback (closed). Surplus buying (explained, kept). Republic ARC-170 / V-Wing at level 5 (balance owner, not this plan). "Held zone with no site left" risk (fixed by E3c in round 5).
 
@@ -147,6 +184,27 @@ reopened: 2026-11-21
 - W6 ✓ Vulture wings (cheapest fighter), 2 parallel interceptors at 0:00–0:05 (`mandatory=7000 / 3000`).
 - W9 ✗ no raid (above). W11 partly (above).
 - W4, W5, W7, W10: no row in this log proves or disproves them. W12: Survival not played.
+
+## Evidence — online match 2026-11-21 20:13 (host log; 2v2 Medium, Republic humans Player0 / Player1 vs Rebellion AI Player2 / Player3, 12,000 start, build `fa7d138ad` v0.1.75, 2,430 s)
+- File: `Loading_20261121_201350_ai.csv` (compact log, release build; first real use → W14 "read one host-side file" is satisfied for the host). Matches played as client leave no AI log on this machine (the file stays with the host). `Player.log` / `Player-prev.log`: no exception, 4 `Tangent route build failed` fallbacks.
+- Result: Player2 station lost 22:47, Player3 station ≈ 35:00, last station ≈ 40:00. Fleet advantage of both AIs 0.04–0.87 for the whole match (never ≥ 1).
+- Income was level until 20:00 (AI 445–723 per s, humans 489–723).
+
+### Faults
+- **Zone-bound while the ally falls.** 21:09–22:55: Player3 held zone 0 with 12–13 ships, state `CaptureZone`, local advantage 100 (no hostile near; zone defenders 10 → 1, statics 9 → 1). In the same minutes Player2's station went from shields 568,752 (20:00) to lost (22:47). Player3 was in `CaptureZone` in every 2-minute sample 2:15–26:43. → W23, W24.
+- **Ally help cannot fire.** Request only at `IsStationCritical`; responder must not be `recovering`; only the nearest main force answers. Player3 `recoveryMode` 15:14–35:11. → W24.
+- **No armada awareness.** No rule reacts to the hostile main force leaving the centre for a base. `HuntFleet` / `AssaultBase` need a clearly stronger fleet → never seen. → W25, W26.
+- **Platform spending.** Player3 153,000 on platforms vs 643,800 on ships; Player2 36,000. → W27.
+- **Money unspent late.** Player2 55,267 (28:00) and 73,336 (32:00) with 8–14 ships; Player3 46,333 and 49,816. Cause not in the compact log. → W28.
+- **Low-tier ships at level 5.** Player3 28:00–36:00: Nebulon-B × 11, MC30c × 7, MC50 × 3 while its station was critical. → W29.
+- **Type stacking.** 0:00–4:00 Nebulon-B × 12 (Player2) / × 10 (Player3); 4:00–8:00 Assault Frigate Mk II × 11 / × 9. Same fault as the 34 Diamonds.
+
+### Old-build faults against the new code (`2614f45f9`, not played yet)
+- Type stacking → **addressed** by W18 (source: `HasWaitingBuild` in `CanReserve`), not battle-tested.
+- Regen / repair / platforms in the strength math → **addressed** by W15–W17, not battle-tested. Not the main cause here: the AI already rated itself weaker all match.
+- Bombers idle (`raidSkip` 46 + 39 rows) → **addressed** by W19, not battle-tested.
+- Zone-bound, ally help, armada, platform spending, late bank, low-tier under pressure → **not fixed** (W23–W29).
+- Role labels → **not wired** (W8 / W29).
 
 ## Status history (2026-11-20, round 7 implemented)
 - Round-6 playtest played 17:44 (Rebellion AI vs Empire). User: start as good as before; Rebellion ship selection awful. Reopened and closed again the same day.

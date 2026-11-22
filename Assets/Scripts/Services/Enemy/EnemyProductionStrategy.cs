@@ -247,9 +247,13 @@ namespace EmpireAtWar.Services.Enemy
             bool canBuildShip = hasShipOption && IsAffordable(shipChoice) && FitsRemainingCapacity(shipChoice);
             // A fleet at the unit limit cannot spend on ships, so held zones take further platforms.
             bool shipBlockedByCapacity = hasShipOption && IsAffordable(shipChoice) && !canBuildShip;
+            // Platforms never outbid the fleet: while a ship can be bought, only the first platform of the station ring
+            // or of a held zone is placed, and none while a team station is under pressure.
+            bool platformsBlockedByPressure = canBuildShip && _stateProvider.HasTeamStationPressure;
+            bool firstPlatformsOnly = hasShipOption && !shipBlockedByCapacity;
             bool canBuildDefense = BattleClock.CurrentElapsed >= _nextDefenseBuildTime &&
-                hasDefenseSelection && IsAffordable(defense.Value) &&
-                _enemyStructurePlacementService.TryGetDefensePosition(shipBlockedByCapacity, out _);
+                !platformsBlockedByPressure && hasDefenseSelection && IsAffordable(defense.Value) &&
+                _enemyStructurePlacementService.TryGetDefensePosition(shipBlockedByCapacity, firstPlatformsOnly, out _);
             UnitTypeId combatChoice = hasCounter ? counterId : hasShip
                 ? UnitTypeId.Ship(ship.Key) : UnitTypeId.Squadron(squadron.Key);
             if (_stationPressure.IsStationCritical && !hasShipOption)
@@ -620,8 +624,10 @@ namespace EmpireAtWar.Services.Enemy
             selectedId = default;
             selectedData = null;
             PlayerId self = _owner.Id;
-            // Counters answer what the team has seen of the enemy, not the whole hidden map.
-            _forceBuilder.BuildKnown(_hostileForce, _intel, Time.time, sighting => true);
+            // Counters answer what the team has seen of the enemy, not the whole hidden map; an armada that threatens a
+            // team asset and outmatches the fleet is answered alone, so new ships are bought to beat it.
+            if (!_stateProvider.TryCopyOutmatchingArmada(_hostileForce))
+                _forceBuilder.BuildKnown(_hostileForce, _intel, Time.time, sighting => true);
             if (_hostileForce.IsEmpty && !_stationPressure.IsStationCritical)
                 return false;
             _forceBuilder.Build(_ownForce, entity => entity.Owner == self, _liveUnitCounts);
@@ -831,7 +837,9 @@ namespace EmpireAtWar.Services.Enemy
                 return;
             EnemyAiTelemetry.RecordEvent(_owner.Id, _owner.Faction, "surplusShip",
                 FormattableString.Invariant($"unit={extra.Key};cost={extra.Value.Price};money={_economyModel.Money:F1}"));
-            _purchaseProcessor.Purchase(_requestFactory.ConstructUnitRequest(extra.Value, extra.Key));
+            UnitRequest request = _requestFactory.ConstructUnitRequest(extra.Value, extra.Key);
+            RecordExtraPurchase(request);
+            _purchaseProcessor.Purchase(request);
         }
 
         private void TrackSaving(string unit)
@@ -977,9 +985,17 @@ namespace EmpireAtWar.Services.Enemy
             Debug.Log(
                 $"[EnemyAI:Production] BattleTime={BattleClock.CurrentElapsed:F1}, Player={_owner.Id}:{_owner.Faction}, Category=Scout, Unit={request.Id}, " +
                 $"Cost={request.FactionData.Price}, Money={_economyModel.Money}");
+            RecordExtraPurchase(request);
             _purchaseProcessor.Purchase(request);
             return true;
         }
+
+        /// <summary>A purchase row for a unit bought outside the main choice (surplus ship, scout, patrol wing, interceptor).</summary>
+        private void RecordExtraPurchase(UnitRequest request) =>
+            EnemyAiTelemetry.RecordPurchase(_owner.Id, _owner.Faction, _stateProvider.CurrentState,
+                EnemyProductionCategory.Ship, false, request.Id, request.FactionData.Price, _economyModel.Money,
+                _stationPressure.IsStationCritical, 0f, _stationPressure.EstimatedTimeToLossSeconds,
+                _savingUnit, GetSavingForSeconds());
 
         /// <summary>
         /// From level 2 the patrol is a fighter or interceptor wing. When no wing can be spared, the cheapest one is
@@ -1004,7 +1020,9 @@ namespace EmpireAtWar.Services.Enemy
             _patrolWingRetryAt = BattleClock.CurrentElapsed + PATROL_WING_RETRY_SECONDS;
             EnemyAiTelemetry.RecordEvent(_owner.Id, _owner.Faction, "patrolWingPurchase",
                 $"unit={cheapest.Key};price={cheapest.Value.Price}");
-            _purchaseProcessor.Purchase(_requestFactory.ConstructUnitRequest(cheapest.Value, cheapest.Key));
+            UnitRequest request = _requestFactory.ConstructUnitRequest(cheapest.Value, cheapest.Key);
+            RecordExtraPurchase(request);
+            _purchaseProcessor.Purchase(request);
             return true;
         }
 
@@ -1105,7 +1123,9 @@ namespace EmpireAtWar.Services.Enemy
             EnemyAiTelemetry.RecordEvent(_owner.Id, _owner.Faction, "parallelInterceptor",
                 FormattableString.Invariant(
                     $"unit={interceptor.Key};cost={interceptor.Value.Price};money={_economyModel.Money:F1};mandatory={mandatoryCosts:F1}"));
-            _purchaseProcessor.Purchase(_requestFactory.ConstructUnitRequest(interceptor.Value, interceptor.Key));
+            UnitRequest request = _requestFactory.ConstructUnitRequest(interceptor.Value, interceptor.Key);
+            RecordExtraPurchase(request);
+            _purchaseProcessor.Purchase(request);
         }
 
         /// <summary>

@@ -351,6 +351,19 @@ namespace EmpireAtWar.Tests.Editor
         }
 
         [Test]
+        public void DefensePosition_FirstOnly_ZoneWithAPlatformGetsNoSecond()
+        {
+            _map.SetBounds(-1000f, 1000f);
+            AddZone(TestPlayers.Enemy, Vector3.zero, isMain: true);
+            AddPlatform(new Vector3(70f, 0f, 0f));
+
+            Assert.That(_enemyStructurePlacementService.TryGetDefensePosition(false, out _), Is.True,
+                "The centre takes a second platform when ships do not compete.");
+            Assert.That(_enemyStructurePlacementService.TryGetDefensePosition(false, true, out _), Is.False,
+                "While a ship can be bought only first platforms are placed.");
+        }
+
+        [Test]
         public void DefensePosition_SatellitesAndBattleAsteroidsAreNotPlatforms()
         {
             _map.SetBounds(-1000f, 1000f);
