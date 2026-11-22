@@ -90,15 +90,15 @@ MonoBehaviour:
   - hullMultiplier: 1
     shieldsMultiplier: 1
     shieldRegenerateMultiplier: 1
-  - hullMultiplier: 1.4
+  - hullMultiplier: 1.2
     shieldsMultiplier: 1.5
     shieldRegenerateMultiplier: 1.15
-  - hullMultiplier: 1.9
+  - hullMultiplier: 1.45
     shieldsMultiplier: 2.2
     shieldRegenerateMultiplier: 1.35
-  - hullMultiplier: 2.6
+  - hullMultiplier: 1.8
     shieldsMultiplier: 3.1
     shieldRegenerateMultiplier: 1.6
-  - hullMultiplier: 3.5
+  - hullMultiplier: 2.25
     shieldsMultiplier: 4.2
     shieldRegenerateMultiplier: 1.9
