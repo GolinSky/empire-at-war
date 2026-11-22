@@ -116,5 +116,7 @@ namespace EmpireAtWar.Components.AttackComponent
         DarthVaderEscortLaser = 165,
         LukeSkywalkerLaser = 169,
         RedSquadronEscortLaser = 170,
+        AllegianceHeavyOctupleTurbolaser = 171,
+        AllegianceHeavyQuadTurbolaser = 172,
     }
 }
