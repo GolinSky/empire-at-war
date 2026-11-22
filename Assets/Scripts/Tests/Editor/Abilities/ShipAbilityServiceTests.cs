@@ -769,6 +769,23 @@ namespace EmpireAtWar.Tests.Editor
         }
 
         [Test]
+        public void Cancel_InterdictGravityWell_OwnerMayEndIt()
+        {
+            var relations = TestPlayers.CreateDuel();
+            ShipAbilityService service = new ShipAbilityService(new FakeFactory(),
+                relations, new VisionService(relations, fogEnabled: false));
+            FakeCommand caster = CreateCaster();
+            SetField(caster.Slots[0].Definition, "settings", new GravityWellSettings());
+            Assert.That(service.TryActivate(caster, ShipAbilityId.BoostEnginePower, null), Is.True);
+
+            Assert.That(caster.Slots[0].CanCancel, Is.True);
+            service.Press(new IEntity[] { caster.Entity }, ShipAbilityId.BoostEnginePower);
+
+            Assert.That(caster.Slots[0].State, Is.EqualTo(ShipAbilityState.Recovering));
+            service.LateDispose();
+        }
+
+        [Test]
         public void CasterDeath_StopsActiveAbilityOnce()
         {
             FakeFactory factory = new FakeFactory();
