@@ -138,6 +138,10 @@ namespace Mirror.FizzySteam
             Debug.Log($"Client with ConnectionID {connId} disconnected.");
         }
 
+        // Empire at War: read by FizzySteamworks.TryGetServerConnectionStatus (network status overlay).
+        public bool TryGetConnection(int connectionId, out HSteamNetConnection conn) =>
+            connToMirrorID.TryGetValue(connectionId, out conn);
+
         public void Disconnect(int connectionId)
         {
             if (connToMirrorID.TryGetValue(connectionId, out HSteamNetConnection conn))

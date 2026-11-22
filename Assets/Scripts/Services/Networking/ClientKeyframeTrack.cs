@@ -30,6 +30,17 @@ namespace EmpireAtWar.Services.Networking
             _count++;
         }
 
+        /// <summary>The latest keyframe extrapolated to <paramref name="time"/>; false unless it is newer than every keyframe.</summary>
+        public bool TryPredict(double time, out EntityMotion predicted)
+        {
+            predicted = default;
+            if (_count == 0) return false;
+            int last = Index(_count - 1);
+            if (time <= _times[last]) return false;
+            predicted = _motions[last].Extrapolate((float)(time - _times[last]));
+            return true;
+        }
+
         public EntityMotion Sample(double renderTime)
         {
             int before = -1;

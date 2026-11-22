@@ -161,7 +161,7 @@ namespace EmpireAtWar.Services.VContainer
             builder.Register<UnitOrderService>(Lifetime.Singleton).AsImplementedInterfaces().AsSelf();
             builder.Register<PlayerCommandHandlers>(Lifetime.Singleton);
             OnlineMatchService online = Parent.Container.Resolve<OnlineMatchService>();
-            NetworkBattleRegistrations.Register(builder, online);
+            NetworkBattleRegistrations.Register(builder, online, transform);
             builder.Register<PlayerUnitOrders>(Lifetime.Singleton).As<IPlayerUnitOrders>();
             builder.Register<UnitActionTargetingModel>(Lifetime.Singleton);
             builder.Register<PlayerOrderInputHandler>(Lifetime.Singleton).AsImplementedInterfaces().AsSelf();

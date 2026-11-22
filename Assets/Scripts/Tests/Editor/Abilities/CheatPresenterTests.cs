@@ -157,6 +157,8 @@ namespace EmpireAtWar.Tests.Editor
             public event Action<SuperWeaponType> GrantSuperWeaponRequested { add { } remove { } }
             public event Action GrantAllSuperWeaponsRequested { add { } remove { } }
             public event Action<bool> RangeDebugToggled { add { } remove { } }
+            public event Action<bool> NetworkStatusToggled { add { } remove { } }
+            public void SetNetworkStatusAvailable(bool available) { }
             public event Action DestroyOwnShipsRequested { add { } remove { } }
         }
     }

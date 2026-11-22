@@ -1,11 +1,14 @@
 using EmpireAtWar.Commands.Game;
 using EmpireAtWar.Components.AttackComponent;
 using EmpireAtWar.Services.Networking;
+using EmpireAtWar.Services.Networking.Diagnostics;
 using EmpireAtWar.Services.Networking.Online;
 using EmpireAtWar.Services.PlayerCommands;
 using EmpireAtWar.Services.Squadrons;
 using EmpireAtWar.Services.TacticalMarkers;
 using global::VContainer;
+using global::VContainer.Unity;
+using UnityEngine;
 
 namespace EmpireAtWar.Services.VContainer
 {
@@ -15,13 +18,15 @@ namespace EmpireAtWar.Services.VContainer
     /// </summary>
     public static class NetworkBattleRegistrations
     {
-        public static void Register(IContainerBuilder builder, OnlineMatchService online)
+        public static void Register(IContainerBuilder builder, OnlineMatchService online, Transform root)
         {
             OnlineRole role = online.IsInBattle ? online.Role : OnlineRole.None;
             builder.Register<ReplicatedStateRegistry>(Lifetime.Singleton);
+            builder.RegisterInstance(new NetworkStatusModel(role != OnlineRole.None));
             if (role == OnlineRole.Client)
             {
                 RegisterClient(builder);
+                RegisterDiagnostics(builder, root);
                 return;
             }
 
@@ -51,6 +56,17 @@ namespace EmpireAtWar.Services.VContainer
             builder.Register<OnlineHostGameCommand>(Lifetime.Singleton).As<IGameCommand>();
             builder.Register<AbandonedPlayerTakeover>(Lifetime.Singleton).AsImplementedInterfaces();
             builder.Register<OnlineBattleLifetime>(Lifetime.Singleton).AsImplementedInterfaces();
+            builder.Register<HostNetworkStats>(Lifetime.Singleton).As<INetworkRoleStats>();
+            RegisterDiagnostics(builder, root);
+        }
+
+        // Network status overlay + per-battle _net.csv on every online machine (Multiplayer Connection Analysis).
+        private static void RegisterDiagnostics(IContainerBuilder builder, Transform root)
+        {
+            builder.Register<NetworkStatsCollector>(Lifetime.Singleton).AsImplementedInterfaces().AsSelf();
+            GameObject overlayRoot = new GameObject(nameof(NetworkStatusOverlayView));
+            overlayRoot.transform.SetParent(root, false);
+            builder.RegisterComponent(overlayRoot.AddComponent<NetworkStatusOverlayView>());
         }
 
         private static void RegisterClient(IContainerBuilder builder)
@@ -70,6 +86,7 @@ namespace EmpireAtWar.Services.VContainer
             builder.Register<ClientUnitOrderReceiver>(Lifetime.Singleton).AsImplementedInterfaces();
             builder.Register<ClientBattleRecordReceiver>(Lifetime.Singleton).AsImplementedInterfaces();
             builder.Register<ClientBattleStartGate>(Lifetime.Singleton).As<IBattleStartGate>();
+            builder.Register<ClientNetworkStats>(Lifetime.Singleton).AsImplementedInterfaces();
             builder.Register<OnlineBattleLifetime>(Lifetime.Singleton).AsImplementedInterfaces();
         }
     }

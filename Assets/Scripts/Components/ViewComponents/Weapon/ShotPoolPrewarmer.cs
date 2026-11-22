@@ -36,9 +36,7 @@ namespace EmpireAtWar.ViewComponents.Weapon
         private readonly Dictionary<ShotEffectCache, int> _targets = new Dictionary<ShotEffectCache, int>();
         private readonly Dictionary<ShotEffectPool, (ShotEffectCache Cache, int Capacity)> _pools =
             new Dictionary<ShotEffectPool, (ShotEffectCache, int)>();
-#if UNITY_EDITOR || DEVELOPMENT_BUILD
-        public IEnumerable<ShotEffectCache> Caches => _caches.Values;
-#endif
+        public Dictionary<(ShotEffect Prefab, bool Strikecraft), ShotEffectCache>.ValueCollection Caches => _caches.Values;
 
         public ShotEffectPool CreatePool(WeaponProfile profile, Transform owner, Action<int> completed,
             ImpactEffectPresenter impacts, BoltFlightBatch flights, int target, bool strikecraft = false)

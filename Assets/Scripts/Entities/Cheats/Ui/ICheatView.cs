@@ -38,6 +38,11 @@ namespace EmpireAtWar.Views.Cheats
 
         event Action<bool> RangeDebugToggled;
 
+        event Action<bool> NetworkStatusToggled;
+
+        /// <summary>Online battles only: shows the network status overlay toggle in the Debug tab.</summary>
+        void SetNetworkStatusAvailable(bool available);
+
         event Action DestroyOwnShipsRequested;
 
         void SetFactions(IReadOnlyList<FactionType> factions);

@@ -131,6 +131,32 @@ namespace Mirror.FizzySteam
         }
         public bool ClientActive() => client != null;
 
+        // Empire at War: live Steam link status (ping, quality, send rate, queued bytes) for the network status
+        // overlay. Only Steam Sockets (UseNextGenSteamNetworking) connections expose it.
+        public bool TryGetClientConnectionStatus(out SteamNetConnectionRealTimeStatus_t status)
+        {
+            status = default;
+            return client is NextClient next && next.Connected && TryGetStatus(next.Connection, out status);
+        }
+
+        public bool TryGetServerConnectionStatus(int connectionId, out SteamNetConnectionRealTimeStatus_t status)
+        {
+            status = default;
+            return server is NextServer next && next.TryGetConnection(connectionId, out HSteamNetConnection connection) &&
+                TryGetStatus(connection, out status);
+        }
+
+        private static bool TryGetStatus(HSteamNetConnection connection, out SteamNetConnectionRealTimeStatus_t status)
+        {
+            status = default;
+            SteamNetConnectionRealTimeLaneStatus_t lanes = default;
+#if UNITY_SERVER
+            return SteamGameServerNetworkingSockets.GetConnectionRealTimeStatus(connection, ref status, 0, ref lanes) == EResult.k_EResultOK;
+#else
+            return SteamNetworkingSockets.GetConnectionRealTimeStatus(connection, ref status, 0, ref lanes) == EResult.k_EResultOK;
+#endif
+        }
+
 
         public override bool ServerActive() => server != null;
         public override void ServerStart()

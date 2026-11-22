@@ -37,6 +37,10 @@ namespace EmpireAtWar.Services.Networking
         }
 
         public uint CurrentTick => _replicator.Tick;
+        public int ReplicatedEntityCount => _replicator.EntityCount;
+        /// <summary>Keyframes and unreliable chunks sent since the battle began (per tick, not per client).</summary>
+        public long KeyframesSent { get; private set; }
+        public long KeyframeChunksSent { get; private set; }
         public event Action SpawnsSent;
 
         public void Tick()
@@ -47,7 +51,12 @@ namespace EmpireAtWar.Services.Networking
             foreach (EntityDespawnMessage despawn in _output.Despawns) HostBroadcast.ToClients(_online, despawn);
             foreach (EntitySpawnMessage spawn in _output.Spawns) HostBroadcast.ToClients(_online, spawn);
             SpawnsSent?.Invoke();
-            foreach (EntityKeyframesMessage chunk in _output.Keyframes) HostBroadcast.ToClients(_online, chunk, Channels.Unreliable);
+            foreach (EntityKeyframesMessage chunk in _output.Keyframes)
+            {
+                HostBroadcast.ToClients(_online, chunk, Channels.Unreliable);
+                KeyframesSent += chunk.Keyframes.Length;
+                KeyframeChunksSent++;
+            }
             _healthTimer -= Time.unscaledDeltaTime;
             if (_healthTimer > 0f) return;
             _healthTimer = HEALTH_INTERVAL_SECONDS;

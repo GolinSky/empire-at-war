@@ -57,6 +57,8 @@ namespace EmpireAtWar.Views.Cheats
 
         private bool _isExpanded;
         private bool _showRanges;
+        private bool _networkStatusAvailable;
+        private bool _showNetworkStatus;
         private Vector2 _scrollPosition;
         private IReadOnlyList<PlayerSlot> _enemies = Array.Empty<PlayerSlot>();
 
@@ -83,6 +85,8 @@ namespace EmpireAtWar.Views.Cheats
         public event Action GrantAllSuperWeaponsRequested;
 
         public event Action<bool> RangeDebugToggled;
+
+        public event Action<bool> NetworkStatusToggled;
 
         public event Action DestroyOwnShipsRequested;
 
@@ -130,6 +134,11 @@ namespace EmpireAtWar.Views.Cheats
         public void SetPlatforms(IReadOnlyList<DefendPlatformType> platforms)
         {
             _platforms = platforms;
+        }
+
+        public void SetNetworkStatusAvailable(bool available)
+        {
+            _networkStatusAvailable = available;
         }
 
         private void DrawStationTab()
@@ -360,6 +369,14 @@ namespace EmpireAtWar.Views.Cheats
             {
                 _showRanges = showRanges;
                 RangeDebugToggled?.Invoke(_showRanges);
+            }
+
+            if (!_networkStatusAvailable) return;
+            bool showNetworkStatus = GUILayout.Toggle(_showNetworkStatus, "Show network status (online battle)");
+            if (showNetworkStatus != _showNetworkStatus)
+            {
+                _showNetworkStatus = showNetworkStatus;
+                NetworkStatusToggled?.Invoke(_showNetworkStatus);
             }
         }
 

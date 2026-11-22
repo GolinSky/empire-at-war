@@ -26,6 +26,9 @@ namespace Mirror.FizzySteam
         private HSteamNetConnection HostConnection;
         private List<Action> BufferedData;
 
+        // Empire at War: read by FizzySteamworks.TryGetClientConnectionStatus (network status overlay).
+        public HSteamNetConnection Connection => HostConnection;
+
         private NextClient(FizzySteamworks transport)
         {
             ConnectionTimeout = TimeSpan.FromSeconds(Math.Max(1, transport.Timeout));

@@ -32,7 +32,6 @@ namespace EmpireAtWar.ViewComponents.Weapon
         public int RequiredCount => InUseCount + _reservedCount + _waitingCount;
         public int RegisteredCapacity => _registeredCapacity;
         public event Action<ShotEffectCache> DemandChanged;
-#if UNITY_EDITOR || DEVELOPMENT_BUILD
         public string PrefabName => _prefab.name;
         public int PeakInUse { get; private set; }
         public int LoadingCreated { get; private set; }
@@ -43,7 +42,6 @@ namespace EmpireAtWar.ViewComponents.Weapon
         public float MaxAdmissionWaitSeconds { get; private set; }
         public float OldestPendingWaitSeconds => _waiting.First == null ? 0f
             : Mathf.Max(0f, Time.time - _waiting.First.Value.AdmissionStartedAt);
-#endif
 
         internal bool TryReserve(ShotEffectPool pool, int count)
         {
@@ -53,9 +51,7 @@ namespace EmpireAtWar.ViewComponents.Weapon
                 pool.WaitingShots = count;
                 _waitingCount += count;
                 _waiting.AddLast(pool.AdmissionNode);
-#if UNITY_EDITOR || DEVELOPMENT_BUILD
                 pool.AdmissionStartedAt = Time.time;
-#endif
             }
             else if (pool.WaitingShots != count)
             {
@@ -66,18 +62,14 @@ namespace EmpireAtWar.ViewComponents.Weapon
             if (_idle.Count - _reservedCount >= count)
             {
                 _waiting.Remove(pool.AdmissionNode);
-#if UNITY_EDITOR || DEVELOPMENT_BUILD
                 RecordWait(pool);
-#endif
                 _waitingCount -= pool.WaitingShots;
                 pool.WaitingShots = 0;
                 pool.ReservedShots = count;
                 _reservedCount += count;
                 return true;
             }
-#if UNITY_EDITOR || DEVELOPMENT_BUILD
             AdmissionWaits++;
-#endif
             if (DemandChanged != null) DemandChanged(this);
             return false;
         }
@@ -87,9 +79,7 @@ namespace EmpireAtWar.ViewComponents.Weapon
             if (pool.AdmissionNode.List != null)
             {
                 _waiting.Remove(pool.AdmissionNode);
-#if UNITY_EDITOR || DEVELOPMENT_BUILD
                 RecordWait(pool);
-#endif
                 _waitingCount -= pool.WaitingShots;
                 pool.WaitingShots = 0;
             }
@@ -97,14 +87,12 @@ namespace EmpireAtWar.ViewComponents.Weapon
             pool.ReservedShots = 0;
         }
 
-#if UNITY_EDITOR || DEVELOPMENT_BUILD
         private void RecordWait(ShotEffectPool pool)
         {
             float seconds = Mathf.Max(0f, Time.time - pool.AdmissionStartedAt);
             TotalAdmissionWaitSeconds += seconds;
             MaxAdmissionWaitSeconds = Mathf.Max(MaxAdmissionWaitSeconds, seconds);
         }
-#endif
 
         public int RegisterCapacity(int capacity)
         {
@@ -144,9 +132,7 @@ namespace EmpireAtWar.ViewComponents.Weapon
                 AttackSequenceDiagnostics.RecordPoolReused();
                 pool.ReservedShots--;
                 _reservedCount--;
-#if UNITY_EDITOR || DEVELOPMENT_BUILD
                 PeakInUse = Math.Max(PeakInUse, InUseCount);
-#endif
                 effect.enabled = true;
                 return effect;
             }
@@ -174,17 +160,11 @@ namespace EmpireAtWar.ViewComponents.Weapon
             if (_released || _all.Count >= target) return false;
 #if UNITY_EDITOR || DEVELOPMENT_BUILD
             using (_prewarmMarker.Auto())
-            {
 #endif
             Return(Create());
-#if UNITY_EDITOR || DEVELOPMENT_BUILD
             if (loading) LoadingCreated++;
             else RuntimeCreated++;
-#endif
             return true;
-#if UNITY_EDITOR || DEVELOPMENT_BUILD
-            }
-#endif
         }
 
         private ShotEffect Create()

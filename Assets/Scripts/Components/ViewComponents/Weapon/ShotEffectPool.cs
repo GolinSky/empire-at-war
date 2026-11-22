@@ -30,9 +30,7 @@ namespace EmpireAtWar.ViewComponents.Weapon
         internal LinkedListNode<ShotEffectPool> AdmissionNode { get; }
         internal int WaitingShots { get; set; }
         internal int ReservedShots { get; set; }
-#if UNITY_EDITOR || DEVELOPMENT_BUILD
         internal float AdmissionStartedAt { get; set; }
-#endif
 
         internal void IncreaseCapacity(int capacity)
         {

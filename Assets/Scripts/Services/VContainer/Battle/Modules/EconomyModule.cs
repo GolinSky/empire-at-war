@@ -51,6 +51,7 @@ namespace EmpireAtWar.Services.VContainer
             builder.Register<CheatService>(Lifetime.Singleton).AsImplementedInterfaces().AsSelf();
             builder.Register<CheatWorldService>(Lifetime.Singleton);
             builder.Register<CheatPresenter>(Lifetime.Singleton).AsImplementedInterfaces().AsSelf();
+            builder.Register<NetworkStatusCheatPresenter>(Lifetime.Singleton).AsImplementedInterfaces();
             GameObject cheatRoot = new GameObject(nameof(CheatView));
             cheatRoot.transform.SetParent(playerRoot, false);
             builder.RegisterComponent(cheatRoot.AddComponent<CheatView>()).AsImplementedInterfaces().AsSelf();

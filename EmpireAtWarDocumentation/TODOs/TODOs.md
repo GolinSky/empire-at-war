@@ -91,6 +91,9 @@
 - [ ] **[AGY] Capital Movement and Class Rework Fixes (Audit & Reconciled Plan)** → [[TODOs/Bugs/Capital_Movement_And_Class_Rework_Fixes_AGY|Plan]]
 - [ ] **[AGY] Ship Attack Order Hold-in-Range Band and Formation Offset Fix** → [[TODOs/Bugs/Attack_Order_Hold_In_Range_And_Formation_Offsets_AGY|Plan]]
 - [ ] **[AGY] Enemy AI Mid-Fight Base Defense at Level 3 and Difficulty Consistency** → [[TODOs/Bugs/Enemy_AI_Base_Defense_And_MidGame_Consistency_AGY|Plan]]
+- [ ] **Multiplayer connection analysis (client ships drag while rotating, client weapons fire slower; network status overlay from cheats)** → [[TODOs/Bugs/Multiplayer_Connection_Analysis]]
+  - 2026-11-22: plan created and re-validated from source + `Player.log` of 2026-11-21. Logs hold no network or pool numbers. Movement = leftover low-bandwidth design; weapon cause open (pool gate, late targets). Awaiting user go for Phase 1; nothing implemented.
+  - 2026-11-22: Phase 1 done (compiles, tests not run): Cheats ▸ Debug network status overlay, per-battle `BattleTelemetry/*_net.csv` on every online machine, release pool counters, `NetworkDebugStatsMessage`. Next: user plays the Phase 2 3v3 match and sends the CSVs.
 - [ ] **Weapon fire rate drops at low FPS (shots gated on visual projectile pool, 1 bolt/frame growth)** → [[TODOs/Bugs/Weapon_Fire_Rate_Low_FPS]]
   - 2026-11-18: cause from source after online battles 2026-11-17 (logs `Logs/OnlineBattles/20261117T1650Z/`). Nothing implemented; Phase 1 measurement next.
 - [ ] **Attack order: hold while in range, no run-away / map-edge legs** → [[TODOs/Bugs/Attack_Order_Hold_In_Range]]

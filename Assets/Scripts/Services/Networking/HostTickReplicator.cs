@@ -37,6 +37,7 @@ namespace EmpireAtWar.Services.Networking
         }
 
         public uint Tick => _clock.Tick;
+        public int EntityCount => _indices.Count;
 
         public bool TryGetIndex(long entityId, out ushort index) => _indices.TryGetIndex(entityId, out index);
 

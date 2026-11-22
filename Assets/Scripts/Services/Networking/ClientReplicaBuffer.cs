@@ -1,4 +1,5 @@
 using System.Collections.Generic;
+using EmpireAtWar.Services.Networking.Diagnostics;
 using EmpireAtWar.Services.Networking.Messages;
 using Mirror;
 
@@ -23,6 +24,7 @@ namespace EmpireAtWar.Services.Networking
         private double _localTimeline;
         private double _localTimescale = 1;
         private uint _lastTimelineTick;
+        private double _newestRemoteTime;
 
         public ClientReplicaBuffer()
         {
@@ -33,6 +35,9 @@ namespace EmpireAtWar.Services.Networking
         public double RenderTime => _localTimeline;
         public double BufferTime => NetworkTickSettings.TICK_INTERVAL * _settings.bufferTimeMultiplier;
         public uint LastReceivedTick { get; private set; }
+        /// <summary>Host time of the newest tick received; render time trails it by about <see cref="BufferTime"/>.</summary>
+        public double NewestRemoteTime => _newestRemoteTime;
+        public ClientReplicaStats Stats { get; } = new ClientReplicaStats();
         public int EntityCount => _tracks.Count;
 
         public IEnumerable<long> EntityIds => _tracks.Keys;
@@ -61,11 +66,15 @@ namespace EmpireAtWar.Services.Networking
         public void OnKeyframes(EntityKeyframesMessage message, double localTime)
         {
             AdvanceTimeline(message.Tick, message.Time, localTime);
+            Stats.RecordChunk(message.Tick, message.ChunkCount, message.Keyframes.Length);
             foreach (EntityKeyframe keyframe in message.Keyframes)
             {
                 // Unreliable keyframes can arrive before their reliable spawn; the next refresh repairs it.
-                if (_indices.TryGetEntityId(keyframe.Index, out long entityId))
-                    _tracks[entityId].Add(message.Time, EntityKeyframeCodec.Decode(keyframe));
+                if (!_indices.TryGetEntityId(keyframe.Index, out long entityId)) continue;
+                ClientKeyframeTrack track = _tracks[entityId];
+                EntityMotion motion = EntityKeyframeCodec.Decode(keyframe);
+                if (track.TryPredict(message.Time, out EntityMotion predicted)) Stats.RecordCorrection(motion, predicted);
+                track.Add(message.Time, motion);
             }
         }
 
@@ -73,6 +82,7 @@ namespace EmpireAtWar.Services.Networking
         {
             if (_timeline.Count == 0) return;
             SnapshotInterpolation.Step(_timeline, unscaledDeltaTime, ref _localTimeline, _localTimescale, out _, out _, out _);
+            Stats.RecordFrame(_newestRemoteTime - _localTimeline);
         }
 
         public bool TrySample(long entityId, out EntityMotion motion)
@@ -86,6 +96,7 @@ namespace EmpireAtWar.Services.Networking
         private void AdvanceTimeline(uint tick, double remoteTime, double localTime)
         {
             if (tick > LastReceivedTick) LastReceivedTick = tick;
+            if (remoteTime > _newestRemoteTime) _newestRemoteTime = remoteTime;
             if (tick == _lastTimelineTick) return;
             _lastTimelineTick = tick;
             SnapshotInterpolation.InsertAndAdjust(_timeline, _settings.bufferLimit,

@@ -5,10 +5,11 @@ namespace EmpireAtWar.Components.Weapon
 {
     public static class AttackSequenceDiagnostics
     {
+        /// <summary>Counted in every build: the network status overlay reports shots/s in release.</summary>
+        public static int EmittedShots { get; private set; }
 #if UNITY_EDITOR || DEVELOPMENT_BUILD
         public static int Starts { get; private set; }
         public static int RejectedBusyStarts { get; private set; }
-        public static int EmittedShots { get; private set; }
         public static int ScheduledImpacts { get; private set; }
         public static int AppliedImpacts { get; private set; }
         public static int CancelledImpacts { get; private set; }
@@ -110,12 +111,7 @@ namespace EmpireAtWar.Components.Weapon
 #endif
         }
 
-        public static void RecordEmittedShot()
-        {
-#if UNITY_EDITOR || DEVELOPMENT_BUILD
-            EmittedShots++;
-#endif
-        }
+        public static void RecordEmittedShot() => EmittedShots++;
 
         public static void RecordScheduledImpact()
         {
