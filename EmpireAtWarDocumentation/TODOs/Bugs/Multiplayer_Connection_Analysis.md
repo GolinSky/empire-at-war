@@ -101,7 +101,7 @@ Fix direction for 1 (decision needed): drive client fighters from the host root 
 ### Phase 1 — Done 2026-11-22
 
 - Toggle: Cheats (Ctrl+Shift+F12) ▸ Debug ▸ "Show network status (online battle)". Shown only online. Cheat panel = local player scope, no build guard → reachable on release clients.
-- CSV: `persistentDataPath/BattleTelemetry/<scene>_<yyyyMMdd_HHmmss>_net.csv`, 1 row/s, flushed per row, every online machine. Header comments: role, transport, build, `mirror_send_rate_hz`, tick rate, render delay target.
+- CSV: `persistentDataPath/BattleTelemetry/<scene>_<yyyyMMdd_HHmmss>_<role>_net.csv` (+ `_pools.csv`, `_links.csv`), 1 row/s, flushed per window, every online machine. Header comments: role, transport, build, `mirror_send_rate_hz`, tick rate, render delay target.
 - Shared columns: `begun, fps, frame_max_ms, shots_s, in/out_Bps, in/out_msgs_s`, `msg_<type>_s/_Bps` (keyframes, health, weapon_target, spawn, route, state, order_state, attack_target), `pool_waiting_shots, pool_oldest_wait_ms, pool_in_use, pool_total, pool_created_s, pool_blocked_attempts_s, pool_max_wait_ms`.
 - Host columns: `tick_rate, keyframes_s, keyframe_chunks_s, entities, clients, rtt_ms` (max), `steam_*` (worst over clients). Sends `NetworkDebugStatsMessage` 1 Hz reliable.
 - Client columns: `rtt_ms, rtt_sd_ms, steam_*, timeline_delay_ms, underruns_s, keyframes_s, keyframe_chunks_s, lost_chunks_s, corrections_s, correction_mean/max_m, correction_heading_mean/max_deg, entities, host_fps, host_tick_rate, host_shots_s, host_keyframe_chunks_s, host_entities, chunk_loss_pct, reliable_lag_ms, reliable_lag_max_ms`.
@@ -113,6 +113,13 @@ Fix direction for 1 (decision needed): drive client fighters from the host root 
 - Files: `Services/Networking/Diagnostics/*`, `Messages/NetworkDebugStatsMessage.cs`, `Entities/Cheats/Ui/NetworkStatusCheatPresenter.cs`, `ClientReplicaBuffer`, `ClientKeyframeTrack.TryPredict`, `NetworkTickService`, `HostTickReplicator.EntityCount`, `NetworkBattleRegistrations`, `EconomyModule`, `CheatView`/`ICheatView`.
 - Tests: new `NetworkDiagnosticsTests` (`Networking`); `CheatPresenterTests` fake updated. Reviewed, no change: `NetworkTickReplicationTests`, `ShotEffectPoolLifecycleTests`. Not run (local override).
 - Reusable guidance: none extracted yet; record measured results here in Phase 2.
+- Source review 2026-11-22 (commit `dff5d8082`; nothing run): wiring, column consistency, Mirror counters in release, Steam status on client (`UseTransport(_fizzy)`) and host (`MultiplexTransport.OriginalId`) check out; last Editor compile succeeded after the commit. Gaps, all closed 2026-11-22 (Editor compile clean, tests not run):
+  - [x] D1 not collected → client columns `squadrons, squadron_drift_mean_m, squadron_drift_max_m, squadrons_beyond_loiter` + overlay line. Drift = horizontal distance host pose (`ClientReplicaBuffer.TrySample`) ↔ local fighter centroid (`ISquadronFighterSpreadFacade` → `SquadronFlightModel.GetCentroid`); beyond = drift > `SquadronData.LoiterRadius`. Sampled once per window over all live replica squadrons (mean/max over squadrons, not over frames).
+  - [x] Starving pool overlay-only → new columns `pool_ships_waiting, pool_fighters_waiting, pool_starving` + `<stem>_pools.csv` (1 row/s per pool with a salvo waiting: prefab, ships/fighters, waiting, in use, total, runtime created, oldest/max wait ms). `ShotPoolStats` owns the aggregation.
+  - [x] Per-client links overlay-only → `<stem>_links.csv` (1 row/s per connection, host: every loaded client, client: `Host`; rtt + all `steam_*`, empty on KCP). Roles return `NetworkLinkSample`s; the collector writes overlay lines and rows.
+  - [x] `pool_max_wait_ms` since start → per window (`ShotEffectCache.TakeWindowMaxAdmissionWaitSeconds`).
+  - [x] CSV errors / name clash → `NetworkStatsFiles`: stem = `<scene>_<yyyyMMdd_HHmmss>_<role>`, `_net.csv` opened `CreateNew`, taken stem → `_2`, `_3`…; IO/permission error → one `Debug.LogError`, CSV stops, overlay keeps running.
+  - [x] Tests (`NetworkDiagnosticsTests`, `Networking`): traffic counter (`RecordIn/RecordOut`), Steam worst-link aggregate, squadron drift math, pool stats ships/fighters split, file naming + rows, uncreatable folder, client column stability. `HostNetworkStats` still untested (needs `NetworkTickService` + `OnlineMatchService` + Mirror server).
 
 ### Phase 1 — original spec
 
@@ -173,6 +180,7 @@ Weapons:
 - [ ] Phase 2: 3v3 Steam match + one KCP client; record numbers here.
 - [x] Mirror `sendRate`: not set on `OnlineNetworkManager` → `NetworkManager` default 60 Hz (source). CSV header records the runtime value.
 - [ ] Steam send rate: read `steam_send_rate_Bps` from the Phase 2 CSV (runtime value, not yet seen).
-- [ ] D1: **measure first (user, 2026-11-22)** — no fighter-anchoring fix until the overlay/CSV shows root ↔ local fighter centroid distance (max and mean per second, client only). Confirmed if it stays above the squadron's loiter radius after host move orders.
+- [x] Phase 1 review gaps closed (D1 drift columns, pools/links CSV, per-window max wait, guarded unique files, tests) — 2026-11-22, compile clean, tests not run.
+- [ ] D1: **measure first (user, 2026-11-22)** — no fighter-anchoring fix until the Phase 2 client CSV shows `squadron_drift_*`. Confirmed if `squadrons_beyond_loiter` stays > 0 after host move orders.
 - [ ] D2/D4 checks.
 - [ ] Phase 3: user picks movement approach (B recommended) and weapon fix from the table.

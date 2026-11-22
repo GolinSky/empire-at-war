@@ -25,7 +25,8 @@ namespace EmpireAtWar.Services.Networking.Diagnostics
             _online = online;
         }
 
-        public void Collect(NetworkStatsRow row, List<string> details, NetworkStatsWindow window)
+        public void Collect(NetworkStatsRow row, List<string> details, List<NetworkLinkSample> links,
+            NetworkStatsWindow window)
         {
             float seconds = window.Seconds;
             float tickRate = (_ticks.CurrentTick - _lastTick) / seconds;
@@ -50,7 +51,7 @@ namespace EmpireAtWar.Services.Networking.Diagnostics
                 bool hasSteam = NetworkLinkProbe.TryGetServerSteamStatus(connection.connectionId,
                     out SteamNetConnectionRealTimeStatus_t status);
                 if (hasSteam) _steam.Add(status);
-                details.Add(SteamLinkAggregate.FormatLink($"Client {connection.connectionId}", rtt, hasSteam, status));
+                links.Add(new NetworkLinkSample($"Client {connection.connectionId}", rtt, hasSteam, status));
             }
             row.Set("clients", clients);
             row.Set("rtt_ms", rttMax);

@@ -15,16 +15,15 @@ namespace EmpireAtWar.Services.Networking.Diagnostics
 {
     /// <summary>
     /// Online battles, host and client: once per second collects FPS, shots, Mirror traffic per message type,
-    /// projectile pool admission and the role's numbers; appends a row to
-    /// persistentDataPath/BattleTelemetry/&lt;scene&gt;_&lt;time&gt;_net.csv and publishes overlay lines.
-    /// Runs whether or not the overlay is visible.
+    /// projectile pool admission, connection links and the role's numbers; appends rows to
+    /// persistentDataPath/BattleTelemetry/&lt;scene&gt;_&lt;time&gt;_&lt;role&gt;_{net,pools,links}.csv
+    /// (<see cref="NetworkStatsFiles"/>) and publishes overlay lines. Runs whether or not the overlay is visible.
     /// </summary>
     public sealed class NetworkStatsCollector : IInitializable, ITickable, ILateDisposable
     {
         private const float WINDOW_SECONDS = 1f;
         private const string FOLDER = "BattleTelemetry";
         private const int TOP_MESSAGE_TYPES = 6;
-        private const int POOL_LINES = 6;
         private const int GRID_COLUMNS = 3;
 
         private static readonly (Type Type, string Messages, string Bytes)[] TRACKED_MESSAGES =
@@ -41,8 +40,6 @@ namespace EmpireAtWar.Services.Networking.Diagnostics
 
         private static readonly Comparison<MessageTraffic> BY_BYTES = (left, right) =>
             (right.InBytes + right.OutBytes).CompareTo(left.InBytes + left.OutBytes);
-        private static readonly Comparison<ShotEffectCache> BY_WAITING = (left, right) =>
-            right.WaitingCount.CompareTo(left.WaitingCount);
 
         private readonly INetworkRoleStats _role;
         private readonly NetworkStatusModel _model;
@@ -50,18 +47,17 @@ namespace EmpireAtWar.Services.Networking.Diagnostics
         private readonly OnlineMatchService _online;
         private readonly NetworkStatsRow _row = new NetworkStatsRow();
         private readonly List<string> _details = new List<string>();
+        private readonly List<NetworkLinkSample> _links = new List<NetworkLinkSample>();
         private readonly List<MessageTraffic> _sortedTypes = new List<MessageTraffic>();
-        private readonly List<ShotEffectCache> _waitingPools = new List<ShotEffectCache>();
+        private readonly ShotPoolStats _poolStats = new ShotPoolStats();
         private NetworkTrafficCounter _traffic;
-        private NetworkStatsCsvWriter _writer;
+        private NetworkStatsFiles _files;
         private string _title;
         private float _startTime;
         private float _elapsed;
         private float _maxFrame;
         private int _frames;
         private int _lastShots;
-        private int _lastPoolCreated;
-        private int _lastPoolBlocked;
 
         public NetworkStatsCollector(INetworkRoleStats role, NetworkStatusModel model, ShotPoolPrewarmer pools,
             OnlineMatchService online)
@@ -72,7 +68,8 @@ namespace EmpireAtWar.Services.Networking.Diagnostics
             _online = online;
         }
 
-        public string CsvPath { get; private set; }
+        /// <summary>The _net.csv path; null when the files could not be created.</summary>
+        public string CsvPath => _files.StatsPath;
 
         public void Initialize()
         {
@@ -83,9 +80,6 @@ namespace EmpireAtWar.Services.Networking.Diagnostics
             bool host = _online.Role == OnlineRole.Host;
             _title = $"{_online.Role} · {transport} · build {Application.version}";
             string scene = SceneManager.GetActiveScene().name;
-            CsvPath = Path.Combine(Application.persistentDataPath, FOLDER,
-                $"{scene}_{DateTime.Now:yyyyMMdd_HHmmss}_net.csv");
-            Directory.CreateDirectory(Path.GetDirectoryName(CsvPath));
             var comments = new List<KeyValuePair<string, string>>
             {
                 new KeyValuePair<string, string>("role", _online.Role.ToString()),
@@ -99,7 +93,8 @@ namespace EmpireAtWar.Services.Networking.Diagnostics
                 new KeyValuePair<string, string>("render_delay_target_ms",
                     (NetworkTickSettings.TICK_INTERVAL * NetworkTickSettings.INTERPOLATION_BUFFER_TICKS * 1000f).ToString("0", CultureInfo.InvariantCulture)),
             };
-            _writer = new NetworkStatsCsvWriter(new StreamWriter(CsvPath), comments);
+            _files = NetworkStatsFiles.Open(Path.Combine(Application.persistentDataPath, FOLDER),
+                $"{scene}_{DateTime.Now:yyyyMMdd_HHmmss}_{_online.Role}", comments);
         }
 
         public void Tick()
@@ -118,7 +113,7 @@ namespace EmpireAtWar.Services.Networking.Diagnostics
         public void LateDispose()
         {
             _traffic.Dispose();
-            _writer.Dispose();
+            _files.Dispose();
         }
 
         private void Collect()
@@ -130,15 +125,24 @@ namespace EmpireAtWar.Services.Networking.Diagnostics
 
             _row.Begin();
             _details.Clear();
+            _links.Clear();
             _row.Set("begun", _online.HasBegun ? 1 : 0);
             _row.Set("fps", window.Fps);
             _row.Set("frame_max_ms", _maxFrame * 1000f);
             _row.Set("shots_s", window.ShotsPerSecond);
             CollectTraffic(seconds);
-            CollectPools(seconds);
-            _role.Collect(_row, _details, window);
+            _poolStats.Collect(_pools.Caches, seconds, _row, _details);
+            _role.Collect(_row, _details, _links, window);
             _row.End();
-            _writer.Write(Time.unscaledTime - _startTime, _row);
+            double battleSeconds = Time.unscaledTime - _startTime;
+            _files.WriteStats(battleSeconds, _row);
+            foreach (ShotPoolSample pool in _poolStats.WaitingPools) _files.WritePool(battleSeconds, pool);
+            foreach (NetworkLinkSample link in _links)
+            {
+                _details.Add(SteamLinkAggregate.FormatLink(link));
+                _files.WriteLink(battleSeconds, link);
+            }
+            _files.Flush();
             _traffic.ResetWindow();
             _model.Publish(BuildLines());
         }
@@ -169,52 +173,6 @@ namespace EmpireAtWar.Services.Networking.Diagnostics
                     "{0}: in {1:0}/s {2:0.0} KiB/s, out {3:0}/s {4:0.0} KiB/s", traffic.Name,
                     traffic.InMessages / seconds, traffic.InBytes / seconds / 1024f,
                     traffic.OutMessages / seconds, traffic.OutBytes / seconds / 1024f));
-            }
-        }
-
-        private void CollectPools(float seconds)
-        {
-            int waiting = 0, inUse = 0, total = 0, created = 0, blocked = 0;
-            float oldestWait = 0f, maxWait = 0f;
-            _waitingPools.Clear();
-            foreach (ShotEffectCache cache in _pools.Caches)
-            {
-                waiting += cache.WaitingCount;
-                inUse += cache.InUseCount;
-                total += cache.TotalCount;
-                created += cache.RuntimeCreated;
-                blocked += cache.AdmissionWaits;
-                oldestWait = Mathf.Max(oldestWait, cache.OldestPendingWaitSeconds);
-                maxWait = Mathf.Max(maxWait, cache.MaxAdmissionWaitSeconds);
-                if (cache.WaitingCount > 0) _waitingPools.Add(cache);
-            }
-
-            // A battle restart clears the caches; never report negative growth.
-            _row.Set("pool_waiting_shots", waiting);
-            _row.Set("pool_oldest_wait_ms", oldestWait * 1000f);
-            _row.Set("pool_in_use", inUse);
-            _row.Set("pool_total", total);
-            _row.Set("pool_created_s", Math.Max(0, created - _lastPoolCreated) / seconds);
-            _row.Set("pool_blocked_attempts_s", Math.Max(0, blocked - _lastPoolBlocked) / seconds);
-            _row.Set("pool_max_wait_ms", maxWait * 1000f);
-            _lastPoolCreated = created;
-            _lastPoolBlocked = blocked;
-
-            if (_waitingPools.Count == 0)
-            {
-                _details.Add("Pools: no salvo waiting for a projectile.");
-                return;
-            }
-            _waitingPools.Sort(BY_WAITING);
-            int count = Math.Min(POOL_LINES, _waitingPools.Count);
-            for (int i = 0; i < count; i++)
-            {
-                ShotEffectCache cache = _waitingPools[i];
-                _details.Add(string.Format(CultureInfo.InvariantCulture,
-                    "Pool {0} ({1}): waiting {2}, in use {3}/{4}, created at runtime {5}, oldest wait {6:0.00} s, max wait {7:0.00} s",
-                    cache.PrefabName, cache.IsStrikecraftGroup ? "fighters" : "ships", cache.WaitingCount,
-                    cache.InUseCount, cache.TotalCount, cache.RuntimeCreated, cache.OldestPendingWaitSeconds,
-                    cache.MaxAdmissionWaitSeconds));
             }
         }
 

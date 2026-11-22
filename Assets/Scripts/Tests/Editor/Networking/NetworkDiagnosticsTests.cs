@@ -1,10 +1,18 @@
 using System;
 using System.Collections.Generic;
 using System.IO;
+using System.Text.RegularExpressions;
+using EmpireAtWar.Components.AttackComponent;
+using EmpireAtWar.Entities.BaseEntity;
 using EmpireAtWar.Services.Networking;
 using EmpireAtWar.Services.Networking.Diagnostics;
+using EmpireAtWar.Services.Networking.Messages;
+using EmpireAtWar.ViewComponents.Weapon;
 using NUnit.Framework;
+using Steamworks;
+using UnityEditor;
 using UnityEngine;
+using UnityEngine.TestTools;
 
 namespace EmpireAtWar.Tests.Editor
 {
@@ -125,6 +133,213 @@ namespace EmpireAtWar.Tests.Editor
             var online = new NetworkStatusModel(true);
             online.SetVisible(true);
             Assert.That(online.IsVisible, Is.True);
+        }
+
+        [Test]
+        public void TrafficCounter_CountsEveryCopyAndResetsPerWindow()
+        {
+            using var traffic = new NetworkTrafficCounter();
+            traffic.RecordOut(typeof(EntityKeyframesMessage), 3, 100);
+            traffic.RecordOut(typeof(EntityKeyframesMessage), 1, 50);
+            traffic.RecordIn(typeof(EntityHealthMessage), 1, 20);
+
+            Assert.That(traffic.OutMessages, Is.EqualTo(4));
+            Assert.That(traffic.OutBytes, Is.EqualTo(350));
+            Assert.That(traffic.InMessages, Is.EqualTo(1));
+            Assert.That(traffic.InBytes, Is.EqualTo(20));
+            MessageTraffic keyframes = traffic.Get(typeof(EntityKeyframesMessage));
+            Assert.That(keyframes.OutMessages, Is.EqualTo(4));
+            Assert.That(keyframes.OutBytes, Is.EqualTo(350));
+            Assert.That(keyframes.InMessages, Is.Zero);
+
+            traffic.ResetWindow();
+            Assert.That(traffic.OutBytes, Is.Zero);
+            Assert.That(traffic.InMessages, Is.Zero);
+            Assert.That(keyframes.OutMessages, Is.Zero, "Per-type counters restart with the window too.");
+        }
+
+        [Test]
+        public void SteamLinks_KeepWorstLinkAndSumTraffic()
+        {
+            var steam = new SteamLinkAggregate();
+            var row = new NetworkStatsRow();
+            steam.Reset();
+            steam.Add(Status(ping: 40, quality: 0.99f, outBytes: 1000f, pending: 10));
+            steam.Add(Status(ping: 120, quality: 0.9f, outBytes: 500f, pending: 300));
+            row.Begin();
+            steam.WriteTo(row);
+            row.End();
+
+            Assert.That(Value(row, "steam_links"), Is.EqualTo(2));
+            Assert.That(Value(row, "steam_ping_ms"), Is.EqualTo(120));
+            Assert.That(Value(row, "steam_quality_local"), Is.EqualTo(0.9).Within(TOLERANCE));
+            Assert.That(Value(row, "steam_out_Bps"), Is.EqualTo(1500));
+            Assert.That(Value(row, "steam_pending_reliable_B"), Is.EqualTo(300));
+
+            steam.Reset();
+            row.Begin();
+            steam.WriteTo(row);
+            row.End();
+            Assert.That(Value(row, "steam_links"), Is.Zero);
+            Assert.That(double.IsNaN(Value(row, "steam_ping_ms")), "Direct IP links leave Steam columns empty.");
+        }
+
+        [Test]
+        public void SquadronDrift_ReportsMeanMaxAndSquadronsBeyondLoiter()
+        {
+            var drift = new SquadronDriftStats();
+            Assert.That(double.IsNaN(drift.Mean));
+
+            drift.Add(10f, 18f);
+            drift.Add(50f, 18f);
+            drift.Add(30f, 40f);
+
+            Assert.That(drift.Count, Is.EqualTo(3));
+            Assert.That(drift.Mean, Is.EqualTo(30.0).Within(TOLERANCE));
+            Assert.That(drift.Max, Is.EqualTo(50f).Within(TOLERANCE));
+            Assert.That(drift.BeyondLoiter, Is.EqualTo(1));
+
+            drift.Reset();
+            Assert.That(drift.Count, Is.Zero);
+            Assert.That(drift.BeyondLoiter, Is.Zero);
+        }
+
+        [Test]
+        public void PoolStats_SplitsShipAndFighterWaitsAndListsStarvingPools()
+        {
+            var weapons = AssetDatabase.LoadAssetAtPath<WeaponsData>("Assets/Settings/Data/Models/Weapon/WeaponsData.asset");
+            WeaponProfile profile = WeaponProfileFactory.Create(new WeaponDefinition(), weapons.GetFamily(WeaponFamily.Torpedo),
+                weapons.GetCaliber(WeaponCaliber.Medium), weapons.GetMount(WeaponMount.Single));
+            var prewarmer = new ShotPoolPrewarmer();
+            ShotEffectPool ship = prewarmer.CreatePool(profile, null, _ => { }, null, null, 1000);
+            ShotEffectPool fighter = prewarmer.CreatePool(profile, null, _ => { }, null, null, 1000, true);
+            try
+            {
+                ship.Prewarm(1);
+                fighter.Prewarm(1);
+                Assert.That(ship.TryReserveSalvo(2), Is.False);
+                Assert.That(fighter.TryReserveSalvo(3), Is.False);
+
+                var stats = new ShotPoolStats();
+                var row = new NetworkStatsRow();
+                var details = new List<string>();
+                row.Begin();
+                stats.Collect(prewarmer.Caches, 1f, row, details);
+                row.End();
+
+                Assert.That(Value(row, "pool_waiting_shots"), Is.EqualTo(5));
+                Assert.That(Value(row, "pool_ships_waiting"), Is.EqualTo(2));
+                Assert.That(Value(row, "pool_fighters_waiting"), Is.EqualTo(3));
+                Assert.That(Value(row, "pool_starving"), Is.EqualTo(2));
+                Assert.That(stats.WaitingPools.Count, Is.EqualTo(2));
+                Assert.That(stats.WaitingPools[0].IsFighters, Is.True, "Most waiting shots first.");
+                Assert.That(details.Count, Is.EqualTo(2));
+
+                ship.CancelReservation();
+                fighter.CancelReservation();
+                details.Clear();
+                row.Begin();
+                stats.Collect(prewarmer.Caches, 1f, row, details);
+                row.End();
+                Assert.That(Value(row, "pool_starving"), Is.Zero);
+                Assert.That(stats.WaitingPools, Is.Empty);
+            }
+            finally { prewarmer.Clear(); }
+        }
+
+        [Test]
+        public void StatsFiles_SecondInstanceInTheSameSecondGetsItsOwnFiles()
+        {
+            string folder = Path.Combine(Path.GetTempPath(), "EawNetStats_" + Guid.NewGuid().ToString("N"));
+            var comments = new List<KeyValuePair<string, string>>();
+            NetworkStatsFiles first = NetworkStatsFiles.Open(folder, "Battle_20261122_120000_Client", comments);
+            NetworkStatsFiles second = NetworkStatsFiles.Open(folder, "Battle_20261122_120000_Client", comments);
+            try
+            {
+                Assert.That(first.IsWriting && second.IsWriting);
+                Assert.That(Path.GetFileName(second.StatsPath), Is.EqualTo("Battle_20261122_120000_Client_2_net.csv"));
+
+                first.WritePool(1.0, new ShotPoolSample("Laser,Red", false, 4, 10, 12, 2, 0.5f, 0.25f));
+                first.WriteLink(1.0, new NetworkLinkSample("Host", 42.0, false, default));
+                first.Flush();
+            }
+            finally
+            {
+                first.Dispose();
+                second.Dispose();
+            }
+
+            try
+            {
+                string[] pools = File.ReadAllLines(Path.Combine(folder, "Battle_20261122_120000_Client_pools.csv"));
+                Assert.That(pools[1], Is.EqualTo("1.0,Laser Red,ships,4,10,12,2,500,250"));
+                string[] links = File.ReadAllLines(Path.Combine(folder, "Battle_20261122_120000_Client_links.csv"));
+                Assert.That(links[1].Split(',').Length, Is.EqualTo(links[0].Split(',').Length),
+                    "A direct IP link still fills every column.");
+            }
+            finally { Directory.Delete(folder, true); }
+        }
+
+        [Test]
+        public void StatsFiles_UncreatableFolderDisablesTheCsvWithOneError()
+        {
+            // A file where the folder should be: Directory.CreateDirectory fails with IOException.
+            string blocker = Path.GetTempFileName();
+            try
+            {
+                LogAssert.Expect(LogType.Error, new Regex("Battle network CSV disabled"));
+                NetworkStatsFiles files = NetworkStatsFiles.Open(blocker, "Battle", new List<KeyValuePair<string, string>>());
+
+                Assert.That(files.IsWriting, Is.False);
+                Assert.That(files.StatsPath, Is.Null);
+                var row = new NetworkStatsRow();
+                row.Begin();
+                row.Set("fps", 60);
+                row.End();
+                files.WriteStats(1.0, row);
+                files.Dispose();
+            }
+            finally { File.Delete(blocker); }
+        }
+
+        [Test]
+        public void ClientStats_KeepsTheSameColumnsBeforeHostStatsAndSquadronsArrive()
+        {
+            var stats = new ClientNetworkStats(new ClientReplicaBuffer(), new EntityLocator());
+            var row = new NetworkStatsRow();
+            var details = new List<string>();
+            var links = new List<NetworkLinkSample>();
+
+            for (int window = 0; window < 2; window++)
+            {
+                row.Begin();
+                stats.Collect(row, details, links, new NetworkStatsWindow(1f, 60f, 10f));
+                row.End();
+            }
+
+            Assert.That(Value(row, "squadrons"), Is.Zero);
+            Assert.That(double.IsNaN(Value(row, "squadron_drift_max_m")));
+            Assert.That(double.IsNaN(Value(row, "host_fps")));
+            Assert.That(links.Count, Is.EqualTo(2), "One host link per window.");
+            Assert.That(links[0].Label, Is.EqualTo("Host"));
+        }
+
+        private static SteamNetConnectionRealTimeStatus_t Status(int ping, float quality, float outBytes, int pending) =>
+            new SteamNetConnectionRealTimeStatus_t
+            {
+                m_nPing = ping,
+                m_flConnectionQualityLocal = quality,
+                m_flConnectionQualityRemote = quality,
+                m_flOutBytesPerSec = outBytes,
+                m_nSendRateBytesPerSecond = 100000,
+                m_cbPendingReliable = pending
+            };
+
+        private static double Value(NetworkStatsRow row, string name)
+        {
+            for (int i = 0; i < row.Count; i++)
+                if (row.GetName(i) == name) return row.GetValue(i);
+            throw new ArgumentException($"No column '{name}'.");
         }
     }
 }

@@ -18,6 +18,7 @@ namespace EmpireAtWar.ViewComponents.Weapon
         private readonly LinkedList<ShotEffectPool> _waiting = new LinkedList<ShotEffectPool>();
         private int _reservedCount;
         private int _waitingCount;
+        private float _windowMaxAdmissionWaitSeconds;
 #if UNITY_EDITOR || DEVELOPMENT_BUILD
         private readonly ProfilerMarker _instantiateMarker;
         private readonly ProfilerMarker _prewarmMarker;
@@ -92,6 +93,15 @@ namespace EmpireAtWar.ViewComponents.Weapon
             float seconds = Mathf.Max(0f, Time.time - pool.AdmissionStartedAt);
             TotalAdmissionWaitSeconds += seconds;
             MaxAdmissionWaitSeconds = Mathf.Max(MaxAdmissionWaitSeconds, seconds);
+            _windowMaxAdmissionWaitSeconds = Mathf.Max(_windowMaxAdmissionWaitSeconds, seconds);
+        }
+
+        /// <summary>Longest finished admission wait since the previous call (network status window), then resets.</summary>
+        public float TakeWindowMaxAdmissionWaitSeconds()
+        {
+            float seconds = _windowMaxAdmissionWaitSeconds;
+            _windowMaxAdmissionWaitSeconds = 0f;
+            return seconds;
         }
 
         public int RegisterCapacity(int capacity)

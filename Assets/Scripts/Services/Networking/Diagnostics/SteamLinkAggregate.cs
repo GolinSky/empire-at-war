@@ -68,10 +68,11 @@ namespace EmpireAtWar.Services.Networking.Diagnostics
             row.Set("steam_queue_ms", any ? _queueMaxMs : double.NaN);
         }
 
-        public static string FormatLink(string label, double rttMs, bool hasSteam, in SteamNetConnectionRealTimeStatus_t status)
+        public static string FormatLink(in NetworkLinkSample link)
         {
-            string rtt = $"{label}: rtt {rttMs.ToString("0", CultureInfo.InvariantCulture)} ms";
-            if (!hasSteam) return rtt + ", no Steam link status (direct IP)";
+            string rtt = $"{link.Label}: rtt {link.RttMs.ToString("0", CultureInfo.InvariantCulture)} ms";
+            if (!link.HasSteam) return rtt + ", no Steam link status (direct IP)";
+            SteamNetConnectionRealTimeStatus_t status = link.Status;
             return rtt + string.Format(CultureInfo.InvariantCulture,
                 ", Steam ping {0} ms, quality {1:0.###}/{2:0.###}, out {3:0.0} KiB/s, in {4:0.0} KiB/s, rate {5:0} KiB/s, pending rel {6} B / unrel {7} B, unacked {8} B, queue {9:0.0} ms",
                 status.m_nPing, status.m_flConnectionQualityLocal, status.m_flConnectionQualityRemote,

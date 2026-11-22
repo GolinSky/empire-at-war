@@ -47,20 +47,25 @@ namespace EmpireAtWar.Services.Networking.Diagnostics
         }
 
         // count = connections the message went to; bytes are per copy.
-        private void OnOut(NetworkDiagnostics.MessageInfo info)
+        private void OnOut(NetworkDiagnostics.MessageInfo info) => RecordOut(info.message.GetType(), info.count, info.bytes);
+
+        private void OnIn(NetworkDiagnostics.MessageInfo info) => RecordIn(info.message.GetType(), info.count, info.bytes);
+
+        /// <summary>One sent message: <paramref name="bytesPerCopy"/> went to <paramref name="copies"/> connections.</summary>
+        public void RecordOut(Type type, int copies, int bytesPerCopy)
         {
-            long bytes = (long)info.bytes * info.count;
-            OutMessages += info.count;
+            long bytes = (long)bytesPerCopy * copies;
+            OutMessages += copies;
             OutBytes += bytes;
-            Get(info.message.GetType()).AddOut(info.count, bytes);
+            Get(type).AddOut(copies, bytes);
         }
 
-        private void OnIn(NetworkDiagnostics.MessageInfo info)
+        public void RecordIn(Type type, int copies, int bytesPerCopy)
         {
-            long bytes = (long)info.bytes * info.count;
-            InMessages += info.count;
+            long bytes = (long)bytesPerCopy * copies;
+            InMessages += copies;
             InBytes += bytes;
-            Get(info.message.GetType()).AddIn(info.count, bytes);
+            Get(type).AddIn(copies, bytes);
         }
     }
 }

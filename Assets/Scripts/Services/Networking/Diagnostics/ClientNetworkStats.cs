@@ -1,10 +1,13 @@
 using System;
 using System.Collections.Generic;
 using System.Globalization;
+using EmpireAtWar.Entities.BaseEntity;
+using EmpireAtWar.Entities.Squadrons.EntityFacades;
 using EmpireAtWar.Lifecycle;
 using EmpireAtWar.Services.Networking.Messages;
 using Mirror;
 using Steamworks;
+using UnityEngine;
 
 namespace EmpireAtWar.Services.Networking.Diagnostics
 {
@@ -12,23 +15,31 @@ namespace EmpireAtWar.Services.Networking.Diagnostics
     /// Client columns: host link, render timeline, keyframe arrival and correction size, and the host's own
     /// numbers from <see cref="NetworkDebugStatsMessage"/>. Reliable lag = newest unreliable keyframe time minus
     /// the reliable message's send time (same host clock): how far the ordered reliable stream trails.
+    /// Squadron drift = horizontal host pose vs local fighter centroid (see <see cref="SquadronDriftStats"/>).
     /// </summary>
     public sealed class ClientNetworkStats : INetworkRoleStats, IInitializable, ILateDisposable
     {
         private readonly ClientReplicaBuffer _replica;
+        private readonly IEntityLocator _entities;
         private readonly SteamLinkAggregate _steam = new SteamLinkAggregate();
+        private readonly SquadronDriftStats _drift = new SquadronDriftStats();
         private NetworkDebugStatsMessage _host;
         private bool _hasHost;
         private double _lagLast = double.NaN;
         private double _lagMax = double.NaN;
 
-        public ClientNetworkStats(ClientReplicaBuffer replica) => _replica = replica;
+        public ClientNetworkStats(ClientReplicaBuffer replica, IEntityLocator entities)
+        {
+            _replica = replica;
+            _entities = entities;
+        }
 
         public void Initialize() => NetworkClient.RegisterHandler<NetworkDebugStatsMessage>(OnHostStats);
 
         public void LateDispose() => NetworkClient.UnregisterHandler<NetworkDebugStatsMessage>();
 
-        public void Collect(NetworkStatsRow row, List<string> details, NetworkStatsWindow window)
+        public void Collect(NetworkStatsRow row, List<string> details, List<NetworkLinkSample> links,
+            NetworkStatsWindow window)
         {
             float seconds = window.Seconds;
             double rtt = NetworkTime.rtt * 1000.0;
@@ -38,7 +49,7 @@ namespace EmpireAtWar.Services.Networking.Diagnostics
             bool hasSteam = NetworkLinkProbe.TryGetClientSteamStatus(out SteamNetConnectionRealTimeStatus_t status);
             if (hasSteam) _steam.Add(status);
             _steam.WriteTo(row);
-            details.Add(SteamLinkAggregate.FormatLink("Host", rtt, hasSteam, status));
+            links.Add(new NetworkLinkSample("Host", rtt, hasSteam, status));
 
             ClientReplicaStats stats = _replica.Stats;
             float chunks = stats.Chunks / seconds;
@@ -54,6 +65,7 @@ namespace EmpireAtWar.Services.Networking.Diagnostics
             row.Set("correction_heading_max_deg", stats.Corrections > 0 ? stats.HeadingErrorMax : double.NaN);
             row.Set("entities", _replica.EntityCount);
             stats.ResetWindow();
+            CollectSquadronDrift(row, details);
 
             row.Set("host_fps", _hasHost ? _host.HostFps : double.NaN);
             row.Set("host_tick_rate", _hasHost ? _host.TickRate : double.NaN);
@@ -71,6 +83,29 @@ namespace EmpireAtWar.Services.Networking.Diagnostics
                 : "No host stats received yet.");
             _lagLast = double.NaN;
             _lagMax = double.NaN;
+        }
+
+        private void CollectSquadronDrift(NetworkStatsRow row, List<string> details)
+        {
+            _drift.Reset();
+            foreach (long entityId in _replica.EntityIds)
+            {
+                if (!_entities.TryGetEntity(entityId, out IEntity entity) || entity.HealthModel.IsDestroyed ||
+                    !entity.TryGetFacade(out ISquadronFighterSpreadFacade squadron) ||
+                    !_replica.TrySample(entityId, out EntityMotion host)) continue;
+                Vector3 offset = squadron.FighterCentroid - host.Position;
+                offset.y = 0f;
+                _drift.Add(offset.magnitude, squadron.LoiterRadius);
+            }
+            bool any = _drift.Count > 0;
+            row.Set("squadrons", _drift.Count);
+            row.Set("squadron_drift_mean_m", _drift.Mean);
+            row.Set("squadron_drift_max_m", any ? _drift.Max : double.NaN);
+            row.Set("squadrons_beyond_loiter", _drift.BeyondLoiter);
+            if (any)
+                details.Add(string.Format(CultureInfo.InvariantCulture,
+                    "Squadron drift (host pose vs local fighters): mean {0:0} m, max {1:0} m, {2}/{3} beyond loiter radius",
+                    _drift.Mean, _drift.Max, _drift.BeyondLoiter, _drift.Count));
         }
 
         private void OnHostStats(NetworkDebugStatsMessage message)

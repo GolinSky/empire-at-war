@@ -28,7 +28,7 @@ namespace EmpireAtWar.Presenters.Cheats
         {
             _model.SetVisible(visible);
             _view.SetStatus(visible
-                ? "Network status on. Every online battle also writes BattleTelemetry/<scene>_<time>_net.csv."
+                ? "Network status on. Every online battle also writes BattleTelemetry/<scene>_<time>_<role>_net.csv (+ _pools, _links)."
                 : "Network status off.");
         }
     }
