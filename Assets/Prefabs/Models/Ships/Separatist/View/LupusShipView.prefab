@@ -1199,7 +1199,7 @@ Transform:
   serializedVersion: 2
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
   m_LocalPosition: {x: 0, y: 0, z: 0}
-  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_LocalScale: {x: 0.30332917, y: 0.30332917, z: 0.30332917}
   m_ConstrainProportionsScale: 0
   m_Children:
   - {fileID: 6911527422113049242}
@@ -1683,7 +1683,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::EmpireAtWar.ViewComponents.Health.HardPoint
   spawnDestroyedExplosion: 1
   destroyedVfxAnchor: {fileID: 4797757794287226915}
-  destroyedVfxScale: 1.5
+  destroyedVfxScale: 0.45499375
   unlockLevel: 1
   healthOverride: 0
   healthWeight: 1
@@ -1809,7 +1809,7 @@ PrefabInstance:
     - target: {fileID: 8971924557341600259, guid: 16cdd29a8d92d99448cff88dd410a464,
         type: 3}
       propertyPath: m_Parameters.widthMultiplier
-      value: 3.1
+      value: 0.9403204
       objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
@@ -1840,6 +1840,11 @@ PrefabInstance:
         type: 3}
       propertyPath: unlockLevel
       value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 1396921986716529170, guid: 23702bc0e5303b740b61f1b451630b85,
+        type: 3}
+      propertyPath: destroyedVfxScale
+      value: 0.30332917
       objectReference: {fileID: 0}
     - target: {fileID: 1396921986716529170, guid: 23702bc0e5303b740b61f1b451630b85,
         type: 3}
@@ -1969,6 +1974,11 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 1396921986716529170, guid: 23702bc0e5303b740b61f1b451630b85,
         type: 3}
+      propertyPath: destroyedVfxScale
+      value: 0.30332917
+      objectReference: {fileID: 0}
+    - target: {fileID: 1396921986716529170, guid: 23702bc0e5303b740b61f1b451630b85,
+        type: 3}
       propertyPath: <Id>k__BackingField
       value: 3
       objectReference: {fileID: 0}
@@ -2090,6 +2100,11 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 1396921986716529170, guid: 23702bc0e5303b740b61f1b451630b85,
         type: 3}
+      propertyPath: destroyedVfxScale
+      value: 0.30332917
+      objectReference: {fileID: 0}
+    - target: {fileID: 1396921986716529170, guid: 23702bc0e5303b740b61f1b451630b85,
+        type: 3}
       propertyPath: <Id>k__BackingField
       value: 2
       objectReference: {fileID: 0}
@@ -2208,6 +2223,11 @@ PrefabInstance:
         type: 3}
       propertyPath: unlockLevel
       value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 1396921986716529170, guid: 23702bc0e5303b740b61f1b451630b85,
+        type: 3}
+      propertyPath: destroyedVfxScale
+      value: 0.30332917
       objectReference: {fileID: 0}
     - target: {fileID: 1396921986716529170, guid: 23702bc0e5303b740b61f1b451630b85,
         type: 3}
@@ -2334,6 +2354,11 @@ PrefabInstance:
         type: 3}
       propertyPath: unlockLevel
       value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 1396921986716529170, guid: 23702bc0e5303b740b61f1b451630b85,
+        type: 3}
+      propertyPath: destroyedVfxScale
+      value: 0.30332917
       objectReference: {fileID: 0}
     - target: {fileID: 1396921986716529170, guid: 23702bc0e5303b740b61f1b451630b85,
         type: 3}
@@ -2619,6 +2644,11 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 1396921986716529170, guid: 23702bc0e5303b740b61f1b451630b85,
         type: 3}
+      propertyPath: destroyedVfxScale
+      value: 0.30332917
+      objectReference: {fileID: 0}
+    - target: {fileID: 1396921986716529170, guid: 23702bc0e5303b740b61f1b451630b85,
+        type: 3}
       propertyPath: <Id>k__BackingField
       value: 1
       objectReference: {fileID: 0}
@@ -2732,6 +2762,11 @@ PrefabInstance:
         type: 3}
       propertyPath: unlockLevel
       value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 1396921986716529170, guid: 23702bc0e5303b740b61f1b451630b85,
+        type: 3}
+      propertyPath: destroyedVfxScale
+      value: 0.30332917
       objectReference: {fileID: 0}
     - target: {fileID: 1396921986716529170, guid: 23702bc0e5303b740b61f1b451630b85,
         type: 3}
@@ -3045,6 +3080,11 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 1396921986716529170, guid: 23702bc0e5303b740b61f1b451630b85,
         type: 3}
+      propertyPath: destroyedVfxScale
+      value: 0.30332917
+      objectReference: {fileID: 0}
+    - target: {fileID: 1396921986716529170, guid: 23702bc0e5303b740b61f1b451630b85,
+        type: 3}
       propertyPath: <Id>k__BackingField
       value: 6
       objectReference: {fileID: 0}
@@ -3212,7 +3252,7 @@ PrefabInstance:
     - target: {fileID: 8971924557341600259, guid: 16cdd29a8d92d99448cff88dd410a464,
         type: 3}
       propertyPath: m_Parameters.widthMultiplier
-      value: 3.1
+      value: 0.9403204
       objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
