@@ -31,8 +31,8 @@ TILES = {
     "ISDII_Empire_ISD_Superstructure_Base": LIGHT,
 }
 
-GOLD = np.array([0.86, 0.72, 0.41])
-GOLD_DARK = np.array([0.41, 0.30, 0.12])
+GOLD = np.array([0.96, 0.80, 0.46])
+GOLD_DARK = np.array([0.46, 0.33, 0.13])
 
 # Metallic (R) / smoothness (A) per surface; materials use _Metallic = _Smoothness = 1.
 PLATE_METAL, PLATE_SMOOTH = 0.10, 0.25
