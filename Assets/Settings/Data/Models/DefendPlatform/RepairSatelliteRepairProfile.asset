@@ -16,4 +16,4 @@ MonoBehaviour:
   <Interval>k__BackingField: 1
   <PercentPerTick>k__BackingField: 0.5
   <MaxTargets>k__BackingField: 10
-  <MaxHealersPerTarget>k__BackingField: 2
+  <MaxHealersPerTarget>k__BackingField: 1
