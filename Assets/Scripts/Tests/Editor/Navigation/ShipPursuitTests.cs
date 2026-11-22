@@ -1150,6 +1150,38 @@ namespace EmpireAtWar.Tests.Movement
         }
 
         [Test]
+        public void AbilityFacing_NewOrdersWaitAndCastsAreRefusedUntilFacingEnds()
+        {
+            AbilityCaster caster = new AbilityCaster(_target, _movement, ShipAbilityId.BoostEnginePower);
+            var relations = TestPlayers.CreateDuel();
+            ShipAbilityService abilities = new ShipAbilityService(new AbilityFactory(new RecordingAbility()),
+                relations, new VisionService(relations, fogEnabled: false));
+            Radar radar = new Radar();
+            UnitOrderModel orders = new UnitOrderModel();
+            ShipStateMachine machine = new ShipStateMachine();
+            IdleState idle = new IdleState(_movement, _weapon, radar);
+            AttackTargetState attack = new AttackTargetState(null, _weapon, _movement);
+            AbilityApproachState approach = new AbilityApproachState(_movement);
+            ShipOrderRunner runner = new ShipOrderRunner(_movement, _weapon, null, orders, machine,
+                idle, null, attack, null, null, null, approach, abilities, caster, radar, null,
+                new NoTeamContacts(), TestPlayers.Human);
+            runner.Start();
+            runner.BeginAbilityFacing();
+
+            runner.Attack(_target, Vector3.zero);
+            runner.CastAbility(ShipAbilityId.TractorBeam, _target, 100f);
+
+            Assert.That(runner.IsAbilityFacing, Is.True, "An order must not cancel an ability that steers the hull.");
+            Assert.That(orders.Current, Is.EqualTo(UnitOrderType.Attack));
+            Assert.That(machine.CurrentState, Is.SameAs(idle));
+
+            runner.EndAbilityFacing();
+
+            Assert.That(machine.CurrentState, Is.SameAs(attack), "The waiting order starts once facing ends.");
+            abilities.Clear();
+        }
+
+        [Test]
         public void AnchoredShip_RetreatEndsTheGravityWellAndLeaves()
         {
             AbilityCaster caster = new AbilityCaster(_target, _movement, ShipAbilityId.Interdict);

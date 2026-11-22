@@ -412,6 +412,12 @@ namespace EmpireAtWar.Entities.Ship.Orders
         {
             // An anchored ship cannot approach; in-range casts never reach this path.
             if (RejectWhileAnchored(UnitOrderType.UseAbility)) return;
+            // A running ability that steers the hull (Ion Pulse turn) cannot be cancelled by another cast.
+            if (IsAbilityFacing)
+            {
+                RecordOrder("rejected", $"Cast {id} refused: ability controls facing.");
+                return;
+            }
             _movement.CancelCombatHold();
             _pendingAbilityId = id;
             _pendingAbilityTarget = target;
@@ -443,11 +449,17 @@ namespace EmpireAtWar.Entities.Ship.Orders
             _movement.CancelCombatHold();
             if (_orders.Current != UnitOrderType.None || _pendingAbilityTarget != null)
                 RecordOrder("cancel", $"Replaced by {type}.");
-            IsAbilityFacing = false;
             _pendingAbilityTarget = null;
             LeavePace();
             _orders.Replace(type, destination, target, offset, waypoints, targetHardPointId, engagement, holdAttackPosition);
             RecordOrder("issued", "Requested order before state entry.");
+            // A running ability that steers the hull (Ion Pulse turn) cannot be cancelled by orders:
+            // the new order waits and starts from EndAbilityFacing.
+            if (IsAbilityFacing)
+            {
+                RecordOrder("ability-queued", $"{type} starts after ability facing.");
+                return;
+            }
             StartOrder();
         }
 

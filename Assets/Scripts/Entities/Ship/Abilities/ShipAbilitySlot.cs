@@ -24,7 +24,7 @@ namespace EmpireAtWar.Entities.Ship.Abilities
         public bool CanActivate => State == ShipAbilityState.Ready && IsAvailable &&
             (!Owner.Modifiers.IsCloaked || Definition.Settings is { CanActivateWhileCloaked: true }) &&
             (!(Definition.Settings is IShipAbilityReadiness readiness) || readiness.IsReady(Owner));
-        public bool CanCancel => State == ShipAbilityState.Active && Definition.CanCancel && IsAvailable;
+        public bool CanCancel => State == ShipAbilityState.Active && Definition.CanPlayerCancel && IsAvailable;
         public bool CanPress => CanActivate || CanCancel;
         public float Progress01 => State switch
         {

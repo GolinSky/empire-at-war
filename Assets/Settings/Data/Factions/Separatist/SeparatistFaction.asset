@@ -960,6 +960,124 @@ MonoBehaviour:
             <Icon>k__BackingField: {fileID: 21300000, guid: d846cedf6810ffb4ea05703dbeeee74c,
               type: 3}
           effects: []
+    - key: 9
+      value:
+        tiers:
+        - factionData:
+            matchups: {fileID: 0}
+            displayName: Fortification I
+            description: Raises the hull and shields of all your structures. Replaces
+              the previous tier.
+            role: Research
+            iconKey: b73f9718576eb694bb3badc9b47afc43:21300000
+            isHero: 0
+            <Name>k__BackingField: Fortified Structures I
+            <MaxCount>k__BackingField: 1
+            <AvailableLevel>k__BackingField: 1
+            <Price>k__BackingField: 500
+            <BuildTime>k__BackingField: 30
+            <UnitCapacity>k__BackingField: 0
+            <Icon>k__BackingField: {fileID: 21300000, guid: b73f9718576eb694bb3badc9b47afc43,
+              type: 3}
+          effects:
+          - shipClasses: 06000000
+            stat: 6
+            multiplier: 1.05
+          - shipClasses: 06000000
+            stat: 4
+            multiplier: 1.05
+        - factionData:
+            matchups: {fileID: 0}
+            displayName: Fortification II
+            description: Raises the hull and shields of all your structures. Replaces
+              the previous tier.
+            role: Research
+            iconKey: b73f9718576eb694bb3badc9b47afc43:21300000
+            isHero: 0
+            <Name>k__BackingField: Fortified Structures II
+            <MaxCount>k__BackingField: 1
+            <AvailableLevel>k__BackingField: 2
+            <Price>k__BackingField: 1000
+            <BuildTime>k__BackingField: 45
+            <UnitCapacity>k__BackingField: 0
+            <Icon>k__BackingField: {fileID: 21300000, guid: b73f9718576eb694bb3badc9b47afc43,
+              type: 3}
+          effects:
+          - shipClasses: 06000000
+            stat: 6
+            multiplier: 1.15
+          - shipClasses: 06000000
+            stat: 4
+            multiplier: 1.15
+        - factionData:
+            matchups: {fileID: 0}
+            displayName: Fortification III
+            description: Raises the hull and shields of all your structures. Replaces
+              the previous tier.
+            role: Research
+            iconKey: b73f9718576eb694bb3badc9b47afc43:21300000
+            isHero: 0
+            <Name>k__BackingField: Fortified Structures III
+            <MaxCount>k__BackingField: 1
+            <AvailableLevel>k__BackingField: 3
+            <Price>k__BackingField: 2000
+            <BuildTime>k__BackingField: 60
+            <UnitCapacity>k__BackingField: 0
+            <Icon>k__BackingField: {fileID: 21300000, guid: b73f9718576eb694bb3badc9b47afc43,
+              type: 3}
+          effects:
+          - shipClasses: 06000000
+            stat: 6
+            multiplier: 1.25
+          - shipClasses: 06000000
+            stat: 4
+            multiplier: 1.25
+        - factionData:
+            matchups: {fileID: 0}
+            displayName: Fortification IV
+            description: Raises the hull and shields of all your structures. Replaces
+              the previous tier.
+            role: Research
+            iconKey: b73f9718576eb694bb3badc9b47afc43:21300000
+            isHero: 0
+            <Name>k__BackingField: Fortified Structures IV
+            <MaxCount>k__BackingField: 1
+            <AvailableLevel>k__BackingField: 4
+            <Price>k__BackingField: 3500
+            <BuildTime>k__BackingField: 80
+            <UnitCapacity>k__BackingField: 0
+            <Icon>k__BackingField: {fileID: 21300000, guid: b73f9718576eb694bb3badc9b47afc43,
+              type: 3}
+          effects:
+          - shipClasses: 06000000
+            stat: 6
+            multiplier: 1.4
+          - shipClasses: 06000000
+            stat: 4
+            multiplier: 1.4
+        - factionData:
+            matchups: {fileID: 0}
+            displayName: Fortification V
+            description: Raises the hull and shields of all your structures. Replaces
+              the previous tier.
+            role: Research
+            iconKey: b73f9718576eb694bb3badc9b47afc43:21300000
+            isHero: 0
+            <Name>k__BackingField: Fortified Structures V
+            <MaxCount>k__BackingField: 1
+            <AvailableLevel>k__BackingField: 5
+            <Price>k__BackingField: 6000
+            <BuildTime>k__BackingField: 120
+            <UnitCapacity>k__BackingField: 0
+            <Icon>k__BackingField: {fileID: 21300000, guid: b73f9718576eb694bb3badc9b47afc43,
+              type: 3}
+          effects:
+          - shipClasses: 06000000
+            stat: 6
+            multiplier: 2
+          - shipClasses: 06000000
+            stat: 4
+            multiplier: 2
   miningFacilities: 00000000
   defendPlatforms: 000000000200000003000000
   superWeapons: 000000000100000002000000

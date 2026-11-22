@@ -26,6 +26,8 @@ namespace EmpireAtWar.Models.Health
         private readonly HardPointHealthBudget _hardPointHealthBudget;
         private float _hullMultiplier;
         private float _shieldsMultiplier;
+        // Base hull last applied; research raises it live and current hull keeps its percentage.
+        private float _dataHull;
         private int _level = 1;
         private float _levelHullScale = 1f;
         private float _levelShieldsScale = 1f;
@@ -86,15 +88,20 @@ namespace EmpireAtWar.Models.Health
             _hardPointHealthBudget = hardPointHealthBudget;
             _hullMultiplier = modifiers.HullMultiplier;
             _shieldsMultiplier = modifiers.ShieldsMultiplier;
+            _dataHull = data.Hull;
             Hull = MaxHull;
             Shields = MaxShields;
         }
 
         public void RefreshStatModifiers()
         {
+            float dataHull = _data.Hull;
             if (_hullMultiplier == _modifiers.HullMultiplier &&
-                _shieldsMultiplier == _modifiers.ShieldsMultiplier) return;
+                _shieldsMultiplier == _modifiers.ShieldsMultiplier &&
+                _dataHull == dataHull) return;
             Hull *= _modifiers.HullMultiplier / _hullMultiplier;
+            if (_dataHull != dataHull) Hull *= dataHull / _dataHull;
+            _dataHull = dataHull;
             Shields = IsShieldSuppressed ? 0f : Shields * _modifiers.ShieldsMultiplier / _shieldsMultiplier;
             _hullMultiplier = _modifiers.HullMultiplier;
             _shieldsMultiplier = _modifiers.ShieldsMultiplier;

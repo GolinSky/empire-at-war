@@ -30,7 +30,10 @@ namespace EmpireAtWar.Services.ShipAbilities
         public string Description => description;
         public float Duration => duration;
         public float RecoveryDelay => recoveryDelay;
+        /// <summary>Game rules may end it early (Cloak on attack, Interdict on Retreat).</summary>
         public bool CanCancel => canCancel;
+        /// <summary>For now players (click again, auto power) may end only toggles; other abilities run their full time.</summary>
+        public bool CanPlayerCancel => canCancel && isToggle;
         public bool IsToggle => isToggle;
         public bool RequiresEnemyTarget => requiresEnemyTarget;
         public float Range => range;

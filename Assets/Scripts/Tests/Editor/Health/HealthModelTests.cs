@@ -719,6 +719,22 @@ namespace EmpireAtWar.Tests.Editor
         }
 
         [Test]
+        public void ResearchHullRaise_KeepsHullPercentageOnRefresh()
+        {
+            var data = new HealthDataStub(0f);
+            var modifiers = new CombatModifiers();
+            var model = new HealthModel(data, _matrix, modifiers, new HardPointHealthBudget());
+            model.InitializeHardPoints(Array.Empty<HardPointModel>());
+            model.Restore(0.5f, 0f, Array.Empty<float>());
+
+            data.HullScale = 2f;
+            model.RefreshStatModifiers();
+
+            Assert.That(model.MaxHull, Is.EqualTo(HULL * 2f).Within(0.001f));
+            Assert.That(model.HullPercentage, Is.EqualTo(0.5f).Within(0.0001f));
+        }
+
+        [Test]
         public void IonPulseHit_EmptiesShieldsWithoutHullDamageOrBlockingRegeneration()
         {
             CombatModifiers modifiers = new CombatModifiers();
@@ -806,7 +822,8 @@ namespace EmpireAtWar.Tests.Editor
         private sealed class HealthDataStub : IHealthData
         {
             public ShipClass ShipClass => ShipClass.Capital;
-            public float Hull => HULL;
+            public float Hull => HULL * HullScale;
+            public float HullScale { get; set; } = 1f;
             public float Shields { get; }
             public float ShieldRegenerateValue => 0f;
             public float ShieldRegenerateDelay => 0f;

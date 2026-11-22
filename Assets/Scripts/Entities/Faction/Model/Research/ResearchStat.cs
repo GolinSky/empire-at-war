@@ -8,5 +8,6 @@ namespace EmpireAtWar.Models.Factions
         DamageTaken = 3,
         ShieldCapacity = 4,
         StationIncome = 5,
+        HullCapacity = 6,
     }
 }

@@ -69,7 +69,7 @@ created: 2026-11-22
 - Host `IonPulseAbility` raises `IFiringShipAbility.Fired` with `ShipAbilityFire` (origin, planar direction, rise, range) → `ShipAbilityService.Fired` → `HostCombatEventSender` queues `ShipAbilityFireMessage` (flushed after activations) → `ClientCombatEventReceiver.OnAbilityFire` → `ShipAbilityService.FireReplica`.
 - Replica (`IMatchSession.IsAuthority == false`): no `BeginAbilityFacing`/`EndAbilityFacing`, no cannon pick, no self-cancel, no self-fire; plays only the host geometry.
 - Service subscribes once per started ability (abilities are single-use); no unsubscribe needed.
-- Cause 2 (cooldown when the pulse never fired): not changed; user decision queued in [[TODOs/User_Acceptance_Queue]].
+- Cause 2 resolved 2026-11-22 by user decision: no ability can be cancelled by its owner for now; new orders wait until the Ion Pulse fires. See [[Architecture/Ship_Ability_Readiness_Targeting_And_Lifecycle]] Rules.
 - Reusable guidance → [[Architecture/Ship_Ability_Readiness_Targeting_And_Lifecycle]] Rules (replicated fire).
 
 ## Verification

@@ -249,10 +249,12 @@ namespace EmpireAtWar.Tests.Editor
             using (builder.Build())
             {
                 Assert.That(probe.Health, Is.TypeOf<ResearchHealthData>());
-                Assert.That(probe.Health.Hull, Is.EqualTo(baseData.Hull));
+                Assert.That(probe.Health.Hull, Is.EqualTo(150f));
                 Assert.That(probe.Health.Shields, Is.EqualTo(30f));
                 research.Multiplier = 2f;
+                Assert.That(probe.Health.Hull, Is.EqualTo(200f));
                 Assert.That(probe.Health.Shields, Is.EqualTo(40f));
+                Assert.That(baseData.Hull, Is.EqualTo(100f));
                 Assert.That(baseData.Shields, Is.EqualTo(20f));
             }
         }

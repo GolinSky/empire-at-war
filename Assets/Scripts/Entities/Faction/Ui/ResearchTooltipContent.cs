@@ -64,6 +64,7 @@ namespace EmpireAtWar.Entities.Faction.Ui
             ResearchStat.Speed => "Speed",
             ResearchStat.DamageTaken => "Damage taken",
             ResearchStat.ShieldCapacity => "Shield capacity",
+            ResearchStat.HullCapacity => "Hull capacity",
             _ => throw new ArgumentOutOfRangeException(nameof(stat))
         };
     }

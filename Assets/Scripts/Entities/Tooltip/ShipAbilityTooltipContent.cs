@@ -65,7 +65,7 @@ namespace EmpireAtWar.Entities.Tooltip
                     (shieldsOffline > 0 ? $"Shields and abilities disabled by hazards: {shieldsOffline}. " : "") +
                     (jammed > 0 ? $"Abilities disabled by hazards: {jammed}. " : "") +
                     $"{ready} of {slots.Count} ready · {active} active. " +
-                    (definition.CanCancel && active > 0 ? "Select the unit on its own and click again to end the effect. " : "") +
+                    (definition.CanPlayerCancel && active > 0 ? "Select the unit on its own and click again to end the effect. " : "") +
                     (definition.RequiresEnemyTarget
                         ? $"Choose an enemy target with {TooltipBindings.Get(bindings, "Battle", "Command")}. " +
                           $"Cancel with {TooltipBindings.Get(bindings, "Ui", "Cancel")}."

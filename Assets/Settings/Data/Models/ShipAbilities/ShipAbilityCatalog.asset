@@ -20,7 +20,7 @@ MonoBehaviour:
         displayName: Ion Pulse
         description: Turn the ion cannon that needs the smallest turn toward the
           target and fire a slow ion wave. The wave disables enemy ships and structures
-          without dealing hull damage. Move or Stop cancels the turn.
+          without dealing hull damage. New orders wait until the wave fires.
         duration: 80
         recoveryDelay: 60
         canCancel: 0

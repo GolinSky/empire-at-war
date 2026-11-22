@@ -45,7 +45,7 @@ namespace EmpireAtWar.Services.Enemy
             _tuning = catalog.AutoPower;
             // The AI runs on the host: its abilities start and end directly instead of being requested.
             _decider = new AutoPowerDecider(shipAbilityService, combat, autoUse, _tuning, shipAbilityService.TryActivate,
-                shipAbilityService.TryCancel);
+                shipAbilityService.TryOwnerCancel);
         }
 
         public void Tick()

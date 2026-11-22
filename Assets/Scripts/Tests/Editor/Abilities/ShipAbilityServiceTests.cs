@@ -725,13 +725,13 @@ namespace EmpireAtWar.Tests.Editor
         }
 
         [Test]
-        public void Cancel_StopsOnceAndEntersFullRecovery_OnlyWhenAllowed()
+        public void Cancel_StopsOnceAndEntersFullRecovery_OnlyForToggles()
         {
             FakeFactory factory = new FakeFactory();
             var relations = TestPlayers.CreateDuel();
             ShipAbilityService service = new ShipAbilityService(factory,
                 relations, new VisionService(relations, fogEnabled: false));
-            FakeCommand caster = CreateCaster();
+            FakeCommand caster = CreateCaster(isToggle: true);
             service.Press(new IEntity[] { caster.Entity }, ShipAbilityId.BoostEnginePower);
 
             service.Press(new IEntity[] { caster.Entity }, ShipAbilityId.BoostEnginePower);
@@ -741,6 +741,23 @@ namespace EmpireAtWar.Tests.Editor
             service.Advance(6f);
             service.LateDispose();
             Assert.That(factory.Created[0].StopCount, Is.EqualTo(1));
+
+            // A cancellable timed ability runs its full time: players and auto power may end only toggles.
+            FakeCommand timed = CreateCaster();
+            ShipAbilityService timedService = new ShipAbilityService(factory,
+                relations, new VisionService(relations, fogEnabled: false));
+            timedService.Press(new IEntity[] { timed.Entity }, ShipAbilityId.BoostEnginePower);
+            timedService.Press(new IEntity[] { timed.Entity }, ShipAbilityId.BoostEnginePower);
+            Assert.That(timed.Slots[0].State, Is.EqualTo(ShipAbilityState.Active));
+            Assert.That(timed.Slots[0].CanCancel, Is.False);
+            Assert.That(timedService.TryRequestCancel(timed, ShipAbilityId.BoostEnginePower), Is.False);
+            Assert.That(timedService.TryOwnerCancel(timed, ShipAbilityId.BoostEnginePower), Is.False);
+            timedService.Execute(new[] { timed.Entity }, ShipAbilityId.BoostEnginePower, null, cancel: true);
+            Assert.That(timed.Slots[0].State, Is.EqualTo(ShipAbilityState.Active));
+            // Game rules (Cloak on attack, Interdict on Retreat) still end it.
+            Assert.That(timedService.TryCancel(timed, ShipAbilityId.BoostEnginePower), Is.True);
+            Assert.That(timed.Slots[0].State, Is.EqualTo(ShipAbilityState.Recovering));
+            timedService.LateDispose();
 
             FakeCommand fixedDuration = CreateCaster(canCancel: false);
             ShipAbilityService fixedService = new ShipAbilityService(factory,
@@ -1248,7 +1265,7 @@ namespace EmpireAtWar.Tests.Editor
                 service.Advance(0.1f);
                 Assert.That(allChanges, Is.GreaterThan(beforeElapsed));
                 Assert.That(stateChanges, Is.EqualTo(1));
-                service.Press(new[] { caster.Entity }, ShipAbilityId.BoostEnginePower);
+                service.TryCancel(caster, ShipAbilityId.BoostEnginePower);
                 Assert.That(stateChanges, Is.EqualTo(2));
                 beforeElapsed = allChanges;
                 service.Advance(0.1f);
@@ -1370,12 +1387,13 @@ namespace EmpireAtWar.Tests.Editor
         }
 
         private static FakeCommand CreateCaster(bool canCancel = true, bool targeted = false,
-            float recoveryDelay = 6f)
+            float recoveryDelay = 6f, bool isToggle = false)
         {
             ShipAbilityDefinition definition = new ShipAbilityDefinition();
             SetField(definition, "duration", 5f);
             SetField(definition, "recoveryDelay", recoveryDelay);
             SetField(definition, "canCancel", canCancel);
+            SetField(definition, "isToggle", isToggle);
             SetField(definition, "requiresEnemyTarget", targeted);
             SetField(definition, "range", 10f);
             SetField(definition, "settings", new BoostEnginePowerSettings());

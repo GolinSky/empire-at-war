@@ -171,7 +171,7 @@ namespace EmpireAtWar.Services.ShipAbilities
                 if (!casters[i].TryGetFacade(out IShipAbilityFacade command)) continue;
                 if (cancel)
                 {
-                    TryCancel(command, id);
+                    TryOwnerCancel(command, id);
                     continue;
                 }
 
@@ -287,6 +287,13 @@ namespace EmpireAtWar.Services.ShipAbilities
                 if (ownRebuilt) _running.RemoveAt(i);
             }
         }
+
+        /// <summary>
+        /// The owner (player press, auto power, AI) asks to end an ability early: allowed only for abilities the
+        /// owner may end (toggles for now). Game rules that end an effect use <see cref="TryCancel"/>.
+        /// </summary>
+        public bool TryOwnerCancel(IShipAbilityFacade caster, ShipAbilityId id) =>
+            CanCancel(caster, id) && TryCancel(caster, id);
 
         public bool TryCancel(IShipAbilityFacade caster, ShipAbilityId id)
         {

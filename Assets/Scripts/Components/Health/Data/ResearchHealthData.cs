@@ -7,7 +7,7 @@ using VContainer;
 namespace EmpireAtWar.Models.Health
 {
     /// <summary>
-    /// Decorates base health data with the owning faction's researched shield capacity.
+    /// Decorates base health data with the owning faction's researched hull and shield capacity.
     /// Values are read live, so research completed mid-battle applies to units already on the field.
     /// </summary>
     public sealed class ResearchHealthData : IHealthData
@@ -17,7 +17,16 @@ namespace EmpireAtWar.Models.Health
 
         public ShipClass ShipClass => _healthData.ShipClass;
         public bool UsesHullHardPointBudget => _healthData.UsesHullHardPointBudget;
-        public float Hull => _healthData.Hull;
+        public float Hull
+        {
+            get
+            {
+                float hull = _healthData.Hull;
+                for (int i = 0; i < _research.Count; i++)
+                    hull *= _research[i].GetMultiplier(ResearchStat.HullCapacity, ShipClass);
+                return hull;
+            }
+        }
         public float Shields
         {
             get
