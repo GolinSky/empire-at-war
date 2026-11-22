@@ -25,7 +25,7 @@ verification: "Satellite pad expansion: Unity compile 0 errors; scripted
 - Main mine/satellite ring counts must be even and ≥2; invalid values throw before an asymmetric ring is built.
 - Home sites prefer the corner behind the station, then front only when behind candidates do not fit. `IsHomeSite` excludes asteroid pockets; bounds use footprint only. Field clearing includes one raster cell of spill margin.
 - Home sites: 1 mine + `HomeSatelliteCount` (4) pads on the station ring `station.Radius + 60 + 15`. Pads fan from the old pad angle away from the mine in `max(20°, chord ≥ 2 × 60)` steps (Rebel radius `261` → ≈`21.6°`); first clear candidates win, else next side/orientation. All share `PointId` = station index, `IsHomeSite`.
-- Additional relay groups: mirrored edge-band candidates, station exclusion, main-distance exclusion, opposite nearest-team halves. Group members share a `PointId`. Pads: `AdditionalZoneSatelliteCount` (4) evenly on a `200` ring → outer edge `260` < `270`.
+- Additional relay groups: mirrored edge-band candidates, station exclusion, main-distance exclusion, `AdditionalZoneSpacing` from every other outer relay (mirror partner included), opposite nearest-team halves. Best of `24` valid candidates by largest minimum distance to nodes/stations. Unmirrored rosters (2v1, odd FFA) place single groups with the same main and spacing rules. Group members share a `PointId`. Pads: `AdditionalZoneSatelliteCount` (4) evenly on a `200` ring → outer edge `260` < `270`.
 - Site count (`BattleSaveValidator.ValidateMapCounts`): `Slots × (1 + HomeSatelliteCount) + MainMining + MainSatellite + 2 × pairs × (1 + AdditionalSatellite) + size.FreeSatelliteCount`. Count changes make old Full saves fail to load (accepted 2026-11-21).
 
 ### Free satellite pads
@@ -49,11 +49,16 @@ verification: "Satellite pad expansion: Unity compile 0 errors; scripted
 
 | Setting | Small | Medium | Large |
 |---|---:|---:|---:|
-| Additional relay pairs | 1 | 2 | 3 |
-| Main distance minimum | 900 | 1400 | 2000 |
+| Additional relay pairs | 1 | 1 | 2 |
+| Main distance minimum | 1500 | 1700 | 2900 |
+| Outer relay spacing minimum | 3000 | 3400 | 3400 |
 | Edge band | 800 | 1100 | 1400 |
 | Station distance minimum | 1100 | 1300 | 1500 |
 | Station corner jitter | 180 | 240 | 360 |
+
+- Outer relay count ignores roster size: `ForArchetype` adds only `MapArchetype.AdditionalRelayPairs` + `PlanetMapProfileEntry.AdditionalRelayPairs` (all `0`). Hazards still grow with players.
+- Distance tuning (2026-11-22, 7 planets × every size/roster × seeds `0,7,19`, both team assignments): failure edges Small main `1700` (legacy edge band), Medium main `1900` (Orbital Ring 6p fairness), Large main `3200` (Orbital Ring 7p fairness), Large spacing `4000` (3-player unmirrored). Shipped values one step below; Small kept `1500` for edge-band margin.
+- Archetype radial candidates start at `clamp(MainDistance / half, 0.4, 0.8)` of half-extent so main-distance rejects are rare.
 
 ## Edge Cases
 

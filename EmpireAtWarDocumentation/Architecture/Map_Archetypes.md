@@ -17,7 +17,7 @@ verification: "Archetypes: Map 83/83, MapGeneration 224/224, MapExhaustive
 - Open Field with 2–4 players uses the unchanged legacy generation branch. Archetype overrides apply to other kinds and Open Field with 5–8 players.
 - Limits: Small 4, Medium 6, Large 8. Shrinking the setup map preserves occupied slots and disables Start until the roster fits.
 - Bounds scale: base half-size × `BoundsMultiplier` × `sqrt(max(1, players / 4))`; authored multiplier 1.15. Large8 half-size ≈7319 m; network positions must remain within −8192..8191.75 m.
-- Additional relay pairs: base + `max(0, (players - 3) / 2)` + archetype/profile additions. Hazard pairs scale by the same count; Orbital Ring adds one central storm.
+- Additional relay pairs: base + archetype/profile additions; roster size adds none (2026-11-22, [[Done/Features/Map_Outer_Zone_Reduction]]). Hazard pairs: base + `max(0, (players - 3) / 2)` + archetype/profile additions; Orbital Ring adds one central storm.
 
 ## Implementation
 - `MapSizeSettings.ForArchetype` copies settings per call; never mutate shared serialized settings during generation.

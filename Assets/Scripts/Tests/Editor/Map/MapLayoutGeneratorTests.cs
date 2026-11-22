@@ -137,6 +137,10 @@ namespace EmpireAtWar.Tests.Editor
                             Is.GreaterThanOrEqualTo(size.AdditionalZoneStationDistance), context);
                     Assert.That(PlanarGeometry.Distance(zone.Center, main.Center) + TOLERANCE,
                         Is.GreaterThanOrEqualTo(size.AdditionalZoneMainDistance), context);
+                    foreach (MapNode other in additional)
+                        if (other != zone)
+                            Assert.That(PlanarGeometry.Distance(zone.Center, other.Center) + TOLERANCE,
+                                Is.GreaterThanOrEqualTo(size.AdditionalZoneSpacing), context + " outer spacing");
                     Assert.That(nodes.Count(node => node.PointId == zone.PointId &&
                         node.Kind == MapNodeKind.MiningSite), Is.EqualTo(1), context);
                     MapNode[] zonePads = nodes.Where(node => node.PointId == zone.PointId &&
@@ -973,15 +977,16 @@ namespace EmpireAtWar.Tests.Editor
         // The baseline includes the visual rocks retained by RockScatter's 50% density reduction.
         // Medium/Large team-game baselines include allied corners pulled together along their shared edge.
         // Baselines include 4 home pads per station, 8 main pads, 4 pads per outer relay and free lane pads.
-        [TestCase(MapSize.Small, 0, "26D258B45665B5580BBD5FA46DD72EDB54EFB3AB41048E4134D84508C67E04A5")]
-        [TestCase(MapSize.Small, 7, "D94F472D0D4335FEF9153DFDF5D3108B887A0901A1D2D4F0BB42EE3A7466AFF5")]
-        [TestCase(MapSize.Small, 19, "D95D485C8E3E6F276A24B6DD40CE2EA0ED3C9AF98982484C985144AF5E534948")]
-        [TestCase(MapSize.Medium, 0, "BED7E9F95F6D4760EB0442CD929376442815F6B5DC4A295117A5CC9E3D6492D1")]
-        [TestCase(MapSize.Medium, 7, "95C641253D045D1535350C62F4C516743A37B60CFCAC3ACEB4A8DF9E91773086")]
-        [TestCase(MapSize.Medium, 19, "862D84D6537B601C9C4967C9503B25659EEBD9CD5242BE44725E9310497A9BC8")]
-        [TestCase(MapSize.Large, 0, "5BBAF4D846E16EF0475F9E5CB6676C143B2BCC99AAC3A19D67598B34C549200A")]
-        [TestCase(MapSize.Large, 7, "BCC00BA6C08C515F6D026BADF7BCBDA0B355112FEF35260CB3AD959BD66ADD5F")]
-        [TestCase(MapSize.Large, 19, "A5BAF84AFCE7B3323B76868753AA4F0C25C4BD5702D507519ED48D76143AF9A0")]
+        // Baselines include the reduced outer relay pairs and their spacing from each other and the main relay.
+        [TestCase(MapSize.Small, 0, "0AC30BC27BB75615F3FF79FFBAD45594060ABAEC82B7CC126BB2D75FDCE0C9A8")]
+        [TestCase(MapSize.Small, 7, "C5BC5A6BB6577FA12E83FB2CAD63C4B0F0F1192B3AF3EFE36BEA2C5153C1C0D6")]
+        [TestCase(MapSize.Small, 19, "64F9EA94FCE6E3C43F00A0BB7386EE9229AAC93155DD946524F043CC7BE78DCB")]
+        [TestCase(MapSize.Medium, 0, "C2F504D538886CAB2DF49C3B58E2436668BA0C23E11D13CC7118DF74E2CCF423")]
+        [TestCase(MapSize.Medium, 7, "19BCD5CF954A32BFA034CC07244D17351AC84412C3E6A37DAA5BAB758FAEBE30")]
+        [TestCase(MapSize.Medium, 19, "EC788A43C5E0AC6C0F6C2F24F518D37F14C01E04D2281DCE19FF175F0C65ECD2")]
+        [TestCase(MapSize.Large, 0, "755CB43737F2589E35E1B8AA54230A673A1FDD53B372712E90558ABEFD16E605")]
+        [TestCase(MapSize.Large, 7, "0B5496F7AE0FA9499FDFF66CC8C102DCF2FA4FE099513645FAEEB697D7324CFD")]
+        [TestCase(MapSize.Large, 19, "F39940373EA1B0A55DB5B448097B819E7AEC871DF59ED691C2F75776455E85CF")]
         public void OpenField_MatchesGeometryBaseline(MapSize mapSize, int seed, string expected)
         {
             MapLayout layout = _generator.Generate(mapSize, TestPlayers.CreateTeamGame().Players,

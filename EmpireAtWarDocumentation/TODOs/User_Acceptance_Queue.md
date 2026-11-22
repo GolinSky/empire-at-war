@@ -565,3 +565,9 @@ created: "2026-10-29\r"
 - [ ] [[Done/Features/Map_Satellite_Pad_Expansion]] — Confirm decisions: old Skirmish (Full) saves no longer load; free pads only inside lane corridors.
 - [ ] [[Done/Features/Map_Satellite_Pad_Expansion]] — In a fresh Skirmish: check 4 home pads per station, 4 pads per outer relay, 8 main pads, free pads on routes (2/6/10); AI satellite spending/squadron spread; performance on Large 8-player.
 - [ ] [[Done/Features/Map_Satellite_Pad_Expansion]] — Run `Map`, `MapGeneration` (explicit), `GameFlow`, `EnemyAi`, `Capture` when authorized; compile passed, tests not run.
+
+## Map Outer Zones
+
+- [ ] [[Done/Features/Map_Outer_Zone_Reduction]] — In a fresh Skirmish (Medium and Large, 2 and 6–8 players): outer relays spread far apart and far from the main relay; AI still captures and defends them; economy feel with fewer neutral mines.
+- [ ] [[Done/Features/Map_Outer_Zone_Reduction]] — Decide: old Small Skirmish saves load onto the new geometry (count unchanged) → accept, or bump the save version.
+- [ ] [[Done/Features/Map_Outer_Zone_Reduction]] — Run `Map`, `MapGeneration` (explicit), `GameFlow`, `EnemyAi` when authorized; compile passed, 630 scripted layouts passed, tests not run.

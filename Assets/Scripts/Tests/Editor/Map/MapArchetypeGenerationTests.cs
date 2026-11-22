@@ -88,6 +88,18 @@ namespace EmpireAtWar.Tests.Editor
                 PlanetMapProfileEntry profile = _settings.Profiles.Get(planet);
                 if (profile.Archetype.Kind != MapArchetypeKind.OpenField || count > 4)
                     size = size.ForArchetype(profile, count);
+                Vector3 main = layout.Zones.Single(zone => zone.IsMain).Center;
+                ZoneSpot[] outer = layout.Zones.Where(zone => zone.IsCapturable && !zone.IsMain).ToArray();
+                Assert.That(outer.Length, Is.EqualTo(2 * size.AdditionalZonePairCount), context + " outer relays");
+                foreach (ZoneSpot zone in outer)
+                {
+                    Assert.That(PlanarGeometry.Distance(zone.Center, main) + 0.01f,
+                        Is.GreaterThanOrEqualTo(size.AdditionalZoneMainDistance), context + " outer to main");
+                    foreach (ZoneSpot other in outer)
+                        if (!other.Center.Equals(zone.Center))
+                            Assert.That(PlanarGeometry.Distance(zone.Center, other.Center) + 0.01f,
+                                Is.GreaterThanOrEqualTo(size.AdditionalZoneSpacing), context + " outer spacing");
+                }
                 foreach (SiteSpot site in layout.Sites)
                 {
                     AssertInside(layout, site.Center, context);
@@ -140,6 +152,21 @@ namespace EmpireAtWar.Tests.Editor
                     if (enemy.Team != owner.Team)
                         Assert.That(PlanarGeometry.Distance(zone.Center, layout.GetStationPosition(enemy.Id)),
                             Is.GreaterThanOrEqualTo(size.AdditionalZoneStationDistance));
+            }
+        }
+
+        [Test]
+        public void LargeRosters_KeepBaseOuterRelayCount()
+        {
+            foreach (PlanetType planet in (PlanetType[])Enum.GetValues(typeof(PlanetType)))
+            foreach (MapSize mapSize in Enum.GetValues(typeof(MapSize)))
+            {
+                PlanetMapProfileEntry profile = _settings.Profiles.Get(planet);
+                int expected = _settings.GetSize(mapSize).AdditionalZonePairCount +
+                    profile.Archetype.AdditionalRelayPairs + profile.AdditionalRelayPairs;
+                for (int count = 2; count <= MatchRules.GetMaxPlayers(mapSize); count++)
+                    Assert.That(_settings.GetSize(mapSize).ForArchetype(profile, count).AdditionalZonePairCount,
+                        Is.EqualTo(expected), $"{planet}/{mapSize}/{count}");
             }
         }
 

@@ -51,7 +51,8 @@ namespace EmpireAtWar.Entities.Map
             Vector2 max = center + half;
             result.Bounds = JsonUtility.FromJson<Vector2Range>(FormattableString.Invariant(
                 $"{{\"<Min>k__BackingField\":{{\"x\":{min.x},\"y\":{min.y}}},\"<Max>k__BackingField\":{{\"x\":{max.x},\"y\":{max.y}}}}}"));
-            result.AdditionalZonePairCount = AdditionalZonePairCount + Mathf.Max(0, (playerCount - 3) / 2) +
+            // Outer relays do not grow with the roster; only explicit archetype or planet pairs add them.
+            result.AdditionalZonePairCount = AdditionalZonePairCount +
                 profile.Archetype.AdditionalRelayPairs + profile.AdditionalRelayPairs;
             result.HazardCount = HazardCount + (Mathf.Max(0, (playerCount - 3) / 2) +
                 profile.Archetype.AdditionalHazardPairs + profile.AdditionalHazardPairs) * 2;
@@ -72,6 +73,8 @@ namespace EmpireAtWar.Entities.Map
         [field: SerializeField] public Vector2Range Bounds { get; private set; }
         [field: SerializeField, Min(0)] public int AdditionalZonePairCount { get; private set; }
         [field: SerializeField, Min(0f)] public float AdditionalZoneMainDistance { get; private set; }
+        [field: SerializeField, Min(0f), Tooltip("Minimum centre distance between two outer relays, mirror partner included.")]
+        public float AdditionalZoneSpacing { get; private set; }
         [field: SerializeField, Min(0f)] public float AdditionalZoneEdgeBand { get; private set; } = 800f;
         [field: SerializeField, Min(0f)] public float AdditionalZoneStationDistance { get; private set; } = 1100f;
         [field: SerializeField, Min(0f)] public float StationCornerJitter { get; private set; } = 180f;

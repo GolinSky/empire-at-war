@@ -10,9 +10,12 @@ namespace EmpireAtWar.Entities.Map.Generation
     public sealed class AdditionalZonePlacer
     {
         private const int MAX_ATTEMPTS = 400;
-        private const int CANDIDATES_PER_PICK = 12;
+        private const int CANDIDATES_PER_PICK = 24;
         private const float FULL_TURN = 360f;
         private const float MIRROR_TOLERANCE = 1f;
+        private const float ARCHETYPE_RADIUS_FLOOR = 0.4f;
+        private const float ARCHETYPE_RADIUS_CEILING = 0.88f;
+        private const float ARCHETYPE_RADIUS_FLOOR_LIMIT = 0.8f;
         public string LastFailure { get; private set; }
         private readonly MapGenerationSettings _settings;
         private readonly MapFeatureRadii _radii;
@@ -37,7 +40,7 @@ namespace EmpireAtWar.Entities.Map.Generation
                 List<MapNode> best = null;
                 float bestScore = float.MinValue;
                 int valid = 0;
-                int stationRejected = 0, mainRejected = 0, teamRejected = 0, groupRejected = 0;
+                int stationRejected = 0, mainRejected = 0, spacingRejected = 0, teamRejected = 0, groupRejected = 0;
                 int first = nodes.Count;
                 int pointId = stations.Count + 1 + pair * 2;
                 for (int attempt = 0; attempt < MAX_ATTEMPTS && valid < CANDIDATES_PER_PICK; attempt++)
@@ -66,6 +69,9 @@ namespace EmpireAtWar.Entities.Map.Generation
                     if (PlanarGeometry.Distance(candidate, mainPosition) < size.AdditionalZoneMainDistance ||
                         PlanarGeometry.Distance(mirror, mainPosition) < size.AdditionalZoneMainDistance)
                     { mainRejected++; continue; }
+                    if (PlanarGeometry.Distance(candidate, mirror) < size.AdditionalZoneSpacing ||
+                        !IsSpaced(candidate, size, nodes) || !IsSpaced(mirror, size, nodes))
+                    { spacingRejected++; continue; }
                     if (MainZonePlacer.GetNearestTeam(candidate, stations, players) ==
                         MainZonePlacer.GetNearestTeam(mirror, stations, players))
                     { teamRejected++; continue; }
@@ -91,7 +97,7 @@ namespace EmpireAtWar.Entities.Map.Generation
                 if (best == null)
                 {
                     LastFailure = $"pair {pair}: station={stationRejected}, main={mainRejected}, " +
-                        $"team={teamRejected}, group={groupRejected}";
+                        $"spacing={spacingRejected}, team={teamRejected}, group={groupRejected}";
                     return false;
                 }
                 nodes.AddRange(best);
@@ -142,13 +148,14 @@ namespace EmpireAtWar.Entities.Map.Generation
                 int first = nodes.Count;
                 int pointId = stations.Count + 1 + index;
                 int valid = 0;
-                int stationRejected = 0, mainRejected = 0, groupRejected = 0;
+                int stationRejected = 0, mainRejected = 0, spacingRejected = 0, groupRejected = 0;
                 for (int attempt = 0; attempt < MAX_ATTEMPTS && valid < CANDIDATES_PER_PICK; attempt++)
                 {
                     Vector3 candidate = CreateArchetypeCandidate(size, center, index / 2, random);
                     if (random.Next(2) == 0) candidate = PlanarGeometry.Reflect(candidate, center);
                     if (PlanarGeometry.Distance(candidate, mainPosition) < size.AdditionalZoneMainDistance)
                     { mainRejected++; continue; }
+                    if (!IsSpaced(candidate, size, nodes)) { spacingRejected++; continue; }
                     bool nearStation = false;
                     foreach (MapStation station in stations)
                         if (PlanarGeometry.Distance(candidate, station.Position) < size.AdditionalZoneStationDistance)
@@ -169,11 +176,21 @@ namespace EmpireAtWar.Entities.Map.Generation
                 }
                 if (best == null)
                 {
-                    LastFailure = $"group {index}: station={stationRejected}, main={mainRejected}, group={groupRejected}";
+                    LastFailure = $"group {index}: station={stationRejected}, main={mainRejected}, " +
+                        $"spacing={spacingRejected}, group={groupRejected}";
                     return false;
                 }
                 nodes.AddRange(best);
             }
+            return true;
+        }
+
+        private static bool IsSpaced(Vector3 candidate, MapSizeSettings size, IReadOnlyList<MapNode> nodes)
+        {
+            foreach (MapNode node in nodes)
+                if (node.Kind == MapNodeKind.CapturableZone && !node.IsMain &&
+                    PlanarGeometry.Distance(candidate, node.Center) < size.AdditionalZoneSpacing)
+                    return false;
             return true;
         }
 
@@ -182,7 +199,10 @@ namespace EmpireAtWar.Entities.Map.Generation
             float half = Mathf.Min(size.Bounds.Max.x - size.Bounds.Min.x,
                 size.Bounds.Max.y - size.Bounds.Min.y) * 0.5f;
             float angle = (float)random.NextDouble() * Mathf.PI * 2f;
-            float radius = half * Mathf.Lerp(0.4f, 0.88f, (float)random.NextDouble());
+            // Radii inside the main-relay distance are always rejected, so the ring starts beyond it.
+            float floor = Mathf.Clamp(size.AdditionalZoneMainDistance / half, ARCHETYPE_RADIUS_FLOOR,
+                ARCHETYPE_RADIUS_FLOOR_LIMIT);
+            float radius = half * Mathf.Lerp(floor, ARCHETYPE_RADIUS_CEILING, (float)random.NextDouble());
             Vector3 local;
             switch (size.Archetype)
             {
