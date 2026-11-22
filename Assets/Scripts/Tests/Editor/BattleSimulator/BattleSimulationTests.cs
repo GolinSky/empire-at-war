@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using EmpireAtWar.Components.AttackComponent;
 using EmpireAtWar.Components.Ship.Health;
+using EmpireAtWar.Components.Weapon;
 using EmpireAtWar.Editor.BattleSimulator;
 using EmpireAtWar.Models.Health;
 using EmpireAtWar.Services.Saves;
@@ -251,15 +252,18 @@ namespace EmpireAtWar.Tests.Editor
             Assert.That(result.Units[0].Shots, Is.EqualTo(1));
         }
 
-        [TestCase(ShipClass.Dreadnought, StructureKind.SpaceStation, DamageType.Turbolaser, 60f, 120f)]
-        [TestCase(ShipClass.BattleCruiser, StructureKind.SpaceStation, DamageType.Turbolaser, 60f, 84f)]
-        [TestCase(ShipClass.Dreadnought, StructureKind.DefendPlatform, DamageType.ProtonTorpedo, 0f, 180f)]
-        [TestCase(ShipClass.Capital, StructureKind.SecondStation, DamageType.Turbolaser, 60f, 60f)]
-        [TestCase(ShipClass.Dreadnought, StructureKind.MiningFacility, DamageType.Turbolaser, 60f, 60f)]
+        [TestCase(ShipClass.Dreadnought, StructureKind.SpaceStation, DamageType.Turbolaser, 60f)]
+        [TestCase(ShipClass.BattleCruiser, StructureKind.SpaceStation, DamageType.Turbolaser, 60f)]
+        [TestCase(ShipClass.Dreadnought, StructureKind.DefendPlatform, DamageType.ProtonTorpedo, 0f)]
+        [TestCase(ShipClass.Capital, StructureKind.SecondStation, DamageType.Turbolaser, 60f)]
+        [TestCase(ShipClass.Cruiser, StructureKind.SecondStation, DamageType.Turbolaser, 60f)]
+        [TestCase(ShipClass.Dreadnought, StructureKind.MiningFacility, DamageType.Turbolaser, 60f)]
         public void SiegeDamage_UsesExplicitStructureKindForShieldAndHullLoss(ShipClass attacker, StructureKind kind,
-            DamageType damageType, float shieldLoss, float hullLoss)
+            DamageType damageType, float shieldLoss)
         {
-            var source = Unit("A", 1000, 120, type: damageType);
+            const float SHOT_DAMAGE = 120f;
+            float hullLoss = SHOT_DAMAGE * SiegeDamage.GetMultiplier(attacker, kind) - shieldLoss;
+            var source = Unit("A", 1000, SHOT_DAMAGE, type: damageType);
             source.ShipClass = attacker;
             source.Mounts[0].DamageDuration = 0.25f;
             var target = Unit("B", 1000, 0);

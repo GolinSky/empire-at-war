@@ -20,19 +20,22 @@ namespace EmpireAtWar.Tests.Editor
     [Category("Combat")]
     public sealed class OverkillTargetingTests
     {
-        [TestCase(ShipClass.Dreadnought, StructureKind.SpaceStation, 1.5f)]
-        [TestCase(ShipClass.Dreadnought, StructureKind.SecondStation, 1.5f)]
-        [TestCase(ShipClass.Dreadnought, StructureKind.DefendPlatform, 1.5f)]
-        [TestCase(ShipClass.BattleCruiser, StructureKind.SpaceStation, 1.2f)]
-        [TestCase(ShipClass.BattleCruiser, StructureKind.SecondStation, 1.2f)]
-        [TestCase(ShipClass.BattleCruiser, StructureKind.DefendPlatform, 1.2f)]
-        [TestCase(ShipClass.Capital, StructureKind.SpaceStation, 1f)]
-        [TestCase(ShipClass.Structure, StructureKind.DefendPlatform, 1f)]
-        [TestCase(ShipClass.Dreadnought, StructureKind.MiningFacility, 1f)]
-        [TestCase(ShipClass.Dreadnought, null, 1f)]
+        [TestCase(ShipClass.Dreadnought, StructureKind.SpaceStation, true)]
+        [TestCase(ShipClass.Dreadnought, StructureKind.SecondStation, true)]
+        [TestCase(ShipClass.Dreadnought, StructureKind.DefendPlatform, true)]
+        [TestCase(ShipClass.BattleCruiser, StructureKind.SpaceStation, true)]
+        [TestCase(ShipClass.BattleCruiser, StructureKind.SecondStation, true)]
+        [TestCase(ShipClass.BattleCruiser, StructureKind.DefendPlatform, true)]
+        [TestCase(ShipClass.Capital, StructureKind.SpaceStation, true)]
+        [TestCase(ShipClass.Cruiser, StructureKind.SpaceStation, false)]
+        [TestCase(ShipClass.Structure, StructureKind.DefendPlatform, false)]
+        [TestCase(ShipClass.Dreadnought, StructureKind.MiningFacility, false)]
+        [TestCase(ShipClass.Dreadnought, null, false)]
         public void ApplyDamage_ScalesEachScheduledTickAndReservationOnce(ShipClass attacker, StructureKind? kind,
-            float factor)
+            bool expectsSiegeBonus)
         {
+            float factor = SiegeDamage.GetMultiplier(attacker, kind);
+            Assert.That(factor > 1f, Is.EqualTo(expectsSiegeBonus));
             var coordinator = new CombatAttackCoordinator();
             var owner = new GameObject("Siege weapon");
             var matrix = ScriptableObject.CreateInstance<DamageMatrixData>();

@@ -1,6 +1,7 @@
 using System;
 using System.Collections.Generic;
 using EmpireAtWar.Components.Ship.Health;
+using EmpireAtWar.Components.Weapon;
 using EmpireAtWar.Entities.EnemyFaction.Models.Combat;
 using EmpireAtWar.Services.Saves;
 using NUnit.Framework;
@@ -122,11 +123,11 @@ namespace EmpireAtWar.Tests.Editor
         public void Select_PredictsSiegeDamageOnlyAgainstEligibleStructures(StructureKind? kind, int best)
         {
             var heavy = ForceOfClass(ShipClass.Dreadnought, 100f, (ShipClass.Structure, 8f));
-            var capital = Force(100f, (ShipClass.Structure, 10f));
+            var cruiser = ForceOfClass(ShipClass.Cruiser, 100f, (ShipClass.Structure, 10f));
             var selected = new List<int>();
             var model = new EnemyTaskForceSelectionModel();
 
-            bool ready = model.Select(new[] { heavy, capital }, new ForceComposition(), ShipClass.Structure,
+            bool ready = model.Select(new[] { heavy, cruiser }, new ForceComposition(), ShipClass.Structure,
                 100f, 100f, 1f, Array.Empty<int>(), 1, selected, kind);
 
             Assert.That(ready, Is.True);
@@ -137,18 +138,19 @@ namespace EmpireAtWar.Tests.Editor
         public void TimeToDestroyTarget_BonusesOnlySiegeShipDpsInMixedForce()
         {
             var heavy = ForceOfClass(ShipClass.Dreadnought, 100f, (ShipClass.Structure, 40f));
-            var capital = Force(100f, (ShipClass.Structure, 40f));
+            var cruiser = ForceOfClass(ShipClass.Cruiser, 100f, (ShipClass.Structure, 40f));
             var combined = new ForceComposition();
-            combined.CopyFrom(capital);
+            combined.CopyFrom(cruiser);
             combined.Add(heavy);
+            float siegeBonus = SiegeDamage.GetMultiplier(ShipClass.Dreadnought, StructureKind.SecondStation) - 1f;
 
             Assert.That(CombatMatchup.TimeToDestroyTarget(combined, ShipClass.Structure, 100f, 100f,
-                StructureKind.SecondStation), Is.EqualTo(2f));
+                StructureKind.SecondStation), Is.EqualTo(200f / (80f + 40f * siegeBonus)).Within(0.0001f));
             Assert.That(CombatMatchup.TimeToDestroyTarget(combined, ShipClass.Structure, 100f, 100f,
                 StructureKind.MiningFacility), Is.EqualTo(2.5f));
 
             combined.Clear();
-            combined.Add(capital);
+            combined.Add(cruiser);
             Assert.That(CombatMatchup.TimeToDestroyTarget(combined, ShipClass.Structure, 100f, 100f,
                 StructureKind.SecondStation), Is.EqualTo(5f));
         }

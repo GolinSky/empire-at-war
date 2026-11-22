@@ -5,8 +5,9 @@ namespace EmpireAtWar.Components.Weapon
 {
     public static class SiegeDamage
     {
-        private const float DREADNOUGHT_MULTIPLIER = 1.5f;
-        private const float BATTLE_CRUISER_MULTIPLIER = 1.2f;
+        private const float DREADNOUGHT_MULTIPLIER = 2.5f;
+        private const float BATTLE_CRUISER_MULTIPLIER = 2f;
+        private const float CAPITAL_MULTIPLIER = 1.5f;
 
         public static float GetMultiplier(ShipClass attackerClass, StructureKind? targetKind)
         {
@@ -15,6 +16,7 @@ namespace EmpireAtWar.Components.Weapon
             {
                 ShipClass.Dreadnought => DREADNOUGHT_MULTIPLIER,
                 ShipClass.BattleCruiser => BATTLE_CRUISER_MULTIPLIER,
+                ShipClass.Capital => CAPITAL_MULTIPLIER,
                 _ => 1f
             };
         }
