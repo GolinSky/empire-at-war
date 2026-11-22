@@ -1,0 +1,275 @@
+fileFormatVersion: 2
+guid: 8803b9ca91ba92e43b9ca56db4406c51
+ModelImporter:
+  serializedVersion: 24200
+  internalIDToNameTable: []
+  externalObjects:
+  - first:
+      type: UnityEngine:Material
+      assembly: UnityEngine.CoreModule
+      name: ViscountDreadnought_M023
+    second: {fileID: 2100000, guid: 0dbdd83c54db55d4c864a0317603207a, type: 2}
+  - first:
+      type: UnityEngine:Material
+      assembly: UnityEngine.CoreModule
+      name: ViscountDreadnought_M024
+    second: {fileID: 2100000, guid: 33533afc66489c240829d269f18633a8, type: 2}
+  - first:
+      type: UnityEngine:Material
+      assembly: UnityEngine.CoreModule
+      name: ViscountDreadnought_M025
+    second: {fileID: 2100000, guid: baa1a352e76d71343ac6f7f663c7185f, type: 2}
+  - first:
+      type: UnityEngine:Material
+      assembly: UnityEngine.CoreModule
+      name: ViscountDreadnought_M026
+    second: {fileID: 2100000, guid: fcf2dfb11e6949f419f707e6af808c96, type: 2}
+  - first:
+      type: UnityEngine:Material
+      assembly: UnityEngine.CoreModule
+      name: ViscountDreadnought_M027
+    second: {fileID: 2100000, guid: 00be2dfcf7e3b024d81575fc698dde01, type: 2}
+  - first:
+      type: UnityEngine:Material
+      assembly: UnityEngine.CoreModule
+      name: ViscountDreadnought_M028
+    second: {fileID: 2100000, guid: 10c8963980125bf45b01f28d60f5a1cf, type: 2}
+  - first:
+      type: UnityEngine:Material
+      assembly: UnityEngine.CoreModule
+      name: ViscountDreadnought_M029
+    second: {fileID: 2100000, guid: 8e51892220a1772428f951be20321faf, type: 2}
+  - first:
+      type: UnityEngine:Material
+      assembly: UnityEngine.CoreModule
+      name: ViscountDreadnought_M030
+    second: {fileID: 2100000, guid: 069e077c93893184bb8f7b40f2f2a240, type: 2}
+  - first:
+      type: UnityEngine:Material
+      assembly: UnityEngine.CoreModule
+      name: ViscountDreadnought_M031
+    second: {fileID: 2100000, guid: c5a93c7b8bc22894194f8360d7b1b6d0, type: 2}
+  - first:
+      type: UnityEngine:Material
+      assembly: UnityEngine.CoreModule
+      name: ViscountDreadnought_M032
+    second: {fileID: 2100000, guid: fd580a623dcfe284ab7520a82d161525, type: 2}
+  - first:
+      type: UnityEngine:Material
+      assembly: UnityEngine.CoreModule
+      name: ViscountDreadnought_M033
+    second: {fileID: 2100000, guid: 486aad63e2fa12d488b1c0d634ba8ec3, type: 2}
+  - first:
+      type: UnityEngine:Material
+      assembly: UnityEngine.CoreModule
+      name: ViscountDreadnought_M034
+    second: {fileID: 2100000, guid: 7dc8586b902c15a4fa06fab2a9d87981, type: 2}
+  - first:
+      type: UnityEngine:Material
+      assembly: UnityEngine.CoreModule
+      name: ViscountDreadnought_M035
+    second: {fileID: 2100000, guid: 51d9f5c7242d6ad439cf011fcb263f65, type: 2}
+  - first:
+      type: UnityEngine:Material
+      assembly: UnityEngine.CoreModule
+      name: ViscountDreadnought_M049
+    second: {fileID: 2100000, guid: a85e039fa24a07f4f852f7efdbdf5462, type: 2}
+  - first:
+      type: UnityEngine:Material
+      assembly: UnityEngine.CoreModule
+      name: ViscountDreadnought_M050
+    second: {fileID: 2100000, guid: abf7a0002590d5f4499f84d784f990d2, type: 2}
+  - first:
+      type: UnityEngine:Material
+      assembly: UnityEngine.CoreModule
+      name: ViscountDreadnought_M051
+    second: {fileID: 2100000, guid: 284f1af39806ab045874339e8c07b91f, type: 2}
+  - first:
+      type: UnityEngine:Material
+      assembly: UnityEngine.CoreModule
+      name: ViscountDreadnought_M052
+    second: {fileID: 2100000, guid: 86550a8fc8c3781448df85ca2748f882, type: 2}
+  - first:
+      type: UnityEngine:Material
+      assembly: UnityEngine.CoreModule
+      name: ViscountDreadnought_M053
+    second: {fileID: 2100000, guid: 8d599632d9d0dd449900aec094e783e6, type: 2}
+  - first:
+      type: UnityEngine:Material
+      assembly: UnityEngine.CoreModule
+      name: ViscountDreadnought_M054
+    second: {fileID: 2100000, guid: d7b8208c737609a42a910fa8453025d7, type: 2}
+  - first:
+      type: UnityEngine:Material
+      assembly: UnityEngine.CoreModule
+      name: ViscountDreadnought_M055
+    second: {fileID: 2100000, guid: b83c21d26cc181b40aab5c3a5670a790, type: 2}
+  - first:
+      type: UnityEngine:Material
+      assembly: UnityEngine.CoreModule
+      name: ViscountDreadnought_M056
+    second: {fileID: 2100000, guid: 1285487f83cfeed40affc6c980b6e315, type: 2}
+  - first:
+      type: UnityEngine:Material
+      assembly: UnityEngine.CoreModule
+      name: ViscountDreadnought_M057
+    second: {fileID: 2100000, guid: b78911c88f65cb542b408cf3e6865a6e, type: 2}
+  - first:
+      type: UnityEngine:Material
+      assembly: UnityEngine.CoreModule
+      name: ViscountDreadnought_M058
+    second: {fileID: 2100000, guid: 6f8bb82f4e8bf2541835e6c459d561bd, type: 2}
+  - first:
+      type: UnityEngine:Material
+      assembly: UnityEngine.CoreModule
+      name: ViscountDreadnought_M059
+    second: {fileID: 2100000, guid: 06812adc392e7f04db75578fd171d272, type: 2}
+  - first:
+      type: UnityEngine:Material
+      assembly: UnityEngine.CoreModule
+      name: ViscountDreadnought_M060
+    second: {fileID: 2100000, guid: aed8ad13aade39b4686e6984c4bc9827, type: 2}
+  - first:
+      type: UnityEngine:Material
+      assembly: UnityEngine.CoreModule
+      name: ViscountDreadnought_M061
+    second: {fileID: 2100000, guid: 2e4d33f4b2f0f1849ab9bfbff29eb3cd, type: 2}
+  - first:
+      type: UnityEngine:Material
+      assembly: UnityEngine.CoreModule
+      name: ViscountDreadnought_M062
+    second: {fileID: 2100000, guid: 2d1c87c1f2a6ec246a17d652172a215c, type: 2}
+  - first:
+      type: UnityEngine:Material
+      assembly: UnityEngine.CoreModule
+      name: ViscountDreadnought_M063
+    second: {fileID: 2100000, guid: c16d881473f801343a68950a65f95185, type: 2}
+  - first:
+      type: UnityEngine:Material
+      assembly: UnityEngine.CoreModule
+      name: ViscountDreadnought_M064
+    second: {fileID: 2100000, guid: 4597fa3f71fb68444ab43d3f3b734682, type: 2}
+  - first:
+      type: UnityEngine:Material
+      assembly: UnityEngine.CoreModule
+      name: ViscountDreadnought_M065
+    second: {fileID: 2100000, guid: 4db797909be1b8f4c991f48f54dbb52c, type: 2}
+  - first:
+      type: UnityEngine:Material
+      assembly: UnityEngine.CoreModule
+      name: ViscountDreadnought_M066
+    second: {fileID: 2100000, guid: 9747008ec9a5ff64d8cdfa70466e643a, type: 2}
+  - first:
+      type: UnityEngine:Material
+      assembly: UnityEngine.CoreModule
+      name: ViscountDreadnought_M067
+    second: {fileID: 2100000, guid: 3caafa3bacac83a459863c1946cae296, type: 2}
+  - first:
+      type: UnityEngine:Material
+      assembly: UnityEngine.CoreModule
+      name: ViscountDreadnought_M068
+    second: {fileID: 2100000, guid: 98e2272e8b58bfe40b5655a942ef1276, type: 2}
+  materials:
+    materialImportMode: 1
+    materialName: 0
+    materialSearch: 1
+    materialLocation: 1
+  animations:
+    legacyGenerateAnimations: 4
+    bakeSimulation: 0
+    resampleCurves: 1
+    optimizeGameObjects: 0
+    removeConstantScaleCurves: 0
+    motionNodeName: 
+    animationImportErrors: 
+    animationImportWarnings: 
+    animationRetargetingWarnings: 
+    animationDoRetargetingWarnings: 0
+    importAnimatedCustomProperties: 0
+    importConstraints: 0
+    animationCompression: 1
+    animationRotationError: 0.5
+    animationPositionError: 0.5
+    animationScaleError: 0.5
+    animationWrapMode: 0
+    extraExposedTransformPaths: []
+    extraUserProperties: []
+    clipAnimations: []
+    isReadable: 1
+  meshes:
+    lODScreenPercentages: []
+    globalScale: 0.02
+    meshCompression: 0
+    addColliders: 0
+    useSRGBMaterialColor: 1
+    sortHierarchyByName: 1
+    importPhysicalCameras: 1
+    importVisibility: 1
+    importBlendShapes: 1
+    importCameras: 1
+    importLights: 1
+    nodeNameCollisionStrategy: 1
+    fileIdsGeneration: 2
+    swapUVChannels: 0
+    generateSecondaryUV: 0
+    useFileUnits: 1
+    keepQuads: 0
+    weldVertices: 0
+    bakeAxisConversion: 0
+    preserveHierarchy: 1
+    skinWeightsMode: 0
+    maxBonesPerVertex: 4
+    minBoneWeight: 0.001
+    optimizeBones: 1
+    generateMeshLods: 0
+    meshLodGenerationFlags: 0
+    maximumMeshLod: -1
+    meshOptimizationFlags: -1
+    indexFormat: 0
+    secondaryUVAngleDistortion: 8
+    secondaryUVAreaDistortion: 15.000001
+    secondaryUVHardAngle: 88
+    secondaryUVMarginMethod: 1
+    secondaryUVMinLightmapResolution: 40
+    secondaryUVMinObjectScale: 1
+    secondaryUVPackMargin: 4
+    useFileScale: 1
+    strictVertexDataChecks: 0
+  tangentSpace:
+    normalSmoothAngle: 60
+    normalImportMode: 0
+    tangentImportMode: 3
+    normalCalculationMode: 4
+    legacyComputeAllNormalsFromSmoothingGroupsWhenMeshHasBlendShapes: 0
+    blendShapeNormalImportMode: 1
+    normalSmoothingSource: 0
+  referencedClips: []
+  importAnimation: 0
+  humanDescription:
+    serializedVersion: 3
+    human: []
+    skeleton: []
+    armTwist: 0.5
+    foreArmTwist: 0.5
+    upperLegTwist: 0.5
+    legTwist: 0.5
+    armStretch: 0.05
+    legStretch: 0.05
+    feetSpacing: 0
+    globalScale: 0.0002
+    rootMotionBoneName: 
+    hasTranslationDoF: 0
+    hasExtraRoot: 0
+    skeletonHasParents: 1
+  lastHumanDescriptionAvatarSource: {instanceID: 0}
+  autoGenerateAvatarMappingIfUnspecified: 1
+  animationType: 2
+  humanoidOversampling: 1
+  avatarSetup: 0
+  addHumanoidExtraRootOnlyWhenUsingAvatar: 1
+  importBlendShapeDeformPercent: 1
+  remapMaterialsIfMaterialImportModeIsNone: 0
+  additionalBone: 0
+  userData: 
+  assetBundleName: 
+  assetBundleVariant: 

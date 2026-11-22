@@ -1,0 +1,278 @@
+[
+ {
+  "name": "ViscountDreadnought_M024",
+  "shader": "MeshBumpColorize.fx",
+  "base": "ViscountDreadnought_Rebel_Mon_Calamari_Viscount_Unsymm_2",
+  "normal": "ViscountDreadnought_Rebel_Mon_Calamari_Viscount_Unsymm_2_B"
+ },
+ {
+  "name": "ViscountDreadnought_M039",
+  "shader": "MeshShadowVolume.fx",
+  "base": null,
+  "normal": null
+ },
+ {
+  "name": "ViscountDreadnought_M050",
+  "shader": "MeshShield.fx",
+  "base": "ViscountDreadnought_Engine_Glow_Fancy_Blue",
+  "normal": null
+ },
+ {
+  "name": "ViscountDreadnought_M041",
+  "shader": "MeshShadowVolume.fx",
+  "base": null,
+  "normal": null
+ },
+ {
+  "name": "ViscountDreadnought_M045",
+  "shader": "MeshShadowVolume.fx",
+  "base": null,
+  "normal": null
+ },
+ {
+  "name": "ViscountDreadnought_M060",
+  "shader": "MeshBumpColorize.fx",
+  "base": "ViscountDreadnought_Rebel_DP_20",
+  "normal": "ViscountDreadnought_Rebel_DP_20_B"
+ },
+ {
+  "name": "ViscountDreadnought_M065",
+  "shader": "MeshAdditive.fx",
+  "base": "ViscountDreadnought_Lights_Grid_Orange_Desaturated_Sparse",
+  "normal": null
+ },
+ {
+  "name": "ViscountDreadnought_M034",
+  "shader": "MeshBumpColorize.fx",
+  "base": "ViscountDreadnought_Rebel_Mon_Calamari_Viscount_Unsymm_2",
+  "normal": "ViscountDreadnought_Rebel_Mon_Calamari_Viscount_Unsymm_2_B"
+ },
+ {
+  "name": "ViscountDreadnought_M046",
+  "shader": "MeshShadowVolume.fx",
+  "base": null,
+  "normal": null
+ },
+ {
+  "name": "ViscountDreadnought_M055",
+  "shader": "MeshBumpColorize.fx",
+  "base": "ViscountDreadnought_Hangar_2",
+  "normal": "ViscountDreadnought_Hangar_2_B"
+ },
+ {
+  "name": "ViscountDreadnought_M035",
+  "shader": "MeshBumpColorize.fx",
+  "base": "ViscountDreadnought_Rebel_Mon_Calamari_Viscount_Unsymm_3",
+  "normal": "ViscountDreadnought_Rebel_Mon_Calamari_Viscount_Unsymm_3_B"
+ },
+ {
+  "name": "ViscountDreadnought_M025",
+  "shader": "MeshBumpColorize.fx",
+  "base": "ViscountDreadnought_Rebel_Mon_Calamari_Viscount_Unsymm_1",
+  "normal": "ViscountDreadnought_Rebel_Mon_Calamari_Viscount_Unsymm_1_B"
+ },
+ {
+  "name": "ViscountDreadnought_M053",
+  "shader": "MeshAdditive.fx",
+  "base": "ViscountDreadnought_Rebel_Mon_Calamari_Viscount_Ambient",
+  "normal": null
+ },
+ {
+  "name": "ViscountDreadnought_M032",
+  "shader": "MeshBumpColorize.fx",
+  "base": "ViscountDreadnought_Rebel_Mon_Calamari_Viscount_Symm_3_Greeble",
+  "normal": "ViscountDreadnought_Rebel_Mon_Calamari_Viscount_Symm_3_Greeble_B"
+ },
+ {
+  "name": "ViscountDreadnought_M043",
+  "shader": "MeshShadowVolume.fx",
+  "base": null,
+  "normal": null
+ },
+ {
+  "name": "ViscountDreadnought_M049",
+  "shader": "MeshBumpColorize.fx",
+  "base": "ViscountDreadnought_Engine_Exhaust",
+  "normal": "ViscountDreadnought_Engine_Exhaust_B"
+ },
+ {
+  "name": "ViscountDreadnought_M038",
+  "shader": "MeshShadowVolume.fx",
+  "base": null,
+  "normal": null
+ },
+ {
+  "name": "ViscountDreadnought_M059",
+  "shader": "MeshAdditive.fx",
+  "base": "ViscountDreadnought_Empire_Death_Star_Lights",
+  "normal": null
+ },
+ {
+  "name": "ViscountDreadnought_M063",
+  "shader": "MeshAdditive.fx",
+  "base": "ViscountDreadnought_Rebel_Mon_Calamari_Viscount_Symm_1",
+  "normal": null
+ },
+ {
+  "name": "ViscountDreadnought_M026",
+  "shader": "MeshBumpColorize.fx",
+  "base": "ViscountDreadnought_Rebel_Mon_Calamari_Viscount_Symm_3_Greeble",
+  "normal": "ViscountDreadnought_Rebel_Mon_Calamari_Viscount_Symm_3_Greeble_B"
+ },
+ {
+  "name": "ViscountDreadnought_M051",
+  "shader": "MeshBumpColorize.fx",
+  "base": "ViscountDreadnought_Rebel_Mon_Calamari_Viscount_Symm_2",
+  "normal": "ViscountDreadnought_Rebel_Mon_Calamari_Viscount_Symm_2_B"
+ },
+ {
+  "name": "ViscountDreadnought_M056",
+  "shader": "MeshShield.fx",
+  "base": "ViscountDreadnought_Nb_shieldbase_Blue",
+  "normal": null
+ },
+ {
+  "name": "ViscountDreadnought_M028",
+  "shader": "MeshBumpColorize.fx",
+  "base": "ViscountDreadnought_Rebel_Mon_Calamari_Viscount_Symm_3",
+  "normal": "ViscountDreadnought_Rebel_Mon_Calamari_Viscount_Symm_3_B"
+ },
+ {
+  "name": "ViscountDreadnought_M040",
+  "shader": "MeshShadowVolume.fx",
+  "base": null,
+  "normal": null
+ },
+ {
+  "name": "ViscountDreadnought_M068",
+  "shader": "MeshBumpColorize.fx",
+  "base": "ViscountDreadnought_Rebel_DP_20",
+  "normal": "ViscountDreadnought_Rebel_DP_20_B"
+ },
+ {
+  "name": "ViscountDreadnought_M061",
+  "shader": "MeshBumpColorize.fx",
+  "base": "ViscountDreadnought_Rebel_Mon_Calamari_Viscount_Symm_1",
+  "normal": "ViscountDreadnought_Rebel_Mon_Calamari_Viscount_Symm_1_B"
+ },
+ {
+  "name": "ViscountDreadnought_M064",
+  "shader": "MeshAdditive.fx",
+  "base": "ViscountDreadnought_Lights_Grid_Orange_Desaturated_Sparse",
+  "normal": null
+ },
+ {
+  "name": "ViscountDreadnought_M067",
+  "shader": "MeshAdditive.fx",
+  "base": "ViscountDreadnought_Lights_Grid_Orange_Desaturated_Sparse",
+  "normal": null
+ },
+ {
+  "name": "ViscountDreadnought_M030",
+  "shader": "MeshBumpColorize.fx",
+  "base": "ViscountDreadnought_Rebel_Mon_Calamari_Viscount_Symm_1",
+  "normal": "ViscountDreadnought_Rebel_Mon_Calamari_Viscount_Symm_1_B"
+ },
+ {
+  "name": "ViscountDreadnought_M057",
+  "shader": "MeshAdditive.fx",
+  "base": "ViscountDreadnought_Empire_Death_Star_Lights",
+  "normal": null
+ },
+ {
+  "name": "ViscountDreadnought_M066",
+  "shader": "MeshAdditive.fx",
+  "base": "ViscountDreadnought_Lights_Grid_Orange_Desaturated_Sparse",
+  "normal": null
+ },
+ {
+  "name": "ViscountDreadnought_M029",
+  "shader": "MeshBumpColorize.fx",
+  "base": "ViscountDreadnought_Rebel_Mon_Calamari_Viscount_Symm_2",
+  "normal": "ViscountDreadnought_Rebel_Mon_Calamari_Viscount_Symm_2_B"
+ },
+ {
+  "name": "ViscountDreadnought_M031",
+  "shader": "MeshBumpColorize.fx",
+  "base": "ViscountDreadnought_Rebel_Mon_Calamari_Viscount_Symm_3",
+  "normal": "ViscountDreadnought_Rebel_Mon_Calamari_Viscount_Symm_3_B"
+ },
+ {
+  "name": "ViscountDreadnought_M036",
+  "shader": "MeshShadowVolume.fx",
+  "base": null,
+  "normal": null
+ },
+ {
+  "name": "ViscountDreadnought_M062",
+  "shader": "MeshAdditive.fx",
+  "base": "ViscountDreadnought_Hangar_2",
+  "normal": null
+ },
+ {
+  "name": "ViscountDreadnought_M042",
+  "shader": "MeshShadowVolume.fx",
+  "base": null,
+  "normal": null
+ },
+ {
+  "name": "ViscountDreadnought_M048",
+  "shader": "MeshShadowVolume.fx",
+  "base": null,
+  "normal": null
+ },
+ {
+  "name": "ViscountDreadnought_M052",
+  "shader": "MeshAdditive.fx",
+  "base": "ViscountDreadnought_Engine_Exhaust",
+  "normal": null
+ },
+ {
+  "name": "ViscountDreadnought_M037",
+  "shader": "MeshShadowVolume.fx",
+  "base": null,
+  "normal": null
+ },
+ {
+  "name": "ViscountDreadnought_M047",
+  "shader": "MeshShadowVolume.fx",
+  "base": null,
+  "normal": null
+ },
+ {
+  "name": "ViscountDreadnought_M058",
+  "shader": "MeshAdditive.fx",
+  "base": "ViscountDreadnought_Lights_Grid_Orange_Desaturated_Sparse",
+  "normal": null
+ },
+ {
+  "name": "ViscountDreadnought_M027",
+  "shader": "MeshBumpColorize.fx",
+  "base": "ViscountDreadnought_Rebel_Mon_Calamari_Viscount_Unsymm_3",
+  "normal": "ViscountDreadnought_Rebel_Mon_Calamari_Viscount_Unsymm_3_B"
+ },
+ {
+  "name": "ViscountDreadnought_M023",
+  "shader": "MeshBumpColorize.fx",
+  "base": "ViscountDreadnought_Rebel_Mon_Calamari_Viscount_Unsymm_4",
+  "normal": "ViscountDreadnought_Rebel_Mon_Calamari_Viscount_Unsymm_4_B"
+ },
+ {
+  "name": "ViscountDreadnought_M044",
+  "shader": "MeshShadowVolume.fx",
+  "base": null,
+  "normal": null
+ },
+ {
+  "name": "ViscountDreadnought_M054",
+  "shader": "MeshAdditive.fx",
+  "base": "ViscountDreadnought_Rebel_Mon_Calamari_Viscount_Symm_2",
+  "normal": null
+ },
+ {
+  "name": "ViscountDreadnought_M033",
+  "shader": "MeshBumpColorize.fx",
+  "base": "ViscountDreadnought_Rebel_Mon_Calamari_Viscount_Symm_3_Greeble",
+  "normal": "ViscountDreadnought_Rebel_Mon_Calamari_Viscount_Symm_3_Greeble_B"
+ }
+]

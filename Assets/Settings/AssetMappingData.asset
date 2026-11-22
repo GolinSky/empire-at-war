@@ -1911,3 +1911,31 @@ MonoBehaviour:
         m_SubObjectType: 
         m_SubObjectGUID: 
         m_EditorAssetChanged: 0
+    - key: ViscountPrototypeShipView
+      value:
+        m_AssetGUID: 8a251f1d1bb49cd4ca16c8ba251ebfa8
+        m_SubObjectName: 
+        m_SubObjectType: 
+        m_SubObjectGUID: 
+        m_EditorAssetChanged: 0
+    - key: ViscountPrototypeShipData
+      value:
+        m_AssetGUID: 0eaafddbfb704eb4c815d1c958de8a19
+        m_SubObjectName: 
+        m_SubObjectType: 
+        m_SubObjectGUID: 
+        m_EditorAssetChanged: 0
+    - key: ViscountDreadnoughtShipView
+      value:
+        m_AssetGUID: 059e0128b06175340a92fe5bdf232b48
+        m_SubObjectName: 
+        m_SubObjectType: 
+        m_SubObjectGUID: 
+        m_EditorAssetChanged: 0
+    - key: ViscountDreadnoughtShipData
+      value:
+        m_AssetGUID: 61aa1eab4619d32418a2d8fc4ca0900a
+        m_SubObjectName: 
+        m_SubObjectType: 
+        m_SubObjectGUID: 
+        m_EditorAssetChanged: 0

@@ -86,6 +86,8 @@ namespace EmpireAtWar.Models.Factions
         MC80bRemonda = 325,
         MediatorBattlecruiser = 326,
         AssaultFrigateMkII = 309,
+        ViscountPrototype = 331,
+        ViscountDreadnought = 332,
 
     }
 }

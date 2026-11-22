@@ -20,6 +20,11 @@ MonoBehaviour:
     m_ReadOnly: 0
     m_SerializedLabels: []
     FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 059e0128b06175340a92fe5bdf232b48
+    m_Address: ViscountDreadnoughtShipView
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
   - m_GUID: 0ac08f12d8ee11342a737e2233105f18
     m_Address: HomeOneReinforcementView
     m_ReadOnly: 0
@@ -77,6 +82,11 @@ MonoBehaviour:
     FlaggedDuringContentUpdateRestriction: 0
   - m_GUID: 3471504197b5da542ad0dc223160c94d
     m_Address: AssaultFrigateMkIIWreckView
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 379ec4e5988f9d749a3f8cfff63e33ba
+    m_Address: ViscountPrototypeWreckView
     m_ReadOnly: 0
     m_SerializedLabels: []
     FlaggedDuringContentUpdateRestriction: 0
@@ -170,6 +180,11 @@ MonoBehaviour:
     m_ReadOnly: 0
     m_SerializedLabels: []
     FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 80e7199fabf02654ba8533d9e56e4ed9
+    m_Address: ViscountDreadnoughtWreckView
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
   - m_GUID: 81cbdd3371dcba04caf371c90d70967e
     m_Address: CorellianCorvetteWreckView
     m_ReadOnly: 0
@@ -212,6 +227,11 @@ MonoBehaviour:
     FlaggedDuringContentUpdateRestriction: 0
   - m_GUID: 89ff134f310a9a4498ac3743b1524c26
     m_Address: NebulonBReinforcementView
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 8a251f1d1bb49cd4ca16c8ba251ebfa8
+    m_Address: ViscountPrototypeShipView
     m_ReadOnly: 0
     m_SerializedLabels: []
     FlaggedDuringContentUpdateRestriction: 0
@@ -345,6 +365,11 @@ MonoBehaviour:
     m_ReadOnly: 0
     m_SerializedLabels: []
     FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: eb858c517dbe5c045b7ee430367feb7c
+    m_Address: ViscountPrototypeReinforcementView
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
   - m_GUID: ebd944d8ca3d2f14389ad26e0a56f4e3
     m_Address: MC80JusticeShipView
     m_ReadOnly: 0
@@ -372,6 +397,11 @@ MonoBehaviour:
     FlaggedDuringContentUpdateRestriction: 0
   - m_GUID: fcf89bb599b6ed44b9c260bed720ecd4
     m_Address: HomeOneWreckView
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: fd4e0b56135087741b6a1d31379a22ff
+    m_Address: ViscountDreadnoughtReinforcementView
     m_ReadOnly: 0
     m_SerializedLabels: []
     FlaggedDuringContentUpdateRestriction: 0

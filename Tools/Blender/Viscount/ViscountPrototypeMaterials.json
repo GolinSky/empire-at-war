@@ -1,0 +1,32 @@
+[
+ {
+  "name": "ViscountPrototype_M006",
+  "shader": "MeshBumpColorize.fx",
+  "base": "ViscountPrototype_Viscount",
+  "normal": "ViscountPrototype_Viscount_B"
+ },
+ {
+  "name": "ViscountPrototype_M007",
+  "shader": "MeshAdditive.fx",
+  "base": "ViscountPrototype_Viscount_L",
+  "normal": null
+ },
+ {
+  "name": "ViscountPrototype_M010",
+  "shader": "MeshShadowVolume.fx",
+  "base": null,
+  "normal": null
+ },
+ {
+  "name": "ViscountPrototype_M008",
+  "shader": "MeshShadowVolume.fx",
+  "base": null,
+  "normal": null
+ },
+ {
+  "name": "ViscountPrototype_M009",
+  "shader": "MeshCollision.fx",
+  "base": null,
+  "normal": null
+ }
+]

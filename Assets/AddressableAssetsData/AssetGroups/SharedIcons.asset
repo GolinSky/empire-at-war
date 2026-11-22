@@ -295,6 +295,11 @@ MonoBehaviour:
     m_ReadOnly: 0
     m_SerializedLabels: []
     FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 6777cd15cb22be545b68b9d5550c5773
+    m_Address: Assets/Art/Textures/Ui/Icons/ShipIcon/Rebellion/ViscountPrototypeIcon.png
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
   - m_GUID: 677a9fb4a7566e14d932893ee85f3357
     m_Address: Assets/Art/Textures/Ui/Icons/ShipIcon/RothanaIcon.png
     m_ReadOnly: 0
@@ -692,6 +697,11 @@ MonoBehaviour:
     FlaggedDuringContentUpdateRestriction: 0
   - m_GUID: f786c5540a32883458104436e8362962
     m_Address: Assets/Art/Textures/Ui/Icons/ShipIcon/Separatist/LupusIcon.png
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: f7ccaa4fef7a37e4f976890d3b3784fb
+    m_Address: Assets/Art/Textures/Ui/Icons/ShipIcon/Rebellion/ViscountDreadnoughtIcon.png
     m_ReadOnly: 0
     m_SerializedLabels: []
     FlaggedDuringContentUpdateRestriction: 0

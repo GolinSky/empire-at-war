@@ -1,0 +1,4 @@
+{
+ "Viscount_Dreadnought_Draft": {"hull":180000,"shields":225000,"loadout":{"3":24,"5":16,"4":20,"68":7,"91":11,"32":12,"48":12}},
+ "Viscount_Prototype_Draft": {"hull":55000,"shields":60000,"loadout":{"3":10,"90":10,"91":12,"94":14,"93":4,"66":4}}
+}

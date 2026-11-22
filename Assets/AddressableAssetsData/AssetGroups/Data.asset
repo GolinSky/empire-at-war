@@ -55,6 +55,11 @@ MonoBehaviour:
     m_ReadOnly: 0
     m_SerializedLabels: []
     FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 0eaafddbfb704eb4c815d1c958de8a19
+    m_Address: ViscountPrototypeShipData
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
   - m_GUID: 112a722429b68b44b9bf748ac57265f8
     m_Address: YWingSquadronData
     m_ReadOnly: 0
@@ -237,6 +242,11 @@ MonoBehaviour:
     FlaggedDuringContentUpdateRestriction: 0
   - m_GUID: 5cfe1457f6a65cb46a369fc81f54997d
     m_Address: RecusantDreadnoughtShipData
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 61aa1eab4619d32418a2d8fc4ca0900a
+    m_Address: ViscountDreadnoughtShipData
     m_ReadOnly: 0
     m_SerializedLabels: []
     FlaggedDuringContentUpdateRestriction: 0

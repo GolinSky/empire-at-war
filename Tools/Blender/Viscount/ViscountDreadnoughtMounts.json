@@ -1,0 +1,683 @@
+{
+ "weapons": [
+  {
+   "socket": "HP_IC_03",
+   "weaponType": 68,
+   "sourceProjectile": "Proj_Ship_Ion_Cannon_Large_Quad",
+   "id": 0
+  },
+  {
+   "socket": "HP_TL_05",
+   "weaponType": 5,
+   "sourceProjectile": "Proj_Ship_Turbolaser_Red_Dual",
+   "id": 1
+  },
+  {
+   "socket": "HP_IC_01",
+   "weaponType": 32,
+   "sourceProjectile": "Proj_Ship_Ion_Cannon_Large",
+   "id": 2
+  },
+  {
+   "socket": "HP_IC_02",
+   "weaponType": 32,
+   "sourceProjectile": "Proj_Ship_Ion_Cannon_Large",
+   "id": 3
+  },
+  {
+   "socket": "HP_TL_06",
+   "weaponType": 5,
+   "sourceProjectile": "Proj_Ship_Turbolaser_Red_Dual",
+   "id": 4
+  },
+  {
+   "socket": "HP_IC_04",
+   "weaponType": 91,
+   "sourceProjectile": "Proj_Ship_Ion_Cannon_Large_Dual",
+   "id": 5
+  },
+  {
+   "socket": "HP_TL_42",
+   "weaponType": 4,
+   "sourceProjectile": "Proj_Ship_Turbolaser_Red",
+   "id": 6
+  },
+  {
+   "socket": "HP_TL_01",
+   "weaponType": 3,
+   "sourceProjectile": "Proj_Ship_Turbolaser_Red_Quad",
+   "id": 7
+  },
+  {
+   "socket": "HP_TL_02",
+   "weaponType": 3,
+   "sourceProjectile": "Proj_Ship_Turbolaser_Red_Quad",
+   "id": 8
+  },
+  {
+   "socket": "HP_TL_03",
+   "weaponType": 5,
+   "sourceProjectile": "Proj_Ship_Turbolaser_Red_Dual",
+   "id": 9
+  },
+  {
+   "socket": "HP_TL_04",
+   "weaponType": 5,
+   "sourceProjectile": "Proj_Ship_Turbolaser_Red_Dual",
+   "id": 10
+  },
+  {
+   "socket": "HP_TL_07",
+   "weaponType": 4,
+   "sourceProjectile": "Proj_Ship_Turbolaser_Red",
+   "id": 11
+  },
+  {
+   "socket": "HP_TL_08",
+   "weaponType": 4,
+   "sourceProjectile": "Proj_Ship_Turbolaser_Red",
+   "id": 12
+  },
+  {
+   "socket": "HP_PTL_02",
+   "weaponType": 48,
+   "sourceProjectile": "Proj_Proton_Torpedo_Heavy",
+   "id": 13
+  },
+  {
+   "socket": "HP_PTL_08",
+   "weaponType": 48,
+   "sourceProjectile": "Proj_Proton_Torpedo_Heavy",
+   "id": 14
+  },
+  {
+   "socket": "HP_TL_50",
+   "weaponType": 5,
+   "sourceProjectile": "Proj_Ship_Turbolaser_Red_Dual",
+   "id": 15
+  },
+  {
+   "socket": "HP_IC_05",
+   "weaponType": 91,
+   "sourceProjectile": "Proj_Ship_Ion_Cannon_Large_Dual",
+   "id": 16
+  },
+  {
+   "socket": "HP_IC_06",
+   "weaponType": 91,
+   "sourceProjectile": "Proj_Ship_Ion_Cannon_Large_Dual",
+   "id": 17
+  },
+  {
+   "socket": "HP_HTL_01",
+   "weaponType": 3,
+   "sourceProjectile": "Proj_Ship_Turbolaser_Red_Heavy",
+   "id": 18
+  },
+  {
+   "socket": "HP_IC_27",
+   "weaponType": 32,
+   "sourceProjectile": "Proj_Ship_Ion_Cannon_Large",
+   "id": 19
+  },
+  {
+   "socket": "HP_IC_29",
+   "weaponType": 91,
+   "sourceProjectile": "Proj_Ship_Ion_Cannon_Large_Dual",
+   "id": 20
+  },
+  {
+   "socket": "HP_IC_30",
+   "weaponType": 91,
+   "sourceProjectile": "Proj_Ship_Ion_Cannon_Large_Dual",
+   "id": 21
+  },
+  {
+   "socket": "HP_TL_10",
+   "weaponType": 4,
+   "sourceProjectile": "Proj_Ship_Turbolaser_Red",
+   "id": 22
+  },
+  {
+   "socket": "HP_TL_09",
+   "weaponType": 4,
+   "sourceProjectile": "Proj_Ship_Turbolaser_Red",
+   "id": 23
+  },
+  {
+   "socket": "HP_IC_17",
+   "weaponType": 32,
+   "sourceProjectile": "Proj_Ship_Ion_Cannon_Large",
+   "id": 24
+  },
+  {
+   "socket": "HP_IC_18",
+   "weaponType": 32,
+   "sourceProjectile": "Proj_Ship_Ion_Cannon_Large",
+   "id": 25
+  },
+  {
+   "socket": "HP_HTL_02",
+   "weaponType": 3,
+   "sourceProjectile": "Proj_Ship_Turbolaser_Red_Heavy",
+   "id": 26
+  },
+  {
+   "socket": "HP_IC_15",
+   "weaponType": 68,
+   "sourceProjectile": "Proj_Ship_Ion_Cannon_Large_Quad",
+   "id": 27
+  },
+  {
+   "socket": "HP_IC_16",
+   "weaponType": 68,
+   "sourceProjectile": "Proj_Ship_Ion_Cannon_Large_Quad",
+   "id": 28
+  },
+  {
+   "socket": "HP_IC_28",
+   "weaponType": 91,
+   "sourceProjectile": "Proj_Ship_Ion_Cannon_Large_Dual",
+   "id": 29
+  },
+  {
+   "socket": "HP_TL_49",
+   "weaponType": 3,
+   "sourceProjectile": "Proj_Ship_Turbolaser_Red_Quad",
+   "id": 30
+  },
+  {
+   "socket": "HP_PTL_03",
+   "weaponType": 48,
+   "sourceProjectile": "Proj_Proton_Torpedo_Heavy",
+   "id": 31
+  },
+  {
+   "socket": "HP_PTL_09",
+   "weaponType": 48,
+   "sourceProjectile": "Proj_Proton_Torpedo_Heavy",
+   "id": 32
+  },
+  {
+   "socket": "HP_IC_26",
+   "weaponType": 68,
+   "sourceProjectile": "Proj_Ship_Ion_Cannon_Large_Quad",
+   "id": 33
+  },
+  {
+   "socket": "HP_TL_17",
+   "weaponType": 4,
+   "sourceProjectile": "Proj_Ship_Turbolaser_Red",
+   "id": 34
+  },
+  {
+   "socket": "HP_TL_21",
+   "weaponType": 4,
+   "sourceProjectile": "Proj_Ship_Turbolaser_Red",
+   "id": 35
+  },
+  {
+   "socket": "HP_IC_07",
+   "weaponType": 91,
+   "sourceProjectile": "Proj_Ship_Ion_Cannon_Large_Dual",
+   "id": 36
+  },
+  {
+   "socket": "HP_IC_09",
+   "weaponType": 91,
+   "sourceProjectile": "Proj_Ship_Ion_Cannon_Large_Dual",
+   "id": 37
+  },
+  {
+   "socket": "HP_HTL_03",
+   "weaponType": 3,
+   "sourceProjectile": "Proj_Ship_Turbolaser_Red_Heavy",
+   "id": 38
+  },
+  {
+   "socket": "HP_HTL_04",
+   "weaponType": 3,
+   "sourceProjectile": "Proj_Ship_Turbolaser_Red_Heavy",
+   "id": 39
+  },
+  {
+   "socket": "HP_IC_08",
+   "weaponType": 68,
+   "sourceProjectile": "Proj_Ship_Ion_Cannon_Large_Quad",
+   "id": 40
+  },
+  {
+   "socket": "HP_IC_10",
+   "weaponType": 68,
+   "sourceProjectile": "Proj_Ship_Ion_Cannon_Large_Quad",
+   "id": 41
+  },
+  {
+   "socket": "HP_TL_19",
+   "weaponType": 4,
+   "sourceProjectile": "Proj_Ship_Turbolaser_Red",
+   "id": 42
+  },
+  {
+   "socket": "HP_TL_23",
+   "weaponType": 4,
+   "sourceProjectile": "Proj_Ship_Turbolaser_Red",
+   "id": 43
+  },
+  {
+   "socket": "HP_IC_13",
+   "weaponType": 32,
+   "sourceProjectile": "Proj_Ship_Ion_Cannon_Large",
+   "id": 44
+  },
+  {
+   "socket": "HP_IC_14",
+   "weaponType": 32,
+   "sourceProjectile": "Proj_Ship_Ion_Cannon_Large",
+   "id": 45
+  },
+  {
+   "socket": "HP_TL_48",
+   "weaponType": 3,
+   "sourceProjectile": "Proj_Ship_Turbolaser_Red_Quad",
+   "id": 46
+  },
+  {
+   "socket": "HP_TL_31",
+   "weaponType": 3,
+   "sourceProjectile": "Proj_Ship_Turbolaser_Red_Quad",
+   "id": 47
+  },
+  {
+   "socket": "HP_HTL_08",
+   "weaponType": 3,
+   "sourceProjectile": "Proj_Ship_Turbolaser_Red_Heavy",
+   "id": 48
+  },
+  {
+   "socket": "HP_TL_47",
+   "weaponType": 3,
+   "sourceProjectile": "Proj_Ship_Turbolaser_Red_Quad",
+   "id": 49
+  },
+  {
+   "socket": "HP_TL_11",
+   "weaponType": 3,
+   "sourceProjectile": "Proj_Ship_Turbolaser_Red_Quad",
+   "id": 50
+  },
+  {
+   "socket": "HP_TL_12",
+   "weaponType": 3,
+   "sourceProjectile": "Proj_Ship_Turbolaser_Red_Quad",
+   "id": 51
+  },
+  {
+   "socket": "HP_TL_18",
+   "weaponType": 4,
+   "sourceProjectile": "Proj_Ship_Turbolaser_Red",
+   "id": 52
+  },
+  {
+   "socket": "HP_TL_22",
+   "weaponType": 4,
+   "sourceProjectile": "Proj_Ship_Turbolaser_Red",
+   "id": 53
+  },
+  {
+   "socket": "HP_PTL_01",
+   "weaponType": 48,
+   "sourceProjectile": "Proj_Proton_Torpedo_Heavy",
+   "id": 54
+  },
+  {
+   "socket": "HP_PTL_07",
+   "weaponType": 48,
+   "sourceProjectile": "Proj_Proton_Torpedo_Heavy",
+   "id": 55
+  },
+  {
+   "socket": "HP_TL_13",
+   "weaponType": 4,
+   "sourceProjectile": "Proj_Ship_Turbolaser_Red",
+   "id": 56
+  },
+  {
+   "socket": "HP_TL_14",
+   "weaponType": 4,
+   "sourceProjectile": "Proj_Ship_Turbolaser_Red",
+   "id": 57
+  },
+  {
+   "socket": "HP_HTL_10",
+   "weaponType": 3,
+   "sourceProjectile": "Proj_Ship_Turbolaser_Red_Heavy",
+   "id": 58
+  },
+  {
+   "socket": "HP_TL_20",
+   "weaponType": 4,
+   "sourceProjectile": "Proj_Ship_Turbolaser_Red",
+   "id": 59
+  },
+  {
+   "socket": "HP_TL_24",
+   "weaponType": 4,
+   "sourceProjectile": "Proj_Ship_Turbolaser_Red",
+   "id": 60
+  },
+  {
+   "socket": "HP_TL_27",
+   "weaponType": 4,
+   "sourceProjectile": "Proj_Ship_Turbolaser_Red",
+   "id": 61
+  },
+  {
+   "socket": "HP_TL_28",
+   "weaponType": 4,
+   "sourceProjectile": "Proj_Ship_Turbolaser_Red",
+   "id": 62
+  },
+  {
+   "socket": "HP_TL_32",
+   "weaponType": 3,
+   "sourceProjectile": "Proj_Ship_Turbolaser_Red_Quad",
+   "id": 63
+  },
+  {
+   "socket": "HP_TL_29",
+   "weaponType": 5,
+   "sourceProjectile": "Proj_Ship_Turbolaser_Red_Dual",
+   "id": 64
+  },
+  {
+   "socket": "HP_TL_30",
+   "weaponType": 5,
+   "sourceProjectile": "Proj_Ship_Turbolaser_Red_Dual",
+   "id": 65
+  },
+  {
+   "socket": "HP_HTL_07",
+   "weaponType": 3,
+   "sourceProjectile": "Proj_Ship_Turbolaser_Red_Heavy",
+   "id": 66
+  },
+  {
+   "socket": "HP_HTL_09",
+   "weaponType": 3,
+   "sourceProjectile": "Proj_Ship_Turbolaser_Red_Heavy",
+   "id": 67
+  },
+  {
+   "socket": "HP_TL_15",
+   "weaponType": 5,
+   "sourceProjectile": "Proj_Ship_Turbolaser_Red_Dual",
+   "id": 68
+  },
+  {
+   "socket": "HP_TL_16",
+   "weaponType": 5,
+   "sourceProjectile": "Proj_Ship_Turbolaser_Red_Dual",
+   "id": 69
+  },
+  {
+   "socket": "HP_PTL_04",
+   "weaponType": 48,
+   "sourceProjectile": "Proj_Proton_Torpedo_Heavy",
+   "id": 70
+  },
+  {
+   "socket": "HP_PTL_10",
+   "weaponType": 48,
+   "sourceProjectile": "Proj_Proton_Torpedo_Heavy",
+   "id": 71
+  },
+  {
+   "socket": "HP_TL_25",
+   "weaponType": 5,
+   "sourceProjectile": "Proj_Ship_Turbolaser_Red_Dual",
+   "id": 72
+  },
+  {
+   "socket": "HP_TL_26",
+   "weaponType": 5,
+   "sourceProjectile": "Proj_Ship_Turbolaser_Red_Dual",
+   "id": 73
+  },
+  {
+   "socket": "HP_IC_23",
+   "weaponType": 32,
+   "sourceProjectile": "Proj_Ship_Ion_Cannon_Large",
+   "id": 74
+  },
+  {
+   "socket": "HP_IC_24",
+   "weaponType": 32,
+   "sourceProjectile": "Proj_Ship_Ion_Cannon_Large",
+   "id": 75
+  },
+  {
+   "socket": "HP_IC_21",
+   "weaponType": 91,
+   "sourceProjectile": "Proj_Ship_Ion_Cannon_Large_Dual",
+   "id": 76
+  },
+  {
+   "socket": "HP_IC_22",
+   "weaponType": 91,
+   "sourceProjectile": "Proj_Ship_Ion_Cannon_Large_Dual",
+   "id": 77
+  },
+  {
+   "socket": "HP_TL_33",
+   "weaponType": 3,
+   "sourceProjectile": "Proj_Ship_Turbolaser_Red_Quad",
+   "id": 78
+  },
+  {
+   "socket": "HP_TL_34",
+   "weaponType": 3,
+   "sourceProjectile": "Proj_Ship_Turbolaser_Red_Quad",
+   "id": 79
+  },
+  {
+   "socket": "HP_TL_41",
+   "weaponType": 4,
+   "sourceProjectile": "Proj_Ship_Turbolaser_Red",
+   "id": 80
+  },
+  {
+   "socket": "HP_HTL_05",
+   "weaponType": 3,
+   "sourceProjectile": "Proj_Ship_Turbolaser_Red_Heavy",
+   "id": 81
+  },
+  {
+   "socket": "HP_HTL_06",
+   "weaponType": 3,
+   "sourceProjectile": "Proj_Ship_Turbolaser_Red_Heavy",
+   "id": 82
+  },
+  {
+   "socket": "HP_IC_11",
+   "weaponType": 32,
+   "sourceProjectile": "Proj_Ship_Ion_Cannon_Large",
+   "id": 83
+  },
+  {
+   "socket": "HP_IC_12",
+   "weaponType": 32,
+   "sourceProjectile": "Proj_Ship_Ion_Cannon_Large",
+   "id": 84
+  },
+  {
+   "socket": "HP_PTL_05",
+   "weaponType": 48,
+   "sourceProjectile": "Proj_Proton_Torpedo_Heavy",
+   "id": 85
+  },
+  {
+   "socket": "HP_PTL_11",
+   "weaponType": 48,
+   "sourceProjectile": "Proj_Proton_Torpedo_Heavy",
+   "id": 86
+  },
+  {
+   "socket": "HP_TL_38",
+   "weaponType": 4,
+   "sourceProjectile": "Proj_Ship_Turbolaser_Red",
+   "id": 87
+  },
+  {
+   "socket": "HP_TL_39",
+   "weaponType": 3,
+   "sourceProjectile": "Proj_Ship_Turbolaser_Red_Quad",
+   "id": 88
+  },
+  {
+   "socket": "HP_TL_40",
+   "weaponType": 3,
+   "sourceProjectile": "Proj_Ship_Turbolaser_Red_Quad",
+   "id": 89
+  },
+  {
+   "socket": "HP_TL_43",
+   "weaponType": 5,
+   "sourceProjectile": "Proj_Ship_Turbolaser_Red_Dual",
+   "id": 90
+  },
+  {
+   "socket": "HP_TL_44",
+   "weaponType": 5,
+   "sourceProjectile": "Proj_Ship_Turbolaser_Red_Dual",
+   "id": 91
+  },
+  {
+   "socket": "HP_PTL_06",
+   "weaponType": 48,
+   "sourceProjectile": "Proj_Proton_Torpedo_Heavy",
+   "id": 92
+  },
+  {
+   "socket": "HP_PTL_12",
+   "weaponType": 48,
+   "sourceProjectile": "Proj_Proton_Torpedo_Heavy",
+   "id": 93
+  },
+  {
+   "socket": "HP_TL_37",
+   "weaponType": 4,
+   "sourceProjectile": "Proj_Ship_Turbolaser_Red",
+   "id": 94
+  },
+  {
+   "socket": "HP_TL_45",
+   "weaponType": 5,
+   "sourceProjectile": "Proj_Ship_Turbolaser_Red_Dual",
+   "id": 95
+  },
+  {
+   "socket": "HP_TL_46",
+   "weaponType": 5,
+   "sourceProjectile": "Proj_Ship_Turbolaser_Red_Dual",
+   "id": 96
+  },
+  {
+   "socket": "HP_TL_35",
+   "weaponType": 5,
+   "sourceProjectile": "Proj_Ship_Turbolaser_Red_Dual",
+   "id": 97
+  },
+  {
+   "socket": "HP_IC_25",
+   "weaponType": 32,
+   "sourceProjectile": "Proj_Ship_Ion_Cannon_Large",
+   "id": 98
+  },
+  {
+   "socket": "HP_TL_36",
+   "weaponType": 3,
+   "sourceProjectile": "Proj_Ship_Turbolaser_Red_Quad",
+   "id": 99
+  },
+  {
+   "socket": "HP_IC_20",
+   "weaponType": 68,
+   "sourceProjectile": "Proj_Ship_Ion_Cannon_Large_Quad",
+   "id": 100
+  },
+  {
+   "socket": "HP_IC_19",
+   "weaponType": 91,
+   "sourceProjectile": "Proj_Ship_Ion_Cannon_Large_Dual",
+   "id": 101
+  }
+ ],
+ "systems": [
+  {
+   "socket": "HP_Hangar_01",
+   "system": "Hangar",
+   "id": 102
+  },
+  {
+   "socket": "HP_Hangar_02",
+   "system": "Hangar",
+   "id": 103
+  },
+  {
+   "socket": "HP_Hangar_05",
+   "system": "Hangar",
+   "id": 104
+  },
+  {
+   "socket": "HP_Shield_Gen_04",
+   "system": "ShieldGenerator",
+   "id": 105
+  },
+  {
+   "socket": "HP_Hangar_03",
+   "system": "Hangar",
+   "id": 106
+  },
+  {
+   "socket": "HP_Hangar_04",
+   "system": "Hangar",
+   "id": 107
+  },
+  {
+   "socket": "HP_Shield_Gen_03",
+   "system": "ShieldGenerator",
+   "id": 108
+  },
+  {
+   "socket": "HP_Engine_02",
+   "system": "Engines",
+   "id": 109
+  },
+  {
+   "socket": "HP_Engine_03",
+   "system": "Engines",
+   "id": 110
+  },
+  {
+   "socket": "HP_Shield_Gen_01",
+   "system": "ShieldGenerator",
+   "id": 111
+  },
+  {
+   "socket": "HP_Engine_01",
+   "system": "Engines",
+   "id": 112
+  },
+  {
+   "socket": "HP_Shield_Gen_02",
+   "system": "ShieldGenerator",
+   "id": 113
+  },
+  {
+   "socket": "HP_Engine_04",
+   "system": "Engines",
+   "id": 114
+  }
+ ]
+}

@@ -580,3 +580,9 @@ created: "2026-10-29\r"
 
 - [ ] [[Done/Features/Map_Outer_Zone_Reduction]] — In a fresh Skirmish (Medium and Large, 2 and 6–8 players): outer relays spread far apart and far from the main relay; AI still captures and defends them; economy feel with fewer neutral mines.
 - [ ] [[Done/Features/Map_Outer_Zone_Reduction]] — Run `Map`, `MapGeneration` (explicit), `GameFlow`, `EnemyAi` when authorized; compile passed, 630 scripted layouts passed, tests not run.
+
+## Viscount Import
+
+- [ ] [[Done/Features/Viscount_Import]] — In battle (Rebellion): build Viscount Prototype and Viscount Dreadnought; check hull scale vs Home One / Executor, textures and lights, engine plumes on the nozzles, team colours, selection ring, shield fit, hangar launches, wreck.
+- [ ] [[Done/Features/Viscount_Import]] — Balance check: Dreadnought vs Executor 1v1 and Prototype vs ISD II / Praetor; review provisional price, build time, capacity and speed.
+- [ ] [[Done/Features/Viscount_Import]] — Run `Ships`, `Health`, `Combat`, `Audio`, `Balance` when authorized; compile passed, tests not run.

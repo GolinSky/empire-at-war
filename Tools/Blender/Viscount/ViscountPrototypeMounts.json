@@ -1,0 +1,321 @@
+{
+ "weapons": [
+  {
+   "socket": "HP_MIS02",
+   "weaponType": 93,
+   "id": 0
+  },
+  {
+   "socket": "HP_MIS03",
+   "weaponType": 93,
+   "id": 1
+  },
+  {
+   "socket": "HP_LC06",
+   "weaponType": 94,
+   "id": 2
+  },
+  {
+   "socket": "HP_LC09",
+   "weaponType": 94,
+   "id": 3
+  },
+  {
+   "socket": "HP_MIS04",
+   "weaponType": 93,
+   "id": 4
+  },
+  {
+   "socket": "HP_MIS01",
+   "weaponType": 93,
+   "id": 5
+  },
+  {
+   "socket": "HP_TL10",
+   "weaponType": 90,
+   "id": 6
+  },
+  {
+   "socket": "HP_TL11",
+   "weaponType": 90,
+   "id": 7
+  },
+  {
+   "socket": "HP_IC05",
+   "weaponType": 91,
+   "id": 8
+  },
+  {
+   "socket": "HP_IC08",
+   "weaponType": 91,
+   "id": 9
+  },
+  {
+   "socket": "HP_TORP02",
+   "weaponType": 66,
+   "id": 10
+  },
+  {
+   "socket": "HP_TORP03",
+   "weaponType": 66,
+   "id": 11
+  },
+  {
+   "socket": "HP_IC06",
+   "weaponType": 91,
+   "id": 12
+  },
+  {
+   "socket": "HP_IC07",
+   "weaponType": 91,
+   "id": 13
+  },
+  {
+   "socket": "HP_IC01",
+   "weaponType": 91,
+   "id": 14
+  },
+  {
+   "socket": "HP_IC12",
+   "weaponType": 91,
+   "id": 15
+  },
+  {
+   "socket": "HP_TL05",
+   "weaponType": 3,
+   "id": 16
+  },
+  {
+   "socket": "HP_TL09",
+   "weaponType": 90,
+   "id": 17
+  },
+  {
+   "socket": "HP_TL12",
+   "weaponType": 90,
+   "id": 18
+  },
+  {
+   "socket": "HP_TL16",
+   "weaponType": 3,
+   "id": 19
+  },
+  {
+   "socket": "HP_LC02",
+   "weaponType": 94,
+   "id": 20
+  },
+  {
+   "socket": "HP_LC13",
+   "weaponType": 94,
+   "id": 21
+  },
+  {
+   "socket": "HP_TL08",
+   "weaponType": 90,
+   "id": 22
+  },
+  {
+   "socket": "HP_TL13",
+   "weaponType": 90,
+   "id": 23
+  },
+  {
+   "socket": "HP_LC05",
+   "weaponType": 94,
+   "id": 24
+  },
+  {
+   "socket": "HP_LC10",
+   "weaponType": 94,
+   "id": 25
+  },
+  {
+   "socket": "HP_TL18",
+   "weaponType": 3,
+   "id": 26
+  },
+  {
+   "socket": "HP_TL03",
+   "weaponType": 3,
+   "id": 27
+  },
+  {
+   "socket": "HP_IC04",
+   "weaponType": 91,
+   "id": 28
+  },
+  {
+   "socket": "HP_IC09",
+   "weaponType": 91,
+   "id": 29
+  },
+  {
+   "socket": "HP_IC11",
+   "weaponType": 91,
+   "id": 30
+  },
+  {
+   "socket": "HP_IC02",
+   "weaponType": 91,
+   "id": 31
+  },
+  {
+   "socket": "HP_TL07",
+   "weaponType": 90,
+   "id": 32
+  },
+  {
+   "socket": "HP_TL14",
+   "weaponType": 90,
+   "id": 33
+  },
+  {
+   "socket": "HP_TORP01",
+   "weaponType": 66,
+   "id": 34
+  },
+  {
+   "socket": "HP_TORP04",
+   "weaponType": 66,
+   "id": 35
+  },
+  {
+   "socket": "HP_TL04",
+   "weaponType": 3,
+   "id": 36
+  },
+  {
+   "socket": "HP_IC03",
+   "weaponType": 91,
+   "id": 37
+  },
+  {
+   "socket": "HP_IC10",
+   "weaponType": 91,
+   "id": 38
+  },
+  {
+   "socket": "HP_LC07",
+   "weaponType": 94,
+   "id": 39
+  },
+  {
+   "socket": "HP_LC08",
+   "weaponType": 94,
+   "id": 40
+  },
+  {
+   "socket": "HP_TL17",
+   "weaponType": 3,
+   "id": 41
+  },
+  {
+   "socket": "HP_TL15",
+   "weaponType": 90,
+   "id": 42
+  },
+  {
+   "socket": "HP_TL06",
+   "weaponType": 90,
+   "id": 43
+  },
+  {
+   "socket": "HP_LC11",
+   "weaponType": 94,
+   "id": 44
+  },
+  {
+   "socket": "HP_LC04",
+   "weaponType": 94,
+   "id": 45
+  },
+  {
+   "socket": "HP_TL02",
+   "weaponType": 3,
+   "id": 46
+  },
+  {
+   "socket": "HP_TL19",
+   "weaponType": 3,
+   "id": 47
+  },
+  {
+   "socket": "HP_LC01",
+   "weaponType": 94,
+   "id": 48
+  },
+  {
+   "socket": "HP_LC14",
+   "weaponType": 94,
+   "id": 49
+  },
+  {
+   "socket": "HP_TL20",
+   "weaponType": 3,
+   "id": 50
+  },
+  {
+   "socket": "HP_TL01",
+   "weaponType": 3,
+   "id": 51
+  },
+  {
+   "socket": "HP_LC03",
+   "weaponType": 94,
+   "id": 52
+  },
+  {
+   "socket": "HP_LC12",
+   "weaponType": 94,
+   "id": 53
+  }
+ ],
+ "systems": [
+  {
+   "socket": "HP_SPAWN00",
+   "system": "Hangar",
+   "id": 54
+  },
+  {
+   "socket": "HP_SPAWN01",
+   "system": "Hangar",
+   "id": 55
+  },
+  {
+   "socket": "HP_SHIELD02",
+   "system": "ShieldGenerator",
+   "id": 56
+  },
+  {
+   "socket": "HP_E01",
+   "system": "Engines",
+   "id": 57
+  },
+  {
+   "socket": "HP_E02",
+   "system": "Engines",
+   "id": 58
+  },
+  {
+   "socket": "HP_SHIELD01",
+   "system": "ShieldGenerator",
+   "id": 59
+  },
+  {
+   "socket": "HP_E04",
+   "system": "Engines",
+   "id": 60
+  },
+  {
+   "socket": "HP_E05",
+   "system": "Engines",
+   "id": 61
+  },
+  {
+   "socket": "HP_E03",
+   "system": "Engines",
+   "id": 62
+  }
+ ]
+}

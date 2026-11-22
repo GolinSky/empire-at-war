@@ -20,6 +20,8 @@ namespace EmpireAtWar.Tests.Editor
         [TestCase("QuasarFireShipData")]
         [TestCase("ArquitensImperialCruiserShipData")]
         [TestCase("ISDIIShipData")]
+        [TestCase("ViscountPrototypeShipData")]
+        [TestCase("ViscountDreadnoughtShipData")]
         public void SavedShip_HasEngineAndShieldGeneratorHardpointsWithHealthAndInjectionBindings(string dataName)
         {
             BalanceUnit unit = BalanceInventory.BuildCombat().Units.Single(candidate =>

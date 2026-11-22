@@ -261,6 +261,15 @@ bpy.ops.import_scene.fbx(
 - Selection sizing must account for the shared sprite's visible fraction (`1038 / 1254`); fit `ringSize` to visible renderer bounds × `1.15 / visibleFraction`, and center marker XZ without moving the health anchor. Verified by `HealthOverlayAnchorTests` for Gladiator.
 - Replacing derived stripe GameObjects can invalidate `Ship.explosionHullRenderers`; rebuild that explicit list from current opaque hull renderers before saving. Verified by `ShipExplosionPrefabTests`; reusable example: `Tools/Blender/Gladiator/BuildLivery.cs`.
 
+### Viscount import evidence — 2026-11-22
+
+- `Pe_*` / `Pte_*` ALOs beside a hull are particle systems (top chunk `0x900`). ALAMO scans unknown chunks 4 bytes at a time and can misread them as meshes → freeze risk. Walk the chunk tree before importing; never feed particle ALOs to ALAMO.
+- ALAMO lacks shaders such as `MeshAdditive2x.fxo` → map to `MeshAdditive.fx` before assigning `shaderList`; keep the source name as custom property `EaWSourceShader`.
+- `export_isd_i.py` geometry check uses an absolute 0.001 limit; float32 spacing near 8,000 units is ~0.001. Scale the limit for very large hulls (Viscount Dreadnought: 0.005).
+- Donor `BodyPivot` can carry the donor's own scale (MC80 Independence ≈ 1.81×). Reset body position/rotation/scale before instantiating a new visual, or the hull length is wrong.
+- `ShipReinforcementPreviewPostprocessor` logs KeyNotFound when a new view is saved before `ReinforcementData` registration; register, then run `ShipReinforcementPreviewSync.Sync`.
+- Reference: [[Done/Features/Viscount_Import]], tooling `Tools/Blender/Viscount/`.
+
 ### Hero fighter import evidence — 2026-11-16
 
 - FBX normalization: multiply imported root scale by target/measured length; do not replace the root scale. Remake Vader FBX root scale 100 caused a 100× undersized prefab when overwritten. Verify the saved formation alongside existing fighters.

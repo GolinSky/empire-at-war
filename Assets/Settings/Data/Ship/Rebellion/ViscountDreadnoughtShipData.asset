@@ -1,0 +1,153 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: e580e579044741caae6ff7662bce890d, type: 3}
+  m_Name: ViscountDreadnoughtShipData
+  m_EditorClassIdentifier: Assembly-CSharp::EmpireAtWar.Entities.Ship.ShipData
+  <MinMoveCoefficient>k__BackingField: 0.4
+  usesArtilleryStandoff: 0
+  <ShowBattleMarker>k__BackingField: 0
+  visionHull:
+  - {x: -252.30513, y: 210.45892}
+  - {x: -252.26675, y: 201.01585}
+  - {x: -247.88264, y: 131.47057}
+  - {x: -247.67754, y: 129.42654}
+  - {x: -243.73997, y: 91.74793}
+  - {x: -230.62471, y: 14.099667}
+  - {x: -230.27263, y: 12.510223}
+  - {x: -111.49763, y: -499.44354}
+  - {x: -105.19177, y: -526.0358}
+  - {x: -59.258, y: -715.0073}
+  - {x: -50.746037, y: -748.9673}
+  - {x: -42.090023, y: -782.64734}
+  - {x: -33.34038, y: -816.1332}
+  - {x: -29.115385, y: -831.9542}
+  - {x: -25.222654, y: -846.0059}
+  - {x: -21.835363, y: -857.4211}
+  - {x: -19.127115, y: -865.332}
+  - {x: -16.958351, y: -870.5863}
+  - {x: -15.19145, y: -874.0348}
+  - {x: -9.839135, y: -883.257}
+  - {x: -7.5507207, y: -886.8577}
+  - {x: -6.4335227, y: -888.3357}
+  - {x: -5.308702, y: -889.4986}
+  - {x: -3.1603572, y: -891.44415}
+  - {x: -1.0191548, y: -892.3811}
+  - {x: -0.0000620465, y: -892.49994}
+  - {x: 1.0190307, y: -892.3811}
+  - {x: 3.160233, y: -891.44415}
+  - {x: 5.308577, y: -889.4986}
+  - {x: 6.433397, y: -888.3357}
+  - {x: 7.5505943, y: -886.8577}
+  - {x: 9.839009, y: -883.257}
+  - {x: 15.191326, y: -874.0348}
+  - {x: 16.958225, y: -870.5863}
+  - {x: 19.126987, y: -865.332}
+  - {x: 21.835236, y: -857.4211}
+  - {x: 25.22252, y: -846.0059}
+  - {x: 29.115253, y: -831.95416}
+  - {x: 33.340252, y: -816.1333}
+  - {x: 42.089878, y: -782.64734}
+  - {x: 50.745884, y: -748.9673}
+  - {x: 59.25785, y: -715.0073}
+  - {x: 105.191605, y: -526.03577}
+  - {x: 111.4975, y: -499.44342}
+  - {x: 230.27255, y: 12.510159}
+  - {x: 230.62459, y: 14.099625}
+  - {x: 243.7399, y: 91.74792}
+  - {x: 247.67744, y: 129.42653}
+  - {x: 247.88257, y: 131.47057}
+  - {x: 252.2667, y: 201.01581}
+  - {x: 252.30508, y: 210.45886}
+  - {x: 251.61232, y: 216.56436}
+  - {x: 246.7024, y: 250.15755}
+  - {x: 225.16917, y: 374.85828}
+  - {x: 198.58066, y: 480.33807}
+  - {x: 197.02626, y: 486.27255}
+  - {x: 185.06448, y: 521.0332}
+  - {x: 148.19621, y: 611.43555}
+  - {x: 138.39699, y: 634.0272}
+  - {x: 92.62311, y: 735.54224}
+  - {x: 75.47625, y: 769.8356}
+  - {x: 74.54809, y: 771.67303}
+  - {x: 17.972052, y: 871.0707}
+  - {x: 8.848152, y: 884.881}
+  - {x: 2.756497, y: 890.5613}
+  - {x: 1.700653, y: 891.3445}
+  - {x: -0.18374957, y: 892.49994}
+  - {x: -0.28393653, y: 892.49994}
+  - {x: -8.848127, y: 884.881}
+  - {x: -11.361009, y: 881.22504}
+  - {x: -17.972023, y: 871.0707}
+  - {x: -74.54819, y: 771.67303}
+  - {x: -75.47634, y: 769.8356}
+  - {x: -92.62319, y: 735.54224}
+  - {x: -138.39705, y: 634.0272}
+  - {x: -148.19629, y: 611.43555}
+  - {x: -185.06453, y: 521.0332}
+  - {x: -197.02629, y: 486.27255}
+  - {x: -198.58072, y: 480.33804}
+  - {x: -225.1692, y: 374.85828}
+  - {x: -246.70245, y: 250.15756}
+  - {x: -251.61238, y: 216.56442}
+  <Speed>k__BackingField: 13
+  heightTiers: {fileID: 11400000, guid: f4dc0cc9c112ddb4d8209fb4b8d1d9de, type: 2}
+  <HeightTier>k__BackingField: 0
+  <HullBottom>k__BackingField: -187.04877
+  <HullTop>k__BackingField: 187.04877
+  <RotationSpeed>k__BackingField: 3
+  <TurnAcceleration>k__BackingField: 1.5
+  <HyperSpaceDuration>k__BackingField: 0.6
+  <BodyRotationMaxAngle>k__BackingField: 3
+  <NavigationRadius>k__BackingField: 895
+  <IgnoresMapObstacles>k__BackingField: 1
+  <DestroyDelay>k__BackingField: 0.35
+  <Wreck>k__BackingField: {fileID: 11400000, guid: 6d415fbe3e08466438cdeda1330bf402,
+    type: 2}
+  <ShipClass>k__BackingField: 11
+  <Hull>k__BackingField: 180000
+  <Shields>k__BackingField: 225000
+  shieldRegenTiers: {fileID: 11400000, guid: 44b427ab8d3b478397680d1181fc7fea, type: 2}
+  <ShieldRegenTier>k__BackingField: 5
+  <ShieldRegenMultiplier>k__BackingField: 1.2
+  <ShieldRegenerateDelay>k__BackingField: 1
+  <Range>k__BackingField: 2055
+  <Delay>k__BackingField: 0.25
+  abilities: 03000000
+  hangarBays:
+  - squadronType: 300
+    reserve: 8
+    maxActive: 2
+  - squadronType: 301
+    reserve: 8
+    maxActive: 2
+  - squadronType: 1
+    reserve: 8
+    maxActive: 2
+  <HangarMaxActive>k__BackingField: -1
+  <HangarInitialDelay>k__BackingField: 4
+  <HangarLaunchInterval>k__BackingField: 1
+  weaponLoadout:
+  - weaponType: 3
+    count: 24
+  - weaponType: 4
+    count: 20
+  - weaponType: 5
+    count: 16
+  - weaponType: 32
+    count: 12
+  - weaponType: 48
+    count: 12
+  - weaponType: 68
+    count: 7
+  - weaponType: 91
+    count: 11
+  roles: 65
