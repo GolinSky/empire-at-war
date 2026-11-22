@@ -24,6 +24,17 @@ namespace EmpireAtWar.Tests.Editor
     [Category("Capture")]
     public sealed class DefenseSatelliteContractTests
     {
+        private sealed class StubHealthTooltip : IHealthTooltipObserver
+        {
+            public float Hull => 10f;
+            public float MaxHull => 20f;
+            public float Shields => 5f;
+            public float MaxShields => 10f;
+            public bool IsShieldRecovering => false;
+            public float ShieldRegeneration => 0f;
+            public float ShieldRegenerationInterval => 0f;
+        }
+
         [TestCase(SiteFacilityType.QuadLaserSatellite, DefendPlatformType.QuadLaserSatellite, WeaponType.DualRepeatingPointDefense)]
         [TestCase(SiteFacilityType.TurbolaserSatellite, DefendPlatformType.TurbolaserSatellite, WeaponType.DualMediumTurboLaser)]
         [TestCase(SiteFacilityType.IonSatellite, DefendPlatformType.IonSatellite, WeaponType.MediumIonCannon)]
@@ -179,11 +190,13 @@ namespace EmpireAtWar.Tests.Editor
                 "Assets/Settings/Data/Factions/Shared/DefendPlatformCatalog.asset");
             var icons = AssetDatabase.LoadAssetAtPath<TooltipIconData>(
                 "Assets/Settings/Data/Tooltip/TooltipIconData.asset");
-            var facade = new DefendPlatformTooltipFacade(catalog, platform);
+            var facade = new DefendPlatformTooltipFacade(catalog, platform, new StubHealthTooltip());
 
             TooltipContent content = facade.Build(new List<TooltipStat>(), "Owner: Player · Structure");
 
             Assert.That(content.Title, Is.EqualTo(expectedTitle));
+            if (platform == DefendPlatformType.BattleAsteroid)
+                Assert.That(content.Stats.Select(stat => stat.Label), Is.EquivalentTo(new[] { "Hull", "Shields" }));
             Assert.That(content.Status, Is.EqualTo("Owner: Player · Structure"));
             if (platform != DefendPlatformType.BattleAsteroid)
                 Assert.That(icons.Resolve(content.IconKey), Is.Not.Null);

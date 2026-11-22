@@ -60,6 +60,8 @@ namespace EmpireAtWar.Components.Squadrons.Health
         public ShipClass ShipClass => Model.ShipClass;
         public IReadOnlyList<IReadOnlyHardPointModel> HardPointModels => Model.Members;
         public float Hull => Model.Hull;
+        public float MaxHull => Model.MaxHull;
+        public float MaxShields => Model.MaxShields;
         public bool IsShieldRecovering => _shieldRecovering && !_shieldRecoveryTimer.IsComplete;
         public float ShieldRegeneration => Model.IsShieldSuppressed || IsShieldRecovering ? 0f
             : Model.ShieldRegenerateValue * _modifiers.ShieldRegenMultiplier * Model.ShieldedAliveCount;

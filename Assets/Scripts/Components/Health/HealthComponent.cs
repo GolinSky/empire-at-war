@@ -77,6 +77,8 @@ namespace EmpireAtWar.Components.Ship.Health
         public ShipClass ShipClass => Model.ShipClass;
         public IReadOnlyList<IReadOnlyHardPointModel> HardPointModels => Model.HardPointModels;
         public float Hull => Model.Hull;
+        public float MaxHull => Model.MaxHull;
+        public float MaxShields => Model.MaxShields;
         public bool IsShieldRecovering => _shieldRecovering && !_shieldRecoveryTimer.IsComplete;
         public float ShieldRegeneration => Model.IsLostShieldGenerator || Model.IsShieldSuppressed || IsShieldRecovering ? 0f
             : Model.ShieldRegenerateValue * _modifiers.ShieldRegenMultiplier;
