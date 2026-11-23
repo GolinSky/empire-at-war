@@ -43,9 +43,8 @@ namespace EmpireAtWar.Entities.Ship.EntityFacades
         // A focused hardpoint attack resumes against the whole target.
         public void RetargetRebuilt(IEntity rebuilt)
         {
-            if (!_weapon.RemoveTargetsOf(rebuilt.Id, out bool wasMain)) return;
-            _weapon.AddReplicaTarget(_attackDataFactory.ConstructData(rebuilt),
-                wasMain ? AttackType.MainTarget : AttackType.Base);
+            if (!_weapon.RemoveTargetsOf(rebuilt.Id, out AttackType? mainType)) return;
+            _weapon.AddReplicaTarget(_attackDataFactory.ConstructData(rebuilt), mainType ?? AttackType.Base);
         }
     }
 }

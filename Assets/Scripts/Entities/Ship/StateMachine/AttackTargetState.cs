@@ -204,7 +204,7 @@ namespace EmpireAtWar.Entities.Ship.StateMachine
                 _attackData = _focusedHardPoint == null || _focusedHardPoint.IsDestroyed
                     ? _attackDataFactory.ConstructData(_mainTargetEntity)
                     : _attackDataFactory.ConstructHardPointData(_mainTargetEntity, _focusedHardPoint.Id);
-                _weaponComponent.AddTarget(_attackData, AttackType.MainTarget);
+                _weaponComponent.AddTarget(_attackData, AttackType.OrderedTarget);
                 if (!IsComplete) UpdateMoveState();
             }
 
@@ -223,7 +223,7 @@ namespace EmpireAtWar.Entities.Ship.StateMachine
                 _focusedHardPoint = null;
                 _hasHardPointApproach = false;
                 _attackData = _attackDataFactory.ConstructData(_mainTargetEntity);
-                _weaponComponent.AddTarget(_attackData, AttackType.MainTarget);
+                _weaponComponent.AddTarget(_attackData, AttackType.OrderedTarget);
             }
 
             UpdateMoveState(deltaTime);

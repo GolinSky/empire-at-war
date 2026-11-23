@@ -118,8 +118,8 @@ namespace EmpireAtWar.Components.Weapon
                         CandidateCount = request.CandidateCount,
                         GroupStart = request.GroupStart,
                         StrikecraftOnly = request.CandidateCount > 0 && request.HardPoint.StrikecraftOnly ? 1 : 0,
-                        ShipsOnly = request.HardPoint.ShipsOnly ? 1 : 0,
-                        Preference = (int)request.HardPoint.PreferredTarget,
+                        ShipsOnly = request.Weapon.IgnoresStrikecraft(request.HardPoint) ? 1 : 0,
+                        Preference = (int)request.Weapon.GetSelectionPreference(request.HardPoint),
                         HasDoomed = request.Weapon.HasDoomedCandidates ? 1 : 0
                     };
                 }
@@ -274,7 +274,8 @@ namespace EmpireAtWar.Components.Weapon
             };
             NativeArray<byte> flags = _capture.Flags;
             NativeArray<float3> positions = _capture.Positions;
-            int preference = (int)request.HardPoint.PreferredTarget;
+            int preference = (int)request.Weapon.GetSelectionPreference(request.HardPoint);
+            bool ignoresStrikecraft = request.Weapon.IgnoresStrikecraft(request.HardPoint);
             bool hasDoomed = request.Weapon.HasDoomedCandidates;
             int passes = WeaponTargetSelectionJob.GetPassCount(preference, hasDoomed);
             int bestGroup = -1;
@@ -290,7 +291,7 @@ namespace EmpireAtWar.Components.Weapon
                 byte slotFlags = flags[slot];
                 if ((slotFlags & TargetSelectionCapture.SLOT_VALID) == 0) continue;
                 if (request.HardPoint.StrikecraftOnly && (slotFlags & TargetSelectionCapture.SLOT_STRIKECRAFT) == 0) continue;
-                if (request.HardPoint.ShipsOnly && (slotFlags & TargetSelectionCapture.SLOT_STRIKECRAFT) != 0) continue;
+                if (ignoresStrikecraft && (slotFlags & TargetSelectionCapture.SLOT_STRIKECRAFT) != 0) continue;
                 if (!WeaponTargetSelectionJob.MatchesPass(pass, hasDoomed,
                         WeaponTargetSelectionJob.IsPreferred(preference, slotFlags), eligibility)) continue;
                 result.Visited++;

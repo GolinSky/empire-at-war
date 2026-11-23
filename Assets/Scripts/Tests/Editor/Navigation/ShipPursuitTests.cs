@@ -1173,6 +1173,32 @@ namespace EmpireAtWar.Tests.Movement
         }
 
         [Test]
+        public void SelectThreat_ShipBuiltForShipsTakesAWarshipBeforeASquadronAttackingIt()
+        {
+            GameObject squadronObject = new GameObject("Bombers");
+            try
+            {
+                squadronObject.transform.position = Vector3.right * 30f;
+                Target squadron = new Target(squadronObject.transform) { Id = 2 };
+                squadron.Health.ShipClass = ShipClass.Bomber;
+                _target.Transform.position = Vector3.forward * 90f;
+                _target.Health.ShipClass = ShipClass.Frigate;
+                FakeShipThreats threats = new FakeShipThreats();
+                threats.SelfAttackers.Add(squadron);
+                threats.StationAttackers.Add(squadron);
+
+                Assert.That(_weapon.PreferredTarget, Is.EqualTo(TargetPreference.Ships));
+                Assert.That(ShipEngagement.SelectThreat(new IEntity[] { squadron, _target }, _movement, _weapon,
+                    threats), Is.SameAs(_target), "Heavy guns leave squadrons to lasers while a ship is near.");
+                Assert.That(ShipEngagement.Outranks(_target, squadron, _weapon, threats), Is.True);
+                Assert.That(ShipEngagement.Outranks(squadron, _target, _weapon, threats), Is.False);
+                Assert.That(ShipEngagement.SelectThreat(new IEntity[] { squadron }, _movement, _weapon, threats),
+                    Is.SameAs(squadron), "Without a ship the squadron is still fought.");
+            }
+            finally { Object.DestroyImmediate(squadronObject); }
+        }
+
+        [Test]
         public void Idle_UnderFireTargetsATeamVisibleHostileInReachBeyondOwnRadar()
         {
             _target.Transform.position = Vector3.forward * 90f;

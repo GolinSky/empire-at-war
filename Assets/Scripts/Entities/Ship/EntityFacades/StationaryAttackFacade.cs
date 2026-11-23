@@ -20,12 +20,12 @@ namespace EmpireAtWar.Entities.Ship.EntityFacades
         }
 
         public void FocusFire(IEntity target) =>
-            _weapon.AddTarget(_attackDataFactory.ConstructData(target), AttackType.MainTarget);
+            _weapon.AddTarget(_attackDataFactory.ConstructData(target), AttackType.OrderedTarget);
 
         // Stations cannot move, so neither the formation offset nor the pace cluster applies.
         public void AttackHardPoint(IEntity target, int hardPointId, Vector3 formationOffset, PaceCluster pace = null) =>
             _weapon.AddTarget(_attackDataFactory.ConstructHardPointData(target, hardPointId),
-                AttackType.MainTarget);
+                AttackType.OrderedTarget);
 
         public void Stop() => _weapon.ResetTarget();
     }

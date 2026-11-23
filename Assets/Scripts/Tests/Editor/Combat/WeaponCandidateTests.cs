@@ -272,7 +272,7 @@ namespace EmpireAtWar.Tests.Weapon
             Assert.That(_weapon.GetFiringTurnAngle(group.TargetEntity, Vector3.zero), Is.Zero);
         }
 
-        private List<WeaponHardPoint> ConfigureMounts(int count)
+        private List<WeaponHardPoint> ConfigureMounts(int count, TargetPreference preference = TargetPreference.Any)
         {
             CombatModifiers modifiers = new CombatModifiers();
             typeof(WeaponComponent).GetField("_modifiers", PRIVATE_INSTANCE).SetValue(_weapon, modifiers);
@@ -288,7 +288,8 @@ namespace EmpireAtWar.Tests.Weapon
             {
                 WeaponHardPoint mount = Track(new GameObject("Mount")).AddComponent<WeaponHardPoint>();
                 SetYawArc(mount, -180f, 180f);
-                mount.SetData(Profile(), 100f, 0f, _weapon, _coordinator, modifiers, null, null, null, null);
+                mount.SetData(Profile(preference: preference), 100f, 0f, _weapon, _coordinator, modifiers,
+                    null, null, null, null);
                 object timer = typeof(WeaponHardPoint).GetField("_reloadTimer", PRIVATE_INSTANCE).GetValue(mount);
                 timer.GetType().GetField("_timer", PRIVATE_INSTANCE).SetValue(timer, float.NegativeInfinity);
                 mounts.Add(mount);
@@ -307,9 +308,10 @@ namespace EmpireAtWar.Tests.Weapon
             mount.SetData(arc);
         }
 
-        private WeaponProfile Profile(DamageType damageType = DamageType.Laser) =>
+        private WeaponProfile Profile(DamageType damageType = DamageType.Laser,
+            TargetPreference preference = TargetPreference.Any) =>
             new WeaponProfile(WeaponType.Laser, "Test", WeaponFamily.Laser, damageType, 1f, 1, 0f, 1f, 100f,
-                false, false, _shot, 100f, Color.white, Vector3.one, false, false, default, default, 45f);
+                false, false, _shot, 100f, Color.white, Vector3.one, false, false, default, default, 45f, preference);
 
         private sealed class AttackRunStub : IFighterAttackRunObserver
         {
@@ -320,6 +322,48 @@ namespace EmpireAtWar.Tests.Weapon
         {
             public int Run;
             public int GetAttackRun(int fighterIndex) => Run;
+        }
+
+        [Test]
+        public void HeavyGuns_SkipStrikecraftWhileFightingShipsUnlessOrdered()
+        {
+            WeaponHardPoint heavy = ConfigureMounts(1, TargetPreference.Ships)[0];
+            WeaponHardPoint laser = Track(new GameObject("Laser")).AddComponent<WeaponHardPoint>();
+            laser.SetData(Profile(preference: TargetPreference.Strikecraft), 100f, 0f, _weapon, _coordinator,
+                (CombatModifiers)Field("_modifiers"), null, null, null, null);
+            AttackData ship = Group(1);
+            AttackData squadron = Group(1, ShipClass.Bomber);
+            squadron.Units[0].Transform.position = Vector3.forward * 10f;
+            // Well beyond the 100-unit weapon range.
+            ship.Units[0].Transform.position = Vector3.forward * 1000f;
+            _weapon.AddTarget(squadron, AttackType.Base);
+            _weapon.AddTarget(ship, AttackType.Base);
+            Invoke("RefreshShipsNear");
+            Assert.That(_weapon.IgnoresStrikecraft(heavy), Is.False, "No ship near: heavy guns still fall back.");
+
+            ship.Units[0].Transform.position = Vector3.forward * 50f;
+            Invoke("RefreshShipsNear");
+            Assert.That(_weapon.IgnoresStrikecraft(heavy), Is.True, "A ship near keeps heavy guns on ships.");
+            Assert.That(_weapon.IgnoresStrikecraft(laser), Is.False, "Lasers stay on strikecraft.");
+
+            ship.Units[0].Transform.position = Vector3.forward * 1000f;
+            Invoke("RefreshShipsNear");
+            _weapon.AddTarget(ship, AttackType.MainTarget);
+            Assert.That(_weapon.IgnoresStrikecraft(heavy), Is.True, "Fighting a ship keeps heavy guns on ships.");
+
+            _weapon.AddTarget(squadron, AttackType.MainTarget);
+            ship.Units[0].Transform.position = Vector3.forward * 50f;
+            Invoke("RefreshShipsNear");
+            Assert.That(_weapon.IgnoresStrikecraft(heavy), Is.True, "An automatic squadron pick does not open heavy guns.");
+            Assert.That(_weapon.GetSelectionPreference(heavy), Is.EqualTo(TargetPreference.Ships));
+
+            _weapon.AddTarget(squadron, AttackType.OrderedTarget);
+            Assert.That(_weapon.IgnoresStrikecraft(heavy), Is.False, "A direct order on strikecraft opens every gun.");
+            Assert.That(_weapon.GetSelectionPreference(heavy), Is.EqualTo(TargetPreference.Any));
+            Assert.That(_weapon.GetSelectionPreference(laser), Is.EqualTo(TargetPreference.Strikecraft));
+
+            _weapon.ResetTarget();
+            Assert.That(_weapon.IgnoresStrikecraft(heavy), Is.True);
         }
 
         [Test]
@@ -455,9 +499,9 @@ namespace EmpireAtWar.Tests.Weapon
             Assert.That(listed, Has.Member(first).And.Member(second));
         }
 
-        private AttackData Group(int units)
+        private AttackData Group(int units, ShipClass shipClass = ShipClass.Capital)
         {
-            HealthStub health = new HealthStub(Units(units));
+            HealthStub health = new HealthStub(Units(units), shipClass);
             return new AttackData(health, new HealthFacadeStub(), HardPointType.Any,
                 new EntityStub(health, health.GetShipUnits(HardPointType.Any)[0].Transform));
         }
@@ -521,11 +565,15 @@ namespace EmpireAtWar.Tests.Weapon
         {
             private readonly IHardPointModel[] _units;
 
-            public HealthStub(IHardPointModel[] units) => _units = units;
+            public HealthStub(IHardPointModel[] units, ShipClass shipClass = ShipClass.Capital)
+            {
+                _units = units;
+                ShipClass = shipClass;
+            }
 
             public event Action OnDestroy;
             public event Action OnValueChanged { add { } remove { } }
-            public ShipClass ShipClass => ShipClass.Capital;
+            public ShipClass ShipClass { get; }
             public IReadOnlyList<IReadOnlyHardPointModel> HardPointModels => Array.Empty<HardPointModel>();
             public float Hull => 100f;
             public float HullPercentage => 1f;

@@ -17,8 +17,8 @@ namespace EmpireAtWar.Components.Weapon
 
         /// <summary>
         /// Host AI takeover: drops every target group of this entity (its old life); true when any was tracked.
-        /// <paramref name="wasMain"/> tells whether it was the main target.
+        /// <paramref name="mainType"/> is how it was the main target (main or ordered), or null when it was not.
         /// </summary>
-        bool RemoveTargetsOf(long entityId, out bool wasMain);
+        bool RemoveTargetsOf(long entityId, out AttackType? mainType);
     }
 }

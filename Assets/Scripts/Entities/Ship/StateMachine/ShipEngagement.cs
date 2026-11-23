@@ -54,15 +54,24 @@ namespace EmpireAtWar.Entities.Ship.StateMachine
             threats.IsAttackingSelf(enemy) ? SELF_ATTACKER_RANK : 0;
 
         /// <summary>
-        /// Main-target choice for ships without an attack order: attacker of a team station, then attacker of this
-        /// ship, then what the loadout prefers, then the biggest hull class, then the nearest. Dead or cloaked
-        /// candidates are skipped; null when none is left.
+        /// A ship built for ships fights ships and structures before any strikecraft, whatever the threat: its heavy
+        /// guns skip strikecraft while a ship is near, so lasers and point defense handle squadrons.
+        /// </summary>
+        public static bool DefersStrikecraft(IEntity enemy, IWeaponComponent weapon) =>
+            weapon.PreferredTarget == TargetPreference.Ships && enemy.HealthModel.ShipClass.IsStrikecraft();
+
+        /// <summary>
+        /// Main-target choice for ships without an attack order: for a ship built for ships any non-strikecraft enemy
+        /// first (<see cref="DefersStrikecraft"/>); then attacker of a team station, then attacker of this ship, then
+        /// what the loadout prefers, then the biggest hull class, then the nearest. Dead or cloaked candidates are
+        /// skipped; null when none is left.
         /// </summary>
         public static IEntity SelectThreat(IReadOnlyList<IEntity> candidates, IShipMovement movement,
             IWeaponComponent weapon, IShipThreatSense threats)
         {
             IEntity best = null;
             int bestRank = -1;
+            bool bestDeferred = false;
             bool bestPreferred = false;
             int bestTier = -1;
             float bestDistance = float.PositiveInfinity;
@@ -70,12 +79,16 @@ namespace EmpireAtWar.Entities.Ship.StateMachine
             {
                 IEntity enemy = candidates[i];
                 if (enemy.IsCloaked() || enemy.HealthModel.IsDestroyed || !enemy.HealthModel.HasUnits) continue;
+                bool deferred = DefersStrikecraft(enemy, weapon);
+                if (best != null && deferred && !bestDeferred) continue;
+                // A first non-deferred enemy replaces a deferred pick whatever its rank.
+                bool replacesDeferred = best != null && bestDeferred && !deferred;
                 int rank = ThreatRank(enemy, threats);
-                if (rank < bestRank) continue;
+                if (!replacesDeferred && rank < bestRank) continue;
                 bool preferred = IsPreferred(enemy, weapon);
                 int tier = enemy.HealthModel.ShipClass.HullTier();
                 float distance = movement.GetRange(enemy.GetFacade<IEntityTransformFacade>().Transform.position);
-                if (rank == bestRank)
+                if (!replacesDeferred && rank == bestRank)
                 {
                     if (bestPreferred && !preferred) continue;
                     if (preferred == bestPreferred)
@@ -87,6 +100,7 @@ namespace EmpireAtWar.Entities.Ship.StateMachine
 
                 best = enemy;
                 bestRank = rank;
+                bestDeferred = deferred;
                 bestPreferred = preferred;
                 bestTier = tier;
                 bestDistance = distance;
@@ -96,12 +110,16 @@ namespace EmpireAtWar.Entities.Ship.StateMachine
         }
 
         /// <summary>
-        /// Whether a fresh <see cref="SelectThreat"/> pick should replace the held target: a higher threat rank, or
-        /// the same rank and a preferred enemy over one the loadout is not built for.
+        /// Whether a fresh <see cref="SelectThreat"/> pick should replace the held target: a ship over deferred
+        /// strikecraft (<see cref="DefersStrikecraft"/>), a higher threat rank, or the same rank and a preferred enemy
+        /// over one the loadout is not built for.
         /// </summary>
         public static bool Outranks(IEntity candidate, IEntity held, IWeaponComponent weapon,
             IShipThreatSense threats)
         {
+            bool candidateDeferred = DefersStrikecraft(candidate, weapon);
+            bool heldDeferred = DefersStrikecraft(held, weapon);
+            if (candidateDeferred != heldDeferred) return heldDeferred;
             int candidateRank = ThreatRank(candidate, threats);
             int heldRank = ThreatRank(held, threats);
             if (candidateRank != heldRank) return candidateRank > heldRank;

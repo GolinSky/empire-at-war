@@ -59,7 +59,7 @@ namespace EmpireAtWar.Services.Networking
                 HardPointId = attackData.IsFocused ? FindHardPoint(attackData) : NO_HARD_POINT,
                 HardPointType = attackData.HardPointType
             };
-            if (attackType == AttackType.MainTarget) _main = message;
+            if (attackType != AttackType.Base) _main = message;
             else
             {
                 _bases.Add(message);

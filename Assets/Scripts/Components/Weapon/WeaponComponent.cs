@@ -44,6 +44,8 @@ namespace EmpireAtWar.Components.Weapon
         private const float GROUP_SORT_INTERVAL = 1f;
         // Facing weights are DPS in tenths, so the solver keeps integer scores.
         private const float FACING_WEIGHT_SCALE = 10f;
+        // A visible hostile ship within this multiple of the weapon range keeps heavy guns off strikecraft.
+        private const float SHIP_CONTACT_RANGE_FACTOR = 1.25f;
 
         private ISelectionModelObserver _selection;
         private IVisionService _visionService;
@@ -90,6 +92,10 @@ namespace EmpireAtWar.Components.Weapon
         private int[] _facingWeights = Array.Empty<int>();
         private readonly WeaponFacingSolver _facingSolver = new WeaponFacingSolver();
         private AttackData _mainAttackData = null;
+        // The main target came from a direct attack order (AttackType.OrderedTarget).
+        private bool _mainIsOrdered;
+        // A visible hostile ship is near, refreshed with the group sort (see IgnoresStrikecraft).
+        private bool _shipsNear;
         private Transform _viewTransform;
         private float _groupSortAt;
         // Scratch for re-sorting listed groups by distance.
@@ -284,6 +290,8 @@ namespace EmpireAtWar.Components.Weapon
             _turningSalvos.Clear();
             _attackDataList.Clear();
             _mainAttackData = null;
+            _mainIsOrdered = false;
+            _shipsNear = false;
         }
 
         private void OnModifiersChanged()
@@ -321,11 +329,16 @@ namespace EmpireAtWar.Components.Weapon
 
         public void ResetReplicaTarget() => ApplyReset();
 
-        public bool RemoveTargetsOf(long entityId, out bool wasMain)
+        public bool RemoveTargetsOf(long entityId, out AttackType? mainType)
         {
             AttackData main = _mainAttackData;
-            wasMain = main != null && main.TargetEntity.Id == entityId;
-            if (wasMain) _mainAttackData = null;
+            bool wasMain = main != null && main.TargetEntity.Id == entityId;
+            mainType = wasMain ? _mainIsOrdered ? AttackType.OrderedTarget : AttackType.MainTarget : (AttackType?)null;
+            if (wasMain)
+            {
+                _mainAttackData = null;
+                _mainIsOrdered = false;
+            }
             bool removed = wasMain;
             for (int i = _attackDataList.Count - 1; i >= 0; i--)
             {
@@ -360,9 +373,11 @@ namespace EmpireAtWar.Components.Weapon
                     break;
                 }
                 case AttackType.MainTarget:
+                case AttackType.OrderedTarget:
                 {
                     AttackData previousMain = _mainAttackData;
                     _mainAttackData = attackData;
+                    _mainIsOrdered = attackType == AttackType.OrderedTarget;
                     Subscribe(attackData);
 
                     bool isListed = !HasSameSource(attackData);
@@ -380,6 +395,60 @@ namespace EmpireAtWar.Components.Weapon
 
         private bool CanAcquire(AttackData group) =>
             !group.IsDestroyed && group.CanAcquireTarget && _visionService.IsVisible(_owner, group.TargetEntity);
+
+        private bool IsStrikecraftOrdered => _mainIsOrdered && _mainAttackData.TargetClass.IsStrikecraft();
+
+        // The main target is a ship, or a visible hostile ship is near.
+        private bool IsEngagedWithShips =>
+            _shipsNear || _mainAttackData != null && !_mainAttackData.TargetClass.IsStrikecraft();
+
+        /// <summary>
+        /// Heavy guns (weapons built for ships) leave strikecraft to lasers and point defense while the ship fights a
+        /// ship or one is near. A direct attack order on strikecraft opens them to every gun.
+        /// </summary>
+        internal bool IgnoresStrikecraft(WeaponHardPoint weapon) =>
+            weapon.ShipsOnly ||
+            weapon.PreferredTarget == TargetPreference.Ships && IsEngagedWithShips && !IsStrikecraftOrdered;
+
+        /// <summary>An ordered strikecraft target comes first for heavy guns too; the main block leads the candidates.</summary>
+        internal TargetPreference GetSelectionPreference(WeaponHardPoint weapon) =>
+            IsStrikecraftOrdered && weapon.PreferredTarget == TargetPreference.Ships
+                ? TargetPreference.Any
+                : weapon.PreferredTarget;
+
+        private bool CanEngage(WeaponHardPoint weapon, ShipClass targetClass) =>
+            weapon.CanEngage(targetClass) && (!targetClass.IsStrikecraft() || !IgnoresStrikecraft(weapon));
+
+        /// <summary>
+        /// Updates whether a visible hostile ship is within <see cref="SHIP_CONTACT_RANGE_FACTOR"/> of the weapon
+        /// range. A change re-runs target selection. Main target changes re-run it on their own.
+        /// </summary>
+        private void RefreshShipsNear()
+        {
+            bool near = HasShipNear();
+            if (near == _shipsNear) return;
+            _shipsNear = near;
+            // Picks captured under the old rule fall back at commit; waiting mounts select again now.
+            _targetVersion++;
+            CancelWaits();
+        }
+
+        private bool HasShipNear()
+        {
+            float range = AttackDistance * SHIP_CONTACT_RANGE_FACTOR;
+            float rangeSquared = range * range;
+            Vector3 origin = _viewTransform.position;
+            for (int i = 0; i < _attackDataList.Count; i++)
+            {
+                AttackData group = _attackDataList[i];
+                if (group.TargetClass.IsStrikecraft() || !CanAcquire(group)) continue;
+                Vector3 offset = group.TargetEntity.GetFacade<IEntityTransformFacade>().Transform.position - origin;
+                // Planar, like weapon range.
+                if (offset.x * offset.x + offset.z * offset.z <= rangeSquared) return true;
+            }
+
+            return false;
+        }
 
         // Strikecraft only when anti-strikecraft weapons carry most of the firepower, e.g. a laser corvette.
         private static TargetPreference GetLoadoutPreference(List<WeaponProfile> profiles)
@@ -476,7 +545,8 @@ namespace EmpireAtWar.Components.Weapon
             for (int i = 0; i < hardPoints.Count; i++)
             {
                 WeaponHardPoint mount = hardPoints[i];
-                if (!mount.CanContributeToFacing(targetClass, _modifiers)) continue;
+                if (!mount.CanContributeToFacing(targetClass, _modifiers) ||
+                    targetClass.IsStrikecraft() && IgnoresStrikecraft(mount)) continue;
 
                 Transform mountTransform = mount.transform;
                 _facingSolver.AddMount(mountTransform.position - pivot, mountTransform.parent.rotation,
@@ -527,6 +597,7 @@ namespace EmpireAtWar.Components.Weapon
         {
             AttackData previousMain = _mainAttackData;
             _mainAttackData = null;
+            _mainIsOrdered = false;
             UnsubscribeIfUnused(previousMain);
             SwitchMainCandidates(null, false);
         }
@@ -604,6 +675,7 @@ namespace EmpireAtWar.Components.Weapon
             {
                 _groupSortAt = Time.time + GROUP_SORT_INTERVAL;
                 SortListedGroupsByDistance();
+                RefreshShipsNear();
             }
 
             for (int i = 0; i < hardPoints.Count; i++)
@@ -675,7 +747,7 @@ namespace EmpireAtWar.Components.Weapon
 
             // Preferred targets first, the main target first among them; the rest only when none is in reach.
             // The first group with a hardpoint in reach is the target; its nearest reachable hardpoint is hit.
-            TargetPreference preference = weapon.PreferredTarget;
+            TargetPreference preference = GetSelectionPreference(weapon);
             // Rare serial path: doomed groups are checked live, so the fallback passes are always available.
             int passes = WeaponTargetSelectionJob.GetPassCount((int)preference, true);
             AttackData bestGroup = null;
@@ -697,7 +769,7 @@ namespace EmpireAtWar.Components.Weapon
                 if (!WeaponTargetSelectionJob.MatchesDoomedTier(pass, true, eligibility)) continue;
                 if (!group.CanTarget(unit)) continue;
 
-                if (!weapon.CanEngage(group.TargetClass)) continue;
+                if (!CanEngage(weapon, group.TargetClass)) continue;
 
                 AttackSequenceDiagnostics.RecordCandidateVisit();
                 Vector3 position = GetTargetPosition(_targetPositions, unit);
@@ -737,7 +809,7 @@ namespace EmpireAtWar.Components.Weapon
 
             // Ship positions in the selection batch may be a few batches old, so the pick is re-aimed live.
             if (_targetVersion != targetVersion || result.CandidateIndex >= 0 &&
-                (!CanAcquire(group) || !weapon.CanEngage(group.TargetClass) || !IsTargetValid(group, unit) || unit.Generation != generation ||
+                (!CanAcquire(group) || !CanEngage(weapon, group.TargetClass) || !IsTargetValid(group, unit) || unit.Generation != generation ||
                  !HasFiringSolution(weapon, unit.Position)))
             {
                 AttackSequenceDiagnostics.RecordTargetSelectionFallback(_targetVersion != targetVersion
@@ -786,7 +858,7 @@ namespace EmpireAtWar.Components.Weapon
                 _turningSalvos.RemoveAt(i);
                 WeaponHardPoint weapon = salvo.HardPoint;
                 if (weapon.IsDestroyed || _modifiers.IsCloaked || !CanAcquire(salvo.Group) ||
-                    salvo.Unit.Generation != salvo.TargetGeneration ||
+                    !CanEngage(weapon, salvo.Group.TargetClass) || salvo.Unit.Generation != salvo.TargetGeneration ||
                     !IsTargetValid(salvo.Group, salvo.Unit) || !HasFiringSolution(weapon, salvo.Unit.Position))
                 {
                     weapon.CancelPendingAdmission();
