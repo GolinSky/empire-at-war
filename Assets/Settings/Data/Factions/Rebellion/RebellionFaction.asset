@@ -101,7 +101,7 @@ MonoBehaviour:
         <Name>k__BackingField: Home One / Admiral Ackbar
         <MaxCount>k__BackingField: 1
         <AvailableLevel>k__BackingField: 5
-        <Price>k__BackingField: 25000
+        <Price>k__BackingField: 20000
         <BuildTime>k__BackingField: 80
         <UnitCapacity>k__BackingField: 30
         <Icon>k__BackingField: {fileID: 21300000, guid: f71730a251297854b97875858cdb2249,
@@ -145,7 +145,7 @@ MonoBehaviour:
         <Name>k__BackingField: MC80 Independence
         <MaxCount>k__BackingField: 3
         <AvailableLevel>k__BackingField: 5
-        <Price>k__BackingField: 20000
+        <Price>k__BackingField: 18000
         <BuildTime>k__BackingField: 80
         <UnitCapacity>k__BackingField: 25
         <Icon>k__BackingField: {fileID: 21300000, guid: d1df96d57bfbbb049952971439112bf5,
@@ -471,7 +471,7 @@ MonoBehaviour:
         <Name>k__BackingField: Viscount-class Star Defender Prototype
         <MaxCount>k__BackingField: 3
         <AvailableLevel>k__BackingField: 5
-        <Price>k__BackingField: 22000
+        <Price>k__BackingField: 18000
         <BuildTime>k__BackingField: 85
         <UnitCapacity>k__BackingField: 25
         <Icon>k__BackingField: {fileID: 21300000, guid: 6777cd15cb22be545b68b9d5550c5773,

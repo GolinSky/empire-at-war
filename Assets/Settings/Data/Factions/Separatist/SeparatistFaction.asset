@@ -201,7 +201,7 @@ MonoBehaviour:
         <Name>k__BackingField: Invincible
         <MaxCount>k__BackingField: 20
         <AvailableLevel>k__BackingField: 5
-        <Price>k__BackingField: 20000
+        <Price>k__BackingField: 18000
         <BuildTime>k__BackingField: 75
         <UnitCapacity>k__BackingField: 20
         <Icon>k__BackingField: {fileID: 21300000, guid: af913e547595237409f81ee21d82b267,
@@ -305,7 +305,7 @@ MonoBehaviour:
         <Name>k__BackingField: Recusant Dreadnought
         <MaxCount>k__BackingField: 20
         <AvailableLevel>k__BackingField: 5
-        <Price>k__BackingField: 18000
+        <Price>k__BackingField: 15000
         <BuildTime>k__BackingField: 75
         <UnitCapacity>k__BackingField: 15
         <Icon>k__BackingField: {fileID: 21300000, guid: 868302fc85b4fef429aefdbe75fef36b,
