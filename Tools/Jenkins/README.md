@@ -79,7 +79,7 @@
   1. Publishes the launcher from `Tools/Launcher` at the **source commit** (`git archive`); commits without `Tools/Launcher` are rejected.
   2. Extracts the archived player ZIP, adds the launcher.
   3. Downloads the newest published release's `*-full.nupkg` anonymously (size + SHA-256 checked) as delta base; none → full-only release.
-  4. `vpk pack --packId EmpireAtWar --packVersion <tag without v> --mainExe EmpireAtWarLauncher.exe --runtime win-x64`.
+  4. `vpk pack --packId EmpireAtWar --packVersion <tag without v> --mainExe EmpireAtWarLauncher.exe --runtime win-x64 --noPortable`. No portable ZIP: nothing uses it and it added ~1.5 GB per upload.
   5. Rewrites `releases.win.json` to this version's entries only (`GithubSource` resolves each feed entry inside the release hosting the feed).
 - Output cache: `F:\Jenkins\velopack-cache\<tag>`, reused on resume when tag/commit/ZIP hash match so re-uploaded assets stay byte-identical; deleted after `VerifiedDraft`.
 - Binaries are unsigned → SmartScreen "Unknown publisher" on `Setup.exe` until `vpk pack --signParams` gets a certificate.
@@ -131,7 +131,7 @@
 
 Before changing GitHub, the job requires SUCCESS, all four archived inputs, matching Windows build provenance/commit (CLI `source.dirty` is ignored: version stamping and Unity reserialization always dirty the snapshot; preparation already rejects a dirty snapshot before building), the ZIP's archived SHA-256, and nonempty assets below 2 GiB. The archived commit must already exist in GitHub; push the intended commit separately if needed.
 
-- Uploaded assets: `EmpireAtWar-win-Setup.exe`, `EmpireAtWar-<version>-full.nupkg`, `EmpireAtWar-<version>-delta.nupkg` (when a published Velopack release exists), `EmpireAtWar-win-Portable.zip`, `releases.win.json`, `commit.txt`, `zip-sha256.json`. The raw player ZIP is not uploaded; `zip-sha256.json` still identifies the Jenkins archive. Unity provenance is used for validation and remains in Jenkins.
+- Uploaded assets: `EmpireAtWar-win-Setup.exe`, `EmpireAtWar-<version>-full.nupkg`, `EmpireAtWar-<version>-delta.nupkg` (when a published Velopack release exists), `releases.win.json`, `commit.txt`, `zip-sha256.json`. The raw player ZIP is not uploaded; `zip-sha256.json` still identifies the Jenkins archive. Unity provenance is used for validation and remains in Jenkins.
 - The tag resolves to the archived commit. An existing tag pointing elsewhere is rejected, including annotated tags after dereferencing.
 - Draft notes identify the source build, commit, and ZIP hash. Keep the embedded provenance marker when editing notes if you intend to resume the job.
 - Uploaded asset names, sizes, states, and SHA-256 digests must match before the job succeeds.

@@ -75,7 +75,7 @@ if ($previous) {
 }
 
 $packArguments = @('pack', '--packId', $packId, '--packVersion', $version, '--packDir', $staging, '--mainExe', 'EmpireAtWarLauncher.exe',
-    '--packTitle', 'Empire at War', '--packAuthors', 'GolinSkyCompany', '--runtime', 'win-x64', '--outputDir', $releases)
+    '--packTitle', 'Empire at War', '--packAuthors', 'GolinSkyCompany', '--runtime', 'win-x64', '--outputDir', $releases, '--noPortable')
 # Commits before the launcher icon was added have no .ico; their Setup.exe keeps Velopack's default icon.
 $icon = "$launcherSource\Tools\Launcher\EmpireAtWar.ico"
 if (Test-Path -LiteralPath $icon -PathType Leaf) { $packArguments += @('--icon', $icon) }

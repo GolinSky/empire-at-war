@@ -105,7 +105,7 @@ try {
     $commit = Invoke-GitHubApi -Resource "commits/$sha" -AllowMissing
     if ($commit.Status -eq 404) { throw "Commit $sha is unavailable in $repo. Check token access and push the intended source commit before retrying; Jenkins will not push local commits." }
     if ($commit.Data.sha -ine $sha) { throw 'GitHub returned a different source commit.' }
-    # The raw player ZIP is replaced by Velopack's Setup.exe, packages, feed and portable ZIP.
+    # The raw player ZIP is replaced by Velopack's Setup.exe, packages and feed.
     $packed = @(& "$PSScriptRoot\New-VelopackRelease.ps1" -Tag $tag -Commit $sha -ZipPath $files[0].Path -ZipSha256 $zipHash)
     $files = @(foreach ($file in @($packed) + @($files | Select-Object -Skip 1 | ForEach-Object { Get-Item -LiteralPath $_.Path })) {
         if ($file.Length -le 0 -or $file.Length -ge 2GB) { throw "Release asset must be nonempty and smaller than 2 GiB: $($file.Name)" }
