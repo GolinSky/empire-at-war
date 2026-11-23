@@ -20,6 +20,7 @@ namespace EmpireAtWar.Services.ShipAbilities
     {
         private const float CELL_SIZE = 512f;
         private readonly List<IEntity> _units = new List<IEntity>();
+        private readonly List<IEntity> _stations = new List<IEntity>();
         private readonly Dictionary<(int X, int Z), List<int>> _cells = new Dictionary<(int, int), List<int>>();
         private readonly List<(IEntity Entity, Vector3 Position)> _nearby = new List<(IEntity, Vector3)>();
         private readonly ForceComposition _own = new ForceComposition();
@@ -48,10 +49,18 @@ namespace EmpireAtWar.Services.ShipAbilities
         public void Capture()
         {
             _units.Clear();
+            _stations.Clear();
             _maxTargetFootprint = 0f;
             foreach (List<int> cell in _cells.Values) cell.Clear();
             foreach (IEntity entity in _entities.Entities)
-                if (!entity.HealthModel.IsDestroyed && entity.TryGetFacade(out IUnitTypeFacade _))
+            {
+                if (entity.HealthModel.IsDestroyed) continue;
+                if (entity.IsPlayerBase())
+                {
+                    _maxTargetFootprint = Mathf.Max(_maxTargetFootprint, ShipAbilityRange.FootprintRadius(entity));
+                    _stations.Add(entity);
+                }
+                else if (entity.TryGetFacade(out IUnitTypeFacade _))
                 {
                     _maxTargetFootprint = Mathf.Max(_maxTargetFootprint, ShipAbilityRange.FootprintRadius(entity));
                     Vector3 position = entity.GetFacade<IEntityTransformFacade>().Transform.position;
@@ -64,11 +73,14 @@ namespace EmpireAtWar.Services.ShipAbilities
                     cell.Add(_units.Count);
                     _units.Add(entity);
                 }
+            }
         }
 
         /// <summary>Prefer the explicit attack target, then nearby hostiles in range.</summary>
         public IEntity FindTarget(IShipAbilityFacade caster, ShipAbilityDefinition definition)
         {
+            if (definition.Settings is IShipAbilityTargetPriority priority)
+                return FindPriorityTarget(caster, definition, priority);
             IUnitOrderObserverFacade order = caster.Entity.GetFacade<IUnitOrderObserverFacade>();
             if (order.CurrentOrder == UnitOrderType.Attack)
             {
@@ -96,6 +108,34 @@ namespace EmpireAtWar.Services.ShipAbilities
                     continue;
                 target = entity;
                 targetStrikecraft = strikecraft;
+                nearest = distance;
+            }
+            return target;
+        }
+
+        // Highest priority in range, stations included; the attack-order target breaks ties, then the nearest.
+        private IEntity FindPriorityTarget(IShipAbilityFacade caster, ShipAbilityDefinition definition,
+            IShipAbilityTargetPriority priority)
+        {
+            IUnitOrderObserverFacade order = caster.Entity.GetFacade<IUnitOrderObserverFacade>();
+            IEntity ordered = order.CurrentOrder == UnitOrderType.Attack ? order.AttackTarget : null;
+            float searchRange = ShipAbilityRange.MaximumDistance(ShipAbilityRange.FootprintRadius(caster.Entity),
+                _maxTargetFootprint, definition.Range);
+            CollectNearby(caster.WorldPosition, searchRange);
+            CollectNearbyStations(caster.WorldPosition, searchRange);
+            IEntity target = null;
+            int best = int.MinValue;
+            float nearest = float.PositiveInfinity;
+            foreach ((IEntity entity, Vector3 position) in _nearby)
+            {
+                if (!_abilities.CanTarget(caster, definition, entity) ||
+                    !ShipAbilityRange.IsInRange(caster, entity, definition.Range)) continue;
+                int rank = priority.GetTargetPriority(entity);
+                float distance = ReferenceEquals(entity, ordered) ? -1f
+                    : PlanarGeometry.Distance(caster.WorldPosition, position);
+                if (rank < best || rank == best && distance >= nearest) continue;
+                target = entity;
+                best = rank;
                 nearest = distance;
             }
             return target;
@@ -148,7 +188,9 @@ namespace EmpireAtWar.Services.ShipAbilities
                 hasShieldPower && automation.CanRegenerateShields, shieldsBoosted, shieldLoss, meaningful, canAttack,
                 CombatMatchup.Advantage(_hostile, _own), hostileShipNearby);
             bool heavyLoss = shieldLoss == AutoPowerShieldLoss.Heavy;
-            return new AutoPowerSituation(power, hostileNearby: !_hostile.IsEmpty, engaged: meaningful && canAttack,
+            // A hostile station alone still counts as nearby, so a station-first ability can open on it.
+            bool hostileNearby = !_hostile.IsEmpty || HasHostileStation(owner, caster.WorldPosition, caster.RadarRange);
+            return new AutoPowerSituation(power, hostileNearby, engaged: meaningful && canAttack,
                 endangered: heavyLoss && health.ShieldPercentage < _tuning.LowShields,
                 cornered: heavyLoss && health.HullPercentage < _tuning.LastStandHull, travelling,
                 urgent: IsUrgentShieldBoost(health.ShieldPercentage, hasShieldPower && automation.CanRegenerateShields,
@@ -205,6 +247,26 @@ namespace EmpireAtWar.Services.ShipAbilities
                     if (PlanarGeometry.Distance(origin, position) <= range) _nearby.Add((entity, position));
                 }
             }
+        }
+
+        // Stations are few and stay out of the unit grid: force composition rates units only.
+        private void CollectNearbyStations(Vector3 origin, float range)
+        {
+            foreach (IEntity station in _stations)
+            {
+                if (!IsLive(station)) continue;
+                Vector3 position = station.GetFacade<IEntityTransformFacade>().Transform.position;
+                if (PlanarGeometry.Distance(origin, position) <= range) _nearby.Add((station, position));
+            }
+        }
+
+        private bool HasHostileStation(PlayerId owner, Vector3 origin, float range)
+        {
+            foreach (IEntity station in _stations)
+                if (IsLive(station) && _abilities.IsVisibleHostile(owner, station) &&
+                    PlanarGeometry.Distance(origin, station.GetFacade<IEntityTransformFacade>().Transform.position) <= range)
+                    return true;
+            return false;
         }
 
         private bool IsLive(IEntity entity) =>

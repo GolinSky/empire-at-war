@@ -182,7 +182,9 @@ namespace EmpireAtWar.Services.ShipAbilities
                     if (slot.Definition.RequiresEnemyTarget)
                     {
                         IUnitOrderObserverFacade order = casters[i].GetFacade<IUnitOrderObserverFacade>();
-                        if (order.CurrentOrder == UnitOrderType.Attack)
+                        // A priority ability keeps the target its own order chose (a station before the attack target).
+                        if (order.CurrentOrder == UnitOrderType.Attack &&
+                            !(slot.Definition.Settings is IShipAbilityTargetPriority))
                         {
                             if (CanTarget(command, slot.Definition, order.AttackTarget) && IsInRange(slot, order.AttackTarget))
                                 automaticTarget = order.AttackTarget;

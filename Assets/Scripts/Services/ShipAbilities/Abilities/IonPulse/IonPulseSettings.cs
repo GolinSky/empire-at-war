@@ -1,6 +1,7 @@
 using EmpireAtWar.Components.Ship.Health;
 using EmpireAtWar.Entities.BaseEntity;
 using EmpireAtWar.Entities.BaseEntity.EntityFacades;
+using EmpireAtWar.Entities.Units;
 using System;
 using EmpireAtWar.ViewComponents.Weapon;
 using UnityEngine;
@@ -8,7 +9,8 @@ using UnityEngine;
 namespace EmpireAtWar.Services.ShipAbilities.Abilities
 {
     [Serializable]
-    public sealed class IonPulseSettings : ShipAbilitySettings, IShipAbilityTargetRule, IShipAbilityReadiness
+    public sealed class IonPulseSettings : ShipAbilitySettings, IShipAbilityTargetRule, IShipAbilityReadiness,
+        IShipAbilityTargetPriority
     {
         [SerializeField] private IonPulseView viewPrefab;
         [SerializeField] private float alignmentTolerance = 5f;
@@ -33,6 +35,19 @@ namespace EmpireAtWar.Services.ShipAbilities.Abilities
             !(caster.Entity.TryGetFacade(out IShipArrivalFacade arrival) && arrival.IsArriving);
 
         public bool CanTarget(IShipAbilityFacade caster, IEntity target) => !target.HealthModel.ShipClass.IsStrikecraft();
+
+        // Automatic order: station, then Dreadnought > BattleCruiser > Capital, then any other ship.
+        public int GetTargetPriority(IEntity target)
+        {
+            if (target.IsPlayerBase()) return 4;
+            return target.HealthModel.ShipClass switch
+            {
+                ShipClass.Dreadnought => 3,
+                ShipClass.BattleCruiser => 2,
+                ShipClass.Capital => 1,
+                _ => 0
+            };
+        }
 
         public override IShipAbility CreateAbility(ShipAbilityDependencies dependencies) =>
             new IonPulseAbility(this, dependencies.Entities, dependencies.Relations, dependencies.Session);
