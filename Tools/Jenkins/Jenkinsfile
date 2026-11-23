@@ -62,7 +62,7 @@ pipeline {
         success {
             script {
                 if (params.PUBLISH_GITHUB) {
-                    // wait: false — the publish job waits for this build to finish and needs the single executor.
+                    // wait: false - the publish job waits for this build to finish and needs the single executor.
                     build job: 'EmpireAtWar-Publish-GitHub', wait: false, parameters: [
                         string(name: 'SOURCE_BUILD', value: env.BUILD_NUMBER),
                         booleanParam(name: 'PRERELEASE', value: true)
