@@ -593,3 +593,10 @@ created: "2026-10-29\r"
 - [ ] [[Done/Features/Xyston_Import]] — In battle (Empire, level 5): build Xyston; check superlaser beam leaves the ventral cannon, kills a full-health ISD I, auto-targets capitals; turret/stripe/team colours, engine plumes, shield fit, wreck.
 - [ ] [[Done/Features/Xyston_Import]] — Balance check: provisional price 14,000 / build 80 s / capacity 15 / max 2; 1v1 vs ISD II and Allegiance.
 - [ ] [[Done/Features/Xyston_Import]] — Selection fix (enabled hull box) and 2,406 m scale: click-select in battle; red armor band shows owner colour. `Ships`/`Abilities`/`Audio` passed; `Health`, `Combat`, `Balance` not run.
+
+## Resurgent Import
+
+- [ ] [[Done/Features/Resurgent_Import]] — In battle (Empire, level 5): build Resurgent; check 306-unit scale vs ISD II / Executor, turret seating, engine plumes, shield fit, pick-hull selection, hangar launches (Avenger, Defender, Interceptor), wreck.
+- [ ] [[Done/Features/Resurgent_Import]] — Balance check of user values: hull/shields 70,000/35,000, regen delay 0.8 s, price 18,000, population 20; provisional hangar 4/2/3 reserves, build 110 s, max 2; medium-calibre swap of 28 light guns.
+- [ ] [[Done/Features/Resurgent_Import]] — Team colour: source albedo has no hue or alpha mask; decide stripes or a painted mask later.
+- [ ] [[Done/Features/Resurgent_Import]] — Run `Ships`, `Map`, `Health`, `Combat`, `Audio`, `Balance` when authorized; compile passed, tests not run.

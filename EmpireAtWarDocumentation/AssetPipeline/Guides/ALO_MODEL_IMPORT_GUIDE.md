@@ -279,6 +279,16 @@ bpy.ops.import_scene.fbx(
 - Duplicate ALO bone names get Blender `.001` suffixes after FBX round trip (e.g. `pe_imperial_star_destroyer_large`); look them up by prefix.
 - Same-mod ISD-family hulls reuse the ISD I Remake parts: clone `ISDIPart*` from `ISDI.prefab` onto the same bone names with the same local TRS and ISD I geometry scale. Reference: [[Done/Features/Xyston_Import]], `Tools/Blender/Xyston/`.
 
+### Resurgent import evidence — 2026-11-23
+
+- Donor view root can carry its own scale: `ISDIIShipView` root is `0.933`. Spawning keeps root scale → the copied ship came out 6.7% short (285.75 instead of 306.16). Reset `root.localScale = Vector3.one` after copying a donor view; verify length on the saved view's world-space renderer bounds.
+- Remake Reforged `Model_To_Attach` turrets use the ISD I Remake attachment basis: turret FBX under the hull bone, `localPosition 0`, `localRotation Euler(90,0,0)`, `localScale 0.01` (both FBXs at `globalScale 0.02`). Verified by turret size vs hull and hull-vertex gap.
+- Turret copies (`_01`…`_18`) are byte-identical → hash them and convert one FBX per unique model.
+- A missing normal (`W_PLANETCLOUDS_NONE_B.dds`) must become `None` in both the REPAIR block and the exporter's `normal =` line, or the exporter throws `KeyError`.
+- Team colour: check albedo hue before choosing livery. `MeshBumpColorize` with alpha 0 everywhere and grey albedo (mean saturation 0.02–0.13) → no hue livery and no mask is possible.
+- Adding a ship to a faction class with fewer than 3 ships makes `ShipRoleRoster.ClassMates` switch from all-faction to own-faction medians. Re-check Fast/Slow/Brawler/Fragile flags on the class mates (Resurgent removed `Slow` from Allegiance and Titan).
+- Reference: [[Done/Features/Resurgent_Import]], tooling `Tools/Blender/Resurgent/`.
+
 ### Hero fighter import evidence — 2026-11-16
 
 - FBX normalization: multiply imported root scale by target/measured length; do not replace the root scale. Remake Vader FBX root scale 100 caused a 100× undersized prefab when overwritten. Verify the saved formation alongside existing fighters.

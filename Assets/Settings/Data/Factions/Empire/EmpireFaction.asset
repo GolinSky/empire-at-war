@@ -466,6 +466,32 @@ MonoBehaviour:
         <UnitCapacity>k__BackingField: 15
         <Icon>k__BackingField: {fileID: 21300000, guid: 344ab43239374da438ba8d36fe4c2dd7,
           type: 3}
+    - key: 221
+      value:
+        matchups: {fileID: 11400000, guid: 2b6d8f8b068b1bc4dbefb4389b435307, type: 2}
+        displayName: Resurgent
+        description: 70,000 hull; 35,000 shields; speed 20. Direct successor to the
+          Imperial Star Destroyer, built for sustained fleet combat. Eight octuple
+          heavy turbolaser main batteries, eight heavy quad turbolasers, ten medium
+          dual turbolasers, eight medium and four heavy dual ion cannons, six missile
+          launchers, two heavy missile launchers and eighteen medium laser cannons.
+          Every weapon is targetable; two shield generators, three engines, tractor
+          beam, hangar and command array can be destroyed. Power to Main Batteries
+          and Tractor Beam. Deploys 1 TIE Avenger, 1 TIE Defender and 1 TIE Interceptor
+          squadron at once. Carries 9 total squadron launches, including the initial
+          deployment.
+        role: Heavy brawler / Anti-capital / Carrier
+        iconKey: 7483d8b1ea7011e4a9c5384489f3f150:21300000
+        isHero: 0
+        isUnique: 0
+        <Name>k__BackingField: Resurgent-class Star Destroyer
+        <MaxCount>k__BackingField: 2
+        <AvailableLevel>k__BackingField: 5
+        <Price>k__BackingField: 18000
+        <BuildTime>k__BackingField: 110
+        <UnitCapacity>k__BackingField: 20
+        <Icon>k__BackingField: {fileID: 21300000, guid: 7483d8b1ea7011e4a9c5384489f3f150,
+          type: 3}
   squadrons:
     keyValue:
     - key: 200

@@ -1,0 +1,67 @@
+[
+ {
+  "name": "ResurgentLightTurret_M005",
+  "mesh": "First_Order_Resurgent_Turret",
+  "shader": "MeshBumpColorize.fx",
+  "base": "ResurgentLightTurret_First_Order_Resurgent_Turret_Diffuse",
+  "normal": "ResurgentLightTurret_First_Order_Resurgent_Turret_Normal",
+  "hidden": false,
+  "diffuse": [
+   1.0,
+   1.0,
+   1.0,
+   0.0
+  ],
+  "color": null
+ },
+ {
+  "name": "ResurgentLightTurret_M006",
+  "mesh": "First_Order_Resurgent_Turret_Double_Barrel",
+  "shader": "MeshBumpColorize.fx",
+  "base": "ResurgentLightTurret_First_Order_Resurgent_Turret_Diffuse",
+  "normal": "ResurgentLightTurret_First_Order_Resurgent_Turret_Normal",
+  "hidden": false,
+  "diffuse": [
+   1.0,
+   1.0,
+   1.0,
+   0.0
+  ],
+  "color": null
+ },
+ {
+  "name": "ResurgentLightTurret_M007",
+  "mesh": "First_Order_Resurgent_Turret_Shadow",
+  "shader": "MeshShadowVolume.fx",
+  "base": null,
+  "normal": null,
+  "hidden": true,
+  "diffuse": null,
+  "color": null
+ },
+ {
+  "name": "ResurgentLightTurret_M008",
+  "mesh": "First_Order_Resurgent_Turret_Collison",
+  "shader": "MeshCollision.fx",
+  "base": null,
+  "normal": null,
+  "hidden": true,
+  "diffuse": null,
+  "color": [
+   1.0,
+   1.0,
+   1.0,
+   1.0
+  ]
+ },
+ {
+  "name": "ResurgentLightTurret_M009",
+  "mesh": "First_Order_Resurgent_Turret_Double_Barrel_Shadow",
+  "shader": "MeshShadowVolume.fx",
+  "base": null,
+  "normal": null,
+  "hidden": true,
+  "diffuse": null,
+  "color": null
+ }
+]

@@ -1,0 +1,122 @@
+[
+ {
+  "name": "ResurgentSextupleTurret_M005",
+  "mesh": "Mounts_Superfire",
+  "shader": "MeshBumpColorize.fx",
+  "base": "ResurgentSextupleTurret_Allegiance_QHTL_Diffuse",
+  "normal": "ResurgentSextupleTurret_Allegiance_QHTL_Normal",
+  "hidden": false,
+  "diffuse": [
+   1.0,
+   1.0,
+   1.0,
+   0.0
+  ],
+  "color": null
+ },
+ {
+  "name": "ResurgentSextupleTurret_M006",
+  "mesh": "Valor_SD_DHTL_Barrel",
+  "shader": "MeshBumpColorize.fx",
+  "base": "ResurgentSextupleTurret_Allegiance_QHTL_Diffuse",
+  "normal": "ResurgentSextupleTurret_Allegiance_QHTL_Normal",
+  "hidden": false,
+  "diffuse": [
+   1.0,
+   1.0,
+   1.0,
+   0.0
+  ],
+  "color": null
+ },
+ {
+  "name": "ResurgentSextupleTurret_M007",
+  "mesh": "Valor_SD_DHTL_Turret_Shadow",
+  "shader": "MeshBumpColorize.fx",
+  "base": "ResurgentSextupleTurret_Allegiance_QHTL_Diffuse",
+  "normal": "ResurgentSextupleTurret_Allegiance_QHTL_Normal",
+  "hidden": false,
+  "diffuse": [
+   1.0,
+   1.0,
+   1.0,
+   0.0
+  ],
+  "color": null
+ },
+ {
+  "name": "ResurgentSextupleTurret_M008",
+  "mesh": "Valor_SD_DHTL_Turret_Shadow.001",
+  "shader": "MeshBumpColorize.fx",
+  "base": "ResurgentSextupleTurret_Allegiance_QHTL_Diffuse",
+  "normal": "ResurgentSextupleTurret_Allegiance_QHTL_Normal",
+  "hidden": false,
+  "diffuse": [
+   1.0,
+   1.0,
+   1.0,
+   0.0
+  ],
+  "color": null
+ },
+ {
+  "name": "ResurgentSextupleTurret_M009",
+  "mesh": "Valor_SD_DHTL_Barrel.001",
+  "shader": "MeshBumpColorize.fx",
+  "base": "ResurgentSextupleTurret_Allegiance_QHTL_Diffuse",
+  "normal": "ResurgentSextupleTurret_Allegiance_QHTL_Normal",
+  "hidden": false,
+  "diffuse": [
+   1.0,
+   1.0,
+   1.0,
+   0.0
+  ],
+  "color": null
+ },
+ {
+  "name": "ResurgentSextupleTurret_M010",
+  "mesh": "Plane",
+  "shader": "MeshCollision.fx",
+  "base": null,
+  "normal": null,
+  "hidden": true,
+  "diffuse": null,
+  "color": [
+   1.0,
+   1.0,
+   1.0,
+   1.0
+  ]
+ },
+ {
+  "name": "ResurgentSextupleTurret_M011",
+  "mesh": "Mounts_Superfire.001",
+  "shader": "MeshShadowVolume.fx",
+  "base": null,
+  "normal": null,
+  "hidden": true,
+  "diffuse": null,
+  "color": null
+ },
+ {
+  "name": "ResurgentSextupleTurret_M012",
+  "mesh": "Valor_SD_DHTL_Barrel.002",
+  "shader": "MeshShadowVolume.fx",
+  "base": null,
+  "normal": null,
+  "hidden": true,
+  "diffuse": null,
+  "color": null
+ },
+ {
+  "name": "ResurgentSextupleTurret_M013",
+  "mesh": "Valor_SD_DHTL_Barrel.003",
+  "shader": "MeshShadowVolume.fx",
+  "base": null,
+  "normal": null,
+  "hidden": true,
+  "diffuse": null,
+  "color": null
+ }
+]

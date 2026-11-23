@@ -1,0 +1,2127 @@
+[
+ {
+  "name": "Resurgent_M023",
+  "mesh": "Engine_Glow_Push_sm",
+  "shader": "MeshShield.fx",
+  "base": "Resurgent_Engine_Glow_Fancy_Yellow",
+  "normal": null,
+  "hidden": false,
+  "diffuse": null,
+  "color": [
+   1.0,
+   1.0,
+   1.0,
+   1.0
+  ]
+ },
+ {
+  "name": "Resurgent_M024",
+  "mesh": "Engine_Glow push",
+  "shader": "MeshShield.fx",
+  "base": "Resurgent_Engine_Glow_Fancy_Blue",
+  "normal": null,
+  "hidden": false,
+  "diffuse": null,
+  "color": [
+   1.0,
+   1.0,
+   1.0,
+   1.0
+  ]
+ },
+ {
+  "name": "Resurgent_M025",
+  "mesh": "Engine_Glow",
+  "shader": "MeshShield.fx",
+  "base": "Resurgent_Engine_Glow_Fancy_Blue",
+  "normal": null,
+  "hidden": false,
+  "diffuse": null,
+  "color": [
+   1.0,
+   1.0,
+   1.0,
+   1.0
+  ]
+ },
+ {
+  "name": "Resurgent_M026",
+  "mesh": "Engine_Exhaust",
+  "shader": "MeshAdditive.fx",
+  "base": "Resurgent_Engine_Exhaust",
+  "normal": null,
+  "hidden": false,
+  "diffuse": null,
+  "color": [
+   1.0,
+   1.0,
+   1.0,
+   1.0
+  ]
+ },
+ {
+  "name": "Resurgent_M027",
+  "mesh": "RSD_Detail_Panel_14",
+  "shader": "MeshBumpColorize.fx",
+  "base": "Resurgent_IMP_Floor_COLOUR",
+  "normal": "Resurgent_IMP_Floor_NORMAL",
+  "hidden": false,
+  "diffuse": [
+   1.0,
+   1.0,
+   1.0,
+   0.0
+  ],
+  "color": null
+ },
+ {
+  "name": "Resurgent_M028",
+  "mesh": "RSD_Detail_Panel_14.001",
+  "shader": "MeshAdditive.fx",
+  "base": "Resurgent_Hangar_Imp_Light_Dim",
+  "normal": null,
+  "hidden": false,
+  "diffuse": null,
+  "color": [
+   1.0,
+   1.0,
+   1.0,
+   1.0
+  ]
+ },
+ {
+  "name": "Resurgent_M029",
+  "mesh": "RSD_Detail_Panel_05",
+  "shader": "MeshBumpColorize.fx",
+  "base": "Resurgent_IMP_Floor_COLOUR",
+  "normal": "Resurgent_IMP_Floor_NORMAL",
+  "hidden": false,
+  "diffuse": [
+   1.0,
+   1.0,
+   1.0,
+   0.0
+  ],
+  "color": null
+ },
+ {
+  "name": "Resurgent_M030",
+  "mesh": "Light_RSD_Detail_Panel_05",
+  "shader": "MeshAdditive.fx",
+  "base": "Resurgent_IMP_Floor_COLOUR",
+  "normal": null,
+  "hidden": false,
+  "diffuse": null,
+  "color": [
+   1.0,
+   1.0,
+   1.0,
+   1.0
+  ]
+ },
+ {
+  "name": "Resurgent_M031",
+  "mesh": "RSD_Detail_Panel_05.001",
+  "shader": "MeshAdditive.fx",
+  "base": "Resurgent_Hangar_Imp_Light_Dim",
+  "normal": null,
+  "hidden": false,
+  "diffuse": null,
+  "color": [
+   1.0,
+   1.0,
+   1.0,
+   1.0
+  ]
+ },
+ {
+  "name": "Resurgent_M032",
+  "mesh": "RSD_Detail_Panel_14_Light",
+  "shader": "MeshAdditive.fx",
+  "base": "Resurgent_IMP_Floor_COLOUR",
+  "normal": null,
+  "hidden": false,
+  "diffuse": null,
+  "color": [
+   1.0,
+   1.0,
+   1.0,
+   1.0
+  ]
+ },
+ {
+  "name": "Resurgent_M033",
+  "mesh": "Radiator",
+  "shader": "MeshBumpColorize.fx",
+  "base": "Resurgent_RSD_Hull_Diffuse",
+  "normal": "Resurgent_RSD_Hull_Normal",
+  "hidden": false,
+  "diffuse": [
+   1.0,
+   1.0,
+   1.0,
+   0.0
+  ],
+  "color": null
+ },
+ {
+  "name": "Resurgent_M034",
+  "mesh": "M_RSD_Hull_Gen",
+  "shader": "MeshBumpColorize.fx",
+  "base": "Resurgent_RSD_Hull_Diffuse",
+  "normal": "Resurgent_RSD_Hull_Normal",
+  "hidden": false,
+  "diffuse": [
+   1.0,
+   1.0,
+   1.0,
+   0.0
+  ],
+  "color": null
+ },
+ {
+  "name": "Resurgent_M035",
+  "mesh": "M_RSD_Hull_Gen.001",
+  "shader": "MeshBumpColorize.fx",
+  "base": "Resurgent_RSD_Hull_Diffuse",
+  "normal": "Resurgent_RSD_Hull_Normal",
+  "hidden": false,
+  "diffuse": [
+   1.0,
+   1.0,
+   1.0,
+   0.0
+  ],
+  "color": null
+ },
+ {
+  "name": "Resurgent_M036",
+  "mesh": "M_RSD_Hull_Gen.002",
+  "shader": "MeshBumpColorize.fx",
+  "base": "Resurgent_RSD_Hull_Diffuse",
+  "normal": "Resurgent_RSD_Hull_Normal",
+  "hidden": false,
+  "diffuse": [
+   1.0,
+   1.0,
+   1.0,
+   0.0
+  ],
+  "color": null
+ },
+ {
+  "name": "Resurgent_M037",
+  "mesh": "M_RSD_Hull02",
+  "shader": "MeshBumpColorize.fx",
+  "base": "Resurgent_RSD_Hull_Diffuse",
+  "normal": "Resurgent_RSD_Hull_Normal",
+  "hidden": false,
+  "diffuse": [
+   1.0,
+   1.0,
+   1.0,
+   0.0
+  ],
+  "color": null
+ },
+ {
+  "name": "Resurgent_M038",
+  "mesh": "M_RSD_Hull01",
+  "shader": "MeshBumpColorize.fx",
+  "base": "Resurgent_RSD_Hull_Diffuse",
+  "normal": "Resurgent_RSD_Hull_Normal",
+  "hidden": false,
+  "diffuse": [
+   1.0,
+   1.0,
+   1.0,
+   0.0
+  ],
+  "color": null
+ },
+ {
+  "name": "Resurgent_M039",
+  "mesh": "M_RSD_DetailsPanel",
+  "shader": "MeshBumpColorize.fx",
+  "base": "Resurgent_RSD_Hull_Diffuse",
+  "normal": "Resurgent_RSD_Hull_Normal",
+  "hidden": false,
+  "diffuse": [
+   1.0,
+   1.0,
+   1.0,
+   0.0
+  ],
+  "color": null
+ },
+ {
+  "name": "Resurgent_M040",
+  "mesh": "Hull",
+  "shader": "MeshBumpColorize.fx",
+  "base": "Resurgent_RSD_Hull_Diffuse",
+  "normal": "Resurgent_RSD_Hull_Normal",
+  "hidden": false,
+  "diffuse": [
+   1.0,
+   1.0,
+   1.0,
+   0.0
+  ],
+  "color": null
+ },
+ {
+  "name": "Resurgent_M041",
+  "mesh": "Backplate",
+  "shader": "MeshBumpColorize.fx",
+  "base": "Resurgent_RSD_Hull_Diffuse",
+  "normal": "Resurgent_RSD_Hull_Normal",
+  "hidden": false,
+  "diffuse": [
+   1.0,
+   1.0,
+   1.0,
+   0.0
+  ],
+  "color": null
+ },
+ {
+  "name": "Resurgent_M042",
+  "mesh": "RSD_Detail_Panel_14_Light.001",
+  "shader": "MeshAdditive.fx",
+  "base": "Resurgent_IMP_Floor_COLOUR",
+  "normal": null,
+  "hidden": false,
+  "diffuse": null,
+  "color": [
+   1.0,
+   1.0,
+   1.0,
+   1.0
+  ]
+ },
+ {
+  "name": "Resurgent_M043",
+  "mesh": "RSD_Detail_Panel_14.002",
+  "shader": "MeshBumpColorize.fx",
+  "base": "Resurgent_Hangar_Imp_Light_Dim",
+  "normal": null,
+  "hidden": false,
+  "diffuse": [
+   1.0,
+   1.0,
+   1.0,
+   0.0
+  ],
+  "color": null
+ },
+ {
+  "name": "Resurgent_M044",
+  "mesh": "RSD_Detail_Panel_05.002",
+  "shader": "MeshBumpColorize.fx",
+  "base": "Resurgent_Hangar_Imp_Light_Dim",
+  "normal": null,
+  "hidden": false,
+  "diffuse": [
+   1.0,
+   1.0,
+   1.0,
+   0.0
+  ],
+  "color": null
+ },
+ {
+  "name": "Resurgent_M045",
+  "mesh": "RSD_Hull_Geb_01",
+  "shader": "MeshBumpColorize.fx",
+  "base": "Resurgent_RSD_Greeble_Hull_03_Diffuse",
+  "normal": "Resurgent_RSD_Greeble_Hull_03_Normal",
+  "hidden": false,
+  "diffuse": [
+   1.0,
+   1.0,
+   1.0,
+   0.0
+  ],
+  "color": null
+ },
+ {
+  "name": "Resurgent_M046",
+  "mesh": "RSD_Hull_Geb_02",
+  "shader": "MeshBumpColorize.fx",
+  "base": "Resurgent_RSD_Greeble_Hull_03_Diffuse",
+  "normal": "Resurgent_RSD_Greeble_Hull_03_Normal",
+  "hidden": false,
+  "diffuse": [
+   1.0,
+   1.0,
+   1.0,
+   0.0
+  ],
+  "color": null
+ },
+ {
+  "name": "Resurgent_M047",
+  "mesh": "RSD_Superstructure_2",
+  "shader": "MeshBumpColorize.fx",
+  "base": "Resurgent_RSD_Superstructure_Diffuse",
+  "normal": "Resurgent_RSD_Superstructure_Normal",
+  "hidden": false,
+  "diffuse": [
+   1.0,
+   1.0,
+   1.0,
+   0.0
+  ],
+  "color": null
+ },
+ {
+  "name": "Resurgent_M048",
+  "mesh": "RSD_Superstructure_1",
+  "shader": "MeshBumpColorize.fx",
+  "base": "Resurgent_RSD_Superstructure_Diffuse",
+  "normal": "Resurgent_RSD_Superstructure_Normal",
+  "hidden": false,
+  "diffuse": [
+   1.0,
+   1.0,
+   1.0,
+   0.0
+  ],
+  "color": null
+ },
+ {
+  "name": "Resurgent_M049",
+  "mesh": "RSD_Superstructure_3",
+  "shader": "MeshBumpColorize.fx",
+  "base": "Resurgent_RSD_Superstructure_Diffuse",
+  "normal": "Resurgent_RSD_Superstructure_Normal",
+  "hidden": false,
+  "diffuse": [
+   1.0,
+   1.0,
+   1.0,
+   0.0
+  ],
+  "color": null
+ },
+ {
+  "name": "Resurgent_M050",
+  "mesh": "RSD_Hull_Geb_06",
+  "shader": "MeshBumpColorize.fx",
+  "base": "Resurgent_RSD_Greeble_Superstructure_01_Diffuse",
+  "normal": "Resurgent_RSD_Greeble_Superstructure_01_Normal",
+  "hidden": false,
+  "diffuse": [
+   1.0,
+   1.0,
+   1.0,
+   0.0
+  ],
+  "color": null
+ },
+ {
+  "name": "Resurgent_M051",
+  "mesh": "RSD_Hull_Geb_07",
+  "shader": "MeshBumpColorize.fx",
+  "base": "Resurgent_RSD_Greeble_Superstructure_01_Diffuse",
+  "normal": "Resurgent_RSD_Greeble_Superstructure_01_Normal",
+  "hidden": false,
+  "diffuse": [
+   1.0,
+   1.0,
+   1.0,
+   0.0
+  ],
+  "color": null
+ },
+ {
+  "name": "Resurgent_M052",
+  "mesh": "RSD_Detail_Sheetbase_01",
+  "shader": "MeshBumpColorize.fx",
+  "base": "Resurgent_RSD_Greeble_Superstructure_01_Diffuse",
+  "normal": "Resurgent_RSD_Greeble_Superstructure_01_Normal",
+  "hidden": false,
+  "diffuse": [
+   1.0,
+   1.0,
+   1.0,
+   0.0
+  ],
+  "color": null
+ },
+ {
+  "name": "Resurgent_M053",
+  "mesh": "RSD_Hull_Geb_08",
+  "shader": "MeshBumpColorize.fx",
+  "base": "Resurgent_RSD_Greeble_Superstructure_02_Diffuse",
+  "normal": "Resurgent_RSD_Greeble_Superstructure_02_Normal",
+  "hidden": false,
+  "diffuse": [
+   1.0,
+   1.0,
+   1.0,
+   0.0
+  ],
+  "color": null
+ },
+ {
+  "name": "Resurgent_M054",
+  "mesh": "RSD_Detail_Panel_01",
+  "shader": "MeshBumpColorize.fx",
+  "base": "Resurgent_RSD_Greeble_Superstructure_02_Diffuse",
+  "normal": "Resurgent_RSD_Greeble_Superstructure_02_Normal",
+  "hidden": false,
+  "diffuse": [
+   1.0,
+   1.0,
+   1.0,
+   0.0
+  ],
+  "color": null
+ },
+ {
+  "name": "Resurgent_M055",
+  "mesh": "RSD_Hull_Geb_09",
+  "shader": "MeshBumpColorize.fx",
+  "base": "Resurgent_RSD_Hull_Contrast_Diffuse",
+  "normal": "Resurgent_RSD_Hull_Contrast_Normal",
+  "hidden": false,
+  "diffuse": [
+   1.0,
+   1.0,
+   1.0,
+   0.0
+  ],
+  "color": null
+ },
+ {
+  "name": "Resurgent_M056",
+  "mesh": "RSD_Hull_Geb_10",
+  "shader": "MeshBumpColorize.fx",
+  "base": "Resurgent_RSD_Hull_Contrast_Diffuse",
+  "normal": "Resurgent_RSD_Hull_Contrast_Normal",
+  "hidden": false,
+  "diffuse": [
+   1.0,
+   1.0,
+   1.0,
+   0.0
+  ],
+  "color": null
+ },
+ {
+  "name": "Resurgent_M057",
+  "mesh": "Nose_Tip_T",
+  "shader": "MeshBumpColorize.fx",
+  "base": "Resurgent_RSD_Greeble_Hull_02_Diffuse",
+  "normal": "Resurgent_RSD_Greeble_Hull_02_Normal",
+  "hidden": false,
+  "diffuse": [
+   1.0,
+   1.0,
+   1.0,
+   0.0
+  ],
+  "color": null
+ },
+ {
+  "name": "Resurgent_M058",
+  "mesh": "RSD_Detail_Panel_02",
+  "shader": "MeshBumpColorize.fx",
+  "base": "Resurgent_RSD_Greeble_Superstructure_02_Diffuse",
+  "normal": "Resurgent_RSD_Greeble_Superstructure_02_Normal",
+  "hidden": false,
+  "diffuse": [
+   1.0,
+   1.0,
+   1.0,
+   0.0
+  ],
+  "color": null
+ },
+ {
+  "name": "Resurgent_M059",
+  "mesh": "RSD_Hull_Geb_11",
+  "shader": "MeshBumpColorize.fx",
+  "base": "Resurgent_RSD_Hull_Contrast_Diffuse",
+  "normal": "Resurgent_RSD_Hull_Contrast_Normal",
+  "hidden": false,
+  "diffuse": [
+   1.0,
+   1.0,
+   1.0,
+   0.0
+  ],
+  "color": null
+ },
+ {
+  "name": "Resurgent_M060",
+  "mesh": "RSD_Hull_Geb_12",
+  "shader": "MeshBumpColorize.fx",
+  "base": "Resurgent_RSD_Hull_Contrast_Diffuse",
+  "normal": "Resurgent_RSD_Hull_Contrast_Normal",
+  "hidden": false,
+  "diffuse": [
+   1.0,
+   1.0,
+   1.0,
+   0.0
+  ],
+  "color": null
+ },
+ {
+  "name": "Resurgent_M061",
+  "mesh": "RSD_Hull_Geb_13",
+  "shader": "MeshBumpColorize.fx",
+  "base": "Resurgent_RSD_Hull_Contrast_Diffuse",
+  "normal": "Resurgent_RSD_Hull_Contrast_Normal",
+  "hidden": false,
+  "diffuse": [
+   1.0,
+   1.0,
+   1.0,
+   0.0
+  ],
+  "color": null
+ },
+ {
+  "name": "Resurgent_M062",
+  "mesh": "RSD_Detail_Sheetbase_02",
+  "shader": "MeshBumpColorize.fx",
+  "base": "Resurgent_RSD_Greeble_Hull_02_Diffuse",
+  "normal": "Resurgent_RSD_Greeble_Hull_02_Normal",
+  "hidden": false,
+  "diffuse": [
+   1.0,
+   1.0,
+   1.0,
+   0.0
+  ],
+  "color": null
+ },
+ {
+  "name": "Resurgent_M063",
+  "mesh": "RSD_Hull_Geb_15",
+  "shader": "MeshBumpColorize.fx",
+  "base": "Resurgent_RSD_Greeble_Hull_02_Diffuse",
+  "normal": "Resurgent_RSD_Greeble_Hull_02_Normal",
+  "hidden": false,
+  "diffuse": [
+   1.0,
+   1.0,
+   1.0,
+   0.0
+  ],
+  "color": null
+ },
+ {
+  "name": "Resurgent_M064",
+  "mesh": "RSD_Hull_Geb_16",
+  "shader": "MeshBumpColorize.fx",
+  "base": "Resurgent_RSD_Greeble_Hull_02_Diffuse",
+  "normal": "Resurgent_RSD_Greeble_Hull_02_Normal",
+  "hidden": false,
+  "diffuse": [
+   1.0,
+   1.0,
+   1.0,
+   0.0
+  ],
+  "color": null
+ },
+ {
+  "name": "Resurgent_M065",
+  "mesh": "RSD_Detail_Sheetbase_03",
+  "shader": "MeshBumpColorize.fx",
+  "base": "Resurgent_RSD_Greeble_Hull_02_Diffuse",
+  "normal": "Resurgent_RSD_Greeble_Hull_02_Normal",
+  "hidden": false,
+  "diffuse": [
+   1.0,
+   1.0,
+   1.0,
+   0.0
+  ],
+  "color": null
+ },
+ {
+  "name": "Resurgent_M066",
+  "mesh": "RSD_Detail_Sheetbase_04",
+  "shader": "MeshBumpColorize.fx",
+  "base": "Resurgent_RSD_Greeble_Hull_02_Diffuse",
+  "normal": "Resurgent_RSD_Greeble_Hull_02_Normal",
+  "hidden": false,
+  "diffuse": [
+   1.0,
+   1.0,
+   1.0,
+   0.0
+  ],
+  "color": null
+ },
+ {
+  "name": "Resurgent_M067",
+  "mesh": "RSD_Hull_Geb_17",
+  "shader": "MeshBumpColorize.fx",
+  "base": "Resurgent_RSD_Greeble_Hull_01_Diffuse",
+  "normal": "Resurgent_RSD_Greeble_Hull_01_Normal",
+  "hidden": false,
+  "diffuse": [
+   1.0,
+   1.0,
+   1.0,
+   0.0
+  ],
+  "color": null
+ },
+ {
+  "name": "Resurgent_M068",
+  "mesh": "RSD_Hull_Geb_20",
+  "shader": "MeshBumpColorize.fx",
+  "base": "Resurgent_RSD_Greeble_Hull_03_Diffuse",
+  "normal": "Resurgent_RSD_Greeble_Hull_03_Normal",
+  "hidden": false,
+  "diffuse": [
+   1.0,
+   1.0,
+   1.0,
+   0.0
+  ],
+  "color": null
+ },
+ {
+  "name": "Resurgent_M069",
+  "mesh": "RSD_Detail_Sheetbase_05",
+  "shader": "MeshBumpColorize.fx",
+  "base": "Resurgent_RSD_Greeble_Hull_01_Diffuse",
+  "normal": "Resurgent_RSD_Greeble_Hull_01_Normal",
+  "hidden": false,
+  "diffuse": [
+   1.0,
+   1.0,
+   1.0,
+   0.0
+  ],
+  "color": null
+ },
+ {
+  "name": "Resurgent_M070",
+  "mesh": "RSD_Detail_Panel_03",
+  "shader": "MeshBumpColorize.fx",
+  "base": "Resurgent_RSD_Greeble_Hull_01_Diffuse",
+  "normal": "Resurgent_RSD_Greeble_Hull_01_Normal",
+  "hidden": false,
+  "diffuse": [
+   1.0,
+   1.0,
+   1.0,
+   0.0
+  ],
+  "color": null
+ },
+ {
+  "name": "Resurgent_M071",
+  "mesh": "RSD_Detail_Panel_04",
+  "shader": "MeshBumpColorize.fx",
+  "base": "Resurgent_RSD_Greeble_Superstructure_02_Diffuse",
+  "normal": "Resurgent_RSD_Greeble_Superstructure_02_Normal",
+  "hidden": false,
+  "diffuse": [
+   1.0,
+   1.0,
+   1.0,
+   0.0
+  ],
+  "color": null
+ },
+ {
+  "name": "Resurgent_M072",
+  "mesh": "RSD_Detail_Sheetbase_06",
+  "shader": "MeshBumpColorize.fx",
+  "base": "Resurgent_RSD_Greeble_Hull_02_Diffuse",
+  "normal": "Resurgent_RSD_Greeble_Hull_02_Normal",
+  "hidden": false,
+  "diffuse": [
+   1.0,
+   1.0,
+   1.0,
+   0.0
+  ],
+  "color": null
+ },
+ {
+  "name": "Resurgent_M073",
+  "mesh": "RSD_Detail_Greebles_01",
+  "shader": "MeshBumpColorize.fx",
+  "base": "Resurgent_RSD_Greeble_Superstructure_02_Diffuse",
+  "normal": "Resurgent_RSD_Greeble_Superstructure_02_Normal",
+  "hidden": false,
+  "diffuse": [
+   1.0,
+   1.0,
+   1.0,
+   0.0
+  ],
+  "color": null
+ },
+ {
+  "name": "Resurgent_M074",
+  "mesh": "RSD_Detail_Greebles_02",
+  "shader": "MeshBumpColorize.fx",
+  "base": "Resurgent_RSD_Greeble_Superstructure_02_Diffuse",
+  "normal": "Resurgent_RSD_Greeble_Superstructure_02_Normal",
+  "hidden": false,
+  "diffuse": [
+   1.0,
+   1.0,
+   1.0,
+   0.0
+  ],
+  "color": null
+ },
+ {
+  "name": "Resurgent_M075",
+  "mesh": "RSD_Detail_Sheetbase_07",
+  "shader": "MeshBumpColorize.fx",
+  "base": "Resurgent_RSD_Greeble_Superstructure_02_Diffuse",
+  "normal": "Resurgent_RSD_Greeble_Superstructure_02_Normal",
+  "hidden": false,
+  "diffuse": [
+   1.0,
+   1.0,
+   1.0,
+   0.0
+  ],
+  "color": null
+ },
+ {
+  "name": "Resurgent_M076",
+  "mesh": "RSD_Hull_Geb_21",
+  "shader": "MeshBumpColorize.fx",
+  "base": "Resurgent_RSD_Greeble_Superstructure_01_Diffuse",
+  "normal": "Resurgent_RSD_Greeble_Superstructure_01_Normal",
+  "hidden": false,
+  "diffuse": [
+   1.0,
+   1.0,
+   1.0,
+   0.0
+  ],
+  "color": null
+ },
+ {
+  "name": "Resurgent_M077",
+  "mesh": "RSD_Hull_Geb_22",
+  "shader": "MeshBumpColorize.fx",
+  "base": "Resurgent_RSD_Greeble_Superstructure_01_Diffuse",
+  "normal": "Resurgent_RSD_Greeble_Superstructure_01_Normal",
+  "hidden": false,
+  "diffuse": [
+   1.0,
+   1.0,
+   1.0,
+   0.0
+  ],
+  "color": null
+ },
+ {
+  "name": "Resurgent_M078",
+  "mesh": "RSD_Detail_Greebles_03",
+  "shader": "MeshBumpColorize.fx",
+  "base": "Resurgent_RSD_Greeble_Superstructure_01_Diffuse",
+  "normal": "Resurgent_RSD_Greeble_Superstructure_01_Normal",
+  "hidden": false,
+  "diffuse": [
+   1.0,
+   1.0,
+   1.0,
+   0.0
+  ],
+  "color": null
+ },
+ {
+  "name": "Resurgent_M079",
+  "mesh": "RSD_Detail_Panel_07",
+  "shader": "MeshBumpColorize.fx",
+  "base": "Resurgent_RSD_Greeble_Hull_01_Diffuse",
+  "normal": "Resurgent_RSD_Greeble_Hull_01_Normal",
+  "hidden": false,
+  "diffuse": [
+   1.0,
+   1.0,
+   1.0,
+   0.0
+  ],
+  "color": null
+ },
+ {
+  "name": "Resurgent_M080",
+  "mesh": "RSD_Detail_Sheetbase_08",
+  "shader": "MeshBumpColorize.fx",
+  "base": "Resurgent_RSD_Greeble_Hull_01_Diffuse",
+  "normal": "Resurgent_RSD_Greeble_Hull_01_Normal",
+  "hidden": false,
+  "diffuse": [
+   1.0,
+   1.0,
+   1.0,
+   0.0
+  ],
+  "color": null
+ },
+ {
+  "name": "Resurgent_M081",
+  "mesh": "RSD_Detail_Sheetbase_09",
+  "shader": "MeshBumpColorize.fx",
+  "base": "Resurgent_RSD_Greeble_Superstructure_02_Diffuse",
+  "normal": "Resurgent_RSD_Greeble_Superstructure_02_Normal",
+  "hidden": false,
+  "diffuse": [
+   1.0,
+   1.0,
+   1.0,
+   0.0
+  ],
+  "color": null
+ },
+ {
+  "name": "Resurgent_M082",
+  "mesh": "RSD_Detail_Sheetbase_10",
+  "shader": "MeshBumpColorize.fx",
+  "base": "Resurgent_RSD_Greeble_Superstructure_01_Diffuse",
+  "normal": "Resurgent_RSD_Greeble_Superstructure_01_Normal",
+  "hidden": false,
+  "diffuse": [
+   1.0,
+   1.0,
+   1.0,
+   0.0
+  ],
+  "color": null
+ },
+ {
+  "name": "Resurgent_M083",
+  "mesh": "RSD_Detail_Sheetbase_11",
+  "shader": "MeshBumpColorize.fx",
+  "base": "Resurgent_RSD_Greeble_Superstructure_01_Diffuse",
+  "normal": "Resurgent_RSD_Greeble_Superstructure_01_Normal",
+  "hidden": false,
+  "diffuse": [
+   1.0,
+   1.0,
+   1.0,
+   0.0
+  ],
+  "color": null
+ },
+ {
+  "name": "Resurgent_M084",
+  "mesh": "RSD_Detail_Panel_08",
+  "shader": "MeshBumpColorize.fx",
+  "base": "Resurgent_RSD_Greeble_Superstructure_01_Diffuse",
+  "normal": "Resurgent_RSD_Greeble_Superstructure_01_Normal",
+  "hidden": false,
+  "diffuse": [
+   1.0,
+   1.0,
+   1.0,
+   0.0
+  ],
+  "color": null
+ },
+ {
+  "name": "Resurgent_M085",
+  "mesh": "RSD_Detail_Panel_09",
+  "shader": "MeshBumpColorize.fx",
+  "base": "Resurgent_RSD_Greeble_Superstructure_02_Diffuse",
+  "normal": "Resurgent_RSD_Greeble_Superstructure_02_Normal",
+  "hidden": false,
+  "diffuse": [
+   1.0,
+   1.0,
+   1.0,
+   0.0
+  ],
+  "color": null
+ },
+ {
+  "name": "Resurgent_M086",
+  "mesh": "RSD_Detail_Greebles_04",
+  "shader": "MeshBumpColorize.fx",
+  "base": "Resurgent_RSD_Greeble_Superstructure_02_Diffuse",
+  "normal": "Resurgent_RSD_Greeble_Superstructure_02_Normal",
+  "hidden": false,
+  "diffuse": [
+   1.0,
+   1.0,
+   1.0,
+   0.0
+  ],
+  "color": null
+ },
+ {
+  "name": "Resurgent_M087",
+  "mesh": "RSD_Detail_Panel_10",
+  "shader": "MeshBumpColorize.fx",
+  "base": "Resurgent_RSD_Greeble_Superstructure_01_Diffuse",
+  "normal": "Resurgent_RSD_Greeble_Superstructure_01_Normal",
+  "hidden": false,
+  "diffuse": [
+   1.0,
+   1.0,
+   1.0,
+   0.0
+  ],
+  "color": null
+ },
+ {
+  "name": "Resurgent_M088",
+  "mesh": "RSD_Hull_Geb_23",
+  "shader": "MeshBumpColorize.fx",
+  "base": "Resurgent_RSD_Greeble_Hull_03_Diffuse",
+  "normal": "Resurgent_RSD_Greeble_Hull_03_Normal",
+  "hidden": false,
+  "diffuse": [
+   1.0,
+   1.0,
+   1.0,
+   0.0
+  ],
+  "color": null
+ },
+ {
+  "name": "Resurgent_M089",
+  "mesh": "Engine_Main",
+  "shader": "MeshBumpColorize.fx",
+  "base": "Resurgent_RSD_Greeble_Hull_03_Diffuse",
+  "normal": "Resurgent_RSD_Greeble_Hull_03_Normal",
+  "hidden": false,
+  "diffuse": [
+   1.0,
+   1.0,
+   1.0,
+   0.0
+  ],
+  "color": null
+ },
+ {
+  "name": "Resurgent_M090",
+  "mesh": "RSD_Detail_Panel_11",
+  "shader": "MeshBumpColorize.fx",
+  "base": "Resurgent_RSD_Greeble_Hull_03_Diffuse",
+  "normal": "Resurgent_RSD_Greeble_Hull_03_Normal",
+  "hidden": false,
+  "diffuse": [
+   1.0,
+   1.0,
+   1.0,
+   0.0
+  ],
+  "color": null
+ },
+ {
+  "name": "Resurgent_M091",
+  "mesh": "RSD_Hull_Geb_24_RB",
+  "shader": "MeshBumpColorize.fx",
+  "base": "Resurgent_RSD_Greeble_Hull_03_Diffuse",
+  "normal": "Resurgent_RSD_Greeble_Hull_03_Normal",
+  "hidden": false,
+  "diffuse": [
+   1.0,
+   1.0,
+   1.0,
+   0.0
+  ],
+  "color": null
+ },
+ {
+  "name": "Resurgent_M092",
+  "mesh": "Engine_Sub",
+  "shader": "MeshBumpColorize.fx",
+  "base": "Resurgent_RSD_Greeble_Hull_03_Diffuse",
+  "normal": "Resurgent_RSD_Greeble_Hull_03_Normal",
+  "hidden": false,
+  "diffuse": [
+   1.0,
+   1.0,
+   1.0,
+   0.0
+  ],
+  "color": null
+ },
+ {
+  "name": "Resurgent_M093",
+  "mesh": "Engine_Sub_Small",
+  "shader": "MeshBumpColorize.fx",
+  "base": "Resurgent_RSD_Greeble_Hull_03_Diffuse",
+  "normal": "Resurgent_RSD_Greeble_Hull_03_Normal",
+  "hidden": false,
+  "diffuse": [
+   1.0,
+   1.0,
+   1.0,
+   0.0
+  ],
+  "color": null
+ },
+ {
+  "name": "Resurgent_M094",
+  "mesh": "RSD_Detail_Sheetbase_12",
+  "shader": "MeshBumpColorize.fx",
+  "base": "Resurgent_RSD_Greeble_Hull_02_Diffuse",
+  "normal": "Resurgent_RSD_Greeble_Hull_02_Normal",
+  "hidden": false,
+  "diffuse": [
+   1.0,
+   1.0,
+   1.0,
+   0.0
+  ],
+  "color": null
+ },
+ {
+  "name": "Resurgent_M095",
+  "mesh": "RSD_Detail_Panel_12",
+  "shader": "MeshBumpColorize.fx",
+  "base": "Resurgent_RSD_Greeble_Hull_01_Diffuse",
+  "normal": "Resurgent_RSD_Greeble_Hull_01_Normal",
+  "hidden": false,
+  "diffuse": [
+   1.0,
+   1.0,
+   1.0,
+   0.0
+  ],
+  "color": null
+ },
+ {
+  "name": "Resurgent_M096",
+  "mesh": "Nose_Base",
+  "shader": "MeshBumpColorize.fx",
+  "base": "Resurgent_RSD_Greeble_Hull_02_Diffuse",
+  "normal": "Resurgent_RSD_Greeble_Hull_02_Normal",
+  "hidden": false,
+  "diffuse": [
+   1.0,
+   1.0,
+   1.0,
+   0.0
+  ],
+  "color": null
+ },
+ {
+  "name": "Resurgent_M097",
+  "mesh": "RSD_Detail_Greebles_05",
+  "shader": "MeshBumpColorize.fx",
+  "base": "Resurgent_RSD_Greeble_Hull_03_Diffuse",
+  "normal": "Resurgent_RSD_Greeble_Hull_03_Normal",
+  "hidden": false,
+  "diffuse": [
+   1.0,
+   1.0,
+   1.0,
+   0.0
+  ],
+  "color": null
+ },
+ {
+  "name": "Resurgent_M098",
+  "mesh": "RSD_Detail_Greebles_06",
+  "shader": "MeshBumpColorize.fx",
+  "base": "Resurgent_RSD_Greeble_Hull_03_Diffuse",
+  "normal": "Resurgent_RSD_Greeble_Hull_03_Normal",
+  "hidden": false,
+  "diffuse": [
+   1.0,
+   1.0,
+   1.0,
+   0.0
+  ],
+  "color": null
+ },
+ {
+  "name": "Resurgent_M099",
+  "mesh": "RSD_Detail_Greebles_07",
+  "shader": "MeshBumpColorize.fx",
+  "base": "Resurgent_RSD_Greeble_Hull_02_Diffuse",
+  "normal": "Resurgent_RSD_Greeble_Hull_02_Normal",
+  "hidden": false,
+  "diffuse": [
+   1.0,
+   1.0,
+   1.0,
+   0.0
+  ],
+  "color": null
+ },
+ {
+  "name": "Resurgent_M100",
+  "mesh": "RSD_Detail_Greebles_08",
+  "shader": "MeshBumpColorize.fx",
+  "base": "Resurgent_RSD_Greeble_Hull_02_Diffuse",
+  "normal": "Resurgent_RSD_Greeble_Hull_02_Normal",
+  "hidden": false,
+  "diffuse": [
+   1.0,
+   1.0,
+   1.0,
+   0.0
+  ],
+  "color": null
+ },
+ {
+  "name": "Resurgent_M101",
+  "mesh": "RSD_Detail_Greebles_09",
+  "shader": "MeshBumpColorize.fx",
+  "base": "Resurgent_RSD_Greeble_Superstructure_02_Diffuse",
+  "normal": "Resurgent_RSD_Greeble_Superstructure_02_Normal",
+  "hidden": false,
+  "diffuse": [
+   1.0,
+   1.0,
+   1.0,
+   0.0
+  ],
+  "color": null
+ },
+ {
+  "name": "Resurgent_M102",
+  "mesh": "RSD_Detail_Greebles_10",
+  "shader": "MeshBumpColorize.fx",
+  "base": "Resurgent_RSD_Greeble_Hull_02_Diffuse",
+  "normal": "Resurgent_RSD_Greeble_Hull_02_Normal",
+  "hidden": false,
+  "diffuse": [
+   1.0,
+   1.0,
+   1.0,
+   0.0
+  ],
+  "color": null
+ },
+ {
+  "name": "Resurgent_M103",
+  "mesh": "RSD_Detail_Greebles_11",
+  "shader": "MeshBumpColorize.fx",
+  "base": "Resurgent_RSD_Greeble_Superstructure_02_Diffuse",
+  "normal": "Resurgent_RSD_Greeble_Superstructure_02_Normal",
+  "hidden": false,
+  "diffuse": [
+   1.0,
+   1.0,
+   1.0,
+   0.0
+  ],
+  "color": null
+ },
+ {
+  "name": "Resurgent_M104",
+  "mesh": "RSD_Detail_Greebles_12",
+  "shader": "MeshBumpColorize.fx",
+  "base": "Resurgent_RSD_Greeble_Superstructure_02_Diffuse",
+  "normal": "Resurgent_RSD_Greeble_Superstructure_02_Normal",
+  "hidden": false,
+  "diffuse": [
+   1.0,
+   1.0,
+   1.0,
+   0.0
+  ],
+  "color": null
+ },
+ {
+  "name": "Resurgent_M105",
+  "mesh": "RSD_Detail_Greebles_13",
+  "shader": "MeshBumpColorize.fx",
+  "base": "Resurgent_RSD_Greeble_Superstructure_02_Diffuse",
+  "normal": "Resurgent_RSD_Greeble_Superstructure_02_Normal",
+  "hidden": false,
+  "diffuse": [
+   1.0,
+   1.0,
+   1.0,
+   0.0
+  ],
+  "color": null
+ },
+ {
+  "name": "Resurgent_M106",
+  "mesh": "RSD_Detail_Greebles_14",
+  "shader": "MeshBumpColorize.fx",
+  "base": "Resurgent_RSD_Greeble_Superstructure_02_Diffuse",
+  "normal": "Resurgent_RSD_Greeble_Superstructure_02_Normal",
+  "hidden": false,
+  "diffuse": [
+   1.0,
+   1.0,
+   1.0,
+   0.0
+  ],
+  "color": null
+ },
+ {
+  "name": "Resurgent_M107",
+  "mesh": "RSD_Detail_Greebles_15",
+  "shader": "MeshBumpColorize.fx",
+  "base": "Resurgent_RSD_Greeble_Superstructure_01_Diffuse",
+  "normal": "Resurgent_RSD_Greeble_Superstructure_01_Normal",
+  "hidden": false,
+  "diffuse": [
+   1.0,
+   1.0,
+   1.0,
+   0.0
+  ],
+  "color": null
+ },
+ {
+  "name": "Resurgent_M108",
+  "mesh": "RSD_Detail_Greebles_16",
+  "shader": "MeshBumpColorize.fx",
+  "base": "Resurgent_RSD_Greeble_Hull_03_Diffuse",
+  "normal": "Resurgent_RSD_Greeble_Hull_03_Normal",
+  "hidden": false,
+  "diffuse": [
+   1.0,
+   1.0,
+   1.0,
+   0.0
+  ],
+  "color": null
+ },
+ {
+  "name": "Resurgent_M109",
+  "mesh": "RSD_Detail_Greebles_17",
+  "shader": "MeshBumpColorize.fx",
+  "base": "Resurgent_RSD_Greeble_Hull_03_Diffuse",
+  "normal": "Resurgent_RSD_Greeble_Hull_03_Normal",
+  "hidden": false,
+  "diffuse": [
+   1.0,
+   1.0,
+   1.0,
+   0.0
+  ],
+  "color": null
+ },
+ {
+  "name": "Resurgent_M110",
+  "mesh": "RSD_Detail_Greebles_18",
+  "shader": "MeshBumpColorize.fx",
+  "base": "Resurgent_RSD_Greeble_Hull_01_Diffuse",
+  "normal": "Resurgent_RSD_Greeble_Hull_01_Normal",
+  "hidden": false,
+  "diffuse": [
+   1.0,
+   1.0,
+   1.0,
+   0.0
+  ],
+  "color": null
+ },
+ {
+  "name": "Resurgent_M111",
+  "mesh": "RSD_Detail_Panel_13",
+  "shader": "MeshBumpColorize.fx",
+  "base": "Resurgent_RSD_Greeble_Hull_01_Diffuse",
+  "normal": "Resurgent_RSD_Greeble_Hull_01_Normal",
+  "hidden": false,
+  "diffuse": [
+   1.0,
+   1.0,
+   1.0,
+   0.0
+  ],
+  "color": null
+ },
+ {
+  "name": "Resurgent_M112",
+  "mesh": "RSD_Detail_Panel_15",
+  "shader": "MeshBumpColorize.fx",
+  "base": "Resurgent_RSD_Hull_Contrast_Diffuse",
+  "normal": "Resurgent_RSD_Hull_Contrast_Normal",
+  "hidden": false,
+  "diffuse": [
+   1.0,
+   1.0,
+   1.0,
+   0.0
+  ],
+  "color": null
+ },
+ {
+  "name": "Resurgent_M113",
+  "mesh": "RSD_Detail_Panel_16",
+  "shader": "MeshBumpColorize.fx",
+  "base": "Resurgent_RSD_Greeble_Hull_02_Diffuse",
+  "normal": "Resurgent_RSD_Greeble_Hull_02_Normal",
+  "hidden": false,
+  "diffuse": [
+   1.0,
+   1.0,
+   1.0,
+   0.0
+  ],
+  "color": null
+ },
+ {
+  "name": "Resurgent_M114",
+  "mesh": "RSD_Detail_Panel_17",
+  "shader": "MeshBumpColorize.fx",
+  "base": "Resurgent_RSD_Greeble_Hull_02_Diffuse",
+  "normal": "Resurgent_RSD_Greeble_Hull_02_Normal",
+  "hidden": false,
+  "diffuse": [
+   1.0,
+   1.0,
+   1.0,
+   0.0
+  ],
+  "color": null
+ },
+ {
+  "name": "Resurgent_M115",
+  "mesh": "RSD_Detail_Sheetbase_13",
+  "shader": "MeshBumpColorize.fx",
+  "base": "Resurgent_RSD_Greeble_Superstructure_02_Diffuse",
+  "normal": "Resurgent_RSD_Greeble_Superstructure_02_Normal",
+  "hidden": false,
+  "diffuse": [
+   1.0,
+   1.0,
+   1.0,
+   0.0
+  ],
+  "color": null
+ },
+ {
+  "name": "Resurgent_M116",
+  "mesh": "RSD_Detail_Sheetbase_14",
+  "shader": "MeshBumpColorize.fx",
+  "base": "Resurgent_RSD_Greeble_Superstructure_01_Diffuse",
+  "normal": "Resurgent_RSD_Greeble_Superstructure_01_Normal",
+  "hidden": false,
+  "diffuse": [
+   1.0,
+   1.0,
+   1.0,
+   0.0
+  ],
+  "color": null
+ },
+ {
+  "name": "Resurgent_M117",
+  "mesh": "RSD_Detail_Sheetbase_15",
+  "shader": "MeshBumpColorize.fx",
+  "base": "Resurgent_RSD_Greeble_Hull_02_Diffuse",
+  "normal": "Resurgent_RSD_Greeble_Hull_02_Normal",
+  "hidden": false,
+  "diffuse": [
+   1.0,
+   1.0,
+   1.0,
+   0.0
+  ],
+  "color": null
+ },
+ {
+  "name": "Resurgent_M118",
+  "mesh": "RSD_Detail_Sheetbase_16",
+  "shader": "MeshBumpColorize.fx",
+  "base": "Resurgent_RSD_Greeble_Superstructure_02_Diffuse",
+  "normal": "Resurgent_RSD_Greeble_Superstructure_02_Normal",
+  "hidden": false,
+  "diffuse": [
+   1.0,
+   1.0,
+   1.0,
+   0.0
+  ],
+  "color": null
+ },
+ {
+  "name": "Resurgent_M119",
+  "mesh": "RSD_Detail_Sheetbase_17",
+  "shader": "MeshBumpColorize.fx",
+  "base": "Resurgent_RSD_Greeble_Superstructure_01_Diffuse",
+  "normal": "Resurgent_RSD_Greeble_Superstructure_01_Normal",
+  "hidden": false,
+  "diffuse": [
+   1.0,
+   1.0,
+   1.0,
+   0.0
+  ],
+  "color": null
+ },
+ {
+  "name": "Resurgent_M120",
+  "mesh": "RSD_Detail_Sheetbase_18",
+  "shader": "MeshBumpColorize.fx",
+  "base": "Resurgent_RSD_Greeble_Superstructure_02_Diffuse",
+  "normal": "Resurgent_RSD_Greeble_Superstructure_02_Normal",
+  "hidden": false,
+  "diffuse": [
+   1.0,
+   1.0,
+   1.0,
+   0.0
+  ],
+  "color": null
+ },
+ {
+  "name": "Resurgent_M121",
+  "mesh": "RSD_Detail_Sheetbase_19",
+  "shader": "MeshBumpColorize.fx",
+  "base": "Resurgent_RSD_Greeble_Hull_01_Diffuse",
+  "normal": "Resurgent_RSD_Greeble_Hull_01_Normal",
+  "hidden": false,
+  "diffuse": [
+   1.0,
+   1.0,
+   1.0,
+   0.0
+  ],
+  "color": null
+ },
+ {
+  "name": "Resurgent_M122",
+  "mesh": "RSD_Detail_Sheetbase_20",
+  "shader": "MeshBumpColorize.fx",
+  "base": "Resurgent_RSD_Greeble_Hull_01_Diffuse",
+  "normal": "Resurgent_RSD_Greeble_Hull_01_Normal",
+  "hidden": false,
+  "diffuse": [
+   1.0,
+   1.0,
+   1.0,
+   0.0
+  ],
+  "color": null
+ },
+ {
+  "name": "Resurgent_M123",
+  "mesh": "RSD_Hull_Geb_26",
+  "shader": "MeshBumpColorize.fx",
+  "base": "Resurgent_RSD_Greeble_Hull_01_Diffuse",
+  "normal": "Resurgent_RSD_Greeble_Hull_01_Normal",
+  "hidden": false,
+  "diffuse": [
+   1.0,
+   1.0,
+   1.0,
+   0.0
+  ],
+  "color": null
+ },
+ {
+  "name": "Resurgent_M124",
+  "mesh": "RSD_Hull_Geb_27",
+  "shader": "MeshBumpColorize.fx",
+  "base": "Resurgent_RSD_Greeble_Hull_02_Diffuse",
+  "normal": "Resurgent_RSD_Greeble_Hull_02_Normal",
+  "hidden": false,
+  "diffuse": [
+   1.0,
+   1.0,
+   1.0,
+   0.0
+  ],
+  "color": null
+ },
+ {
+  "name": "Resurgent_M125",
+  "mesh": "RSD_Hull_Geb_28",
+  "shader": "MeshBumpColorize.fx",
+  "base": "Resurgent_RSD_Greeble_Hull_02_Diffuse",
+  "normal": "Resurgent_RSD_Greeble_Hull_02_Normal",
+  "hidden": false,
+  "diffuse": [
+   1.0,
+   1.0,
+   1.0,
+   0.0
+  ],
+  "color": null
+ },
+ {
+  "name": "Resurgent_M126",
+  "mesh": "RSD_Hull_Geb_29",
+  "shader": "MeshBumpColorize.fx",
+  "base": "Resurgent_RSD_Greeble_Hull_02_Diffuse",
+  "normal": "Resurgent_RSD_Greeble_Hull_02_Normal",
+  "hidden": false,
+  "diffuse": [
+   1.0,
+   1.0,
+   1.0,
+   0.0
+  ],
+  "color": null
+ },
+ {
+  "name": "Resurgent_M127",
+  "mesh": "Reactor",
+  "shader": "MeshBumpColorize.fx",
+  "base": "Resurgent_RSD_Hull_Contrast_Diffuse",
+  "normal": "Resurgent_RSD_Hull_Contrast_Normal",
+  "hidden": false,
+  "diffuse": [
+   1.0,
+   1.0,
+   1.0,
+   0.0
+  ],
+  "color": null
+ },
+ {
+  "name": "Resurgent_M128",
+  "mesh": "RSD_Hull_Geb_30",
+  "shader": "MeshBumpColorize.fx",
+  "base": "Resurgent_RSD_Greeble_Hull_01_Diffuse",
+  "normal": "Resurgent_RSD_Greeble_Hull_01_Normal",
+  "hidden": false,
+  "diffuse": [
+   1.0,
+   1.0,
+   1.0,
+   0.0
+  ],
+  "color": null
+ },
+ {
+  "name": "Resurgent_M129",
+  "mesh": "RSD_Hull_Geb_32",
+  "shader": "MeshBumpColorize.fx",
+  "base": "Resurgent_RSD_Superstructure_Diffuse",
+  "normal": "Resurgent_RSD_Superstructure_Normal",
+  "hidden": false,
+  "diffuse": [
+   1.0,
+   1.0,
+   1.0,
+   0.0
+  ],
+  "color": null
+ },
+ {
+  "name": "Resurgent_M130",
+  "mesh": "RSD_Hull_Geb_33",
+  "shader": "MeshBumpColorize.fx",
+  "base": "Resurgent_RSD_Superstructure_Diffuse",
+  "normal": "Resurgent_RSD_Superstructure_Normal",
+  "hidden": false,
+  "diffuse": [
+   1.0,
+   1.0,
+   1.0,
+   0.0
+  ],
+  "color": null
+ },
+ {
+  "name": "Resurgent_M131",
+  "mesh": "RSD_Hull_Geb_34",
+  "shader": "MeshBumpColorize.fx",
+  "base": "Resurgent_RSD_Greeble_Hull_01_Diffuse",
+  "normal": "Resurgent_RSD_Greeble_Hull_01_Normal",
+  "hidden": false,
+  "diffuse": [
+   1.0,
+   1.0,
+   1.0,
+   0.0
+  ],
+  "color": null
+ },
+ {
+  "name": "Resurgent_M132",
+  "mesh": "RSD_Hull_Geb_35",
+  "shader": "MeshBumpColorize.fx",
+  "base": "Resurgent_RSD_Greeble_Hull_01_Diffuse",
+  "normal": "Resurgent_RSD_Greeble_Hull_01_Normal",
+  "hidden": false,
+  "diffuse": [
+   1.0,
+   1.0,
+   1.0,
+   0.0
+  ],
+  "color": null
+ },
+ {
+  "name": "Resurgent_M133",
+  "mesh": "Mounts_Superfire",
+  "shader": "MeshBumpColorize.fx",
+  "base": "Resurgent_RSD_Hull_Contrast_Diffuse",
+  "normal": "Resurgent_RSD_Hull_Contrast_Normal",
+  "hidden": false,
+  "diffuse": [
+   1.0,
+   1.0,
+   1.0,
+   0.0
+  ],
+  "color": null
+ },
+ {
+  "name": "Resurgent_M134",
+  "mesh": "Mounts_Superfire_Base",
+  "shader": "MeshBumpColorize.fx",
+  "base": "Resurgent_RSD_Hull_Contrast_Diffuse",
+  "normal": "Resurgent_RSD_Hull_Contrast_Normal",
+  "hidden": false,
+  "diffuse": [
+   1.0,
+   1.0,
+   1.0,
+   0.0
+  ],
+  "color": null
+ },
+ {
+  "name": "Resurgent_M135",
+  "mesh": "Shadow_Hull",
+  "shader": "MeshShadowVolume.fx",
+  "base": null,
+  "normal": null,
+  "hidden": true,
+  "diffuse": null,
+  "color": null
+ },
+ {
+  "name": "Resurgent_M136",
+  "mesh": "Shadow_RSD_Hull_Geb_01",
+  "shader": "MeshShadowVolume.fx",
+  "base": null,
+  "normal": null,
+  "hidden": true,
+  "diffuse": null,
+  "color": null
+ },
+ {
+  "name": "Resurgent_M137",
+  "mesh": "Shadow_RSD_Superstructure_2",
+  "shader": "MeshShadowVolume.fx",
+  "base": null,
+  "normal": null,
+  "hidden": true,
+  "diffuse": null,
+  "color": null
+ },
+ {
+  "name": "Resurgent_M138",
+  "mesh": "Shadow_RSD_Superstructure_1",
+  "shader": "MeshShadowVolume.fx",
+  "base": null,
+  "normal": null,
+  "hidden": true,
+  "diffuse": null,
+  "color": null
+ },
+ {
+  "name": "Resurgent_M139",
+  "mesh": "Shadow_RSD_Superstructure_3",
+  "shader": "MeshShadowVolume.fx",
+  "base": null,
+  "normal": null,
+  "hidden": true,
+  "diffuse": null,
+  "color": null
+ },
+ {
+  "name": "Resurgent_M140",
+  "mesh": "Shadow_RSD_Hull_Geb_06",
+  "shader": "MeshShadowVolume.fx",
+  "base": null,
+  "normal": null,
+  "hidden": true,
+  "diffuse": null,
+  "color": null
+ },
+ {
+  "name": "Resurgent_M141",
+  "mesh": "Shadow_RSD_Hull_Geb_07",
+  "shader": "MeshShadowVolume.fx",
+  "base": null,
+  "normal": null,
+  "hidden": true,
+  "diffuse": null,
+  "color": null
+ },
+ {
+  "name": "Resurgent_M142",
+  "mesh": "Shadow_RSD_Detail_Panel_01",
+  "shader": "MeshShadowVolume.fx",
+  "base": null,
+  "normal": null,
+  "hidden": true,
+  "diffuse": null,
+  "color": null
+ },
+ {
+  "name": "Resurgent_M143",
+  "mesh": "Shadow_RSD_Hull_Geb_09",
+  "shader": "MeshShadowVolume.fx",
+  "base": null,
+  "normal": null,
+  "hidden": true,
+  "diffuse": null,
+  "color": null
+ },
+ {
+  "name": "Resurgent_M144",
+  "mesh": "Shadow_Nose_Tip",
+  "shader": "MeshShadowVolume.fx",
+  "base": null,
+  "normal": null,
+  "hidden": true,
+  "diffuse": null,
+  "color": null
+ },
+ {
+  "name": "Resurgent_M145",
+  "mesh": "Shadow_RSD_Hull_Geb_13",
+  "shader": "MeshShadowVolume.fx",
+  "base": null,
+  "normal": null,
+  "hidden": true,
+  "diffuse": null,
+  "color": null
+ },
+ {
+  "name": "Resurgent_M146",
+  "mesh": "Shadow_RSD_Hull_Geb_14",
+  "shader": "MeshShadowVolume.fx",
+  "base": null,
+  "normal": null,
+  "hidden": true,
+  "diffuse": null,
+  "color": null
+ },
+ {
+  "name": "Resurgent_M147",
+  "mesh": "Shadow_RSD_Hull_Geb_19",
+  "shader": "MeshShadowVolume.fx",
+  "base": null,
+  "normal": null,
+  "hidden": true,
+  "diffuse": null,
+  "color": null
+ },
+ {
+  "name": "Resurgent_M148",
+  "mesh": "Shadow_RSD_Hull_Geb_20",
+  "shader": "MeshShadowVolume.fx",
+  "base": null,
+  "normal": null,
+  "hidden": true,
+  "diffuse": null,
+  "color": null
+ },
+ {
+  "name": "Resurgent_M149",
+  "mesh": "Shadow_RSD_Detail_Sheetbase_06",
+  "shader": "MeshShadowVolume.fx",
+  "base": null,
+  "normal": null,
+  "hidden": true,
+  "diffuse": null,
+  "color": null
+ },
+ {
+  "name": "Resurgent_M150",
+  "mesh": "Shadow_RSD_Detail_Sheetbase_07",
+  "shader": "MeshShadowVolume.fx",
+  "base": null,
+  "normal": null,
+  "hidden": true,
+  "diffuse": null,
+  "color": null
+ },
+ {
+  "name": "Resurgent_M151",
+  "mesh": "Shadow_RSD_Detail_Sheetbase_09",
+  "shader": "MeshShadowVolume.fx",
+  "base": null,
+  "normal": null,
+  "hidden": true,
+  "diffuse": null,
+  "color": null
+ },
+ {
+  "name": "Resurgent_M152",
+  "mesh": "Shadow_Engine_Main",
+  "shader": "MeshShadowVolume.fx",
+  "base": null,
+  "normal": null,
+  "hidden": true,
+  "diffuse": null,
+  "color": null
+ },
+ {
+  "name": "Resurgent_M153",
+  "mesh": "Shadow_RSD_Detail_Sheetbase_12",
+  "shader": "MeshShadowVolume.fx",
+  "base": null,
+  "normal": null,
+  "hidden": true,
+  "diffuse": null,
+  "color": null
+ },
+ {
+  "name": "Resurgent_M154",
+  "mesh": "Shadow_RSD_Detail_Greebles_09",
+  "shader": "MeshShadowVolume.fx",
+  "base": null,
+  "normal": null,
+  "hidden": true,
+  "diffuse": null,
+  "color": null
+ },
+ {
+  "name": "Resurgent_M155",
+  "mesh": "Shadow_Reactor",
+  "shader": "MeshShadowVolume.fx",
+  "base": null,
+  "normal": null,
+  "hidden": true,
+  "diffuse": null,
+  "color": null
+ },
+ {
+  "name": "Resurgent_M156",
+  "mesh": "Shadow_RSD_Hull_Geb_32",
+  "shader": "MeshShadowVolume.fx",
+  "base": null,
+  "normal": null,
+  "hidden": true,
+  "diffuse": null,
+  "color": null
+ },
+ {
+  "name": "Resurgent_M157",
+  "mesh": "Shadow_Mounts_Superfire",
+  "shader": "MeshShadowVolume.fx",
+  "base": null,
+  "normal": null,
+  "hidden": true,
+  "diffuse": null,
+  "color": null
+ },
+ {
+  "name": "Resurgent_M158",
+  "mesh": "Shadow_Mounts_Superfire_Base",
+  "shader": "MeshShadowVolume.fx",
+  "base": null,
+  "normal": null,
+  "hidden": true,
+  "diffuse": null,
+  "color": null
+ },
+ {
+  "name": "Resurgent_M159",
+  "mesh": "Shadow_RSD_Detail_Sheetbase_03",
+  "shader": "MeshShadowVolume.fx",
+  "base": null,
+  "normal": null,
+  "hidden": true,
+  "diffuse": null,
+  "color": null
+ },
+ {
+  "name": "Resurgent_M160",
+  "mesh": "RSD_Hull_Geb_24_LB",
+  "shader": "MeshBumpColorize.fx",
+  "base": "Resurgent_RSD_Greeble_Hull_03_Diffuse",
+  "normal": "Resurgent_RSD_Greeble_Hull_03_Normal",
+  "hidden": false,
+  "diffuse": [
+   1.0,
+   1.0,
+   1.0,
+   0.0
+  ],
+  "color": null
+ },
+ {
+  "name": "Resurgent_M161",
+  "mesh": "Plane",
+  "shader": "MeshBumpColorize.fx",
+  "base": "Resurgent_Procursator_Trench_Set_Diffuse",
+  "normal": "Resurgent_Procursator_Trench_Set_Normal",
+  "hidden": false,
+  "diffuse": [
+   1.0,
+   1.0,
+   1.0,
+   0.0
+  ],
+  "color": null
+ },
+ {
+  "name": "Resurgent_M162",
+  "mesh": "Shadow_RSD_Hull_Geb_02",
+  "shader": "MeshShadowVolume.fx",
+  "base": null,
+  "normal": null,
+  "hidden": true,
+  "diffuse": null,
+  "color": null
+ },
+ {
+  "name": "Resurgent_M163",
+  "mesh": "RSD_Hull_Geb_24_LT",
+  "shader": "MeshBumpColorize.fx",
+  "base": "Resurgent_RSD_Greeble_Hull_03_Diffuse",
+  "normal": "Resurgent_RSD_Greeble_Hull_03_Normal",
+  "hidden": false,
+  "diffuse": [
+   1.0,
+   1.0,
+   1.0,
+   0.0
+  ],
+  "color": null
+ },
+ {
+  "name": "Resurgent_M164",
+  "mesh": "RSD_Hull_Geb_24_RT",
+  "shader": "MeshBumpColorize.fx",
+  "base": "Resurgent_RSD_Greeble_Hull_03_Diffuse",
+  "normal": "Resurgent_RSD_Greeble_Hull_03_Normal",
+  "hidden": false,
+  "diffuse": [
+   1.0,
+   1.0,
+   1.0,
+   0.0
+  ],
+  "color": null
+ },
+ {
+  "name": "Resurgent_M165",
+  "mesh": "Shadow_RSD_Hull_Geb_15",
+  "shader": "MeshShadowVolume.fx",
+  "base": null,
+  "normal": null,
+  "hidden": true,
+  "diffuse": null,
+  "color": null
+ },
+ {
+  "name": "Resurgent_M166",
+  "mesh": "Shadow_RSD_Detail_Panel_04",
+  "shader": "MeshShadowVolume.fx",
+  "base": null,
+  "normal": null,
+  "hidden": true,
+  "diffuse": null,
+  "color": null
+ },
+ {
+  "name": "Resurgent_M167",
+  "mesh": "Col",
+  "shader": "MeshCollision.fx",
+  "base": null,
+  "normal": null,
+  "hidden": true,
+  "diffuse": null,
+  "color": [
+   1.0,
+   1.0,
+   1.0,
+   1.0
+  ]
+ },
+ {
+  "name": "Resurgent_M168",
+  "mesh": "RSD_Detail_Sheetbase_04.001",
+  "shader": "MeshAdditive.fx",
+  "base": "Resurgent_Sith_Fighter_L",
+  "normal": null,
+  "hidden": false,
+  "diffuse": null,
+  "color": [
+   1.0,
+   1.0,
+   1.0,
+   1.0
+  ]
+ },
+ {
+  "name": "Resurgent_M169",
+  "mesh": "Light_Unmirroed",
+  "shader": "MeshAdditive.fx",
+  "base": "Resurgent_Sith_Fighter_L",
+  "normal": null,
+  "hidden": false,
+  "diffuse": null,
+  "color": [
+   1.0,
+   1.0,
+   1.0,
+   1.0
+  ]
+ },
+ {
+  "name": "Resurgent_M170",
+  "mesh": "RSD_Detail_Panel_07.001",
+  "shader": "MeshAdditive.fx",
+  "base": "Resurgent_Hull_Lights_Grid1",
+  "normal": null,
+  "hidden": false,
+  "diffuse": null,
+  "color": [
+   1.0,
+   1.0,
+   1.0,
+   1.0
+  ]
+ },
+ {
+  "name": "Resurgent_M171",
+  "mesh": "RSD_Hull_Geb_20_Light",
+  "shader": "MeshAdditive.fx",
+  "base": "Resurgent_Sith_Fighter_L",
+  "normal": null,
+  "hidden": false,
+  "diffuse": null,
+  "color": [
+   1.0,
+   1.0,
+   1.0,
+   1.0
+  ]
+ },
+ {
+  "name": "Resurgent_M172",
+  "mesh": "RSD_Hull_Geb_17.001",
+  "shader": "MeshShield.fx",
+  "base": "Resurgent_Nb_shieldbase_Blue",
+  "normal": null,
+  "hidden": false,
+  "diffuse": null,
+  "color": [
+   1.0,
+   1.0,
+   1.0,
+   1.0
+  ]
+ },
+ {
+  "name": "Resurgent_M173",
+  "mesh": "DB_Tube",
+  "shader": "MeshBumpColorize.fx",
+  "base": "Resurgent_Procursator_Trench_Set_Diffuse",
+  "normal": "Resurgent_Procursator_Trench_Set_Normal",
+  "hidden": false,
+  "diffuse": [
+   1.0,
+   1.0,
+   1.0,
+   0.0
+  ],
+  "color": null
+ }
+]

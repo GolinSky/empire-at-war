@@ -1953,3 +1953,17 @@ MonoBehaviour:
         m_SubObjectType: 
         m_SubObjectGUID: 
         m_EditorAssetChanged: 0
+    - key: ResurgentShipView
+      value:
+        m_AssetGUID: 65227a73ed5d15b4f8bbd4318247ae70
+        m_SubObjectName: 
+        m_SubObjectType: 
+        m_SubObjectGUID: 
+        m_EditorAssetChanged: 0
+    - key: ResurgentShipData
+      value:
+        m_AssetGUID: 638ecbedfdc1a464596808af9f3f8aad
+        m_SubObjectName: 
+        m_SubObjectType: 
+        m_SubObjectGUID: 
+        m_EditorAssetChanged: 0

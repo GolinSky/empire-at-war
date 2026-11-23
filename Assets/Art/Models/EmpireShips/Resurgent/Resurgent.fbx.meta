@@ -1,0 +1,720 @@
+fileFormatVersion: 2
+guid: b955409b8636cea429c1058b6f5813d2
+ModelImporter:
+  serializedVersion: 24200
+  internalIDToNameTable: []
+  externalObjects:
+  - first:
+      type: UnityEngine:Material
+      assembly: UnityEngine.CoreModule
+      name: Resurgent_M023
+    second: {fileID: 2100000, guid: 6f28b24a51094a24c839e52518b345c4, type: 2}
+  - first:
+      type: UnityEngine:Material
+      assembly: UnityEngine.CoreModule
+      name: Resurgent_M024
+    second: {fileID: 2100000, guid: 6186c42259fae7242bd80223f950d823, type: 2}
+  - first:
+      type: UnityEngine:Material
+      assembly: UnityEngine.CoreModule
+      name: Resurgent_M025
+    second: {fileID: 2100000, guid: bf486351288d6a1499ba83593adbd8c3, type: 2}
+  - first:
+      type: UnityEngine:Material
+      assembly: UnityEngine.CoreModule
+      name: Resurgent_M026
+    second: {fileID: 2100000, guid: 247cc87e92a099b4cb3fb0d1c25006ed, type: 2}
+  - first:
+      type: UnityEngine:Material
+      assembly: UnityEngine.CoreModule
+      name: Resurgent_M027
+    second: {fileID: 2100000, guid: 244d67b487c940a48b2a2e3f1bc3a615, type: 2}
+  - first:
+      type: UnityEngine:Material
+      assembly: UnityEngine.CoreModule
+      name: Resurgent_M028
+    second: {fileID: 2100000, guid: 097147f0f68e4ed4aa847b4737ed5c71, type: 2}
+  - first:
+      type: UnityEngine:Material
+      assembly: UnityEngine.CoreModule
+      name: Resurgent_M029
+    second: {fileID: 2100000, guid: d0de965e244329b42b895943e92a6922, type: 2}
+  - first:
+      type: UnityEngine:Material
+      assembly: UnityEngine.CoreModule
+      name: Resurgent_M030
+    second: {fileID: 2100000, guid: a46801180dd38f541a8e1c15c52c0c62, type: 2}
+  - first:
+      type: UnityEngine:Material
+      assembly: UnityEngine.CoreModule
+      name: Resurgent_M031
+    second: {fileID: 2100000, guid: 52015cba3b5137e40bdacb718d33d8ba, type: 2}
+  - first:
+      type: UnityEngine:Material
+      assembly: UnityEngine.CoreModule
+      name: Resurgent_M032
+    second: {fileID: 2100000, guid: 885c3e3829e7b144b8db89e6df9b31a8, type: 2}
+  - first:
+      type: UnityEngine:Material
+      assembly: UnityEngine.CoreModule
+      name: Resurgent_M033
+    second: {fileID: 2100000, guid: d9ae0a01ea752394b96627aa0ce62a8b, type: 2}
+  - first:
+      type: UnityEngine:Material
+      assembly: UnityEngine.CoreModule
+      name: Resurgent_M034
+    second: {fileID: 2100000, guid: 682b7dcbe02d68544ad91755ac95703f, type: 2}
+  - first:
+      type: UnityEngine:Material
+      assembly: UnityEngine.CoreModule
+      name: Resurgent_M035
+    second: {fileID: 2100000, guid: f25b0e01d1b4e6445938fcd14558ff9e, type: 2}
+  - first:
+      type: UnityEngine:Material
+      assembly: UnityEngine.CoreModule
+      name: Resurgent_M036
+    second: {fileID: 2100000, guid: 02956cf6ec832a942acc346e1212586a, type: 2}
+  - first:
+      type: UnityEngine:Material
+      assembly: UnityEngine.CoreModule
+      name: Resurgent_M037
+    second: {fileID: 2100000, guid: 9ecb9bf32d6be6f4ca6f1e37ea501d19, type: 2}
+  - first:
+      type: UnityEngine:Material
+      assembly: UnityEngine.CoreModule
+      name: Resurgent_M038
+    second: {fileID: 2100000, guid: 59196c0727e00cd4ab1a81010d21736d, type: 2}
+  - first:
+      type: UnityEngine:Material
+      assembly: UnityEngine.CoreModule
+      name: Resurgent_M039
+    second: {fileID: 2100000, guid: da361c70fd201ee4fb0d54571fa9785e, type: 2}
+  - first:
+      type: UnityEngine:Material
+      assembly: UnityEngine.CoreModule
+      name: Resurgent_M040
+    second: {fileID: 2100000, guid: 191c0c90d27cb344b9a5fe69bfa8876b, type: 2}
+  - first:
+      type: UnityEngine:Material
+      assembly: UnityEngine.CoreModule
+      name: Resurgent_M041
+    second: {fileID: 2100000, guid: 9b9cda2b4ad4eb3449d91b057406fd11, type: 2}
+  - first:
+      type: UnityEngine:Material
+      assembly: UnityEngine.CoreModule
+      name: Resurgent_M042
+    second: {fileID: 2100000, guid: b968f5d1f198d3643a0cf894f156f4f5, type: 2}
+  - first:
+      type: UnityEngine:Material
+      assembly: UnityEngine.CoreModule
+      name: Resurgent_M043
+    second: {fileID: 2100000, guid: c342fc6765d95ff44a56e31c89ac7705, type: 2}
+  - first:
+      type: UnityEngine:Material
+      assembly: UnityEngine.CoreModule
+      name: Resurgent_M044
+    second: {fileID: 2100000, guid: 09b35c851dc5b704698f3d51926f4833, type: 2}
+  - first:
+      type: UnityEngine:Material
+      assembly: UnityEngine.CoreModule
+      name: Resurgent_M045
+    second: {fileID: 2100000, guid: 33cdaff9eac45d8459e867a4f74383f5, type: 2}
+  - first:
+      type: UnityEngine:Material
+      assembly: UnityEngine.CoreModule
+      name: Resurgent_M046
+    second: {fileID: 2100000, guid: a574560407305ba4abbc3720b77871fd, type: 2}
+  - first:
+      type: UnityEngine:Material
+      assembly: UnityEngine.CoreModule
+      name: Resurgent_M047
+    second: {fileID: 2100000, guid: 2ed967342751e0a41b3a927315f712f8, type: 2}
+  - first:
+      type: UnityEngine:Material
+      assembly: UnityEngine.CoreModule
+      name: Resurgent_M048
+    second: {fileID: 2100000, guid: 60fdc175e6f17254eb2c6b1efb6eb8ef, type: 2}
+  - first:
+      type: UnityEngine:Material
+      assembly: UnityEngine.CoreModule
+      name: Resurgent_M049
+    second: {fileID: 2100000, guid: 3e1da3f6d196a0542b7129575b76fc4a, type: 2}
+  - first:
+      type: UnityEngine:Material
+      assembly: UnityEngine.CoreModule
+      name: Resurgent_M050
+    second: {fileID: 2100000, guid: 4cc4db7c50c0d21479a6ae5cbb23c771, type: 2}
+  - first:
+      type: UnityEngine:Material
+      assembly: UnityEngine.CoreModule
+      name: Resurgent_M051
+    second: {fileID: 2100000, guid: f12438205aeaec74dae9086bc31abf58, type: 2}
+  - first:
+      type: UnityEngine:Material
+      assembly: UnityEngine.CoreModule
+      name: Resurgent_M052
+    second: {fileID: 2100000, guid: 5c1db59b9d6a2b641a785126b3832b1b, type: 2}
+  - first:
+      type: UnityEngine:Material
+      assembly: UnityEngine.CoreModule
+      name: Resurgent_M053
+    second: {fileID: 2100000, guid: 4d5aa57ccec255040a40d850ae80ed86, type: 2}
+  - first:
+      type: UnityEngine:Material
+      assembly: UnityEngine.CoreModule
+      name: Resurgent_M054
+    second: {fileID: 2100000, guid: 0eac4fd969e891d46aff0be5ef5d6b0d, type: 2}
+  - first:
+      type: UnityEngine:Material
+      assembly: UnityEngine.CoreModule
+      name: Resurgent_M055
+    second: {fileID: 2100000, guid: 465813c2ccc74804a86d29313b38ff93, type: 2}
+  - first:
+      type: UnityEngine:Material
+      assembly: UnityEngine.CoreModule
+      name: Resurgent_M056
+    second: {fileID: 2100000, guid: f541391a02a22c740b70bafc7eba739a, type: 2}
+  - first:
+      type: UnityEngine:Material
+      assembly: UnityEngine.CoreModule
+      name: Resurgent_M057
+    second: {fileID: 2100000, guid: 0c9d6c2bc6e522342864146276f64f69, type: 2}
+  - first:
+      type: UnityEngine:Material
+      assembly: UnityEngine.CoreModule
+      name: Resurgent_M058
+    second: {fileID: 2100000, guid: d50dff7adb688ac4fa1109df48e66a03, type: 2}
+  - first:
+      type: UnityEngine:Material
+      assembly: UnityEngine.CoreModule
+      name: Resurgent_M059
+    second: {fileID: 2100000, guid: 166d9581329f8dc4288d26134ce4600f, type: 2}
+  - first:
+      type: UnityEngine:Material
+      assembly: UnityEngine.CoreModule
+      name: Resurgent_M060
+    second: {fileID: 2100000, guid: 0ebe528c1ddf8da49984052d66e87d13, type: 2}
+  - first:
+      type: UnityEngine:Material
+      assembly: UnityEngine.CoreModule
+      name: Resurgent_M061
+    second: {fileID: 2100000, guid: 936d4e89bc1720143ad562c8c26dd1fc, type: 2}
+  - first:
+      type: UnityEngine:Material
+      assembly: UnityEngine.CoreModule
+      name: Resurgent_M062
+    second: {fileID: 2100000, guid: e1c7fd6e5ec988546b0f030dee479001, type: 2}
+  - first:
+      type: UnityEngine:Material
+      assembly: UnityEngine.CoreModule
+      name: Resurgent_M063
+    second: {fileID: 2100000, guid: d2d82a5fb07de0346920d07c18efac47, type: 2}
+  - first:
+      type: UnityEngine:Material
+      assembly: UnityEngine.CoreModule
+      name: Resurgent_M064
+    second: {fileID: 2100000, guid: 00808971395b19644a9757436f07b853, type: 2}
+  - first:
+      type: UnityEngine:Material
+      assembly: UnityEngine.CoreModule
+      name: Resurgent_M065
+    second: {fileID: 2100000, guid: fbeb39d53ff9b984b93b89b2d662baf9, type: 2}
+  - first:
+      type: UnityEngine:Material
+      assembly: UnityEngine.CoreModule
+      name: Resurgent_M066
+    second: {fileID: 2100000, guid: 23f65e87fedc2924a8520130a573caec, type: 2}
+  - first:
+      type: UnityEngine:Material
+      assembly: UnityEngine.CoreModule
+      name: Resurgent_M067
+    second: {fileID: 2100000, guid: f7f6b0a8696e3854d8ff8a0cf1fadf5c, type: 2}
+  - first:
+      type: UnityEngine:Material
+      assembly: UnityEngine.CoreModule
+      name: Resurgent_M068
+    second: {fileID: 2100000, guid: 951ec44eae453c7419cc4f1a957bb2e3, type: 2}
+  - first:
+      type: UnityEngine:Material
+      assembly: UnityEngine.CoreModule
+      name: Resurgent_M069
+    second: {fileID: 2100000, guid: 3cf86b5e59b388a46b0f1eaa2e82ca18, type: 2}
+  - first:
+      type: UnityEngine:Material
+      assembly: UnityEngine.CoreModule
+      name: Resurgent_M070
+    second: {fileID: 2100000, guid: 6c760d55ded4b674190d5e683416684c, type: 2}
+  - first:
+      type: UnityEngine:Material
+      assembly: UnityEngine.CoreModule
+      name: Resurgent_M071
+    second: {fileID: 2100000, guid: 6cd3e613d96ab8241aabe48dfd1e7037, type: 2}
+  - first:
+      type: UnityEngine:Material
+      assembly: UnityEngine.CoreModule
+      name: Resurgent_M072
+    second: {fileID: 2100000, guid: e8b3247f2d6240f42a8523f93b149737, type: 2}
+  - first:
+      type: UnityEngine:Material
+      assembly: UnityEngine.CoreModule
+      name: Resurgent_M073
+    second: {fileID: 2100000, guid: 725081fca25ecd243bf2e111f8d01db3, type: 2}
+  - first:
+      type: UnityEngine:Material
+      assembly: UnityEngine.CoreModule
+      name: Resurgent_M074
+    second: {fileID: 2100000, guid: 54266d8065482e04981d9b19b54a1bdd, type: 2}
+  - first:
+      type: UnityEngine:Material
+      assembly: UnityEngine.CoreModule
+      name: Resurgent_M075
+    second: {fileID: 2100000, guid: 4492570220e2b824faa15fccbef7760c, type: 2}
+  - first:
+      type: UnityEngine:Material
+      assembly: UnityEngine.CoreModule
+      name: Resurgent_M076
+    second: {fileID: 2100000, guid: 93774f933e3ccea408494e7d793ebfd2, type: 2}
+  - first:
+      type: UnityEngine:Material
+      assembly: UnityEngine.CoreModule
+      name: Resurgent_M077
+    second: {fileID: 2100000, guid: ba240e8edbbd49047923bafb6c957160, type: 2}
+  - first:
+      type: UnityEngine:Material
+      assembly: UnityEngine.CoreModule
+      name: Resurgent_M078
+    second: {fileID: 2100000, guid: ddf7cd9512ada8e4db235932a211c517, type: 2}
+  - first:
+      type: UnityEngine:Material
+      assembly: UnityEngine.CoreModule
+      name: Resurgent_M079
+    second: {fileID: 2100000, guid: 204576d5eea836b47803f2eade6f5f42, type: 2}
+  - first:
+      type: UnityEngine:Material
+      assembly: UnityEngine.CoreModule
+      name: Resurgent_M080
+    second: {fileID: 2100000, guid: 4e8dafeada46b0d45917fac64aa2d037, type: 2}
+  - first:
+      type: UnityEngine:Material
+      assembly: UnityEngine.CoreModule
+      name: Resurgent_M081
+    second: {fileID: 2100000, guid: ef28a7d5f4913be43a5bdab4fb41da8d, type: 2}
+  - first:
+      type: UnityEngine:Material
+      assembly: UnityEngine.CoreModule
+      name: Resurgent_M082
+    second: {fileID: 2100000, guid: 7a8398f0fb3d37a4fbf9e6e18daef1e8, type: 2}
+  - first:
+      type: UnityEngine:Material
+      assembly: UnityEngine.CoreModule
+      name: Resurgent_M083
+    second: {fileID: 2100000, guid: 93b523e79002ae44ea6cce83fb00eee1, type: 2}
+  - first:
+      type: UnityEngine:Material
+      assembly: UnityEngine.CoreModule
+      name: Resurgent_M084
+    second: {fileID: 2100000, guid: 7810dcfaabc81ce4c81b8fcdcd62ac46, type: 2}
+  - first:
+      type: UnityEngine:Material
+      assembly: UnityEngine.CoreModule
+      name: Resurgent_M085
+    second: {fileID: 2100000, guid: 6c535b2199ecbc54289541eab965b5d0, type: 2}
+  - first:
+      type: UnityEngine:Material
+      assembly: UnityEngine.CoreModule
+      name: Resurgent_M086
+    second: {fileID: 2100000, guid: 5c353a03c83cea845a47a3d6426bb11b, type: 2}
+  - first:
+      type: UnityEngine:Material
+      assembly: UnityEngine.CoreModule
+      name: Resurgent_M087
+    second: {fileID: 2100000, guid: ce6f9c63ae6e6694abffb8b88d5b79e0, type: 2}
+  - first:
+      type: UnityEngine:Material
+      assembly: UnityEngine.CoreModule
+      name: Resurgent_M088
+    second: {fileID: 2100000, guid: 7fe9e682fb27e054faee52e2ad336d21, type: 2}
+  - first:
+      type: UnityEngine:Material
+      assembly: UnityEngine.CoreModule
+      name: Resurgent_M089
+    second: {fileID: 2100000, guid: 5d41f5181b2010944b72c57ae0c61261, type: 2}
+  - first:
+      type: UnityEngine:Material
+      assembly: UnityEngine.CoreModule
+      name: Resurgent_M090
+    second: {fileID: 2100000, guid: e9538c7149a66f14593122a3863c97f7, type: 2}
+  - first:
+      type: UnityEngine:Material
+      assembly: UnityEngine.CoreModule
+      name: Resurgent_M091
+    second: {fileID: 2100000, guid: e65af7cf57272db44b7167dbf969f98a, type: 2}
+  - first:
+      type: UnityEngine:Material
+      assembly: UnityEngine.CoreModule
+      name: Resurgent_M092
+    second: {fileID: 2100000, guid: 1d67fabb7ff589648bbbbb1dc1fc1e57, type: 2}
+  - first:
+      type: UnityEngine:Material
+      assembly: UnityEngine.CoreModule
+      name: Resurgent_M093
+    second: {fileID: 2100000, guid: 55f444b9bebdf714bb5acba9ad89d24e, type: 2}
+  - first:
+      type: UnityEngine:Material
+      assembly: UnityEngine.CoreModule
+      name: Resurgent_M094
+    second: {fileID: 2100000, guid: 700ba4f8291532c41a5a07a38dcb2c76, type: 2}
+  - first:
+      type: UnityEngine:Material
+      assembly: UnityEngine.CoreModule
+      name: Resurgent_M095
+    second: {fileID: 2100000, guid: a00de563f5a9ec94db55eb1e9b5c547e, type: 2}
+  - first:
+      type: UnityEngine:Material
+      assembly: UnityEngine.CoreModule
+      name: Resurgent_M096
+    second: {fileID: 2100000, guid: ca944e90980803f4da9d44de2d0a34a4, type: 2}
+  - first:
+      type: UnityEngine:Material
+      assembly: UnityEngine.CoreModule
+      name: Resurgent_M097
+    second: {fileID: 2100000, guid: b12bcdecd458e98488a5770ba6905ae9, type: 2}
+  - first:
+      type: UnityEngine:Material
+      assembly: UnityEngine.CoreModule
+      name: Resurgent_M098
+    second: {fileID: 2100000, guid: b532143b6f5d99841a8017293b89fec0, type: 2}
+  - first:
+      type: UnityEngine:Material
+      assembly: UnityEngine.CoreModule
+      name: Resurgent_M099
+    second: {fileID: 2100000, guid: 4500d74e9888dfe44b60a4917d7d0be7, type: 2}
+  - first:
+      type: UnityEngine:Material
+      assembly: UnityEngine.CoreModule
+      name: Resurgent_M100
+    second: {fileID: 2100000, guid: 1ee6d8eb5c06a1a4cb0baf63f62c0579, type: 2}
+  - first:
+      type: UnityEngine:Material
+      assembly: UnityEngine.CoreModule
+      name: Resurgent_M101
+    second: {fileID: 2100000, guid: 7874a734891052941a4c8a0347e31237, type: 2}
+  - first:
+      type: UnityEngine:Material
+      assembly: UnityEngine.CoreModule
+      name: Resurgent_M102
+    second: {fileID: 2100000, guid: fa007d8f3c06fd14a99fc34fcd3ef8fd, type: 2}
+  - first:
+      type: UnityEngine:Material
+      assembly: UnityEngine.CoreModule
+      name: Resurgent_M103
+    second: {fileID: 2100000, guid: f491cfb3aeb0ace4ea0dd556611e25c5, type: 2}
+  - first:
+      type: UnityEngine:Material
+      assembly: UnityEngine.CoreModule
+      name: Resurgent_M104
+    second: {fileID: 2100000, guid: 8846d508cc7e4a64ba7a32db1343cb80, type: 2}
+  - first:
+      type: UnityEngine:Material
+      assembly: UnityEngine.CoreModule
+      name: Resurgent_M105
+    second: {fileID: 2100000, guid: 7206b9e6f1f193340afe044963d090b8, type: 2}
+  - first:
+      type: UnityEngine:Material
+      assembly: UnityEngine.CoreModule
+      name: Resurgent_M106
+    second: {fileID: 2100000, guid: f79e2ae3d766e9d4b97d433e46e50d06, type: 2}
+  - first:
+      type: UnityEngine:Material
+      assembly: UnityEngine.CoreModule
+      name: Resurgent_M107
+    second: {fileID: 2100000, guid: 46fe9a7b64f0df64fb9f237d54985752, type: 2}
+  - first:
+      type: UnityEngine:Material
+      assembly: UnityEngine.CoreModule
+      name: Resurgent_M108
+    second: {fileID: 2100000, guid: 45f754f5716a25f4cb62a3a2dc43383d, type: 2}
+  - first:
+      type: UnityEngine:Material
+      assembly: UnityEngine.CoreModule
+      name: Resurgent_M109
+    second: {fileID: 2100000, guid: d2c7f0297a1f4d94ab715d80f3ab38d9, type: 2}
+  - first:
+      type: UnityEngine:Material
+      assembly: UnityEngine.CoreModule
+      name: Resurgent_M110
+    second: {fileID: 2100000, guid: 3d9eeef974f736f4aa93252f61ace9df, type: 2}
+  - first:
+      type: UnityEngine:Material
+      assembly: UnityEngine.CoreModule
+      name: Resurgent_M111
+    second: {fileID: 2100000, guid: c3a5253d30708a547895c47b78131d03, type: 2}
+  - first:
+      type: UnityEngine:Material
+      assembly: UnityEngine.CoreModule
+      name: Resurgent_M112
+    second: {fileID: 2100000, guid: f45880f0287d73e4cab4e323b17ee836, type: 2}
+  - first:
+      type: UnityEngine:Material
+      assembly: UnityEngine.CoreModule
+      name: Resurgent_M113
+    second: {fileID: 2100000, guid: 187eeadc645e99449bc606860c6fe983, type: 2}
+  - first:
+      type: UnityEngine:Material
+      assembly: UnityEngine.CoreModule
+      name: Resurgent_M114
+    second: {fileID: 2100000, guid: 037a51a5bf207344691258e64a6a9e77, type: 2}
+  - first:
+      type: UnityEngine:Material
+      assembly: UnityEngine.CoreModule
+      name: Resurgent_M115
+    second: {fileID: 2100000, guid: 0590722e9cf919642914f1f145eee78c, type: 2}
+  - first:
+      type: UnityEngine:Material
+      assembly: UnityEngine.CoreModule
+      name: Resurgent_M116
+    second: {fileID: 2100000, guid: f804a1ab3ca59674eaf5b0b2615a3630, type: 2}
+  - first:
+      type: UnityEngine:Material
+      assembly: UnityEngine.CoreModule
+      name: Resurgent_M117
+    second: {fileID: 2100000, guid: 988e69a79a198e14d95b06b0d1157c4f, type: 2}
+  - first:
+      type: UnityEngine:Material
+      assembly: UnityEngine.CoreModule
+      name: Resurgent_M118
+    second: {fileID: 2100000, guid: b7bb87f8aceb8444b95b5336313da106, type: 2}
+  - first:
+      type: UnityEngine:Material
+      assembly: UnityEngine.CoreModule
+      name: Resurgent_M119
+    second: {fileID: 2100000, guid: 86970ee364bce674cab683e1368ec49f, type: 2}
+  - first:
+      type: UnityEngine:Material
+      assembly: UnityEngine.CoreModule
+      name: Resurgent_M120
+    second: {fileID: 2100000, guid: a2d305b9ef6808141a53fecf068d514b, type: 2}
+  - first:
+      type: UnityEngine:Material
+      assembly: UnityEngine.CoreModule
+      name: Resurgent_M121
+    second: {fileID: 2100000, guid: 6a1c9b466f93acb45a76b2d216910434, type: 2}
+  - first:
+      type: UnityEngine:Material
+      assembly: UnityEngine.CoreModule
+      name: Resurgent_M122
+    second: {fileID: 2100000, guid: 7118da26b8801b843a8d37442df40ad6, type: 2}
+  - first:
+      type: UnityEngine:Material
+      assembly: UnityEngine.CoreModule
+      name: Resurgent_M123
+    second: {fileID: 2100000, guid: fedfea2f9595d614c806a7e5dc4ff98f, type: 2}
+  - first:
+      type: UnityEngine:Material
+      assembly: UnityEngine.CoreModule
+      name: Resurgent_M124
+    second: {fileID: 2100000, guid: f92c2aef6cf0ce240b6db79d58784f36, type: 2}
+  - first:
+      type: UnityEngine:Material
+      assembly: UnityEngine.CoreModule
+      name: Resurgent_M125
+    second: {fileID: 2100000, guid: cdba42fb86872de4aa022af6ade66894, type: 2}
+  - first:
+      type: UnityEngine:Material
+      assembly: UnityEngine.CoreModule
+      name: Resurgent_M126
+    second: {fileID: 2100000, guid: 61da8a3ae7f73884d9997b6f0882e233, type: 2}
+  - first:
+      type: UnityEngine:Material
+      assembly: UnityEngine.CoreModule
+      name: Resurgent_M127
+    second: {fileID: 2100000, guid: 16dc562d87dfebd4ab9fe86ef984859a, type: 2}
+  - first:
+      type: UnityEngine:Material
+      assembly: UnityEngine.CoreModule
+      name: Resurgent_M128
+    second: {fileID: 2100000, guid: e9bf2f74de54c7148bd1d9521d89296a, type: 2}
+  - first:
+      type: UnityEngine:Material
+      assembly: UnityEngine.CoreModule
+      name: Resurgent_M129
+    second: {fileID: 2100000, guid: 638cc37e47f1e6e47b4afd94acab6b63, type: 2}
+  - first:
+      type: UnityEngine:Material
+      assembly: UnityEngine.CoreModule
+      name: Resurgent_M130
+    second: {fileID: 2100000, guid: 713ef07000da5ae4e9d3474dccb5fc44, type: 2}
+  - first:
+      type: UnityEngine:Material
+      assembly: UnityEngine.CoreModule
+      name: Resurgent_M131
+    second: {fileID: 2100000, guid: 9d0360dbb5816174abb4bd9db8695a22, type: 2}
+  - first:
+      type: UnityEngine:Material
+      assembly: UnityEngine.CoreModule
+      name: Resurgent_M132
+    second: {fileID: 2100000, guid: 04185ec849a344d449b983f19a2e3f16, type: 2}
+  - first:
+      type: UnityEngine:Material
+      assembly: UnityEngine.CoreModule
+      name: Resurgent_M133
+    second: {fileID: 2100000, guid: 1eb0001fe9470d44086b19d247359ea9, type: 2}
+  - first:
+      type: UnityEngine:Material
+      assembly: UnityEngine.CoreModule
+      name: Resurgent_M134
+    second: {fileID: 2100000, guid: a4dbbb1b42cd6954fbe9b9fb7ee226e4, type: 2}
+  - first:
+      type: UnityEngine:Material
+      assembly: UnityEngine.CoreModule
+      name: Resurgent_M160
+    second: {fileID: 2100000, guid: 351d22059e78c2b4c9f72385fe38938a, type: 2}
+  - first:
+      type: UnityEngine:Material
+      assembly: UnityEngine.CoreModule
+      name: Resurgent_M161
+    second: {fileID: 2100000, guid: 5c3dc49bc2f715b4785d7609f111e569, type: 2}
+  - first:
+      type: UnityEngine:Material
+      assembly: UnityEngine.CoreModule
+      name: Resurgent_M163
+    second: {fileID: 2100000, guid: 50584bbec9f8bd54e9ca013a61d8234d, type: 2}
+  - first:
+      type: UnityEngine:Material
+      assembly: UnityEngine.CoreModule
+      name: Resurgent_M164
+    second: {fileID: 2100000, guid: 0475e20253063b641b54845f706a2465, type: 2}
+  - first:
+      type: UnityEngine:Material
+      assembly: UnityEngine.CoreModule
+      name: Resurgent_M168
+    second: {fileID: 2100000, guid: c5573d6697dd65a4da6436a00fffe460, type: 2}
+  - first:
+      type: UnityEngine:Material
+      assembly: UnityEngine.CoreModule
+      name: Resurgent_M169
+    second: {fileID: 2100000, guid: 4846f66aa9c25e449938281c055fff9d, type: 2}
+  - first:
+      type: UnityEngine:Material
+      assembly: UnityEngine.CoreModule
+      name: Resurgent_M170
+    second: {fileID: 2100000, guid: cb037a1b698c5634c937c791c037be38, type: 2}
+  - first:
+      type: UnityEngine:Material
+      assembly: UnityEngine.CoreModule
+      name: Resurgent_M171
+    second: {fileID: 2100000, guid: 2c79f18ffdb9b834487aeba6271bb794, type: 2}
+  - first:
+      type: UnityEngine:Material
+      assembly: UnityEngine.CoreModule
+      name: Resurgent_M172
+    second: {fileID: 2100000, guid: 339a8f711a3f0d743b36b52220e6d409, type: 2}
+  - first:
+      type: UnityEngine:Material
+      assembly: UnityEngine.CoreModule
+      name: Resurgent_M173
+    second: {fileID: 2100000, guid: 77d93d92eaba93d4d9dd33534665bf88, type: 2}
+  materials:
+    materialImportMode: 1
+    materialName: 0
+    materialSearch: 1
+    materialLocation: 1
+  animations:
+    legacyGenerateAnimations: 4
+    bakeSimulation: 0
+    resampleCurves: 1
+    optimizeGameObjects: 0
+    removeConstantScaleCurves: 0
+    motionNodeName: 
+    animationImportErrors: 
+    animationImportWarnings: 
+    animationRetargetingWarnings: 
+    animationDoRetargetingWarnings: 0
+    importAnimatedCustomProperties: 0
+    importConstraints: 0
+    animationCompression: 1
+    animationRotationError: 0.5
+    animationPositionError: 0.5
+    animationScaleError: 0.5
+    animationWrapMode: 0
+    extraExposedTransformPaths: []
+    extraUserProperties: []
+    clipAnimations: []
+    isReadable: 1
+  meshes:
+    lODScreenPercentages: []
+    globalScale: 0.02
+    meshCompression: 0
+    addColliders: 0
+    useSRGBMaterialColor: 1
+    sortHierarchyByName: 1
+    importPhysicalCameras: 1
+    importVisibility: 1
+    importBlendShapes: 1
+    importCameras: 1
+    importLights: 1
+    nodeNameCollisionStrategy: 1
+    fileIdsGeneration: 2
+    swapUVChannels: 0
+    generateSecondaryUV: 0
+    useFileUnits: 1
+    keepQuads: 0
+    weldVertices: 0
+    bakeAxisConversion: 0
+    preserveHierarchy: 1
+    skinWeightsMode: 0
+    maxBonesPerVertex: 4
+    minBoneWeight: 0.001
+    optimizeBones: 1
+    generateMeshLods: 0
+    meshLodGenerationFlags: 0
+    maximumMeshLod: -1
+    meshOptimizationFlags: -1
+    indexFormat: 0
+    secondaryUVAngleDistortion: 8
+    secondaryUVAreaDistortion: 15.000001
+    secondaryUVHardAngle: 88
+    secondaryUVMarginMethod: 1
+    secondaryUVMinLightmapResolution: 40
+    secondaryUVMinObjectScale: 1
+    secondaryUVPackMargin: 4
+    useFileScale: 1
+    strictVertexDataChecks: 0
+  tangentSpace:
+    normalSmoothAngle: 60
+    normalImportMode: 0
+    tangentImportMode: 3
+    normalCalculationMode: 4
+    legacyComputeAllNormalsFromSmoothingGroupsWhenMeshHasBlendShapes: 0
+    blendShapeNormalImportMode: 1
+    normalSmoothingSource: 0
+  referencedClips: []
+  importAnimation: 0
+  humanDescription:
+    serializedVersion: 3
+    human: []
+    skeleton: []
+    armTwist: 0.5
+    foreArmTwist: 0.5
+    upperLegTwist: 0.5
+    legTwist: 0.5
+    armStretch: 0.05
+    legStretch: 0.05
+    feetSpacing: 0
+    globalScale: 0.02
+    rootMotionBoneName: 
+    hasTranslationDoF: 0
+    hasExtraRoot: 0
+    skeletonHasParents: 1
+  lastHumanDescriptionAvatarSource: {instanceID: 0}
+  autoGenerateAvatarMappingIfUnspecified: 1
+  animationType: 2
+  humanoidOversampling: 1
+  avatarSetup: 0
+  addHumanoidExtraRootOnlyWhenUsingAvatar: 1
+  importBlendShapeDeformPercent: 1
+  remapMaterialsIfMaterialImportModeIsNone: 0
+  additionalBone: 0
+  userData: 
+  assetBundleName: 
+  assetBundleVariant: 

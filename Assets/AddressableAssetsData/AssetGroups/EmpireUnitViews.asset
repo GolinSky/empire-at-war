@@ -170,6 +170,11 @@ MonoBehaviour:
     m_ReadOnly: 0
     m_SerializedLabels: []
     FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 65227a73ed5d15b4f8bbd4318247ae70
+    m_Address: ResurgentShipView
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
   - m_GUID: 68c5a6579b2a4ac4a2538e41627e1346
     m_Address: TIEDefenderReinforcementView
     m_ReadOnly: 0
@@ -285,6 +290,11 @@ MonoBehaviour:
     m_ReadOnly: 0
     m_SerializedLabels: []
     FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: acdedfe5ff64b3c4ca995b52b99db33c
+    m_Address: ResurgentWreckView
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
   - m_GUID: b31bfbf5f42265c4e912a5b25ed4ca6a
     m_Address: AllegianceShipView
     m_ReadOnly: 0
@@ -292,6 +302,11 @@ MonoBehaviour:
     FlaggedDuringContentUpdateRestriction: 0
   - m_GUID: b43babda8bfeb71458bf14202a25837f
     m_Address: TIEInterceptorReinforcementView
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: b46d88cfeac76de469fc152986520053
+    m_Address: ResurgentReinforcementView
     m_ReadOnly: 0
     m_SerializedLabels: []
     FlaggedDuringContentUpdateRestriction: 0

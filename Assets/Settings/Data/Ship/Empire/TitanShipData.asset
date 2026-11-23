@@ -54,12 +54,12 @@ MonoBehaviour:
   <Wreck>k__BackingField: {fileID: 11400000, guid: b3c3b9e9584d4c0448fe738d020c6fe1,
     type: 2}
   <ShipClass>k__BackingField: 5
-  <Hull>k__BackingField: 72450
-  <Shields>k__BackingField: 39600
+  <Hull>k__BackingField: 80000
+  <Shields>k__BackingField: 40000
   shieldRegenTiers: {fileID: 11400000, guid: 13e8b17936074345b03019b205c57d90, type: 2}
   <ShieldRegenTier>k__BackingField: 4
   <ShieldRegenMultiplier>k__BackingField: 1
-  <ShieldRegenerateDelay>k__BackingField: 1
+  <ShieldRegenerateDelay>k__BackingField: 0.9
   <Range>k__BackingField: 1495
   <Delay>k__BackingField: 0.25
   abilities: 0500000016000000
@@ -76,4 +76,4 @@ MonoBehaviour:
     count: 2
   - weaponType: 89
     count: 12
-  roles: 33
+  roles: 1

@@ -1,0 +1,92 @@
+[
+ {
+  "name": "ResurgentMissileTurret_M004",
+  "mesh": "Short_Tower",
+  "shader": "MeshBumpColorize.fx",
+  "base": "ResurgentMissileTurret_W_XX_9",
+  "normal": "ResurgentMissileTurret_W_XX_9_B",
+  "hidden": false,
+  "diffuse": [
+   1.0,
+   1.0,
+   1.0,
+   0.0
+  ],
+  "color": null
+ },
+ {
+  "name": "ResurgentMissileTurret_M005",
+  "mesh": "Short_Tower_Shadow",
+  "shader": "MeshShadowVolume.fx",
+  "base": null,
+  "normal": null,
+  "hidden": true,
+  "diffuse": null,
+  "color": null
+ },
+ {
+  "name": "ResurgentMissileTurret_M006",
+  "mesh": "Barrel",
+  "shader": "MeshBumpColorize.fx",
+  "base": "ResurgentMissileTurret_W_XX_9",
+  "normal": "ResurgentMissileTurret_W_XX_9_B",
+  "hidden": false,
+  "diffuse": [
+   1.0,
+   1.0,
+   1.0,
+   0.0
+  ],
+  "color": null
+ },
+ {
+  "name": "ResurgentMissileTurret_M007",
+  "mesh": "Barrel_Shadow",
+  "shader": "MeshShadowVolume.fx",
+  "base": null,
+  "normal": null,
+  "hidden": true,
+  "diffuse": null,
+  "color": null
+ },
+ {
+  "name": "ResurgentMissileTurret_M008",
+  "mesh": "Muzzles",
+  "shader": "MeshBumpColorize.fx",
+  "base": "ResurgentMissileTurret_W_XX_9",
+  "normal": "ResurgentMissileTurret_W_XX_9_B",
+  "hidden": false,
+  "diffuse": [
+   0.20000001788139343,
+   0.20000001788139343,
+   0.20000001788139343,
+   0.0
+  ],
+  "color": null
+ },
+ {
+  "name": "ResurgentMissileTurret_M009",
+  "mesh": "Turret",
+  "shader": "MeshBumpColorize.fx",
+  "base": "ResurgentMissileTurret_W_XX_9",
+  "normal": "ResurgentMissileTurret_W_XX_9_B",
+  "hidden": false,
+  "diffuse": [
+   1.0,
+   1.0,
+   1.0,
+   0.0
+  ],
+  "color": null
+ },
+ {
+  "name": "ResurgentMissileTurret_M010",
+  "mesh": "Turret_Shadow",
+  "shader": "MeshShadowVolume.fx",
+  "base": null,
+  "normal": null,
+  "hidden": true,
+  "diffuse": null,
+  "color": null
+ }
+]

@@ -340,6 +340,11 @@ MonoBehaviour:
     m_ReadOnly: 0
     m_SerializedLabels: []
     FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 7483d8b1ea7011e4a9c5384489f3f150
+    m_Address: Assets/Art/Textures/Ui/Icons/ShipIcon/Empire/ResurgentIcon.png
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
   - m_GUID: 771dbf8529c7a394b864ffcb0bd556d7
     m_Address: Assets/Art/Textures/Ui/Icons/ShipIcon/MandatorIcon.png
     m_ReadOnly: 0

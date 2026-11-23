@@ -1,0 +1,539 @@
+{
+ "note": "HP_TOR_Resurgent.xml hardpoints -> existing weapon types (user 2026-11-23: option A octuple main battery, HeavyAssaultMissile). turret = staged turret FBX attached on the hull bone (source Model_To_Attach); socket = fire bone inside that turret, else a hull bone. QL and DB_RKT have no turret model. 2026-11-23 (user): light calibre -> medium, same mount: LightDualTurbolaser -> DualMediumTurboLaser, Laser -> MediumLaser.",
+ "weapons": [
+  {
+   "id": 0,
+   "bone": "HSTL_01",
+   "weaponType": 85,
+   "mainBattery": true,
+   "turret": "ResurgentSextupleTurret",
+   "socket": "FP_01"
+  },
+  {
+   "id": 1,
+   "bone": "HSTL_02",
+   "weaponType": 85,
+   "mainBattery": true,
+   "turret": "ResurgentSextupleTurret",
+   "socket": "FP_01"
+  },
+  {
+   "id": 2,
+   "bone": "HSTL_03",
+   "weaponType": 85,
+   "mainBattery": true,
+   "turret": "ResurgentSextupleTurret",
+   "socket": "FP_01"
+  },
+  {
+   "id": 3,
+   "bone": "HSTL_04",
+   "weaponType": 85,
+   "mainBattery": true,
+   "turret": "ResurgentSextupleTurret",
+   "socket": "FP_01"
+  },
+  {
+   "id": 4,
+   "bone": "HSTL_05",
+   "weaponType": 85,
+   "mainBattery": true,
+   "turret": "ResurgentSextupleTurret",
+   "socket": "FP_01"
+  },
+  {
+   "id": 5,
+   "bone": "HSTL_06",
+   "weaponType": 85,
+   "mainBattery": true,
+   "turret": "ResurgentSextupleTurret",
+   "socket": "FP_01"
+  },
+  {
+   "id": 6,
+   "bone": "HSTL_07",
+   "weaponType": 85,
+   "mainBattery": true,
+   "turret": "ResurgentSextupleTurret",
+   "socket": "FP_01"
+  },
+  {
+   "id": 7,
+   "bone": "HSTL_08",
+   "weaponType": 85,
+   "mainBattery": true,
+   "turret": "ResurgentSextupleTurret",
+   "socket": "FP_01"
+  },
+  {
+   "id": 8,
+   "bone": "LQTL_01",
+   "weaponType": 89,
+   "mainBattery": true,
+   "turret": "ResurgentQuadTurret",
+   "socket": "FP_01"
+  },
+  {
+   "id": 9,
+   "bone": "LQTL_02",
+   "weaponType": 89,
+   "mainBattery": true,
+   "turret": "ResurgentQuadTurret",
+   "socket": "FP_01"
+  },
+  {
+   "id": 10,
+   "bone": "LQTL_03",
+   "weaponType": 89,
+   "mainBattery": true,
+   "turret": "ResurgentQuadTurret",
+   "socket": "FP_01"
+  },
+  {
+   "id": 11,
+   "bone": "LQTL_04",
+   "weaponType": 89,
+   "mainBattery": true,
+   "turret": "ResurgentQuadTurret",
+   "socket": "FP_01"
+  },
+  {
+   "id": 12,
+   "bone": "LQTL_05",
+   "weaponType": 89,
+   "mainBattery": true,
+   "turret": "ResurgentQuadTurret",
+   "socket": "FP_01"
+  },
+  {
+   "id": 13,
+   "bone": "LQTL_06",
+   "weaponType": 89,
+   "mainBattery": true,
+   "turret": "ResurgentQuadTurret",
+   "socket": "FP_01"
+  },
+  {
+   "id": 14,
+   "bone": "LQTL_07",
+   "weaponType": 89,
+   "mainBattery": true,
+   "turret": "ResurgentQuadTurret",
+   "socket": "FP_01"
+  },
+  {
+   "id": 15,
+   "bone": "LQTL_08",
+   "weaponType": 89,
+   "mainBattery": true,
+   "turret": "ResurgentQuadTurret",
+   "socket": "FP_01"
+  },
+  {
+   "id": 16,
+   "bone": "LDTL_01",
+   "weaponType": 5,
+   "mainBattery": false,
+   "turret": "ResurgentLightTurret",
+   "socket": "FP_03"
+  },
+  {
+   "id": 17,
+   "bone": "LDTL_02",
+   "weaponType": 5,
+   "mainBattery": false,
+   "turret": "ResurgentLightTurret",
+   "socket": "FP_03"
+  },
+  {
+   "id": 18,
+   "bone": "LDTL_03",
+   "weaponType": 5,
+   "mainBattery": false,
+   "turret": "ResurgentLightTurret",
+   "socket": "FP_03"
+  },
+  {
+   "id": 19,
+   "bone": "LDTL_04",
+   "weaponType": 5,
+   "mainBattery": false,
+   "turret": "ResurgentLightTurret",
+   "socket": "FP_03"
+  },
+  {
+   "id": 20,
+   "bone": "LDTL_05",
+   "weaponType": 5,
+   "mainBattery": false,
+   "turret": "ResurgentLightTurret",
+   "socket": "FP_03"
+  },
+  {
+   "id": 21,
+   "bone": "LDTL_06",
+   "weaponType": 5,
+   "mainBattery": false,
+   "turret": "ResurgentLightTurret",
+   "socket": "FP_03"
+  },
+  {
+   "id": 22,
+   "bone": "LDTL_07",
+   "weaponType": 5,
+   "mainBattery": false,
+   "turret": "ResurgentLightTurret",
+   "socket": "FP_03"
+  },
+  {
+   "id": 23,
+   "bone": "LDTL_08",
+   "weaponType": 5,
+   "mainBattery": false,
+   "turret": "ResurgentLightTurret",
+   "socket": "FP_03"
+  },
+  {
+   "id": 24,
+   "bone": "LDTL_09",
+   "weaponType": 5,
+   "mainBattery": false,
+   "turret": "ResurgentLightTurret",
+   "socket": "FP_03"
+  },
+  {
+   "id": 25,
+   "bone": "LDTL_10",
+   "weaponType": 5,
+   "mainBattery": false,
+   "turret": "ResurgentLightTurret",
+   "socket": "FP_03"
+  },
+  {
+   "id": 26,
+   "bone": "MIC_01",
+   "weaponType": 32,
+   "mainBattery": false,
+   "turret": "ResurgentLightTurret",
+   "socket": "FP_01"
+  },
+  {
+   "id": 27,
+   "bone": "MIC_02",
+   "weaponType": 32,
+   "mainBattery": false,
+   "turret": "ResurgentLightTurret",
+   "socket": "FP_01"
+  },
+  {
+   "id": 28,
+   "bone": "MIC_03",
+   "weaponType": 32,
+   "mainBattery": false,
+   "turret": "ResurgentLightTurret",
+   "socket": "FP_01"
+  },
+  {
+   "id": 29,
+   "bone": "MIC_04",
+   "weaponType": 32,
+   "mainBattery": false,
+   "turret": "ResurgentLightTurret",
+   "socket": "FP_01"
+  },
+  {
+   "id": 30,
+   "bone": "MIC_05",
+   "weaponType": 32,
+   "mainBattery": false,
+   "turret": "ResurgentLightTurret",
+   "socket": "FP_01"
+  },
+  {
+   "id": 31,
+   "bone": "MIC_06",
+   "weaponType": 32,
+   "mainBattery": false,
+   "turret": "ResurgentLightTurret",
+   "socket": "FP_01"
+  },
+  {
+   "id": 32,
+   "bone": "MIC_07",
+   "weaponType": 32,
+   "mainBattery": false,
+   "turret": "ResurgentLightTurret",
+   "socket": "FP_01"
+  },
+  {
+   "id": 33,
+   "bone": "MIC_08",
+   "weaponType": 32,
+   "mainBattery": false,
+   "turret": "ResurgentLightTurret",
+   "socket": "FP_01"
+  },
+  {
+   "id": 34,
+   "bone": "QHIC_01",
+   "weaponType": 91,
+   "mainBattery": false,
+   "turret": "ResurgentQuadIonTurret",
+   "socket": "FP_01"
+  },
+  {
+   "id": 35,
+   "bone": "QHIC_02",
+   "weaponType": 91,
+   "mainBattery": false,
+   "turret": "ResurgentQuadIonTurret",
+   "socket": "FP_01"
+  },
+  {
+   "id": 36,
+   "bone": "QHIC_03",
+   "weaponType": 91,
+   "mainBattery": false,
+   "turret": "ResurgentQuadIonTurret",
+   "socket": "FP_01"
+  },
+  {
+   "id": 37,
+   "bone": "QHIC_04",
+   "weaponType": 91,
+   "mainBattery": false,
+   "turret": "ResurgentQuadIonTurret",
+   "socket": "FP_01"
+  },
+  {
+   "id": 38,
+   "bone": "ML_01",
+   "weaponType": 93,
+   "mainBattery": false,
+   "turret": "ResurgentMissileTurret",
+   "socket": "FP_01"
+  },
+  {
+   "id": 39,
+   "bone": "ML_02",
+   "weaponType": 93,
+   "mainBattery": false,
+   "turret": "ResurgentMissileTurret",
+   "socket": "FP_01"
+  },
+  {
+   "id": 40,
+   "bone": "ML_03",
+   "weaponType": 93,
+   "mainBattery": false,
+   "turret": "ResurgentMissileTurret",
+   "socket": "FP_01"
+  },
+  {
+   "id": 41,
+   "bone": "ML_04",
+   "weaponType": 93,
+   "mainBattery": false,
+   "turret": "ResurgentMissileTurret",
+   "socket": "FP_01"
+  },
+  {
+   "id": 42,
+   "bone": "ML_05",
+   "weaponType": 93,
+   "mainBattery": false,
+   "turret": "ResurgentMissileTurret",
+   "socket": "FP_01"
+  },
+  {
+   "id": 43,
+   "bone": "ML_06",
+   "weaponType": 93,
+   "mainBattery": false,
+   "turret": "ResurgentMissileTurret",
+   "socket": "FP_01"
+  },
+  {
+   "id": 44,
+   "bone": "DB_RKT_01",
+   "weaponType": 65,
+   "mainBattery": false,
+   "socket": "DB_RKT_01_Fire"
+  },
+  {
+   "id": 45,
+   "bone": "DB_RKT_02",
+   "weaponType": 65,
+   "mainBattery": false,
+   "socket": "DB_RKT_02_Fire"
+  },
+  {
+   "id": 46,
+   "bone": "QL_01",
+   "weaponType": 23,
+   "mainBattery": false,
+   "socket": "QL_01"
+  },
+  {
+   "id": 47,
+   "bone": "QL_02",
+   "weaponType": 23,
+   "mainBattery": false,
+   "socket": "QL_02"
+  },
+  {
+   "id": 48,
+   "bone": "QL_03",
+   "weaponType": 23,
+   "mainBattery": false,
+   "socket": "QL_03"
+  },
+  {
+   "id": 49,
+   "bone": "QL_04",
+   "weaponType": 23,
+   "mainBattery": false,
+   "socket": "QL_04"
+  },
+  {
+   "id": 50,
+   "bone": "QL_05",
+   "weaponType": 23,
+   "mainBattery": false,
+   "socket": "QL_05"
+  },
+  {
+   "id": 51,
+   "bone": "QL_06",
+   "weaponType": 23,
+   "mainBattery": false,
+   "socket": "QL_06"
+  },
+  {
+   "id": 52,
+   "bone": "QL_07",
+   "weaponType": 23,
+   "mainBattery": false,
+   "socket": "QL_07"
+  },
+  {
+   "id": 53,
+   "bone": "QL_08",
+   "weaponType": 23,
+   "mainBattery": false,
+   "socket": "QL_08"
+  },
+  {
+   "id": 54,
+   "bone": "QL_09",
+   "weaponType": 23,
+   "mainBattery": false,
+   "socket": "QL_09"
+  },
+  {
+   "id": 55,
+   "bone": "QL_10",
+   "weaponType": 23,
+   "mainBattery": false,
+   "socket": "QL_10"
+  },
+  {
+   "id": 56,
+   "bone": "QL_11",
+   "weaponType": 23,
+   "mainBattery": false,
+   "socket": "QL_11"
+  },
+  {
+   "id": 57,
+   "bone": "QL_12",
+   "weaponType": 23,
+   "mainBattery": false,
+   "socket": "QL_12"
+  },
+  {
+   "id": 58,
+   "bone": "QL_13",
+   "weaponType": 23,
+   "mainBattery": false,
+   "socket": "QL_13"
+  },
+  {
+   "id": 59,
+   "bone": "QL_14",
+   "weaponType": 23,
+   "mainBattery": false,
+   "socket": "QL_14"
+  },
+  {
+   "id": 60,
+   "bone": "QL_15",
+   "weaponType": 23,
+   "mainBattery": false,
+   "socket": "QL_15"
+  },
+  {
+   "id": 61,
+   "bone": "QL_16",
+   "weaponType": 23,
+   "mainBattery": false,
+   "socket": "QL_16"
+  },
+  {
+   "id": 62,
+   "bone": "QL_17",
+   "weaponType": 23,
+   "mainBattery": false,
+   "socket": "QL_17"
+  },
+  {
+   "id": 63,
+   "bone": "QL_18",
+   "weaponType": 23,
+   "mainBattery": false,
+   "socket": "QL_18"
+  }
+ ],
+ "systems": [
+  {
+   "id": 64,
+   "system": "ShieldGenerator",
+   "socket": "S_01"
+  },
+  {
+   "id": 65,
+   "system": "ShieldGenerator",
+   "socket": "S_02"
+  },
+  {
+   "id": 66,
+   "system": "Engines",
+   "socket": "HP_E1"
+  },
+  {
+   "id": 67,
+   "system": "Engines",
+   "socket": "HP_E2"
+  },
+  {
+   "id": 68,
+   "system": "Engines",
+   "socket": "HP_E3"
+  },
+  {
+   "id": 69,
+   "system": "TractorBeam",
+   "socket": "HP_TRAC_BONE_00"
+  },
+  {
+   "id": 70,
+   "system": "Hangar",
+   "socket": "SPAWN_01"
+  },
+  {
+   "id": 71,
+   "system": "CommandArray",
+   "socket": "HP_SG"
+  }
+ ]
+}

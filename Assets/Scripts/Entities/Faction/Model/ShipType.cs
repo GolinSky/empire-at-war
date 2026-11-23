@@ -64,6 +64,7 @@ namespace EmpireAtWar.Models.Factions
         Chimaera = 218,
         Devastator = 219,
         Xyston = 220,
+        Resurgent = 221,
         QuasarFire = 320,
 
         //rebellion

@@ -1,0 +1,122 @@
+[
+ {
+  "name": "ResurgentQuadIonTurret_M005",
+  "mesh": "Turret_Base",
+  "shader": "MeshBumpColorize.fx",
+  "base": "ResurgentQuadIonTurret_RSD_QHIC_Base_color",
+  "normal": "ResurgentQuadIonTurret_RSD_QHIC_Normal",
+  "hidden": false,
+  "diffuse": [
+   1.0,
+   1.0,
+   1.0,
+   0.0
+  ],
+  "color": null
+ },
+ {
+  "name": "ResurgentQuadIonTurret_M006",
+  "mesh": "SHTL_Actuator",
+  "shader": "MeshBumpColorize.fx",
+  "base": "ResurgentQuadIonTurret_RSD_QHIC_Base_color",
+  "normal": "ResurgentQuadIonTurret_RSD_QHIC_Normal",
+  "hidden": false,
+  "diffuse": [
+   1.0,
+   1.0,
+   1.0,
+   0.0
+  ],
+  "color": null
+ },
+ {
+  "name": "ResurgentQuadIonTurret_M007",
+  "mesh": "Greeble_non_mirrored",
+  "shader": "MeshBumpColorize.fx",
+  "base": "ResurgentQuadIonTurret_RSD_QHIC_Base_color",
+  "normal": "ResurgentQuadIonTurret_RSD_QHIC_Normal",
+  "hidden": false,
+  "diffuse": [
+   1.0,
+   1.0,
+   1.0,
+   0.0
+  ],
+  "color": null
+ },
+ {
+  "name": "ResurgentQuadIonTurret_M008",
+  "mesh": "Greeble",
+  "shader": "MeshBumpColorize.fx",
+  "base": "ResurgentQuadIonTurret_RSD_QHIC_Base_color",
+  "normal": "ResurgentQuadIonTurret_RSD_QHIC_Normal",
+  "hidden": false,
+  "diffuse": [
+   1.0,
+   1.0,
+   1.0,
+   0.0
+  ],
+  "color": null
+ },
+ {
+  "name": "ResurgentQuadIonTurret_M009",
+  "mesh": "COL",
+  "shader": "MeshCollision.fx",
+  "base": null,
+  "normal": null,
+  "hidden": true,
+  "diffuse": null,
+  "color": [
+   1.0,
+   1.0,
+   1.0,
+   1.0
+  ]
+ },
+ {
+  "name": "ResurgentQuadIonTurret_M010",
+  "mesh": "Shadow_Turret_Base",
+  "shader": "MeshShadowVolume.fx",
+  "base": null,
+  "normal": null,
+  "hidden": true,
+  "diffuse": null,
+  "color": null
+ },
+ {
+  "name": "ResurgentQuadIonTurret_M011",
+  "mesh": "Shadow_SHTL_Actuator",
+  "shader": "MeshShadowVolume.fx",
+  "base": null,
+  "normal": null,
+  "hidden": true,
+  "diffuse": null,
+  "color": null
+ },
+ {
+  "name": "ResurgentQuadIonTurret_M012",
+  "mesh": "QHIC_Barrel",
+  "shader": "MeshBumpColorize.fx",
+  "base": "ResurgentQuadIonTurret_RSD_QHIC_Base_color",
+  "normal": "ResurgentQuadIonTurret_RSD_QHIC_Normal",
+  "hidden": false,
+  "diffuse": [
+   1.0,
+   1.0,
+   1.0,
+   0.0
+  ],
+  "color": null
+ },
+ {
+  "name": "ResurgentQuadIonTurret_M013",
+  "mesh": "Shadow_QHIC_Barrel",
+  "shader": "MeshShadowVolume.fx",
+  "base": null,
+  "normal": null,
+  "hidden": true,
+  "diffuse": null,
+  "color": null
+ }
+]

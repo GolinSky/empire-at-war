@@ -1,0 +1,52 @@
+[
+ {
+  "name": "ResurgentQuadTurret_M004",
+  "mesh": "Turret",
+  "shader": "MeshBumpColorize.fx",
+  "base": "ResurgentQuadTurret_Hull_Kitbash_Pieces_ISD",
+  "normal": "ResurgentQuadTurret_Hull_Kitbash_Pieces_ISD_B",
+  "hidden": false,
+  "diffuse": [
+   1.0,
+   1.0,
+   1.0,
+   0.0
+  ],
+  "color": null
+ },
+ {
+  "name": "ResurgentQuadTurret_M005",
+  "mesh": "Barrel",
+  "shader": "MeshBumpColorize.fx",
+  "base": "ResurgentQuadTurret_Hull_Kitbash_Pieces_ISD",
+  "normal": "ResurgentQuadTurret_Hull_Kitbash_Pieces_ISD_B",
+  "hidden": false,
+  "diffuse": [
+   1.0,
+   1.0,
+   1.0,
+   0.0
+  ],
+  "color": null
+ },
+ {
+  "name": "ResurgentQuadTurret_M006",
+  "mesh": "Barrel01",
+  "shader": "MeshShadowVolume.fx",
+  "base": null,
+  "normal": null,
+  "hidden": true,
+  "diffuse": null,
+  "color": null
+ },
+ {
+  "name": "ResurgentQuadTurret_M007",
+  "mesh": "Turret01",
+  "shader": "MeshShadowVolume.fx",
+  "base": null,
+  "normal": null,
+  "hidden": true,
+  "diffuse": null,
+  "color": null
+ }
+]
