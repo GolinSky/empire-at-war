@@ -48,6 +48,14 @@ namespace EmpireAtWar.Components.TeamColor
             ApplyUserValue((_userValue & ~HULL_DAMAGE_LEVEL_MASK) | (level << HULL_DAMAGE_LEVEL_SHIFT));
         }
 
+        // The entity factory writes team and damage while the unit is still inactive. The GPU Resident Drawer
+        // registers renderers on activation into reused instance slots, so a value written before that can lose to
+        // the slot's previous (dead, damaged) unit. Writing again once enabled keeps the drawer in sync.
+        private void OnEnable()
+        {
+            WriteUserValue();
+        }
+
         private void ApplyUserValue(uint userValue)
         {
             if (_userValue == userValue)
@@ -56,6 +64,12 @@ namespace EmpireAtWar.Components.TeamColor
             }
 
             _userValue = userValue;
+            WriteUserValue();
+        }
+
+        private void WriteUserValue()
+        {
+            uint userValue = _userValue;
             foreach (MeshRenderer meshRenderer in meshRenderers)
             {
                 meshRenderer.SetShaderUserValue(userValue);

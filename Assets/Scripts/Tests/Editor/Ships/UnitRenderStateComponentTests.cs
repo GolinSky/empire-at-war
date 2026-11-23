@@ -164,6 +164,19 @@ namespace EmpireAtWar.Tests.Editor
         }
 
         [Test]
+        public void Enable_RewritesUserValueEvenWhenUnchanged()
+        {
+            _component.SetHullDamage(1f);
+            // Stands in for a GPU Resident Drawer slot still holding a dead unit's damaged value.
+            _renderer.SetShaderUserValue(_base | (31u << 11));
+
+            typeof(UnitRenderStateComponent).GetMethod("OnEnable", BindingFlags.Instance | BindingFlags.NonPublic)
+                .Invoke(_component, null);
+
+            Assert.That(_renderer.GetShaderUserValue(), Is.EqualTo(_base));
+        }
+
+        [Test]
         public void WreckUserValue_CarriesTeamDamageAndSeedButNotHighlight()
         {
             _component.SetHullDamage(0f);
