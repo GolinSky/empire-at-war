@@ -140,7 +140,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::EmpireAtWar.ViewComponents.Health.WeaponHardPoint
   spawnDestroyedExplosion: 1
   destroyedVfxAnchor: {fileID: 1852614931720717116}
-  destroyedVfxScale: 1
+  destroyedVfxScale: 1.0000281
   unlockLevel: 1
   healthOverride: 0
   healthWeight: 1
@@ -260,7 +260,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::EmpireAtWar.ViewComponents.Health.WeaponHardPoint
   spawnDestroyedExplosion: 1
   destroyedVfxAnchor: {fileID: 8163808548468042437}
-  destroyedVfxScale: 1
+  destroyedVfxScale: 1.0000281
   unlockLevel: 1
   healthOverride: 0
   healthWeight: 1
@@ -5185,7 +5185,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::EmpireAtWar.ViewComponents.Health.WeaponHardPoint
   spawnDestroyedExplosion: 1
   destroyedVfxAnchor: {fileID: 6154377597634364925}
-  destroyedVfxScale: 1
+  destroyedVfxScale: 1.0000281
   unlockLevel: 1
   healthOverride: 0
   healthWeight: 1
@@ -5243,7 +5243,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::EmpireAtWar.ViewComponents.Health.WeaponHardPoint
   spawnDestroyedExplosion: 1
   destroyedVfxAnchor: {fileID: 4199969295418176624}
-  destroyedVfxScale: 1
+  destroyedVfxScale: 1.0000281
   unlockLevel: 1
   healthOverride: 0
   healthWeight: 1
@@ -5332,7 +5332,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::EmpireAtWar.ViewComponents.Health.WeaponHardPoint
   spawnDestroyedExplosion: 1
   destroyedVfxAnchor: {fileID: 7358181094242686946}
-  destroyedVfxScale: 1
+  destroyedVfxScale: 1.0000281
   unlockLevel: 1
   healthOverride: 0
   healthWeight: 1
@@ -5390,7 +5390,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::EmpireAtWar.ViewComponents.Health.WeaponHardPoint
   spawnDestroyedExplosion: 1
   destroyedVfxAnchor: {fileID: 7187723393298709826}
-  destroyedVfxScale: 1
+  destroyedVfxScale: 1.0000281
   unlockLevel: 1
   healthOverride: 0
   healthWeight: 1
@@ -5448,7 +5448,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::EmpireAtWar.ViewComponents.Health.WeaponHardPoint
   spawnDestroyedExplosion: 1
   destroyedVfxAnchor: {fileID: 4238212906647781145}
-  destroyedVfxScale: 1
+  destroyedVfxScale: 1.0000281
   unlockLevel: 1
   healthOverride: 0
   healthWeight: 1
@@ -5506,7 +5506,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::EmpireAtWar.ViewComponents.Health.WeaponHardPoint
   spawnDestroyedExplosion: 1
   destroyedVfxAnchor: {fileID: 8637900115022643356}
-  destroyedVfxScale: 1
+  destroyedVfxScale: 1.0000281
   unlockLevel: 1
   healthOverride: 0
   healthWeight: 1
@@ -6002,7 +6002,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::EmpireAtWar.Components.Ship.Selection.SelectionComponent
   selectionRoot: {fileID: 6823356564290352850}
   selectedRenderer: {fileID: 3318282782644180738}
-  ringSize: {x: 350.98047, y: 350.98047}
+  ringSize: {x: 376.05563, y: 376.05563}
 --- !u!114 &9099343971920931525
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -11167,7 +11167,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::EmpireAtWar.ViewComponents.Health.HardPoint
   spawnDestroyedExplosion: 1
   destroyedVfxAnchor: {fileID: 1288418871579665872}
-  destroyedVfxScale: 1
+  destroyedVfxScale: 1.0000281
   unlockLevel: 1
   healthOverride: 0
   healthWeight: 1
@@ -11220,7 +11220,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::EmpireAtWar.ViewComponents.Health.WeaponHardPoint
   spawnDestroyedExplosion: 1
   destroyedVfxAnchor: {fileID: 3125230616406914184}
-  destroyedVfxScale: 1
+  destroyedVfxScale: 1.0000281
   unlockLevel: 1
   healthOverride: 0
   healthWeight: 1
@@ -11407,7 +11407,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::EmpireAtWar.ViewComponents.Health.WeaponHardPoint
   spawnDestroyedExplosion: 1
   destroyedVfxAnchor: {fileID: 3274035658884196829}
-  destroyedVfxScale: 1
+  destroyedVfxScale: 1.0000281
   unlockLevel: 1
   healthOverride: 0
   healthWeight: 1
@@ -11594,7 +11594,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::EmpireAtWar.ViewComponents.Health.WeaponHardPoint
   spawnDestroyedExplosion: 1
   destroyedVfxAnchor: {fileID: 8405094048501009323}
-  destroyedVfxScale: 1
+  destroyedVfxScale: 1.0000281
   unlockLevel: 1
   healthOverride: 0
   healthWeight: 1
@@ -11714,7 +11714,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::EmpireAtWar.ViewComponents.Health.WeaponHardPoint
   spawnDestroyedExplosion: 1
   destroyedVfxAnchor: {fileID: 1068071970712424474}
-  destroyedVfxScale: 1
+  destroyedVfxScale: 1.0000281
   unlockLevel: 1
   healthOverride: 0
   healthWeight: 1
@@ -11772,7 +11772,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::EmpireAtWar.ViewComponents.Health.WeaponHardPoint
   spawnDestroyedExplosion: 1
   destroyedVfxAnchor: {fileID: 6067368128955624709}
-  destroyedVfxScale: 1
+  destroyedVfxScale: 1.0000281
   unlockLevel: 1
   healthOverride: 0
   healthWeight: 1
@@ -11830,7 +11830,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::EmpireAtWar.ViewComponents.Health.WeaponHardPoint
   spawnDestroyedExplosion: 1
   destroyedVfxAnchor: {fileID: 2554425961746388900}
-  destroyedVfxScale: 1
+  destroyedVfxScale: 1.0000281
   unlockLevel: 1
   healthOverride: 0
   healthWeight: 1
@@ -12050,7 +12050,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::EmpireAtWar.ViewComponents.Health.WeaponHardPoint
   spawnDestroyedExplosion: 1
   destroyedVfxAnchor: {fileID: 7832529578047049287}
-  destroyedVfxScale: 1
+  destroyedVfxScale: 1.0000281
   unlockLevel: 1
   healthOverride: 0
   healthWeight: 1
@@ -13240,7 +13240,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::EmpireAtWar.ViewComponents.Health.HardPoint
   spawnDestroyedExplosion: 1
   destroyedVfxAnchor: {fileID: 48913900641759321}
-  destroyedVfxScale: 1
+  destroyedVfxScale: 1.0000281
   unlockLevel: 1
   healthOverride: 0
   healthWeight: 1
@@ -13355,7 +13355,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::EmpireAtWar.ViewComponents.Health.WeaponHardPoint
   spawnDestroyedExplosion: 1
   destroyedVfxAnchor: {fileID: 7539776365404002646}
-  destroyedVfxScale: 1
+  destroyedVfxScale: 1.0000281
   unlockLevel: 1
   healthOverride: 0
   healthWeight: 1
@@ -18249,7 +18249,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::EmpireAtWar.ViewComponents.Health.WeaponHardPoint
   spawnDestroyedExplosion: 1
   destroyedVfxAnchor: {fileID: 5170781959310587675}
-  destroyedVfxScale: 1
+  destroyedVfxScale: 1.0000281
   unlockLevel: 1
   healthOverride: 0
   healthWeight: 1
@@ -18374,7 +18374,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::EmpireAtWar.ViewComponents.Health.WeaponHardPoint
   spawnDestroyedExplosion: 1
   destroyedVfxAnchor: {fileID: 8954583524045583182}
-  destroyedVfxScale: 1
+  destroyedVfxScale: 1.0000281
   unlockLevel: 1
   healthOverride: 0
   healthWeight: 1
@@ -18463,7 +18463,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::EmpireAtWar.ViewComponents.Health.HardPoint
   spawnDestroyedExplosion: 1
   destroyedVfxAnchor: {fileID: 998897004144653245}
-  destroyedVfxScale: 1
+  destroyedVfxScale: 1.0000281
   unlockLevel: 1
   healthOverride: 0
   healthWeight: 1
@@ -18516,7 +18516,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::EmpireAtWar.ViewComponents.Health.WeaponHardPoint
   spawnDestroyedExplosion: 1
   destroyedVfxAnchor: {fileID: 6637872668382847982}
-  destroyedVfxScale: 1
+  destroyedVfxScale: 1.0000281
   unlockLevel: 1
   healthOverride: 0
   healthWeight: 1
@@ -18574,7 +18574,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::EmpireAtWar.ViewComponents.Health.HardPoint
   spawnDestroyedExplosion: 1
   destroyedVfxAnchor: {fileID: 9054781450646674070}
-  destroyedVfxScale: 1
+  destroyedVfxScale: 1.0000281
   unlockLevel: 1
   healthOverride: 0
   healthWeight: 1
@@ -18627,7 +18627,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::EmpireAtWar.ViewComponents.Health.WeaponHardPoint
   spawnDestroyedExplosion: 1
   destroyedVfxAnchor: {fileID: 4462426815819442874}
-  destroyedVfxScale: 1
+  destroyedVfxScale: 1.0000281
   unlockLevel: 1
   healthOverride: 0
   healthWeight: 1
@@ -18685,7 +18685,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::EmpireAtWar.ViewComponents.Health.WeaponHardPoint
   spawnDestroyedExplosion: 1
   destroyedVfxAnchor: {fileID: 7888283078971557159}
-  destroyedVfxScale: 1
+  destroyedVfxScale: 1.0000281
   unlockLevel: 1
   healthOverride: 0
   healthWeight: 1

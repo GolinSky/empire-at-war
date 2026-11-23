@@ -487,11 +487,13 @@ namespace EmpireAtWar.Tests.Editor
                 shipService.Remove(ship2);
                 ((TestHealthModel)entity4.HealthModel).IsDestroyed = true;
                 entities.RemoveEntity(entity4);
+                int attackMovesBefore = orders.AttackMoveCalls;
 
                 Assert.DoesNotThrow(() => scheduler.Step(0.1f));
                 Assert.That((bool)cycleField.GetValue(commander), Is.False);
                 Assert.That(commander.HasDecision, Is.True);
-                Assert.That(orders.MoveCalls, Is.GreaterThan(0));
+                // X2: the zone force holds at its gather point (attack-move) instead of a spawn-zone exit move.
+                Assert.That(orders.AttackMoveCalls, Is.GreaterThan(attackMovesBefore));
             }
             finally
             {
@@ -703,14 +705,14 @@ namespace EmpireAtWar.Tests.Editor
         private sealed class TestOrderService : IUnitOrderService
         {
             public event Action<UnitOrder> OrderIssued { add { } remove { } }
-            public int MoveCalls { get; private set; }
-            public void IssueMove(IReadOnlyList<IEntity> receivers, Vector3 point, MovePace pace = MovePace.Formation) => MoveCalls++;
-            public void IssueMove(IReadOnlyList<IEntity> receivers, IReadOnlyList<Vector3> destinations) => MoveCalls++;
+            public int AttackMoveCalls { get; private set; }
+            public void IssueMove(IReadOnlyList<IEntity> receivers, Vector3 point, MovePace pace = MovePace.Formation) { }
+            public void IssueMove(IReadOnlyList<IEntity> receivers, IReadOnlyList<Vector3> destinations) { }
             public void IssueAttack(IReadOnlyList<IEntity> receivers, IEntity target, MovePace pace = MovePace.Formation) { }
             public void IssueAttack(IReadOnlyList<IEntity> receivers, IEntity target, IReadOnlyList<Vector3> offsets) { }
             public void IssueHardPointAttack(IReadOnlyList<IEntity> receivers, IEntity target, int hardPointId, MovePace pace = MovePace.Formation) { }
-            public void IssueAttackMove(IReadOnlyList<IEntity> receivers, Vector3 point, MovePace pace = MovePace.Formation) { }
-            public void IssueAttackMove(IReadOnlyList<IEntity> receivers, IReadOnlyList<Vector3> destinations) { }
+            public void IssueAttackMove(IReadOnlyList<IEntity> receivers, Vector3 point, MovePace pace = MovePace.Formation) => AttackMoveCalls++;
+            public void IssueAttackMove(IReadOnlyList<IEntity> receivers, IReadOnlyList<Vector3> destinations) => AttackMoveCalls++;
             public void IssueStop(IReadOnlyList<IEntity> receivers) { }
             public void IssueGuard(IReadOnlyList<IEntity> receivers, IEntity friendly) { }
             public void IssueGuard(IReadOnlyList<IEntity> receivers, IEntity friendly, IReadOnlyList<Vector3> offsets) { }

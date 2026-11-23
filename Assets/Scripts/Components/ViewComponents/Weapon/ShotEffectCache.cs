@@ -32,7 +32,8 @@ namespace EmpireAtWar.ViewComponents.Weapon
         public int InUseCount => _all.Count - _idle.Count;
         /// <summary>Visuals still wanted by shots that fired undrawn.</summary>
         public int PendingDemand { get; private set; }
-        public int RequiredCount => InUseCount + PendingDemand;
+        // Each runtime-created visual raises TotalCount and lowers PendingDemand, so the size stays put until demand is served.
+        public int RequiredCount => TotalCount + PendingDemand;
         public event Action<ShotEffectCache> DemandChanged;
         public string PrefabName => _prefab.name;
         public int PeakInUse { get; private set; }

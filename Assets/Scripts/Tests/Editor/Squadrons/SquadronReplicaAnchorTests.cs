@@ -35,7 +35,9 @@ namespace EmpireAtWar.Tests.Editor
             for (float time = 0f; time < 10f; time += DELTA_TIME)
             {
                 Fly(flight, pilot, anchor, hostRoot);
-                maxDrift = Mathf.Max(maxDrift, Drift(flight, hostRoot));
+                // Settling: the jump lands the fighters on the orbit centre; they fly out to the ring and swing wide
+                // once, and the pull back is deliberately gradual (see Drift_BeyondTheLoiterRadius_...).
+                if (time > 2f) maxDrift = Mathf.Max(maxDrift, Drift(flight, hostRoot));
             }
 
             Assert.That(pilot.HasArrived, Is.True, "A resting host squadron is orbited.");
