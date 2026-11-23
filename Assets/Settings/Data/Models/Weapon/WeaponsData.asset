@@ -1133,27 +1133,6 @@ MonoBehaviour:
     size: {x: 1, y: 1, z: 1}
     overrideColor: 0
     color: {r: 1, g: 1, b: 1, a: 1}
-  - weaponType: 43
-    displayName: Imperial Heavy Dual Turbolaser
-    family: 1
-    caliber: 2
-    mount: 2
-    scope: 1
-    faction: 3
-    unit: 
-    damageMultiplier: 1.1
-    reloadMultiplier: 1
-    rangeMultiplier: 1.15
-    reason: 'Imperial heavy dual turbolaser (ISD III, Imperial Venator): hits harder
-      and reaches farther than the shared one.'
-    overrideVisual: 1
-    shotPrefab: {fileID: 4723455029226909166, guid: d08e869a202dee742b31818cc8c5b23b,
-      type: 3}
-    beamPrefab: {fileID: 0}
-    projectileSpeed: 172.9
-    size: {x: 1, y: 1, z: 1}
-    overrideColor: 0
-    color: {r: 1, g: 1, b: 1, a: 1}
   - weaponType: 45
     displayName: Composite Beam
     family: 8

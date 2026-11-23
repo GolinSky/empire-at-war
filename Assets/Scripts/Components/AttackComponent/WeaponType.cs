@@ -31,7 +31,6 @@ namespace EmpireAtWar.Components.AttackComponent
         MediumIonCannon = 32,
         HeavyArtilleryRocket = 34,
         LightDualTurbolaser = 36,
-        HeavyDualTurbolaser = 43,
         CompositeBeam = 45,
         MediumDualIonCannon = 37,
         LightDualLaser = 46,
