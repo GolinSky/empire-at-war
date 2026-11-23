@@ -49,13 +49,13 @@ Material:
         m_Offset: {x: 0, y: 0}
     m_Ints: []
     m_Floats:
-    - _BumpScale: 1
+    - _BumpScale: 2
     - _Cutoff: 0.5
     - _HullDamageMarkScale: 2.2921767
     - _HullDamageOpacityScale: 1
-    - _Metallic: 0.1
-    - _OcclusionStrength: 0.65
-    - _Smoothness: 0.25
+    - _Metallic: 0.3
+    - _OcclusionStrength: 1
+    - _Smoothness: 0.5
     - _TeamEmissionTint: 0.5
     - _TeamLiveryHue: 0
     - _TeamLiveryHueRange: 0.07
@@ -76,7 +76,7 @@ Material:
     - _WreckTiltSpeed: 2
     - _WreckTornEdgeWidth: 4
     m_Colors:
-    - _BaseColor: {r: 1, g: 1, b: 1, a: 1}
+    - _BaseColor: {r: 0.8, g: 0.8, b: 0.816, a: 1}
     - _EmissionColor: {r: 0, g: 0, b: 0, a: 1}
     - _WreckAxis: {r: 1, g: 0, b: 0, a: 0}
     - _WreckAxisRange: {r: -1, g: 1, b: 0, a: 0}
