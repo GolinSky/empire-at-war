@@ -21,12 +21,17 @@ using EmpireAtWar.Lifecycle;
 namespace EmpireAtWar.ViewComponents.Weapon
 {
     /// <summary>
-    /// Owns per-prefab battle storage; loading warms roster demand and runtime growth is capped per frame.
+    /// Hands each mount its shot visuals and owns per-prefab battle storage. Bolts draw through
+    /// <see cref="BoltFlightBatch"/> with no per-shot object; other shots lease pooled visuals. Loading warms roster
+    /// demand; runtime growth is budgeted per frame, with a larger budget while shots are firing undrawn.
     /// </summary>
     public sealed class ShotPoolPrewarmer : ITickable, ILateDisposable
     {
         private const double BUDGET_MILLISECONDS = 0.5;
+        private const double DEMAND_BUDGET_MILLISECONDS = 2.0;
         private const double LOADING_BUDGET_MILLISECONDS = 4.0;
+
+        private readonly BoltFlightBatch _bolts;
 
         private readonly List<ShotEffectCache> _pending = new List<ShotEffectCache>();
         private readonly HashSet<ShotEffectCache> _queued = new HashSet<ShotEffectCache>();
@@ -34,27 +39,23 @@ namespace EmpireAtWar.ViewComponents.Weapon
         private readonly Dictionary<(ShotEffect Prefab, bool Strikecraft), ShotEffectCache> _caches =
             new Dictionary<(ShotEffect, bool), ShotEffectCache>();
         private readonly Dictionary<ShotEffectCache, int> _targets = new Dictionary<ShotEffectCache, int>();
-        private readonly Dictionary<ShotEffectPool, (ShotEffectCache Cache, int Capacity)> _pools =
-            new Dictionary<ShotEffectPool, (ShotEffectCache, int)>();
+        private readonly HashSet<ShotEffectPool> _pools = new HashSet<ShotEffectPool>();
         public Dictionary<(ShotEffect Prefab, bool Strikecraft), ShotEffectCache>.ValueCollection Caches => _caches.Values;
 
-        public ShotEffectPool CreatePool(WeaponProfile profile, Transform owner, Action<int> completed,
-            ImpactEffectPresenter impacts, BoltFlightBatch flights, int target, bool strikecraft = false)
+        public ShotPoolPrewarmer(BoltFlightBatch bolts)
         {
-            ShotEffectCache cache = GetCache(profile.ShotPrefab, strikecraft);
-            cache.RegisterCapacity(target);
-            var pool = new ShotEffectPool(profile, owner, completed, impacts, flights, cache, target);
-            _pools.Add(pool, (cache, target));
-            pool.Retired += OnRetired;
-            return pool;
+            _bolts = bolts;
         }
 
-        internal void IncreaseCapacity(ShotEffectPool pool, int capacity)
+        /// <param name="capacity">Shots this mount expects in flight; pre-sizes its lease set.</param>
+        public IShotVisuals CreateVisuals(WeaponProfile profile, Transform owner, ImpactEffectPresenter impacts,
+            int capacity, bool strikecraft = false)
         {
-            (ShotEffectCache cache, int previousCapacity) = _pools[pool];
-            cache.RegisterCapacity(capacity - previousCapacity);
-            _pools[pool] = (cache, capacity);
-            pool.IncreaseCapacity(capacity);
+            if (profile.ShotPrefab is BoltShot bolt) return new BoltShotVisuals(_bolts, bolt, profile, owner, impacts);
+            var pool = new ShotEffectPool(profile, owner, impacts, GetCache(profile.ShotPrefab, strikecraft), capacity);
+            _pools.Add(pool);
+            pool.Retired += OnRetired;
+            return pool;
         }
 
         private ShotEffectCache GetCache(ShotEffect prefab, bool strikecraft)
@@ -79,6 +80,11 @@ namespace EmpireAtWar.ViewComponents.Weapon
             var targets = new Dictionary<ShotEffect, int>();
             foreach (WeaponProfile profile in profiles)
             {
+                if (profile.ShotPrefab is BoltShot bolt)
+                {
+                    _bolts.Prepare(bolt);
+                    continue;
+                }
                 targets.TryGetValue(profile.ShotPrefab, out int count);
                 targets[profile.ShotPrefab] = count + WeaponHardPoint.ExpectedShotsInFlight(profile);
             }
@@ -134,8 +140,6 @@ namespace EmpireAtWar.ViewComponents.Weapon
         private void OnRetired(ShotEffectPool pool)
         {
             pool.Retired -= OnRetired;
-            (ShotEffectCache cache, int capacity) = _pools[pool];
-            cache.ReleaseCapacity(capacity);
             _pools.Remove(pool);
         }
 
@@ -144,7 +148,7 @@ namespace EmpireAtWar.ViewComponents.Weapon
             _pending.Clear();
             _queued.Clear();
             _targets.Clear();
-            foreach (ShotEffectPool pool in new List<ShotEffectPool>(_pools.Keys)) pool.DestroyAll();
+            foreach (ShotEffectPool pool in new List<ShotEffectPool>(_pools)) pool.DestroyAll();
             foreach (ShotEffectCache cache in _caches.Values)
             {
                 cache.DemandChanged -= Enqueue;
@@ -158,9 +162,17 @@ namespace EmpireAtWar.ViewComponents.Weapon
         public void Tick()
         {
             long start = Stopwatch.GetTimestamp();
-            long budget = (long)(BUDGET_MILLISECONDS * Stopwatch.Frequency / 1000.0);
+            long budget = (long)(GetBudgetMilliseconds() * Stopwatch.Frequency / 1000.0);
             while (_pending.Count > 0 && Stopwatch.GetTimestamp() - start < budget)
                 PrewarmNext(false);
+        }
+
+        // Shots firing undrawn grow their storage faster; plain stock top-ups keep the small budget.
+        private double GetBudgetMilliseconds()
+        {
+            foreach (ShotEffectCache cache in _pending)
+                if (cache.PendingDemand > 0) return DEMAND_BUDGET_MILLISECONDS;
+            return BUDGET_MILLISECONDS;
         }
 
         /// <summary>Warm ship and station-fighter stock sized from the battle's slots, before battle Running.</summary>
@@ -230,11 +242,16 @@ namespace EmpireAtWar.ViewComponents.Weapon
         {
             foreach (KeyValuePair<ShotEffect, int> target in targets)
             {
+                cancellationToken.ThrowIfCancellationRequested();
+                if (target.Key is BoltShot bolt)
+                {
+                    _bolts.Prepare(bolt);
+                    continue;
+                }
                 ShotEffectCache cache = GetCache(target.Key, strikecraft);
 #if UNITY_EDITOR || DEVELOPMENT_BUILD
                 UnityEngine.Debug.Log($"[ShotPoolPrewarmer] Roster target: {target.Key.name} ({(strikecraft ? "fighters" : "ships")}) = {target.Value} shots.");
 #endif
-                cancellationToken.ThrowIfCancellationRequested();
                 WarmLoadout(cache, target.Value);
             }
         }

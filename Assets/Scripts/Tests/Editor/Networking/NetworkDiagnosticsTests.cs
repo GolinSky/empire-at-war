@@ -205,20 +205,19 @@ namespace EmpireAtWar.Tests.Editor
         }
 
         [Test]
-        public void PoolStats_SplitsShipAndFighterWaitsAndListsStarvingPools()
+        public void PoolStats_SplitsShipAndFighterMissingVisualsAndListsStarvingPools()
         {
             var weapons = AssetDatabase.LoadAssetAtPath<WeaponsData>("Assets/Settings/Data/Models/Weapon/WeaponsData.asset");
             WeaponProfile profile = WeaponProfileFactory.Create(new WeaponDefinition(), weapons.GetFamily(WeaponFamily.Torpedo),
                 weapons.GetCaliber(WeaponCaliber.Medium), weapons.GetMount(WeaponMount.Single));
-            var prewarmer = new ShotPoolPrewarmer();
-            ShotEffectPool ship = prewarmer.CreatePool(profile, null, _ => { }, null, null, 1000);
-            ShotEffectPool fighter = prewarmer.CreatePool(profile, null, _ => { }, null, null, 1000, true);
+            var prewarmer = new ShotPoolPrewarmer(null);
+            var ship = (ShotEffectPool)prewarmer.CreateVisuals(profile, null, null, 1000);
+            var fighter = (ShotEffectPool)prewarmer.CreateVisuals(profile, null, null, 1000, true);
             try
             {
-                ship.Prewarm(1);
-                fighter.Prewarm(1);
-                Assert.That(ship.TryReserveSalvo(2), Is.False);
-                Assert.That(fighter.TryReserveSalvo(3), Is.False);
+                // Empty pools: every shot fires undrawn and asks for growth.
+                for (int i = 0; i < 2; i++) ship.Play(null, null, Vector3.zero, false, null, 0f);
+                for (int i = 0; i < 3; i++) fighter.Play(null, null, Vector3.zero, false, null, 0f);
 
                 var stats = new ShotPoolStats();
                 var row = new NetworkStatsRow();
@@ -227,24 +226,33 @@ namespace EmpireAtWar.Tests.Editor
                 stats.Collect(prewarmer.Caches, 1f, row, details);
                 row.End();
 
-                Assert.That(Value(row, "pool_waiting_shots"), Is.EqualTo(5));
-                Assert.That(Value(row, "pool_ships_waiting"), Is.EqualTo(2));
-                Assert.That(Value(row, "pool_fighters_waiting"), Is.EqualTo(3));
+                Assert.That(Value(row, "pool_pending_visuals"), Is.EqualTo(5));
+                Assert.That(Value(row, "pool_ships_pending"), Is.EqualTo(2));
+                Assert.That(Value(row, "pool_fighters_pending"), Is.EqualTo(3));
+                Assert.That(Value(row, "pool_skipped_visuals_s"), Is.EqualTo(5));
                 Assert.That(Value(row, "pool_starving"), Is.EqualTo(2));
-                Assert.That(stats.WaitingPools.Count, Is.EqualTo(2));
-                Assert.That(stats.WaitingPools[0].IsFighters, Is.True, "Most waiting shots first.");
+                Assert.That(stats.StarvingPools.Count, Is.EqualTo(2));
+                Assert.That(stats.StarvingPools[0].IsFighters, Is.True, "Most skipped shots first.");
                 Assert.That(details.Count, Is.EqualTo(2));
 
-                ship.CancelReservation();
-                fighter.CancelReservation();
+                // Growth serves the demand; the next window has nothing skipped or pending.
+                for (int tick = 0; tick < 100 && PendingDemand(prewarmer) > 0; tick++) prewarmer.Tick();
                 details.Clear();
                 row.Begin();
                 stats.Collect(prewarmer.Caches, 1f, row, details);
                 row.End();
                 Assert.That(Value(row, "pool_starving"), Is.Zero);
-                Assert.That(stats.WaitingPools, Is.Empty);
+                Assert.That(Value(row, "pool_skipped_visuals_s"), Is.Zero);
+                Assert.That(stats.StarvingPools, Is.Empty);
             }
             finally { prewarmer.Clear(); }
+        }
+
+        private static int PendingDemand(ShotPoolPrewarmer prewarmer)
+        {
+            int pending = 0;
+            foreach (ShotEffectCache cache in prewarmer.Caches) pending += cache.PendingDemand;
+            return pending;
         }
 
         [Test]
@@ -259,7 +267,7 @@ namespace EmpireAtWar.Tests.Editor
                 Assert.That(first.IsWriting && second.IsWriting);
                 Assert.That(Path.GetFileName(second.StatsPath), Is.EqualTo("Battle_20261122_120000_Client_2_net.csv"));
 
-                first.WritePool(1.0, new ShotPoolSample("Laser,Red", false, 4, 10, 12, 2, 0.5f, 0.25f));
+                first.WritePool(1.0, new ShotPoolSample("Laser,Red", false, 4, 3, 10, 12, 2));
                 first.WriteLink(1.0, new NetworkLinkSample("Host", 42.0, false, default));
                 first.Flush();
             }
@@ -272,7 +280,8 @@ namespace EmpireAtWar.Tests.Editor
             try
             {
                 string[] pools = File.ReadAllLines(Path.Combine(folder, "Battle_20261122_120000_Client_pools.csv"));
-                Assert.That(pools[1], Is.EqualTo("1.0,Laser Red,ships,4,10,12,2,500,250"));
+                Assert.That(pools[0].Split(',').Length, Is.EqualTo(pools[1].Split(',').Length));
+                Assert.That(pools[1], Is.EqualTo("1.0,Laser Red,ships,4,3,10,12,2"));
                 string[] links = File.ReadAllLines(Path.Combine(folder, "Battle_20261122_120000_Client_links.csv"));
                 Assert.That(links[1].Split(',').Length, Is.EqualTo(links[0].Split(',').Length),
                     "A direct IP link still fills every column.");

@@ -1,220 +1,162 @@
-using System;
 using System.Collections.Generic;
+using System.Linq;
 using System.Reflection;
-using EmpireAtWar.Components.Ship.Health;
-using EmpireAtWar.Components.Weapon;
-using EmpireAtWar.Models.Health;
-using EmpireAtWar.Models.Players;
-using Object = UnityEngine.Object;
 using EmpireAtWar.Components.AttackComponent;
+using EmpireAtWar.Components.Weapon;
 using EmpireAtWar.ViewComponents.Weapon;
 using NUnit.Framework;
 using UnityEditor;
 using UnityEngine;
+using Object = UnityEngine.Object;
 
 namespace EmpireAtWar.Tests.Weapon
 {
     [Category("Combat")]
     public sealed class BoltParticleSimulationTests
     {
+        private readonly List<GameObject> _objects = new List<GameObject>();
+        private BoltFlightBatch _flights;
+        private Transform _muzzle;
+        private Transform _target;
+        private BoltTestRig.VisualHealth _health;
+        private BoltTestRig.RecordingImpactView _impactView;
+        private ImpactEffectPresenter _impacts;
+
+        [SetUp]
+        public void SetUp()
+        {
+            _flights = new BoltFlightBatch();
+            _muzzle = Create("Test muzzle").transform;
+            _target = Create("Test target").transform;
+            _target.position = Vector3.forward * 100f;
+            _health = new BoltTestRig.VisualHealth();
+            _impactView = new BoltTestRig.RecordingImpactView();
+            _impacts = BoltTestRig.Impacts(_impactView);
+        }
+
+        [TearDown]
+        public void TearDown()
+        {
+            _flights.Dispose();
+            foreach (GameObject instance in _objects) Object.DestroyImmediate(instance);
+            _objects.Clear();
+        }
+
         [TestCase("Projectile", 1)]
         [TestCase("DualProjectile", 2)]
         [TestCase("QuadProjectile", 4)]
         [TestCase("OctupleProjectile", 8)]
         [TestCase("HypervelocitySlugShot", 1)]
-        public void Fire_PausesStaticBurstAndPreservesRenderedMesh(string name, int count)
+        public void SharedLayer_DrawsOneParticlePerBarrelAlongEachFlight(string name, int barrels)
         {
-            GameObject prefab = AssetDatabase.LoadAssetAtPath<GameObject>(
-                $"Assets/Prefabs/Vfx/Projectiles/{name}.prefab");
-            GameObject actual = Object.Instantiate(prefab);
-            GameObject reference = Object.Instantiate(prefab);
-            GameObject muzzle = new GameObject("Test muzzle");
-            GameObject target = new GameObject("Test target");
-            GameObject cameraObject = new GameObject("Test camera", typeof(UnityEngine.Camera));
-            Mesh actualMesh = new Mesh();
-            Mesh referenceMesh = new Mesh();
-            BoltFlightBatch flights = new BoltFlightBatch();
-            try
-            {
-                target.transform.position = Vector3.forward * 100f;
-                cameraObject.transform.position = new Vector3(20f, 25f, -30f);
-                cameraObject.transform.LookAt(Vector3.zero);
-                UnityEngine.Camera camera = cameraObject.GetComponent<UnityEngine.Camera>();
-                camera.enabled = false;
-                WeaponProfile profile = new WeaponProfile();
-                JsonUtility.FromJsonOverwrite("{\"projectileSpeed\":100}", profile);
-                ParticleSystem actualParticles = Fire(actual, muzzle.transform, target.transform, profile, flights);
-                ParticleSystem referenceParticles = Fire(reference, muzzle.transform, target.transform, profile, flights);
+            BoltShot prefab = BoltTestRig.LoadBolt(name);
+            ParticleSystem authored = prefab.Vfx;
+            // The layer reads barrel offsets from one static burst; anything else would draw the wrong shape.
+            Assert.That(authored.emission.burstCount, Is.EqualTo(1));
+            Assert.That(authored.emission.GetBurst(0).time, Is.Zero);
+            Assert.That(authored.emission.GetBurst(0).cycleCount, Is.EqualTo(1));
+            Assert.That(authored.emission.GetBurst(0).probability, Is.EqualTo(1f));
+            Assert.That(authored.emission.rateOverTimeMultiplier, Is.Zero);
+            Assert.That(authored.emission.rateOverDistanceMultiplier, Is.Zero);
+            Assert.That(authored.colorOverLifetime.enabled || authored.colorBySpeed.enabled ||
+                authored.sizeBySpeed.enabled || authored.rotationOverLifetime.enabled ||
+                authored.rotationBySpeed.enabled || authored.velocityOverLifetime.enabled ||
+                authored.forceOverLifetime.enabled || authored.limitVelocityOverLifetime.enabled ||
+                authored.inheritVelocity.enabled || authored.externalForces.enabled || authored.noise.enabled ||
+                authored.collision.enabled || authored.trails.enabled || authored.textureSheetAnimation.enabled ||
+                authored.subEmitters.enabled || authored.lights.enabled, Is.False,
+                "Bolt visuals must remain a static burst.");
 
-                Assert.That(actualParticles.isPaused, Is.True);
-                Assert.That(actualParticles.particleCount, Is.EqualTo(count));
-                Assert.That(actual.GetComponentsInChildren<ParticleSystem>(true).Length, Is.EqualTo(1));
-                Assert.That(actualParticles.emission.burstCount, Is.EqualTo(1));
-                Assert.That(actualParticles.emission.GetBurst(0).time, Is.Zero);
-                Assert.That(actualParticles.emission.GetBurst(0).cycleCount, Is.EqualTo(1));
-                Assert.That(actualParticles.emission.GetBurst(0).probability, Is.EqualTo(1f));
-                Assert.That(actualParticles.emission.rateOverTimeMultiplier, Is.Zero);
-                Assert.That(actualParticles.emission.rateOverDistanceMultiplier, Is.Zero);
-                Assert.That(actualParticles.main.gravityModifierMultiplier, Is.Zero);
-                Assert.That(actualParticles.colorOverLifetime.enabled || actualParticles.colorBySpeed.enabled ||
-                    actualParticles.sizeOverLifetime.enabled || actualParticles.sizeBySpeed.enabled ||
-                    actualParticles.rotationOverLifetime.enabled || actualParticles.rotationBySpeed.enabled ||
-                    actualParticles.velocityOverLifetime.enabled || actualParticles.forceOverLifetime.enabled ||
-                    actualParticles.limitVelocityOverLifetime.enabled || actualParticles.inheritVelocity.enabled ||
-                    actualParticles.externalForces.enabled || actualParticles.noise.enabled ||
-                    actualParticles.collision.enabled || actualParticles.trails.enabled ||
-                    actualParticles.textureSheetAnimation.enabled || actualParticles.subEmitters.enabled ||
-                    actualParticles.lights.enabled, Is.False, "Bolt visuals must remain a static burst.");
+            WeaponProfile profile = BoltTestRig.SpeedProfile(100f);
+            float launch = Time.time;
+            BoltTestRig.Launch(_flights, prefab, profile, _muzzle, _target, _health, _impacts);
+            BoltTestRig.Launch(_flights, prefab, profile, _muzzle, _target, _health, _impacts, lateSeconds: 0.25f);
+            _flights.Advance(launch + 0.5f, 0f);
 
-                // Compare against normal simulation later in flight, after the same transform movement.
-                referenceParticles.Simulate(0.25f, true, true, false);
-                actual.transform.SetPositionAndRotation(new Vector3(3f, 4f, 5f), Quaternion.Euler(10f, 30f, 0f));
-                reference.transform.SetPositionAndRotation(actual.transform.position, actual.transform.rotation);
-                actualParticles.GetComponent<ParticleSystemRenderer>().BakeMesh(actualMesh, camera, ParticleSystemBakeMeshOptions.BakeRotationAndScale);
-                referenceParticles.GetComponent<ParticleSystemRenderer>().BakeMesh(referenceMesh, camera, ParticleSystemBakeMeshOptions.BakeRotationAndScale);
-                Assert.That(actualMesh.vertexCount, Is.GreaterThan(0));
-                Assert.That(actualMesh.vertexCount, Is.EqualTo(referenceMesh.vertexCount));
-                CollectionAssert.AreEqual(referenceMesh.colors32, actualMesh.colors32);
-                CollectionAssert.AreEqual(referenceMesh.uv, actualMesh.uv);
-                Vector3[] actualVertices = actualMesh.vertices;
-                Vector3[] referenceVertices = referenceMesh.vertices;
-                for (int i = 0; i < actualVertices.Length; i++)
-                    Assert.That(Vector3.Distance(actualVertices[i], referenceVertices[i]), Is.LessThan(0.001f));
+            BoltLayer layer = BoltTestRig.Layer(_flights, prefab);
+            Assert.That(layer.Barrels, Is.EqualTo(barrels));
+            ParticleSystem shared = BoltTestRig.Particles(layer);
+            var particles = new ParticleSystem.Particle[2 * barrels + 1];
+            Assert.That(shared.GetParticles(particles), Is.EqualTo(2 * barrels));
+            foreach (ParticleSystem.Particle particle in particles.Take(2 * barrels))
+                Assert.That(Vector3.Dot(particle.velocity.normalized, Vector3.forward), Is.GreaterThan(0.999f),
+                    "Stretched bolts must point along flight.");
+            Assert.That(particles.Take(2 * barrels).Select(particle => particle.position).Distinct().Count(),
+                Is.EqualTo(2 * barrels));
+            Assert.That(shared.main.simulationSpace, Is.EqualTo(ParticleSystemSimulationSpace.World));
 
-                actual.GetComponent<BoltShot>().ResetForPool();
-                Assert.That(actualParticles.particleCount, Is.Zero);
-                Assert.That(actualParticles.isStopped, Is.True);
-            }
-            finally
-            {
-                flights.Dispose();
-                Object.DestroyImmediate(actual);
-                Object.DestroyImmediate(reference);
-                Object.DestroyImmediate(muzzle);
-                Object.DestroyImmediate(target);
-                Object.DestroyImmediate(cameraObject);
-                Object.DestroyImmediate(actualMesh);
-                Object.DestroyImmediate(referenceMesh);
-            }
+            _flights.Advance(launch + 2f, 0f);
+            Assert.That(shared.particleCount, Is.Zero, "Landed bolts leave the shared system.");
         }
 
         [Test]
-        public void FlightBatch_PlacesBoltOnItsPathThenDropsItOnArrival()
+        public void FlightBatch_PlacesBoltOnItsPathThenLandsOnTarget()
         {
-            GameObject bolt = Object.Instantiate(AssetDatabase.LoadAssetAtPath<GameObject>(
-                "Assets/Prefabs/Vfx/Projectiles/Projectile.prefab"));
-            GameObject muzzle = new GameObject("Test muzzle");
-            GameObject target = new GameObject("Test target");
-            BoltFlightBatch flights = new BoltFlightBatch();
-            try
-            {
-                target.transform.position = Vector3.forward * 100f;
-                WeaponProfile profile = new WeaponProfile();
-                JsonUtility.FromJsonOverwrite("{\"projectileSpeed\":100}", profile);
-                Fire(bolt, muzzle.transform, target.transform, profile, flights);
-                float launch = Time.time;
+            BoltShot prefab = BoltTestRig.LoadBolt("Projectile");
+            float launch = Time.time;
+            BoltTestRig.Launch(_flights, prefab, BoltTestRig.SpeedProfile(100f), _muzzle, _target, _health, _impacts,
+                isHit: true);
 
-                flights.Advance(launch + 0.5f, 0f);
+            _flights.Advance(launch + 0.5f, 0f);
 
-                Assert.That(flights.Count, Is.EqualTo(1));
-                Assert.That(Vector3.Distance(bolt.transform.position, Vector3.forward * 50f), Is.LessThan(0.01f));
-                Assert.That(Vector3.Angle(bolt.transform.forward, Vector3.forward), Is.LessThan(0.01f));
+            Assert.That(_flights.Count, Is.EqualTo(1));
+            BoltFlight flight = Flight(prefab);
+            Assert.That(Vector3.Distance(BoltTestRig.Position(flight), Vector3.forward * 50f), Is.LessThan(0.01f));
+            Assert.That(Vector3.Angle((Vector3)flight.Pose.Path, Vector3.forward), Is.LessThan(0.01f));
 
-                flights.Advance(launch + 2f, 0f);
+            _flights.Advance(launch + 2f, 0f);
 
-                Assert.That(flights.Count, Is.Zero);
-                Assert.That(bolt.transform.position, Is.EqualTo(target.transform.position));
-            }
-            finally
-            {
-                flights.Dispose();
-                Object.DestroyImmediate(bolt);
-                Object.DestroyImmediate(muzzle);
-                Object.DestroyImmediate(target);
-            }
+            Assert.That(_flights.Count, Is.Zero);
+            Assert.That(_impactView.Positions, Has.Count.EqualTo(1));
+            Assert.That(Vector3.Distance(_impactView.Positions[0], _target.position), Is.LessThan(0.01f));
         }
 
         [Test]
         public void FlightBatch_AimJumpAtSurfaceClipBendsFlightInsteadOfTeleporting()
         {
-            GameObject bolt = Object.Instantiate(AssetDatabase.LoadAssetAtPath<GameObject>(
-                "Assets/Prefabs/Vfx/Projectiles/Projectile.prefab"));
-            GameObject muzzle = new GameObject("Test muzzle");
-            GameObject target = new GameObject("Test target");
-            BoltFlightBatch flights = new BoltFlightBatch();
-            try
-            {
-                target.transform.position = Vector3.forward * 100f;
-                WeaponProfile profile = new WeaponProfile();
-                JsonUtility.FromJsonOverwrite("{\"projectileSpeed\":100}", profile);
-                Fire(bolt, muzzle.transform, target.transform, profile, flights);
-                float launch = Time.time;
-                flights.Advance(launch + 0.5f, 0f);
+            BoltShot prefab = BoltTestRig.LoadBolt("Projectile");
+            float launch = Time.time;
+            BoltTestRig.Launch(_flights, prefab, BoltTestRig.SpeedProfile(100f), _muzzle, _target, _health, _impacts,
+                isHit: true);
+            _flights.Advance(launch + 0.5f, 0f);
 
-                // Aim jumps sideways (e.g. the target's shield collapses); the next advance re-clips the aim.
-                target.transform.position = new Vector3(40f, 0f, 100f);
-                flights.Advance(launch + 0.6f, 0f);
+            // Aim jumps sideways (e.g. the target's shield collapses); the next advance re-clips the aim.
+            _target.position = new Vector3(40f, 0f, 100f);
+            _flights.Advance(launch + 0.6f, 0f);
 
-                Assert.That(Vector3.Distance(bolt.transform.position, Vector3.forward * 60f), Is.LessThan(0.01f));
+            Assert.That(Vector3.Distance(BoltTestRig.Position(Flight(prefab)), Vector3.forward * 60f), Is.LessThan(0.01f));
 
-                flights.Advance(launch + 0.8f, 0f);
+            _flights.Advance(launch + 0.8f, 0f);
 
-                Assert.That(Vector3.Distance(bolt.transform.position, new Vector3(20f, 0f, 80f)), Is.LessThan(0.01f));
+            Assert.That(Vector3.Distance(BoltTestRig.Position(Flight(prefab)), new Vector3(20f, 0f, 80f)),
+                Is.LessThan(0.01f));
 
-                flights.Advance(launch + 2f, 0f);
+            _flights.Advance(launch + 2f, 0f);
 
-                Assert.That(bolt.transform.position, Is.EqualTo(target.transform.position));
-            }
-            finally
-            {
-                flights.Dispose();
-                Object.DestroyImmediate(bolt);
-                Object.DestroyImmediate(muzzle);
-                Object.DestroyImmediate(target);
-            }
+            Assert.That(Vector3.Distance(_impactView.Positions[0], _target.position), Is.LessThan(0.01f));
         }
 
         [TestCase(false)]
         [TestCase(true)]
         public void FlightBatch_TargetDeathOrShieldReturnDoesNotReverseBolt(bool targetDies)
         {
-            GameObject bolt = Object.Instantiate(AssetDatabase.LoadAssetAtPath<GameObject>(
-                "Assets/Prefabs/Vfx/Projectiles/Projectile.prefab"));
-            GameObject muzzle = new GameObject("Test muzzle");
-            GameObject target = new GameObject("Test target");
-            BoltFlightBatch flights = new BoltFlightBatch();
-            try
+            BoltShot prefab = BoltTestRig.LoadBolt("Projectile");
+            float launch = Time.time;
+            BoltTestRig.Launch(_flights, prefab, BoltTestRig.SpeedProfile(100f), _muzzle, _target, _health, _impacts,
+                isHit: true);
+            _flights.Advance(launch + 0.6f, 0f);
+            Assert.That(BoltTestRig.Position(Flight(prefab)).z, Is.EqualTo(60f).Within(0.01f));
+            if (targetDies)
             {
-                target.transform.position = Vector3.forward * 100f;
-                WeaponProfile profile = new WeaponProfile();
-                JsonUtility.FromJsonOverwrite("{\"projectileSpeed\":100}", profile);
-                VisualHealth health = new VisualHealth();
-                BoltShot shot = bolt.GetComponent<BoltShot>();
-                shot.PrepareImpact(new ImpactEffectPresenter(new SilentImpactView(), LoadDamageMatrix()),
-                    health, DamageType.Turbolaser, 1f, 1f, true);
-                Fire(bolt, muzzle.transform, target.transform, profile, flights);
-                float launch = Time.time;
-                flights.Advance(launch + 0.6f, 0f);
-                Assert.That(bolt.transform.position.z, Is.EqualTo(60f).Within(0.01f));
-                if (targetDies)
-                {
-                    health.IsDestroyed = true;
-                    target.transform.position = Vector3.back * 100f;
-                }
-                else health.HasShields = true;
-                flights.Advance(launch + 0.7f, 0f);
-                flights.Advance(launch + 0.8f, 0f);
-                Assert.That(bolt.transform.position.z, Is.GreaterThanOrEqualTo(60f));
-                flights.Advance(launch + 1.1f, 0f);
-                Assert.That(bolt.transform.position.z, Is.GreaterThanOrEqualTo(60f));
+                _health.IsDestroyed = true;
+                _target.position = Vector3.back * 100f;
             }
-            finally
-            {
-                flights.Dispose();
-                Object.DestroyImmediate(bolt);
-                Object.DestroyImmediate(muzzle);
-                Object.DestroyImmediate(target);
-            }
+            else _health.HasShields = true;
+            _flights.Advance(launch + 0.7f, 0f);
+            _flights.Advance(launch + 0.8f, 0f);
+            Assert.That(BoltTestRig.Position(Flight(prefab)).z, Is.GreaterThanOrEqualTo(60f));
+            _flights.Advance(launch + 0.95f, 0f);
+            Assert.That(BoltTestRig.Position(Flight(prefab)).z, Is.GreaterThanOrEqualTo(60f));
         }
 
         [Test]
@@ -230,8 +172,8 @@ namespace EmpireAtWar.Tests.Weapon
                 ParticleSystem hit = particles.GetComponent<ParticleSystem>();
                 typeof(BeamShot).GetField("beam", BindingFlags.Instance | BindingFlags.NonPublic).SetValue(shot, line);
                 typeof(BeamShot).GetField("hitEffect", BindingFlags.Instance | BindingFlags.NonPublic).SetValue(shot, hit);
-                VisualHealth health = new VisualHealth { HasShields = true };
-                shot.PrepareImpact(new ImpactEffectPresenter(new SilentImpactView(), LoadDamageMatrix()),
+                var health = new BoltTestRig.VisualHealth { HasShields = true };
+                shot.PrepareImpact(BoltTestRig.Impacts(new BoltTestRig.RecordingImpactView()),
                     health, DamageType.Turbolaser, 1f, 1f, true);
                 target.transform.position = Vector3.forward * 100f;
                 shot.PlayBeam(root.transform, target.transform, 10f, new WeaponProfile());
@@ -255,113 +197,50 @@ namespace EmpireAtWar.Tests.Weapon
             }
         }
 
-        private static DamageMatrixData LoadDamageMatrix() => AssetDatabase.LoadAssetAtPath<DamageMatrixData>(
-            "Assets/Settings/Data/Models/Weapon/DamageMatrixData.asset");
-
-        private sealed class SilentImpactView : IImpactEffectView
-        {
-            public void Emit(ImpactSurface surface, Vector3 position, Vector3 direction, float size) { }
-        }
-
-        private sealed class VisualHealth : IHealthModelObserver, IShieldTarget
-        {
-            public event Action OnDestroy { add { } remove { } }
-            public event Action OnValueChanged { add { } remove { } }
-            public ShipClass ShipClass => ShipClass.Capital;
-            public IReadOnlyList<IReadOnlyHardPointModel> HardPointModels => Array.Empty<HardPointModel>();
-            public float Hull => 100f;
-            public float HullPercentage => 1f;
-            public float Shields => HasShields ? 100f : 0f;
-            public float ShieldPercentage => HasShields ? 1f : 0f;
-            public bool IsDestroyed { get; set; }
-            public bool IsLostShieldGenerator => false;
-            public bool HasUnits => true;
-            public bool HasLiveHardPoints => true;
-            public bool HasShields { get; set; }
-            public PlayerId Owner => default;
-            public IHardPointModel[] GetShipUnits(HardPointType type) => Array.Empty<IHardPointModel>();
-            public Vector3 GetImpactPosition(Vector3 origin, Vector3 target, DamageType type) =>
-                HasShields ? new Vector3(0f, 0f, Mathf.Max(origin.z, 40f)) : target;
-            public bool ShowShieldImpact(Vector3 position, float damage) => true;
-        }
-
         [TestCase(WeaponFamily.Laser)]
         [TestCase(WeaponFamily.Ion)]
         [TestCase(WeaponFamily.Turbolaser)]
         [TestCase(WeaponFamily.FighterLaser)]
         [TestCase(WeaponFamily.FighterIon)]
-        public void Caliber_ChangesRenderedLengthOnly_AndPreservesColor(WeaponFamily family)
+        public void Caliber_ChangesBoltLengthOnly_AndPreservesColor(WeaponFamily family)
         {
             var weapons = AssetDatabase.LoadAssetAtPath<WeaponsData>(
                 "Assets/Settings/Data/Models/Weapon/WeaponsData.asset");
-            var rule = weapons.GetFamily(family);
-            GameObject bolt = Object.Instantiate(rule.ShotPrefab.gameObject);
-            GameObject muzzle = new GameObject("Test muzzle");
-            GameObject target = new GameObject("Test target");
-            GameObject cameraObject = new GameObject("Test camera", typeof(UnityEngine.Camera));
-            Mesh mesh = new Mesh();
-            BoltFlightBatch flights = new BoltFlightBatch();
-            try
+            WeaponFamilyRule rule = weapons.GetFamily(family);
+            var prefab = (BoltShot)rule.ShotPrefab;
+            var sizes = new Dictionary<WeaponCaliber, Vector3>();
+            foreach (WeaponCaliber caliber in new[] { WeaponCaliber.Light, WeaponCaliber.Medium, WeaponCaliber.Heavy })
             {
-                target.transform.position = Vector3.forward * 100f;
-                cameraObject.transform.position = Vector3.right * 20f;
-                cameraObject.transform.LookAt(Vector3.zero);
-                var camera = cameraObject.GetComponent<UnityEngine.Camera>();
-                camera.enabled = false;
-                float width = 0f;
-                float lightLength = 0f;
-                foreach (WeaponCaliber caliber in new[] { WeaponCaliber.Light, WeaponCaliber.Medium, WeaponCaliber.Heavy })
-                {
-                    Object.DestroyImmediate(bolt);
-                    bolt = Object.Instantiate(rule.ShotPrefab.gameObject);
-                    var profile = WeaponProfileFactory.Create(new WeaponDefinition(), rule,
-                        weapons.GetCaliber(caliber), weapons.GetMount(WeaponMount.Single));
-                    var particles = Fire(bolt, muzzle.transform, target.transform, profile, flights);
-                    particles.GetComponent<ParticleSystemRenderer>().BakeMesh(mesh, camera, ParticleSystemBakeMeshOptions.BakeRotationAndScale);
-                    mesh.RecalculateBounds();
-                    Assert.That(mesh.vertexCount, Is.GreaterThan(0));
-                    Assert.That(particles.main.startColor.color, Is.EqualTo(rule.Color));
-                    if (caliber == WeaponCaliber.Light)
-                    {
-                        width = mesh.bounds.size.y;
-                        lightLength = mesh.bounds.size.z;
-                        Assert.That(width, Is.GreaterThan(0f));
-                        Assert.That(lightLength, Is.GreaterThan(0f));
-                    }
-                    else
-                    {
-                        Assert.That(mesh.bounds.size.y, Is.EqualTo(width).Within(0.001f));
-                        float ratio = caliber == WeaponCaliber.Medium ? 1f / 0.6f : 1.6f / 0.6f;
-                        Assert.That(mesh.bounds.size.z, Is.EqualTo(lightLength * ratio).Within(0.001f));
-                    }
-                    bolt.GetComponent<BoltShot>().ResetForPool();
-                }
-                float expectedWidth = family == WeaponFamily.Turbolaser ? 3f :
-                    family == WeaponFamily.FighterLaser || family == WeaponFamily.FighterIon ? 0.6f : 1.05f;
-                Assert.That(width, Is.EqualTo(expectedWidth).Within(0.001f));
-                Assert.That(lightLength, Is.EqualTo(rule.Size.y * 0.3f * 3f * 2f).Within(0.001f));
+                WeaponProfile profile = WeaponProfileFactory.Create(new WeaponDefinition(), rule,
+                    weapons.GetCaliber(caliber), weapons.GetMount(WeaponMount.Single));
+                BoltTestRig.Launch(_flights, prefab, profile, _muzzle, _target, _health, _impacts);
+                _flights.Advance(Time.time, 0f);
+                var particles = new ParticleSystem.Particle[1];
+                BoltTestRig.Particles(BoltTestRig.Layer(_flights, prefab)).GetParticles(particles, 1);
+                Assert.That(particles[0].startColor, Is.EqualTo((Color32)rule.Color));
+                sizes[caliber] = particles[0].startSize3D;
+                _flights.Clear();
             }
-            finally
-            {
-                flights.Dispose();
-                Object.DestroyImmediate(bolt);
-                Object.DestroyImmediate(muzzle);
-                Object.DestroyImmediate(target);
-                Object.DestroyImmediate(cameraObject);
-                Object.DestroyImmediate(mesh);
-            }
+
+            Assert.That(sizes[WeaponCaliber.Light].x, Is.GreaterThan(0f));
+            Assert.That(sizes[WeaponCaliber.Light].y, Is.GreaterThan(0f));
+            Assert.That(sizes[WeaponCaliber.Medium].x, Is.EqualTo(sizes[WeaponCaliber.Light].x).Within(0.001f));
+            Assert.That(sizes[WeaponCaliber.Heavy].x, Is.EqualTo(sizes[WeaponCaliber.Light].x).Within(0.001f));
+            Assert.That(sizes[WeaponCaliber.Medium].y, Is.GreaterThan(sizes[WeaponCaliber.Light].y));
+            Assert.That(sizes[WeaponCaliber.Heavy].y, Is.GreaterThan(sizes[WeaponCaliber.Medium].y));
+            // Light bolts are 0.3 of the family length; caliber never changes width.
+            Vector3 light = sizes[WeaponCaliber.Light];
+            Assert.That(light.x, Is.EqualTo(rule.Size.x * prefab.SizeScale).Within(0.001f));
+            Assert.That(light.y, Is.EqualTo(rule.Size.y * 0.3f * prefab.SizeScale).Within(0.001f));
         }
 
-        private static ParticleSystem Fire(GameObject root, Transform muzzle, Transform target, WeaponProfile profile,
-            BoltFlightBatch flights)
+        private GameObject Create(string name)
         {
-            BoltShot shot = root.GetComponent<BoltShot>();
-            ParticleSystem particles = (ParticleSystem)typeof(BoltShot)
-                .GetField("vfx", BindingFlags.Instance | BindingFlags.NonPublic).GetValue(shot);
-            particles.useAutoRandomSeed = false;
-            particles.randomSeed = 12345;
-            shot.Fire(muzzle, target, target, Vector3.zero, profile, flights);
-            return particles;
+            GameObject instance = new GameObject(name);
+            _objects.Add(instance);
+            return instance;
         }
+
+        private BoltFlight Flight(BoltShot prefab) => BoltTestRig.Layer(_flights, prefab).Flights[0];
     }
 }

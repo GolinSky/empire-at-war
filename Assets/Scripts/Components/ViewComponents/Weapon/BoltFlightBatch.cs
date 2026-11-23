@@ -1,119 +1,142 @@
-using System;
 using System.Collections.Generic;
+using EmpireAtWar.Components.AttackComponent;
+using EmpireAtWar.Components.Weapon;
+using EmpireAtWar.Models.Health;
 using EmpireAtWar.Services.Timing;
-using EmpireAtWar.Utils;
-using Unity.Collections;
 using Unity.Jobs;
 using UnityEngine;
-using UnityEngine.Jobs;
-using VContainer;
 using EmpireAtWar.Lifecycle;
 
 namespace EmpireAtWar.ViewComponents.Weapon
 {
     /// <summary>
-    /// Flies every bolt in one pass instead of one Update per bolt. Tracking and landing run on the main thread,
-    /// since impact points and impact effects need managed state; one Burst job then places all flying bolts.
+    /// Flies and draws every bolt of the battle with no object per bolt. Each <see cref="BoltShot"/> prefab gets one
+    /// <see cref="BoltLayer"/>: a shared copy of its particle system that shows all its bolts, so bolts never run out.
+    /// Tracking and landing run in Tick on the main thread, since impacts need managed state. PostTick (after every
+    /// Update, so bolts fired this frame are included) runs one Burst job per layer and hands the particles to Unity
+    /// before it simulates and bounds particle systems for rendering.
     /// </summary>
-    [LifecycleOrder(LateTick = LifecycleOrders.BOLT_POSE_LATE_TICK,
-        Dispose = LifecycleOrders.BOLT_FLIGHT_DISPOSE)]
-    public sealed class BoltFlightBatch : ITickable, ILateTickable, IOrderedDisposable
+    [LifecycleOrder(Dispose = LifecycleOrders.BOLT_FLIGHT_DISPOSE)]
+    public sealed class BoltFlightBatch : ITickable, IPostTickable, IOrderedDisposable
     {
-        private const int INITIAL_CAPACITY = 256;
+        private readonly Dictionary<BoltShot, BoltLayer> _layers = new Dictionary<BoltShot, BoltLayer>();
+        private readonly List<BoltLayer> _layerList = new List<BoltLayer>();
+        private readonly Stack<BoltFlight> _free = new Stack<BoltFlight>();
+        private Transform _root;
 
-        private readonly List<BoltShot> _bolts = new List<BoltShot>();
-        // Index = bolt in _bolts.
-        private TransformAccessArray _transforms;
-        private NativeArray<BoltPose> _poses;
-        private JobHandle _placement;
-        private bool _hasPendingPlacement;
-
-        public int Count => _bolts.Count;
-
-        public void Add(BoltShot bolt)
+        public int Count
         {
-            CompletePlacement();
-            if (!_transforms.isCreated) _transforms = new TransformAccessArray(INITIAL_CAPACITY);
-            _bolts.Add(bolt);
-            _transforms.Add(bolt.transform);
-            bolt.IsInFlightBatch = true;
+            get
+            {
+                int count = 0;
+                foreach (BoltLayer layer in _layerList) count += layer.Flights.Count;
+                return count;
+            }
         }
 
-        public void Tick() => ScheduleAdvance(Time.time, Time.deltaTime);
+        /// <summary>Builds the shared drawing for a bolt prefab ahead of its first shot (loading, unit spawn).</summary>
+        public void Prepare(BoltShot prefab) => GetLayer(prefab);
 
-        public void LateTick() => CompletePlacement();
+        /// <returns>Seconds until the bolt lands.</returns>
+        public float Launch(BoltShot prefab, WeaponProfile profile, Transform muzzle, Transform target,
+            Transform targetPivot, Vector3 aimOffset, IHealthModelObserver targetHealth, ImpactEffectPresenter impacts,
+            float impactDamage, float impactSize, bool isHit, IncomingMissile missile, float lateSeconds)
+        {
+            BoltLayer layer = GetLayer(prefab);
+            BoltFlight flight = _free.Count > 0 ? _free.Pop() : new BoltFlight();
+            Vector3 muzzlePosition = muzzle.position;
+            float remaining = flight.Launch(prefab, profile, muzzlePosition, target, targetPivot, aimOffset,
+                targetHealth, impacts, impactDamage, impactSize, isHit, missile, lateSeconds);
+            layer.PlayFlash(muzzle, flight.Pose.Start + flight.Pose.Path, profile.Color, profile.Size.x);
+            layer.Flights.Add(flight);
+            return remaining;
+        }
 
+        private BoltLayer GetLayer(BoltShot prefab)
+        {
+            if (_layers.TryGetValue(prefab, out BoltLayer layer)) return layer;
+            if (_root == null) _root = new GameObject(nameof(BoltFlightBatch)).transform;
+            layer = new BoltLayer(prefab, _root);
+            _layers.Add(prefab, layer);
+            _layerList.Add(layer);
+            return layer;
+        }
+
+        public void Tick()
+        {
+            AdvanceFlights(Time.time, Time.deltaTime);
+            // Shots that fired without a muzzle flash grow the flash stock by one per frame.
+            foreach (BoltLayer layer in _layerList)
+                if (layer.GrowFlashes()) break;
+        }
+
+        public void PostTick() => DrawParticles();
+
+        /// <summary>Flies every bolt to <paramref name="now"/> and draws the result, as one frame does.</summary>
         public void Advance(float now, float deltaTime)
         {
-            ScheduleAdvance(now, deltaTime);
-            CompletePlacement();
+            AdvanceFlights(now, deltaTime);
+            DrawParticles();
         }
 
-        internal void ScheduleAdvance(float now, float deltaTime)
+        internal void AdvanceFlights(float now, float deltaTime)
         {
-            CompletePlacement();
 #if UNITY_EDITOR || DEVELOPMENT_BUILD
             using (BattleProfilerMarkers.ProjectileTurretUpdate.Auto())
-            {
-#endif
-            if (_bolts.Count == 0) return;
-#if UNITY_EDITOR || DEVELOPMENT_BUILD
             using (BattleProfilerMarkers.ProjectileTrack.Auto())
 #endif
             {
-                for (int i = _bolts.Count - 1; i >= 0; i--)
+                foreach (BoltLayer layer in _layerList)
                 {
-                    BoltShot bolt = _bolts[i];
-                    // Landed, returned to its pool or destroyed with the scene: it leaves the batch.
-                    if (bolt != null && bolt.Advance(now, deltaTime)) continue;
-                    if (bolt != null) bolt.IsInFlightBatch = false;
-                    int last = _bolts.Count - 1;
-                    _bolts[i] = _bolts[last];
-                    _bolts.RemoveAt(last);
-                    _transforms.RemoveAtSwapBack(i);
+                    List<BoltFlight> flights = layer.Flights;
+                    for (int i = flights.Count - 1; i >= 0; i--)
+                    {
+                        BoltFlight flight = flights[i];
+                        if (flight.Advance(now, deltaTime)) continue;
+                        int last = flights.Count - 1;
+                        flights[i] = flights[last];
+                        flights.RemoveAt(last);
+                        _free.Push(flight);
+                    }
+                    layer.TickFlashes();
                 }
             }
+        }
 
-            if (_bolts.Count == 0) return;
+        /// <summary>Writes every flying bolt into its layer's particles; one Burst job per layer.</summary>
+        internal void DrawParticles()
+        {
 #if UNITY_EDITOR || DEVELOPMENT_BUILD
             using (BattleProfilerMarkers.ProjectileMove.Auto())
 #endif
             {
-                NativeArrayBuffer.EnsureCapacity(ref _poses, _bolts.Count);
-                for (int i = 0; i < _bolts.Count; i++) _poses[i] = _bolts[i].Pose;
-                _placement = new BoltPlacementJob { Poses = _poses }.Schedule(_transforms);
-                _hasPendingPlacement = true;
+                JobHandle placement = default;
+                foreach (BoltLayer layer in _layerList)
+                    placement = JobHandle.CombineDependencies(placement, layer.ScheduleParticles());
+                placement.Complete();
+                foreach (BoltLayer layer in _layerList) layer.ApplyParticles();
             }
-#if UNITY_EDITOR || DEVELOPMENT_BUILD
-            }
-#endif
-        }
-
-        internal void CompletePlacement()
-        {
-            if (!_hasPendingPlacement) return;
-#if UNITY_EDITOR || DEVELOPMENT_BUILD
-            using (BattleProfilerMarkers.ProjectileMove.Auto())
-#endif
-                _placement.Complete();
-            _hasPendingPlacement = false;
         }
 
         public void Dispose()
         {
-            CompletePlacement();
-            if (_transforms.isCreated) _transforms.Dispose();
-            if (_poses.IsCreated) _poses.Dispose();
+            foreach (BoltLayer layer in _layerList) layer.Dispose();
+            _layers.Clear();
+            _layerList.Clear();
+            // Scene teardown may already have destroyed the root with the scene.
+            if (_root == null) return;
+            if (Application.isPlaying) Object.Destroy(_root.gameObject);
+            else Object.DestroyImmediate(_root.gameObject);
         }
 
+        /// <summary>Drops every bolt in flight without impacts; layers stay ready for the next battle.</summary>
         public void Clear()
         {
-            CompletePlacement();
-            foreach (BoltShot bolt in _bolts)
-                if (bolt != null) bolt.IsInFlightBatch = false;
-            _bolts.Clear();
-            if (_transforms.isCreated)
-                while (_transforms.length > 0) _transforms.RemoveAtSwapBack(_transforms.length - 1);
+            foreach (BoltLayer layer in _layerList)
+            {
+                foreach (BoltFlight flight in layer.Flights) _free.Push(flight);
+                layer.Clear();
+            }
         }
     }
 }

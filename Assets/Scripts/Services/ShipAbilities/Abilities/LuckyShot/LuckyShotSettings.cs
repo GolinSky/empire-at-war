@@ -39,7 +39,7 @@ namespace EmpireAtWar.Services.ShipAbilities.Abilities
         }
 
         public override IShipAbility CreateAbility(ShipAbilityDependencies dependencies) =>
-            new LuckyShotAbility(this, dependencies.Entities, dependencies.BoltFlights,
-                dependencies.ImpactPresenter, dependencies.Vision, dependencies.Session);
+            new LuckyShotAbility(this, dependencies.Entities, dependencies.ImpactPresenter, dependencies.Vision,
+                dependencies.Session);
     }
 }

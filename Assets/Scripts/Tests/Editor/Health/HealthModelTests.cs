@@ -54,7 +54,7 @@ namespace EmpireAtWar.Tests.Editor
                 HealthComponent health = mountObject.AddComponent<HealthComponent>();
                 typeof(HealthComponent).GetMethod("Construct", PRIVATE_INSTANCE)
                     .Invoke(health, new object[] { model, modifiers, mountObject.transform, TestPlayers.Human });
-                IncomingMissile missile = missiles.Launch(health, Vector3.forward, 100f);
+                IncomingMissile missile = missiles.Launch(health, Vector3.forward, Vector3.forward, 100f);
                 MissileInterceptorHardPoint mount = mountObject.AddComponent<MissileInterceptorHardPoint>();
                 LineRenderer laser = mountObject.AddComponent<LineRenderer>();
                 laser.positionCount = 2;
@@ -96,7 +96,7 @@ namespace EmpireAtWar.Tests.Editor
                 HealthComponent health = mountObject.AddComponent<HealthComponent>();
                 typeof(HealthComponent).GetMethod("Construct", PRIVATE_INSTANCE)
                     .Invoke(health, new object[] { model, modifiers, mountObject.transform, TestPlayers.Human });
-                IncomingMissile first = missiles.Launch(health, Vector3.forward, 100f);
+                IncomingMissile first = missiles.Launch(health, Vector3.forward, Vector3.forward, 100f);
                 MissileInterceptorHardPoint mount = mountObject.AddComponent<MissileInterceptorHardPoint>();
                 LineRenderer laser = mountObject.AddComponent<LineRenderer>();
                 laser.positionCount = 2;
@@ -119,7 +119,7 @@ namespace EmpireAtWar.Tests.Editor
                 update.Invoke(mount, null);
                 Assert.That(first.IsIntercepted, Is.False, "A mount must not roll twice on the same missile.");
 
-                IncomingMissile second = missiles.Launch(health, Vector3.forward, 100f);
+                IncomingMissile second = missiles.Launch(health, Vector3.forward, Vector3.forward, 100f);
                 update.Invoke(mount, null);
                 Assert.That(second.IsIntercepted, Is.True, "A new missile still gets its own roll.");
             }

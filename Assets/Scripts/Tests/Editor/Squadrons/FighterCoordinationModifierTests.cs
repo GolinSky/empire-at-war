@@ -33,7 +33,7 @@ namespace EmpireAtWar.Tests.Editor
                 var entities = new EntityLocator();
                 entities.AddEntity(squadron);
                 IStoppableShipAbility ability = (IStoppableShipAbility)new FighterCoordinationSettings().CreateAbility(
-                    new ShipAbilityDependencies(entities, TestPlayers.CreateTeamGame(), null, null, null, null,
+                    new ShipAbilityDependencies(entities, TestPlayers.CreateTeamGame(), null, null, null,
                         new VisionService(TestPlayers.CreateTeamGame(), fogEnabled: false),
                         new OfflineSession(TestPlayers.Human), null, null, null));
 
@@ -59,7 +59,7 @@ namespace EmpireAtWar.Tests.Editor
             {
                 var entities = new EntityLocator();
                 entities.AddEntity(ally);
-                var dependencies = new ShipAbilityDependencies(entities, TestPlayers.CreateTeamGame(), null, null, null, null,
+                var dependencies = new ShipAbilityDependencies(entities, TestPlayers.CreateTeamGame(), null, null, null,
                     new VisionService(TestPlayers.CreateTeamGame(), fogEnabled: false),
                     new OfflineSession(TestPlayers.Human), null, null, null);
                 var settings = new FighterCoordinationSettings();

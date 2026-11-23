@@ -1,17 +1,19 @@
 namespace EmpireAtWar.Components.Weapon
 {
+    /// <summary>
+    /// One mount's salvo lifecycle: Ready → Emitting → Ready. Shots in flight never hold the mount; only the reload does.
+    /// </summary>
     public sealed class AttackSequenceState
     {
-        private int _activeEffects;
         private int _generation;
 
         public Status CurrentStatus { get; private set; } = Status.Ready;
         public bool IsBusy => CurrentStatus == Status.Emitting;
         public int Generation => _generation;
 
-        public bool TryStart(int shotsPerSalvo, int inFlightCap, out int generation)
+        public bool TryStart(out int generation)
         {
-            if (CurrentStatus != Status.Ready || _activeEffects + shotsPerSalvo > inFlightCap)
+            if (CurrentStatus != Status.Ready)
             {
                 AttackSequenceDiagnostics.RecordRejectedBusyStart();
                 generation = _generation;
@@ -27,18 +29,6 @@ namespace EmpireAtWar.Components.Weapon
 
         public bool IsEmitting(int generation) =>
             generation == _generation && CurrentStatus == Status.Emitting;
-
-        public bool RegisterEffect(int generation)
-        {
-            if (!IsEmitting(generation))
-            {
-                AttackSequenceDiagnostics.RecordUnmatchedCompletion();
-                return false;
-            }
-
-            _activeEffects++;
-            return true;
-        }
 
         public void RecordShotEmission(int generation)
         {
@@ -59,19 +49,6 @@ namespace EmpireAtWar.Components.Weapon
             AttackSequenceDiagnostics.RecordSequenceFinished();
         }
 
-        public bool TryCompleteEffect(int generation)
-        {
-            // Pool lease validation owns callback lifetime; older salvos can still be in flight.
-            if (_activeEffects == 0)
-            {
-                AttackSequenceDiagnostics.RecordUnmatchedCompletion();
-                return false;
-            }
-
-            _activeEffects--;
-            return true;
-        }
-
         public void Release()
         {
             if (CurrentStatus == Status.Released)
@@ -85,7 +62,6 @@ namespace EmpireAtWar.Components.Weapon
             }
 
             _generation++;
-            _activeEffects = 0;
             CurrentStatus = Status.Released;
         }
 

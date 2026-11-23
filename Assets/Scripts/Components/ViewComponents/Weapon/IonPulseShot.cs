@@ -39,8 +39,11 @@ namespace EmpireAtWar.ViewComponents.Weapon
             pulse.SetPosition(1, _origin);
             pulse.enabled = true;
             impactFlash.Stop(true, ParticleSystemStopBehavior.StopEmittingAndClear);
-            return flightDuration;
+            return GetFlightSeconds(_origin, _aimPoint, profile, LateSeconds);
         }
+
+        public override float GetFlightSeconds(Vector3 muzzle, Vector3 aimPoint, WeaponProfile profile,
+            float lateSeconds) => flightDuration;
 
         protected override void Update()
         {

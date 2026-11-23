@@ -207,6 +207,18 @@ tags:
 - Motion = exact projected anchor + decaying springs (cell 0.1 s, placement 0.12 s); camera motion never goes through a spring. No write thresholds or dead zones.
 - Placement queries a uniform screen grid of obstacles (ship hulls via `IBattleHull`, ship markers, placed grids); squadron and ship markers use separate nested canvases. Budgets still unmeasured.
 
+### Firing independent of visuals · 2026-11-23
+
+- Supersedes the admission, in-flight-cap and lease-completion rules in the two sections below. Cadence rules (`EarliestFrame`, retiming) still hold.
+- Rule: weapon logic never waits on a visual. Only `AttackSequenceState` (Ready → Emitting) and the reload timer gate a salvo; there is no in-flight cap or salvo reservation.
+- `WeaponHardPoint.EmitScheduledShot`: aim point (shield-resolved on hit) → `ShotPrefab.GetFlightSeconds(muzzle, aim, profile, late)` → `IncomingMissile` (interceptable hits) → `IShotVisuals.Play` (best effort) → damage at that duration. Drawn visuals use the same flight rule.
+- `IncomingMissile.Position` lerps origin → aim point until a drawn visual reports its arc, so point defense works on undrawn missiles.
+- Pooled visuals (missiles, beams, ion pulses): `ShotEffectCache.TryAcquire` leases an idle visual or skips the draw → `SkippedVisuals`, `PendingDemand` (cap 256). `ShotPoolPrewarmer.Tick` budget: 2 ms while demand is pending, else 0.5 ms; never instantiate while firing.
+- Bolts (`BoltShot` prefabs: Projectile, Dual, Quad, Octuple, Dby827, HypervelocitySlug) are authoring-only. `BoltFlightBatch` holds pure-C# `BoltFlight`s; one `BoltLayer` per prefab draws all its bolts as particles of one shared copy of the prefab's particle system (barrel offsets read from the authored burst). No per-bolt GameObject, so bolts never run out.
+- Particles are written by `BoltParticleJob` in `PostTick` (after every Update, before Unity simulates/bounds particle systems). Muzzle flashes come from a per-layer pool (16 prewarmed, ≤1 created/frame on demand, cap 256); no idle flash → no flash.
+- Network CSV pool columns: `pool_pending_visuals`, `pool_skipped_visuals_s`, `pool_starving`; the wait columns are gone.
+- Source + Unity compile and an edit-mode layer build (6 prefabs, barrels 1/2/4/8) were verified. Tests were not run; visual parity and FPS need user acceptance in-game.
+
 ### Weapon cadence and pooled overlap · 2026-11-14
 
 - `AttackSequenceState` becomes ready after the last emitted shot; leased effects from older salvos still count until completion. Admit a full salvo only when `activeEffects + ShotsPerSalvo ≤ inFlightCap`; pool release suppresses old callbacks and resets sequence counting.

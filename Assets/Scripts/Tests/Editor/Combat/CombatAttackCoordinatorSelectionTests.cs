@@ -38,12 +38,12 @@ namespace EmpireAtWar.Tests.Weapon
                     hardPoint.SetData(new WeaponProfile(WeaponType.Laser, "Test", WeaponFamily.Laser,
                         DamageType.Laser, 1f, 1, 0f, 1f, 100f, false, false, shot, 100f, Color.white,
                         Vector3.one, false, false, default, default, 0f),
-                        100f, 0f, weapon, coordinator, new CombatModifiers(), null, null, null, null);
+                        100f, 0f, weapon, coordinator, new CombatModifiers(), null, null, null);
                     typeof(WeaponComponent).GetField("hardPoints", BindingFlags.Instance | BindingFlags.NonPublic)
                         .SetValue(weapon, new List<WeaponHardPoint> { hardPoint });
                     typeof(WeaponComponent).GetMethod("Construct", BindingFlags.Instance | BindingFlags.NonPublic)
-                        .Invoke(weapon, new object[] { null, null, coordinator, new CombatModifiers(), null, null, null, null, null, null, null, null, null, null, weapon.transform,
-                        new OfflineSession(PlayerId.None), null, ShipClass.Capital, 1L });
+                        .Invoke(weapon, new object[] { null, null, coordinator, new CombatModifiers(), null, null, null, null, null, null, null, null, null, weapon.transform,
+                        new OfflineSession(PlayerId.None), ShipClass.Capital, 1L });
                     coordinator.Register(weapon);
                     coordinator.QueueTargetSelection(weapon, hardPoint);
                 }
@@ -86,8 +86,8 @@ namespace EmpireAtWar.Tests.Weapon
                 typeof(WeaponComponent).GetField("hardPoints", BindingFlags.Instance | BindingFlags.NonPublic)
                     .SetValue(weapon, new List<WeaponHardPoint> { hardPoint });
                 typeof(WeaponComponent).GetMethod("Construct", BindingFlags.Instance | BindingFlags.NonPublic)
-                    .Invoke(weapon, new object[] { null, null, coordinator, new CombatModifiers(), null, null, null, null, null, null, null, null, null, null, weapon.transform,
-                        new OfflineSession(PlayerId.None), null, ShipClass.Capital, 1L });
+                    .Invoke(weapon, new object[] { null, null, coordinator, new CombatModifiers(), null, null, null, null, null, null, null, null, null, weapon.transform,
+                        new OfflineSession(PlayerId.None), ShipClass.Capital, 1L });
                 coordinator.Register(weapon);
                 coordinator.QueueTargetSelection(weapon, hardPoint);
                 weapon.Release();

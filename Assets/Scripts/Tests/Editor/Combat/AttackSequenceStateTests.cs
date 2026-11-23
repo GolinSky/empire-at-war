@@ -11,33 +11,33 @@ namespace EmpireAtWar.Tests.Editor
         {
             AttackSequenceState sequence = new AttackSequenceState();
             sequence.Release();
-            Assert.That(sequence.TryStart(1, 2, out _), Is.False);
+            Assert.That(sequence.TryStart(out _), Is.False);
 
             sequence.Restart();
 
             Assert.That(sequence.CurrentStatus, Is.EqualTo(AttackSequenceState.Status.Ready));
-            Assert.That(sequence.TryStart(1, 2, out _), Is.True);
+            Assert.That(sequence.TryStart(out _), Is.True);
         }
 
         [Test]
-        public void Restart_KeepsEffectsOfReleasedSequenceUnmatched()
+        public void Restart_KeepsReleasedGenerationStopped()
         {
             AttackSequenceState sequence = new AttackSequenceState();
-            sequence.TryStart(1, 2, out int oldGeneration);
-            sequence.RegisterEffect(oldGeneration);
+            sequence.TryStart(out int oldGeneration);
             sequence.Release();
 
             sequence.Restart();
 
-            Assert.That(sequence.TryCompleteEffect(oldGeneration), Is.False);
             Assert.That(sequence.IsEmitting(oldGeneration), Is.False);
+            Assert.That(sequence.TryStart(out int newGeneration), Is.True);
+            Assert.That(newGeneration, Is.Not.EqualTo(oldGeneration));
         }
 
         [Test]
         public void Restart_DoesNotInterruptRunningSequence()
         {
             AttackSequenceState sequence = new AttackSequenceState();
-            sequence.TryStart(1, 2, out int generation);
+            sequence.TryStart(out int generation);
 
             sequence.Restart();
 
@@ -45,61 +45,34 @@ namespace EmpireAtWar.Tests.Editor
         }
 
         [Test]
-        public void StopEmitting_AllowsOverlapAndOlderEffectsReleaseCapacity()
+        public void TryStart_RefusesOnlyWhileEmitting()
         {
             AttackSequenceState sequence = new AttackSequenceState();
-            int unmatchedBefore = AttackSequenceDiagnostics.UnmatchedCompletions;
-            Assert.That(sequence.TryStart(2, 4, out int first), Is.True);
-            sequence.RegisterEffect(first);
-            sequence.RegisterEffect(first);
+            Assert.That(sequence.TryStart(out int first), Is.True);
+            Assert.That(sequence.TryStart(out _), Is.False, "A salvo in progress holds the mount.");
             sequence.StopEmitting(first);
             Assert.That(sequence.IsBusy, Is.False);
-            Assert.That(sequence.TryStart(2, 4, out int second), Is.True);
-            sequence.RegisterEffect(second);
-            sequence.RegisterEffect(second);
-            sequence.StopEmitting(second);
 
-            Assert.That(sequence.TryStart(2, 4, out _), Is.False);
-            Assert.That(sequence.TryCompleteEffect(first), Is.True);
-            Assert.That(sequence.TryStart(2, 4, out _), Is.False);
-            Assert.That(sequence.TryCompleteEffect(first), Is.True);
-            Assert.That(sequence.TryStart(2, 4, out int third), Is.True);
-            Assert.That(sequence.TryCompleteEffect(second), Is.True);
-            Assert.That(sequence.IsEmitting(third), Is.True);
-            Assert.That(AttackSequenceDiagnostics.UnmatchedCompletions, Is.EqualTo(unmatchedBefore));
+            // Shots of earlier salvos may still be flying; they never hold the mount.
+            for (int salvo = 0; salvo < 5; salvo++)
+            {
+                Assert.That(sequence.TryStart(out int next), Is.True);
+                sequence.StopEmitting(next);
+            }
             sequence.Release();
         }
 
         [Test]
-        public void ReleaseRestart_ResetsCapacityAcrossOverlappingSalvos()
+        public void StopEmitting_IgnoresStaleGeneration()
         {
             AttackSequenceState sequence = new AttackSequenceState();
-            sequence.TryStart(1, 2, out int first);
-            sequence.RegisterEffect(first);
+            sequence.TryStart(out int first);
             sequence.StopEmitting(first);
-            sequence.TryStart(1, 2, out int second);
-            sequence.RegisterEffect(second);
-            sequence.Release();
-            sequence.Restart();
+            sequence.TryStart(out int second);
 
-            Assert.That(sequence.TryStart(2, 2, out int restarted), Is.True);
-            Assert.That(sequence.RegisterEffect(first), Is.False);
-            Assert.That(sequence.IsEmitting(restarted), Is.True);
-            sequence.Release();
-        }
+            sequence.StopEmitting(first);
 
-        [Test]
-        public void CapGate_ReservesSpaceForWholeSalvo()
-        {
-            AttackSequenceState sequence = new AttackSequenceState();
-            Assert.That(sequence.TryStart(3, 2, out _), Is.False);
-            Assert.That(sequence.TryStart(2, 2, out int generation), Is.True);
-            Assert.That(sequence.TryStart(1, 2, out _), Is.False);
-            sequence.RegisterEffect(generation);
-            sequence.StopEmitting(generation);
-            Assert.That(sequence.TryStart(2, 2, out _), Is.False);
-            sequence.TryCompleteEffect(generation);
-            Assert.That(sequence.TryStart(2, 2, out _), Is.True);
+            Assert.That(sequence.IsEmitting(second), Is.True);
             sequence.Release();
         }
     }

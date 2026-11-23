@@ -20,18 +20,14 @@ namespace EmpireAtWar.ViewComponents.Health
         [SerializeField] private FloatRange yAxisRange = new FloatRange();
         [SerializeField] private bool mainBattery;
         private readonly AttackSequenceState _sequence = new AttackSequenceState();
-        private ShotEffectPool _effectPool;
+        private IShotVisuals _visuals;
         private WeaponProfile _profile;
         private CombatAttackCoordinator _attackCoordinator;
         private CombatModifiers _modifiers;
         private ImpactEffectPresenter _impactPresenter;
-        private BoltFlightBatch _boltFlights;
         private ShotPoolPrewarmer _poolPrewarmer;
         private IncomingMissileRegistry _missiles;
         private bool _strikecraftOwner;
-        private int _inFlightCap;
-        private int _timingInFlightCap;
-        private int _requestedInFlightCap;
         private float _reloadMultiplier = 1f;
         private float _intervalMultiplier = 1f;
 
@@ -74,8 +70,6 @@ namespace EmpireAtWar.ViewComponents.Health
 
         internal bool RefreshTiming()
         {
-            if (_modifiers.IsIonDisabled || _modifiers.IsCloaked || !_modifiers.CanFireWeapon(mainBattery))
-                CancelPendingAdmission();
             var timing = GetTimingMultipliers();
             PendingShotIntervalRatio = timing.interval / _intervalMultiplier;
             bool changed = timing.reload != _reloadMultiplier || timing.interval != _intervalMultiplier;
@@ -83,17 +77,7 @@ namespace EmpireAtWar.ViewComponents.Health
             _reloadTimer.AppendTime(_reloadTimer.TimeLeft * (timing.reload / _reloadMultiplier - 1f));
             _reloadMultiplier = timing.reload;
             _intervalMultiplier = timing.interval;
-            _timingInFlightCap = ExpectedShotsInFlight(_profile, timing.reload, timing.interval);
-            ReserveShotsInFlight();
             return true;
-        }
-
-        private void ReserveShotsInFlight()
-        {
-            if (_effectPool == null) return;
-            if (_timingInFlightCap <= _requestedInFlightCap) return;
-            _poolPrewarmer.IncreaseCapacity(_effectPool, _timingInFlightCap);
-            _requestedInFlightCap = _timingInFlightCap;
         }
 
         internal bool CanEngage(ShipClass targetClass) =>
@@ -121,11 +105,10 @@ namespace EmpireAtWar.ViewComponents.Health
 
         public void SetData(WeaponProfile profile, float maxAttackDistance, float missSpread,
             IWeaponPresenter weaponPresenter, CombatAttackCoordinator attackCoordinator, CombatModifiers modifiers,
-            ImpactEffectPresenter impactPresenter, BoltFlightBatch boltFlights, IncomingMissileRegistry missiles,
-            ShotPoolPrewarmer poolPrewarmer, int inFlightCap = 0, bool strikecraftOwner = false)
+            ImpactEffectPresenter impactPresenter, IncomingMissileRegistry missiles, ShotPoolPrewarmer poolPrewarmer,
+            bool strikecraftOwner = false)
         {
             _strikecraftOwner = strikecraftOwner;
-            _boltFlights = boltFlights;
             _poolPrewarmer = poolPrewarmer;
             _profile = profile;
             _maxAttackDistance = maxAttackDistance;
@@ -134,10 +117,7 @@ namespace EmpireAtWar.ViewComponents.Health
             WeaponPresenter = weaponPresenter;
             _attackCoordinator = attackCoordinator;
             _modifiers = modifiers;
-            _inFlightCap = inFlightCap > 0 ? inFlightCap : ExpectedShotsInFlight(profile);
-            _requestedInFlightCap = _inFlightCap;
             (_reloadMultiplier, _intervalMultiplier) = GetTimingMultipliers();
-            _timingInFlightCap = ExpectedShotsInFlight(profile, _reloadMultiplier, _intervalMultiplier);
             PendingShotIntervalRatio = 1f;
             _impactPresenter = impactPresenter;
             _missiles = missiles;
@@ -179,9 +159,9 @@ namespace EmpireAtWar.ViewComponents.Health
             if (_attackCoordinator != null)
                 _attackCoordinator.CancelSequence(this, _sequence.Generation);
 
-            if (_effectPool != null)
+            if (_visuals != null)
             {
-                _effectPool.Release();
+                _visuals.Release();
             }
 
             _sequence.Release();
@@ -190,7 +170,7 @@ namespace EmpireAtWar.ViewComponents.Health
         /// <summary>Lets a released hardpoint fire again when its squadron is reused.</summary>
         public virtual void RestartAttackSequence()
         {
-            _effectPool = null;
+            _visuals = null;
             _sequence.Restart();
             _reloadTimer.ForceFinish();
             _turnEndTime = float.NegativeInfinity;
@@ -206,18 +186,8 @@ namespace EmpireAtWar.ViewComponents.Health
         {
             generation = _sequence.Generation;
             if (_sequence.CurrentStatus != AttackSequenceState.Status.Ready) return false;
-            if (_modifiers.IsIonDisabled || _modifiers.IsCloaked || !_modifiers.CanFireWeapon(mainBattery))
-            {
-                CancelPendingAdmission();
-                return false;
-            }
-            int inFlightCap = Mathf.Max(_inFlightCap, _timingInFlightCap);
-            if (!GetPool().TryReserveSalvo(_profile.ShotsPerSalvo, inFlightCap)) return false;
-            if (!_sequence.TryStart(_profile.ShotsPerSalvo, inFlightCap, out generation))
-            {
-                _effectPool.CancelReservation();
-                return false;
-            }
+            if (_modifiers.IsIonDisabled || _modifiers.IsCloaked || !_modifiers.CanFireWeapon(mainBattery)) return false;
+            if (!_sequence.TryStart(out generation)) return false;
             _reloadTimer.ChangeDelay(_profile.Reload * GetTimingMultipliers().reload).StartTimer();
             return true;
         }
@@ -227,63 +197,53 @@ namespace EmpireAtWar.ViewComponents.Health
 
         internal void StopEmitting(int generation)
         {
-            if (!_sequence.IsEmitting(generation)) return;
             _sequence.StopEmitting(generation);
-            _effectPool.CancelReservation();
         }
 
-        internal void CancelPendingAdmission()
-        {
-            if (!_sequence.IsBusy && _effectPool != null) _effectPool.CancelReservation();
-        }
-
+        /// <summary>
+        /// Fires one shot. Combat times it from the shot prefab's flight rule and lands it on schedule; drawing it is
+        /// best effort, so a shot with no free visual still fires, hits and can be intercepted.
+        /// </summary>
         internal void EmitScheduledShot(AttackData attackData, IHardPointModel hardPointModel, int sequenceGeneration,
             float lateSeconds = 0f)
         {
-            bool isHit = _hits.Roll(WeaponPresenter.GetHitChance(attackData, _profile), Random.value);
-            Vector3 aimOffset = isHit ? Vector3.zero : Random.onUnitSphere * _missSpread;
-            float duration = GetPool().Play(attackData, hardPointModel, aimOffset, sequenceGeneration, isHit,
-                out ShotEffect effect, lateSeconds);
-
-            if (!_sequence.RegisterEffect(sequenceGeneration))
+            if (!_sequence.IsEmitting(sequenceGeneration))
             {
+                AttackSequenceDiagnostics.RecordUnmatchedCompletion();
                 return;
             }
+
+            bool isHit = _hits.Roll(WeaponPresenter.GetHitChance(attackData, _profile), Random.value);
+            Vector3 aimOffset = isHit ? Vector3.zero : Random.onUnitSphere * _missSpread;
+            Vector3 muzzle = transform.position;
+            Vector3 aimPoint = hardPointModel.Transform.position + aimOffset;
+            if (isHit)
+                aimPoint = _impactPresenter.GetImpactPosition(attackData.TargetHealth, _profile.DamageType, muzzle, aimPoint);
+            ShotEffect shot = _profile.ShotPrefab;
+            float duration = shot.GetFlightSeconds(muzzle, aimPoint, _profile, lateSeconds);
+            IncomingMissile missile = isHit && _profile.Interceptable
+                ? _missiles.Launch(attackData.TargetHealth, muzzle, aimPoint, duration)
+                : null;
+            GetVisuals().Play(attackData, hardPointModel, aimOffset, isHit, missile, lateSeconds);
 
             _sequence.RecordShotEmission(sequenceGeneration);
             if (AttackEmitted != null) AttackEmitted.Invoke(attackData);
             if (ShotEmitted != null) ShotEmitted.Invoke(_profile, transform, DelayBetweenShots);
             if (isHit)
-            {
-                IncomingMissile missile = null;
-                if (_profile.Interceptable)
-                {
-                    missile = _missiles.Launch(attackData.TargetHealth, transform.position, duration);
-                    effect.TrackInterception(missile);
-                }
-
-                WeaponPresenter.ApplyDamage(attackData, hardPointModel, _profile, duration, effect.DamageDuration, missile);
-            }
+                WeaponPresenter.ApplyDamage(attackData, hardPointModel, _profile, duration, shot.DamageDuration, missile);
         }
 
-        private void OnTurretEffectCompleted(int sequenceGeneration)
+        internal void PrepareEffects() => GetVisuals();
+
+        private IShotVisuals GetVisuals()
         {
-            _sequence.TryCompleteEffect(sequenceGeneration);
+            if (_visuals != null) return _visuals;
+            _visuals = _poolPrewarmer.CreateVisuals(_profile, transform, _impactPresenter,
+                ExpectedShotsInFlight(_profile, _reloadMultiplier, _intervalMultiplier), _strikecraftOwner);
+            return _visuals;
         }
 
-        internal void PrepareEffects() => GetPool();
-
-        private ShotEffectPool GetPool()
-        {
-            if (_effectPool != null) return _effectPool;
-            _effectPool = _poolPrewarmer.CreatePool(_profile, transform, OnTurretEffectCompleted,
-                _impactPresenter, _boltFlights, _inFlightCap, _strikecraftOwner);
-            _requestedInFlightCap = _inFlightCap;
-            ReserveShotsInFlight();
-            return _effectPool;
-        }
-
-        /// <summary>One salvo plus every further salvo fired while the slowest shot is still flying.</summary>
+        /// <summary>One salvo plus every further salvo fired while the slowest shot is still flying; sizes visual stock.</summary>
         internal static int ExpectedShotsInFlight(WeaponProfile profile) => ExpectedShotsInFlight(profile, 1f, 1f);
 
         internal static int ExpectedShotsInFlight(WeaponProfile profile, float reloadMultiplier, float intervalMultiplier)
@@ -304,7 +264,6 @@ namespace EmpireAtWar.ViewComponents.Health
             Destroyed = healthPercentage <= 0f;
             if (Destroyed)
             {
-                CancelPendingAdmission();
                 if (_attackCoordinator != null)
                     _attackCoordinator.CancelSequence(this, _sequence.Generation);
                 _sequence.StopEmitting(_sequence.Generation);

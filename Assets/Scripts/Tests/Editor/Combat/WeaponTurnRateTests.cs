@@ -54,7 +54,7 @@ namespace EmpireAtWar.Tests.Weapon
                 SetBound(arc, "Min", -90f);
                 SetBound(arc, "Max", 90f);
                 weapon.SetData(arc);
-                weapon.SetData(Profile(mount, 45f), 100f, 0f, null, null, new CombatModifiers(), null, null, null, null);
+                weapon.SetData(Profile(mount, 45f), 100f, 0f, null, null, new CombatModifiers(), null, null, null);
 
                 float firstTurn = weapon.TurnTowards(new Vector3(10f, 0f, 0f));
 
@@ -89,7 +89,7 @@ namespace EmpireAtWar.Tests.Weapon
                 SetBound(arc, "Min", minYaw);
                 SetBound(arc, "Max", maxYaw);
                 weapon.SetData(arc);
-                weapon.SetData(Profile(mount, TURN_RATE), 100f, 0f, null, null, new CombatModifiers(), null, null, null, null);
+                weapon.SetData(Profile(mount, TURN_RATE), 100f, 0f, null, null, new CombatModifiers(), null, null, null);
                 Vector3 firstTarget = ship.transform.TransformPoint(Quaternion.Euler(0f, firstYaw, 0f) * Vector3.forward * 10f);
                 Vector3 secondTarget = ship.transform.TransformPoint(Quaternion.Euler(0f, secondYaw, 0f) * Vector3.forward * 10f);
                 weapon.TurnTowards(firstTarget);
@@ -112,7 +112,7 @@ namespace EmpireAtWar.Tests.Weapon
             try
             {
                 WeaponHardPoint weapon = mount.AddComponent<WeaponHardPoint>();
-                weapon.SetData(Profile(mount, 0f), 100f, 0f, null, null, new CombatModifiers(), null, null, null, null);
+                weapon.SetData(Profile(mount, 0f), 100f, 0f, null, null, new CombatModifiers(), null, null, null);
 
                 Assert.That(weapon.TurnTowards(new Vector3(-10f, 0f, 0f)), Is.Zero);
             }
@@ -133,7 +133,7 @@ namespace EmpireAtWar.Tests.Weapon
                 SetBound(arc, "Min", -90f);
                 SetBound(arc, "Max", 90f);
                 weapon.SetData(arc);
-                weapon.SetData(Profile(mount, 45f), 100f, 0f, null, null, new CombatModifiers(), null, null, null, null);
+                weapon.SetData(Profile(mount, 45f), 100f, 0f, null, null, new CombatModifiers(), null, null, null);
                 ITimer timer = (ITimer)typeof(WeaponHardPoint).GetField("_reloadTimer",
                     BindingFlags.Instance | BindingFlags.NonPublic).GetValue(weapon);
                 timer.ChangeDelay(100f).StartTimer();
@@ -158,7 +158,7 @@ namespace EmpireAtWar.Tests.Weapon
             {
                 WeaponHardPoint weapon = mount.AddComponent<WeaponHardPoint>();
                 CombatModifiers modifiers = new CombatModifiers();
-                weapon.SetData(Profile(mount, 0f), 100f, 0f, null, null, modifiers, null, null, null, null);
+                weapon.SetData(Profile(mount, 0f), 100f, 0f, null, null, modifiers, null, null, null);
                 Assert.That(weapon.MaxAttackDistance, Is.EqualTo(100f));
                 modifiers.SetFleetCommand(true);
                 Assert.That(weapon.MaxAttackDistance, Is.EqualTo(150f));

@@ -15,7 +15,7 @@ namespace EmpireAtWar.Services.Networking.Diagnostics
 {
     /// <summary>
     /// Online battles, host and client: once per second collects FPS, shots, Mirror traffic per message type,
-    /// projectile pool admission, connection links and the role's numbers; appends rows to
+    /// projectile pool visuals, connection links and the role's numbers; appends rows to
     /// persistentDataPath/BattleTelemetry/&lt;scene&gt;_&lt;time&gt;_&lt;role&gt;_{net,pools,links}.csv
     /// (<see cref="NetworkStatsFiles"/>) and publishes overlay lines. Runs whether or not the overlay is visible.
     /// </summary>
@@ -136,7 +136,7 @@ namespace EmpireAtWar.Services.Networking.Diagnostics
             _row.End();
             double battleSeconds = Time.unscaledTime - _startTime;
             _files.WriteStats(battleSeconds, _row);
-            foreach (ShotPoolSample pool in _poolStats.WaitingPools) _files.WritePool(battleSeconds, pool);
+            foreach (ShotPoolSample pool in _poolStats.StarvingPools) _files.WritePool(battleSeconds, pool);
             foreach (NetworkLinkSample link in _links)
             {
                 _details.Add(SteamLinkAggregate.FormatLink(link));

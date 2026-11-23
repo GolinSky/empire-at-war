@@ -17,7 +17,6 @@ namespace EmpireAtWar.Services.ShipAbilities.Abilities
     {
         private readonly LuckyShotSettings _settings;
         private readonly IEntityLocator _entities;
-        private readonly BoltFlightBatch _boltFlights;
         private readonly ImpactEffectPresenter _impacts;
         private readonly IVisionService _vision;
         private readonly IMatchSession _session;
@@ -46,12 +45,11 @@ namespace EmpireAtWar.Services.ShipAbilities.Abilities
             }
         }
 
-        public LuckyShotAbility(LuckyShotSettings settings, IEntityLocator entities, BoltFlightBatch boltFlights,
-            ImpactEffectPresenter impacts, IVisionService vision, IMatchSession session)
+        public LuckyShotAbility(LuckyShotSettings settings, IEntityLocator entities, ImpactEffectPresenter impacts,
+            IVisionService vision, IMatchSession session)
         {
             _settings = settings;
             _entities = entities;
-            _boltFlights = boltFlights;
             _impacts = impacts;
             _vision = vision;
             _session = session;
@@ -94,8 +92,7 @@ namespace EmpireAtWar.Services.ShipAbilities.Abilities
                 _shot = Object.Instantiate(_settings.Projectile.ShotPrefab);
                 _shot.PrepareImpact(_impacts, _target.HealthModel, DamageType.PrecisionStrike,
                     _settings.Damage, _settings.Projectile.Size.x, true);
-                _remaining = _shot.Fire(_leader.Transform, target, target, Vector3.zero,
-                    _settings.Projectile, _boltFlights);
+                _remaining = _shot.Fire(_leader.Transform, target, target, Vector3.zero, _settings.Projectile);
                 _launched = true;
                 if (_session.IsAuthority)
                     _vision.Reveal(_target.Owner, _caster.Entity.Id, _vision.FiringRevealSeconds);

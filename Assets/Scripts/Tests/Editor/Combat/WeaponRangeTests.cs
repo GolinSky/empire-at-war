@@ -176,7 +176,7 @@ namespace EmpireAtWar.Tests.Editor
             WeaponProfile profile = new WeaponProfile(default, family.ToString(), family, damageType, 1f,
                 1, 0f, 1f, range, false, false, shot, 100f, Color.white, Vector3.one,
                 false, false, default, default, 0f);
-            mount.SetData(profile, range, 0f, null, null, modifiers, null, null, null, null);
+            mount.SetData(profile, range, 0f, null, null, modifiers, null, null, null);
             return mount;
         }
     }

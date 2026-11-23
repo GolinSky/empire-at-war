@@ -32,8 +32,8 @@ namespace EmpireAtWar.ViewComponents.Weapon
             _lastAimPoint = ResolveAimPoint(_start, target.position + aimOffset);
             _arcNormal = Random.onUnitSphere;
             _travelTime = GetTravelTime(_start, _lastAimPoint, profile.ProjectileSpeed);
-            float late = Mathf.Min(LateSeconds, _travelTime);
-            _startTime = Time.time - late;
+            float flightSeconds = GetFlightSeconds(_start, _lastAimPoint, profile, LateSeconds);
+            _startTime = Time.time - (_travelTime - flightSeconds);
             _isFlying = true;
             transform.position = _start;
 
@@ -45,7 +45,7 @@ namespace EmpireAtWar.ViewComponents.Weapon
             trailMain.startSize = profile.Size.x * 0.6f;
             head.Play(true);
             trail.Play(true);
-            return _travelTime - late;
+            return flightSeconds;
         }
 
         // The trail outlives the flight; an intercepted missile also plays its explosion.

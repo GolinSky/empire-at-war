@@ -16,7 +16,6 @@ namespace EmpireAtWar.Services.ShipAbilities
         public IPlayerRelations Relations { get; }
         public ImpactEffectPresenter ImpactPresenter { get; }
         public WeaponsData WeaponsData { get; }
-        public BoltFlightBatch BoltFlights { get; }
         public HarmonicBombService HarmonicBombs { get; }
         public IVisionService Vision { get; }
         public IMatchSession Session { get; }
@@ -26,15 +25,13 @@ namespace EmpireAtWar.Services.ShipAbilities
         public IReinforcementZoneSource Zones { get; }
 
         public ShipAbilityDependencies(IEntityLocator entities, IPlayerRelations relations,
-            ImpactEffectPresenter impactPresenter, WeaponsData weaponsData, BoltFlightBatch boltFlights,
-            HarmonicBombService harmonicBombs, IVisionService vision, IMatchSession session,
+            ImpactEffectPresenter impactPresenter, WeaponsData weaponsData, HarmonicBombService harmonicBombs, IVisionService vision, IMatchSession session,
             IBattleAreaWriter battleAreas, GravityWellEffects gravityWells, IReinforcementZoneSource zones)
         {
             Entities = entities;
             Relations = relations;
             ImpactPresenter = impactPresenter;
             WeaponsData = weaponsData;
-            BoltFlights = boltFlights;
             HarmonicBombs = harmonicBombs;
             Vision = vision;
             Session = session;

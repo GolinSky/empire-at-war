@@ -13,9 +13,9 @@ namespace EmpireAtWar.Components.Weapon
         private readonly List<IncomingMissile> _missiles = new List<IncomingMissile>();
         public void Clear() => _missiles.Clear();
 
-        public IncomingMissile Launch(IHealthModelObserver targetHealth, Vector3 origin, float travelTime)
+        public IncomingMissile Launch(IHealthModelObserver targetHealth, Vector3 origin, Vector3 aimPoint, float travelTime)
         {
-            IncomingMissile missile = new IncomingMissile(targetHealth, origin, Time.time, travelTime);
+            IncomingMissile missile = new IncomingMissile(targetHealth, origin, aimPoint, Time.time, travelTime);
             _missiles.Add(missile);
             return missile;
         }

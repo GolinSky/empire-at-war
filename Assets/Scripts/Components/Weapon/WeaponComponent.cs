@@ -15,8 +15,6 @@ using EmpireAtWar.Mvc;
 using EmpireAtWar.ViewComponents.Health;
 using EmpireAtWar.ViewComponents.Weapon;
 using EmpireAtWar.Services.Timing;
-using EmpireAtWar.Services.ShipAbilities;
-using EmpireAtWar.Services.ShipAbilities.Abilities;
 using EmpireAtWar.Services.Vision;
 using EmpireAtWar.Models.Selection;
 using EmpireAtWar.Utils;
@@ -69,10 +67,7 @@ namespace EmpireAtWar.Components.Weapon
         private IncomingMissileRegistry _missiles;
         private DebugRangeCircleFactory _rangeCircleFactory;
         private ImpactEffectPresenter _impactPresenter;
-        private BoltFlightBatch _boltFlights;
         private ShotPoolPrewarmer _poolPrewarmer;
-        private ShipAbilityCatalog _abilityCatalog;
-        private bool _hasWeaponPower;
         private ArtilleryCapability _artillery;
         private List<AttackData> _attackDataList = new List<AttackData>();
         // Candidates in priority order: a hardpoint slot in the coordinator's target table and an index into
@@ -146,16 +141,14 @@ namespace EmpireAtWar.Components.Weapon
             CombatAttackCoordinator attackCoordinator, CombatModifiers modifiers, WeaponsData weaponsData,
             DamageMatrixData damageMatrix, DebugRangeCircleFactory rangeCircleFactory, IncomingMissileRegistry missiles,
             IVisionService visionService, IPlayerRoster playerRoster, PlayerId owner,
-            ImpactEffectPresenter impactPresenter, BoltFlightBatch boltFlights, ShotPoolPrewarmer poolPrewarmer,
+            ImpactEffectPresenter impactPresenter, ShotPoolPrewarmer poolPrewarmer,
             [Key(EntityBindType.ViewTransform)] Transform viewTransform, IMatchSession session,
-            ShipAbilityCatalog abilityCatalog, ShipClass attackerClass, long entityId)
+            ShipClass attackerClass, long entityId)
         {
             _entityId = entityId;
-            _abilityCatalog = abilityCatalog;
             _attackerClass = attackerClass;
             _followsHost = !session.IsAuthority;
             _impactPresenter = impactPresenter;
-            _boltFlights = boltFlights;
             _poolPrewarmer = poolPrewarmer;
             _viewTransform = viewTransform;
             SetModel(model);
@@ -179,8 +172,6 @@ namespace EmpireAtWar.Components.Weapon
 
         public void ConfigureUnitFaction(FactionType faction) => _unitFaction = faction;
 
-        public void ConfigureWeaponPower(bool enabled) => _hasWeaponPower = enabled;
-
         public void ConfigureArtillery(bool enabled) =>
             _artillery = enabled ? new ArtilleryCapability() : null;
 
@@ -198,14 +189,6 @@ namespace EmpireAtWar.Components.Weapon
             FactionType boltFaction = _unitFaction ?? faction;
             _telemetryName = _viewTransform.name.Replace("(Clone)", string.Empty);
             List<WeaponProfile> profiles = new List<WeaponProfile>(hardPoints.Count);
-            float reloadMultiplier = 1f;
-            float intervalMultiplier = 1f;
-            if (_hasWeaponPower)
-            {
-                var settings = (BoostWeaponPowerSettings)_abilityCatalog.Get(ShipAbilityId.BoostWeaponPower).Settings;
-                reloadMultiplier = settings.StatModifier.FireDelayMultiplier;
-                intervalMultiplier = settings.ShotIntervalMultiplier;
-            }
             for (int i = 0; i < hardPoints.Count; i++)
             {
                 WeaponHardPoint hardPoint = hardPoints[i];
@@ -215,8 +198,7 @@ namespace EmpireAtWar.Components.Weapon
                 profiles.Add(profile);
                 _facingWeights[i] = Mathf.Max(1, Mathf.RoundToInt(profile.DamagePerSecond * FACING_WEIGHT_SCALE));
                 hardPoint.SetData(profile, profile.Range, _damageMatrix.MissSpread,
-                    this, _attackCoordinator, _modifiers, _impactPresenter, _boltFlights, _missiles, _poolPrewarmer,
-                    WeaponHardPoint.ExpectedShotsInFlight(profile, reloadMultiplier, intervalMultiplier),
+                    this, _attackCoordinator, _modifiers, _impactPresenter, _missiles, _poolPrewarmer,
                     _attackerClass.IsStrikecraft());
                 hardPoint.PrepareEffects();
                 hardPoint.ShotEmitted += OnShotEmitted;
@@ -686,7 +668,6 @@ namespace EmpireAtWar.Components.Weapon
             for (int i = 0; i < hardPoints.Count; i++)
             {
                 WeaponHardPoint weapon = hardPoints[i];
-                if (weapon.IsDestroyed) weapon.CancelPendingAdmission();
                 if (!weapon.IsDestroyed && !weapon.IsBusy && weapon.CanStartSalvo && Time.time >= _retryAt[i])
                     _attackCoordinator.QueueTargetSelection(this, weapon);
             }
@@ -806,11 +787,7 @@ namespace EmpireAtWar.Components.Weapon
         internal void CommitTargetSelection(WeaponHardPoint weapon, int targetVersion,
             WeaponTargetSelectionJob.Result result, AttackData group, IHardPointModel unit, int generation)
         {
-            if (_isReleased || weapon.IsDestroyed || weapon.IsBusy || _modifiers.IsCloaked)
-            {
-                weapon.CancelPendingAdmission();
-                return;
-            }
+            if (_isReleased || weapon.IsDestroyed || weapon.IsBusy || _modifiers.IsCloaked) return;
 
             // Ship positions in the selection batch may be a few batches old, so the pick is re-aimed live.
             if (_targetVersion != targetVersion || result.CandidateIndex >= 0 &&
@@ -865,16 +842,13 @@ namespace EmpireAtWar.Components.Weapon
                 if (weapon.IsDestroyed || _modifiers.IsCloaked || !CanAcquire(salvo.Group) ||
                     !CanEngage(weapon, salvo.Group.TargetClass) || salvo.Unit.Generation != salvo.TargetGeneration ||
                     !IsTargetValid(salvo.Group, salvo.Unit) || !HasFiringSolution(weapon, salvo.Unit.Position))
-                {
-                    weapon.CancelPendingAdmission();
                     continue;
-                }
                 AttackOrDelay(weapon, salvo.Group, salvo.Unit);
             }
         }
 
-        // A mount that could not start (no free shot storage) stays queued for storage but waits before selecting
-        // a target again, instead of re-running target selection every frame.
+        // A mount that could not start waits before selecting a target again, instead of re-running target selection
+        // every frame.
         private void AttackOrDelay(WeaponHardPoint weapon, AttackData group, IHardPointModel unit)
         {
             weapon.Attack(group, unit);
@@ -894,17 +868,12 @@ namespace EmpireAtWar.Components.Weapon
 
         internal void CommitTargetSelectionSerial(WeaponHardPoint weapon)
         {
-            if (_isReleased || weapon.IsDestroyed || weapon.IsBusy || _modifiers.IsCloaked)
-            {
-                weapon.CancelPendingAdmission();
-                return;
-            }
+            if (_isReleased || weapon.IsDestroyed || weapon.IsBusy || _modifiers.IsCloaked) return;
             if (!TryFireWeapon(weapon)) DelayRetry(weapon);
         }
 
         private void DelayRetry(WeaponHardPoint weapon)
         {
-            weapon.CancelPendingAdmission();
             _retryAt[hardPoints.IndexOf(weapon)] =
                 Time.time + UnityEngine.Random.Range(MIN_RETRY_INTERVAL, MAX_RETRY_INTERVAL);
         }

@@ -62,4 +62,4 @@ acceptance: pending-user
 - Verification: Unity recompile clean, no Console errors. Tests not run. Post-fix scan cost not measured live.
 - Not scan-throttled: stopped ship (holding in range or stalled out of range) still scans every frame; cheaper per scan only.
 - Review notes on shipped probe: no stall-rejection memory across detachments (fresh builder per capture group) and no recovery-relay objective in `CanDetachForCapture`; both minor behaviour differences from the old full `Build`.
-- Open: admission-latency policy (6.24 s boosted wait) — user decision. Squadron respawn duplicate-ID error (133/134) uninvestigated; suspect pooled-squadron ID vs restored-save ID collision.
+- Open: admission-latency policy (6.24 s boosted wait) — user decision. Resolved 2026-11-23: admission removed; firing no longer waits on visuals → [[Rules/BATTLE_PERFORMANCE_GUIDELINES#Firing independent of visuals · 2026-11-23]]. Squadron respawn duplicate-ID error (133/134) uninvestigated; suspect pooled-squadron ID vs restored-save ID collision.

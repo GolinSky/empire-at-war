@@ -8,14 +8,14 @@ namespace EmpireAtWar.Services.Networking.Diagnostics
 {
     /// <summary>
     /// The three CSV files of one online battle, sharing one name stem:
-    /// &lt;stem&gt;_net.csv (1 row/s), &lt;stem&gt;_pools.csv (1 row/s per pool with a salvo waiting) and
+    /// &lt;stem&gt;_net.csv (1 row/s), &lt;stem&gt;_pools.csv (1 row/s per pool short of shot visuals) and
     /// &lt;stem&gt;_links.csv (1 row/s per connection). A stem already taken gets _2, _3… so two game instances on
     /// one PC never share a file. A file error is logged once and stops the CSV; the overlay keeps running.
     /// </summary>
     public sealed class NetworkStatsFiles : IDisposable
     {
         private const string POOLS_HEADER =
-            "time_s,pool,group,waiting,in_use,total,created_at_runtime,oldest_wait_ms,max_wait_ms";
+            "time_s,pool,group,pending,skipped,in_use,total,created_at_runtime";
         private const string LINKS_HEADER =
             "time_s,link,rtt_ms,steam_ping_ms,steam_quality_local,steam_quality_remote,steam_out_Bps,steam_in_Bps," +
             "steam_send_rate_Bps,steam_pending_reliable_B,steam_pending_unreliable_B,steam_unacked_reliable_B,steam_queue_ms";
@@ -79,9 +79,9 @@ namespace EmpireAtWar.Services.Networking.Diagnostics
         public void WritePool(double battleSeconds, in ShotPoolSample pool)
         {
             if (!IsWriting) return;
-            Write(_pools, string.Format(CultureInfo.InvariantCulture, "{0:0.0},{1},{2},{3},{4},{5},{6},{7:0},{8:0}",
-                battleSeconds, Sanitize(pool.Prefab), pool.IsFighters ? "fighters" : "ships", pool.Waiting, pool.InUse,
-                pool.Total, pool.RuntimeCreated, pool.OldestWaitSeconds * 1000f, pool.WindowMaxWaitSeconds * 1000f));
+            Write(_pools, string.Format(CultureInfo.InvariantCulture, "{0:0.0},{1},{2},{3},{4},{5},{6},{7}",
+                battleSeconds, Sanitize(pool.Prefab), pool.IsFighters ? "fighters" : "ships", pool.Pending,
+                pool.Skipped, pool.InUse, pool.Total, pool.RuntimeCreated));
         }
 
         public void WriteLink(double battleSeconds, in NetworkLinkSample link)

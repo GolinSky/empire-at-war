@@ -27,7 +27,7 @@ namespace EmpireAtWar.Tests.Weapon
             _shot = _mount.AddComponent<BoltShot>();
             _profile = Profile(3, 0.2f, 4f, 450f, 172.9f);
             _modifiers = new CombatModifiers();
-            _weapon.SetData(_profile, _profile.Range, 0f, null, null, _modifiers, null, null, null, null);
+            _weapon.SetData(_profile, _profile.Range, 0f, null, null, _modifiers, null, null, null);
             _reload = (ITimer)typeof(WeaponHardPoint).GetField("_reloadTimer",
                 BindingFlags.Instance | BindingFlags.NonPublic).GetValue(_weapon);
         }
@@ -121,7 +121,7 @@ namespace EmpireAtWar.Tests.Weapon
         [TestCase(3, 0.2f, 4f, 450f, 172.9f, 6, 24)]
         [TestCase(4, 0.25f, 10f, 550f, 45.5f, 12, 56)]
         [TestCase(3, 2f, 1f, 100f, 100f, 6, 12)]
-        public void InFlightCap_UsesSlowerOfReloadAndBurst(int shots, float interval, float reload,
+        public void VisualStock_UsesSlowerOfReloadAndBurst(int shots, float interval, float reload,
             float range, float speed, int baseline, int boosted)
         {
             WeaponProfile profile = Profile(shots, interval, reload, range, speed);

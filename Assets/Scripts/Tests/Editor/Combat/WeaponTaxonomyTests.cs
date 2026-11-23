@@ -317,31 +317,30 @@ namespace EmpireAtWar.Tests.Editor
         {
             WeaponProfile profile = Build(Weapons, mount);
             Assert.That(profile.ShotPrefab.name, Is.EqualTo(prefabName));
-            var shot = UnityEngine.Object.Instantiate(profile.ShotPrefab);
+            var bolt = (BoltShot)profile.ShotPrefab;
             var muzzle = new GameObject("Test muzzle");
             var target = new GameObject("Test target");
             var flights = new BoltFlightBatch();
             try
             {
                 target.transform.position = Vector3.forward * 133f;
-                var serialized = new SerializedObject(shot);
-                var particles = (ParticleSystem)serialized.FindProperty("vfx").objectReferenceValue;
-                for (int reuse = 0; reuse < 2; reuse++)
+                var health = new EmpireAtWar.Tests.Weapon.BoltTestRig.VisualHealth();
+                var impacts = EmpireAtWar.Tests.Weapon.BoltTestRig.Impacts(new EmpireAtWar.Tests.Weapon.BoltTestRig.RecordingImpactView());
+                for (int shot = 1; shot <= 2; shot++)
                 {
-                    // Exercise the runtime setup without a damage target, then advance particle simulation.
-                    if (reuse == 0)
-                        shot.Fire(muzzle.transform, target.transform, target.transform, Vector3.zero, profile, flights);
-                    else
-                        typeof(BoltShot).GetMethod("Play",
-                            System.Reflection.BindingFlags.Instance | System.Reflection.BindingFlags.NonPublic)
-                            .Invoke(shot, new object[] { muzzle.transform, target.transform, Vector3.zero, profile });
-                    particles.Simulate(0.05f, true, false, true);
-                    var buffer = new ParticleSystem.Particle[count + 1];
-                    Assert.That(particles.GetParticles(buffer), Is.EqualTo(count));
-                    foreach (var particle in buffer.Take(count))
+                    // Each shot adds one burst of barrels to the shared layer, never more.
+                    flights.Launch(bolt, profile, muzzle.transform, target.transform, target.transform, Vector3.zero,
+                        health, impacts, 1f, 1f, false, null, 0f);
+                    flights.Advance(Time.time, 0f);
+                    ParticleSystem particles = EmpireAtWar.Tests.Weapon.BoltTestRig.Particles(
+                        EmpireAtWar.Tests.Weapon.BoltTestRig.Layer(flights, bolt));
+                    var buffer = new ParticleSystem.Particle[count * shot + 1];
+                    Assert.That(particles.GetParticles(buffer), Is.EqualTo(count * shot));
+                    var burst = buffer.Skip(count * (shot - 1)).Take(count).ToArray();
+                    foreach (var particle in burst)
                         Assert.That(Vector3.Dot(particle.velocity.normalized, Vector3.forward),
                             Is.GreaterThan(0.999f), "Stretched bolts must point along flight");
-                    var positions = buffer.Take(count).Select(particle => particle.position).ToArray();
+                    var positions = burst.Select(particle => particle.position).ToArray();
                     Assert.That(positions.Distinct().Count(), Is.EqualTo(count));
                     if (count >= 4)
                     {
@@ -350,14 +349,11 @@ namespace EmpireAtWar.Tests.Editor
                         Assert.That(positions.Max(position => position.x) - positions.Min(position => position.x),
                             Is.LessThanOrEqualTo(5.3f));
                     }
-                    particles.Simulate(0.25f, true, false, true);
-                    Assert.That(particles.particleCount, Is.EqualTo(count), "Only one burst per shot");
                 }
             }
             finally
             {
                 flights.Dispose();
-                UnityEngine.Object.DestroyImmediate(shot.gameObject);
                 UnityEngine.Object.DestroyImmediate(muzzle);
                 UnityEngine.Object.DestroyImmediate(target);
             }

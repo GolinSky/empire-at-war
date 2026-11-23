@@ -197,7 +197,7 @@ namespace EmpireAtWar.Tests.Weapon
             FighterTorpedoHardPoint mount = Track(new GameObject("Torpedo")).AddComponent<FighterTorpedoHardPoint>();
             CombatModifiers modifiers = new CombatModifiers();
             modifiers.SetCloaked(true);
-            mount.SetData(Profile(), 100f, 0f, _weapon, _coordinator, modifiers, null, null, null, null);
+            mount.SetData(Profile(), 100f, 0f, _weapon, _coordinator, modifiers, null, null, null);
             typeof(FighterTorpedoHardPoint).GetField("_attackRuns", PRIVATE_INSTANCE)
                 .SetValue(mount, new AttackRunStub());
             AttackData group = Group(1);
@@ -233,7 +233,7 @@ namespace EmpireAtWar.Tests.Weapon
         public void IonMount_DoesNotAcquireStrikecraft(DamageType damageType)
         {
             WeaponHardPoint mount = Track(new GameObject("Ion")).AddComponent<WeaponHardPoint>();
-            mount.SetData(Profile(damageType), 100f, 0f, null, null, new CombatModifiers(), null, null, null, null);
+            mount.SetData(Profile(damageType), 100f, 0f, null, null, new CombatModifiers(), null, null, null);
             Assert.That(mount.CanEngage(ShipClass.Fighter), Is.False);
             Assert.That(mount.CanEngage(ShipClass.Bomber), Is.False);
             Assert.That(mount.CanEngage(ShipClass.Interceptor), Is.False);
@@ -289,7 +289,7 @@ namespace EmpireAtWar.Tests.Weapon
                 WeaponHardPoint mount = Track(new GameObject("Mount")).AddComponent<WeaponHardPoint>();
                 SetYawArc(mount, -180f, 180f);
                 mount.SetData(Profile(preference: preference), 100f, 0f, _weapon, _coordinator, modifiers,
-                    null, null, null, null);
+                    null, null, null);
                 object timer = typeof(WeaponHardPoint).GetField("_reloadTimer", PRIVATE_INSTANCE).GetValue(mount);
                 timer.GetType().GetField("_timer", PRIVATE_INSTANCE).SetValue(timer, float.NegativeInfinity);
                 mounts.Add(mount);
@@ -330,7 +330,7 @@ namespace EmpireAtWar.Tests.Weapon
             WeaponHardPoint heavy = ConfigureMounts(1, TargetPreference.Ships)[0];
             WeaponHardPoint laser = Track(new GameObject("Laser")).AddComponent<WeaponHardPoint>();
             laser.SetData(Profile(preference: TargetPreference.Strikecraft), 100f, 0f, _weapon, _coordinator,
-                (CombatModifiers)Field("_modifiers"), null, null, null, null);
+                (CombatModifiers)Field("_modifiers"), null, null, null);
             AttackData ship = Group(1);
             AttackData squadron = Group(1, ShipClass.Bomber);
             squadron.Units[0].Transform.position = Vector3.forward * 10f;

@@ -207,12 +207,23 @@ namespace EmpireAtWar.Services.SuperWeapons
             SuperWeaponProfile profile = salvo.Profile;
             SfxProfile sound = _sfxData.GetWeapon(profile.Weapon.WeaponType);
             _audioService.PlayOneShot(_weaponSource, sound.GetClip(), sound.Volume);
-            ShotEffect shot = Object.Instantiate(profile.Weapon.ShotPrefab);
-            shot.PrepareImpact(_impactPresenter, salvo.Target.HealthModel, profile.Weapon.DamageType,
-                profile.GetDamage(salvo.ResearchTier), profile.ImpactSize, true);
             Transform target = salvo.Target.GetFacade<IEntityTransformFacade>().Transform;
-            float travelTime = shot.Fire(salvo.Origin, target, target, Vector3.zero, profile.Weapon, _boltFlights);
-            shot.RetireAfterCompletion();
+            float damage = profile.GetDamage(salvo.ResearchTier);
+            float travelTime;
+            // Bolt prefabs (Hypervelocity slug) fly in the shared bolt batch; other shots are one-off objects.
+            if (profile.Weapon.ShotPrefab is BoltShot bolt)
+            {
+                travelTime = _boltFlights.Launch(bolt, profile.Weapon, salvo.Origin, target, target, Vector3.zero,
+                    salvo.Target.HealthModel, _impactPresenter, damage, profile.ImpactSize, true, null, 0f);
+            }
+            else
+            {
+                ShotEffect shot = Object.Instantiate(profile.Weapon.ShotPrefab);
+                shot.PrepareImpact(_impactPresenter, salvo.Target.HealthModel, profile.Weapon.DamageType, damage,
+                    profile.ImpactSize, true);
+                travelTime = shot.Fire(salvo.Origin, target, target, Vector3.zero, profile.Weapon);
+                shot.RetireAfterCompletion();
+            }
             salvo.ImpactTimes.Add(travelTime);
             salvo.ShotsFired++;
         }

@@ -53,7 +53,7 @@ namespace EmpireAtWar.Tests.Editor
         public void ActiveSecondarySalvo_StopsAndCannotRestartDuringAbility()
         {
             GameObject obj = new GameObject("SecondaryWeapon");
-            var prewarmer = new ShotPoolPrewarmer();
+            var prewarmer = new ShotPoolPrewarmer(null);
             try
             {
                 WeaponHardPoint weapon = obj.AddComponent<WeaponHardPoint>();
@@ -79,7 +79,7 @@ namespace EmpireAtWar.Tests.Editor
         public void MainBattery_BoostsShotIntervalAndRemainsBlockedByIonDisable()
         {
             GameObject obj = new GameObject("MainBattery");
-            var prewarmer = new ShotPoolPrewarmer();
+            var prewarmer = new ShotPoolPrewarmer(null);
             try
             {
                 WeaponHardPoint weapon = obj.AddComponent<WeaponHardPoint>();
@@ -107,9 +107,8 @@ namespace EmpireAtWar.Tests.Editor
             var profile = new WeaponProfile(WeaponType.Laser, "Test", WeaponFamily.Laser, DamageType.Laser,
                 1f, 1, 1f, 1f, 100f, false, false, weapons.GetFamily(WeaponFamily.Laser).ShotPrefab,
                 100f, Color.white, Vector3.one, false, false, default, default, 0f);
-            weapon.SetData(profile, 100f, 0f, null, null, modifiers, null, null, null, prewarmer);
-            var pool = (ShotEffectPool)typeof(WeaponHardPoint).GetMethod("GetPool", PRIVATE_INSTANCE).Invoke(weapon, null);
-            pool.Prewarm(WeaponHardPoint.ExpectedShotsInFlight(profile));
+            // Starting a salvo needs no shot visuals; only the reload and power state gate it.
+            weapon.SetData(profile, 100f, 0f, null, null, modifiers, null, null, prewarmer);
         }
 
         private sealed class TestFacade : IShipAbilityFacade

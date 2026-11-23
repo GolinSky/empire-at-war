@@ -24,6 +24,8 @@ namespace EmpireAtWar.Components.Weapon
         public static int PoolExpansions { get; private set; }
         public static int PoolActiveHighWater { get; private set; }
         public static int OwnerlessActive { get; private set; }
+        /// <summary>Shots that fired without a visual because their pool had none idle.</summary>
+        public static int SkippedVisuals { get; private set; }
         public static long CandidateVisits { get; private set; }
         public static long TargetSnapshots { get; private set; }
         public static long TargetInvalidations { get; private set; }
@@ -196,6 +198,13 @@ namespace EmpireAtWar.Components.Weapon
         {
 #if UNITY_EDITOR || DEVELOPMENT_BUILD
             PoolRetired++;
+#endif
+        }
+
+        public static void RecordSkippedVisual()
+        {
+#if UNITY_EDITOR || DEVELOPMENT_BUILD
+            SkippedVisuals++;
 #endif
         }
 

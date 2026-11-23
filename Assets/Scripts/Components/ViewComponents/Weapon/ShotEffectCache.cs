@@ -8,109 +8,38 @@ using Object = UnityEngine.Object;
 
 namespace EmpireAtWar.ViewComponents.Weapon
 {
-    /// <summary>Battle-owned storage shared by every mount using this shot prefab.</summary>
+    /// <summary>
+    /// Battle-owned storage shared by every mount using this shot prefab. A shot that finds no idle visual is not
+    /// drawn; it counts as demand, and <see cref="ShotPoolPrewarmer"/> grows the storage for later shots.
+    /// </summary>
     public sealed class ShotEffectCache
     {
+        // Demand counted per missed shot is capped, so one burst cannot queue unbounded growth.
+        private const int MAX_PENDING_DEMAND = 256;
+
         private readonly ShotEffect _prefab;
         private readonly Stack<ShotEffect> _available = new Stack<ShotEffect>();
         private readonly HashSet<ShotEffect> _idle = new HashSet<ShotEffect>();
         private readonly HashSet<ShotEffect> _all = new HashSet<ShotEffect>();
-        private readonly LinkedList<ShotEffectPool> _waiting = new LinkedList<ShotEffectPool>();
-        private int _reservedCount;
-        private int _waitingCount;
-        private float _windowMaxAdmissionWaitSeconds;
 #if UNITY_EDITOR || DEVELOPMENT_BUILD
         private readonly ProfilerMarker _instantiateMarker;
         private readonly ProfilerMarker _prewarmMarker;
 #endif
         private bool _released;
-        private int _registeredCapacity;
+        private int _windowSkippedVisuals;
 
         public int TotalCount => _all.Count;
         public int InUseCount => _all.Count - _idle.Count;
-        public int ReservedCount => _reservedCount;
-        public int WaitingCount => _waitingCount;
-        public int RequiredCount => InUseCount + _reservedCount + _waitingCount;
-        public int RegisteredCapacity => _registeredCapacity;
+        /// <summary>Visuals still wanted by shots that fired undrawn.</summary>
+        public int PendingDemand { get; private set; }
+        public int RequiredCount => InUseCount + PendingDemand;
         public event Action<ShotEffectCache> DemandChanged;
         public string PrefabName => _prefab.name;
         public int PeakInUse { get; private set; }
         public int LoadingCreated { get; private set; }
         public int RuntimeCreated { get; private set; }
-        public int OnDemandExpansions { get; private set; }
-        public int AdmissionWaits { get; private set; }
-        public double TotalAdmissionWaitSeconds { get; private set; }
-        public float MaxAdmissionWaitSeconds { get; private set; }
-        public float OldestPendingWaitSeconds => _waiting.First == null ? 0f
-            : Mathf.Max(0f, Time.time - _waiting.First.Value.AdmissionStartedAt);
-
-        internal bool TryReserve(ShotEffectPool pool, int count)
-        {
-            if (pool.ReservedShots > 0) return pool.ReservedShots == count;
-            if (pool.AdmissionNode.List == null)
-            {
-                pool.WaitingShots = count;
-                _waitingCount += count;
-                _waiting.AddLast(pool.AdmissionNode);
-                pool.AdmissionStartedAt = Time.time;
-            }
-            else if (pool.WaitingShots != count)
-            {
-                _waitingCount += count - pool.WaitingShots;
-                pool.WaitingShots = count;
-            }
-            // Any waiter whose salvo fits is admitted; a larger salvo at the head must not block smaller ones.
-            if (_idle.Count - _reservedCount >= count)
-            {
-                _waiting.Remove(pool.AdmissionNode);
-                RecordWait(pool);
-                _waitingCount -= pool.WaitingShots;
-                pool.WaitingShots = 0;
-                pool.ReservedShots = count;
-                _reservedCount += count;
-                return true;
-            }
-            AdmissionWaits++;
-            if (DemandChanged != null) DemandChanged(this);
-            return false;
-        }
-
-        internal void CancelReservation(ShotEffectPool pool)
-        {
-            if (pool.AdmissionNode.List != null)
-            {
-                _waiting.Remove(pool.AdmissionNode);
-                RecordWait(pool);
-                _waitingCount -= pool.WaitingShots;
-                pool.WaitingShots = 0;
-            }
-            _reservedCount -= pool.ReservedShots;
-            pool.ReservedShots = 0;
-        }
-
-        private void RecordWait(ShotEffectPool pool)
-        {
-            float seconds = Mathf.Max(0f, Time.time - pool.AdmissionStartedAt);
-            TotalAdmissionWaitSeconds += seconds;
-            MaxAdmissionWaitSeconds = Mathf.Max(MaxAdmissionWaitSeconds, seconds);
-            _windowMaxAdmissionWaitSeconds = Mathf.Max(_windowMaxAdmissionWaitSeconds, seconds);
-        }
-
-        /// <summary>Longest finished admission wait since the previous call (network status window), then resets.</summary>
-        public float TakeWindowMaxAdmissionWaitSeconds()
-        {
-            float seconds = _windowMaxAdmissionWaitSeconds;
-            _windowMaxAdmissionWaitSeconds = 0f;
-            return seconds;
-        }
-
-        public int RegisterCapacity(int capacity)
-        {
-            _registeredCapacity += capacity;
-            return _registeredCapacity;
-        }
-
-        public void ReleaseCapacity(int capacity) => _registeredCapacity -= capacity;
+        /// <summary>Shots fired without a visual because every visual was in use.</summary>
+        public int SkippedVisuals { get; private set; }
 
         /// <summary>Fighters and ships use separate caches of the same prefab so neither starves the other.</summary>
         public bool IsStrikecraftGroup { get; }
@@ -125,31 +54,43 @@ namespace EmpireAtWar.ViewComponents.Weapon
 #endif
         }
 
-        internal ShotEffect Acquire(ShotEffectPool pool)
+        /// <summary>Leases an idle visual; never instantiates while firing.</summary>
+        internal bool TryAcquire(out ShotEffect effect)
         {
-            if (pool.ReservedShots == 0)
-                throw new InvalidOperationException("A projectile must belong to an admitted salvo before it is leased.");
 #if UNITY_EDITOR || DEVELOPMENT_BUILD
             using (BattleProfilerMarkers.ProjectileGetOrCreate.Auto())
             {
 #endif
             while (_available.Count > 0)
             {
-                ShotEffect effect = _available.Pop();
+                effect = _available.Pop();
                 if (!_idle.Remove(effect)) continue;
                 AttackSequenceDiagnostics.RecordPoolAvailable(-1);
                 if (!effect) continue;
                 AttackSequenceDiagnostics.RecordPoolReused();
-                pool.ReservedShots--;
-                _reservedCount--;
                 PeakInUse = Math.Max(PeakInUse, InUseCount);
                 effect.enabled = true;
-                return effect;
+                return true;
             }
-            throw new InvalidOperationException("An admitted salvo lost its reserved projectile storage.");
 #if UNITY_EDITOR || DEVELOPMENT_BUILD
             }
 #endif
+            effect = null;
+            SkippedVisuals++;
+            _windowSkippedVisuals++;
+            AttackSequenceDiagnostics.RecordSkippedVisual();
+            if (_released) return false;
+            PendingDemand = Math.Min(PendingDemand + 1, MAX_PENDING_DEMAND);
+            if (DemandChanged != null) DemandChanged(this);
+            return false;
+        }
+
+        /// <summary>Shots fired without a visual since the previous call (network status window), then resets.</summary>
+        public int TakeWindowSkippedVisuals()
+        {
+            int skipped = _windowSkippedVisuals;
+            _windowSkippedVisuals = 0;
+            return skipped;
         }
 
         public void Return(ShotEffect effect)
@@ -172,6 +113,7 @@ namespace EmpireAtWar.ViewComponents.Weapon
             using (_prewarmMarker.Auto())
 #endif
             Return(Create());
+            if (PendingDemand > 0) PendingDemand--;
             if (loading) LoadingCreated++;
             else RuntimeCreated++;
             return true;
@@ -206,6 +148,7 @@ namespace EmpireAtWar.ViewComponents.Weapon
         public void Release()
         {
             _released = true;
+            PendingDemand = 0;
             foreach (ShotEffect effect in _all)
                 if (effect) effect.RetireAfterCompletion();
         }
@@ -213,6 +156,7 @@ namespace EmpireAtWar.ViewComponents.Weapon
         public void DestroyAll()
         {
             _released = true;
+            PendingDemand = 0;
             foreach (ShotEffect effect in new List<ShotEffect>(_all))
                 if (effect) effect.CancelAndDestroy();
             _available.Clear();

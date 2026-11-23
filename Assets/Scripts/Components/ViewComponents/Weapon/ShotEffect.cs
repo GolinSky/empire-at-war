@@ -10,6 +10,7 @@ namespace EmpireAtWar.ViewComponents.Weapon
 {
     /// <summary>
     /// Visual of one shot. Subclasses only draw; <see cref="ShotEffectPool"/> reuses instances through the lease.
+    /// Bolts are the exception: <see cref="BoltShot"/> is authoring data drawn by <see cref="BoltFlightBatch"/>.
     /// </summary>
     public abstract class ShotEffect : MonoBehaviour
     {
@@ -46,8 +47,6 @@ namespace EmpireAtWar.ViewComponents.Weapon
         protected bool HasArmorImpact => _impactTarget != null &&
             _impactPresenter.ResolveSurface(_impactTarget, _impactDamageType) == ImpactSurface.Armor;
         protected bool IsImpactTargetDestroyed => _impactTarget != null && _impactTarget.IsDestroyed;
-        /// <summary>Flies bolts for the whole battle; only bolts use it.</summary>
-        protected BoltFlightBatch BoltFlights { get; private set; }
 
         public void PrepareImpact(ImpactEffectPresenter presenter, IHealthModelObserver target,
             DamageType damageType, float damage, float size, bool isHit)
@@ -94,6 +93,18 @@ namespace EmpireAtWar.ViewComponents.Weapon
             return horizontal.magnitude / speed;
         }
 
+        /// <summary>
+        /// Seconds from firing until the shot lands, read from the prefab so combat can time a shot it does not draw.
+        /// A shot fired late starts that far into its flight. Drawn shots use the same rule.
+        /// </summary>
+        public virtual float GetFlightSeconds(Vector3 muzzle, Vector3 aimPoint, WeaponProfile profile, float lateSeconds)
+        {
+            float travelTime = GetTravelTime(muzzle, aimPoint, profile.ProjectileSpeed);
+            return travelTime - Mathf.Min(lateSeconds, travelTime);
+        }
+
+        internal MuzzleFlashView MuzzleFlash => muzzleFlash;
+
         /// <summary>Stops the visual early if missile defense shoots this shot down.</summary>
         public void TrackInterception(IncomingMissile missile)
         {
@@ -110,11 +121,10 @@ namespace EmpireAtWar.ViewComponents.Weapon
         /// <summary>Plays the shot from <paramref name="muzzle"/> towards <paramref name="target"/> + offset.</summary>
         /// <returns>Seconds until the shot reaches its aim point.</returns>
         public float Fire(Transform muzzle, Transform target, Transform targetPivot, Vector3 aimOffset,
-            WeaponProfile profile, BoltFlightBatch boltFlights, float lateSeconds = 0f)
+            WeaponProfile profile, float lateSeconds = 0f)
         {
             LateSeconds = lateSeconds;
             TargetPivot = targetPivot;
-            BoltFlights = boltFlights;
             muzzleFlash.Play(muzzle, ResolveAimPoint(muzzle.position, target.position + aimOffset),
                 profile.Color, profile.Size.x);
             float travelTime = Play(muzzle, target, aimOffset, profile);

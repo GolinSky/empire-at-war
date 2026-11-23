@@ -31,7 +31,7 @@ namespace EmpireAtWar.Tests.Editor
             ShipAbilityDependencies dependencies = new ShipAbilityDependencies(
                 new EntityLocator(), TestPlayers.CreateDuel(), new ImpactEffectPresenter(null, null),
                 AssetDatabase.LoadAssetAtPath<WeaponsData>("Assets/Settings/Data/Models/Weapon/WeaponsData.asset"),
-                new BoltFlightBatch(), null, new VisionService(TestPlayers.CreateDuel(), fogEnabled: false),
+                null, new VisionService(TestPlayers.CreateDuel(), fogEnabled: false),
                 new OfflineSession(TestPlayers.Human), new BattleAreaService(TestPlayers.CreateDuel()),
                 new GravityWellEffects(TestPlayers.CreateDuel(), new OfflineSession(TestPlayers.Human), null), null);
             IShipAbilityFactory factory = new ShipAbilityFactory(dependencies);

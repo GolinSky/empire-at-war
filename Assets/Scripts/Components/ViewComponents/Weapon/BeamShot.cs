@@ -44,7 +44,7 @@ namespace EmpireAtWar.ViewComponents.Weapon
         {
             ApplyProfile(profile);
             StartBeam(muzzle, target, aimOffset, holdDuration);
-            return growthDuration;
+            return GetFlightSeconds(_lastOrigin, _lastAimPoint, profile, LateSeconds);
         }
 
         private void ApplyProfile(WeaponProfile profile)
@@ -164,6 +164,9 @@ namespace EmpireAtWar.ViewComponents.Weapon
             _muzzle = null;
             _target = null;
         }
+
+        public override float GetFlightSeconds(Vector3 muzzle, Vector3 aimPoint, WeaponProfile profile,
+            float lateSeconds) => growthDuration;
 
         // Beams deal damage continuously while they hold on the target.
         public override float DamageDuration => holdDuration;

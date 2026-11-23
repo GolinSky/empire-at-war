@@ -55,7 +55,7 @@ namespace EmpireAtWar.Tests.Editor
                 var weapon = owner.AddComponent<WeaponComponent>();
                 typeof(WeaponComponent).GetMethod("Construct", BindingFlags.Instance | BindingFlags.NonPublic)
                     .Invoke(weapon, new object[] { null, null, coordinator, modifiers, null, matrix, null, null, null,
-                        null, PlayerId.None, null, null, null, owner.transform, new OfflineSession(PlayerId.None), null, attacker, 2L });
+                        null, PlayerId.None, null, null, owner.transform, new OfflineSession(PlayerId.None), attacker, 2L });
                 coordinator.Register(weapon);
                 var bias = new ShipClassValues(1f, 1f, 1f, 1f, 1f, 1f, 1f, 1f, 1f, 1f, 1.25f, 1f);
                 var profile = new WeaponProfile(WeaponType.TurboLaser, "Test", WeaponFamily.Turbolaser,

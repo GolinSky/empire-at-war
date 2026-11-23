@@ -262,7 +262,7 @@ namespace EmpireAtWar.Tests.Editor
             var vision = new VisionService(TestPlayers.CreateDuel());
             int revealCount = 0;
             vision.RevealChanged += (viewer, entity, active) => revealCount++;
-            var ability = new IonShotAbility(new IonShotSettings(), null, vision,
+            var ability = new IonShotAbility(new IonShotSettings(), vision,
                 new OfflineSession(TestPlayers.Human));
             FakeCommand caster = CreateCaster();
             FakeCommand target = CreateCaster();
@@ -328,7 +328,7 @@ namespace EmpireAtWar.Tests.Editor
             var settings = (LuckyShotSettings)definition.Settings;
             var matrix = UnityEditor.AssetDatabase.LoadAssetAtPath<DamageMatrixData>(
                 "Assets/Settings/Data/Models/Weapon/DamageMatrixData.asset");
-            var ability = new LuckyShotAbility(settings, entities, null,
+            var ability = new LuckyShotAbility(settings, entities,
                 new ImpactEffectPresenter(null, matrix), vision,
                 new OnlineSession(authority, TestPlayers.Human));
             var service = new ShipAbilityService(new SingleAbilityFactory(ability), relations, vision);
@@ -390,7 +390,7 @@ namespace EmpireAtWar.Tests.Editor
         public void LuckyShot_RemovedTargetDuringWindupCancelsWithoutDamage()
         {
             var entities = new EntityLocator();
-            var ability = new LuckyShotAbility(new LuckyShotSettings(), entities, null, null,
+            var ability = new LuckyShotAbility(new LuckyShotSettings(), entities, null,
                 new VisionService(TestPlayers.CreateDuel(), fogEnabled: false),
                 new OfflineSession(TestPlayers.Human));
             FakeCommand caster = CreateCaster();
@@ -410,7 +410,7 @@ namespace EmpireAtWar.Tests.Editor
         public void LuckyShot_MoveOrStopDuringWindupCancelsWithoutLaunching(UnitOrderType order)
         {
             var entities = new EntityLocator();
-            var ability = new LuckyShotAbility(new LuckyShotSettings(), entities, null, null,
+            var ability = new LuckyShotAbility(new LuckyShotSettings(), entities, null,
                 new VisionService(TestPlayers.CreateDuel(), fogEnabled: false),
                 new OfflineSession(TestPlayers.Human));
             FakeCommand caster = CreateCaster();
@@ -429,7 +429,7 @@ namespace EmpireAtWar.Tests.Editor
         [Test]
         public void LuckyShot_ReplicaActivationAfterLeaderLossDoesNotFireFromAWingman()
         {
-            var ability = new LuckyShotAbility(new LuckyShotSettings(), new EntityLocator(), null, null,
+            var ability = new LuckyShotAbility(new LuckyShotSettings(), new EntityLocator(), null,
                 new VisionService(TestPlayers.CreateDuel(), fogEnabled: false),
                 new OnlineSession(false, TestPlayers.Human));
             FakeCommand caster = CreateCaster();

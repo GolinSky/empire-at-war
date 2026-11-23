@@ -63,7 +63,6 @@ namespace EmpireAtWar.Ship
             EntityFeatureBindings.RegisterWeapons(builder, Bindings, Data.ShipClass);
             foreach (var weapon in Bindings.Weapons)
             {
-                weapon.ConfigureWeaponPower(Data.Abilities.Contains(ShipAbilityId.BoostWeaponPower));
                 weapon.ConfigureArtillery(Data.UsesArtilleryStandoff);
                 weapon.ConfigureUnitFaction(_shipFaction);
             }
