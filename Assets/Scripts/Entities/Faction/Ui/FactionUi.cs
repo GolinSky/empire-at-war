@@ -10,7 +10,6 @@ using EmpireAtWar.Services.Selection;
 using EmpireAtWar.Services.Tutorial;
 using EmpireAtWar.Ui.Base;
 using MPUIKIT;
-using TMPro;
 using UnityEngine;
 using UnityEngine.UI;
 
@@ -40,11 +39,12 @@ namespace EmpireAtWar.Entities.Faction.Ui
         [SerializeField] private Button allUnitsFilter;
         [SerializeField] private Button squadronsFilter;
         [SerializeField] private Button shipsFilter;
-        [SerializeField] private TMP_Dropdown unitTypeFilter;
+        [SerializeField] private RectTransform unitTypeFilters;
+        [SerializeField] private FactionTypeFilterButton unitTypeButtonTemplate;
 
         private RosterCategory _category;
         private ShipClass? _unitClass;
-        private ShipClass[] _filterClasses = Array.Empty<ShipClass>();
+        private readonly List<(Button Button, ShipClass? UnitClass)> _typeButtons = new();
         private readonly List<FactionUnitUi> _factionUnitsUi =
             new List<FactionUnitUi>();
         private readonly Dictionary<ResearchType, FactionUnitUi> _researchUnitsUi =
@@ -147,7 +147,6 @@ namespace EmpireAtWar.Entities.Faction.Ui
             allUnitsFilter.onClick.AddListener(ShowAllUnits);
             squadronsFilter.onClick.AddListener(ShowSquadrons);
             shipsFilter.onClick.AddListener(ShowShips);
-            unitTypeFilter.onValueChanged.AddListener(SetUnitClassFilter);
             _isInitialized = true;
             ShowAllUnits();
         }
@@ -167,7 +166,7 @@ namespace EmpireAtWar.Entities.Faction.Ui
             allUnitsFilter.onClick.RemoveListener(ShowAllUnits);
             squadronsFilter.onClick.RemoveListener(ShowSquadrons);
             shipsFilter.onClick.RemoveListener(ShowShips);
-            unitTypeFilter.onValueChanged.RemoveListener(SetUnitClassFilter);
+            ClearTypeFilterButtons();
             _productionMenus.Close();
             tooltipHover.Unregister(_productionMenus.ResearchTooltip);
             foreach (ResearchBuffIcon buff in _researchBuffs.Values)
@@ -401,28 +400,27 @@ namespace EmpireAtWar.Entities.Faction.Ui
             SetFilterSelected(squadronsFilter, category == RosterCategory.Squadrons);
             SetFilterSelected(shipsFilter, category == RosterCategory.Ships);
 
-            unitTypeFilter.gameObject.SetActive(category != RosterCategory.All);
+            ClearTypeFilterButtons();
+            unitTypeFilters.gameObject.SetActive(category != RosterCategory.All);
             if (category != RosterCategory.All)
             {
-                _filterClasses = _factionUnitsUi
+                AddTypeFilterButton("All types", null);
+                var classes = _factionUnitsUi
                     .Where(card => MatchesCategory(card, category))
                     .OrderBy(card => _presenter.GetUnitSortOrder(card.Request))
                     .Select(card => card.UnitClass)
-                    .Distinct()
-                    .ToArray();
-                var labels = new List<string>
+                    .Distinct();
+                foreach (ShipClass type in classes)
                 {
-                    category == RosterCategory.Squadrons ? "All squadron types" : "All ship types"
-                };
-                labels.AddRange(_filterClasses.Select(type => type switch
-                {
-                    ShipClass.HeroStrikecraft => "Hero Strikecraft",
-                    ShipClass.HeavyCruiser => "Heavy Cruiser",
-                    ShipClass.BattleCruiser => "Battle Cruiser",
-                    _ => type.ToString()
-                }));
-                unitTypeFilter.ClearOptions();
-                unitTypeFilter.AddOptions(labels);
+                    string label = type switch
+                    {
+                        ShipClass.HeroStrikecraft => "Hero Strikecraft",
+                        ShipClass.HeavyCruiser => "Heavy Cruiser",
+                        ShipClass.BattleCruiser => "Battle Cruiser",
+                        _ => type.ToString()
+                    };
+                    AddTypeFilterButton(label, type);
+                }
             }
 
             RefreshUnitVisibility(_model.SelectionType);
@@ -434,9 +432,33 @@ namespace EmpireAtWar.Entities.Faction.Ui
             background.OutlineColor = selected ? new Color32(210, 169, 94, 255) : new Color32(52, 67, 87, 255);
         }
 
-        private void SetUnitClassFilter(int index)
+        private void AddTypeFilterButton(string label, ShipClass? unitClass)
         {
-            _unitClass = index == 0 ? null : _filterClasses[index - 1];
+            FactionTypeFilterButton filter = Instantiate(unitTypeButtonTemplate, unitTypeFilters);
+            filter.Label.text = label;
+            Button button = filter.Button;
+            button.onClick.AddListener(() => SetUnitClassFilter(unitClass));
+            SetFilterSelected(button, unitClass == _unitClass);
+            _typeButtons.Add((button, unitClass));
+            button.gameObject.SetActive(true);
+        }
+
+        private void ClearTypeFilterButtons()
+        {
+            foreach (var (button, _) in _typeButtons)
+            {
+                button.gameObject.SetActive(false);
+                if (Application.isPlaying) Destroy(button.gameObject);
+                else DestroyImmediate(button.gameObject);
+            }
+            _typeButtons.Clear();
+        }
+
+        private void SetUnitClassFilter(ShipClass? unitClass)
+        {
+            _unitClass = unitClass;
+            foreach (var (button, type) in _typeButtons)
+                SetFilterSelected(button, type == unitClass);
             RefreshUnitVisibility(_model.SelectionType);
         }
 

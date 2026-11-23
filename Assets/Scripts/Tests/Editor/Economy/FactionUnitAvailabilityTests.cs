@@ -253,7 +253,7 @@ namespace EmpireAtWar.Tests.Editor
             var all = (Button)serializedView.FindProperty("allUnitsFilter").objectReferenceValue;
             var squadrons = (Button)serializedView.FindProperty("squadronsFilter").objectReferenceValue;
             var ships = (Button)serializedView.FindProperty("shipsFilter").objectReferenceValue;
-            var types = (TMP_Dropdown)serializedView.FindProperty("unitTypeFilter").objectReferenceValue;
+            var types = (RectTransform)serializedView.FindProperty("unitTypeFilters").objectReferenceValue;
             var grid = (RectTransform)cards.First().transform.parent;
             var viewport = (RectTransform)grid.parent;
             var header = (RectTransform)all.transform.parent;
@@ -264,19 +264,24 @@ namespace EmpireAtWar.Tests.Editor
 
             squadrons.onClick.Invoke();
             Assert.That(types.gameObject.activeSelf, Is.True);
-            Assert.That(types.options.Select(option => option.text), Does.Contain("Hero Strikecraft"));
             Assert.That(cards.Any(card => card.gameObject.activeSelf && card.Request is SquadronUnitRequest), Is.True);
             Assert.That(cards.Any(card => card.gameObject.activeSelf && card.Request is ShipUnitRequest), Is.False);
-            types.value = types.options.FindIndex(option => option.text == "Hero Strikecraft");
+            FindTypeButton("Hero Strikecraft").onClick.Invoke();
             view.RefreshAvailability(10000f, false);
             var shownSquadrons = cards.Where(card => card.gameObject.activeSelf && card.Request is SquadronUnitRequest);
             Assert.That(shownSquadrons, Is.Not.Empty);
             Assert.That(shownSquadrons.All(card => card.UnitClass == ShipClass.HeroStrikecraft), Is.True);
             Assert.That(cards.Any(card => card.gameObject.activeSelf && card.Request is LevelUnitRequest), Is.True);
 
+            FindTypeButton("All types").onClick.Invoke();
+            Assert.That(shownSquadrons.Any(card => card.UnitClass == ShipClass.Fighter), Is.True);
+
             ships.onClick.Invoke();
-            Assert.That(types.options[0].text, Is.EqualTo("All ship types"));
-            Assert.That(types.value, Is.Zero);
+            Assert.That(types.gameObject.activeSelf, Is.True);
+            Assert.That(types.GetComponentsInChildren<FactionTypeFilterButton>(true)
+                .Where(filter => filter.gameObject.activeSelf).Select(filter => filter.Label.text),
+                Is.EqualTo(new[] { "All types", "Capital" }));
+            FindTypeButton("Capital").onClick.Invoke();
             Assert.That(cards.Any(card => card.gameObject.activeSelf && card.Request is ShipUnitRequest), Is.True);
             Assert.That(cards.Any(card => card.gameObject.activeSelf && card.Request is SquadronUnitRequest), Is.False);
 
@@ -284,6 +289,9 @@ namespace EmpireAtWar.Tests.Editor
             Assert.That(types.gameObject.activeSelf, Is.False);
             Assert.That(cards.Any(card => card.gameObject.activeSelf && card.Request is ShipUnitRequest), Is.True);
             Assert.That(cards.Any(card => card.gameObject.activeSelf && card.Request is SquadronUnitRequest), Is.True);
+
+            Button FindTypeButton(string label) => types.GetComponentsInChildren<FactionTypeFilterButton>(true)
+                .Single(filter => filter.gameObject.activeSelf && filter.Label.text == label).Button;
         }
 
         [TestCase(false, false, false)]
