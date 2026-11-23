@@ -41,6 +41,9 @@ namespace EmpireAtWar.Models.Health
 
         public event Action OnRestored;
 
+        /// <summary>Repair brought the hull back to its maximum. Destroyed hardpoints stay destroyed.</summary>
+        public event Action OnFullyRepaired;
+
         public ShipClass ShipClass => _data.ShipClass;
         public float Hull { get; private set; }
         public float MaxHull => _data.Hull * _hullMultiplier * _levelHullScale * _constructionScale;
@@ -204,8 +207,11 @@ namespace EmpireAtWar.Models.Health
         /// <summary>Online client: the host's health, applied like combat; see <see cref="HardPointModel.ApplyReplicaHealth"/>.</summary>
         public void ApplyReplica(float hullPercentage, float shieldPercentage, IReadOnlyList<float> hardPointPercentages)
         {
+            bool wasFull = Hull >= MaxHull;
             SetHealth(hullPercentage, shieldPercentage, hardPointPercentages, isReplica: true);
             OnValueChanged?.Invoke();
+            // The client never runs repair; the host's hull returning to full is its repair.
+            if (!wasFull && Hull >= MaxHull) OnFullyRepaired?.Invoke();
         }
 
         private void SetHealth(float hullPercentage, float shieldPercentage, IReadOnlyList<float> hardPointPercentages,
@@ -308,10 +314,12 @@ namespace EmpireAtWar.Models.Health
         public void Repair(float fraction)
         {
             if (IsDestroyed || fraction <= 0f) return;
+            bool wasFull = Hull >= MaxHull;
             Hull = Math.Min(MaxHull, Hull + MaxHull * fraction);
             foreach (HardPointModel hardPoint in HardPointModels)
                 hardPoint.Repair(hardPoint.MaxHealth * fraction);
             OnValueChanged?.Invoke();
+            if (!wasFull && Hull >= MaxHull) OnFullyRepaired?.Invoke();
         }
 
         public void RegenerateShields(float value)

@@ -116,6 +116,8 @@ namespace EmpireAtWar.Components.Ship.Health
             _modifiers.Changed += Model.RefreshStatModifiers;
             _modifiers.Changed += HandleShieldSuppressionChanged;
             HandleShieldSuppressionChanged();
+            Model.OnFullyRepaired += HandleFullyRepaired;
+            Model.OnRestored += HandleRestored;
 
             if (shieldView != null)
             {
@@ -136,6 +138,20 @@ namespace EmpireAtWar.Components.Ship.Health
             _shieldRecovering = !suppressed && _modifiers.ShieldRecoveryDelay > 0f;
             if (_shieldRecovering) _shieldRecoveryTimer.ChangeDelay(_modifiers.ShieldRecoveryDelay).StartTimer();
             Model.SetShieldSuppressed(suppressed);
+        }
+
+        // A healed unit stops burning; destroyed hardpoints stay destroyed.
+        private void HandleFullyRepaired() => ExtinguishHardPointFires(false);
+
+        // A save loaded at full hull shows no fire, without the flames fading in.
+        private void HandleRestored()
+        {
+            if (Model.HullPercentage >= 1f) ExtinguishHardPointFires(true);
+        }
+
+        private void ExtinguishHardPointFires(bool immediately)
+        {
+            foreach (HardPoint hardPoint in ShipUnits) hardPoint.Extinguish(immediately);
         }
 
         private void HandleIonStateChanged()
@@ -163,6 +179,8 @@ namespace EmpireAtWar.Components.Ship.Health
             _modifiers.Changed -= HandleIonStateChanged;
             _modifiers.Changed -= Model.RefreshStatModifiers;
             _modifiers.Changed -= HandleShieldSuppressionChanged;
+            Model.OnFullyRepaired -= HandleFullyRepaired;
+            Model.OnRestored -= HandleRestored;
             if (_ionStunView != null) _ionStunView.Release();
 
             if (_shield != null)

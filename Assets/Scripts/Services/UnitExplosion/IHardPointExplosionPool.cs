@@ -12,5 +12,11 @@ namespace EmpireAtWar.Services.UnitExplosion
         void Play(Transform anchor, IFogVisibilityFacade fogVisibility, float scale);
 
         void Stop(Transform anchor);
+
+        /// <summary>
+        /// Puts out the anchor's fire on a healed unit. It keeps following the anchor while the last flames die,
+        /// then returns to the pool; <paramref name="immediately"/> clears it at once (loaded save).
+        /// </summary>
+        void Extinguish(Transform anchor, bool immediately);
     }
 }

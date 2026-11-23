@@ -67,6 +67,25 @@ namespace EmpireAtWar.Services.UnitExplosion
             }
         }
 
+        public void Extinguish(Transform anchor, bool immediately)
+        {
+            for (int i = _active.Count - 1; i >= 0; i--)
+            {
+                ActiveExplosion active = _active[i];
+                if (active.Anchor != anchor || active.IsExtinguished) continue;
+                if (immediately)
+                {
+                    active.Explosion.Clear();
+                    _idle.Add(active.Explosion);
+                    _active.RemoveAt(i);
+                    continue;
+                }
+
+                active.Explosion.StopEmitting();
+                _active[i] = active.Extinguish();
+            }
+        }
+
         private void FadeAt(int index)
         {
             ExplosionVfx explosion = _active[index].Explosion;
@@ -94,7 +113,7 @@ namespace EmpireAtWar.Services.UnitExplosion
                     continue;
                 }
 
-                if (!active.Explosion.HasSustainedEmission && !active.Explosion.IsPlaying)
+                if ((active.IsExtinguished || !active.Explosion.HasSustainedEmission) && !active.Explosion.IsPlaying)
                 {
                     _idle.Add(active.Explosion);
                     _active.RemoveAt(i);
@@ -148,14 +167,21 @@ namespace EmpireAtWar.Services.UnitExplosion
 
             public ExplosionVfx Explosion { get; }
 
-            public ActiveExplosion(ExplosionVfx explosion, Transform anchor, IFogVisibilityFacade fogVisibility)
+            public ActiveExplosion(ExplosionVfx explosion, Transform anchor, IFogVisibilityFacade fogVisibility,
+                bool isExtinguished = false)
             {
                 Explosion = explosion;
                 _anchor = anchor;
                 _fogVisibility = fogVisibility;
+                IsExtinguished = isExtinguished;
             }
 
             public Transform Anchor => _anchor;
+
+            /// <summary>Stopped on a healed unit: still follows the anchor, never resumes emitting.</summary>
+            public bool IsExtinguished { get; }
+
+            public ActiveExplosion Extinguish() => new ActiveExplosion(Explosion, _anchor, _fogVisibility, true);
 
             public void Follow(Plane[] planes)
             {
@@ -169,7 +195,7 @@ namespace EmpireAtWar.Services.UnitExplosion
                     renderer.forceRenderingOff = isHidden;
                     if (!isHidden && !visible) visible = GeometryUtility.TestPlanesAABB(planes, renderer.bounds);
                 }
-                Explosion.SetSustainedEmission(visible);
+                if (!IsExtinguished) Explosion.SetSustainedEmission(visible);
             }
         }
     }

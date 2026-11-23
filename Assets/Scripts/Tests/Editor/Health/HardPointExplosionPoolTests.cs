@@ -197,6 +197,67 @@ namespace EmpireAtWar.Tests.Editor
         }
 
         [Test]
+        public void Extinguish_StopsLoopingFireAndReturnsItToPoolWhenDone()
+        {
+            _pool.Play(_anchor, null, 1f);
+            ExplosionVfx fire = PlayingExplosions()[0];
+            ParticleSystem.MainModule main = fire.GetComponent<ParticleSystem>().main;
+            main.loop = true;
+
+            _pool.Extinguish(_anchor, false);
+
+            Assert.That(fire.GetComponent<ParticleSystem>().isEmitting, Is.False);
+
+            fire.Clear();
+            _pool.Tick();
+            for (int i = 0; i < PREWARM_COUNT; i++)
+            {
+                _pool.Play(Track(new GameObject("HardPoint")).transform, null, 1f);
+            }
+
+            Assert.That(Root().childCount, Is.EqualTo(PREWARM_COUNT));
+        }
+
+        [Test]
+        public void Extinguish_Immediately_ClearsAndReturnsToPool()
+        {
+            _pool.Play(_anchor, null, 1f);
+            ExplosionVfx fire = PlayingExplosions()[0];
+
+            _pool.Extinguish(_anchor, true);
+
+            Assert.That(fire.IsPlaying, Is.False);
+            for (int i = 0; i < PREWARM_COUNT; i++)
+            {
+                _pool.Play(Track(new GameObject("HardPoint")).transform, null, 1f);
+            }
+
+            Assert.That(Root().childCount, Is.EqualTo(PREWARM_COUNT));
+        }
+
+        [Test]
+        public void HardPoint_Extinguished_StaysOutWhenHitAgain()
+        {
+            HardPoint hardPoint = _anchor.gameObject.AddComponent<HardPoint>();
+            SerializedObject serialized = new SerializedObject(hardPoint);
+            serialized.FindProperty("destroyedVfxAnchor").objectReferenceValue =
+                Track(new GameObject("VfxAnchor")).transform;
+            serialized.ApplyModifiedPropertiesWithoutUndo();
+            ContainerBuilder builder = new ContainerBuilder();
+            builder.RegisterInstance<IHardPointExplosionPool>(_pool);
+            builder.RegisterInstance<IFogVisibilityFacade>(new VisibleFogFacade());
+            builder.RegisterComponent(hardPoint);
+            using IObjectResolver container = builder.Build();
+            hardPoint.UpdateData(0f);
+
+            hardPoint.Extinguish(true);
+            hardPoint.UpdateData(0f);
+
+            Assert.That(hardPoint.IsDestroyed, Is.True);
+            Assert.That(PlayingExplosions(), Is.Empty);
+        }
+
+        [Test]
         public void Play_ReusedExplosionReceivesNewWorldScale()
         {
             _pool.Play(_anchor, null, 8f);

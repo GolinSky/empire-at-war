@@ -75,6 +75,15 @@ namespace EmpireAtWar.ViewComponents.Health
             OnStateUpdated(healthPercentage);
         }
 
+        /// <summary>
+        /// Puts out this hardpoint's destruction fire on a healed unit. The hardpoint stays destroyed, and further
+        /// hits do not relight it; only a new destruction after a restore does.
+        /// </summary>
+        public void Extinguish(bool immediately)
+        {
+            if (_hasExploded) ExplosionPool.Extinguish(destroyedVfxAnchor, immediately);
+        }
+
         public void SetInstalled(bool installed)
         {
             _isInstalled = installed;

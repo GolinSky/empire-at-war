@@ -683,6 +683,25 @@ namespace EmpireAtWar.Tests.Editor
             Assert.That(model.NeedsRepair, Is.False);
         }
 
+        [Test]
+        public void Repair_ReachingFullHull_RaisesFullyRepairedOnceAndKeepsDestroyedHardPointDestroyed()
+        {
+            HealthModel model = CreateModel(0f, out HardPointModel weapon, out _, out _);
+            model.ApplyDamage(weapon.MaxHealth, DamageType.Turbolaser, weapon.Id);
+            Assert.That(weapon.IsDestroyed, Is.True);
+            int fullyRepaired = 0;
+            model.OnFullyRepaired += () => fullyRepaired++;
+
+            model.Repair(0.0001f);
+            Assert.That(fullyRepaired, Is.Zero, "A partial repair does not put the fire out.");
+
+            model.Repair(1f);
+            model.Repair(1f);
+
+            Assert.That(fullyRepaired, Is.EqualTo(1));
+            Assert.That(weapon.IsDestroyed, Is.True);
+        }
+
         private HealthModel CreateModel(float shields, out HardPointModel weapon, out HardPointModel engine,
             out HardPointModel shieldGenerator)
         {
