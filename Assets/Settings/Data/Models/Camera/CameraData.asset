@@ -14,7 +14,9 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   <ZoomRange>k__BackingField:
     <Min>k__BackingField: 48
-    <Max>k__BackingField: 1410
+    <Max>k__BackingField: 1974
+  <EdgeOverscroll>k__BackingField: 0.35
+  <BottomEdgeOverscroll>k__BackingField: 0.6
   <PanSpeed>k__BackingField: 500
   <PanAcceleration>k__BackingField: 1250
   <PanDeceleration>k__BackingField: 1750

@@ -31,7 +31,7 @@ MonoBehaviour:
         <HazardLengthShare>k__BackingField: {x: 0.35, y: 0.5}
         <HazardHalfWidthShare>k__BackingField: {x: 0.03, y: 0.065}
         <HazardFringeWidth>k__BackingField: 60
-        <EdgeMargin>k__BackingField: 1500
+        <EdgeMargin>k__BackingField: 2100
         <PointSpacing>k__BackingField: 0
         <HomeMiningGap>k__BackingField:
           <Min>k__BackingField: 200
@@ -65,7 +65,7 @@ MonoBehaviour:
         <HazardLengthShare>k__BackingField: {x: 0.35, y: 0.5}
         <HazardHalfWidthShare>k__BackingField: {x: 0.03, y: 0.065}
         <HazardFringeWidth>k__BackingField: 90
-        <EdgeMargin>k__BackingField: 1700
+        <EdgeMargin>k__BackingField: 2380
         <PointSpacing>k__BackingField: 120
         <HomeMiningGap>k__BackingField:
           <Min>k__BackingField: 200
@@ -99,7 +99,7 @@ MonoBehaviour:
         <HazardLengthShare>k__BackingField: {x: 0.35, y: 0.5}
         <HazardHalfWidthShare>k__BackingField: {x: 0.03, y: 0.065}
         <HazardFringeWidth>k__BackingField: 135
-        <EdgeMargin>k__BackingField: 2000
+        <EdgeMargin>k__BackingField: 2800
         <PointSpacing>k__BackingField: 300
         <HomeMiningGap>k__BackingField:
           <Min>k__BackingField: 240

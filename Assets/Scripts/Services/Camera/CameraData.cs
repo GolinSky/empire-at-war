@@ -10,6 +10,12 @@ namespace EmpireAtWar.Services.Camera
         [field: SerializeField,
                 Tooltip("Camera height limits; zoom dollies along the view ray between them.")]
         public FloatRange ZoomRange { get; private set; }
+        [field: SerializeField, Min(0f),
+                Tooltip("How far past the left, right and top map edges the screen-centre ground point may go, as a fraction of camera height.")]
+        public float EdgeOverscroll { get; private set; }
+        [field: SerializeField, Min(0f),
+                Tooltip("How far past the bottom map edge the screen-centre ground point may go, as a fraction of camera height. Larger than the other edges because the faction HUD covers the bottom of the screen.")]
+        public float BottomEdgeOverscroll { get; private set; }
         [field: SerializeField] public float PanSpeed { get; private set; }
         [field: SerializeField] public float PanAcceleration { get; private set; }
         [field: SerializeField] public float PanDeceleration { get; private set; }

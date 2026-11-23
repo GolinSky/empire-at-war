@@ -2,6 +2,7 @@ using System;
 using System.Collections.Generic;
 using EmpireAtWar.Controllers.Game;
 using EmpireAtWar.Entities.Map;
+using EmpireAtWar.Models.SkirmishCamera;
 using EmpireAtWar.Mvc;
 using EmpireAtWar.Services.Settings;
 using EmpireAtWar.Services.Input;
@@ -356,7 +357,13 @@ namespace EmpireAtWar.Services.Camera
             // Bound the point under the screen centre, not the elevated camera transform.
             Vector3 groundOffset = CameraForward * (position.y / PitchSine);
             Vector2 groundPoint = new Vector2(position.x + groundOffset.x, position.z + groundOffset.z);
-            Vector2 clampedPoint = _mapModel.SizeRange.Clamp(groundPoint);
+            // The view may pass the map edges; the HUD hides the bottom of the screen, so that edge gets more room.
+            Vector2Range map = _mapModel.SizeRange;
+            float sideOverscroll = position.y * _cameraData.EdgeOverscroll;
+            float bottomOverscroll = position.y * _cameraData.BottomEdgeOverscroll;
+            Vector2 clampedPoint = new Vector2(
+                Mathf.Clamp(groundPoint.x, map.Min.x - sideOverscroll, map.Max.x + sideOverscroll),
+                Mathf.Clamp(groundPoint.y, map.Min.y - bottomOverscroll, map.Max.y + sideOverscroll));
             position.x += clampedPoint.x - groundPoint.x;
             position.z += clampedPoint.y - groundPoint.y;
             return position;

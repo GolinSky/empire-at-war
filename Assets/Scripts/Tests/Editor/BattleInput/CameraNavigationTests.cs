@@ -14,7 +14,7 @@ namespace EmpireAtWar.Tests.Camera
         [TestCase(500f, 30f, 0f)]
         [TestCase(940f, 30f, 0f)]
         [TestCase(940f, 60f, 90f)]
-        public void MoveTo_CentresMinimapTargetsAndClampsOutsideTargets(float height, float pitch, float yaw)
+        public void MoveTo_CentresMinimapTargetsAndClampsOutsideTargetsToOverscrolledEdges(float height, float pitch, float yaw)
         {
             GameObject cameraObject = new GameObject("Navigation test camera");
             try
@@ -30,6 +30,10 @@ namespace EmpireAtWar.Tests.Camera
                     "Assets/Settings/Data/Models/Camera/CameraData.asset");
                 service.Constructor(null, map, null, null, null, data);
                 service.SetPose(new Vector3(0f, height, 0f), Quaternion.Euler(pitch, yaw, 0f));
+                Assert.That(data.BottomEdgeOverscroll, Is.GreaterThan(data.EdgeOverscroll).And.GreaterThan(0f),
+                    "The bottom edge needs the most room because the faction HUD covers it.");
+                float side = height * data.EdgeOverscroll;
+                float bottom = height * data.BottomEdgeOverscroll;
 
                 foreach (Vector3 target in new[]
                 {
@@ -41,8 +45,8 @@ namespace EmpireAtWar.Tests.Camera
                     var ray = new Ray(service.CameraPosition, service.CameraForward);
                     Assert.That(new Plane(Vector3.up, Vector3.zero).Raycast(ray, out float distance), Is.True);
                     Vector3 ground = ray.GetPoint(distance);
-                    Assert.That(ground.x, Is.EqualTo(Mathf.Clamp(target.x, -100f, 200f)).Within(0.001f));
-                    Assert.That(ground.z, Is.EqualTo(Mathf.Clamp(target.z, -80f, 120f)).Within(0.001f));
+                    Assert.That(ground.x, Is.EqualTo(Mathf.Clamp(target.x, -100f - side, 200f + side)).Within(0.001f));
+                    Assert.That(ground.z, Is.EqualTo(Mathf.Clamp(target.z, -80f - bottom, 120f + side)).Within(0.001f));
                     Assert.That(service.CameraPosition.y, Is.EqualTo(height).Within(0.001f));
                 }
             }

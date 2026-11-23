@@ -10,7 +10,7 @@ namespace EmpireAtWar.Entities.Map.Generation
     {
         public const int MAX_INSTANCES = 7500;
         private const int SAMPLE_CAPACITY = MAX_INSTANCES * 2;
-        private const int MAX_CANDIDATES = 120000;
+        private const int MAX_CANDIDATES = 165000;
         private const float AREA_UNIT = 1000f;
         private const float UPRIGHT_TILT = 15f;
         private static readonly AsteroidSize[] SIZES = (AsteroidSize[])Enum.GetValues(typeof(AsteroidSize));

@@ -756,9 +756,9 @@ MonoBehaviour:
       e31: 0
       e32: 0
       e33: 1
-  debrisDistance: 2200
-  mediumDistance: 5000
-  largeDistance: 12000
+  debrisDistance: 3080
+  mediumDistance: 7000
+  largeDistance: 16800
   lodDistance: 1000
 --- !u!1 &5548649388298642683
 GameObject:
