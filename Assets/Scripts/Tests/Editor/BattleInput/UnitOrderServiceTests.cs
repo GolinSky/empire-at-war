@@ -337,6 +337,8 @@ namespace EmpireAtWar.Tests.Editor
             FakeEntity ship = Entity(1, TestPlayers.Human);
             FakeEntity squadron = Entity(50, TestPlayers.Human, new[] { typeof(IAttackFacade) });
             FakeEntity station = Entity(60, TestPlayers.Human, new[] { typeof(IHardPointAttackFacade) });
+            // Beyond link distance: a group already at its target is left unpaced.
+            target.Health.Transform.position = new Vector3(0f, 0f, _settings.PaceTuning.LinkDistance * 2f);
             IEntity[] receivers = { ship, squadron, station };
 
             if (hardPoint) _unitOrderService.IssueHardPointAttack(receivers, target, 0);
