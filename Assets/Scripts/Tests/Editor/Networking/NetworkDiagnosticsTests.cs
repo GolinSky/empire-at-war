@@ -318,6 +318,7 @@ namespace EmpireAtWar.Tests.Editor
             }
 
             Assert.That(Value(row, "squadrons"), Is.Zero);
+            Assert.That(Value(row, "squadron_keyframes_s"), Is.Zero);
             Assert.That(double.IsNaN(Value(row, "squadron_drift_max_m")));
             Assert.That(double.IsNaN(Value(row, "host_fps")));
             Assert.That(links.Count, Is.EqualTo(2), "One host link per window.");

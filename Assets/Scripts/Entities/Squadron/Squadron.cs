@@ -79,6 +79,7 @@ namespace EmpireAtWar.Entities.Squadrons
 
         private UnitOrderModel _orders;
         private SquadronPilot _pilot;
+        private SquadronReplicaAnchor _replicaAnchor;
         private SquadronTargetSelector _targetSelector;
         private SquadronOrderScheduler _orderScheduler;
         private UnitOrderSettings _orderSettings;
@@ -156,8 +157,9 @@ namespace EmpireAtWar.Entities.Squadrons
             ContainerLocal<IReadOnlyList<IDespawnable>> despawnables,
             ContainerLocal<IReadOnlyList<IAudioDialogShipComponent>> audioDialogs, SquadronData data, LifecycleTickGate tickGate,
             long entityId, FighterPoseBatch poseBatch, SquadronOrderScheduler orderScheduler, PlayerId owner,
-            SquadronIconComponent icon, IMatchSession session)
+            SquadronIconComponent icon, IMatchSession session, SquadronReplicaAnchor replicaAnchor)
         {
+            _replicaAnchor = replicaAnchor;
             EntityId = entityId;
             _owner = owner;
             _squadronType = squadronType;
@@ -208,6 +210,7 @@ namespace EmpireAtWar.Entities.Squadrons
             // A hangar issues its guard order right after creation, before the fighters have spawned.
             if (_orders.Current == UnitOrderType.Guard) EscortGuarded();
             else _pilot.Loiter(_flight.Centroid + _flight.Heading * Data.LoiterRadius);
+            _replicaAnchor.Reset();
             // Staggered so squadrons launched together do not all search in the same frame.
             _targetSearchTimer = UnityEngine.Random.Range(0f, TARGET_SEARCH_INTERVAL);
             _orderScheduler.Register(UpdateOrder);
@@ -274,18 +277,19 @@ namespace EmpireAtWar.Entities.Squadrons
                 ResumeCourse();
             }
 
+            // On replicas the root still holds the host pose ClientReplicationReceiver applied in the last LateTick.
+            Vector3 previousPosition = _flight.Centroid;
+            if (_isReplica) _replicaAnchor.Steer(previousPosition, deltaTime);
 #if UNITY_EDITOR || DEVELOPMENT_BUILD
             using (BattleProfilerMarkers.SquadronPilot.Auto())
 #endif
             _pilot.Tick(deltaTime);
             UpdatePace(deltaTime);
-            Vector3 previousPosition = _flight.Centroid;
 #if UNITY_EDITOR || DEVELOPMENT_BUILD
             using (BattleProfilerMarkers.SquadronFlight.Auto())
 #endif
             _flight.Step(deltaTime);
-            // LateTick applies the host root on replicas. Preserve it before local flight overwrites
-            // the transform so the marker follows replicated motion, not the local fighter simulation.
+            // Local flight has overwritten the root; the marker follows the replicated motion, not the fighters.
             Vector3 markerCentroid = _isReplica ? previousPosition : _flight.Centroid;
             _icon.AdvanceAnchor(markerCentroid, deltaTime);
             if (deltaTime > 0f && !_pilot.HasArrived)
@@ -622,6 +626,15 @@ namespace EmpireAtWar.Entities.Squadrons
                 RecordTelemetry("sample", "Periodic squadron order state.");
             }
 #endif
+            // Online clients do not pick their own fights: the host's squadron is followed (SquadronReplicaAnchor)
+            // and only a replayed attack drives the fighters.
+            if (_isReplica)
+            {
+                if (_orders.Current == UnitOrderType.Attack &&
+                    (!SquadronTargetSelector.IsAlive(_orders.Target) || _orders.Target.IsCloaked())) Stop();
+                return;
+            }
+
             switch (_orders.Current)
             {
                 case UnitOrderType.Attack:

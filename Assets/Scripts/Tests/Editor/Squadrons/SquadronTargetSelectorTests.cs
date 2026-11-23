@@ -343,6 +343,24 @@ namespace EmpireAtWar.Tests.Editor
             Assert.That(weapon.ResetCount, Is.Zero);
         }
 
+        [Test]
+        public void ReplicaSquadron_DoesNotPickItsOwnTargets()
+        {
+            IEntity enemy = AddTarget(5f);
+            Squadron squadron = CreateLeashSquadron(CreateSelector(), out SquadronPilot pilot, out WeaponSpy weapon,
+                out UnitOrderModel orders);
+            typeof(Squadron).GetField("_radar", LEASH_FIELDS).SetValue(squadron, new RadarStub(new[] { enemy }));
+            typeof(Squadron).GetField("_isReplica", LEASH_FIELDS).SetValue(squadron, true);
+            pilot.Loiter(Vector3.zero);
+
+            UpdateOrderOnce(squadron);
+
+            Assert.That(Engaged(squadron), Is.Null, "Online clients follow the host's squadron, not local picks.");
+            Assert.That(pilot.IsFighting, Is.False);
+            Assert.That(orders.Current, Is.EqualTo(UnitOrderType.None));
+            Assert.That(weapon.ResetCount, Is.Zero);
+        }
+
         private Squadron CreateLeashSquadron(SquadronTargetSelector selector, out SquadronPilot pilot,
             out WeaponSpy weapon, out UnitOrderModel orders)
         {
@@ -456,6 +474,8 @@ namespace EmpireAtWar.Tests.Editor
                 typeof(Squadron).GetField("_pilot", PRIVATE_INSTANCE).SetValue(squadron, pilot);
                 typeof(Squadron).GetField("_icon", PRIVATE_INSTANCE).SetValue(squadron, icon);
                 typeof(Squadron).GetField("_isReplica", PRIVATE_INSTANCE).SetValue(squadron, isReplica);
+                typeof(Squadron).GetField("_replicaAnchor", PRIVATE_INSTANCE)
+                    .SetValue(squadron, new SquadronReplicaAnchor(flight, pilot));
                 typeof(Squadron).GetProperty("Data", PRIVATE_INSTANCE).SetValue(squadron, data);
 
                 for (int frame = 1; frame <= 2; frame++)
@@ -545,11 +565,13 @@ namespace EmpireAtWar.Tests.Editor
             public Vector3 Centroid { get; set; } = new Vector3(10f, 0f, 20f);
             public Vector3? StepCentroid { get; set; }
             public Vector3 Heading => Vector3.forward;
+            public Vector3 FighterCentroid => Centroid;
             public bool IsAlive(int index) => true;
             public Vector3 GetPosition(int index) => Centroid;
             public Vector3 GetForward(int index) => Heading;
             public void Steer(int index, Vector3 target, float speed) { }
             public void SetSpeedCap(float cap) { }
+            public void Shift(Vector3 offset) => Centroid += offset;
             public void Step(float deltaTime)
             {
                 if (StepCentroid.HasValue) Centroid = StepCentroid.Value;

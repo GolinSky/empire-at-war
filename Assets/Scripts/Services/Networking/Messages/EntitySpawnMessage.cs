@@ -18,5 +18,7 @@ namespace EmpireAtWar.Services.Networking.Messages
         public string Payload;
         /// <summary>A ship still in its hyperspace jump; clients play the jump instead of placing it arrived.</summary>
         public bool IsArriving;
+        /// <summary>Keyframes come every tick without rates (squadron roots); clients interpolate and skip correction stats.</summary>
+        public bool IsInterpolated;
     }
 }

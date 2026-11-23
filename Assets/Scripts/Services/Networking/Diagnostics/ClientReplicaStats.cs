@@ -15,6 +15,8 @@ namespace EmpireAtWar.Services.Networking.Diagnostics
         private bool _inUnderrun;
 
         public int Keyframes { get; private set; }
+        /// <summary>Keyframes of interpolated entities (squadron roots), sent every tick and kept out of the correction stats.</summary>
+        public int InterpolatedKeyframes { get; private set; }
         public int Chunks { get; private set; }
         /// <summary>Chunks missing from ticks that arrived partly. Ticks lost whole are not visible here.</summary>
         public int LostChunks { get; private set; }
@@ -43,6 +45,8 @@ namespace EmpireAtWar.Services.Networking.Diagnostics
             _chunkReceived++;
         }
 
+        public void RecordInterpolatedKeyframe() => InterpolatedKeyframes++;
+
         public void RecordCorrection(EntityMotion received, EntityMotion predicted)
         {
             float position = Vector3.Distance(received.Position, predicted.Position);
@@ -65,6 +69,7 @@ namespace EmpireAtWar.Services.Networking.Diagnostics
         public void ResetWindow()
         {
             Keyframes = 0;
+            InterpolatedKeyframes = 0;
             Chunks = 0;
             LostChunks = 0;
             Corrections = 0;

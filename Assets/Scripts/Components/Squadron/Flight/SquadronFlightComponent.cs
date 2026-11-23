@@ -42,6 +42,7 @@ namespace EmpireAtWar.Components.Squadrons.Flight
         public int Count => fighters.Count;
         public Vector3 Centroid => transform.position;
         public Vector3 Heading => Model.GetHeading().ToUnity();
+        public Vector3 FighterCentroid => Model.GetCentroid().ToUnity();
 
         [Inject]
         private void Construct(IVisionService visionService, IFogVisionData visionData,
@@ -126,6 +127,8 @@ namespace EmpireAtWar.Components.Squadrons.Flight
             Model.SetSteering(index, target.ToNumerics(), speed);
 
         public void SetSpeedCap(float cap) => Model.SetSpeedCap(cap);
+
+        public void Shift(Vector3 offset) => Model.Shift(offset.ToNumerics());
 
         public void Step(float deltaTime)
         {

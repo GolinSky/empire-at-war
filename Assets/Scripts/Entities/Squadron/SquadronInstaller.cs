@@ -60,6 +60,7 @@ namespace EmpireAtWar.Entities.Squadrons
             }
             builder.Register<UnitOrderModel>(Lifetime.Singleton);
             builder.Register<SquadronPilot>(Lifetime.Singleton).AsSelf().AsImplementedInterfaces();
+            builder.Register<SquadronReplicaAnchor>(Lifetime.Singleton);
             builder.Register<SquadronTargetSelector>(Lifetime.Singleton);
             EntityFeatureBindings.RegisterComponent(builder, Bindings.SquadronHealth);
             EntityFeatureBindings.RegisterComponent(builder, Bindings.SquadronFlight);

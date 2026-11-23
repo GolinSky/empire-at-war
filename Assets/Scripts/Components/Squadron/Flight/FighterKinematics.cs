@@ -33,6 +33,9 @@ namespace EmpireAtWar.Components.Squadrons.Flight
             Bank = 0f;
         }
 
+        /// <summary>Moves the fighter without changing its heading, speed or bank.</summary>
+        public void Translate(Vector3 offset) => Position += offset;
+
         public void Step(Vector3 target, float desiredSpeed, IFighterFlightData data, float deltaTime)
         {
             if (deltaTime <= 0f)

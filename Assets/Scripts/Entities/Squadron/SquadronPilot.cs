@@ -121,6 +121,18 @@ namespace EmpireAtWar.Entities.Squadrons
             BeginLoiter(center, Data.LoiterRadius);
         }
 
+        /// <summary>Orbits <paramref name="center"/>, which may move every frame, without restarting a running orbit.</summary>
+        public void Orbit(Vector3 center)
+        {
+            if (_mode == Mode.Loiter && _escortAnchor == null)
+            {
+                _loiterCenter = center;
+                return;
+            }
+
+            Loiter(center);
+        }
+
         public void Escort(Transform anchor, float anchorRadius)
         {
             _escortAnchor = anchor;

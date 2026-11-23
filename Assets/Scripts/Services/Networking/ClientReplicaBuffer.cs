@@ -15,10 +15,14 @@ namespace EmpireAtWar.Services.Networking
         private readonly SortedList<double, TickTimelineSnapshot> _timeline = new SortedList<double, TickTimelineSnapshot>();
         private readonly SnapshotInterpolationSettings _settings = new SnapshotInterpolationSettings
         {
-            bufferTimeMultiplier = NetworkTickSettings.INTERPOLATION_BUFFER_TICKS
+            bufferTimeMultiplier = NetworkTickSettings.INTERPOLATION_BUFFER_TICKS,
+            catchupNegativeThreshold = NetworkTickSettings.SLOWDOWN_THRESHOLD_TICKS,
+            catchupPositiveThreshold = NetworkTickSettings.CATCHUP_THRESHOLD_TICKS
         };
         private readonly NetIndexMap _indices = new NetIndexMap();
         private readonly Dictionary<long, ClientKeyframeTrack> _tracks = new Dictionary<long, ClientKeyframeTrack>();
+        // Sent every tick without rates (EntitySpawnMessage.IsInterpolated): a prediction error is just the tick's motion.
+        private readonly HashSet<long> _interpolated = new HashSet<long>();
         private ExponentialMovingAverage _driftEma;
         private ExponentialMovingAverage _deliveryTimeEma;
         private double _localTimeline;
@@ -52,6 +56,7 @@ namespace EmpireAtWar.Services.Networking
             ClientKeyframeTrack track = new ClientKeyframeTrack();
             track.Add(message.Time, EntityKeyframeCodec.Decode(message.Keyframe));
             _tracks.Add(message.EntityId, track);
+            if (message.IsInterpolated) _interpolated.Add(message.EntityId);
             AdvanceTimeline(message.Tick, message.Time, localTime);
             return true;
         }
@@ -60,6 +65,7 @@ namespace EmpireAtWar.Services.Networking
         {
             if (!_indices.TryGetEntityId(message.Index, out long entityId)) return;
             _tracks.Remove(entityId);
+            _interpolated.Remove(entityId);
             _indices.Unbind(message.Index);
         }
 
@@ -73,7 +79,8 @@ namespace EmpireAtWar.Services.Networking
                 if (!_indices.TryGetEntityId(keyframe.Index, out long entityId)) continue;
                 ClientKeyframeTrack track = _tracks[entityId];
                 EntityMotion motion = EntityKeyframeCodec.Decode(keyframe);
-                if (track.TryPredict(message.Time, out EntityMotion predicted)) Stats.RecordCorrection(motion, predicted);
+                if (_interpolated.Contains(entityId)) Stats.RecordInterpolatedKeyframe();
+                else if (track.TryPredict(message.Time, out EntityMotion predicted)) Stats.RecordCorrection(motion, predicted);
                 track.Add(message.Time, motion);
             }
         }

@@ -16,7 +16,7 @@ Parent → [[TODOs/Features/Multiplayer_Plan|Multiplayer Plan]]. Related → [[T
 - Symptoms on a connected player: ships drag/slide while rotating; weapons fire slower with good client FPS.
 - Add a network status overlay (cheat panel toggle) + per-battle CSV so the next match gives numbers on host and clients.
 - Test match: online 3 humans vs 3 AI.
-- Status: Phase 1 implemented 2026-11-22 (compiles, tests not run). Next = Phase 2 match by the user.
+- Status: Phase 1 implemented 2026-11-22 (compiles, tests not run). Phase 2 measured: host match 2026-11-22 (`Results`), two client matches 2026-11-23 (`Results 2`). Main defect = client squadron fighters 1.5–2 km off the host position (D1). Phase 3 items 1–3 + telemetry part implemented 2026-11-23 (compile clean, tests not run). Next = user re-measures in an online match as client (Phase 3 step 4).
 
 ## Evidence (2026-11-21, `%USERPROFILE%\AppData\LocalLow\GolinSkyCompany\EmpireAtWar`)
 
@@ -140,7 +140,159 @@ Fix direction for 1 (decision needed): drive client fighters from the host root 
 2. One client joins the same lobby by IP → separates Steam relay from our protocol.
 3. Record here: RTT, loss, bytes/s per type, correction sizes, pool waiting shots, client vs host shots/s, reliable delay.
 
+### Phase 2 — Results (host only, 2026-11-22)
+
+Source: `BattleTelemetry/Loading_20261122_201250_Host_net.csv` (3029 rows, no gaps), `_Host_links.csv`, `_Host_pools.csv`, `Player.log`. Build `0.1.77`, release exe, Steam relay.
+
+- Match: user = host, **1 client**, 2 humans (Empire) vs 2 AI (Rebellion), 3037 s, `Outcome=PlayerVictory`, 0 exceptions, 1 disconnect (after leaving the lobby).
+- Not the planned test: no 3v3, no KCP client. **No client CSV on this machine** → `corrections_*`, `squadron_drift_*`, `reliable_lag_ms`, client shots/s, client pools are still unmeasured.
+
+| Measure | Mean | p95 | Max |
+|---|---|---|---|
+| Host FPS | 202 | min 82 | — |
+| `frame_max_ms` | 11.8 | 46 | 158 (load) |
+| `tick_rate` | 20.0 | 20.9 | min 19.5 |
+| `entities` | 166 | 213 | 227 |
+| `rtt_ms` | 16.8 | 22.3 | 27.6 |
+| `out_Bps` | 42 005 | 58 885 | 74 260 |
+| `in_Bps` | 1 343 | 1 407 | 1 586 |
+| `keyframes_s` | 689 | 934 | 1 122 |
+| `shots_s` | 109 | 239 | 408 |
+| `steam_pending_reliable_B` | 287 | 2 074 | 14 348 |
+| `steam_queue_ms` | 0.9 | 8.6 | 51.8 |
+
+Bytes out by type (whole match):
+
+| Message | msgs/s | B/msg | Share |
+|---|---|---|---|
+| `ReplicatedStateMessage` (`msg_state`) | 4.6 | 3 489 | 38.3% |
+| `EntityHealthMessage` | 47.4 | 303 | 34.1% |
+| `EntityKeyframesMessage` | 20.1 | 461 (≈ 34 keyframes) | 22.1% |
+| `EntitySpawnMessage` | 0.5 | 634 | 0.7% |
+| `WeaponTargetMessage` | 21.6 (max 729) | 9 | 0.5% |
+| route + order state + attack target | 6.4 | — | 0.3% |
+
+Findings:
+
+1. **Link is clean.** RTT ≤ 28 ms, Steam quality 1.0 both ways all match, queue ≤ 52 ms, reliable backlog ≤ 14 KB and drains within the second. → Anything the client saw is our protocol, not the network.
+2. **Host is not the limit.** Tick 20.0 Hz all match, FPS ≥ 82. → B4 (low host FPS) ruled out for this match.
+3. *(Corrected by Results 2, finding 2: the excess keyframes are squadron roots, not ships.)* **Dead reckoning mispredicts all the time.** 689 keyframes/s ÷ 166 entities = **4.1 keyframes per entity per second** (p95 5.3, max 9.4). Refresh alone gives ≤ 1/s moving, 0.33/s idle → ≈ 3 of 4 keyframes are threshold corrections (> 2 m or > 5°). Entity count includes idle stations/platforms/sites, so moving units are corrected more often than 4×/s. → A1–A4 confirmed from the host side; the "send only on error" saving is not happening.
+4. **Steam send-rate cap = 262 144 B/s per connection** (`steam_send_rate_Bps`, constant). Peak out = 28% of it.
+5. **Approach B cost with measured counts:** 166 × 14 B × 20 Hz = 46.5 KB/s mean, 63.6 KB/s at 227 entities; replaces today's 9.3 KB/s. Total ≈ 79 KB/s mean, ≈ 125 KB/s worst = 48% of the cap. Fits at 20 Hz; 10 Hz not needed for 1–2 clients.
+6. **Reliable JSON = 72% of bytes.** `ReplicatedStateMessage` is flat ≈ 18 KB/s (3.5 KB × 4–5/s) regardless of fight size → a full snapshot resent 4×/s. No backlog on this link, so not today's symptom; first thing to shrink (delta or binary) before more clients.
+7. **Host shot pools are fine.** Ships: 0 waits all match. Fighters: 2 events (`DualProjectile`, 4 shots waiting, max wait 766 ms, at 1752 s and 1947 s). → B1 ruled out on the host; client pools unknown.
+8. Pool stock is oversized: `pool_total` 9 678–9 757, `pool_in_use` max 707 (7%). Memory/load cost only; revisit in [[TODOs/Bugs/Weapon_Fire_Rate_Low_FPS]].
+9. **≈ 50 ms hitch every ≈ 15 s** (131 windows at 50–60 ms; p50 8.6 ms). No match with `_ai.csv` row times. Cause unknown (GC candidate). One late network tick each; inside the 150 ms buffer.
+10. `[ShipNavigation] Tangent route build failed … turns in place` × 160 in `Player.log` → those ships stop at corners and rotate on the spot (host-side, all machines see it).
+
+### Phase 2 — Results 2 (client, 2 matches, 2026-11-22/23)
+
+Source: `BattleTelemetry/Loading_20261122_223506_Client_*.csv` (C1), `Loading_20261122_235951_Client_*.csv` (C2), `Player.log`. Build `0.1.77` (same build as the host match), user = **client**, Steam relay, other machine hosts. 0 exceptions; disconnects only at match end.
+
+| Measure | C1 (3835 s) | C2 (3765 s) |
+|---|---|---|
+| Entities mean / max | 224 / 305 | 186 / 318 |
+| Squadrons mean / max | 64 / 90 | 58 / 112 |
+| `rtt_ms` mean / max | 75 / 84 | 74 / 85 |
+| Steam ping, quality | 54 ms, 1.0 | 54 ms, 1.0 |
+| `lost_chunks_s` | 0 | 0 |
+| `in_Bps` mean / max | 48 459 / 95 672 | 42 460 / 71 166 |
+| Client FPS mean / min | 207 / 112 | 208 / 107 |
+| Host FPS mean / min, tick | 166 / 98, 20.0 | 158 / 73, 19.9 |
+| `keyframes_s` mean | 1 100 | 1 024 |
+| `correction_mean_m` | 4.4 | 4.5 |
+| `correction_heading_mean_deg` | 0.0 (max p50 5.2) | 0.0 (max p50 5.2) |
+| `squadron_drift_mean_m` / max | **1 971 / 11 026** | **1 464 / 7 758** |
+| Squadrons beyond loiter radius | 62.4 of 63.8 (**98%**) | 56.8 of 57.8 (**98%**) |
+| Shots client / host | 348 807 / 373 374 = **93%** | 443 778 / 495 086 = **90%** |
+| Shots ratio, first 10 min | **73%** | **78%** |
+| Pool waits | 0 | 1 (`ProtonTorpedoShot`, 35 ms) |
+| `reliable_lag_ms` mean / max | −18 / 18 | −12 / 83 |
+| `timeline_delay_ms` first → last 10 min | 117 → 79 | 128 → 75 |
+| Underruns (first 20 min / total) | 0 / 42 | 0 / 57 |
+
+Findings:
+
+1. **D1 confirmed, and it is the largest defect.** Client fighters are on average 1.5–2 km from the host's squadron position; 98% of squadrons are outside their loiter radius (18–20 m) for the whole match. Drift starts at spawn: 5 m at 4 s → 206 m at 14 s (≈ 40 m/s = squadron speed). Source: `Squadron.Tick` flies fighters locally; `ApplyReplicaOrder` replays only attack orders (`Squadron.cs:587`).
+2. **The keyframe storm is squadrons, not ships.** Regression on C1: `keyframes_s ≈ 13.7 × squadrons + 1.3 × other entities`. Squadron roots are re-sent on 14 of 20 ticks; ships ≈ 1.3/s (refresh + rare corrections). → **Corrects host finding 3**: dead reckoning holds for ships; it fails for squadron roots.
+   - Cause (source, likely): squadron root = fighter centroid, position only (`SquadronFlightComponent.QueuePoses`); its heading does not follow its velocity, the motion model is "speed along the nose" → 2 m error within 1–2 ticks.
+   - `correction_mean_m` 4.4 m is dominated by these; heading corrections are ≈ 0.
+3. **Client fires 7–10% fewer shots than the host; 22–27% fewer in the first 10 min.** Pool gate ruled out (0 waits, B1). Late targets ruled out (reliable lag ≤ 83 ms, no Steam backlog, B2). Left: client-local gates on wrong positions (B3 + D1) — fighters that are kilometres away cannot fire at the host's target.
+4. **Render buffer erodes during the match.** `timeline_delay_ms` falls from ≈ 120 ms to ≈ 77 ms in 20 min, then underruns start (≈ 1.5/min). Mirror corrects the client timeline only after drift exceeds ±1 tick (`catchupNegativeThreshold`/`catchupPositiveThreshold`), so it rests on the low edge. Effective buffer ≈ 1.5 ticks, not 3.
+5. **Link and reliable stream are fine at 75 ms RTT**: 0 lost chunks, quality 1.0, no pending bytes. Phase 3 rows "binary health, own channel" and "pool Option A" are not needed for these symptoms.
+6. Large single corrections: `correction_max_m` > 50 m in 14–31% of seconds (max 801 m / 3 672 m), heading up to 179°. Candidates: hyperspace arrivals, reinforcement spawns, squadron launch. Not split by cause.
+7. Client hitches: `frame_max_ms` > 40 in ≈ 5% of seconds on C1, 3% on C2.
+
+Telemetry defects found:
+
+- `timeline_delay_ms` keeps counting after the host stops ticking (−10 488 ms at C2 end) → filter rows with `host_tick_rate` 0.
+- `chunk_loss_pct` is noise (1 s windows on two machines are not aligned): 0.7–1.7% while `lost_chunks_s` = 0. Use `lost_chunks_s`.
+- No split of keyframes, corrections or shots by unit kind (squadron / ship) → finding 2 and 3 needed regression and inference.
+
+### Why online felt worse after Phase 1 (user report 2026-11-23)
+
+- **Phase 1 code changes nothing that is sent or applied** (diff `dff5d8082~1..36298a567`): counters, `TryPredict` (read-only), `NetworkDebugStatsMessage` 1 Hz, CSV row 1 Hz, read-only Steam status, pool counters compiled into release. `ClientReplicaBuffer.OnKeyframes` adds keyframes exactly as before.
+- Cost not measurable: no pre-Phase-1 numbers exist. Nothing points at it: client FPS 207 mean / ≥ 107, 0 pool waits, no backlog.
+- What differed from the 20:12 match:
+  1. **Role.** 20:12 = host (sees none of the client defects). C1/C2 = client → D1, squadron corrections, 150 ms delay and buffer underruns are all visible.
+  2. **RTT 75 ms** (20:12 host link: 17 ms).
+  3. **Bigger fights**: up to 318 entities / 112 squadrons (20:12: 227 entities).
+- Hypothesis, not verified: squadron commits `f720ba112` (2026-11-20, escort in paced groups) and `cc6bd2f23` (2026-11-21, leash back to post, tighter guard) added host-only squadron movement that clients do not replay → more drift than in the 2026-11-21 matches.
+- Open: user to say what exactly got worse (fighters off position / units jumping / fire rate / FPS).
+
+### Rotation drag (user report 2026-11-22, user was host)
+
+**Answer 2026-11-22: seen on the host's own screen → ship movement, not networking.** The host draws its ships from the local simulation; no network smoothing runs there. The client branch below stays valid from source but is not what the user reported.
+
+Host-side candidates (source only; no telemetry records yaw):
+
+1. **Turn easing is long for small turns.** `StepYaw` ramps at `TurnAcceleration` and brakes on `sqrt(2·a·remaining)`. Max rate is reached only for turns > `RotationSpeed² / TurnAcceleration` = **30°** (15/7.5), 24° (12/6), 20° (10/5). Below that, turn time = `2·sqrt(angle / a)`: 20° at 7.5 °/s² = 3.3 s (1.3 s at full rate); 20° at 5 °/s² = 4.0 s (2.0 s).
+2. **Stop-and-rotate.** `_isTurningToRoute` (`ShipMovementTweenPlayer.cs:256, 272, 320`) holds speed 0 until heading is within 0.01° of the route; set at route start, at corner pieces, and after heading recovery. 160 `Tangent route build failed … turns in place` lines in this match.
+3. **Bank lags yaw.** `SmoothBank` = `SmoothDampAngle` with `BANK_SMOOTH_TIME = 0.6f` → hull roll settles ≈ 1.5–2 s after the yaw stops.
+4. Last movement change: `8d1b515c2` (2026-11-22, "keep moving on speed-cap drops and blocked start turns") — committed 09:31, before the telemetry commits the 20:12 build clearly contains (`_links.csv` exists) → the drag is present with that fix in.
+
+Decision needed: which of 1–3 the user means → own `Bugs` plan (ship movement), outside this note. Options: raise `TurnAcceleration` (balance), cap ease time instead of using a pure acceleration model, shorten `BANK_SMOOTH_TIME`, fix the tangent-route fallback.
+
+- **Seen on the client's screen → network (source + finding 3).**
+  - Keyframe carries one whole-°/s `TurnRate` taken from a 50 ms pose difference (`HostTickReplicator.TrySampleMotion` → `EntityMotion.FromSamples`); client holds it constant (`EntityMotion.Extrapolate`).
+  - Host yaw is never constant-rate: `ShipRotationKinematics.StepYaw` ramps up at `TurnAcceleration` and brakes on `sqrt(2·a·remaining)`.
+  - Turn start → client heading lags; turn end → client overshoots, then is pulled back.
+  - Error after `t` s = ½·a·t². Capital ships (`TurnAcceleration` 1.5–7.5 °/s²) stay under 5° within the 1 s refresh → **no correction for a full second**, then up to 3.75° applied late. Fighters (60 °/s²) cross 5° every 0.41 s.
+  - `ClientKeyframeTrack.Sample`: newest keyframe arrives ≈ 150 ms before its time → blend factor jumps from 0 to `(render − tA) / (tB − tA)` in one frame, then lerps (`Mathf.LerpAngle`) → heading moves in steps + slow catch-up = "dragging".
+  - Fix = movement approach B (heading sent every tick, pure interpolation). No turn-rate guess left.
+- **Seen on the host's own screen → ship movement, not networking.**
+  - Every heading change eases in and out: ramp time = `RotationSpeed / TurnAcceleration` = **2.0 s** for the three main capital classes (15/7.5, 12/6, 10/5) and 3/1.5; brake phase is the same length again.
+  - `_isTurningToRoute` / `_isRecoveringHeading` brake the ship to rest and hold it until heading is within 0.01° (`ShipMovementTweenPlayer.TickRoute`).
+  - Finding 10 adds stop-and-rotate at corners.
+  - Fix = balance (`TurnAcceleration` up → shorter ease) and/or route fallback; separate plan, not this one.
+
 ### Phase 3 — Fix by measurement
+
+Order after Results 2 (2026-11-23), recommended:
+
+1. **D1: anchor client fighters to the host squadron root** (fix direction in section D). Removes km-scale drift; expected to close most of the shot deficit.
+2. **Squadron roots: send every tick, interpolate** (approach B for squadrons only). Already 14 of 20 ticks today → ≈ +30% keyframe bytes, no guessing.
+3. **Render buffer**: tighten the catch-up thresholds or use 4 ticks; target 0 underruns over 60 min.
+4. Re-measure shots client/host and ship corrections. Approach B for ships only if ship corrections are still visible.
+5. Telemetry: per-kind split (see TODO).
+
+### Phase 3 — Implemented 2026-11-23 (items 1–3, telemetry part)
+
+User go: "execute plan" 2026-11-23 = recommended order. Editor compile clean; tests not run (local override); not played.
+
+1. **D1 — client fighters ride the host root.** New `Entities/Squadron/SquadronReplicaAnchor.cs`, called from `Squadron.Tick` on replicas before `_pilot.Tick`, while the root still holds the host pose.
+   - Root velocity = finite difference, smoothed 0.3 s. Speed > 25% cruise → `SquadronPilot.Follow(root, velocity dir, speed)` (wedge); else new `SquadronPilot.Orbit(root)` (moving centre, orbit not restarted).
+   - Pull: planar drift > `LoiterRadius` → fighters shifted back, time constant 0.75 s, ≤ 50% cruise speed. Drift > 10 × `LoiterRadius` → shifted at once (launch, respawn, hyperspace) and pilot restarts from the root.
+   - Replayed attack (`IsFighting`) keeps the local swarm; only the pull applies.
+   - `Squadron.UpdateOrder` on replicas: no local target picks (no `DefendArea`/leash/hunt); only drops a replayed attack whose target died or cloaked.
+   - New API: `ISquadronFlightComponent.FighterCentroid` + `Shift`, `SquadronFlightModel.Shift`, `FighterKinematics.Translate`. Registered in `SquadronInstaller`.
+   - Why deadband = loiter radius: an orbiting group's centroid sits up to one radius off its centre; a smaller deadband fights the orbit.
+2. **Squadron roots every tick, interpolated.** `HostTickReplicator.IsInterpolated` = entity has `ISquadronFighterSpreadFacade` → motion with zero speed/turn/climb, `DeadReckoningSender.TryCreateKeyframe(..., everyTick: true)`. Zero rates → `ClientKeyframeTrack.Sample` = pure lerp between ticks. `EntitySpawnMessage.IsInterpolated` tells the client.
+3. **Render buffer.** `ClientReplicaBuffer` passes `NetworkTickSettings.SLOWDOWN_THRESHOLD_TICKS = -0.25` / `CATCHUP_THRESHOLD_TICKS = 0.5` to Mirror (was ±1). Buffer stays 3 ticks (150 ms).
+4. **Telemetry.** Client `corrections_*` now exclude interpolated roots (= ships, stations, other units); new `squadron_keyframes_s`; `timeline_delay_ms` = NaN once `host_tick_rate` ≤ 0; `chunk_loss_pct` removed.
+- Tests (not run): new `SquadronReplicaAnchorTests` (`Squadrons`: snap + orbit, moving root followed, gradual pull); `SquadronTargetSelectorTests` (`FlightStub` gains `FighterCentroid`/`Shift`, icon test sets `_replicaAnchor`, new `ReplicaSquadron_DoesNotPickItsOwnTargets`); `NetworkTickReplicationTests` (`Networking`: squadron roots every tick, zero rates, no corrections); `NetworkDiagnosticsTests` (`squadron_keyframes_s` column). Reviewed, no change: `FighterFlightTests`, `SquadronOrderTimingTests`, `ReconnectOrderBaselineTests`.
+- Expected on re-measure: `squadron_drift_mean_m` < `LoiterRadius`, `squadrons_beyond_loiter` ≈ 0; `squadron_keyframes_s` ≈ 20 × squadrons; ship `corrections_s` small; `timeline_delay_ms` ≈ 120–150 ms all match; underruns ≈ 0.
+- Not done: host-side keyframe split by kind/reason, shots by kind, large-correction cause logging.
 
 | Measurement | Fix |
 |---|---|
@@ -177,10 +329,26 @@ Weapons:
 
 - [x] User: approve Phase 1 (2026-11-22).
 - [x] Phase 1: overlay + pool counters + CSV + `NetworkDebugStatsMessage` (compiles; tests not run).
-- [ ] Phase 2: 3v3 Steam match + one KCP client; record numbers here.
+- [x] Phase 2 host half: 2v2 (1 client) Steam match, 3037 s, recorded 2026-11-22.
+- [x] Phase 2 client half: two client matches recorded 2026-11-23 (`Results 2`). D1 confirmed; pool gate and late targets ruled out.
+- [ ] User: what exactly got worse after Phase 1 (fighters off position / units jumping / fire rate / FPS)?
+- [x] User: approve fix order in Phase 3 (D1 → squadron roots every tick → render buffer) — "execute plan", 2026-11-23.
+- [x] Phase 3.1 D1: client fighters anchored to the host root (`SquadronReplicaAnchor`), no local target picks on replicas — 2026-11-23, compile clean, tests not run.
+- [x] Phase 3.2: squadron roots sent every tick without rates, clients interpolate — 2026-11-23.
+- [x] Phase 3.3: Mirror catch-up thresholds −0.25 / +0.5 tick — 2026-11-23.
+- [ ] Phase 3.4 (user): online match as client on a build with these changes; send `_net.csv` + `Player.log`. Check drift, `squadron_keyframes_s`, ship corrections, timeline delay, underruns, shots client/host.
+- [x] Telemetry: client `corrections_*` exclude squadron roots, `squadron_keyframes_s`, `timeline_delay_ms` NaN when the host stops ticking, `chunk_loss_pct` dropped — 2026-11-23.
+- [ ] Telemetry: `shots_s` by squadron / ship.
+- [ ] Large corrections (> 50 m in 14–31% of seconds): log cause (hyperspace arrival, spawn, launch).
+- [x] User: rotation drag seen on the **host** screen (2026-11-22) → ship movement, not networking.
+- [ ] Rotation drag on host: user picks the symptom (slow small turns / stop-and-rotate / roll settling) → separate ship-movement `Bugs` plan.
+- [ ] Phase 2 rest: 3v3 with 3 factions + one KCP client (optional once the client CSV confirms A).
+- [ ] Telemetry gap: host CSV cannot split keyframes by unit kind or reason → add `keyframes_ships_s`, `keyframes_squadrons_s`, `keyframes_drift_pos_s`, `keyframes_drift_heading_s`, `keyframes_refresh_s`.
+- [ ] `ReplicatedStateMessage` 3.5 KB × 4–5/s: find the sender, send deltas or binary.
+- [ ] 50 ms hitch every ≈ 15 s on the host: identify (GC vs periodic job).
 - [x] Mirror `sendRate`: not set on `OnlineNetworkManager` → `NetworkManager` default 60 Hz (source). CSV header records the runtime value.
-- [ ] Steam send rate: read `steam_send_rate_Bps` from the Phase 2 CSV (runtime value, not yet seen).
+- [x] Steam send rate: `steam_send_rate_Bps` = 262 144 B/s per connection (Phase 2 host CSV).
 - [x] Phase 1 review gaps closed (D1 drift columns, pools/links CSV, per-window max wait, guarded unique files, tests) — 2026-11-22, compile clean, tests not run.
-- [ ] D1: **measure first (user, 2026-11-22)** — no fighter-anchoring fix until the Phase 2 client CSV shows `squadron_drift_*`. Confirmed if `squadrons_beyond_loiter` stays > 0 after host move orders.
+- [x] D1 measured 2026-11-23: 98% of squadrons beyond loiter radius, mean drift 1.5–2 km → confirmed. Fix implemented 2026-11-23 (Phase 3 — Implemented).
 - [ ] D2/D4 checks.
 - [ ] Phase 3: user picks movement approach (B recommended) and weapon fix from the table.

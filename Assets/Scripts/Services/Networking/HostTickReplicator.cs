@@ -2,6 +2,7 @@ using System;
 using System.Collections.Generic;
 using EmpireAtWar.Entities.BaseEntity;
 using EmpireAtWar.Entities.BaseEntity.EntityFacades;
+using EmpireAtWar.Entities.Squadrons.EntityFacades;
 using EmpireAtWar.Services.Networking.Messages;
 using EmpireAtWar.Services.Saves;
 using UnityEngine;
@@ -101,10 +102,16 @@ namespace EmpireAtWar.Services.Networking
             {
                 if (!_indices.TryGetIndex(entity.Id, out ushort index) || !TrySampleMotion(entity, now, true, out EntityMotion motion))
                     continue;
-                if (_sender.TryCreateKeyframe(index, motion, now, out EntityKeyframe keyframe))
+                if (_sender.TryCreateKeyframe(index, motion, now, out EntityKeyframe keyframe, IsInterpolated(entity)))
                     _pending.Add(keyframe);
             }
         }
+
+        /// <summary>
+        /// A squadron root is its fighters' centroid: it moves sideways to its heading, so the dead-reckoning model
+        /// mispredicts it within a tick or two. It goes out every tick without rates and clients only interpolate.
+        /// </summary>
+        private static bool IsInterpolated(IEntity entity) => entity.TryGetFacade(out ISquadronFighterSpreadFacade _);
 
         // Rates come from the previous tick sample; only tick sampling advances that history.
         private bool TrySampleMotion(IEntity entity, double now, bool recordSample, out EntityMotion motion)
@@ -114,6 +121,12 @@ namespace EmpireAtWar.Services.Networking
             Transform transform = facade.Transform;
             Pose current = new Pose(transform.position, transform.rotation);
             float heading = transform.eulerAngles.y;
+            if (IsInterpolated(entity))
+            {
+                motion = new EntityMotion(current.position, heading, 0f, 0f, 0f);
+                return true;
+            }
+
             motion = _previousPoses.TryGetValue(entity.Id, out Pose previous)
                 ? EntityMotion.FromSamples(previous.position, previous.rotation.eulerAngles.y, current.position,
                     heading, (float)(now - _previousTimes[entity.Id]))
@@ -182,7 +195,8 @@ namespace EmpireAtWar.Services.Networking
                 Tick = _clock.Tick,
                 Time = now,
                 Keyframe = EntityKeyframeCodec.Encode(index, motion),
-                Kind = EntitySpawnKind.Untracked
+                Kind = EntitySpawnKind.Untracked,
+                IsInterpolated = IsInterpolated(entity)
             };
             if (entity.TryGetFacade(out IUnitSaveFacade unit))
             {

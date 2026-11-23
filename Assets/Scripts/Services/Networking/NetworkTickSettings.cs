@@ -13,5 +13,12 @@ namespace EmpireAtWar.Services.Networking
         public const float IDLE_REFRESH_SECONDS = 3f;
         /// <summary>Client render delay = TICK_INTERVAL × this = 150 ms.</summary>
         public const int INTERPOLATION_BUFFER_TICKS = 3;
+        /// <summary>
+        /// Render-delay drift, in ticks, past which Mirror slows the client timeline down or speeds it up. Mirror's
+        /// ±1 tick let the delay rest at its low edge (≈ 1.5 ticks, underruns after 20 min; Multiplayer Connection
+        /// Analysis, 2026-11-23); the low side is the one that runs out of keyframes.
+        /// </summary>
+        public const float SLOWDOWN_THRESHOLD_TICKS = -0.25f;
+        public const float CATCHUP_THRESHOLD_TICKS = 0.5f;
     }
 }

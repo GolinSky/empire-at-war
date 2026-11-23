@@ -6,17 +6,22 @@ namespace EmpireAtWar.Services.Networking
     /// <summary>
     /// Host side: sends a keyframe only when the clients' prediction (from the last quantized keyframe) drifts past
     /// the position/heading thresholds, or the refresh interval passes (1 s moving, 3 s idle) to recover from loss.
+    /// Entities whose motion the model cannot predict (squadron roots) are sent every tick instead.
     /// </summary>
     public sealed class DeadReckoningSender
     {
         private readonly Dictionary<ushort, EntityMotion> _lastSent = new Dictionary<ushort, EntityMotion>();
         private readonly Dictionary<ushort, double> _lastSentTime = new Dictionary<ushort, double>();
 
-        /// <summary>Returns true and records the keyframe when <paramref name="actual"/> must be sent at <paramref name="now"/>.</summary>
-        public bool TryCreateKeyframe(ushort index, EntityMotion actual, double now, out EntityKeyframe keyframe)
+        /// <summary>
+        /// Returns true and records the keyframe when <paramref name="actual"/> must be sent at <paramref name="now"/>;
+        /// <paramref name="everyTick"/> sends it regardless of the prediction.
+        /// </summary>
+        public bool TryCreateKeyframe(ushort index, EntityMotion actual, double now, out EntityKeyframe keyframe,
+            bool everyTick = false)
         {
             keyframe = default;
-            if (_lastSent.TryGetValue(index, out EntityMotion sent))
+            if (!everyTick && _lastSent.TryGetValue(index, out EntityMotion sent))
             {
                 float age = (float)(now - _lastSentTime[index]);
                 EntityMotion predicted = sent.Extrapolate(age);

@@ -8,6 +8,7 @@ using EmpireAtWar.Entities.BaseEntity;
 using EmpireAtWar.Entities.BaseEntity.EntityFacades;
 using EmpireAtWar.Entities.BaseEntity.Orders;
 using EmpireAtWar.Entities.Ship.EntityFacades.Health;
+using EmpireAtWar.Entities.Squadrons.EntityFacades;
 using EmpireAtWar.Entities.UnitActions;
 using EmpireAtWar.Entities.Units;
 using EmpireAtWar.Models.Health;
@@ -298,6 +299,58 @@ namespace EmpireAtWar.Tests.Editor
             }
         }
 
+        [Test]
+        public void HostReplicator_SendsSquadronRootsEveryTickWithoutRates_AndClientsKeepThemOutOfCorrections()
+        {
+            GameObject root = new GameObject("NetworkedSquadron");
+            try
+            {
+                EntityLocator entities = new EntityLocator();
+                using HostTickReplicator host = new HostTickReplicator(entities);
+                HostTickOutput output = new HostTickOutput();
+                ClientReplicaBuffer client = new ClientReplicaBuffer();
+                entities.AddEntity(new FakeSquadron(12, root.transform));
+
+                double time = 0;
+                host.Advance(NetworkTickSettings.TICK_INTERVAL, time, output);
+                Assert.That(output.Spawns, Has.Count.EqualTo(1));
+                Assert.That(output.Spawns[0].IsInterpolated, Is.True);
+                int sent = CountKeyframes(output);
+                Deliver(output, client, time);
+
+                const int TICKS = 5;
+                for (int tick = 1; tick <= TICKS; tick++)
+                {
+                    // Sideways to the root's heading (+Z) and under the 2 m drift threshold: dead reckoning would wait.
+                    root.transform.position += Vector3.right * 0.5f;
+                    time += NetworkTickSettings.TICK_INTERVAL;
+                    host.Advance(NetworkTickSettings.TICK_INTERVAL, time, output);
+                    Assert.That(CountKeyframes(output), Is.EqualTo(1), "A squadron root goes out every tick.");
+                    EntityMotion motion = EntityKeyframeCodec.Decode(output.Keyframes[0].Keyframes[0]);
+                    Assert.That(motion.Speed, Is.Zero, "No rates: clients interpolate between ticks instead of guessing.");
+                    Assert.That(motion.TurnRate, Is.Zero);
+                    sent++;
+                    Deliver(output, client, time);
+                }
+
+                Assert.That(client.Stats.InterpolatedKeyframes, Is.EqualTo(sent));
+                Assert.That(client.Stats.Corrections, Is.Zero, "Interpolated roots are not dead-reckoning corrections.");
+                Assert.That(client.TrySample(12, out EntityMotion sampled), Is.True);
+                Assert.That(sampled.Position.x, Is.InRange(0f, TICKS * 0.5f + TOLERANCE));
+            }
+            finally
+            {
+                Object.DestroyImmediate(root);
+            }
+        }
+
+        private static int CountKeyframes(HostTickOutput output)
+        {
+            int count = 0;
+            foreach (EntityKeyframesMessage chunk in output.Keyframes) count += chunk.Keyframes.Length;
+            return count;
+        }
+
         [TestCase(false)]
         [TestCase(true)]
         public void DestroyShip_RequiresConnectionOwnerAndReplicatesOneDeath(bool announceDeathBeforeDespawn)
@@ -442,7 +495,7 @@ namespace EmpireAtWar.Tests.Editor
             public IHardPointModel[] GetShipUnits(HardPointType hardPointType) => Array.Empty<IHardPointModel>();
         }
 
-        private sealed class FakeEntity : IEntity, IEntityTransformFacade
+        private class FakeEntity : IEntity, IEntityTransformFacade
         {
             public FakeEntity(long id, Transform transform)
             {
@@ -469,6 +522,14 @@ namespace EmpireAtWar.Tests.Editor
                 facade = default;
                 return false;
             }
+        }
+
+        private sealed class FakeSquadron : FakeEntity, ISquadronFighterSpreadFacade
+        {
+            public FakeSquadron(long id, Transform transform) : base(id, transform) { }
+
+            public Vector3 FighterCentroid => Transform.position;
+            public float LoiterRadius => 20f;
         }
     }
 }

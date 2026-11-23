@@ -86,6 +86,15 @@ namespace EmpireAtWar.Components.Squadrons.Flight
             }
         }
 
+        /// <summary>Moves every live fighter by <paramref name="offset"/>; dead fighters keep their last pose.</summary>
+        public void Shift(Vector3 offset)
+        {
+            for (int i = 0; i < _fighters.Length; i++)
+            {
+                if (_alive[i]) _fighters[i].Translate(offset);
+            }
+        }
+
         public Vector3 GetCentroid()
         {
             Vector3 sum = Vector3.Zero;

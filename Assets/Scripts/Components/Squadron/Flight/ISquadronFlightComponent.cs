@@ -9,6 +9,8 @@ namespace EmpireAtWar.Components.Squadrons.Flight
         int Count { get; }
         Vector3 Centroid { get; }
         Vector3 Heading { get; }
+        /// <summary>Centroid of the live fighters. Equals <see cref="Centroid"/> except on online clients, whose root holds the host's pose.</summary>
+        Vector3 FighterCentroid { get; }
 
         bool IsAlive(int index);
 
@@ -19,6 +21,9 @@ namespace EmpireAtWar.Components.Squadrons.Flight
         void Steer(int index, Vector3 target, float speed);
 
         void Step(float deltaTime);
+
+        /// <summary>Moves every live fighter by <paramref name="offset"/>; their poses follow on the next <see cref="Step"/>.</summary>
+        void Shift(Vector3 offset);
 
         /// <summary>Limits every fighter's speed to a group pace; PositiveInfinity removes the cap.</summary>
         void SetSpeedCap(float cap);

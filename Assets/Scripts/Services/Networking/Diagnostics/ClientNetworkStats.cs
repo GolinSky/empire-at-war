@@ -53,11 +53,14 @@ namespace EmpireAtWar.Services.Networking.Diagnostics
 
             ClientReplicaStats stats = _replica.Stats;
             float chunks = stats.Chunks / seconds;
-            row.Set("timeline_delay_ms", stats.TimelineDelay * 1000.0);
+            // A host that stopped ticking (match over) sends no keyframes; the delay would only count down.
+            row.Set("timeline_delay_ms", _hasHost && _host.TickRate <= 0f ? double.NaN : stats.TimelineDelay * 1000.0);
             row.Set("underruns_s", stats.Underruns / seconds);
             row.Set("keyframes_s", stats.Keyframes / seconds);
+            row.Set("squadron_keyframes_s", stats.InterpolatedKeyframes / seconds);
             row.Set("keyframe_chunks_s", chunks);
             row.Set("lost_chunks_s", stats.LostChunks / seconds);
+            // Squadron roots are interpolated, not predicted: corrections are ships, stations and other units.
             row.Set("corrections_s", stats.Corrections / seconds);
             row.Set("correction_mean_m", stats.Corrections > 0 ? stats.PositionErrorSum / stats.Corrections : double.NaN);
             row.Set("correction_max_m", stats.Corrections > 0 ? stats.PositionErrorMax : double.NaN);
@@ -72,9 +75,6 @@ namespace EmpireAtWar.Services.Networking.Diagnostics
             row.Set("host_shots_s", _hasHost ? _host.ShotsPerSecond : double.NaN);
             row.Set("host_keyframe_chunks_s", _hasHost ? _host.KeyframeChunksPerSecond : double.NaN);
             row.Set("host_entities", _hasHost ? _host.EntityCount : double.NaN);
-            // Approximate: the host's last window against this one; ticks lost whole show up only here.
-            row.Set("chunk_loss_pct", _hasHost && _host.KeyframeChunksPerSecond > 0f
-                ? Math.Max(0.0, 1.0 - chunks / _host.KeyframeChunksPerSecond) * 100.0 : double.NaN);
             row.Set("reliable_lag_ms", _lagLast);
             row.Set("reliable_lag_max_ms", _lagMax);
             details.Add(_hasHost
