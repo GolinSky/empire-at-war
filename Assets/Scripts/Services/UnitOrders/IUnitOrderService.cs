@@ -14,13 +14,14 @@ namespace EmpireAtWar.Services.UnitOrders
 
         void IssueMove(IReadOnlyList<IEntity> receivers, IReadOnlyList<Vector3> destinations);
 
-        void IssueAttack(IReadOnlyList<IEntity> receivers, IEntity target);
+        void IssueAttack(IReadOnlyList<IEntity> receivers, IEntity target, MovePace pace = MovePace.Formation);
 
         void IssueAttack(IReadOnlyList<IEntity> receivers, IEntity target, IReadOnlyList<Vector3> offsets);
 
-        void IssueHardPointAttack(IReadOnlyList<IEntity> receivers, IEntity target, int hardPointId);
+        void IssueHardPointAttack(IReadOnlyList<IEntity> receivers, IEntity target, int hardPointId,
+            MovePace pace = MovePace.Formation);
 
-        void IssueAttackMove(IReadOnlyList<IEntity> receivers, Vector3 point);
+        void IssueAttackMove(IReadOnlyList<IEntity> receivers, Vector3 point, MovePace pace = MovePace.Formation);
 
         void IssueAttackMove(IReadOnlyList<IEntity> receivers, IReadOnlyList<Vector3> destinations);
 

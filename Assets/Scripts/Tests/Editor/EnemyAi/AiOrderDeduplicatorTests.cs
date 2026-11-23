@@ -110,12 +110,12 @@ namespace EmpireAtWar.Tests.Editor
                 Record("Move", receivers);
             public void IssueMove(IReadOnlyList<IEntity> receivers, IReadOnlyList<Vector3> destinations) =>
                 Record("Move", receivers);
-            public void IssueAttack(IReadOnlyList<IEntity> receivers, IEntity target) => Record("Attack", receivers);
+            public void IssueAttack(IReadOnlyList<IEntity> receivers, IEntity target, MovePace pace = MovePace.Formation) => Record("Attack", receivers);
             public void IssueAttack(IReadOnlyList<IEntity> receivers, IEntity target, IReadOnlyList<Vector3> offsets) =>
                 Record("Attack", receivers);
-            public void IssueHardPointAttack(IReadOnlyList<IEntity> receivers, IEntity target, int hardPointId) =>
+            public void IssueHardPointAttack(IReadOnlyList<IEntity> receivers, IEntity target, int hardPointId, MovePace pace = MovePace.Formation) =>
                 Record("HardPointAttack", receivers);
-            public void IssueAttackMove(IReadOnlyList<IEntity> receivers, Vector3 point) => Record("AttackMove", receivers);
+            public void IssueAttackMove(IReadOnlyList<IEntity> receivers, Vector3 point, MovePace pace = MovePace.Formation) => Record("AttackMove", receivers);
             public void IssueAttackMove(IReadOnlyList<IEntity> receivers, IReadOnlyList<Vector3> destinations) =>
                 Record("AttackMove", receivers);
             public void IssueStop(IReadOnlyList<IEntity> receivers) => Record("Stop", receivers);

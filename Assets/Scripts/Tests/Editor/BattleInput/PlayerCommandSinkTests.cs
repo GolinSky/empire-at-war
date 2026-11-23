@@ -83,6 +83,20 @@ namespace EmpireAtWar.Tests.Editor
         }
 
         [Test]
+        public void UnitOrder_RelaysLoosePaceForAttackAndAttackMove()
+        {
+            _sink.Submit(new UnitOrderCommand(TestPlayers.Human, UnitActionId.Attack, new long[] { 1 }, Vector3.zero,
+                targetId: 2, pace: MovePace.Loose));
+            Assert.That(_orders.LastAction, Is.EqualTo(UnitActionId.Attack));
+            Assert.That(_orders.LastPace, Is.EqualTo(MovePace.Loose));
+
+            _sink.Submit(new UnitOrderCommand(TestPlayers.Human, UnitActionId.AttackMove, new long[] { 1 },
+                Vector3.one, pace: MovePace.Loose));
+            Assert.That(_orders.LastAction, Is.EqualTo(UnitActionId.AttackMove));
+            Assert.That(_orders.LastPace, Is.EqualTo(MovePace.Loose));
+        }
+
+        [Test]
         public void UnitOrderCommand_Create_StoresIdsNotReferences()
         {
             UnitOrderCommand command = UnitOrderCommand.Create(TestPlayers.Human, UnitActionId.WaypointMove,
@@ -306,10 +320,10 @@ namespace EmpireAtWar.Tests.Editor
             public void IssueMove(IReadOnlyList<IEntity> receivers, Vector3 point, MovePace pace = MovePace.Formation) =>
                 Record(UnitActionId.Move, receivers, point, pace: pace);
             public void IssueMove(IReadOnlyList<IEntity> receivers, IReadOnlyList<Vector3> destinations) => Record(UnitActionId.Move, receivers);
-            public void IssueAttack(IReadOnlyList<IEntity> receivers, IEntity target) => Record(UnitActionId.Attack, receivers, target: target);
+            public void IssueAttack(IReadOnlyList<IEntity> receivers, IEntity target, MovePace pace = MovePace.Formation) => Record(UnitActionId.Attack, receivers, target: target, pace: pace);
             public void IssueAttack(IReadOnlyList<IEntity> receivers, IEntity target, IReadOnlyList<Vector3> offsets) => Record(UnitActionId.Attack, receivers, target: target);
-            public void IssueHardPointAttack(IReadOnlyList<IEntity> receivers, IEntity target, int hardPointId) => Record(UnitActionId.Attack, receivers, target: target);
-            public void IssueAttackMove(IReadOnlyList<IEntity> receivers, Vector3 point) => Record(UnitActionId.AttackMove, receivers, point);
+            public void IssueHardPointAttack(IReadOnlyList<IEntity> receivers, IEntity target, int hardPointId, MovePace pace = MovePace.Formation) => Record(UnitActionId.Attack, receivers, target: target, pace: pace);
+            public void IssueAttackMove(IReadOnlyList<IEntity> receivers, Vector3 point, MovePace pace = MovePace.Formation) => Record(UnitActionId.AttackMove, receivers, point, pace: pace);
             public void IssueAttackMove(IReadOnlyList<IEntity> receivers, IReadOnlyList<Vector3> destinations) => Record(UnitActionId.AttackMove, receivers);
             public void IssueStop(IReadOnlyList<IEntity> receivers) => Record(UnitActionId.Stop, receivers);
             public void IssueGuard(IReadOnlyList<IEntity> receivers, IEntity friendly) => Record(UnitActionId.Guard, receivers, target: friendly);

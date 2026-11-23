@@ -64,6 +64,19 @@ namespace EmpireAtWar.Tests.Editor
         }
 
         [Test]
+        public void SelectTarget_SkipsIneligibleEnemiesAndReturnsNullWhenNoneQualify()
+        {
+            AttackMoveEngagement engagement = new AttackMoveEngagement();
+            FakeEntity outside = new FakeEntity(1);
+            FakeEntity inside = new FakeEntity(2);
+            int member = engagement.Join();
+            engagement.Report(member, new IEntity[] { outside, inside });
+
+            Assert.That(engagement.SelectTarget(member, BY_ID, ANY, enemy => enemy == inside), Is.SameAs(inside));
+            Assert.That(engagement.SelectTarget(member, BY_ID, ANY, enemy => false), Is.Null);
+        }
+
+        [Test]
         public void Contains_DropsDestroyedAndUnreportedEnemies()
         {
             AttackMoveEngagement engagement = new AttackMoveEngagement();

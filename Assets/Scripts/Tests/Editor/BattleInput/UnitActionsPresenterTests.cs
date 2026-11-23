@@ -305,12 +305,12 @@ namespace EmpireAtWar.Tests.Editor
             public void IssueMove(IReadOnlyList<IEntity> units, Vector3 point, MovePace pace = MovePace.Formation) =>
                 LastAction = UnitActionId.Move;
 
-            public void IssueAttack(IReadOnlyList<IEntity> units, IEntity target) => LastAction = UnitActionId.Attack;
+            public void IssueAttack(IReadOnlyList<IEntity> units, IEntity target, MovePace pace = MovePace.Formation) => LastAction = UnitActionId.Attack;
 
             public void IssueHardPointAttack(IReadOnlyList<IEntity> units, IEntity target,
-                int hardPointId) => LastAction = UnitActionId.Attack;
+                int hardPointId, MovePace pace = MovePace.Formation) => LastAction = UnitActionId.Attack;
 
-            public void IssueAttackMove(IReadOnlyList<IEntity> units, Vector3 point) => LastAction = UnitActionId.AttackMove;
+            public void IssueAttackMove(IReadOnlyList<IEntity> units, Vector3 point, MovePace pace = MovePace.Formation) => LastAction = UnitActionId.AttackMove;
 
             public void IssueStop(IReadOnlyList<IEntity> units) => LastAction = UnitActionId.Stop;
 

@@ -22,14 +22,17 @@ namespace EmpireAtWar.Services.UnitOrders
         public void IssueMove(IReadOnlyList<IEntity> receivers, Vector3 point, MovePace pace = MovePace.Formation) =>
             Submit(UnitActionId.Move, receivers, point, pace: pace);
 
-        public void IssueAttackMove(IReadOnlyList<IEntity> receivers, Vector3 point) =>
-            Submit(UnitActionId.AttackMove, receivers, point);
+        public void IssueAttackMove(IReadOnlyList<IEntity> receivers, Vector3 point,
+            MovePace pace = MovePace.Formation) =>
+            Submit(UnitActionId.AttackMove, receivers, point, pace: pace);
 
-        public void IssueAttack(IReadOnlyList<IEntity> receivers, IEntity target) =>
-            Submit(UnitActionId.Attack, receivers, target: target);
+        public void IssueAttack(IReadOnlyList<IEntity> receivers, IEntity target,
+            MovePace pace = MovePace.Formation) =>
+            Submit(UnitActionId.Attack, receivers, target: target, pace: pace);
 
-        public void IssueHardPointAttack(IReadOnlyList<IEntity> receivers, IEntity target, int hardPointId) =>
-            Submit(UnitActionId.Attack, receivers, target: target, targetHardPointId: hardPointId);
+        public void IssueHardPointAttack(IReadOnlyList<IEntity> receivers, IEntity target, int hardPointId,
+            MovePace pace = MovePace.Formation) =>
+            Submit(UnitActionId.Attack, receivers, target: target, targetHardPointId: hardPointId, pace: pace);
 
         public void IssueGuard(IReadOnlyList<IEntity> receivers, IEntity friendly) =>
             Submit(UnitActionId.Guard, receivers, target: friendly);

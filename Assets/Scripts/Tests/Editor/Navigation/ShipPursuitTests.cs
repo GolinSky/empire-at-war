@@ -986,6 +986,62 @@ namespace EmpireAtWar.Tests.Movement
         }
 
         [Test]
+        public void AttackMove_ArrivedShipDoesNotChaseEnemiesBeyondReachOfItsPoint()
+        {
+            const BindingFlags PRIVATE_INSTANCE = BindingFlags.Instance | BindingFlags.NonPublic;
+            _target.Transform.position = Vector3.right * 300f;
+            Radar radar = new Radar();
+            radar.Enemies.Add(_target);
+            AttackMoveEngagement engagement = new AttackMoveEngagement();
+            AttackMoveState state = new AttackMoveState(_movement, _weapon, radar, null);
+            state.SetData(Vector3.zero, engagement);
+            state.Enter();
+            _movement.FinishLeg();
+            int moves = _movement.MoveCount;
+            typeof(AttackMoveState).GetField("_nextSearchTime", PRIVATE_INSTANCE)
+                .SetValue(state, float.NegativeInfinity);
+
+            state.Tick(0.1f);
+
+            Assert.That(engagement.Contains(_target), Is.True);
+            Assert.That(state.IsEngaging, Is.False);
+            Assert.That(_movement.MoveCount, Is.EqualTo(moves));
+            Assert.That(state.IsComplete, Is.True);
+            state.Exit();
+        }
+
+        [Test]
+        public void AttackMove_LostTargetSearchesBeforeReturningToThePoint()
+        {
+            const BindingFlags PRIVATE_INSTANCE = BindingFlags.Instance | BindingFlags.NonPublic;
+            // Seeded so the random search delay is above zero; edit-mode time does not advance between ticks.
+            UnityEngine.Random.InitState(7);
+            _target.Transform.position = Vector3.right * 90f;
+            Radar radar = new Radar();
+            radar.Enemies.Add(_target);
+            AttackMoveState state = new AttackMoveState(_movement, _weapon, radar, null);
+            state.SetData(Vector3.zero, new AttackMoveEngagement());
+            state.Enter();
+            _movement.FinishLeg();
+            typeof(AttackMoveState).GetField("_engagementTarget", PRIVATE_INSTANCE).SetValue(state, _target);
+            state.Tick(0.1f);
+            _movement.CurrentPosition = Vector3.right * 50f;
+            int moves = _movement.MoveCount;
+
+            radar.Enemies.Remove(_target);
+            state.Tick(0.1f);
+            Assert.That(state.IsEngaging, Is.False);
+            Assert.That(_movement.MoveCount, Is.EqualTo(moves), "No return before the next target search.");
+
+            typeof(AttackMoveState).GetField("_nextSearchTime", PRIVATE_INSTANCE)
+                .SetValue(state, float.NegativeInfinity);
+            state.Tick(0.1f);
+            Assert.That(_movement.MoveCount, Is.EqualTo(moves + 1));
+            Assert.That(_movement.Destination, Is.EqualTo(Vector3.zero));
+            state.Exit();
+        }
+
+        [Test]
         public void Hunt_NoVisibleEnemiesRemainsActiveAndStopsPreviousMovement()
         {
             UnitOrderSettings settings = ScriptableObject.CreateInstance<UnitOrderSettings>();

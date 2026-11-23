@@ -9,9 +9,10 @@ namespace EmpireAtWar.Services.UnitOrders
     public interface IPlayerUnitOrders
     {
         void IssueMove(IReadOnlyList<IEntity> receivers, Vector3 point, MovePace pace = MovePace.Formation);
-        void IssueAttackMove(IReadOnlyList<IEntity> receivers, Vector3 point);
-        void IssueAttack(IReadOnlyList<IEntity> receivers, IEntity target);
-        void IssueHardPointAttack(IReadOnlyList<IEntity> receivers, IEntity target, int hardPointId);
+        void IssueAttackMove(IReadOnlyList<IEntity> receivers, Vector3 point, MovePace pace = MovePace.Formation);
+        void IssueAttack(IReadOnlyList<IEntity> receivers, IEntity target, MovePace pace = MovePace.Formation);
+        void IssueHardPointAttack(IReadOnlyList<IEntity> receivers, IEntity target, int hardPointId,
+            MovePace pace = MovePace.Formation);
         void IssueGuard(IReadOnlyList<IEntity> receivers, IEntity friendly);
         void IssueWaypointMove(IReadOnlyList<IEntity> receivers, IReadOnlyList<Vector3> waypoints);
         void IssueStop(IReadOnlyList<IEntity> receivers);

@@ -568,6 +568,54 @@ namespace EmpireAtWar.Tests.Editor
             Assert.That(_orders.LastPace, Is.EqualTo(MovePace.Loose));
         }
 
+        [Test]
+        public void DoubleRightClickEnemy_IssuesLooseAttack_WhileSingleRightClickIssuesFormation()
+        {
+            _input.CommandClickCount = 1;
+            _input.RightClick(Vector2.zero);
+            Assert.That(_orders.LastAction, Is.EqualTo(UnitActionId.Attack));
+            Assert.That(_orders.LastPace, Is.EqualTo(MovePace.Formation));
+
+            _input.CommandClickCount = 2;
+            _input.RightClick(Vector2.zero);
+            Assert.That(_orders.LastAction, Is.EqualTo(UnitActionId.Attack));
+            Assert.That(_orders.LastTarget, Is.SameAs(_enemy));
+            Assert.That(_orders.LastPace, Is.EqualTo(MovePace.Loose));
+        }
+
+        [Test]
+        public void DoubleClickAttackMove_ReissuesLooseAttackMove_InsteadOfMove()
+        {
+            _query.ReturnEnemy = false;
+            _targeting.Start(UnitActionId.AttackMove);
+            _input.CommandClickCount = 1;
+            _input.RightClick(new Vector2(10f, 20f));
+            Assert.That(_orders.LastAction, Is.EqualTo(UnitActionId.AttackMove));
+            Assert.That(_orders.LastPace, Is.EqualTo(MovePace.Formation));
+            Assert.That(_targeting.Pending, Is.Null);
+
+            _input.CommandClickCount = 2;
+            _input.RightClick(new Vector2(10f, 20f));
+            Assert.That(_orders.LastAction, Is.EqualTo(UnitActionId.AttackMove));
+            Assert.That(_orders.LastPace, Is.EqualTo(MovePace.Loose));
+        }
+
+        [Test]
+        public void RepeatClickAfterMove_DoesNotTurnIntoAttackMove()
+        {
+            _query.ReturnEnemy = false;
+            _targeting.Start(UnitActionId.AttackMove);
+            _input.CommandClickCount = 1;
+            _input.RightClick(new Vector2(10f, 20f));
+            _input.RightClick(new Vector2(10f, 20f));
+            Assert.That(_orders.LastAction, Is.EqualTo(UnitActionId.Move));
+
+            _input.CommandClickCount = 2;
+            _input.RightClick(new Vector2(10f, 20f));
+            Assert.That(_orders.LastAction, Is.EqualTo(UnitActionId.Move));
+            Assert.That(_orders.LastPace, Is.EqualTo(MovePace.Loose));
+        }
+
         private void RegisterSite() =>
             _areas.Register(BattleAreaLayer.OrderSnap, PlayerId.None, _siteView.transform, 5f);
 
@@ -736,15 +784,15 @@ namespace EmpireAtWar.Tests.Editor
             public void IssueMove(IReadOnlyList<IEntity> units, Vector3 point, MovePace pace = MovePace.Formation)
             { LastAction = UnitActionId.Move; LastPoint = point; LastPace = pace; }
 
-            public void IssueAttack(IReadOnlyList<IEntity> units, IEntity target)
-            { LastAction = UnitActionId.Attack; LastTarget = target; }
+            public void IssueAttack(IReadOnlyList<IEntity> units, IEntity target, MovePace pace = MovePace.Formation)
+            { LastAction = UnitActionId.Attack; LastTarget = target; LastPace = pace; }
 
             public void IssueHardPointAttack(IReadOnlyList<IEntity> units, IEntity target,
-                int hardPointId)
-            { LastAction = UnitActionId.Attack; LastTarget = target; LastHardPointId = hardPointId; }
+                int hardPointId, MovePace pace = MovePace.Formation)
+            { LastAction = UnitActionId.Attack; LastTarget = target; LastHardPointId = hardPointId; LastPace = pace; }
 
-            public void IssueAttackMove(IReadOnlyList<IEntity> units, Vector3 point)
-            { LastAction = UnitActionId.AttackMove; LastPoint = point; }
+            public void IssueAttackMove(IReadOnlyList<IEntity> units, Vector3 point, MovePace pace = MovePace.Formation)
+            { LastAction = UnitActionId.AttackMove; LastPoint = point; LastPace = pace; }
 
             public void IssueStop(IReadOnlyList<IEntity> units) => LastAction = UnitActionId.Stop;
 

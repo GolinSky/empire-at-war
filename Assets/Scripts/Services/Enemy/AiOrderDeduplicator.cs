@@ -49,10 +49,10 @@ namespace EmpireAtWar.Services.Enemy
                 using (Tag()) _orders.IssueMove(_receivers.ToArray(), _destinations.ToArray());
         }
 
-        public void IssueAttack(IReadOnlyList<IEntity> receivers, IEntity target)
+        public void IssueAttack(IReadOnlyList<IEntity> receivers, IEntity target, MovePace pace = MovePace.Formation)
         {
             if (Filter(receivers, UnitOrderType.Attack, target, default))
-                using (Tag()) _orders.IssueAttack(_receivers.ToArray(), target);
+                using (Tag()) _orders.IssueAttack(_receivers.ToArray(), target, pace);
         }
 
         public void IssueAttack(IReadOnlyList<IEntity> receivers, IEntity target, IReadOnlyList<Vector3> offsets)
@@ -61,16 +61,17 @@ namespace EmpireAtWar.Services.Enemy
             using (Tag()) _orders.IssueAttack(receivers, target, offsets);
         }
 
-        public void IssueHardPointAttack(IReadOnlyList<IEntity> receivers, IEntity target, int hardPointId)
+        public void IssueHardPointAttack(IReadOnlyList<IEntity> receivers, IEntity target, int hardPointId,
+            MovePace pace = MovePace.Formation)
         {
             Forget(receivers);
-            using (Tag()) _orders.IssueHardPointAttack(receivers, target, hardPointId);
+            using (Tag()) _orders.IssueHardPointAttack(receivers, target, hardPointId, pace);
         }
 
-        public void IssueAttackMove(IReadOnlyList<IEntity> receivers, Vector3 point)
+        public void IssueAttackMove(IReadOnlyList<IEntity> receivers, Vector3 point, MovePace pace = MovePace.Formation)
         {
             if (Filter(receivers, UnitOrderType.AttackMove, null, point))
-                using (Tag()) _orders.IssueAttackMove(_receivers.ToArray(), point);
+                using (Tag()) _orders.IssueAttackMove(_receivers.ToArray(), point, pace);
         }
 
         public void IssueAttackMove(IReadOnlyList<IEntity> receivers, IReadOnlyList<Vector3> destinations)

@@ -386,6 +386,8 @@ namespace EmpireAtWar.Tests.Editor
             nearA.Command.WorldPosition = new Vector3(0f, 0f, 0f);
             nearB.Command.WorldPosition = new Vector3(100f, 0f, 0f);
             farC.Command.WorldPosition = new Vector3(_settings.PaceTuning.LinkDistance * 3f, 0f, 0f);
+            float farAway = _settings.PaceTuning.LinkDistance * 2f;
+            enemy.Health.Transform.position = new Vector3(0f, 0f, farAway);
             IEntity[] receivers = { nearA, nearB, farC };
 
             UnitOrder issued = default;
@@ -406,7 +408,7 @@ namespace EmpireAtWar.Tests.Editor
             Assert.That(farC.Command.LastPace, Is.Null);
 
             // AttackMove: near pair shares one cluster, far unit gets null.
-            _unitOrderService.IssueAttackMove(receivers, new Vector3(500f, 0f, 500f));
+            _unitOrderService.IssueAttackMove(receivers, new Vector3(0f, 0f, farAway));
             Assert.That(nearA.Command.LastPace, Is.Not.Null);
             Assert.That(nearA.Command.LastPace, Is.SameAs(nearB.Command.LastPace));
             Assert.That(farC.Command.LastPace, Is.Null);
@@ -416,6 +418,44 @@ namespace EmpireAtWar.Tests.Editor
             Assert.That(nearA.Command.LastPace, Is.Not.Null);
             Assert.That(nearA.Command.LastPace, Is.SameAs(nearB.Command.LastPace));
             Assert.That(farC.Command.LastPace, Is.Null);
+
+            // Loose AttackMove and Attack (double tap): no unit receives a pace cluster.
+            _unitOrderService.IssueAttackMove(receivers, new Vector3(0f, 0f, farAway), MovePace.Loose);
+            Assert.That(nearA.Command.LastPace, Is.Null);
+            Assert.That(nearB.Command.LastPace, Is.Null);
+            _unitOrderService.IssueAttack(receivers, enemy, MovePace.Loose);
+            Assert.That(nearA.Command.LastPace, Is.Null);
+            Assert.That(nearB.Command.LastPace, Is.Null);
+        }
+
+        [Test]
+        public void AttackAndAttackMove_TargetNearCluster_LeaveThatClusterUnpaced()
+        {
+            float link = _settings.PaceTuning.LinkDistance;
+            FakeEntity nearA = Entity(1, TestPlayers.Human);
+            FakeEntity nearB = Entity(2, TestPlayers.Human);
+            FakeEntity farA = Entity(3, TestPlayers.Human);
+            FakeEntity farB = Entity(4, TestPlayers.Human);
+            FakeEntity enemy = Entity(5, TestPlayers.Enemy);
+            nearA.Command.WorldPosition = Vector3.zero;
+            nearB.Command.WorldPosition = new Vector3(100f, 0f, 0f);
+            farA.Command.WorldPosition = new Vector3(link * 4f, 0f, 0f);
+            farB.Command.WorldPosition = new Vector3(link * 4f + 100f, 0f, 0f);
+            Vector3 target = new Vector3(0f, 0f, link * 0.5f);
+            enemy.Health.Transform.position = target;
+            IEntity[] receivers = { nearA, nearB, farA, farB };
+
+            _unitOrderService.IssueAttack(receivers, enemy);
+            Assert.That(nearA.Command.LastPace, Is.Null);
+            Assert.That(nearB.Command.LastPace, Is.Null);
+            Assert.That(farA.Command.LastPace, Is.Not.Null);
+            Assert.That(farA.Command.LastPace, Is.SameAs(farB.Command.LastPace));
+
+            _unitOrderService.IssueAttackMove(receivers, target);
+            Assert.That(nearA.Command.LastPace, Is.Null);
+            Assert.That(nearB.Command.LastPace, Is.Null);
+            Assert.That(farA.Command.LastPace, Is.Not.Null);
+            Assert.That(farA.Command.LastPace, Is.SameAs(farB.Command.LastPace));
         }
 
         private FakeEntity Entity(long id, PlayerId side, Type[] commands = null,

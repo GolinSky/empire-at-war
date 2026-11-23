@@ -69,9 +69,11 @@ namespace EmpireAtWar.Entities.BaseEntity.Orders
 
         /// <summary>
         /// Claims a live enemy: preferred enemies first, then the fewest other attackers, nearest first on ties.
-        /// Returns null and drops the member's claim when the engagement set is empty.
+        /// Only enemies passing <paramref name="isEligible"/> (all when null) count. Returns null and drops the
+        /// member's claim when none qualifies.
         /// </summary>
-        public IEntity SelectTarget(int member, Func<IEntity, float> distance, Func<IEntity, bool> isPreferred)
+        public IEntity SelectTarget(int member, Func<IEntity, float> distance, Func<IEntity, bool> isPreferred,
+            Func<IEntity, bool> isEligible = null)
         {
             DropClaim(member);
             IEntity best = null;
@@ -80,7 +82,7 @@ namespace EmpireAtWar.Entities.BaseEntity.Orders
             float nearest = float.PositiveInfinity;
             foreach (IEntity enemy in _reporters.Keys)
             {
-                if (!IsAlive(enemy)) continue;
+                if (!IsAlive(enemy) || (isEligible != null && !isEligible(enemy))) continue;
                 bool preferred = isPreferred(enemy);
                 if (bestPreferred && !preferred) continue;
                 _attackers.TryGetValue(enemy, out int attackers);

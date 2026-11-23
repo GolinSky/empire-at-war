@@ -3902,7 +3902,7 @@ namespace EmpireAtWar.Tests.Editor
                 Record(UnitActionId.Move, receivers,
                     destinations.Count > 0 ? destinations[0] : default);
 
-            public void IssueAttack(IReadOnlyList<IEntity> receivers, IEntity target) =>
+            public void IssueAttack(IReadOnlyList<IEntity> receivers, IEntity target, MovePace pace = MovePace.Formation) =>
                 Record(UnitActionId.Attack, receivers, target: target);
 
             public void IssueAttack(IReadOnlyList<IEntity> receivers, IEntity target,
@@ -3910,10 +3910,10 @@ namespace EmpireAtWar.Tests.Editor
                 Record(UnitActionId.Attack, receivers, target: target, offsets: offsets);
 
             public void IssueHardPointAttack(IReadOnlyList<IEntity> receivers, IEntity target,
-                int hardPointId) =>
+                int hardPointId, MovePace pace = MovePace.Formation) =>
                 Record(UnitActionId.Attack, receivers, target: target);
 
-            public void IssueAttackMove(IReadOnlyList<IEntity> receivers, Vector3 point) =>
+            public void IssueAttackMove(IReadOnlyList<IEntity> receivers, Vector3 point, MovePace pace = MovePace.Formation) =>
                 Record(UnitActionId.AttackMove, receivers, point);
 
             public void IssueAttackMove(IReadOnlyList<IEntity> receivers, IReadOnlyList<Vector3> destinations) =>

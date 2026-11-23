@@ -13,9 +13,10 @@ namespace EmpireAtWar.Entities.Ship.StateMachine
 {
     /// <summary>
     /// Flies to the destination without breaking off for fights on the way (weapons still fire at what passes in
-    /// range), then fights every enemy the arrived attack-move group detects there.
-    /// Targets come from the shared <see cref="AttackMoveEngagement"/> so the group spreads its fire;
-    /// once the engagement set is clear the ship returns to the destination.
+    /// range), then fights the enemies the arrived attack-move group detects within the ship's reach of the
+    /// destination; it never chases beyond that leash.
+    /// Targets come from the shared <see cref="AttackMoveEngagement"/> so the group spreads its fire. A ship that
+    /// loses its target looks for the next one first and returns to the destination only when none is left.
     /// </summary>
     public sealed class AttackMoveState : IBaseState
     {
@@ -32,6 +33,8 @@ namespace EmpireAtWar.Entities.Ship.StateMachine
 
         private readonly Func<IEntity, float> _rangeTo;
         private readonly Func<IEntity, bool> _isPreferred;
+        private readonly Func<IEntity, bool> _isLeashed;
+        private readonly Func<IEntity, bool> _isLeashedPreferred;
         private AttackMoveEngagement _nextEngagement;
         private AttackMoveEngagement _engagement;
 
@@ -43,6 +46,8 @@ namespace EmpireAtWar.Entities.Ship.StateMachine
         private bool _hasSearched;
         // Set once the ship first reaches the destination; until then it neither reports nor claims enemies.
         private bool _hasArrived;
+        // A target was lost: return to the destination unless the next search finds another.
+        private bool _isReturnPending;
 
         public bool IsComplete => _engagementTarget == null && _hasSearched && !_movement.IsMoving;
         public bool IsEngaging => _engagementTarget != null;
@@ -60,6 +65,8 @@ namespace EmpireAtWar.Entities.Ship.StateMachine
             _attackDataFactory = attackDataFactory;
             _rangeTo = enemy => _movement.GetRange(enemy.GetFacade<IEntityTransformFacade>().Transform.position);
             _isPreferred = enemy => ShipEngagement.IsPreferred(enemy, _weapon);
+            _isLeashed = enemy => ShipEngagement.IsInReachFrom(_destination, _movement, _weapon, enemy);
+            _isLeashedPreferred = enemy => _isLeashed(enemy) && _isPreferred(enemy);
         }
 
         public void SetData(Vector3 destination, AttackMoveEngagement engagement)
@@ -74,6 +81,7 @@ namespace EmpireAtWar.Entities.Ship.StateMachine
             _engagement = _nextEngagement;
             _engagementTarget = null;
             _hasArrived = false;
+            _isReturnPending = false;
             _member = _engagement.Join();
             _movement.MoveToPosition(_destination);
             DelaySearch();
@@ -88,11 +96,14 @@ namespace EmpireAtWar.Entities.Ship.StateMachine
             }
 
             _engagement.Report(_member, _radar.Enemies);
-            if (_engagementTarget != null && !_engagement.Contains(_engagementTarget))
+            if (_engagementTarget != null &&
+                (!_engagement.Contains(_engagementTarget) || !_isLeashed(_engagementTarget)))
             {
+                // Hold course until the next search: heading back first and then turning for the next target
+                // made the ship zigzag between the point and the fight.
                 _weapon.ResetTarget();
                 _engagementTarget = null;
-                _movement.MoveToPosition(_destination);
+                _isReturnPending = true;
                 DelaySearch();
             }
 
@@ -102,13 +113,14 @@ namespace EmpireAtWar.Entities.Ship.StateMachine
             {
                 _nextSearchTime = Time.time + SEARCH_INTERVAL;
                 _hasSearched = true;
-                if (_engagementTarget == null || _engagement.HasPreferred(_isPreferred))
+                if (_engagementTarget == null || _engagement.HasPreferred(_isLeashedPreferred))
                 {
-                    IEntity selectedTarget = _engagement.SelectTarget(_member, _rangeTo, _isPreferred);
+                    IEntity selectedTarget = _engagement.SelectTarget(_member, _rangeTo, _isPreferred, _isLeashed);
                     if (selectedTarget != _engagementTarget) _movement.CancelCombatHold();
                     _engagementTarget = selectedTarget;
                     if (_engagementTarget != null)
                     {
+                        _isReturnPending = false;
                         _weapon.AddTarget(_attackDataFactory.ConstructData(_engagementTarget), AttackType.MainTarget);
                         // A new target always breaks off the course to the attack-move point.
                         if (!ShipEngagement.CanEngage(_engagementTarget, _movement, _weapon))
@@ -117,7 +129,17 @@ namespace EmpireAtWar.Entities.Ship.StateMachine
                 }
             }
 
-            if (_engagementTarget != null)
+            if (_engagementTarget == null)
+            {
+                if (_isReturnPending && _hasSearched)
+                {
+                    _isReturnPending = false;
+                    // A ship already on the point stays put: a re-plan this short only loops around it.
+                    if (_movement.GetRange(_destination) > _movement.NavigationRadius)
+                        _movement.MoveToPosition(_destination);
+                }
+            }
+            else
             {
                 if (ShipEngagement.CanEngage(_engagementTarget, _movement, _weapon))
                 {

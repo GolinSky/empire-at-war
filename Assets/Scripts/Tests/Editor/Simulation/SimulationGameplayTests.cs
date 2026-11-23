@@ -217,7 +217,7 @@ namespace EmpireAtWar.Tests.Editor
             public readonly Dictionary<long, long> Targets = new();
             public int Calls { get; private set; }
             public event Action<UnitOrder> OrderIssued { add { } remove { } }
-            public void IssueAttack(IReadOnlyList<IEntity> receivers, IEntity target)
+            public void IssueAttack(IReadOnlyList<IEntity> receivers, IEntity target, MovePace pace = MovePace.Formation)
             {
                 Calls++;
                 foreach (IEntity receiver in receivers) Targets.Add(receiver.Id, target.Id);
@@ -225,8 +225,8 @@ namespace EmpireAtWar.Tests.Editor
             public void IssueMove(IReadOnlyList<IEntity> receivers, Vector3 point, MovePace pace = MovePace.Formation) => throw new NotSupportedException();
             public void IssueMove(IReadOnlyList<IEntity> receivers, IReadOnlyList<Vector3> destinations) => throw new NotSupportedException();
             public void IssueAttack(IReadOnlyList<IEntity> receivers, IEntity target, IReadOnlyList<Vector3> offsets) => throw new NotSupportedException();
-            public void IssueHardPointAttack(IReadOnlyList<IEntity> receivers, IEntity target, int hardPointId) => throw new NotSupportedException();
-            public void IssueAttackMove(IReadOnlyList<IEntity> receivers, Vector3 point) => throw new NotSupportedException();
+            public void IssueHardPointAttack(IReadOnlyList<IEntity> receivers, IEntity target, int hardPointId, MovePace pace = MovePace.Formation) => throw new NotSupportedException();
+            public void IssueAttackMove(IReadOnlyList<IEntity> receivers, Vector3 point, MovePace pace = MovePace.Formation) => throw new NotSupportedException();
             public void IssueAttackMove(IReadOnlyList<IEntity> receivers, IReadOnlyList<Vector3> destinations) => throw new NotSupportedException();
             public void IssueStop(IReadOnlyList<IEntity> receivers) => throw new NotSupportedException();
             public void IssueGuard(IReadOnlyList<IEntity> receivers, IEntity friendly) => throw new NotSupportedException();

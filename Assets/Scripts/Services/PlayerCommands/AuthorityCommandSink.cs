@@ -45,13 +45,13 @@ namespace EmpireAtWar.Services.PlayerCommands
                     _orders.IssueMove(receivers, command.Point, command.Pace);
                     break;
                 case UnitActionId.AttackMove:
-                    _orders.IssueAttackMove(receivers, command.Point);
+                    _orders.IssueAttackMove(receivers, command.Point, command.Pace);
                     break;
                 case UnitActionId.Attack when command.TargetHardPointId != UnitOrderModel.NO_HARD_POINT:
-                    _orders.IssueHardPointAttack(receivers, target, command.TargetHardPointId);
+                    _orders.IssueHardPointAttack(receivers, target, command.TargetHardPointId, command.Pace);
                     break;
                 case UnitActionId.Attack:
-                    _orders.IssueAttack(receivers, target);
+                    _orders.IssueAttack(receivers, target, command.Pace);
                     break;
                 case UnitActionId.Guard:
                     _orders.IssueGuard(receivers, target);

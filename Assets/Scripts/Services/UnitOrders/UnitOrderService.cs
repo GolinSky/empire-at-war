@@ -86,22 +86,23 @@ namespace EmpireAtWar.Services.UnitOrders
                 destinations.Count > 0 ? destinations[0] : default);
         }
 
-        public void IssueAttack(IReadOnlyList<IEntity> receivers, IEntity target)
+        public void IssueAttack(IReadOnlyList<IEntity> receivers, IEntity target, MovePace pace = MovePace.Formation)
         {
             if (target == null || !IsAlive(target)) return;
-            IssueAttack(receivers, target, AttackOffsets(receivers, target));
+            IssueAttack(receivers, target, AttackOffsets(receivers, target), UnitOrderModel.NO_HARD_POINT, pace);
         }
 
         public void IssueAttack(IReadOnlyList<IEntity> receivers, IEntity target,
             IReadOnlyList<Vector3> offsets)
         {
-            IssueAttack(receivers, target, offsets, UnitOrderModel.NO_HARD_POINT);
+            IssueAttack(receivers, target, offsets, UnitOrderModel.NO_HARD_POINT, MovePace.Formation);
         }
 
-        public void IssueHardPointAttack(IReadOnlyList<IEntity> receivers, IEntity target, int hardPointId)
+        public void IssueHardPointAttack(IReadOnlyList<IEntity> receivers, IEntity target, int hardPointId,
+            MovePace pace = MovePace.Formation)
         {
             if (target == null || !IsAlive(target)) return;
-            IssueAttack(receivers, target, AttackOffsets(receivers, target), hardPointId);
+            IssueAttack(receivers, target, AttackOffsets(receivers, target), hardPointId, pace);
         }
 
         // Only ships get a slot, and a slot only picks the side: the attack state approaches along its direction
@@ -172,11 +173,14 @@ namespace EmpireAtWar.Services.UnitOrders
 
         // Receivers without hardpoint targeting (squadrons) attack the whole ship.
         private void IssueAttack(IReadOnlyList<IEntity> receivers, IEntity target,
-            IReadOnlyList<Vector3> offsets, int hardPointId)
+            IReadOnlyList<Vector3> offsets, int hardPointId, MovePace pace)
         {
             if (target == null || !IsAlive(target)) return;
             bool targetsHardPoint = hardPointId != UnitOrderModel.NO_HARD_POINT;
-            PaceCluster[] clusters = CreateAttackClusters(receivers);
+            Vector3 targetPosition = target.GetFacade<IEntityTransformFacade>().Transform.position;
+            PaceCluster[] clusters = pace == MovePace.Formation
+                ? CreateAttackClusters(receivers, targetPosition)
+                : null;
             int movingIndex = 0;
             int issued = 0;
             foreach (IEntity receiver in receivers)
@@ -203,8 +207,7 @@ namespace EmpireAtWar.Services.UnitOrders
                     issued++;
                 }
             }
-            Publish(UnitActionId.Attack, receivers, issued,
-                target.GetFacade<IEntityTransformFacade>().Transform.position, target,
+            Publish(UnitActionId.Attack, receivers, issued, targetPosition, target,
                 targetHardPointId: hardPointId);
             if (issued > 0) AttackIssued?.Invoke(receivers, target, hardPointId);
         }
@@ -225,7 +228,7 @@ namespace EmpireAtWar.Services.UnitOrders
             return BuildClusters();
         }
 
-        private PaceCluster[] CreateAttackClusters(IReadOnlyList<IEntity> receivers)
+        private PaceCluster[] CreateAttackClusters(IReadOnlyList<IEntity> receivers, Vector3 target)
         {
             _paceCandidates.Clear();
             foreach (IEntity receiver in receivers)
@@ -238,11 +241,11 @@ namespace EmpireAtWar.Services.UnitOrders
                     attack.PaceSpeed,
                     receiver.IsSquadron()));
             }
-            return BuildClusters();
+            return BuildClusters(target);
         }
 
         private PaceCluster[] CreateAttackMoveClusters(IReadOnlyList<IEntity> entities,
-            IReadOnlyList<IAttackMoveFacade> commands)
+            IReadOnlyList<IAttackMoveFacade> commands, Vector3 target)
         {
             if (commands.Count < 2) return null;
             _paceCandidates.Clear();
@@ -255,10 +258,11 @@ namespace EmpireAtWar.Services.UnitOrders
                     commands[i].PaceSpeed,
                     entities[i].IsSquadron()));
             }
-            return BuildClusters();
+            return BuildClusters(target);
         }
 
-        private PaceCluster[] BuildClusters()
+        // A target point marks clusters already near it as unpaced (attack and attack-move orders).
+        private PaceCluster[] BuildClusters(Vector3? target = null)
         {
             if (_paceCandidates.Count < 2) return null;
             _obstacleBuffer.Clear();
@@ -270,7 +274,10 @@ namespace EmpireAtWar.Services.UnitOrders
                 orderId,
                 _settings.PaceTuning,
                 _obstacleBuffer.Count > 0 ? _isSegmentClear : null,
-                _createdClusters);
+                _createdClusters,
+                target.HasValue
+                    ? new System.Numerics.Vector2(target.Value.x, target.Value.z)
+                    : (System.Numerics.Vector2?)null);
             if (_createdClusters.Count > 0) _mergeService.RegisterRange(_createdClusters);
             return clusters;
         }
@@ -281,14 +288,17 @@ namespace EmpireAtWar.Services.UnitOrders
                 new Vector3(to.X, 0f, to.Y),
                 _obstacleBuffer, 0f, 0f, 0f);
 
-        public void IssueAttackMove(IReadOnlyList<IEntity> receivers, Vector3 point)
+        public void IssueAttackMove(IReadOnlyList<IEntity> receivers, Vector3 point,
+            MovePace pace = MovePace.Formation)
         {
             List<IEntity> entities = new List<IEntity>();
             List<IAttackMoveFacade> commands = Collect<IAttackMoveFacade>(receivers, entities);
             List<Vector3> slots = Compact(commands, point,
                 command => command.WorldPosition, command => command.NavigationRadius);
             AttackMoveEngagement engagement = new AttackMoveEngagement();
-            PaceCluster[] clusters = CreateAttackMoveClusters(entities, commands);
+            PaceCluster[] clusters = pace == MovePace.Formation
+                ? CreateAttackMoveClusters(entities, commands, point)
+                : null;
             for (int i = 0; i < commands.Count; i++) commands[i].AttackMoveTo(slots[i], engagement, clusters?[i]);
             Publish(UnitActionId.AttackMove, receivers, commands.Count, point);
         }
@@ -310,7 +320,10 @@ namespace EmpireAtWar.Services.UnitOrders
                 commands.Add(command);
                 targets.Add(destinations[i]);
             }
-            PaceCluster[] clusters = CreateAttackMoveClusters(entities, commands);
+            Vector3 center = Vector3.zero;
+            foreach (Vector3 destination in targets) center += destination;
+            if (targets.Count > 0) center /= targets.Count;
+            PaceCluster[] clusters = CreateAttackMoveClusters(entities, commands, center);
             for (int i = 0; i < commands.Count; i++) commands[i].AttackMoveTo(targets[i], engagement, clusters?[i]);
             Publish(UnitActionId.AttackMove, receivers, commands.Count,
                 destinations.Count > 0 ? destinations[0] : default);

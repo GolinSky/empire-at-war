@@ -51,6 +51,21 @@ namespace EmpireAtWar.Entities.Ship.StateMachine
             return weapon.IsWithinReach(distance, ContactDistance(movement, target), target.HealthModel.ShipClass);
         }
 
+        /// <summary>Whether the ship's guns would reach the target from <paramref name="origin"/>.</summary>
+        public static bool IsInReachFrom(Vector3 origin, IShipMovement movement, IWeaponComponent weapon,
+            IEntity target)
+        {
+            float distance = PlanarGeometry.Distance(origin,
+                target.GetFacade<IEntityTransformFacade>().Transform.position);
+            if (weapon is IArtilleryCapability artillery)
+            {
+                float artilleryRange = artillery.GetArtilleryRange(target.HealthModel.ShipClass);
+                if (artilleryRange > 0f && distance <= artilleryRange) return true;
+            }
+
+            return weapon.IsWithinReach(distance, ContactDistance(movement, target), target.HealthModel.ShipClass);
+        }
+
         /// <summary>An enemy the ship's loadout is built for; AI target searches take these before the others.</summary>
         public static bool IsPreferred(IEntity enemy, IWeaponComponent weapon) =>
             weapon.PreferredTarget.Prefers(enemy.HealthModel.ShipClass);

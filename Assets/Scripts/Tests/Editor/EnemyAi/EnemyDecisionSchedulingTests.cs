@@ -703,10 +703,10 @@ namespace EmpireAtWar.Tests.Editor
             public int MoveCalls { get; private set; }
             public void IssueMove(IReadOnlyList<IEntity> receivers, Vector3 point, MovePace pace = MovePace.Formation) => MoveCalls++;
             public void IssueMove(IReadOnlyList<IEntity> receivers, IReadOnlyList<Vector3> destinations) => MoveCalls++;
-            public void IssueAttack(IReadOnlyList<IEntity> receivers, IEntity target) { }
+            public void IssueAttack(IReadOnlyList<IEntity> receivers, IEntity target, MovePace pace = MovePace.Formation) { }
             public void IssueAttack(IReadOnlyList<IEntity> receivers, IEntity target, IReadOnlyList<Vector3> offsets) { }
-            public void IssueHardPointAttack(IReadOnlyList<IEntity> receivers, IEntity target, int hardPointId) { }
-            public void IssueAttackMove(IReadOnlyList<IEntity> receivers, Vector3 point) { }
+            public void IssueHardPointAttack(IReadOnlyList<IEntity> receivers, IEntity target, int hardPointId, MovePace pace = MovePace.Formation) { }
+            public void IssueAttackMove(IReadOnlyList<IEntity> receivers, Vector3 point, MovePace pace = MovePace.Formation) { }
             public void IssueAttackMove(IReadOnlyList<IEntity> receivers, IReadOnlyList<Vector3> destinations) { }
             public void IssueStop(IReadOnlyList<IEntity> receivers) { }
             public void IssueGuard(IReadOnlyList<IEntity> receivers, IEntity friendly) { }

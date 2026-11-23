@@ -50,6 +50,8 @@ namespace EmpireAtWar.Services.UnitOrders
         private IEntity _pressedHardPointOwner;
         private int _pressedHardPointId;
         private bool _hasPressedHardPoint;
+        // The last command tap issued an attack-move: a repeat tap re-issues it without pacing.
+        private bool _lastTapAttackMoved;
 
         private readonly UnitActionTargetingModel _targeting;
         private readonly SuperWeaponTargetingModel _superWeapons;
@@ -111,7 +113,7 @@ namespace EmpireAtWar.Services.UnitOrders
 
         public bool TryIssueMove(Vector3 worldPoint) => TryIssueMove(worldPoint, MovePace.Formation);
 
-        private bool TryIssueMove(Vector3 worldPoint, MovePace pace)
+        private bool TryIssueMove(Vector3 worldPoint, MovePace pace, bool attackMove = false)
         {
             if (_abilities.IsWaitingForTarget || _superWeapons.Pending != null ||
                 _targeting.Pending == UnitActionId.Attack || _targeting.Pending == UnitActionId.Guard)
@@ -123,10 +125,11 @@ namespace EmpireAtWar.Services.UnitOrders
                 if (_battleAreas.TryGetOrderSnap(worldPoint, out Vector3 center))
                     worldPoint = center;
                 worldPoint.y = move.WorldPosition.y;
-                if (_targeting.Pending == UnitActionId.AttackMove)
+                if (attackMove || _targeting.Pending == UnitActionId.AttackMove)
                 {
-                    _playerOrders.IssueAttackMove(receivers, worldPoint);
-                    _targeting.Cancel();
+                    _playerOrders.IssueAttackMove(receivers, worldPoint, pace);
+                    if (_targeting.Pending == UnitActionId.AttackMove) _targeting.Cancel();
+                    _lastTapAttackMoved = true;
                 }
                 else if (_targeting.Pending == UnitActionId.WaypointMove)
                     _targeting.AddWaypoint(ToPoint(worldPoint));
@@ -152,12 +155,16 @@ namespace EmpireAtWar.Services.UnitOrders
 
         private void HandleCommand(Vector2 screen)
         {
-            if (IsAttackMoveArmed())
+            bool isRepeatTap = _gestures.CommandClickCount >= 2;
+            bool repeatsAttackMove = _lastTapAttackMoved && isRepeatTap && _targeting.Pending == null &&
+                                     !_abilities.IsWaitingForTarget && _superWeapons.Pending == null;
+            _lastTapAttackMoved = false;
+            if (IsAttackMoveArmed() || repeatsAttackMove)
             {
                 _pressedMarker = default;
                 _pressedHardPointOwner = null;
                 _hasPressedHardPoint = false;
-                IssueAttackMoveAt(screen);
+                IssueAttackMoveAt(screen, repeatsAttackMove ? MovePace.Loose : MovePace.Formation);
                 return;
             }
 
@@ -231,7 +238,7 @@ namespace EmpireAtWar.Services.UnitOrders
             {
                 if (IsEnemy(target))
                 {
-                    IssueAttack(receivers, target, hasHardPoint, hardPointId);
+                    IssueAttack(receivers, target, hasHardPoint, hardPointId, MovePace.Formation);
                     _targeting.Cancel();
                 }
                 return;
@@ -266,10 +273,10 @@ namespace EmpireAtWar.Services.UnitOrders
                 return;
             }
 
-            if (IsEnemy(target)) IssueAttack(receivers, target, hasHardPoint, hardPointId);
+            MovePace pace = isRepeatTap ? MovePace.Loose : MovePace.Formation;
+            if (IsEnemy(target)) IssueAttack(receivers, target, hasHardPoint, hardPointId, pace);
             else if ((!hasUnit || isFriendlyShip) && !IsObstacle(screen))
             {
-                MovePace pace = _gestures.CommandClickCount >= 2 ? MovePace.Loose : MovePace.Formation;
                 _playerOrders.IssueMove(receivers,
                     _cameraService.GetWorldPoint(screen, ReferencePosition(receivers)), pace);
             }
@@ -282,19 +289,21 @@ namespace EmpireAtWar.Services.UnitOrders
             _targeting.Pending == UnitActionId.AttackMove && !_abilities.IsWaitingForTarget &&
             _superWeapons.Pending == null;
 
-        private void IssueAttackMoveAt(Vector2 screen)
+        private void IssueAttackMoveAt(Vector2 screen, MovePace pace)
         {
             if (TryGetOrderSnap(screen, out Vector3 snap))
             {
-                TryIssueMove(snap);
+                TryIssueMove(snap, pace, attackMove: true);
                 return;
             }
 
             if (IsObstacle(screen)) return;
             List<IEntity> receivers = Snapshot();
             if (receivers.Count == 0) return;
-            _playerOrders.IssueAttackMove(receivers, _cameraService.GetWorldPoint(screen, ReferencePosition(receivers)));
+            _playerOrders.IssueAttackMove(receivers,
+                _cameraService.GetWorldPoint(screen, ReferencePosition(receivers)), pace);
             _targeting.Cancel();
+            _lastTapAttackMoved = true;
         }
 
         private bool TryGetOrderSnap(Vector2 screen, out Vector3 point)
@@ -320,10 +329,11 @@ namespace EmpireAtWar.Services.UnitOrders
             return false;
         }
 
-        private void IssueAttack(List<IEntity> receivers, IEntity target, bool hasHardPoint, int hardPointId)
+        private void IssueAttack(List<IEntity> receivers, IEntity target, bool hasHardPoint, int hardPointId,
+            MovePace pace)
         {
-            if (hasHardPoint) _playerOrders.IssueHardPointAttack(receivers, target, hardPointId);
-            else _playerOrders.IssueAttack(receivers, target);
+            if (hasHardPoint) _playerOrders.IssueHardPointAttack(receivers, target, hardPointId, pace);
+            else _playerOrders.IssueAttack(receivers, target, pace);
         }
 
         private List<IEntity> Snapshot()

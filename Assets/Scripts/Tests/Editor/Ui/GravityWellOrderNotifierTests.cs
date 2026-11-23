@@ -80,12 +80,12 @@ namespace EmpireAtWar.Tests.Editor
             public void IssueMove(IReadOnlyList<IEntity> receivers, Vector3 point, MovePace pace = MovePace.Formation) => throw new NotSupportedException();
             public void IssueMove(IReadOnlyList<IEntity> receivers, IReadOnlyList<Vector3> destinations) =>
                 throw new NotSupportedException();
-            public void IssueAttack(IReadOnlyList<IEntity> receivers, IEntity target) => throw new NotSupportedException();
+            public void IssueAttack(IReadOnlyList<IEntity> receivers, IEntity target, MovePace pace = MovePace.Formation) => throw new NotSupportedException();
             public void IssueAttack(IReadOnlyList<IEntity> receivers, IEntity target, IReadOnlyList<Vector3> offsets) =>
                 throw new NotSupportedException();
-            public void IssueHardPointAttack(IReadOnlyList<IEntity> receivers, IEntity target, int hardPointId) =>
+            public void IssueHardPointAttack(IReadOnlyList<IEntity> receivers, IEntity target, int hardPointId, MovePace pace = MovePace.Formation) =>
                 throw new NotSupportedException();
-            public void IssueAttackMove(IReadOnlyList<IEntity> receivers, Vector3 point) => throw new NotSupportedException();
+            public void IssueAttackMove(IReadOnlyList<IEntity> receivers, Vector3 point, MovePace pace = MovePace.Formation) => throw new NotSupportedException();
             public void IssueAttackMove(IReadOnlyList<IEntity> receivers, IReadOnlyList<Vector3> destinations) =>
                 throw new NotSupportedException();
             public void IssueStop(IReadOnlyList<IEntity> receivers) => throw new NotSupportedException();

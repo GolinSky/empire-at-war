@@ -42,6 +42,9 @@ namespace EmpireAtWar.Components.Ship.Movement
 #endif
         // A ship chasing a moving target re-plans its course at most this often; new orders plan at once.
         private const float REPATH_INTERVAL = 0.5f;
+        // An arrival correction whose route is this many times longer than the hop is a turning loop; the
+        // ship stays where it arrived instead.
+        private const float ARRIVAL_CORRECTION_MAX_ROUTE_FACTOR = 2f;
 
         private IMapModelObserver _mapModel;
         private IStationFacingService _stationFacingService;
@@ -76,6 +79,8 @@ namespace EmpireAtWar.Components.Ship.Movement
         private Vector3 _queuedDestination;
         private Vector3? _failedDestination;
         private bool _hasArrivalCorrection;
+        // The queued plan only nudges an arrived ship off a blocked spot.
+        private bool _isArrivalCorrectionPlan;
         private float _lastPlanTime = float.NegativeInfinity;
         private Vector3 _solvedFacing;
         private Vector3 _solvedBearing;
@@ -281,6 +286,7 @@ namespace EmpireAtWar.Components.Ship.Movement
             if (revision != _spacingRevision || !CanSettle) return false;
             _isSettling = true;
             _hasArrivalCorrection = false;
+            _isArrivalCorrectionPlan = false;
             _failedDestination = null;
             Model.Request(destination.ToNumerics());
             _lastPlanTime = Time.time;
@@ -319,6 +325,7 @@ namespace EmpireAtWar.Components.Ship.Movement
             Model.Request(requested.ToNumerics());
             Model.TakePending();
             _hasArrivalCorrection = false;
+            _isArrivalCorrectionPlan = false;
             QueuePlan(destination, preserveCourse);
         }
 
@@ -435,6 +442,7 @@ namespace EmpireAtWar.Components.Ship.Movement
             _hasQueuedPlan = false;
             _failedDestination = null;
             _hasArrivalCorrection = false;
+            _isArrivalCorrectionPlan = false;
             bool ready = Model.Phase != MovementPhase.Arriving;
             Model.StopAt(transform.position.ToNumerics());
             if (ready)
@@ -523,6 +531,19 @@ namespace EmpireAtWar.Components.Ship.Movement
                 Model.Defer(destination.ToNumerics());
                 return;
             }
+            bool isArrivalCorrection = _isArrivalCorrectionPlan;
+            _isArrivalCorrectionPlan = false;
+            if (isArrivalCorrection && plan.Route.Length > ARRIVAL_CORRECTION_MAX_ROUTE_FACTOR *
+                    PlanarGeometry.Distance(transform.position, plan.Destination))
+            {
+                // A hop shorter than the turning circle flies a loop around the spot (seen on attack-move
+                // arrivals): keep the arrived position instead.
+                _failedDestination = destination;
+                _motion.StopPath();
+                _shipNavigationService.Stop(this);
+                Model.Arrive(transform.position.ToNumerics());
+                return;
+            }
             if (_motion.HasMomentum &&
                 Vector3.Angle(transform.forward, plan.Route.InitialTangent) > 1f)
             {
@@ -564,6 +585,7 @@ namespace EmpireAtWar.Components.Ship.Movement
                             return;
                         }
                         _hasArrivalCorrection = true;
+                        _isArrivalCorrectionPlan = true;
                         QueuePlan(plannedDestination, false);
                     }
                 });

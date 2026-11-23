@@ -6,7 +6,8 @@ namespace EmpireAtWar.Entities.BaseEntity.Orders
 {
     /// <summary>
     /// Single-link union-find spatial clustering built once per order.
-    /// Clusters of size 1 receive <c>null</c> (unit moves at its own speed).
+    /// Clusters of size 1 receive <c>null</c> (unit moves at its own speed), and so does every member of a cluster
+    /// with a member within link distance of <c>target</c>: a group already at its target has nothing to wait for.
     /// </summary>
     public static class PaceClusterBuilder
     {
@@ -15,7 +16,8 @@ namespace EmpireAtWar.Entities.BaseEntity.Orders
             int orderId,
             PaceClusterTuning tuning,
             Func<Vector2, Vector2, bool> isSegmentClear = null,
-            List<PaceCluster> createdClusters = null)
+            List<PaceCluster> createdClusters = null,
+            Vector2? target = null)
         {
             int count = candidates.Count;
             PaceCluster[] result = new PaceCluster[count];
@@ -50,11 +52,23 @@ namespace EmpireAtWar.Entities.BaseEntity.Orders
             int[] sizes = new int[count];
             for (int i = 0; i < count; i++) sizes[Find(parent, i)]++;
 
+            bool[] nearTarget = new bool[count];
+            if (target.HasValue)
+            {
+                for (int i = 0; i < count; i++)
+                {
+                    float near = MathF.Max(tuning.LinkDistance,
+                        tuning.LinkRadiusFactor * candidates[i].NavigationRadius);
+                    if (Vector2.DistanceSquared(candidates[i].Position, target.Value) <= near * near)
+                        nearTarget[Find(parent, i)] = true;
+                }
+            }
+
             PaceCluster[] byRoot = new PaceCluster[count];
             for (int i = 0; i < count; i++)
             {
                 int root = Find(parent, i);
-                if (sizes[root] < 2) continue;
+                if (sizes[root] < 2 || nearTarget[root]) continue;
                 PaceCluster cluster = byRoot[root];
                 if (cluster == null)
                 {
