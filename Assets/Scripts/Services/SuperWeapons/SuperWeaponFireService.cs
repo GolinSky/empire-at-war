@@ -12,7 +12,6 @@ using EmpireAtWar.Models.Health;
 using EmpireAtWar.Models.Factions;
 using EmpireAtWar.Services.Audio;
 using EmpireAtWar.Services.Player;
-using EmpireAtWar.Services.UnitExplosion;
 using EmpireAtWar.ViewComponents.Weapon;
 using UnityEngine;
 using VContainer;
@@ -36,7 +35,6 @@ namespace EmpireAtWar.Services.SuperWeapons
 
         private readonly SuperWeaponData _data;
         private readonly ImpactEffectPresenter _impactPresenter;
-        private readonly IUnitExplosionService _unitExplosions;
         private readonly BoltFlightBatch _boltFlights;
         private readonly IAudioService _audioService;
         private readonly ShipSfxData _sfxData;
@@ -90,8 +88,7 @@ namespace EmpireAtWar.Services.SuperWeapons
 
         public SuperWeaponFireService(IEntityLocator entities, ISuperWeaponOrigin origin,
             IPlayerRelations relations, IPlayerRegistry players, SuperWeaponData data,
-            ImpactEffectPresenter impactPresenter, IUnitExplosionService unitExplosions,
-            BoltFlightBatch boltFlights, IAudioService audioService,
+            ImpactEffectPresenter impactPresenter, BoltFlightBatch boltFlights, IAudioService audioService,
             ShipSfxData sfxData, ShipSfxSources sfxSources)
         {
             _boltFlights = boltFlights;
@@ -99,7 +96,6 @@ namespace EmpireAtWar.Services.SuperWeapons
             _players = players;
             _data = data;
             _impactPresenter = impactPresenter;
-            _unitExplosions = unitExplosions;
             _entities = entities;
             _origin = origin;
             _audioService = audioService;
@@ -235,14 +231,13 @@ namespace EmpireAtWar.Services.SuperWeapons
             if (target.HealthModel.IsDestroyed) return;
 
             Vector3 impactPosition = target.GetFacade<IEntityTransformFacade>().Transform.position;
-            if (salvo.Type != SuperWeaponType.IonCannon)
+            ApplyDamage(target, profile.GetDamage(salvo.ResearchTier), profile);
+            // The target's own destruction explosion, sized to its hull; a killing hit already plays it on death.
+            if (salvo.Type != SuperWeaponType.IonCannon && !target.HealthModel.IsDestroyed)
             {
-                Vector3 explosionPosition = _impactPresenter.GetImpactPosition(target.HealthModel,
-                    profile.Weapon.DamageType, salvo.Origin.position, impactPosition);
-                _unitExplosions.Spawn(explosionPosition, profile.ImpactSize);
+                target.GetFacade<IUnitExplosionFacade>().PlayExplosion();
             }
 
-            ApplyDamage(target, profile.GetDamage(salvo.ResearchTier), profile);
             if (!target.HealthModel.IsDestroyed && profile.StunDuration > 0f &&
                 target.TryGetFacade(out ICombatModifiersFacade combat))
             {

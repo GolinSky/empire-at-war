@@ -317,6 +317,8 @@ namespace EmpireAtWar.Tests.Editor
             _battle.Container.Resolve<IVisionService>().Register(owner.Id, _root.transform, 100000f);
 
             Assert.That(stations.TryGetLivingStation(owner.Id, out IEntity primary), Is.True);
+            Assert.That(primary.TryGetFacade(out IUnitExplosionFacade _), Is.True,
+                "Orbital hits play the station's own explosion.");
             production.Purchase(request);
             Assert.That(production.PendingBuilds, Is.Empty);
             Assert.That(production.CanQueue(request.Id, request.FactionData.MaxCount), Is.False);
@@ -358,8 +360,6 @@ namespace EmpireAtWar.Tests.Editor
             public string Id => nameof(StationDeathEffectsStub);
 
             public void Spawn(IReadOnlyList<Renderer> hullRenderers, float coverageScale) { }
-
-            public void Spawn(Vector3 position, float diameter) { }
 
             public void Spawn(UnitWreckData data, Transform unit, uint renderUserValue, float delay) { }
         }
@@ -788,6 +788,8 @@ namespace EmpireAtWar.Tests.Editor
             EntityLifetimeScope shipScope = ship.transform.parent.GetComponent<EntityLifetimeScope>();
             IEntity shipEntity = locator.GetEntity(ship.EntityId);
             IShipAutoPowerFacade autoPower = shipEntity.GetFacade<IShipAutoPowerFacade>();
+            Assert.That(shipEntity.TryGetFacade(out IUnitExplosionFacade _), Is.True,
+                "Orbital hits play the ship's own explosion.");
             Assert.That(autoPower.Enabled, Is.True);
             Assert.That(autoPower.Eligible, Is.True);
             autoPower.SetEnabled(false);

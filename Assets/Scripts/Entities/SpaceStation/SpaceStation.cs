@@ -1,3 +1,4 @@
+using EmpireAtWar.Entities.BaseEntity.EntityFacades;
 using System.Collections.Generic;
 using EmpireAtWar.Models.Players;
 using EmpireAtWar.Components.Ship.Health;
@@ -18,7 +19,7 @@ using VContainer.Internal;
 
 namespace EmpireAtWar.Entities.SpaceStation
 {
-    public class SpaceStation : EntityView, IController, IInitializable, ILateDisposable
+    public class SpaceStation : EntityView, IController, IUnitExplosionFacade, IInitializable, ILateDisposable
     {
         private const float DESTRUCTION_BURST_SCALE = 0.75f;
 
@@ -48,6 +49,12 @@ namespace EmpireAtWar.Entities.SpaceStation
         public event System.Action Destroyed;
 
         public override string Id => GetType().Name;
+
+        public void PlayExplosion()
+        {
+            _unitExplosionService.Spawn(explosionHullRenderers, DESTRUCTION_BURST_SCALE);
+        }
+
         public BoxCollider HullCollider => levelView.HullCollider;
 
         [Inject]
@@ -133,7 +140,7 @@ namespace EmpireAtWar.Entities.SpaceStation
             if (playDeathAnimation)
             {
                 EntityComponentData componentData = Data.ComponentData;
-                _unitExplosionService.Spawn(explosionHullRenderers, DESTRUCTION_BURST_SCALE);
+                PlayExplosion();
                 // The explosion hides the swap: the wreck appears as the station entity is destroyed.
                 if (Data.TryGetWrecks(_factionType, out StationLevelWrecks wrecks))
                 {

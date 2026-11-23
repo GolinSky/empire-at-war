@@ -46,7 +46,7 @@ namespace EmpireAtWar.Ship
     /// <summary>
     /// Ship lifecycle and component wiring. Orders and states live in <see cref="ShipOrderRunner"/>.
     /// </summary>
-    public class Ship : EntityView, IController, IShipEntity, IInitializable, ILateDisposable, ITickable
+    public class Ship : EntityView, IController, IShipEntity, IUnitExplosionFacade, IInitializable, ILateDisposable, ITickable
     {
         private IHealthComponent _healthComponent;
         private IHealthAudioEvents _healthAudioEvents;
@@ -84,6 +84,12 @@ namespace EmpireAtWar.Ship
         private ShipType ShipType { get; set; }
 
         public override string Id => GetType().Name;
+
+        public void PlayExplosion()
+        {
+            _unitExplosionService.Spawn(explosionHullRenderers);
+        }
+
         public PlayerId Owner => _owner;
         public Vector3 WorldPosition => _shipMoveComponent.CurrentPosition;
         public float NavigationRadius => _shipMoveComponent.NavigationRadius;
@@ -232,7 +238,7 @@ namespace EmpireAtWar.Ship
             if (playDeathEffects && gameObject.activeInHierarchy)
             {
                 OnRelease?.Invoke(ShipType);
-                _unitExplosionService.Spawn(explosionHullRenderers);
+                PlayExplosion();
                 // The explosion hides the swap: the wreck appears as the ship entity is destroyed.
                 if (Data.Wreck != null)
                 {

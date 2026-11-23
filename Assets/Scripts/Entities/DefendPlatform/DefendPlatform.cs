@@ -1,3 +1,4 @@
+using EmpireAtWar.Entities.BaseEntity.EntityFacades;
 using System;
 using EmpireAtWar.Components.Construction;
 using EmpireAtWar.Models.Health;
@@ -22,7 +23,7 @@ using VContainer.Internal;
 
 namespace EmpireAtWar.Entities.DefendPlatform
 {
-    public class DefendPlatform : EntityView, IController, IIncomeProvider, IInitializable, ILateDisposable
+    public class DefendPlatform : EntityView, IController, IIncomeProvider, IUnitExplosionFacade, IInitializable, ILateDisposable
     {
         private TeamIncomeSource _teamIncome;
         private IHealthComponent _healthComponent;
@@ -56,6 +57,12 @@ namespace EmpireAtWar.Entities.DefendPlatform
         private DefendPlatformData Data { get; set; }
 
         public override string Id => GetType().Name;
+
+        public void PlayExplosion()
+        {
+            _unitExplosionService.Spawn(explosionHullRenderers);
+        }
+
         /// <summary>One team member's share; every allied economy receives this amount.</summary>
         public float Income => _teamIncome.Income;
 
@@ -120,7 +127,7 @@ namespace EmpireAtWar.Entities.DefendPlatform
                 _layerService.Apply(gameObject, LayerKey.Dead, true);
                 OnRelease?.Invoke();
                 EntityComponentData componentData = Data.ComponentData;
-                _unitExplosionService.Spawn(explosionHullRenderers);
+                PlayExplosion();
                 // The explosion hides the swap: the wreck appears as the platform entity is destroyed.
                 if (Data.Wreck != null)
                 {
