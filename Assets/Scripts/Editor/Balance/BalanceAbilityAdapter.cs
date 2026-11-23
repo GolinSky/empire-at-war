@@ -32,6 +32,7 @@ namespace EmpireAtWar.Editor.Balance
             [typeof(CompositeBeamSettings)] = new[] { "damage" },
             [typeof(HarmonicBombSettings)] = new[] { "radius", "minimumTargets" },
             [typeof(ProtonBeamSettings)] = new[] { "damage", "damageType" },
+            [typeof(SuperlaserSettings)] = new[] { "damage", "damageType" },
             [typeof(TractorBeamSettings)] = new[] { "speedMultiplier", "beam" },
             [typeof(IonShotSettings)] = new[] { "disableDuration", "projectile" },
             [typeof(ConcentrateFireSettings)] = new[] { "allyStatModifier", "commandRadius", "targetDamageMultiplier" },

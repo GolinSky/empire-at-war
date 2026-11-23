@@ -1,0 +1,280 @@
+fileFormatVersion: 2
+guid: 974c6f4c54eb4794299cf6174553f8ea
+ModelImporter:
+  serializedVersion: 24200
+  internalIDToNameTable: []
+  externalObjects:
+  - first:
+      type: UnityEngine:Material
+      assembly: UnityEngine.CoreModule
+      name: Xyston_M023
+    second: {fileID: 2100000, guid: 5806f4bfbf7bfae4f8db52437e200085, type: 2}
+  - first:
+      type: UnityEngine:Material
+      assembly: UnityEngine.CoreModule
+      name: Xyston_M024
+    second: {fileID: 2100000, guid: 0bdc7d77ca58d47498d5a630483581ee, type: 2}
+  - first:
+      type: UnityEngine:Material
+      assembly: UnityEngine.CoreModule
+      name: Xyston_M026
+    second: {fileID: 2100000, guid: 3a86fb867abecf14a9d3c36858eddc68, type: 2}
+  - first:
+      type: UnityEngine:Material
+      assembly: UnityEngine.CoreModule
+      name: Xyston_M027
+    second: {fileID: 2100000, guid: 8654b1d590d8286409c51d8b2bc32843, type: 2}
+  - first:
+      type: UnityEngine:Material
+      assembly: UnityEngine.CoreModule
+      name: Xyston_M028
+    second: {fileID: 2100000, guid: d440aae7b64f1e74b88cd6ff86f112ad, type: 2}
+  - first:
+      type: UnityEngine:Material
+      assembly: UnityEngine.CoreModule
+      name: Xyston_M029
+    second: {fileID: 2100000, guid: 4b8bbc056be5e904a80f9604f7ddc085, type: 2}
+  - first:
+      type: UnityEngine:Material
+      assembly: UnityEngine.CoreModule
+      name: Xyston_M030
+    second: {fileID: 2100000, guid: 1d543532e502f254a8f42fef341eb075, type: 2}
+  - first:
+      type: UnityEngine:Material
+      assembly: UnityEngine.CoreModule
+      name: Xyston_M031
+    second: {fileID: 2100000, guid: 28e47bbacf1b09a4f8f84b25d79c52e7, type: 2}
+  - first:
+      type: UnityEngine:Material
+      assembly: UnityEngine.CoreModule
+      name: Xyston_M032
+    second: {fileID: 2100000, guid: a32010ab3d5a6d541afe8b84f1bc79e7, type: 2}
+  - first:
+      type: UnityEngine:Material
+      assembly: UnityEngine.CoreModule
+      name: Xyston_M033
+    second: {fileID: 2100000, guid: a35399df095f6a54ab462d3be9f932fd, type: 2}
+  - first:
+      type: UnityEngine:Material
+      assembly: UnityEngine.CoreModule
+      name: Xyston_M034
+    second: {fileID: 2100000, guid: 5340515ea3a815842bc920a5ca179404, type: 2}
+  - first:
+      type: UnityEngine:Material
+      assembly: UnityEngine.CoreModule
+      name: Xyston_M035
+    second: {fileID: 2100000, guid: a95b362f3fc99634693716cbaa48a3bc, type: 2}
+  - first:
+      type: UnityEngine:Material
+      assembly: UnityEngine.CoreModule
+      name: Xyston_M036
+    second: {fileID: 2100000, guid: 50aca4dc1c167744c98074e2c334dd6e, type: 2}
+  - first:
+      type: UnityEngine:Material
+      assembly: UnityEngine.CoreModule
+      name: Xyston_M037
+    second: {fileID: 2100000, guid: c438ec7167cab3d4db6a5d4587e049e1, type: 2}
+  - first:
+      type: UnityEngine:Material
+      assembly: UnityEngine.CoreModule
+      name: Xyston_M038
+    second: {fileID: 2100000, guid: e4a1f2c24f52bd14da233f2866907bd5, type: 2}
+  - first:
+      type: UnityEngine:Material
+      assembly: UnityEngine.CoreModule
+      name: Xyston_M039
+    second: {fileID: 2100000, guid: 744750b4b15e8bc4bbbe1f3bcc34e750, type: 2}
+  - first:
+      type: UnityEngine:Material
+      assembly: UnityEngine.CoreModule
+      name: Xyston_M040
+    second: {fileID: 2100000, guid: 3aa41acd395aef245859116c0cc5a802, type: 2}
+  - first:
+      type: UnityEngine:Material
+      assembly: UnityEngine.CoreModule
+      name: Xyston_M041
+    second: {fileID: 2100000, guid: 4fbaaff1acf800145bd5ed2e176013b6, type: 2}
+  - first:
+      type: UnityEngine:Material
+      assembly: UnityEngine.CoreModule
+      name: Xyston_M042
+    second: {fileID: 2100000, guid: d7ef4db7b8b747c41920262e25086c1e, type: 2}
+  - first:
+      type: UnityEngine:Material
+      assembly: UnityEngine.CoreModule
+      name: Xyston_M043
+    second: {fileID: 2100000, guid: dfa4dcde80f8b2841bf55cd6b0e798b9, type: 2}
+  - first:
+      type: UnityEngine:Material
+      assembly: UnityEngine.CoreModule
+      name: Xyston_M044
+    second: {fileID: 2100000, guid: de4a5cbb6abd36941be3d98b53b1c6a5, type: 2}
+  - first:
+      type: UnityEngine:Material
+      assembly: UnityEngine.CoreModule
+      name: Xyston_M045
+    second: {fileID: 2100000, guid: b4c025105496cce4c998a0dabe13afc2, type: 2}
+  - first:
+      type: UnityEngine:Material
+      assembly: UnityEngine.CoreModule
+      name: Xyston_M046
+    second: {fileID: 2100000, guid: 907673e4ea6f4bc4db8b8cd155fd01a2, type: 2}
+  - first:
+      type: UnityEngine:Material
+      assembly: UnityEngine.CoreModule
+      name: Xyston_M047
+    second: {fileID: 2100000, guid: b1c2efbc99484964f8b79d5593d09f6d, type: 2}
+  - first:
+      type: UnityEngine:Material
+      assembly: UnityEngine.CoreModule
+      name: Xyston_M048
+    second: {fileID: 2100000, guid: 8a4a049264996bf4b91fa5520d73f8bd, type: 2}
+  - first:
+      type: UnityEngine:Material
+      assembly: UnityEngine.CoreModule
+      name: Xyston_M049
+    second: {fileID: 2100000, guid: 8a4e57c1b27452c40aed07345dfc9710, type: 2}
+  - first:
+      type: UnityEngine:Material
+      assembly: UnityEngine.CoreModule
+      name: Xyston_M050
+    second: {fileID: 2100000, guid: 73f5a507d93b2a846a0987bc535ccdad, type: 2}
+  - first:
+      type: UnityEngine:Material
+      assembly: UnityEngine.CoreModule
+      name: Xyston_M051
+    second: {fileID: 2100000, guid: c4d0cc5773c307d4797d700313e2e18c, type: 2}
+  - first:
+      type: UnityEngine:Material
+      assembly: UnityEngine.CoreModule
+      name: Xyston_M052
+    second: {fileID: 2100000, guid: a6e076eafb53661418bb0475441bae91, type: 2}
+  - first:
+      type: UnityEngine:Material
+      assembly: UnityEngine.CoreModule
+      name: Xyston_M053
+    second: {fileID: 2100000, guid: 86ca0a26fce3b494698203a5caf24220, type: 2}
+  - first:
+      type: UnityEngine:Material
+      assembly: UnityEngine.CoreModule
+      name: Xyston_M054
+    second: {fileID: 2100000, guid: 06bd545d2139eb34dbf88bc6aab6d092, type: 2}
+  - first:
+      type: UnityEngine:Material
+      assembly: UnityEngine.CoreModule
+      name: Xyston_M055
+    second: {fileID: 2100000, guid: 8233ed44f5c54c04a9a43c1b76416193, type: 2}
+  - first:
+      type: UnityEngine:Material
+      assembly: UnityEngine.CoreModule
+      name: Xyston_M056
+    second: {fileID: 2100000, guid: 13b92934bb0213c449ee64b0b872cdfb, type: 2}
+  - first:
+      type: UnityEngine:Material
+      assembly: UnityEngine.CoreModule
+      name: Xyston_M059
+    second: {fileID: 2100000, guid: 96fb5e2c73cbb9f45a7a174fe89cd4f4, type: 2}
+  materials:
+    materialImportMode: 1
+    materialName: 0
+    materialSearch: 1
+    materialLocation: 1
+  animations:
+    legacyGenerateAnimations: 4
+    bakeSimulation: 0
+    resampleCurves: 1
+    optimizeGameObjects: 0
+    removeConstantScaleCurves: 0
+    motionNodeName: 
+    animationImportErrors: 
+    animationImportWarnings: 
+    animationRetargetingWarnings: 
+    animationDoRetargetingWarnings: 0
+    importAnimatedCustomProperties: 0
+    importConstraints: 0
+    animationCompression: 1
+    animationRotationError: 0.5
+    animationPositionError: 0.5
+    animationScaleError: 0.5
+    animationWrapMode: 0
+    extraExposedTransformPaths: []
+    extraUserProperties: []
+    clipAnimations: []
+    isReadable: 1
+  meshes:
+    lODScreenPercentages: []
+    globalScale: 0.02
+    meshCompression: 0
+    addColliders: 0
+    useSRGBMaterialColor: 1
+    sortHierarchyByName: 1
+    importPhysicalCameras: 1
+    importVisibility: 1
+    importBlendShapes: 1
+    importCameras: 1
+    importLights: 1
+    nodeNameCollisionStrategy: 1
+    fileIdsGeneration: 2
+    swapUVChannels: 0
+    generateSecondaryUV: 0
+    useFileUnits: 1
+    keepQuads: 0
+    weldVertices: 0
+    bakeAxisConversion: 0
+    preserveHierarchy: 1
+    skinWeightsMode: 0
+    maxBonesPerVertex: 4
+    minBoneWeight: 0.001
+    optimizeBones: 1
+    generateMeshLods: 0
+    meshLodGenerationFlags: 0
+    maximumMeshLod: -1
+    meshOptimizationFlags: -1
+    indexFormat: 0
+    secondaryUVAngleDistortion: 8
+    secondaryUVAreaDistortion: 15.000001
+    secondaryUVHardAngle: 88
+    secondaryUVMarginMethod: 1
+    secondaryUVMinLightmapResolution: 40
+    secondaryUVMinObjectScale: 1
+    secondaryUVPackMargin: 4
+    useFileScale: 1
+    strictVertexDataChecks: 0
+  tangentSpace:
+    normalSmoothAngle: 60
+    normalImportMode: 0
+    tangentImportMode: 3
+    normalCalculationMode: 4
+    legacyComputeAllNormalsFromSmoothingGroupsWhenMeshHasBlendShapes: 0
+    blendShapeNormalImportMode: 1
+    normalSmoothingSource: 0
+  referencedClips: []
+  importAnimation: 0
+  humanDescription:
+    serializedVersion: 3
+    human: []
+    skeleton: []
+    armTwist: 0.5
+    foreArmTwist: 0.5
+    upperLegTwist: 0.5
+    legTwist: 0.5
+    armStretch: 0.05
+    legStretch: 0.05
+    feetSpacing: 0
+    globalScale: 0.02
+    rootMotionBoneName: 
+    hasTranslationDoF: 0
+    hasExtraRoot: 0
+    skeletonHasParents: 1
+  lastHumanDescriptionAvatarSource: {instanceID: 0}
+  autoGenerateAvatarMappingIfUnspecified: 1
+  animationType: 2
+  humanoidOversampling: 1
+  avatarSetup: 0
+  addHumanoidExtraRootOnlyWhenUsingAvatar: 1
+  importBlendShapeDeformPercent: 1
+  remapMaterialsIfMaterialImportModeIsNone: 0
+  additionalBone: 0
+  userData: 
+  assetBundleName: 
+  assetBundleVariant: 

@@ -1,0 +1,57 @@
+[
+ {
+  "name": "XystonCannon_M006",
+  "mesh": "Barrel",
+  "shader": "MeshBumpColorize.fx",
+  "base": "XystonCannon_Hull_2_SD",
+  "normal": "XystonCannon_Hull_2_B",
+  "hidden": false,
+  "diffuse": [
+   1.0,
+   1.0,
+   1.0,
+   0.0
+  ],
+  "color": null
+ },
+ {
+  "name": "XystonCannon_M007",
+  "mesh": "Barrel_Shadow",
+  "shader": "MeshShadowVolume.fx",
+  "base": null,
+  "normal": null,
+  "hidden": true,
+  "diffuse": null,
+  "color": null
+ },
+ {
+  "name": "XystonCannon_M008",
+  "mesh": "Barrel_Light",
+  "shader": "MeshAdditive.fx",
+  "base": "XystonCannon_Hull_Kitbash_Pieces_ISD_Lights",
+  "normal": null,
+  "hidden": false,
+  "diffuse": null,
+  "color": [
+   1.0,
+   1.0,
+   1.0,
+   0.0
+  ]
+ },
+ {
+  "name": "XystonCannon_M009",
+  "mesh": "Cannon_Collision",
+  "shader": "MeshCollision.fx",
+  "base": null,
+  "normal": null,
+  "hidden": true,
+  "diffuse": null,
+  "color": [
+   0.0,
+   0.0,
+   1.0,
+   0.5
+  ]
+ }
+]

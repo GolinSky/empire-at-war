@@ -587,3 +587,9 @@ created: "2026-10-29\r"
 - [ ] [[Done/Features/Viscount_Import]] — In battle (Rebellion): build Viscount Prototype and Viscount Dreadnought; check hull scale vs Home One / Executor, textures and lights, engine plumes on the nozzles, team colours, selection ring, shield fit, hangar launches, wreck.
 - [ ] [[Done/Features/Viscount_Import]] — Balance check: Dreadnought vs Executor 1v1 and Prototype vs ISD II / Praetor; review provisional price, build time, capacity and speed.
 - [ ] [[Done/Features/Viscount_Import]] — Run `Ships`, `Health`, `Combat`, `Audio`, `Balance` when authorized; compile passed, tests not run.
+
+## Xyston Import
+
+- [ ] [[Done/Features/Xyston_Import]] — In battle (Empire, level 5): build Xyston; check superlaser beam leaves the ventral cannon, kills a full-health ISD I, auto-targets capitals; turret/stripe/team colours, engine plumes, shield fit, wreck.
+- [ ] [[Done/Features/Xyston_Import]] — Balance check: provisional price 14,000 / build 80 s / capacity 15 / max 2; 1v1 vs ISD II and Allegiance.
+- [ ] [[Done/Features/Xyston_Import]] — Selection fix (enabled hull box) and 2,406 m scale: click-select in battle; red armor band shows owner colour. `Ships`/`Abilities`/`Audio` passed; `Health`, `Combat`, `Balance` not run.

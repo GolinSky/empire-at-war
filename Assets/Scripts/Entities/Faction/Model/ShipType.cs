@@ -63,6 +63,7 @@ namespace EmpireAtWar.Models.Factions
         InterdictorStarDestroyer = 217,
         Chimaera = 218,
         Devastator = 219,
+        Xyston = 220,
         QuasarFire = 320,
 
         //rebellion

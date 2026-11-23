@@ -273,6 +273,12 @@ bpy.ops.import_scene.fbx(
 - Paint in ship space, not UV space: `Tools/Blender/Viscount/TeamMask.cs` rasterizes UV triangles, each texel takes its hull point's value (side circle radius 0.125 × hull height, centre 0.15 × height up and 0.05 × length forward, outboard faces only `|normal.x| ≥ 0.3`, 4 px seam dilation). Worn paint: ragged edge 0.1 R, value-noise chips (threshold 0.25 centre → 0.52 rim), grime keeps ≥ 0.6 paint on dark albedo. Noise in circle-local (y, z), so both sides match. Chip threshold 0.3 → 0.62 lost the circle shape; 0.16 → 0.4 read as clean paint. Works across many UV islands; mirrored halves sharing UVs stay consistent.
 - Reference: [[Done/Features/Viscount_Import]], tooling `Tools/Blender/Viscount/`.
 
+### Xyston import evidence — 2026-11-23
+
+- `Model_To_Attach` bones can carry a rest pitch (Xyston `HP_Cannon_Attach` 15°) meant for runtime turret aim. Check the unit's `_Show` ALO for the display pose; Xyston barrel sits level → set attachment `localRotation = Inverse(bone.localRotation) * convention`.
+- Duplicate ALO bone names get Blender `.001` suffixes after FBX round trip (e.g. `pe_imperial_star_destroyer_large`); look them up by prefix.
+- Same-mod ISD-family hulls reuse the ISD I Remake parts: clone `ISDIPart*` from `ISDI.prefab` onto the same bone names with the same local TRS and ISD I geometry scale. Reference: [[Done/Features/Xyston_Import]], `Tools/Blender/Xyston/`.
+
 ### Hero fighter import evidence — 2026-11-16
 
 - FBX normalization: multiply imported root scale by target/measured length; do not replace the root scale. Remake Vader FBX root scale 100 caused a 100× undersized prefab when overwritten. Verify the saved formation alongside existing fighters.

@@ -74,9 +74,9 @@ namespace EmpireAtWar.Editor.Balance
                     errors.Add(unit.Name + ": Lock S-foils requires an existing squadron SFoilsView.");
                 if (settings is IonPulseSettings && (!ship || !HasIonPulseCannon(unit)))
                     errors.Add(unit.Name + ": Ion Pulse requires existing facing and cannon bindings.");
-                if (settings is CompositeBeamSettings
+                if ((settings is CompositeBeamSettings || settings is SuperlaserSettings)
                     && (!ship || !unit.Components.OfType<ShipEntity>().Any(entity => entity.CompositeBeamMuzzle != null)))
-                    errors.Add(unit.Name + ": Composite Beam requires an existing bound muzzle.");
+                    errors.Add(unit.Name + ": beam ability requires an existing bound muzzle.");
                 if ((settings is PowerToMainBatteriesSettings || settings is FullSalvoSettings || settings is AssaultSettings)
                     && !unit.Mounts.OfType<WeaponHardPoint>().Any())
                     errors.Add(unit.Name + ": ability requires an existing weapon component and mounts.");

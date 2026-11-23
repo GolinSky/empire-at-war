@@ -1,0 +1,35 @@
+{
+ "note": "Source Units_Space_Empire_Star_Destroyer_Xyston.xml hardpoints -> existing weapon types (user: source-like ~900 DPS). part = ISD I Remake part cloned onto the hull bone; socket = fire bone inside that part, else a hull bone. arcsFrom = ISDIShipView hardpoint with the same source name.",
+ "weapons": [
+  {"id": 0,  "source": "HP_ISD_1_New_HTLT_01", "part": "ISDIPart03", "bone": "TA_ISD1_TLD_01", "socket": "FP_02", "weaponType": 3},
+  {"id": 1,  "source": "HP_ISD_1_New_HTLT_02", "part": "ISDIPart04", "bone": "TA_ISD1_TLD_02", "socket": "FP_02", "weaponType": 3},
+  {"id": 2,  "source": "HP_ISD_1_New_HTLT_03", "part": "ISDIPart05", "bone": "TA_ISD1_TLD_03", "socket": "FP_02", "weaponType": 3},
+  {"id": 3,  "source": "HP_ISD_1_New_HTLT_04", "part": "ISDIPart06", "bone": "TA_ISD1_TLD_04", "socket": "FP_02", "weaponType": 3},
+  {"id": 4,  "source": "HP_ISD_1_New_HTLT_05", "part": "ISDIPart07", "bone": "TA_ISD1_TLD_05", "socket": "FP_02", "weaponType": 3},
+  {"id": 5,  "source": "HP_ISD_1_New_HTLT_06", "part": "ISDIPart08", "bone": "TA_ISD1_TLD_06", "socket": "FP_02", "weaponType": 3},
+  {"id": 6,  "source": "HP_ISD_1_New_HICT_01", "part": "ISDIPart01", "bone": "TA_ISD1_ICD_01", "socket": "FP_01", "weaponType": 91},
+  {"id": 7,  "source": "HP_ISD_1_New_HICT_02", "part": "ISDIPart02", "bone": "TA_ISD1_ICD_02", "socket": "FP_01", "weaponType": 91},
+  {"id": 8,  "source": "HP_ISD_New_QIC_01",    "part": "ISDIPart12", "bone": "TA_ISD_ICQ_01",  "socket": "FP_01", "weaponType": 68},
+  {"id": 9,  "source": "HP_ISD_New_QIC_02",    "part": "ISDIPart13", "bone": "TA_ISD_ICQ_02",  "socket": "FP_01", "weaponType": 68},
+  {"id": 10, "source": "HP_ISD_1_New_LC_01", "socket": "IC_01_FP_01", "weaponType": 69},
+  {"id": 11, "source": "HP_ISD_1_New_LC_02", "socket": "IC_02_FP_01", "weaponType": 69},
+  {"id": 12, "source": "HP_ISD_1_New_LC_03", "socket": "IC_03_FP_01", "weaponType": 69},
+  {"id": 13, "source": "HP_ISD_1_New_LC_04", "socket": "IC_04_FP_01", "weaponType": 69},
+  {"id": 14, "source": "HP_ISD_1_New_LC_05", "socket": "IC_05_FP_01", "weaponType": 69},
+  {"id": 15, "source": "HP_ISD_1_New_LC_06", "socket": "IC_06_FP_01", "weaponType": 69},
+  {"id": 16, "source": "HP_ISD_1_New_TL_01", "socket": "TL_01_FP_01", "weaponType": 5},
+  {"id": 17, "source": "HP_ISD_1_New_TL_02", "socket": "TL_02_FP_01", "weaponType": 5},
+  {"id": 18, "source": "HP_ISD_1_New_TL_03", "socket": "TL_03_FP_01", "weaponType": 5},
+  {"id": 19, "source": "HP_ISD_1_New_TL_04", "socket": "TL_04_FP_01", "weaponType": 5},
+  {"id": 20, "source": "HP_ISD_1_New_TL_05", "socket": "TL_05_FP_01", "weaponType": 5}
+ ],
+ "parts": [
+  {"part": "ISDIPart00", "bone": "Decal_Attach_04"}
+ ],
+ "systems": [
+  {"id": 21, "system": "ShieldGenerator", "socket": "HP_SG"},
+  {"id": 22, "system": "Engines", "socket": "pe_imperial_star_destroyer_large", "pick": "minX"},
+  {"id": 23, "system": "Engines", "socket": "pe_imperial_star_destroyer_large", "pick": "maxX"},
+  {"id": 24, "system": "TractorBeam", "socket": "HP_Trac_Bone_00"}
+ ]
+}

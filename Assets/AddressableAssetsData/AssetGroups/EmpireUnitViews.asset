@@ -30,6 +30,11 @@ MonoBehaviour:
     m_ReadOnly: 0
     m_SerializedLabels: []
     FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 08cc7a5c3dc4cae49b4bb4af2d717e61
+    m_Address: XystonWreckView
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
   - m_GUID: 128f5bd0830b93945a0713c4326912d1
     m_Address: GladiatorWreckView
     m_ReadOnly: 0
@@ -250,6 +255,11 @@ MonoBehaviour:
     m_ReadOnly: 0
     m_SerializedLabels: []
     FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 99b79517fed19614c9df5a8f631e2108
+    m_Address: XystonShipView
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
   - m_GUID: 9a4ba4e132d772948a79c056bc163fa9
     m_Address: DevastatorReinforcementView
     m_ReadOnly: 0
@@ -372,6 +382,11 @@ MonoBehaviour:
     FlaggedDuringContentUpdateRestriction: 0
   - m_GUID: eb4ff8dbfba09204d8932bc648131c7d
     m_Address: InterdictorStarDestroyerShipView
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: f2406d4a7431a9a4a90924ad015fdcef
+    m_Address: XystonReinforcementView
     m_ReadOnly: 0
     m_SerializedLabels: []
     FlaggedDuringContentUpdateRestriction: 0

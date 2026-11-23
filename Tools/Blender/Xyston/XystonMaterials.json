@@ -1,0 +1,562 @@
+[
+ {
+  "name": "Xyston_M022",
+  "mesh": "Collision",
+  "shader": "MeshCollision.fx",
+  "base": null,
+  "normal": null,
+  "hidden": true,
+  "diffuse": null,
+  "color": [
+   0.0,
+   0.0,
+   1.0,
+   0.5
+  ]
+ },
+ {
+  "name": "Xyston_M023",
+  "mesh": "Engine_Glow",
+  "shader": "MeshShield.fx",
+  "base": "Xyston_Engine_Glow_Fancy_Blue",
+  "normal": null,
+  "hidden": false,
+  "diffuse": null,
+  "color": [
+   1.0,
+   1.0,
+   1.0,
+   1.0
+  ]
+ },
+ {
+  "name": "Xyston_M024",
+  "mesh": "Engine_Glow_Sec",
+  "shader": "MeshShield.fx",
+  "base": "Xyston_Engine_Glow_Fancy_White",
+  "normal": null,
+  "hidden": false,
+  "diffuse": null,
+  "color": [
+   1.0,
+   1.0,
+   1.0,
+   1.0
+  ]
+ },
+ {
+  "name": "Xyston_M025",
+  "mesh": "Shield",
+  "shader": "MeshShield.fx",
+  "base": null,
+  "normal": null,
+  "hidden": true,
+  "diffuse": null,
+  "color": [
+   1.0,
+   1.0,
+   1.0,
+   1.0
+  ]
+ },
+ {
+  "name": "Xyston_M026",
+  "mesh": "Hull_Kitbash_Pieces_ISD_Unsymm",
+  "shader": "MeshBumpColorize.fx",
+  "base": "Xyston_Hull_Kitbash_Pieces_ISD",
+  "normal": "Xyston_Hull_Kitbash_Pieces_ISD_B",
+  "hidden": false,
+  "diffuse": [
+   1.0,
+   1.0,
+   1.0,
+   0.0
+  ],
+  "color": null
+ },
+ {
+  "name": "Xyston_M027",
+  "mesh": "Hull_Kitbash_Trench_Inset",
+  "shader": "MeshBumpColorize.fx",
+  "base": "Xyston_Hull_Kitbash_Trench_ISD_Inset",
+  "normal": "Xyston_Hull_Kitbash_Trench_ISD_Inset_B",
+  "hidden": false,
+  "diffuse": [
+   1.0,
+   1.0,
+   1.0,
+   0.0
+  ],
+  "color": null
+ },
+ {
+  "name": "Xyston_M028",
+  "mesh": "Hull_Kitbash_Pieces_ISD_Lights",
+  "shader": "MeshAdditive.fx",
+  "base": "Xyston_Hull_Kitbash_Pieces_ISD_Lights",
+  "normal": null,
+  "hidden": false,
+  "diffuse": null,
+  "color": [
+   1.0,
+   1.0,
+   1.0,
+   0.0
+  ]
+ },
+ {
+  "name": "Xyston_M029",
+  "mesh": "Hull_Kitbash_Pieces_ISD_01",
+  "shader": "MeshBumpColorize.fx",
+  "base": "Xyston_Hull_Kitbash_Pieces_ISD",
+  "normal": "Xyston_Hull_Kitbash_Pieces_ISD_B",
+  "hidden": false,
+  "diffuse": [
+   1.0,
+   1.0,
+   1.0,
+   0.0
+  ],
+  "color": null
+ },
+ {
+  "name": "Xyston_M030",
+  "mesh": "Hull_2",
+  "shader": "MeshBumpColorize.fx",
+  "base": "Xyston_Hull_2_SD",
+  "normal": "Xyston_Hull_2_B",
+  "hidden": false,
+  "diffuse": [
+   1.0,
+   1.0,
+   1.0,
+   0.0
+  ],
+  "color": null
+ },
+ {
+  "name": "Xyston_M031",
+  "mesh": "Kitbash_Lights_Unsymm",
+  "shader": "MeshAdditive.fx",
+  "base": "Xyston_Hull_Kitbash_Pieces_ISD_Lights",
+  "normal": null,
+  "hidden": false,
+  "diffuse": null,
+  "color": [
+   1.0,
+   1.0,
+   1.0,
+   0.0
+  ]
+ },
+ {
+  "name": "Xyston_M032",
+  "mesh": "Hull_Kitbash_Superstructure",
+  "shader": "MeshBumpColorize.fx",
+  "base": "Xyston_Hull_Superstructure_Base",
+  "normal": "Xyston_Hull_Superstructure_Base_B",
+  "hidden": false,
+  "diffuse": [
+   1.0,
+   1.0,
+   1.0,
+   0.0
+  ],
+  "color": null
+ },
+ {
+  "name": "Xyston_M033",
+  "mesh": "Hull_Kitbash_Trench",
+  "shader": "MeshBumpColorize.fx",
+  "base": "Xyston_Hull_Kitbash_Trench_ISD",
+  "normal": "Xyston_Hull_Kitbash_Trench_ISD_B",
+  "hidden": false,
+  "diffuse": [
+   1.0,
+   1.0,
+   1.0,
+   0.0
+  ],
+  "color": null
+ },
+ {
+  "name": "Xyston_M034",
+  "mesh": "Hull_Armor",
+  "shader": "MeshBumpColorize.fx",
+  "base": "Xyston_Hull_Armor_Thick",
+  "normal": "Xyston_Hull_Armor_B",
+  "hidden": false,
+  "diffuse": [
+   1.0,
+   1.0,
+   1.0,
+   0.0
+  ],
+  "color": null
+ },
+ {
+  "name": "Xyston_M035",
+  "mesh": "Hull_2_SD",
+  "shader": "MeshBumpColorize.fx",
+  "base": "Xyston_Hull_2_SD",
+  "normal": "Xyston_Hull_2_B",
+  "hidden": false,
+  "diffuse": [
+   1.0,
+   1.0,
+   1.0,
+   0.0
+  ],
+  "color": null
+ },
+ {
+  "name": "Xyston_M036",
+  "mesh": "Hull_Material_High_Contrast",
+  "shader": "MeshBumpColorize.fx",
+  "base": "Xyston_Hull_Material_HighContrast",
+  "normal": "Xyston_Hull_Material_HighLowContrast_B",
+  "hidden": false,
+  "diffuse": [
+   1.0,
+   1.0,
+   1.0,
+   0.0
+  ],
+  "color": null
+ },
+ {
+  "name": "Xyston_M037",
+  "mesh": "Hull_Material_High_Contrast.001",
+  "shader": "MeshBumpColorize.fx",
+  "base": "Xyston_Hull_Material_HighContrast",
+  "normal": "Xyston_Hull_Material_HighLowContrast_B",
+  "hidden": false,
+  "diffuse": [
+   1.0,
+   1.0,
+   1.0,
+   0.0
+  ],
+  "color": null
+ },
+ {
+  "name": "Xyston_M038",
+  "mesh": "Hull_Lights_Grid",
+  "shader": "MeshAdditive.fx",
+  "base": "Xyston_Hull_Lights_Grid",
+  "normal": null,
+  "hidden": false,
+  "diffuse": null,
+  "color": [
+   1.0,
+   1.0,
+   1.0,
+   0.0
+  ]
+ },
+ {
+  "name": "Xyston_M039",
+  "mesh": "Empire_ISD_Superstructure_Base",
+  "shader": "MeshBumpColorize.fx",
+  "base": "Xyston_Empire_ISD_Superstructure_Base",
+  "normal": "Xyston_Empire_ISD_Superstructure_Base_B",
+  "hidden": false,
+  "diffuse": [
+   1.0,
+   1.0,
+   1.0,
+   0.0
+  ],
+  "color": null
+ },
+ {
+  "name": "Xyston_M040",
+  "mesh": "Empire_ISD_Bridge",
+  "shader": "MeshBumpColorize.fx",
+  "base": "Xyston_Empire_ISD_Bridge",
+  "normal": "Xyston_Empire_ISD_Bridge_B",
+  "hidden": false,
+  "diffuse": [
+   1.0,
+   1.0,
+   1.0,
+   0.0
+  ],
+  "color": null
+ },
+ {
+  "name": "Xyston_M041",
+  "mesh": "CBridge_Kitbash",
+  "shader": "MeshBumpColorize.fx",
+  "base": "Xyston_Hull_Kitbash_Pieces_ISD",
+  "normal": "Xyston_Hull_Kitbash_Pieces_ISD_B",
+  "hidden": false,
+  "diffuse": [
+   1.0,
+   1.0,
+   1.0,
+   0.0
+  ],
+  "color": null
+ },
+ {
+  "name": "Xyston_M042",
+  "mesh": "Hull_Material_High_Contrast.002",
+  "shader": "MeshBumpColorize.fx",
+  "base": "Xyston_Hull_Material_HighContrast",
+  "normal": "Xyston_Hull_Material_HighLowContrast_B",
+  "hidden": false,
+  "diffuse": [
+   1.0,
+   1.0,
+   1.0,
+   0.0
+  ],
+  "color": null
+ },
+ {
+  "name": "Xyston_M043",
+  "mesh": "Hull_Kitbash_Pieces_ISD_02",
+  "shader": "MeshBumpColorize.fx",
+  "base": "Xyston_Hull_Kitbash_Pieces_ISD",
+  "normal": "Xyston_Hull_Kitbash_Pieces_ISD_B",
+  "hidden": false,
+  "diffuse": [
+   1.0,
+   1.0,
+   1.0,
+   0.0
+  ],
+  "color": null
+ },
+ {
+  "name": "Xyston_M044",
+  "mesh": "Hull_Kitbash_Pieces_ISD_03",
+  "shader": "MeshBumpColorize.fx",
+  "base": "Xyston_Hull_Kitbash_Pieces_ISD",
+  "normal": "Xyston_Hull_Kitbash_Pieces_ISD_B",
+  "hidden": false,
+  "diffuse": [
+   1.0,
+   1.0,
+   1.0,
+   0.0
+  ],
+  "color": null
+ },
+ {
+  "name": "Xyston_M045",
+  "mesh": "Hull_Kitbash_Pieces_ISD_04",
+  "shader": "MeshBumpColorize.fx",
+  "base": "Xyston_Hull_Kitbash_Pieces_ISD",
+  "normal": "Xyston_Hull_Kitbash_Pieces_ISD_B",
+  "hidden": false,
+  "diffuse": [
+   1.0,
+   1.0,
+   1.0,
+   0.0
+  ],
+  "color": null
+ },
+ {
+  "name": "Xyston_M046",
+  "mesh": "Xyston_Hull_Lights",
+  "shader": "MeshAdditive.fx",
+  "base": "Xyston_Hull_Lights_Grid",
+  "normal": null,
+  "hidden": false,
+  "diffuse": null,
+  "color": [
+   1.0,
+   1.0,
+   1.0,
+   0.0
+  ]
+ },
+ {
+  "name": "Xyston_M047",
+  "mesh": "Hangars",
+  "shader": "MeshGloss.fx",
+  "base": "Xyston_Hangar_3",
+  "normal": null,
+  "hidden": false,
+  "diffuse": [
+   1.0,
+   1.0,
+   1.0,
+   0.0
+  ],
+  "color": null
+ },
+ {
+  "name": "Xyston_M048",
+  "mesh": "Hangar_Floorlights",
+  "shader": "MeshAdditive.fx",
+  "base": "Xyston_Hangar_2",
+  "normal": null,
+  "hidden": false,
+  "diffuse": null,
+  "color": [
+   1.0,
+   1.0,
+   1.0,
+   0.0
+  ]
+ },
+ {
+  "name": "Xyston_M049",
+  "mesh": "Hangar_Lights",
+  "shader": "MeshAdditive.fx",
+  "base": "Xyston_Hangar_Imp_Light",
+  "normal": null,
+  "hidden": false,
+  "diffuse": null,
+  "color": [
+   1.0,
+   1.0,
+   1.0,
+   0.0
+  ]
+ },
+ {
+  "name": "Xyston_M050",
+  "mesh": "Xyston_Kitbash",
+  "shader": "MeshBumpColorize.fx",
+  "base": "Xyston_Hull_Kitbash_Pieces_ISD",
+  "normal": "Xyston_Hull_Kitbash_Pieces_ISD_B",
+  "hidden": false,
+  "diffuse": [
+   1.0,
+   1.0,
+   1.0,
+   0.0
+  ],
+  "color": null
+ },
+ {
+  "name": "Xyston_M051",
+  "mesh": "Xyston_Kitbash_Lights",
+  "shader": "MeshAdditive.fx",
+  "base": "Xyston_Hull_Kitbash_Pieces_ISD_Lights",
+  "normal": null,
+  "hidden": false,
+  "diffuse": null,
+  "color": [
+   1.0,
+   1.0,
+   1.0,
+   0.0
+  ]
+ },
+ {
+  "name": "Xyston_M052",
+  "mesh": "Xyston_Kitbash_Lights_Unsymm",
+  "shader": "MeshAdditive.fx",
+  "base": "Xyston_Hull_Kitbash_Pieces_ISD_Lights",
+  "normal": null,
+  "hidden": false,
+  "diffuse": null,
+  "color": [
+   1.0,
+   1.0,
+   1.0,
+   0.0
+  ]
+ },
+ {
+  "name": "Xyston_M053",
+  "mesh": "Xyston_Kitbash_Unsymm",
+  "shader": "MeshBumpColorize.fx",
+  "base": "Xyston_Hull_Kitbash_Pieces_ISD",
+  "normal": "Xyston_Hull_Kitbash_Pieces_ISD_B",
+  "hidden": false,
+  "diffuse": [
+   1.0,
+   1.0,
+   1.0,
+   0.0
+  ],
+  "color": null
+ },
+ {
+  "name": "Xyston_M054",
+  "mesh": "Xyston_Hull_Superstructure",
+  "shader": "MeshBumpColorize.fx",
+  "base": "Xyston_Hull_Superstructure",
+  "normal": "Xyston_Hull_Superstructure_B",
+  "hidden": false,
+  "diffuse": [
+   1.0,
+   1.0,
+   1.0,
+   0.0
+  ],
+  "color": null
+ },
+ {
+  "name": "Xyston_M055",
+  "mesh": "Xyston_Armor",
+  "shader": "MeshBumpColorize.fx",
+  "base": "Xyston_Hull_Armor_Thick",
+  "normal": "Xyston_Hull_Armor_B",
+  "hidden": false,
+  "diffuse": [
+   1.0,
+   1.0,
+   1.0,
+   0.0
+  ],
+  "color": null
+ },
+ {
+  "name": "Xyston_M056",
+  "mesh": "Xyston_Material_High_Contrast",
+  "shader": "MeshBumpColorize.fx",
+  "base": "Xyston_Hull_Material_HighContrast",
+  "normal": "Xyston_Hull_Material_HighLowContrast_B",
+  "hidden": false,
+  "diffuse": [
+   1.0,
+   1.0,
+   1.0,
+   0.0
+  ],
+  "color": null
+ },
+ {
+  "name": "Xyston_M057",
+  "mesh": "Shadow_2",
+  "shader": "MeshShadowVolume.fx",
+  "base": null,
+  "normal": null,
+  "hidden": true,
+  "diffuse": null,
+  "color": null
+ },
+ {
+  "name": "Xyston_M058",
+  "mesh": "Shadow_1",
+  "shader": "MeshShadowVolume.fx",
+  "base": null,
+  "normal": null,
+  "hidden": true,
+  "diffuse": null,
+  "color": null
+ },
+ {
+  "name": "Xyston_M059",
+  "mesh": "Hull_Armor_Red",
+  "shader": "MeshBumpColorize.fx",
+  "base": "Xyston_Hull_Armor_Thick",
+  "normal": "Xyston_Hull_Armor_B",
+  "hidden": false,
+  "diffuse": [
+   0.7176470756530762,
+   0.12941177189350128,
+   0.12941177189350128,
+   0.0
+  ],
+  "color": null
+ }
+]

@@ -22,6 +22,7 @@ namespace EmpireAtWar.Tests.Editor
         [TestCase("ISDIIShipData")]
         [TestCase("ViscountPrototypeShipData")]
         [TestCase("ViscountDreadnoughtShipData")]
+        [TestCase("XystonShipData")]
         public void SavedShip_HasEngineAndShieldGeneratorHardpointsWithHealthAndInjectionBindings(string dataName)
         {
             BalanceUnit unit = BalanceInventory.BuildCombat().Units.Single(candidate =>

@@ -1939,3 +1939,17 @@ MonoBehaviour:
         m_SubObjectType: 
         m_SubObjectGUID: 
         m_EditorAssetChanged: 0
+    - key: XystonShipView
+      value:
+        m_AssetGUID: 99b79517fed19614c9df5a8f631e2108
+        m_SubObjectName: 
+        m_SubObjectType: 
+        m_SubObjectGUID: 
+        m_EditorAssetChanged: 0
+    - key: XystonShipData
+      value:
+        m_AssetGUID: a8e56f858128ee9458775d41bd836627
+        m_SubObjectName: 
+        m_SubObjectType: 
+        m_SubObjectGUID: 
+        m_EditorAssetChanged: 0

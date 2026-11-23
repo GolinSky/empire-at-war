@@ -85,7 +85,7 @@ namespace EmpireAtWar.Ship
             if (Data.Abilities.Contains(ShipAbilityId.Interdict))
                 EntityFeatureBindings.RegisterComponent(builder, Bindings.GravityWellEmitter);
             builder.Register<ShipAutoPowerFacade>(Lifetime.Singleton).AsImplementedInterfaces().AsSelf();
-            if (Data.Abilities.Contains(ShipAbilityId.CompositeBeam))
+            if (Data.Abilities.Contains(ShipAbilityId.CompositeBeam) || Data.Abilities.Contains(ShipAbilityId.XystonSuperlaser))
                 builder.Register<CompositeBeamFacade>(Lifetime.Singleton).AsImplementedInterfaces();
             builder.Register<ShipOrderFacade>(Lifetime.Singleton).AsImplementedInterfaces();
             builder.Register<ShipCombatObserverFacade>(Lifetime.Singleton).AsImplementedInterfaces();

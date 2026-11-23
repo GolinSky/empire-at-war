@@ -560,6 +560,13 @@ MonoBehaviour:
         m_SubObjectType: 
         m_SubObjectGUID: 
         m_EditorAssetChanged: 0
+    - key: 220
+      value:
+        m_AssetGUID: f2406d4a7431a9a4a90924ad015fdcef
+        m_SubObjectName: 
+        m_SubObjectType: 
+        m_SubObjectGUID: 
+        m_EditorAssetChanged: 0
   spawnSquadronWrapper:
     keyValue:
     - key: 0

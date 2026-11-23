@@ -725,6 +725,24 @@ namespace EmpireAtWar.Tests.Editor
             }
         }
 
+        [Test, Category("Ships")]
+        public void Xyston_SpawnsWithSuperlaserReadyFromTheBoundMuzzle()
+        {
+            BuildSaveProject();
+            MapLayout layout = BuildSaveBattle();
+            HumanPlayerScope human = _battle.GetComponentsInChildren<HumanPlayerScope>(true).Single();
+            PlayerSlot owner = human.Container.Resolve<PlayerSlot>();
+            ShipEntity ship = human.Container.Resolve<ShipFactory>().Create(owner.Id, ShipType.Xyston,
+                layout.GetStationPosition(owner.Id));
+            IEntity entity = _battle.Container.Resolve<IEntityLocator>().GetEntity(ship.EntityId);
+            IShipAbilityFacade abilities = entity.GetFacade<IShipAbilityFacade>();
+            Assert.That(abilities.Slots.Select(slot => slot.Id),
+                Is.SupersetOf(new[] { ShipAbilityId.XystonSuperlaser, ShipAbilityId.TractorBeam }));
+            Assert.That(abilities.Slots.Single(slot => slot.Id == ShipAbilityId.XystonSuperlaser).State,
+                Is.EqualTo(ShipAbilityState.Ready));
+            Assert.That(entity.GetFacade<ICompositeBeamFacade>().Muzzle, Is.EqualTo(ship.CompositeBeamMuzzle));
+        }
+
         [Test]
         public void ShipAutoPower_ObservesLiveWeaponsAndShieldRecoveryGates()
         {

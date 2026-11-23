@@ -33,5 +33,6 @@ namespace EmpireAtWar.Services.ShipAbilities
         ReplenishWingmen = 55,
         LuckyShot = 56,
         Interdict = 57,
+        XystonSuperlaser = 58,
     }
 }
