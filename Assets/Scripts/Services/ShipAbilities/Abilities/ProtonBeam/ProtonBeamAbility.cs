@@ -11,8 +11,8 @@ namespace EmpireAtWar.Services.ShipAbilities.Abilities
     {
         public ProtonBeamAbility(ProtonBeamSettings settings,
             ImpactEffectPresenter impactPresenter, WeaponsData weaponsData, IVisionService vision, IMatchSession session)
-            : base(impactPresenter, weaponsData.GetProfile(WeaponType.LaserBeam), settings.DamageType, settings.Damage,
-                vision, session)
+            : base(impactPresenter, weaponsData.GetProfile(WeaponType.LaserBeam).WithColor(settings.BeamColor),
+                settings.DamageType, settings.Damage, vision, session)
         {
         }
 

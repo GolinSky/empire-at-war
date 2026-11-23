@@ -743,8 +743,8 @@ MonoBehaviour:
     beamPrefab: {fileID: 0}
     projectileSpeed: 0
     size: {x: 1, y: 1, z: 1}
-    overrideColor: 0
-    color: {r: 1, g: 1, b: 1, a: 1}
+    overrideColor: 1
+    color: {r: 0.04, g: 0.32, b: 1, a: 1}
   - weaponType: 13
     displayName: Light Missile Launcher
     family: 4

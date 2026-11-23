@@ -38,9 +38,37 @@ namespace EmpireAtWar.Tests.Weapon
         public void TearDown() => Object.DestroyImmediate(_root);
 
         [Test]
+        public void Begin_TintsBeamGlowsAndLightWithTheBeamHue()
+        {
+            Color authored = new Color(0.25f, 0.65f, 1f, 1f);
+            ParticleSystem.MainModule main = _contact.main;
+            main.startColor = authored;
+            Light light = _root.GetComponentInChildren<Light>();
+            light.color = authored;
+
+            _visuals.Begin(1f, Vector3.zero, new Color(1f, 0.45f, 0.05f, 1f));
+
+            Color contact = _contact.main.startColor.color;
+            Assert.That(contact.r, Is.GreaterThan(contact.b));
+            Assert.That(light.color.r, Is.GreaterThan(light.color.b));
+            Color.RGBToHSV(authored, out _, out float authoredSaturation, out float authoredValue);
+            Color.RGBToHSV(contact, out _, out float saturation, out float value);
+            Assert.That(saturation, Is.EqualTo(authoredSaturation).Within(0.01f));
+            Assert.That(value, Is.EqualTo(authoredValue).Within(0.01f));
+            MaterialPropertyBlock block = new MaterialPropertyBlock();
+            _beam.GetPropertyBlock(block);
+            Color body = block.GetColor("_BodyColor");
+            Assert.That(body.r, Is.GreaterThan(body.g).And.GreaterThan(body.b));
+
+            _visuals.Begin(1f, Vector3.zero, new Color(0.04f, 0.32f, 1f, 1f));
+            contact = _contact.main.startColor.color;
+            Assert.That(contact.b, Is.GreaterThan(contact.r), "Tint starts from the authored colour, not the last beam.");
+        }
+
+        [Test]
         public void Contact_PersistsOnShieldsButSparksRequireArmor()
         {
-            _visuals.Begin(1f, Vector3.zero);
+            _visuals.Begin(1f, Vector3.zero, Color.cyan);
             _visuals.Tick(Vector3.zero, Vector3.forward * 100f, true, false);
             Assert.That(_contact.isEmitting, Is.True);
             Assert.That(_sparks.isEmitting, Is.False);
@@ -54,7 +82,7 @@ namespace EmpireAtWar.Tests.Weapon
         [Test]
         public void Stop_FadesBeamBeforeReleasingResidualParticles()
         {
-            _visuals.Begin(1f, Vector3.zero);
+            _visuals.Begin(1f, Vector3.zero, Color.cyan);
             _visuals.Stop();
             _visuals.Tick(Vector3.zero, Vector3.forward, false, false);
             Assert.That(_beam.enabled, Is.True);

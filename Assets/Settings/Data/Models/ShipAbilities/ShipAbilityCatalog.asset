@@ -705,6 +705,7 @@ MonoBehaviour:
       data:
         damageType: 7
         damage: 5000
+        beamColor: {r: 0.04, g: 0.32, b: 1, a: 1}
     - rid: 7607833764655792204
       type: {class: InvulnerabilitySettings, ns: EmpireAtWar.Services.ShipAbilities.Abilities,
         asm: Assembly-CSharp}
@@ -780,12 +781,14 @@ MonoBehaviour:
       data:
         damageType: 7
         damage: 20000
+        beamColor: {r: 1, g: 0.45, b: 0.05, a: 1}
     - rid: 7607833764655792234
       type: {class: ProtonBeamSettings, ns: EmpireAtWar.Services.ShipAbilities.Abilities,
         asm: Assembly-CSharp}
       data:
         damageType: 7
         damage: 3000
+        beamColor: {r: 0.04, g: 0.32, b: 1, a: 1}
     - rid: 7607833764655792235
       type: {class: HarmonicBombSettings, ns: EmpireAtWar.Services.ShipAbilities.Abilities,
         asm: Assembly-CSharp}

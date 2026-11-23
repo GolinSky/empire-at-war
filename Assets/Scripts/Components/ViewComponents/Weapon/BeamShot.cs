@@ -74,7 +74,7 @@ namespace EmpireAtWar.ViewComponents.Weapon
             hitEffect.Stop(true, ParticleSystemStopBehavior.StopEmittingAndClear);
             if (visuals != null)
             {
-                visuals.Begin(beam.widthMultiplier, _lastOrigin);
+                visuals.Begin(beam.widthMultiplier, _lastOrigin, _beamColor);
                 visuals.Tick(_lastOrigin, _lastOrigin, false, false);
             }
         }

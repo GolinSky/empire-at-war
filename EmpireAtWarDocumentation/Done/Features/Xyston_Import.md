@@ -65,6 +65,7 @@ acceptance: pending-user
 - `HP_Cannon_Attach` is pitched 15°; `Empire_Xyston_SD_Show.ALO` places the barrel level → cancel the bone rotation. Reusable rule → [[AssetPipeline/Guides/ALO_MODEL_IMPORT_GUIDE]].
 - Source hull albedo alpha is empty → inverted-alpha team mask would recolor the whole hull; team colour uses stripe overlays.
 - Engine glow uses ISD I additive rings (same look as ISD I).
+- `HeavyLaserBeam.shader` ignores LineRenderer vertex RGB (alpha only) → the first red superlaser still drew blue. Fixed 2026-11-23: `BeamVisuals.Begin(width, origin, color)` sets `_BodyColor`/`_CoreColor` (peaks 2.2/3.5) and re-hues glows + muzzle light. Colours: Venator-class `LaserBeam` weapon, Imperator `LaserBeam`, Resolute `ProtonBeam` blue `(0.04, 0.32, 1)` (= old material look); Executor `ExecutorLaserBeam` orange `(1, 0.45, 0.05)`; Xyston red. Test: `BeamColorDataTests`, `BeamVisualsTests`.
 - Superlaser reuses the `compositeBeamMuzzle` field; rename to a generic beam muzzle only if a third beam ship appears.
 
 ## Files
