@@ -187,7 +187,7 @@ namespace EmpireAtWar.Tests.Editor
         [TestCase("ShipGroupUi", "shipLayout")]
         [TestCase("MiniMapUi", "miniMapSlot")]
         [TestCase("ShipBuildUi", "buildPipelineSlot")]
-        [TestCase("FpsUi", "dynamicCanvas")]
+        [TestCase("PerformanceOverlayUi", "dynamicCanvas")]
         [TestCase("ControlGroupUi", "dynamicCanvas")]
         [TestCase("UnitOrderFeedbackUi", "feedbackCanvas")]
         [TestCase("CaptureSiteBuildUi", "contextualSlot")]

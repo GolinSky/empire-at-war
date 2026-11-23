@@ -10,7 +10,7 @@ using EmpireAtWar.Entities.CinematicCamera.Model;
 using EmpireAtWar.Entities.CoreGameUi;
 using EmpireAtWar.Entities.EndGameUi;
 using EmpireAtWar.Entities.ControlGroups;
-using EmpireAtWar.Entities.Fps;
+using EmpireAtWar.Entities.PerformanceOverlay;
 using EmpireAtWar.Entities.Game;
 using EmpireAtWar.Entities.MainMenu.Settings;
 using EmpireAtWar.Entities.Map;
@@ -192,8 +192,8 @@ namespace EmpireAtWar.Services.VContainer
             builder.Register<FadeService>(Lifetime.Singleton).AsImplementedInterfaces().AsSelf();
             builder.Register<FadeUiController>(Lifetime.Singleton)
                 .AsImplementedInterfaces().AsSelf();
-            builder.Register<FpsModel>(Lifetime.Singleton);
-            builder.Register<FpsUiController>(Lifetime.Singleton).AsImplementedInterfaces().AsSelf();
+            builder.Register<PerformanceOverlayModel>(Lifetime.Singleton);
+            builder.Register<PerformanceOverlayUiController>(Lifetime.Singleton).AsImplementedInterfaces().AsSelf();
             builder.Register<EntityLocator>(Lifetime.Singleton).AsImplementedInterfaces().AsSelf();
             builder.Register<UniqueIdGenerator>(Lifetime.Singleton).AsImplementedInterfaces().AsSelf();
             builder.Register<StationRegistry>(Lifetime.Singleton).AsImplementedInterfaces().AsSelf();

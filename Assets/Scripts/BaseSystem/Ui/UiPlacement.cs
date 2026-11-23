@@ -8,7 +8,7 @@ using EmpireAtWar.Entities.Economy.Ui;
 using EmpireAtWar.Entities.EndGameUi;
 using EmpireAtWar.Entities.Faction.Ui;
 using EmpireAtWar.Entities.Fade;
-using EmpireAtWar.Entities.Fps;
+using EmpireAtWar.Entities.PerformanceOverlay;
 using EmpireAtWar.Entities.Game;
 using EmpireAtWar.Entities.Heroes;
 using EmpireAtWar.Entities.MainMenu.Main;
@@ -90,7 +90,7 @@ namespace EmpireAtWar.Ui.Base
                     { typeof(ShipGroupUi), shipLayout.Content },
                     { typeof(MiniMapUi), miniMapSlot },
                     { typeof(ShipBuildUi), buildPipelineSlot },
-                    { typeof(FpsUi), dynamicCanvas.transform },
+                    { typeof(PerformanceOverlayUi), dynamicCanvas.transform },
                     { typeof(HintUi), tooltipSlot },
                     { typeof(MarkerRadialUi), tooltipSlot },
                     { typeof(BattleNotificationUi), dynamicCanvas.transform },

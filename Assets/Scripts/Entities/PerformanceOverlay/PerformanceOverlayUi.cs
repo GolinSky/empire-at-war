@@ -2,16 +2,17 @@ using EmpireAtWar.Ui.Base;
 using TMPro;
 using UnityEngine;
 
-namespace EmpireAtWar.Entities.Fps
+namespace EmpireAtWar.Entities.PerformanceOverlay
 {
-    public sealed class FpsUi : BaseUi
+    public sealed class PerformanceOverlayUi : BaseUi
     {
         [SerializeField] private TextMeshProUGUI fpsText;
-        private FpsModel _model;
+        [SerializeField] private TextMeshProUGUI pingText;
+        private PerformanceOverlayModel _model;
 
         private bool _isInitialized;
 
-        public void Initialize()
+        public void Initialize(bool showPing)
         {
             if (_isInitialized)
             {
@@ -19,7 +20,10 @@ namespace EmpireAtWar.Entities.Fps
             }
 
             fpsText.SetText("-- FPS");
+            pingText.SetText("-- ms");
+            pingText.gameObject.SetActive(showPing);
             _model.OnFramesPerSecondChanged += UpdateFpsText;
+            _model.OnPingChanged += UpdatePingText;
             _isInitialized = true;
         }
 
@@ -31,10 +35,11 @@ namespace EmpireAtWar.Entities.Fps
             }
 
             _model.OnFramesPerSecondChanged -= UpdateFpsText;
+            _model.OnPingChanged -= UpdatePingText;
             _isInitialized = false;
         }
 
-        public void SetModel(FpsModel model)
+        public void SetModel(PerformanceOverlayModel model)
         {
             _model = model;
         }
@@ -47,6 +52,11 @@ namespace EmpireAtWar.Entities.Fps
         private void UpdateFpsText(int framesPerSecond)
         {
             fpsText.SetText("{0} FPS", framesPerSecond);
+        }
+
+        private void UpdatePingText(int pingMs)
+        {
+            pingText.SetText("{0} ms", pingMs);
         }
     }
 }

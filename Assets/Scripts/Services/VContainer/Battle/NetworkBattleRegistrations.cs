@@ -23,6 +23,7 @@ namespace EmpireAtWar.Services.VContainer
             OnlineRole role = online.IsInBattle ? online.Role : OnlineRole.None;
             builder.Register<ReplicatedStateRegistry>(Lifetime.Singleton);
             builder.RegisterInstance(new NetworkStatusModel(role != OnlineRole.None));
+            builder.RegisterInstance<IPingSource>(new NetworkPingSource(role));
             if (role == OnlineRole.Client)
             {
                 RegisterClient(builder);
