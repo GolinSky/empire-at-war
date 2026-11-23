@@ -159,6 +159,30 @@ namespace EmpireAtWar.Tests.Editor
             Assert.That(UpdateFacing(-cursor), Is.EqualTo(-cursor));
         }
 
+        [Test]
+        public void ReleasedPin_OnAreaThatBecameUnplaceable_FollowsCursorAgain()
+        {
+            var input = new FakeDeployInput(false);
+            var placement = new FakeRotatablePlacement();
+            SetField("_deployInput", input);
+            SetField("_placement", placement);
+            typeof(UnitSpawnView).GetField("meshRenderers", BindingFlags.Instance | BindingFlags.NonPublic)
+                .SetValue(_previewObject.GetComponent<UnitSpawnView>(), new MeshRenderer[0]);
+            Vector3 anchor = Vector3.zero;
+            Vector3 cursor = new Vector3(10f, 0f, 0f);
+
+            input.IsAimHeld = true;
+            UpdateFacing(anchor);
+            UpdateFacing(cursor);
+            input.IsAimHeld = false;
+            Assert.That(UpdateFacing(cursor), Is.EqualTo(anchor));
+
+            // The pinned spot can no longer take the unit: the previews resume following the cursor.
+            placement.BlockedPosition = anchor;
+            Assert.That(UpdateFacing(cursor), Is.EqualTo(cursor));
+            Assert.That(UpdateFacing(-cursor), Is.EqualTo(-cursor));
+        }
+
         private Vector3 UpdateFacing(Vector3 cursor) => (Vector3)typeof(ReinforcementService)
             .GetMethod("UpdateFacing", BindingFlags.Instance | BindingFlags.NonPublic)
             .Invoke(_service, new object[] { cursor });
@@ -221,7 +245,8 @@ namespace EmpireAtWar.Tests.Editor
             public bool IsRotatable => true;
             public UnitSpawnView CreatePreview() => throw new NotSupportedException();
             public Quaternion GetAutoFacing(Vector3 position) => Quaternion.identity;
-            public bool IsPositionValid(Vector3 position, Quaternion rotation) => true;
+            public Vector3? BlockedPosition;
+            public bool IsPositionValid(Vector3 position, Quaternion rotation) => position != BlockedPosition;
             public void Spawn(Vector3 position, Quaternion rotation) => throw new NotSupportedException();
         }
 

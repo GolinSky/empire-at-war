@@ -403,6 +403,9 @@ namespace EmpireAtWar.Services.Reinforcement
             }
             else
             {
+                // A pin whose area turned unplaceable (zone lost, unit moved in) would hold the previews
+                // on a dead spot; release it so they follow the cursor again, keeping the chosen heading.
+                if (_isPinned && !IsPinPlaceable()) _isPinned = false;
                 Vector3 turnPoint = _isPinned ? _aimAnchor : cursor;
                 // Unscaled time: the turn sweep is interface input and must not stall while paused.
                 _facing.Turn(_deployInput.TurnDirection, _deployInput.WasTurnPressed, Time.unscaledDeltaTime,
@@ -414,6 +417,17 @@ namespace EmpireAtWar.Services.Reinforcement
 
             _previewRotation = GetFacingRotation(position);
             return position;
+        }
+
+        private bool IsPinPlaceable()
+        {
+            Quaternion rotation = GetFacingRotation(_aimAnchor);
+            for (int i = 0; i < _previews.Count; i++)
+            {
+                if (_placement.IsPositionValid(GetSlotPosition(_aimAnchor, i), rotation)) return true;
+            }
+
+            return false;
         }
 
         // World-space yaw on the battle plane, independent of the camera angle.
