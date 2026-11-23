@@ -153,6 +153,13 @@ created: 2026-10-11
 - Reusable guidance: existing [[Rules/EMPIRE_AT_WAR_OPTIMIZATION_COOKBOOK]] strict gates apply. Explicit BC7 resolved Titan's prior automatic-DXT quality failure; HQ alone does not establish the actual GPU format.
 
 
+## Implementation — 2026-11-23 Resurgent import textures
+- Scope: 45 textures under `Assets/Art/Textures/Models/EmpireShips/Resurgent*` (hull + 5 turrets). Script `Tools/DesktopAssetCompression/DesktopCompressionResurgent.cs` (`Main(offset,count)`, `Summary()`); results `output/DesktopAssetCompression/Resurgent20261123/`.
+- Baseline: Uncompressed at the existing 2048 import ceiling (4K sources stay capped at 2048; no resolution change). Before this pass they used unscreened Unity default Normal compression.
+- Result: 43 retained with explicit Standalone overrides — 33 DXT5, 5 DXT1, 5 BC7 (incl. `RSD_Hull_Normal` p99 4.6° and `RSD_Superstructure_Normal` p99 4.5°, which failed DXT5 at 7.3°/7.1°). Editor texture memory 608.8 → 327.4 MB vs uncompressed.
+- Left Uncompressed (gate failures): `Resurgent_Hangar_Imp_Light_Dim_Additive` (alpha 9/255, 42.7 MB Editor) and `Resurgent_Hull_Lights_Grid1_Additive` (alpha 24/255).
+- New rule: run this screening on every new ship import after `Stage` + `ConfigureArt`; `ConfigureArt` keeps platform overrides on rebuild.
+
 ## Implementation — 2026-11-16 safe desktop pass
 - Complete findings and committed CSV inventories → [[Artifacts/Audits/Asset_Import_Audit_2026-11-16]].
 - User scope: moderate compression across all 419 remaining uncompressed TextureImporters and 99 Off ModelImporters; preserve known quality exceptions and already compressed assets. Read/Write audit only; no flags changed.

@@ -72,3 +72,13 @@ API references: [texture format resolution](https://docs.unity3d.com/6000.4/Docu
 - Read/Write report: 498 project candidates require resolved-hierarchy/Player validation; two collider holds, one vendor VFX hold and one source/helper review. No flags changed. Unused report: 1,210 no-reference candidates, not deletion approval; protect atlas/include-in-build content, ProjectSettings dependencies and authoring inputs.
 - Retained evidence: `Evidence/SafeDesktop20261116.json`; scripts: `DesktopCompressionSafeTextures.cs`, `DesktopCompressionSafeMeshes.cs`. Full rollback metadata, per-asset outcomes, platform verification and review CSVs: `output/DesktopAssetCompression/Audit20261116/`.
 - The original normal-map percentile bins reported their lower edge. All eleven retained normal maps remain below 3.3° even using the upper edge, below the 6° gate; the new script reports the conservative upper edge for future runs.
+
+## Resurgent import — 2026-11-23
+
+- `DesktopCompressionResurgent.cs` screens the 45 Resurgent hull/turret textures with the same gates. Baseline is Uncompressed at the 2048 import ceiling; normal maps try DXT5 then BC7, colour DXT1/DXT5 then BC7; failures stay Uncompressed.
+- 43 retained (33 DXT5, 5 DXT1, 5 BC7); two additive light maps stay Uncompressed (alpha 9 and 24/255). Results: `output/DesktopAssetCompression/Resurgent20261123/`.
+
+```powershell
+unity command script run --file Tools/DesktopAssetCompression/DesktopCompressionResurgent.cs --entry DesktopCompressionResurgent.Main --args '[0,45]' --timeout 1500 --json
+unity command script run --file Tools/DesktopAssetCompression/DesktopCompressionResurgent.cs --entry DesktopCompressionResurgent.Summary --json
+```

@@ -287,6 +287,7 @@ bpy.ops.import_scene.fbx(
 - A missing normal (`W_PLANETCLOUDS_NONE_B.dds`) must become `None` in both the REPAIR block and the exporter's `normal =` line, or the exporter throws `KeyError`.
 - Team colour: check albedo hue before choosing livery. `MeshBumpColorize` with alpha 0 everywhere and grey albedo (mean saturation 0.02–0.13) → no hue livery and no mask is possible.
 - Adding a ship to a faction class with fewer than 3 ships makes `ShipRoleRoster.ClassMates` switch from all-faction to own-faction medians. Re-check Fast/Slow/Brawler/Fragile flags on the class mates (Resurgent removed `Slow` from Allegiance and Titan).
+- Texture compression: staged PNGs import at the 2048 ceiling with unscreened default compression. Screen them with the desktop gates (`Tools/DesktopAssetCompression/DesktopCompressionResurgent.cs` pattern, [[TODOs/Optimization/Desktop_Asset_Compression_Plan]]): normals DXT5 → BC7, colour DXT1/DXT5 → BC7, failures uncompressed.
 - Reference: [[Done/Features/Resurgent_Import]], tooling `Tools/Blender/Resurgent/`.
 
 ### Hero fighter import evidence — 2026-11-16
