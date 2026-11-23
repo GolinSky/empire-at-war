@@ -51,7 +51,7 @@ namespace EmpireAtWar.Tests.Editor
             {
                 var weapons = root.GetComponentsInChildren<WeaponHardPoint>(true).Where(point =>
                     point.WeaponType == WeaponType.HeavyTripleTurbolaser ||
-                    point.WeaponType == WeaponType.HeavyTripleIonCannon ||
+                    point.WeaponType == WeaponType.HeavyDualIonCannon ||
                     point.WeaponType == WeaponType.DualMediumTurboLaser).ToArray();
                 foreach (float heading in new[] { 0f, 73f })
                 {

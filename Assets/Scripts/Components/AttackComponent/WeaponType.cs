@@ -46,7 +46,6 @@ namespace EmpireAtWar.Components.AttackComponent
         HeavyAssaultMissile = 65,
         HeavyProtonTorpedo = 66,
         HeavyTripleTurbolaser = 67,
-        HeavyTripleIonCannon = 68,
         HeavyDualLaser = 69,
         ISDIIOctupleTurbolaser = 70,
         ISDIIQuadIonCannon = 71,

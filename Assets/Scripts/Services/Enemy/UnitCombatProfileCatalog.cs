@@ -77,7 +77,7 @@ namespace EmpireAtWar.Services.Enemy
             return UnitCombatProfileFactory.Create(data.ShipClass, data.Hull, data.Shields,
                 data.WeaponLoadout, _weaponsData, _damageMatrix, hangar,
                 shieldRegen: data.ShieldRegenerateValue / data.ShieldRegenerateDelay, speed: data.Speed,
-                price: GetShipPrice(shipType));
+                price: GetShipPrice(shipType), faction: GetShipFaction(shipType));
         }
 
         /// <summary>
@@ -95,6 +95,21 @@ namespace EmpireAtWar.Services.Enemy
             foreach (FactionDefinition faction in GetFactions().Factions)
                 if (faction.Ships.TryGetValue(shipType, out FactionData data)) return data.Price;
             return 0f;
+        }
+
+        // The faction that lists a unit is the unit's own faction, which owns its faction damage scales.
+        private FactionType? GetShipFaction(ShipType shipType)
+        {
+            foreach (FactionDefinition faction in GetFactions().Factions)
+                if (faction.Ships.ContainsKey(shipType)) return faction.FactionType;
+            return null;
+        }
+
+        private FactionType? GetSquadronFaction(SquadronType squadronType)
+        {
+            foreach (FactionDefinition faction in GetFactions().Factions)
+                if (faction.Squadrons.ContainsKey(squadronType)) return faction.FactionType;
+            return null;
         }
 
         private float GetSquadronPrice(SquadronType squadronType)
@@ -140,7 +155,7 @@ namespace EmpireAtWar.Services.Enemy
                 data.WeaponLoadout, _weaponsData, _damageMatrix,
                 Array.Empty<UnitCombatProfile>(), data.WarheadDamageMultiplier, data.WarheadReloadMultiplier,
                 data.ShieldRegenerateValue * data.MemberCount / data.ShieldRegenerateDelay, data.CruiseSpeed,
-                GetSquadronPrice(squadronType));
+                GetSquadronPrice(squadronType), GetSquadronFaction(squadronType));
         }
     }
 }

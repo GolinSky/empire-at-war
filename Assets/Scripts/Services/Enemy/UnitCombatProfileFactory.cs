@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using EmpireAtWar.Components.AttackComponent;
 using EmpireAtWar.Components.Ship.Health;
 using EmpireAtWar.Entities.EnemyFaction.Models.Combat;
+using EmpireAtWar.Models.Factions;
 
 namespace EmpireAtWar.Services.Enemy
 {
@@ -21,7 +22,8 @@ namespace EmpireAtWar.Services.Enemy
             float warheadReloadMultiplier = 1f,
             float shieldRegen = 0f,
             float speed = 0f,
-            float price = 0f)
+            float price = 0f,
+            FactionType? faction = null)
         {
             float[] hullDps = new float[ForceComposition.ClassSlots];
             float[] shieldDps = new float[ForceComposition.ClassSlots];
@@ -33,7 +35,10 @@ namespace EmpireAtWar.Services.Enemy
                 if (weapon.Reload <= 0f)
                     throw new InvalidOperationException($"{entry.WeaponType} needs a positive reload to rate its damage.");
 
-                float dps = entry.Count * weapon.Damage * weapon.ShotsPerSalvo / weapon.Reload;
+                // The unit's own faction scales its hits in combat (WeaponComponent.ApplyDamage), so the rating does too.
+                float factionScale = faction.HasValue
+                    ? damageMatrix.GetFactionDamageMultiplier(faction.Value, weapon.DamageType) : 1f;
+                float dps = entry.Count * weapon.Damage * weapon.ShotsPerSalvo / weapon.Reload * factionScale;
                 bool piercing = damageMatrix.IsShieldPiercing(weapon.DamageType);
                 foreach (ShipClass target in ForceComposition.Classes)
                 {

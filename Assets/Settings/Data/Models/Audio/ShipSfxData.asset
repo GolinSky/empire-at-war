@@ -391,17 +391,6 @@ MonoBehaviour:
       localFeedback: 0
     weaponType: 67
   - sfx:
-      clip: {fileID: 8300000, guid: ce6b502cd97d65241935f703caa2d476, type: 3}
-      clips:
-        array: []
-      volume: 0.72
-      priority: 30
-      cooldown: 0
-      maxInstances: 8
-      loop: 1
-      localFeedback: 0
-    weaponType: 68
-  - sfx:
       clip: {fileID: 0}
       clips:
         array:

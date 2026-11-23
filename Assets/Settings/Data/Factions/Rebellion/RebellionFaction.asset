@@ -393,8 +393,8 @@ MonoBehaviour:
       value:
         matchups: {fileID: 0}
         displayName: Freedom
-        description: Rebel ion specialist with four heavy triple ion cannons, six
-          medium dual ion cannons, six medium dual turbolasers and four heavy turbolasers.
+        description: Rebel ion specialist with four heavy dual ion cannons, six medium
+          dual ion cannons, six medium dual turbolasers and four heavy turbolasers.
           Boost Shield Power boosts shield regeneration. Deploys 1 bomber squadron
           at once. Carries 2 total squadron launches, including the initial deployment.
         role: Capital ship / Shield disabler
@@ -459,7 +459,7 @@ MonoBehaviour:
         displayName: Viscount Prototype
         description: '3 km Mon Calamari prototype battlecruiser: 55,000 hull and
           60,000 shields with battlecruiser shield regeneration. Ten heavy dual turbolasers,
-          ten medium quad turbolasers, twelve heavy dual ion cannons, fourteen medium
+          ten medium quad turbolasers, twelve medium dual ion cannons, fourteen medium
           dual laser cannons, four missile launchers and four heavy proton torpedo
           launchers. Two shield generators, five engines and two hangars can be destroyed.
           Boost Shield Power raises shield regeneration at the cost of speed and

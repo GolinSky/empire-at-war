@@ -5516,7 +5516,7 @@ MonoBehaviour:
     <Min>k__BackingField: -165
     <Max>k__BackingField: 19
   mainBattery: 0
-  <WeaponType>k__BackingField: 68
+  <WeaponType>k__BackingField: 91
 --- !u!1 &3249094288766375541
 GameObject:
   m_ObjectHideFlags: 0
@@ -18549,7 +18549,7 @@ MonoBehaviour:
     <Min>k__BackingField: -17
     <Max>k__BackingField: 151
   mainBattery: 0
-  <WeaponType>k__BackingField: 68
+  <WeaponType>k__BackingField: 91
 --- !u!1 &8992663462783704596
 GameObject:
   m_ObjectHideFlags: 0

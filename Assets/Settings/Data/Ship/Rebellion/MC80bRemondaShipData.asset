@@ -89,7 +89,7 @@ MonoBehaviour:
   - weaponType: 90
     count: 14
   - weaponType: 89
-    count: 2
-  - weaponType: 91
-    count: 8
+    count: 4
+  - weaponType: 37
+    count: 4
   roles: 66

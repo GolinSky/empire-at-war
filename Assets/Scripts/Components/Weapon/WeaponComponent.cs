@@ -52,6 +52,8 @@ namespace EmpireAtWar.Components.Weapon
         private long _entityId;
         private ShipClass _attackerClass;
         private FactionType _faction;
+        // The unit's own faction, which owns faction damage scales even when another player commands the unit.
+        private FactionType _damageFaction;
         // Faction the unit was designed for; bolts take its color even when another faction owns the unit.
         private FactionType? _unitFaction;
         private string _telemetryName;
@@ -187,6 +189,7 @@ namespace EmpireAtWar.Components.Weapon
             FactionType faction = _playerRoster.Get(_owner).Faction;
             _faction = faction;
             FactionType boltFaction = _unitFaction ?? faction;
+            _damageFaction = boltFaction;
             _telemetryName = _viewTransform.name.Replace("(Clone)", string.Empty);
             List<WeaponProfile> profiles = new List<WeaponProfile>(hardPoints.Count);
             for (int i = 0; i < hardPoints.Count; i++)
@@ -1155,7 +1158,8 @@ namespace EmpireAtWar.Components.Weapon
             if (_isReleased || attackData.IsDestroyed || !attackData.Contains(hardPointModel)) return;
             IEntity target = attackData.TargetEntity;
             float damage = profile.Damage * profile.GetDamageBias(attackData.TargetClass) *
-                           _modifiers.GetDamageMultiplier(target);
+                           _modifiers.GetDamageMultiplier(target) *
+                           _damageMatrix.GetFactionDamageMultiplier(_damageFaction, profile.DamageType);
             if ((_attackerClass == ShipClass.Capital || _attackerClass == ShipClass.BattleCruiser ||
                  _attackerClass == ShipClass.Dreadnought) &&
                 target.TryGetFacade(out IStructureKindFacade structure))

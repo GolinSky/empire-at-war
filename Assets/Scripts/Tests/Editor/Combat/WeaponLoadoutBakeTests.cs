@@ -7,6 +7,7 @@ using EmpireAtWar.Editor.AI;
 using EmpireAtWar.Entities.EnemyFaction.Models.Combat;
 using EmpireAtWar.Entities.Ship.Data;
 using EmpireAtWar.Entities.Squadrons.Data;
+using EmpireAtWar.Models.Factions;
 using EmpireAtWar.Services.Enemy;
 using NUnit.Framework;
 using UnityEditor;
@@ -92,6 +93,24 @@ namespace EmpireAtWar.Tests.Editor
                 matrix.GetDamageMultiplier(weapon.DamageType, target)).Within(0.001f));
             Assert.That(profile.ShieldDps(target), Is.EqualTo(expectedHitDps *
                 matrix.GetShipShieldMultiplier(weapon.DamageType)).Within(0.001f));
+        }
+
+        [Test]
+        public void CombatRating_AppliesTheUnitFactionDamageScale()
+        {
+            WeaponsData weapons = AssetDatabase.LoadAssetAtPath<WeaponsData>(WEAPONS_DATA);
+            DamageMatrixData matrix = AssetDatabase.LoadAssetAtPath<DamageMatrixData>(DAMAGE_MATRIX);
+            var loadout = new[] { new WeaponLoadoutEntry(WeaponType.HeavyDualIonCannon, 1) };
+            UnitCombatProfile neutral = UnitCombatProfileFactory.Create(ShipClass.Capital, 1000f, 1000f, loadout,
+                weapons, matrix, Array.Empty<UnitCombatProfile>());
+            UnitCombatProfile rebel = UnitCombatProfileFactory.Create(ShipClass.Capital, 1000f, 1000f, loadout,
+                weapons, matrix, Array.Empty<UnitCombatProfile>(), faction: FactionType.Rebellion);
+            float scale = matrix.GetFactionDamageMultiplier(FactionType.Rebellion, DamageType.Ion);
+
+            Assert.That(rebel.ShieldDps(ShipClass.Capital),
+                Is.EqualTo(neutral.ShieldDps(ShipClass.Capital) * scale).Within(0.001f));
+            Assert.That(rebel.HullDps(ShipClass.Capital),
+                Is.EqualTo(neutral.HullDps(ShipClass.Capital) * scale).Within(0.001f));
         }
 
         [Test]

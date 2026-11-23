@@ -451,9 +451,9 @@ MonoBehaviour:
           ship, station or structure, enough to destroy an ISD II outright; recovers
           for 60 s and cannot target fighters or corvettes. Six heavy dual turbolaser
           batteries, six heavy dual laser cannons, five medium dual turbolasers,
-          two heavy dual and two heavy triple ion cannons. Shield generator, two
-          engines and tractor beam can be destroyed. Tractor Beam slows enemy ships
-          of a lower class. No hangar.'
+          four heavy dual ion cannons. Shield generator, two engines and tractor
+          beam can be destroyed. Tractor Beam slows enemy ships of a lower class.
+          No hangar.'
         role: Anti-capital artillery / Glass cannon
         iconKey: 344ab43239374da438ba8d36fe4c2dd7:21300000
         isHero: 0
