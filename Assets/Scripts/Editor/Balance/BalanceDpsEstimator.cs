@@ -6,6 +6,8 @@ using EmpireAtWar.Components.AttackComponent;
 using EmpireAtWar.Components.Ship.Health;
 using EmpireAtWar.Components.Weapon;
 using EmpireAtWar.Entities.Squadrons.Data;
+using EmpireAtWar.Models.Factions;
+using UnityEditor;
 
 namespace EmpireAtWar.Editor.Balance
 {
@@ -18,6 +20,8 @@ namespace EmpireAtWar.Editor.Balance
                                       "including squadron warhead tuning.";
         public const string VS_CLASS_FORMULA = "Damage vs class = Base DPS per weapon × min(1, matrix accuracy × size bias) × " +
                                                "matrix hull damage × size bias. Shields, range, firing arcs, turning and travel are excluded.";
+        public const string ION_SHIELD_FORMULA = "Ion vs shields = Base DPS of Ion weapons × matrix Ion vs shield × ship shield " +
+                                                 "multiplier × the unit faction's Ion damage scale. Accuracy and shield regeneration are excluded.";
 
         /// <summary>Target classes shown next to Base DPS: strikecraft, small, medium and large ships.</summary>
         public static readonly ShipClass[] DisplayedClasses =
@@ -26,12 +30,17 @@ namespace EmpireAtWar.Editor.Balance
         private readonly BalanceRegistration _registry;
         private readonly BalanceWeaponPreview _weapons;
         private readonly Dictionary<string, BalanceField> _matrix;
+        private readonly DamageMatrixData _matrixAsset;
+        // Not a balance editor field, so it is read from the saved asset.
+        private readonly float _ionShipShieldMultiplier;
 
         public BalanceDpsEstimator(BalanceRegistration registry)
         {
             _registry = registry;
             _weapons = new BalanceWeaponPreview(registry);
-            _matrix = registry.FieldsFor(registry.Resolve<DamageMatrixData>()).ToDictionary(field => field.Stat);
+            _matrixAsset = registry.Resolve<DamageMatrixData>();
+            _matrix = registry.FieldsFor(_matrixAsset).ToDictionary(field => field.Stat);
+            _ionShipShieldMultiplier = ReadShipShieldMultiplier(_matrixAsset, DamageType.Ion);
         }
 
         public BalanceDpsEstimate Estimate(BalanceUnit unit, BalanceDraft draft) =>
@@ -41,6 +50,28 @@ namespace EmpireAtWar.Editor.Balance
             Sum(unit, draft, profile => WeaponEngagementRange.EffectiveDamagePerSecond(profile, targetClass,
                 MatrixValue(draft, profile.DamageType, "accuracy", targetClass),
                 MatrixValue(draft, profile.DamageType, "damage", targetClass)));
+
+        /// <summary>Shield damage per second from the unit's Ion weapons only, with the draft Ion vs shield value.</summary>
+        public BalanceDpsEstimate EstimateIonVsShields(BalanceUnit unit, BalanceDraft draft)
+        {
+            float shieldMultiplier = float.Parse(_matrix["matrix/" + (int)DamageType.Ion + "/vsShield"].DraftValue(draft),
+                CultureInfo.InvariantCulture) * _ionShipShieldMultiplier * FactionIonScale(unit);
+            return Sum(unit, draft, profile => profile.DamageType == DamageType.Ion ? profile.DamagePerSecond * shieldMultiplier : 0f);
+        }
+
+        // Shared and neutral units have no faction and fire at the unscaled rate.
+        private float FactionIonScale(BalanceUnit unit) =>
+            Enum.TryParse(unit.Faction, out FactionType faction)
+                ? _matrixAsset.GetFactionDamageMultiplier(faction, DamageType.Ion)
+                : 1f;
+
+        private static float ReadShipShieldMultiplier(DamageMatrixData matrix, DamageType damageType)
+        {
+            using SerializedObject serialized = new SerializedObject(matrix);
+            return BalanceRegistration.Elements(serialized.FindProperty("damageTypes"))
+                .First(row => row.FindPropertyRelative("damageType").intValue == (int)damageType)
+                .FindPropertyRelative("shipShieldMultiplier").floatValue;
+        }
 
         /// <summary>"Fighter 12 · Corvette 40 · …" for <see cref="DisplayedClasses"/>, or the problem when unavailable.</summary>
         public string DescribeAgainstClasses(BalanceUnit unit, BalanceDraft draft)

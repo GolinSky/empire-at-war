@@ -5,6 +5,7 @@ using EmpireAtWar.Components.AttackComponent;
 using EmpireAtWar.Components.Ship.Health;
 using EmpireAtWar.Components.Weapon;
 using EmpireAtWar.Editor.Balance;
+using EmpireAtWar.Models.Factions;
 using NUnit.Framework;
 using UnityEditor;
 using UnityEngine;
@@ -96,6 +97,38 @@ namespace EmpireAtWar.Tests.Editor
                         .ToString("R", CultureInfo.InvariantCulture)).ToList());
                 BalanceDpsEstimate doubled = estimator.EstimateAgainst(unit, draft, TARGET);
                 Assert.That(doubled.Value, Is.EqualTo(saved.Value * 2).Within(saved.Value * 1e-5 + 1e-5));
+            }
+        }
+
+        [Test]
+        public void EstimateIonVsShields_MatchesRuntimeShieldDamage_AndFollowsDraftMatrix()
+        {
+            BalanceRegistration registry = BalanceInventory.BuildCombat();
+            WeaponsData weapons = registry.Resolve<WeaponsData>();
+            DamageMatrixData matrix = registry.Resolve<DamageMatrixData>();
+            List<WeaponType> Mounted(BalanceUnit candidate) => candidate.Mounts.Distinct().SelectMany(registry.FieldsFor)
+                .Where(field => !field.SharedMountSource && field.Stat == "WeaponType")
+                .Select(field => (WeaponType)int.Parse(field.Read(), CultureInfo.InvariantCulture)).ToList();
+            BalanceUnit unit = registry.Units.First(entry => entry.Kind == BalanceUnitKind.Ship &&
+                Mounted(entry).Any(type => weapons.GetProfile(type).DamageType == DamageType.Ion));
+            FactionType faction = (FactionType)System.Enum.Parse(typeof(FactionType), unit.Faction);
+            double expected = Mounted(unit).Select(weapons.GetProfile).Where(profile => profile.DamageType == DamageType.Ion)
+                .Sum(profile => (double)profile.DamagePerSecond) * matrix.GetShipShieldMultiplier(DamageType.Ion) *
+                matrix.GetFactionDamageMultiplier(faction, DamageType.Ion);
+
+            using (BalanceDpsEstimator estimator = new BalanceDpsEstimator(registry))
+            {
+                BalanceDpsEstimate saved = estimator.EstimateIonVsShields(unit, new BalanceDraft());
+                Assert.That(saved.HasValue, Is.True, saved.Problem);
+                Assert.That(saved.Value, Is.GreaterThan(0));
+                Assert.That(saved.Value, Is.EqualTo(expected).Within(expected * 1e-5));
+
+                // Doubling the draft Ion vs shield value doubles the estimate.
+                BalanceField vsShield = registry.Fields.Values.Single(field => field.Stat == "matrix/" + (int)DamageType.Ion + "/vsShield");
+                BalanceDraft draft = new BalanceDraft();
+                draft.SetMany(new List<BalanceSnapshot> { vsShield.Snapshot() }, new List<string>
+                    { (double.Parse(vsShield.Read(), CultureInfo.InvariantCulture) * 2).ToString("R", CultureInfo.InvariantCulture) });
+                Assert.That(estimator.EstimateIonVsShields(unit, draft).Value, Is.EqualTo(saved.Value * 2).Within(saved.Value * 1e-5));
             }
         }
 
