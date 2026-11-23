@@ -90,6 +90,7 @@ User-value layout:
 ### Per-ship (material)
 
 - `_HullDamageMarkScale` (0.05–32): scales marks and spacing together. Written by `Tools/Empire At War/Rendering/Materials/Auto Scale Hull Damage Marks` (`HullDamageMarkScaleTool`, one-time; rerun after adding units, overwrites hand tweaks): `1.3 × hullRadius / 58.3`. Ran once: 876 materials + 774 wreck copies (e.g. Arquitens 0.45, Victory 1.3, Tector 2.28, Executor 23.5). Shared `SciFiLamps_*` → geometric mean.
+  - 2026-11-23: Viscount Dreadnought/Prototype (added after the run) were left at 1 → many tiny marks. Set by the tool's formula for those materials + wreck copies only: Dreadnought 21.88, Prototype 3.90. `RepairSatellite` materials still at 1. New units → rerun the tool or set their materials the same way.
 - `_HullDamageOpacityScale` (0–2): soot opacity multiplier. Victory 1.2.
 - Keep the wreck copy equal (`WreckMaterialSyncTests`). The tool writes only Mark Scale into existing `<name>_Wreck` copies; never use `Sync Wreck Materials` for this (it resets 15 drifted wrecks and creates 49 unreferenced ISDI/ISDII materials).
 
