@@ -155,7 +155,9 @@ namespace EmpireAtWar.Services.Enemy
             IEntity attackTarget = state == nameof(AttackTargetState) ? orders.Target : attackMoveTarget;
             bool attackTargetInReach = attackTarget != null &&
                 (heldInReach ?? ShipEngagement.CanEngage(attackTarget, movement, weapon));
-            IEntity facingTarget = attackTarget ?? tracked ?? preferred;
+            // A destroyed target's view is gone ("complete" rows record the kill), so it has no facing.
+            IEntity liveAttackTarget = attackTarget != null && !attackTarget.HealthModel.IsDestroyed ? attackTarget : null;
+            IEntity facingTarget = liveAttackTarget ?? tracked ?? preferred;
             float facingDot = 0f;
             if (facingTarget != null)
             {
