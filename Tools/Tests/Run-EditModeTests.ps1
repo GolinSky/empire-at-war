@@ -120,7 +120,8 @@ function Invoke-TestPass {
 
     Wait-EditorReady
     $active = Get-TestStatus
-    if ($null -ne $active -and $active.status -notin $TERMINAL_STATES) {
+    # 'no_tests' = no run since the Editor started: idle, not active.
+    if ($null -ne $active -and $active.status -notin $TERMINAL_STATES -and $active.status -ne 'no_tests') {
         throw "A test run is already active (status '$($active.status)'). Wait for it or run 'unity command test cancel'."
     }
     Assert-ScenesClean

@@ -452,6 +452,7 @@ namespace EmpireAtWar.Tests.Editor
         {
             public UnitOrderType CurrentOrder => UnitOrderType.None;
             public IEntity AttackTarget => null;
+            public bool IsEngagingEnRoute => false;
             public ISelectionModelObserver Selection { get; } = new SelectionModel();
             public bool Emitting { get; private set; }
             public bool OnScreen { get; private set; } = true;

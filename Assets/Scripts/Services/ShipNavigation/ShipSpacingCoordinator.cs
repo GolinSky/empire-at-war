@@ -112,8 +112,9 @@ namespace EmpireAtWar.Services.ShipNavigation
                         (agent.SpacingTargetPosition - entry.TargetPosition).sqrMagnitude > tolerance * tolerance) continue;
                     // Recheck the actual pair; old snapshots must not displace a newly clear hull.
                     float radius = agent.NavigationRadius + blocker.Agent.NavigationRadius;
+                    float settleDistance = radius * (1f - ShipSpacingJob.MIN_PENETRATION_FRACTION);
                     Vector3 delta = position - blockerPosition;
-                    if (delta.x * delta.x + delta.z * delta.z >= radius * radius ||
+                    if (delta.x * delta.x + delta.z * delta.z > settleDistance * settleDistance ||
                         !agent.NavigationHullSpan.Overlaps(blocker.Agent.NavigationHullSpan)) continue;
                     // Whole-cell hashes remain stable as a saturated query rotates its visited slice.
                     if (entry.FailedOccupancyHash == result.OccupancyHash &&

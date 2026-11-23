@@ -7,16 +7,22 @@ namespace EmpireAtWar.Services.Enemy
 {
     /// <summary>
     /// Per-team cooperation state shared by allied AI commanders: capture reservations, main-force strike
-    /// strength, the shared focus enemy and station-defense requests. Human allies never publish here.
+    /// strength, the shared focus enemy, station-defense requests and combined zone strikes (W47 AllyCombined).
+    /// Human allies never publish here.
     /// </summary>
     public sealed class TeamAiCooperation
     {
         /// <summary>Published data older than this is ignored: twice the slowest decision interval (4 s) plus slack.</summary>
         public const float STALE_SECONDS = 10f;
+        /// <summary>A combined zone strike request lapses this long after it was first made for its zone.</summary>
+        public const float ZONE_STRIKE_SECONDS = 90f;
 
         private readonly Dictionary<PlayerId, HashSet<string>> _reservations = new Dictionary<PlayerId, HashSet<string>>();
         private readonly Dictionary<PlayerId, Strike> _strikes = new Dictionary<PlayerId, Strike>();
         private readonly Dictionary<PlayerId, DefenseRequest> _defenseRequests = new Dictionary<PlayerId, DefenseRequest>();
+        private readonly Dictionary<PlayerId, ZoneStrike> _zoneStrikes = new Dictionary<PlayerId, ZoneStrike>();
+        // Responder → the requester whose zone strike it answers: one at a time.
+        private readonly Dictionary<PlayerId, PlayerId> _zoneStrikeAnswers = new Dictionary<PlayerId, PlayerId>();
         private readonly ForceComposition _combined = new ForceComposition();
 
         public PlayerId FocusEnemy { get; set; }
@@ -45,6 +51,13 @@ namespace EmpireAtWar.Services.Enemy
             }
             return false;
         }
+
+        /// <summary>
+        /// True when <paramref name="player"/> itself holds <paramref name="objectiveId"/> from its last publish, e.g. an
+        /// <c>expansion:</c> zone it sent a force to.
+        /// </summary>
+        public bool IsReservedBy(PlayerId player, string objectiveId) =>
+            _reservations.TryGetValue(player, out HashSet<string> own) && own.Contains(objectiveId);
 
         public void PublishStrike(PlayerId player, ForceComposition force, PlayerId focusEnemy, Vector3 center,
             bool available, float now)
@@ -135,12 +148,84 @@ namespace EmpireAtWar.Services.Enemy
             return false;
         }
 
+        /// <summary>
+        /// W47 AllyCombined: <paramref name="requester"/> wants to take <paramref name="zoneId"/> only together with an
+        /// ally. Its ships wait near the zone; an answering ally gathers at <paramref name="staging"/> and, once
+        /// <paramref name="committed"/>, attacks the zone centre. Repeating the request for the same zone keeps its first
+        /// time, so it lapses <see cref="ZONE_STRIKE_SECONDS"/> after it was first made.
+        /// </summary>
+        /// <param name="needed">The zone's known defenders: what the combined force must beat.</param>
+        public void RequestZoneStrike(PlayerId requester, string zoneId, Vector3 centre, Vector3 staging,
+            ForceComposition needed, bool committed, float now)
+        {
+            if (!_zoneStrikes.TryGetValue(requester, out ZoneStrike strike))
+            {
+                strike = new ZoneStrike();
+                _zoneStrikes.Add(requester, strike);
+            }
+            if (strike.ZoneId != zoneId)
+            {
+                strike.ZoneId = zoneId;
+                strike.RequestedAt = now;
+            }
+            strike.Centre = centre;
+            strike.Staging = staging;
+            strike.Committed = committed;
+            strike.Needed.CopyFrom(needed);
+        }
+
+        /// <summary>The zone is owned, abandoned or no longer planned with an ally: its request ends.</summary>
+        public void ClearZoneStrike(PlayerId requester) => _zoneStrikes.Remove(requester);
+
+        /// <summary>
+        /// The live zone strike <paramref name="responder"/> answers: the one it already answers, else the oldest live
+        /// request of another player. Only a responder whose main force is fresh and available (no own station
+        /// pressure) answers, and only one request at a time. <paramref name="point"/> is the staging point until the
+        /// requester commits, then the zone centre.
+        /// </summary>
+        public bool TryGetZoneStrikeAssignment(PlayerId responder, float now, out PlayerId requester,
+            out Vector3 point)
+        {
+            requester = PlayerId.None;
+            point = default;
+            if (!_strikes.TryGetValue(responder, out Strike own) || !IsAvailable(own, now))
+            {
+                _zoneStrikeAnswers.Remove(responder);
+                return false;
+            }
+            if (_zoneStrikeAnswers.TryGetValue(responder, out PlayerId answered) &&
+                (!_zoneStrikes.TryGetValue(answered, out ZoneStrike held) || !IsLive(held, now)))
+                _zoneStrikeAnswers.Remove(responder);
+            if (!_zoneStrikeAnswers.TryGetValue(responder, out requester))
+            {
+                float oldest = float.PositiveInfinity;
+                foreach (KeyValuePair<PlayerId, ZoneStrike> pair in _zoneStrikes)
+                {
+                    if (pair.Key == responder || !IsLive(pair.Value, now) || pair.Value.RequestedAt >= oldest) continue;
+                    requester = pair.Key;
+                    oldest = pair.Value.RequestedAt;
+                }
+                if (requester.IsNone) return false;
+                _zoneStrikeAnswers[responder] = requester;
+            }
+            ZoneStrike strike = _zoneStrikes[requester];
+            point = strike.Committed ? strike.Centre : strike.Staging;
+            return true;
+        }
+
+        /// <summary>The responder has a higher-priority task: it stops answering its zone strike.</summary>
+        public void ReleaseZoneStrike(PlayerId responder) => _zoneStrikeAnswers.Remove(responder);
+
         public void RemovePlayer(PlayerId player)
         {
             _reservations.Remove(player);
             _strikes.Remove(player);
             _defenseRequests.Remove(player);
+            _zoneStrikes.Remove(player);
+            _zoneStrikeAnswers.Remove(player);
         }
+
+        private static bool IsLive(ZoneStrike strike, float now) => now - strike.RequestedAt <= ZONE_STRIKE_SECONDS;
 
         private bool CanWin(PlayerId requester, DefenseRequest request, float now, float minimumAdvantage)
         {
@@ -171,6 +256,16 @@ namespace EmpireAtWar.Services.Enemy
             public Vector3 Center;
             public bool Available;
             public float PublishedAt;
+        }
+
+        private sealed class ZoneStrike
+        {
+            public readonly ForceComposition Needed = new ForceComposition();
+            public string ZoneId;
+            public Vector3 Centre;
+            public Vector3 Staging;
+            public bool Committed;
+            public float RequestedAt;
         }
 
         private sealed class DefenseRequest

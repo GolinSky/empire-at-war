@@ -32,7 +32,7 @@ namespace EmpireAtWar.Tests.Editor
             else model.Replace(order);
             FakeMovement movement = new FakeMovement();
             FakeWeapon weapon = new FakeWeapon();
-            IdleState idle = new IdleState(movement, weapon, null);
+            IdleState idle = new IdleState(movement, weapon, null, null, new FakeShipThreats());
             ShipStateMachine stateMachine = new ShipStateMachine();
             stateMachine.SetState(new PassiveState());
             ShipOrderRunner runner = new ShipOrderRunner(orders: model, stateMachine: stateMachine, movement: movement, weapon: weapon,

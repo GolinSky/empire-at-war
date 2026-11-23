@@ -134,7 +134,9 @@ namespace EmpireAtWar.Services.Enemy
                 for (int i = 0; i < units.Count; i++)
                 {
                     AiWorldSnapshot.Entry entry = units[i];
-                    if (!_playerRoster.IsHostile(viewer, entry.Owner) ||
+                    // A station is a structure, never a unit sighting: it is rated where it stands (W62), so it never
+                    // enters fleet strength or the hostile ship count.
+                    if (entry.IsPlayerBase || !_playerRoster.IsHostile(viewer, entry.Owner) ||
                         entry.Entity.HealthModel.IsDestroyed ||
                         entry.Entity.IsCloaked())
                     {

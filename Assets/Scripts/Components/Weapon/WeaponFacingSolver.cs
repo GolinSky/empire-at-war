@@ -14,6 +14,10 @@ namespace EmpireAtWar.Components.Weapon
     {
         private const int HEADING_COUNT = 360 / WeaponFacingSweepJob.TURN_STEP;
         private const int BURST_PAIR_THRESHOLD = 64;
+        // A held ship keeps its heading for a turn this small unless the turn adds at least
+        // FACING_SCORE_MARGIN of the battery's total weight; tiny gains made capitals swing back and forth.
+        internal const float FACING_DEAD_ZONE_DEGREES = 10f;
+        internal const float FACING_SCORE_MARGIN = 0.1f;
         private static readonly Vector2[] _headingRotations = BuildHeadingRotations();
 #if UNITY_EDITOR || DEVELOPMENT_BUILD
         private static readonly ProfilerMarker<int, int> _mainMarker =
@@ -100,7 +104,10 @@ namespace EmpireAtWar.Components.Weapon
 
             float bestTurn = 0f;
             if (_reachableTargets.Count >= BURST_PAIR_THRESHOLD)
-                return FindTurnBurst(mounts, maximumScore, targetBearing, out bestScore);
+            {
+                bestTurn = FindTurnBurst(mounts, maximumScore, targetBearing, out bestScore);
+                return KeepCurrentHeading(mounts, maximumScore, targetBearing, bestTurn, ref bestScore);
+            }
 #if UNITY_EDITOR || DEVELOPMENT_BUILD
             _aimChecks = 0;
 #endif
@@ -124,7 +131,24 @@ namespace EmpireAtWar.Components.Weapon
             using (_sweepMarker.Auto(Mathf.Min(step + 1, HEADING_COUNT), _aimChecks,
                        step < HEADING_COUNT - 1 ? 1 : 0)) { }
 #endif
-            return bestTurn;
+            return KeepCurrentHeading(mounts, maximumScore, targetBearing, bestTurn, ref bestScore);
+        }
+
+        /// <summary>
+        /// Dead zone: the current heading (turn 0) wins over a best turn of at most
+        /// <see cref="FACING_DEAD_ZONE_DEGREES"/> when it already fires and the turn gains less than the margin.
+        /// </summary>
+        private float KeepCurrentHeading(List<Mount> mounts, int maximumScore, float? targetBearing, float bestTurn,
+            ref int bestScore)
+        {
+            if (bestTurn == 0f || Mathf.Abs(bestTurn) > FACING_DEAD_ZONE_DEGREES) return bestTurn;
+            if (targetBearing.HasValue && !WeaponFacingSweepJob.KeepsTargetAhead(0, targetBearing.Value))
+                return bestTurn;
+            int currentScore = Score(mounts, 0, reuseRotation: false);
+            int margin = Mathf.Max(1, Mathf.CeilToInt(maximumScore * FACING_SCORE_MARGIN));
+            if (currentScore <= 0 || bestScore - currentScore >= margin) return bestTurn;
+            bestScore = currentScore;
+            return 0f;
         }
 
         private float FindTurnBurst(List<Mount> mounts, int maximumScore, float? targetBearing, out int bestScore)

@@ -12,9 +12,11 @@ namespace EmpireAtWar.Entities.EnemyFaction.Models.Objectives
     /// ship. A force already sent keeps its zone: it leaves on its own lost local fight, not on a zone recount. Ships
     /// that complete no new force join the nearest force out only where they keep or make it a winning fight; with
     /// no force out they attack <see cref="WeakTarget"/> together. Otherwise they gather in the reserve: no ship is
-    /// fed alone into a losing fight. A zone with no armed hostile left (<see cref="IsCleared"/>) keeps only a capture
-    /// detachment, and in the late-game situation (<see cref="LeanZones"/>) every zone force keeps only what it needs:
-    /// the rest stays with the main force.
+    /// fed alone into a losing fight. A captured zone with no armed hostile left (<see cref="IsCleared"/>) keeps its
+    /// whole capturing force while hostiles approach and for <see cref="GARRISON_DWELL_SECONDS"/>, then only its
+    /// garrison: the fewest ships that, with the zone's support, outlast the threat until help arrives (W47). In the
+    /// late-game situation (<see cref="LeanZones"/>) every other zone force keeps only what it needs: the rest stays
+    /// with the main force. Zones rank by score minus the travel of the nearest free ship (W49).
     /// </summary>
     public sealed class EnemyZoneAllocator
     {
@@ -24,8 +26,15 @@ namespace EmpireAtWar.Entities.EnemyFaction.Models.Objectives
         /// this share of its defenders; below it they would only die one by one.
         /// </summary>
         public const float DEFEND_FLOOR = 0.6f;
-        /// <summary>A zone with at most this many known defenders and armed hostile structures has no armed hostile left.</summary>
-        public const int CLEARED_DEFENDERS = 1;
+        /// <summary>
+        /// A captured zone keeps its whole capturing force this long (W49 dwell): site construction starts and
+        /// reinforcements can arrive before ships leave for the next zone.
+        /// </summary>
+        public const float GARRISON_DWELL_SECONDS = 60f;
+        /// <summary>The garrison must outlast the threat this multiple of the time help needs to arrive.</summary>
+        public const float GARRISON_SURVIVAL_SCALE = 1.2f;
+        /// <summary>Ranking cost per travel-distance unit of the nearest free ship; scores are in the same units.</summary>
+        public const float TRAVEL_COST_SCALE = 1f;
 
         private readonly EnemyZoneEvaluator _evaluator = new EnemyZoneEvaluator();
         private readonly ForceComposition _force = new ForceComposition();
@@ -34,6 +43,9 @@ namespace EmpireAtWar.Entities.EnemyFaction.Models.Objectives
         private readonly List<float> _scores = new List<float>();
         private readonly List<bool> _served = new List<bool>();
         private readonly List<int> _picked = new List<int>();
+        private readonly List<EnemyZonePlan> _plans = new List<EnemyZonePlan>();
+        private readonly List<int> _garrisons = new List<int>();
+        private readonly ForceComposition _poolTotal = new ForceComposition();
         private readonly Comparison<int> _compareZones;
 
         public EnemyZoneAllocator() => _compareZones = CompareZones;
@@ -66,10 +78,28 @@ namespace EmpireAtWar.Entities.EnemyFaction.Models.Objectives
         /// </summary>
         public bool LeanZones { get; set; }
 
-        /// <summary>No armed hostile left in the zone: it needs a capture detachment, not a fleet.</summary>
-        public static bool IsCleared(EnemyZoneObjective zone) =>
-            !zone.IsThreatened && zone.Defenders.UnitCount <= CLEARED_DEFENDERS &&
-            zone.StaticDefenders <= CLEARED_DEFENDERS;
+        /// <summary>
+        /// The capture is finished and no armed hostile is left (no unit, no platform): from now on the garrison rule
+        /// decides who stays (W65).
+        /// </summary>
+        public static bool IsCleared(EnemyZoneObjective zone) => zone.IsOwned && HasNoArmedHostile(zone);
+
+        private static bool HasNoArmedHostile(EnemyZoneObjective zone) =>
+            !zone.IsThreatened && zone.Defenders.IsEmpty && zone.StaticDefenders == 0;
+
+        /// <summary>
+        /// The zone's plan after the last <see cref="Allocate"/>: its <see cref="EnemyZoneObjective.Plan"/>, or
+        /// <see cref="EnemyZonePlan.RaidAndLeave"/> when the garrison it needs costs a larger share of the fleet than
+        /// the zone is worth (<see cref="EnemyZoneObjective.WorthShare"/>). <see cref="EnemyZonePlan.HoldBackAndCounter"/>:
+        /// the zone's ships wait at <c>EnemyStrategicContextBuilder.GetPoolHoldBackPoint</c>.
+        /// </summary>
+        public EnemyZonePlan GetPlan(int zone) => _plans[zone];
+
+        /// <summary>
+        /// Ships the garrison rule kept at the zone in the last <see cref="Allocate"/>; -1 when it did not apply (the zone
+        /// is not cleared, hostiles approach, or the capture is younger than <see cref="GARRISON_DWELL_SECONDS"/>).
+        /// </summary>
+        public int GetGarrison(int zone) => _garrisons[zone];
 
         /// <param name="ships">One force per pooled ship.</param>
         /// <param name="current">Per ship, the zone index it is assigned to now, or <see cref="RESERVE"/>.</param>
@@ -82,7 +112,16 @@ namespace EmpireAtWar.Entities.EnemyFaction.Models.Objectives
             for (int i = 0; i < ships.Count; i++) assignment.Add(RESERVE);
             GatherZone = RESERVE;
             _served.Clear();
-            for (int zone = 0; zone < zones.Count; zone++) _served.Add(false);
+            _plans.Clear();
+            _garrisons.Clear();
+            for (int zone = 0; zone < zones.Count; zone++)
+            {
+                _served.Add(false);
+                _plans.Add(zones[zone].Plan);
+                _garrisons.Add(-1);
+            }
+            _poolTotal.Clear();
+            for (int ship = 0; ship < ships.Count; ship++) _poolTotal.Add(ships[ship]);
 
             // A force already sent keeps its zone; its own local fight decides when it pulls back.
             for (int ship = 0; ship < ships.Count; ship++)
@@ -93,7 +132,7 @@ namespace EmpireAtWar.Entities.EnemyFaction.Models.Objectives
                 _served[zone] = true;
             }
 
-            // A cleared zone, and every zone in the late-game situation, keeps only the force it needs.
+            // A cleared zone keeps its garrison, and every other zone in the late-game situation only the force it needs.
             for (int zone = 0; zone < zones.Count; zone++)
                 if (_served[zone]) _served[zone] = Trim(zone, zones, ships, distance, assignment);
 
@@ -119,15 +158,17 @@ namespace EmpireAtWar.Entities.EnemyFaction.Models.Objectives
                 EnemyZoneAssessment assessment = _evaluator.Assess(zones[zone], _force,
                     EnemyZoneEvaluator.COMMIT_ADVANTAGE);
                 _tiers.Add(EnemyZoneEvaluator.GetTier(zones[zone], assessment.Verdict, behindOnZones, StrongEconomy));
-                _scores.Add(assessment.Score);
+                _scores.Add(assessment.Score -
+                    TRAVEL_COST_SCALE * NearestFreeDistance(zone, ships.Count, distance, assignment));
                 if (!_served[zone] && !zones[zone].IsDenied) _order.Add(zone);
             }
             _order.Sort(_compareZones);
 
             foreach (int zone in _order)
             {
-                // Own wings take a cleared zone; ships go only where no wing holds it.
-                if (IsWingHeld(zones[zone])) continue;
+                // Own wings take a zone with no armed hostile; ships go only where no wing holds it. A cleared zone is
+                // taken: only the garrison rule keeps ships there, no new ship is sent.
+                if (IsWingHeld(zones[zone]) || IsCleared(zones[zone])) continue;
                 _force.Clear();
                 if (TryFill(zone, zones, ships, distance, assignment)) _served[zone] = true;
                 else if (GatherZone == RESERVE) GatherZone = zone;
@@ -137,15 +178,15 @@ namespace EmpireAtWar.Entities.EnemyFaction.Models.Objectives
             SelectDeployZone(assignment);
         }
 
-        // The zone's force with this ship added is a Go. A cleared zone, and every zone in the late-game situation,
-        // takes a leftover only when its force is not yet a Go.
+        // The zone's force with this ship added is a Go. A zone with no armed hostile, and every zone in the late-game
+        // situation, takes a leftover only when its force is not yet a Go.
         private bool WinsWith(int zone, int ship, IReadOnlyList<EnemyZoneObjective> zones,
             IReadOnlyList<ForceComposition> ships, List<int> assignment)
         {
             _force.Clear();
             for (int other = 0; other < ships.Count; other++)
                 if (assignment[other] == zone) _force.Add(ships[other]);
-            if ((LeanZones || IsCleared(zones[zone])) && IsGo(zones[zone], _force)) return false;
+            if ((LeanZones || HasNoArmedHostile(zones[zone])) && IsGo(zones[zone], _force)) return false;
             _force.Add(ships[ship]);
             return IsGo(zones[zone], _force);
         }
@@ -154,11 +195,12 @@ namespace EmpireAtWar.Entities.EnemyFaction.Models.Objectives
             _evaluator.Assess(zone, force, EnemyZoneEvaluator.COMMIT_ADVANTAGE).Verdict == EnemyZoneVerdict.Go;
 
         /// <summary>
-        /// Own wings stand in a cleared zone and beat what is left there without ships: the zone needs no ship.
+        /// Own wings stand in a zone with no armed hostile and beat what is left there without ships: the zone needs
+        /// no ship.
         /// </summary>
         private bool IsWingHeld(EnemyZoneObjective zone)
         {
-            if (!IsCleared(zone) || !HasStrikecraft(zone.OwnSupport)) return false;
+            if (!HasNoArmedHostile(zone) || !HasStrikecraft(zone.OwnSupport)) return false;
             _force.Clear();
             return IsGo(zone, _force);
         }
@@ -171,16 +213,22 @@ namespace EmpireAtWar.Entities.EnemyFaction.Models.Objectives
         }
 
         /// <summary>
-        /// Releases the zone's ships farthest from it first while the rest still beats the zone: a cleared zone keeps one
-        /// ship (none when own wings hold it), and in the late-game situation any zone keeps the smallest winning group.
-        /// A held zone under attack that is not cleared keeps its whole force. Returns whether the zone keeps ships.
+        /// A cleared zone keeps its garrison (<see cref="KeepGarrison"/>) once no hostile approaches and the capture is
+        /// <see cref="GARRISON_DWELL_SECONDS"/> old; before that the whole capturing force stays. In the late-game
+        /// situation any other zone releases its ships farthest from it first while the rest still beats the zone
+        /// (the last ship only when own wings hold it); a held zone under attack keeps its whole force. Returns whether
+        /// the zone keeps ships.
         /// </summary>
         private bool Trim(int zone, IReadOnlyList<EnemyZoneObjective> zones, IReadOnlyList<ForceComposition> ships,
             Func<int, int, float> distance, List<int> assignment)
         {
             EnemyZoneObjective objective = zones[zone];
-            bool cleared = IsCleared(objective);
-            if (cleared || LeanZones && !objective.IsHeldUnderAttack)
+            if (IsCleared(objective))
+            {
+                if (!objective.IsHostileNear && objective.HeldSeconds >= GARRISON_DWELL_SECONDS)
+                    KeepGarrison(zone, objective, ships, distance, assignment);
+            }
+            else if (LeanZones && !objective.IsHeldUnderAttack)
                 while (true)
                 {
                     int farthest = RESERVE;
@@ -199,13 +247,72 @@ namespace EmpireAtWar.Entities.EnemyFaction.Models.Objectives
                     _force.Clear();
                     for (int ship = 0; ship < ships.Count; ship++)
                         if (assignment[ship] == zone && ship != farthest) _force.Add(ships[ship]);
-                    bool stillWins = kept > 1 ? IsGo(objective, _force) : cleared && IsWingHeld(objective);
+                    bool stillWins = kept > 1 ? IsGo(objective, _force) : IsWingHeld(objective);
                     if (!stillWins) break;
                     assignment[farthest] = RESERVE;
                 }
             for (int ship = 0; ship < ships.Count; ship++)
                 if (assignment[ship] == zone) return true;
             return false;
+        }
+
+        /// <summary>
+        /// Keeps the zone's nearest ships that, with its <see cref="EnemyZoneObjective.OwnSupport"/>, outlast its
+        /// <see cref="EnemyZoneObjective.Threat"/> for <see cref="GARRISON_SURVIVAL_SCALE"/> × the time help needs, and
+        /// releases the rest. Without such a threat no ship stays. A garrison that is a larger share of the fleet than
+        /// the zone's <see cref="EnemyZoneObjective.WorthShare"/> is no garrison: the zone is raided and left (no token
+        /// ship).
+        /// </summary>
+        private void KeepGarrison(int zone, EnemyZoneObjective objective, IReadOnlyList<ForceComposition> ships,
+            Func<int, int, float> distance, List<int> assignment)
+        {
+            _picked.Clear();
+            for (int ship = 0; ship < ships.Count; ship++)
+                if (assignment[ship] == zone) _picked.Add(ship);
+            // Nearest first: the ships already standing in the zone stay.
+            for (int i = 1; i < _picked.Count; i++)
+                for (int j = i; j > 0 && distance(_picked[j - 1], zone) > distance(_picked[j], zone); j--)
+                    (_picked[j - 1], _picked[j]) = (_picked[j], _picked[j - 1]);
+            int count = CountGarrison(objective, ships);
+            if (count > 0 && !IsWorthGarrison(objective, ships, count))
+            {
+                count = 0;
+                _plans[zone] = EnemyZonePlan.RaidAndLeave;
+            }
+            _garrisons[zone] = count;
+            for (int i = count; i < _picked.Count; i++) assignment[_picked[i]] = RESERVE;
+        }
+
+        /// <summary>Fewest of <see cref="_picked"/> (in order) that outlast the threat; all of them when none suffice.</summary>
+        private int CountGarrison(EnemyZoneObjective objective, IReadOnlyList<ForceComposition> ships)
+        {
+            if (objective.Threat.IsEmpty) return 0;
+            float needed = GARRISON_SURVIVAL_SCALE * objective.HelpSeconds;
+            _force.CopyFrom(objective.OwnSupport);
+            if (CombatMatchup.TimeToDestroy(objective.Threat, _force) >= needed) return 0;
+            for (int i = 0; i < _picked.Count; i++)
+            {
+                _force.Add(ships[_picked[i]]);
+                if (CombatMatchup.TimeToDestroy(objective.Threat, _force) >= needed) return i + 1;
+            }
+            return _picked.Count;
+        }
+
+        // The garrison's share of the pool's strength (a force ratio) is no larger than the zone's share of the income.
+        private bool IsWorthGarrison(EnemyZoneObjective objective, IReadOnlyList<ForceComposition> ships, int count)
+        {
+            _force.Clear();
+            for (int i = 0; i < count; i++) _force.Add(ships[_picked[i]]);
+            return Math.Min(1f, CombatMatchup.Advantage(_force, _poolTotal)) <= objective.WorthShare;
+        }
+
+        private static float NearestFreeDistance(int zone, int shipCount, Func<int, int, float> distance,
+            List<int> assignment)
+        {
+            float nearest = float.PositiveInfinity;
+            for (int ship = 0; ship < shipCount; ship++)
+                if (assignment[ship] == RESERVE) nearest = Math.Min(nearest, distance(ship, zone));
+            return float.IsPositiveInfinity(nearest) ? 0f : nearest;
         }
 
         private void SelectDeployZone(List<int> assignment)

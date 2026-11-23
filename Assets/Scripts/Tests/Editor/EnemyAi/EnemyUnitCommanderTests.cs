@@ -27,6 +27,8 @@ using System.Linq;
 using EmpireAtWar.Components.Combat;
 using EmpireAtWar.Components.Movement.Formation;
 using EmpireAtWar.Entities.EnemyFaction.Models.Intel;
+using EmpireAtWar.Entities.EnemyFaction.Models.Objectives;
+using EmpireAtWar.Services.TacticalMarkers;
 using EmpireAtWar.Entities.Units;
 using EmpireAtWar.Models.Factions;
 using EmpireAtWar.Services.Vision;
@@ -1152,6 +1154,7 @@ namespace EmpireAtWar.Tests.Editor
         private sealed class FakeSquadron : IEntity, ISquadron, IUnitTypeFacade, IUnitOrderObserverFacade
         {
             public IEntity AttackTarget => null;
+            public bool IsEngagingEnRoute => false;
             public event Action Released;
             public UnitOrderType CurrentOrder { get; set; }
             public int OrdersReceived { get; private set; }
@@ -2282,6 +2285,8 @@ namespace EmpireAtWar.Tests.Editor
                 front.IsUnit = false;
                 front.IsBase = true;
                 front.IsSecondStation = true;
+                // W62: the station fights in the local rating; a nearly dead one keeps the group outmatched.
+                ((FakeHealthModel)front.HealthModel).Hull = 100f;
                 FakeEntity receiver = AddEntity("Survivor", 3, Vector3.right * 2900f, owner.Id);
                 ((FakeHealthModel)receiver.HealthModel).Hull = 100f;
                 var ships = new IShipEntity[] { new FakeShip(Vector3.right * 2900f, receiver.Id) };
@@ -2413,6 +2418,178 @@ namespace EmpireAtWar.Tests.Editor
             ship.WorldPosition = guard;
             executor.Execute(decision, context);
             Assert.That(orders.Calls.Count, Is.EqualTo(2));
+        }
+
+        // W55: Hold sends ships to the group's gather point and keeps them there; never order None away from it.
+        [Test]
+        public void Hold_AttackMovesToTheGatherPointAndNeverStopsAwayFromIt()
+        {
+            var away = new FakeShip(Vector3.zero, 1) { CurrentOrder = UnitOrderType.Move };
+            var idle = new FakeShip(Vector3.right * 100f, 2);
+            Vector3 gather = Vector3.forward * (FleetCohesion.RADIUS * 4f);
+            var orders = new FakeOrderService();
+            var executor = new EnemyTaskForceExecutor(orders);
+            var hold = new EnemyStrategicDecision("test", EnemyStrategicState.Hold, 0);
+            EnemyStrategicContext context = Context(new IShipEntity[] { away, idle }, guardPosition: gather);
+
+            executor.Execute(hold, context);
+
+            Assert.That(orders.Calls.Any(call => call.Action == UnitActionId.Stop), Is.False);
+            OrderCall move = orders.Calls.Single();
+            Assert.That(move.Action, Is.EqualTo(UnitActionId.AttackMove));
+            Assert.That(move.Point, Is.EqualTo(gather));
+            Assert.That(move.Receivers.Select(receiver => receiver.Id),
+                Is.EquivalentTo(new[] { away.EntityId, idle.EntityId }));
+            Assert.That(executor.HoldsAtGatherPoint, Is.True, "Ships on the hold order leave the spawn zone themselves.");
+
+            away.WorldPosition = gather;
+            away.CurrentOrder = UnitOrderType.None;
+            idle.CurrentOrder = UnitOrderType.AttackMove;
+            orders.Calls.Clear();
+            executor.Execute(hold, context);
+            Assert.That(orders.Calls, Is.Empty, "Arrived or on the way: nothing is sent again.");
+        }
+
+        // W55: a main force that rallies heads for its gather point around its anchor instead of stopping in place.
+        [Test]
+        public void Rally_AnchorHeadsForTheGatherPointInsteadOfStopping()
+        {
+            var anchor = new FakeShip(Vector3.zero, 1) { CurrentOrder = UnitOrderType.Move };
+            var mate = new FakeShip(Vector3.right * 50f, 2);
+            var straggler = new FakeShip(Vector3.right * (FleetCohesion.RADIUS * 4f), 3);
+            Vector3 gather = Vector3.forward * (FleetCohesion.RADIUS * 3f);
+            var orders = new FakeOrderService();
+
+            new EnemyTaskForceExecutor(orders).Rally(Context(new IShipEntity[] { anchor, mate, straggler },
+                guardPosition: gather));
+
+            Assert.That(orders.Calls.Any(call => call.Action == UnitActionId.Stop), Is.False);
+            OrderCall lead = orders.Calls.Single(call => call.Action == UnitActionId.AttackMove);
+            Assert.That(lead.Point, Is.EqualTo(gather));
+            Assert.That(lead.Receivers.Single().Id, Is.EqualTo(anchor.EntityId));
+            Assert.That(orders.Calls.Where(call => call.Action == UnitActionId.Guard)
+                    .SelectMany(call => call.Receivers).Select(receiver => receiver.Id),
+                Is.EquivalentTo(new[] { mate.EntityId, straggler.EntityId }), "The rest gathers on the anchor.");
+        }
+
+        // W49: a state change that sends ships to the point they already hold keeps them; a new point re-orders them.
+        [Test]
+        public void StateChange_ToTheSamePoint_KeepsArrivedShipsInPlace()
+        {
+            var ship = new FakeShip(Vector3.zero, 1);
+            Vector3 gather = Vector3.right * (FleetCohesion.RADIUS * 3f);
+            Vector3 nearby = gather + Vector3.forward * (EnemyTaskForceExecutor.ORDER_POINT_KEEP_DISTANCE * 0.5f);
+            var orders = new FakeOrderService();
+            var executor = new EnemyTaskForceExecutor(orders);
+            executor.Execute(new EnemyStrategicDecision("test", EnemyStrategicState.Hold, 0),
+                Context(new IShipEntity[] { ship }, guardPosition: gather));
+            Assert.That(orders.Calls.Single().Point, Is.EqualTo(gather));
+            ship.WorldPosition = gather;
+            orders.Calls.Clear();
+
+            executor.Execute(new EnemyStrategicDecision("test", EnemyStrategicState.GuardSite, 1),
+                Context(new IShipEntity[] { ship }, guardPosition: nearby));
+            Assert.That(orders.Calls, Is.Empty, "The arrived ship keeps its place when the state changes.");
+
+            executor.Execute(new EnemyStrategicDecision("test", EnemyStrategicState.CaptureZone, 1),
+                Context(new IShipEntity[] { ship }));
+            orders.Calls.Clear();
+            executor.Execute(new EnemyStrategicDecision("test", EnemyStrategicState.GuardSite, 1),
+                Context(new IShipEntity[] { ship }, guardPosition: gather));
+            Assert.That(orders.Calls.Single().Action, Is.EqualTo(UnitActionId.AttackMove),
+                "After an order elsewhere the ship is placed afresh.");
+        }
+
+        // W66, D3: a ship fighting on its way is not re-ordered, the group keeps going, and the group asks once per
+        // interval for one reinforcement drop beside it.
+        [Test]
+        public void EngagedEnRoute_ShipIsNotReorderedAndTheGroupAsksOnceForADrop()
+        {
+            var engaged = new FakeShip(Vector3.zero, 1) { CurrentOrder = UnitOrderType.AttackMove };
+            var free = new FakeShip(Vector3.right * 50f, 2);
+            Vector3 guard = Vector3.forward * (FleetCohesion.RADIUS * 3f);
+            EnemyStrategicContext context = Context(new IShipEntity[] { engaged, free }, guardPosition: guard);
+            var engagedEntity = (FakeEntity)context.Receivers[engaged];
+            engagedEntity.IsEngagingEnRoute = true;
+            var orders = new FakeOrderService();
+            var executor = new EnemyTaskForceExecutor(orders);
+
+            executor.Execute(new EnemyStrategicDecision("test", EnemyStrategicState.GuardSite, 2), context);
+
+            Assert.That(orders.Calls.SelectMany(call => call.Receivers).Select(receiver => receiver.Id),
+                Is.EqualTo(new[] { free.EntityId }), "The group keeps going; the fighting ship keeps its fight.");
+
+            var group = new EnemyShipTaskGroup(null, new EnemyStrategicDecisionModel(), executor);
+            typeof(EnemyShipTaskGroup).GetField("<Context>k__BackingField", BindingFlags.Instance | BindingFlags.NonPublic)
+                .SetValue(group, context);
+            Assert.That(group.TryRequestReinforcementDrop(0f, out Vector3 drop), Is.True);
+            Assert.That(drop, Is.EqualTo(engaged.WorldPosition));
+            Assert.That(group.TryRequestReinforcementDrop(EnemyShipTaskGroup.DROP_REQUEST_INTERVAL * 0.5f, out _),
+                Is.False, "One drop request per interval.");
+            Assert.That(group.TryRequestReinforcementDrop(EnemyShipTaskGroup.DROP_REQUEST_INTERVAL, out _), Is.True);
+            engagedEntity.IsEngagingEnRoute = false;
+            Assert.That(group.TryRequestReinforcementDrop(EnemyShipTaskGroup.DROP_REQUEST_INTERVAL * 3f, out _),
+                Is.False, "No fight on the way: no drop.");
+
+            free.CurrentOrder = UnitOrderType.AttackMove;
+            orders.Calls.Clear();
+            executor.Execute(new EnemyStrategicDecision("test", EnemyStrategicState.GuardSite, 2), context);
+            Assert.That(orders.Calls.Single().Receivers.Single().Id, Is.EqualTo(engaged.EntityId),
+                "Once its fight ends the ship rejoins its group's order.");
+        }
+
+        // W47: a garrison kept on an owned zone with no site left guards the zone centre: attack-move there, never
+        // order None away from it, and arrived ships stay.
+        [Test]
+        public void Garrison_GuardsTheOwnedZoneAndNeverGetsOrderNone()
+        {
+            var kept = new FakeShip(Vector3.right * (FleetCohesion.RADIUS * 3f), 1) { CurrentOrder = UnitOrderType.Move };
+            var arrived = new FakeShip(Vector3.zero, 2);
+            Vector3 centre = Vector3.zero;
+            EnemyStrategicContext context = Context(new IShipEntity[] { kept, arrived }, guardPosition: centre);
+            context.IsZoneForce = true;
+            var orders = new FakeOrderService();
+            var executor = new EnemyTaskForceExecutor(orders);
+            var guard = new EnemyStrategicDecision("Garrison", EnemyStrategicState.GuardSite, 2);
+
+            executor.Execute(guard, context);
+            Assert.That(orders.Calls.Any(call => call.Action == UnitActionId.Stop), Is.False);
+            Assert.That(orders.Calls.Single().Action, Is.EqualTo(UnitActionId.AttackMove));
+            Assert.That(orders.Calls.Single().Point, Is.EqualTo(centre));
+
+            kept.CurrentOrder = UnitOrderType.AttackMove;
+            orders.Calls.Clear();
+            executor.Execute(guard, context);
+            Assert.That(orders.Calls, Is.Empty, "The garrison holds; nobody is re-sent or stopped.");
+        }
+
+        // W47 HoldBackAndCounter: the zone force waits at the hold-back point while the zone is quiet and goes in when
+        // hostiles come to retake it.
+        [Test]
+        public void HoldBack_WaitsOutsideAndAttacksTheRetake()
+        {
+            var ship = new FakeShip(Vector3.zero, 1);
+            Vector3 centre = Vector3.zero;
+            Vector3 holdBack = Vector3.right * (FleetCohesion.RADIUS * 3f);
+            var zone = new EnemyZoneObjective();
+            zone.Reset("zone:0", false, true, 0f, 0f, 0, null);
+            zone.SetWorth(true, 0f, 0f);
+            zone.SetHold(0f, false, 0f, 1f);
+            var orders = new FakeOrderService();
+            var executor = new EnemyTaskForceExecutor(orders);
+            var guard = new EnemyStrategicDecision("test", EnemyStrategicState.GuardSite, 1);
+
+            Vector3 quiet = EnemyZoneTaskRules.GetGuardPoint(EnemyZonePlan.HoldBackAndCounter, zone, centre, holdBack);
+            executor.Execute(guard, Context(new IShipEntity[] { ship }, guardPosition: quiet));
+            Assert.That(orders.Calls.Single().Point, Is.EqualTo(holdBack), "Quiet zone: the force waits outside.");
+            ship.WorldPosition = holdBack;
+            orders.Calls.Clear();
+
+            zone.SetHold(0f, true, 0f, 1f);
+            Vector3 retake = EnemyZoneTaskRules.GetGuardPoint(EnemyZonePlan.HoldBackAndCounter, zone, centre, holdBack);
+            executor.Execute(guard, Context(new IShipEntity[] { ship }, guardPosition: retake));
+            Assert.That(orders.Calls.Single().Action, Is.EqualTo(UnitActionId.AttackMove));
+            Assert.That(orders.Calls.Single().Point, Is.EqualTo(centre), "Hostiles near: the force hits the retake.");
         }
 
         [Test]
@@ -3035,7 +3212,7 @@ namespace EmpireAtWar.Tests.Editor
             Assert.That(force.ContextBuilder.AssignedZoneId, Is.EqualTo("zone:0"));
             Assert.That(planner.Groups.SelectMany(group => group.Ships), Is.EquivalentTo(ships),
                 "Every ship has a task in the cycle it arrives.");
-            // The zone has one defender left: ships beyond the force it needs stay with the main force.
+            // Ships not in the zone force stay with the main force; none forms a group of its own.
             Assert.That(planner.Groups.Where(group => !group.IsCaptureDetachment), Is.All.Matches<EnemyShipTaskGroup>(
                 group => group.IsMainForce));
             Assert.That(orders.Calls, Is.Empty, "Allocation itself must not issue orders.");
@@ -3055,8 +3232,10 @@ namespace EmpireAtWar.Tests.Editor
             planner.Reconcile(reinforced);
             planner.Allocate(reinforced, new HashSet<string>(), stationPressure: false);
 
-            // W23: a zone with one defender is cleared, so its force is trimmed to the nearest ship that wins.
-            Assert.That(planner.Groups.Single(group => group.IsCaptureDetachment).Ships, Is.EqualTo(new[] { strong }));
+            // W65: one defender left is not cleared (cleared = no armed hostile and the zone owned), so no ship is
+            // trimmed away: the strong ship beats the zone alone and the weak one joins the winning force.
+            Assert.That(planner.Groups.Single(group => group.IsCaptureDetachment).Ships,
+                Is.EquivalentTo(new[] { strong, weak }));
         }
 
         [Test]
@@ -3123,6 +3302,89 @@ namespace EmpireAtWar.Tests.Editor
 
             Assert.That(planner.Groups.Single().IsCaptureDetachment, Is.False);
             Assert.That(planner.Groups.Single().Ships.Single(), Is.SameAs(weak));
+        }
+
+        // W49: a zone group emptied for a cycle comes back with its memory when its zone gets ships again.
+        [Test]
+        public void Allocation_EmptiedZoneGroupKeepsItsMemory()
+        {
+            var (planner, _, _, weak, _, _) = AllocationPlanner(defended: true);
+            IShipEntity[] ships = { weak };
+            planner.Reconcile(ships);
+            BindingFlags flags = BindingFlags.Instance | BindingFlags.NonPublic;
+            MethodInfo getOrCreate = typeof(EnemyShipTaskGroupPlanner).GetMethod("GetOrCreateZoneGroup", flags);
+            var force = (EnemyShipTaskGroup)getOrCreate.Invoke(planner, new object[] { "zone:0" });
+            planner.Groups[0].Ships.Remove(weak);
+            force.Ships.Add(weak);
+            typeof(EnemyShipTaskGroupPlanner).GetMethod("RebuildGroups", flags).Invoke(planner, null);
+
+            planner.Reconcile(Array.Empty<IShipEntity>());
+            Assert.That(planner.Groups.Any(group => group.IsCaptureDetachment), Is.False,
+                "An empty force is not evaluated.");
+
+            Assert.That(getOrCreate.Invoke(planner, new object[] { "zone:0" }), Is.SameAs(force),
+                "The zone's force comes back with its decision state and order memory.");
+        }
+
+        // W48: a last stand recalls every force into the reserve, which may only defend, guard or fight locally, and
+        // holds for its latch time.
+        [Test]
+        public void LastStand_MergesEveryForceIntoTheReserveForItsLatchTime()
+        {
+            var (planner, _, _, weak, _, _) = AllocationPlanner(defended: false);
+            IShipEntity[] ships = { weak };
+            planner.Reconcile(ships);
+            planner.Allocate(ships, new HashSet<string>(), stationPressure: false, now: 1f);
+            Assert.That(planner.Groups.Single().IsCaptureDetachment, Is.True, "Without a last stand a force goes out.");
+
+            var latch = (EnemyLastStandLatch)typeof(EnemyShipTaskGroupPlanner)
+                .GetField("_lastStand", BindingFlags.Instance | BindingFlags.NonPublic).GetValue(planner);
+            latch.Update(EnemyLastStandLatch.ADVANTAGE * 0.5f, stationThreatened: true, now: 2f);
+            planner.Reconcile(ships);
+            planner.Allocate(ships, new HashSet<string>(), stationPressure: false, now: 3f);
+
+            Assert.That(planner.IsLastStand, Is.True);
+            EnemyShipTaskGroup reserve = planner.Groups.Single();
+            Assert.That(reserve.IsMainForce, Is.True);
+            Assert.That(reserve.Ships, Is.EquivalentTo(ships), "Every force comes home.");
+            Assert.That(reserve.LastStand, Is.True, "No capture or raid: only defend, guard or fight locally.");
+
+            planner.Reconcile(ships);
+            planner.Allocate(ships, new HashSet<string>(), stationPressure: false, now: 2f + EnemyLastStandLatch.SECONDS);
+            Assert.That(planner.IsLastStand, Is.False);
+            Assert.That(planner.Groups.Single().IsCaptureDetachment, Is.True, "After the latch the fleet expands again.");
+        }
+
+        // W47 AllyCombined: a published combined zone strike sends an idle allied main force to its staging point; a main
+        // force under station pressure ignores it.
+        [Test]
+        public void AllyZoneStrike_IdleAllySendsItsForceAndAPressedOneIgnoresIt()
+        {
+            PlayerRoster roster = TestPlayers.CreateTeamGame();
+            var zones = new ZoneSource(roster, new[] { TestPlayers.Enemy }, Vector3.right * 100f);
+            var pressure = new EnemyStationPressureTracker();
+            var builder = CreateContextBuilder(new ShipService(), null, Array.Empty<IEnemyCaptureObjectiveSource>(),
+                new EntityLocator(), null, roster, null, new TeamIntelRegistry(), null,
+                roster.Get(TestPlayers.Enemy), null, new TestHazards(), zones, null, pressure, null);
+            Vector3 staging = Vector3.forward * 2000f;
+            float now = Time.time;
+            builder.TeamCooperation.PublishStrike(TestPlayers.Enemy, CombatForce(100f, 10f), PlayerId.None,
+                Vector3.zero, true, now);
+            builder.TeamCooperation.RequestZoneStrike(TestPlayers.SecondEnemy, "zone:1", Vector3.zero, staging,
+                new ForceComposition(), committed: false, now: now);
+
+            TacticalMarker marker = builder.SelectAllyZoneStrike(EnemyStrategicState.CaptureZone, out string reason);
+
+            Assert.That(marker, Is.Not.Null, "The idle main force answers.");
+            Assert.That(marker.Type, Is.EqualTo(TacticalMarkerType.Defend), "It attack-moves there.");
+            Assert.That(marker.Point, Is.EqualTo(staging));
+            Assert.That(reason, Is.Not.Null, "Answering a team request keeps the force out of the zone pool.");
+
+            pressure.Update(1, 100f, 100f, 0f, visibleThreatId: 9);
+            pressure.Update(1, 40f, 100f, 1f, visibleThreatId: 9);
+            Assert.That(pressure.HasPressure, Is.True);
+            Assert.That(builder.SelectAllyZoneStrike(EnemyStrategicState.CaptureZone, out _), Is.Null,
+                "Own station defence comes first.");
         }
 
         [Test]
@@ -4039,6 +4301,7 @@ namespace EmpireAtWar.Tests.Editor
             public DefendPlatformType Type { get; set; } = DefendPlatformType.TurbolaserSatellite;
             public UnitOrderType CurrentOrder { get; set; } = UnitOrderType.None;
             public IEntity AttackTarget { get; set; }
+            public bool IsEngagingEnRoute { get; set; }
             public bool IsUnit { get; set; } = true;
             public bool IsDefendPlatform { get; set; }
             public StructureKind Kind => StructureKind.DefendPlatform;

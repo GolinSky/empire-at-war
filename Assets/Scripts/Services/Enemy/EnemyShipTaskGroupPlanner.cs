@@ -59,6 +59,10 @@ namespace EmpireAtWar.Services.Enemy
         // Per zone with a force: its open sites and hold at the last check, and since when no site turned to the team.
         private readonly Dictionary<string, (int OpenSites, bool Held, float Since)> _flipWatch =
             new Dictionary<string, (int, bool, float)>();
+        // W49: a zone group emptied for a cycle keeps its builder, decision model and executor memory for its zone.
+        private readonly Dictionary<string, EnemyShipTaskGroup> _idleZoneGroups = new Dictionary<string, EnemyShipTaskGroup>();
+        private readonly EnemyLastStandLatch _lastStand = new EnemyLastStandLatch();
+        private readonly EnemyZoneScoutGate _scoutGate = new EnemyZoneScoutGate();
         private int _stationCount = -1;
         private float _turtleUntil = float.NegativeInfinity;
         private string _retreatedZoneId;
@@ -75,6 +79,17 @@ namespace EmpireAtWar.Services.Enemy
         public Vector3? DeploymentPoint { get; private set; }
         /// <summary>Outer zones ships may take this cycle; production sizes capture wings from it.</summary>
         public int EligibleExpansionZoneCount { get; private set; }
+        /// <summary>W48: the weak fleet gathers at one team station; every force is recalled and new ships land there.</summary>
+        public bool IsLastStand => _lastStand.IsActive;
+        /// <summary>W48: where the last stand gathers; null outside a last stand or with no living team station.</summary>
+        public Vector3? LastStandPoint { get; private set; }
+        /// <summary>W68: centre of a zone a force waits to attack until a scout has seen its defenders; null when none.</summary>
+        public Vector3? ScoutTarget { get; private set; }
+        /// <summary>
+        /// W68: <see cref="DeploymentPoint"/> when its zone is rated (<see cref="EnemyZoneScoutGate.IsRated"/>) and still
+        /// to be taken: finished ships land there as one planned wave. Null otherwise and during the opening.
+        /// </summary>
+        public Vector3? PlannedWaveTarget { get; private set; }
 
         public EnemyShipTaskGroupPlanner(EnemyStrategicContextBuilder contextBuilder,
             EnemyStrategicDecisionModel decisionModel, EnemyTaskForceExecutor executor,
@@ -102,7 +117,7 @@ namespace EmpireAtWar.Services.Enemy
                 _reserve.Ships.AddRange(group.Ships);
                 group.Ships.Clear();
             }
-            _zoneGroups.RemoveAll(group => group.Ships.Count == 0);
+            ParkEmptyZoneGroups();
 
             _members.Clear();
             foreach (IShipEntity ship in _reserve.Ships) _members.Add(ship);
@@ -124,11 +139,18 @@ namespace EmpireAtWar.Services.Enemy
             // New forces pause only while the station is about to fall, or for a while after one was lost.
             stationPressure &= _contextBuilder.StationCritical;
             bool turtle = NoteStationLoss(now);
+            bool lastStand = NoteLastStand(ships, turtle, now);
+            if (LastStandPoint.HasValue) GatherPoint = LastStandPoint;
+            bool opening = !_contextBuilder.HoldsOuterZone();
+            ScoutTarget = null;
+            PlannedWaveTarget = null;
             NoteRetreats(now);
             if (CollectPool(ships))
             {
                 Vector3 home = _pool.GetHome(_poolShips[0].WorldPosition);
                 IReadOnlyList<EnemyZoneObjective> zones = _pool.CollectPoolZones(home, GetPoolSpeed(), GetPoolCentre());
+                for (int zone = 0; zone < zones.Count; zone++)
+                    if (_pool.IsPoolZoneVisible(zone)) _scoutGate.NoteSeen(zones[zone].Id, now);
                 NoteStalledSieges(zones, now);
                 _current.Clear();
                 foreach (IShipEntity ship in _poolShips)
@@ -147,9 +169,17 @@ namespace EmpireAtWar.Services.Enemy
                 if (stationPressure)
                     for (int i = 0; i < _assignment.Count; i++)
                         if (_assignment[i] != _current[i]) _assignment[i] = EnemyZoneAllocator.RESERVE;
-                // A lost station: every force comes home and the fleet gathers before it moves again.
-                if (turtle)
+                // A lost station or a last stand: every force comes home and the fleet gathers before it moves again.
+                if (turtle || lastStand)
+                {
                     for (int i = 0; i < _assignment.Count; i++) _assignment[i] = EnemyZoneAllocator.RESERVE;
+                    _pool.ClearAllyZoneStrike();
+                }
+                else
+                {
+                    ApplyZonePlans(zones, home, opening);
+                    if (!opening && !stationPressure) ScoutBeforeCommit(zones, now);
+                }
                 for (int i = 0; i < _poolShips.Count; i++)
                 {
                     IShipEntity ship = _poolShips[i];
@@ -160,16 +190,21 @@ namespace EmpireAtWar.Services.Enemy
                     foreach (EnemyShipTaskGroup group in _zoneGroups) group.Ships.Remove(ship);
                     target.Ships.Add(ship);
                 }
-                _zoneGroups.RemoveAll(group => group.Ships.Count == 0);
+                ParkEmptyZoneGroups();
+                SetZoneGuardPoints(zones, home);
                 int gather = _allocator.GatherZone;
                 // Weak phase: reinforcements gather near the zone the pool attacks.
                 if (gather == EnemyZoneAllocator.RESERVE && _assignment.Contains(_allocator.WeakTarget))
                     gather = _allocator.WeakTarget;
-                _contextBuilder.ReserveStagingPoint = gather == EnemyZoneAllocator.RESERVE || turtle
+                _contextBuilder.ReserveStagingPoint = gather == EnemyZoneAllocator.RESERVE || turtle || lastStand
                     ? (Vector3?)null : _pool.GetPoolStagingPoint(gather, home);
-                GatherPoint = _contextBuilder.ReserveStagingPoint ?? _pool.GetIdleGatherPoint(home);
-                int deploy = turtle ? EnemyZoneAllocator.RESERVE : _allocator.DeployZone;
+                GatherPoint = LastStandPoint ?? _contextBuilder.ReserveStagingPoint ?? _pool.GetIdleGatherPoint(home);
+                int deploy = turtle || lastStand ? EnemyZoneAllocator.RESERVE : _allocator.DeployZone;
                 DeploymentPoint = deploy == EnemyZoneAllocator.RESERVE ? (Vector3?)null : _pool.GetPoolZoneCentre(deploy);
+                // W68: a rated zone still to be taken gets its reinforcements as one wave dropped beside it.
+                if (!opening && deploy != EnemyZoneAllocator.RESERVE && !zones[deploy].IsHeld &&
+                    _scoutGate.IsRated(zones[deploy].Id, false, now))
+                    PlannedWaveTarget = DeploymentPoint;
                 EligibleExpansionZoneCount = 0;
                 _zoneReservations.Clear();
                 _reserve.Turtle = turtle;
@@ -198,6 +233,139 @@ namespace EmpireAtWar.Services.Enemy
             if (_stationCount >= 0 && stations < _stationCount) _turtleUntil = now + TURTLE_SECONDS;
             _stationCount = stations;
             return now < _turtleUntil;
+        }
+
+        /// <summary>
+        /// W48: the main force's smoothed fleet advantage below <see cref="EnemyLastStandLatch.ADVANTAGE"/> while a team
+        /// station is pressed, an own station was lost (<paramref name="turtle"/>) or an armada threatens a team station
+        /// starts a last stand held at least <see cref="EnemyLastStandLatch.SECONDS"/>: every ship joins the reserve,
+        /// which gathers beside the team station with the most platforms.
+        /// </summary>
+        private bool NoteLastStand(IReadOnlyList<IShipEntity> ships, bool turtle, float now)
+        {
+            bool threatened = turtle || _contextBuilder.TeamStationPressure ||
+                _contextBuilder.IsArmadaThreateningTeamStation();
+            bool active = _lastStand.Update(GetMainFleetAdvantage(), threatened, now);
+            LastStandPoint = active && _contextBuilder.TryGetLastStandPoint(GetCentre(ships), out Vector3 point)
+                ? point : (Vector3?)null;
+            _contextBuilder.LastStandPoint = LastStandPoint;
+            _reserve.LastStand = active;
+            return active;
+        }
+
+        /// <summary>Smoothed fleet advantage of the largest rated group, the reserve first on a tie; NaN before any rating.</summary>
+        private float GetMainFleetAdvantage()
+        {
+            EnemyShipTaskGroup main = null;
+            foreach (EnemyShipTaskGroup group in _groups)
+                if (group.Context != null && (main == null || group.Ships.Count > main.Ships.Count)) main = group;
+            return main == null ? float.NaN : main.Context.Snapshot.FleetAdvantage;
+        }
+
+        private static Vector3 GetCentre(IReadOnlyList<IShipEntity> ships)
+        {
+            if (ships.Count == 0) return Vector3.zero;
+            Vector3 sum = Vector3.zero;
+            foreach (IShipEntity ship in ships) sum += ship.WorldPosition;
+            return sum / ships.Count;
+        }
+
+        /// <summary>
+        /// W68 scout first (<see cref="EnemyZoneScoutGate"/>): ships newly sent to a zone with stale defenders wait while
+        /// a scouting wing looks (<see cref="ScoutTarget"/>); after the wing head start the fastest of them goes alone as
+        /// the scout; once the zone is seen, or the wait ran out, the force commits.
+        /// </summary>
+        private void ScoutBeforeCommit(IReadOnlyList<EnemyZoneObjective> zones, float now)
+        {
+            for (int zone = 0; zone < zones.Count; zone++)
+            {
+                if (!IsNewlyAssigned(zone))
+                {
+                    _scoutGate.Release(zones[zone].Id);
+                    continue;
+                }
+                EnemyScoutStep step = _scoutGate.Step(zones[zone].Id, zones[zone].IsHeld, _current.Contains(zone), now);
+                if (step == EnemyScoutStep.Commit) continue;
+                ScoutTarget ??= _pool.GetPoolZoneCentre(zone);
+                int scout = step == EnemyScoutStep.ShipScouts ? FindFastestNewlyAssigned(zone) : EnemyZoneAllocator.RESERVE;
+                for (int i = 0; i < _assignment.Count; i++)
+                    if (_assignment[i] == zone && _current[i] != zone && i != scout) _assignment[i] = _current[i];
+            }
+        }
+
+        /// <summary>
+        /// W47 zone plans after the allocator: a RaidAndLeave zone that is taken and clear of armed hostiles lets every
+        /// ship go (no garrison). After the opening, the first AllyCombined zone with ships sent to it asks the team for
+        /// a combined strike (allies gather at its hold-back point); newly sent ships wait until allied ships can reach
+        /// the zone, then the request turns committed and both attack. No such zone clears the request.
+        /// </summary>
+        private void ApplyZonePlans(IReadOnlyList<EnemyZoneObjective> zones, Vector3 home, bool opening)
+        {
+            bool requested = false;
+            for (int zone = 0; zone < zones.Count; zone++)
+            {
+                EnemyZonePlan plan = _allocator.GetPlan(zone);
+                if (EnemyZoneTaskRules.LeavesZone(plan, zones[zone]))
+                {
+                    for (int i = 0; i < _assignment.Count; i++)
+                        if (_assignment[i] == zone) _assignment[i] = EnemyZoneAllocator.RESERVE;
+                    continue;
+                }
+                if (opening || plan != EnemyZonePlan.AllyCombined || zones[zone].IsOwned || !_assignment.Contains(zone))
+                    continue;
+                Vector3 centre = _pool.GetPoolZoneCentre(zone);
+                bool alliesNear = _pool.CanAlliesReach(centre);
+                if (!requested)
+                {
+                    _pool.RequestAllyZoneStrike(zones[zone].Id, centre, _pool.GetPoolHoldBackPoint(zone, home),
+                        zones[zone].Defenders, committed: alliesNear);
+                    requested = true;
+                }
+                if (!EnemyZoneTaskRules.WaitsForAllies(plan, alliesNear)) continue;
+                for (int i = 0; i < _assignment.Count; i++)
+                    if (_assignment[i] == zone && _current[i] != zone) _assignment[i] = _current[i];
+            }
+            if (!requested) _pool.ClearAllyZoneStrike();
+        }
+
+        /// <summary>
+        /// W47: each zone force gets the point it keeps once its zone has no site left to take: the zone centre
+        /// (garrison, dwell, whole force while hostiles approach), or the hold-back point while a HoldBackAndCounter zone
+        /// is owned and quiet.
+        /// </summary>
+        private void SetZoneGuardPoints(IReadOnlyList<EnemyZoneObjective> zones, Vector3 home)
+        {
+            foreach (EnemyShipTaskGroup group in _zoneGroups)
+            {
+                EnemyStrategicContextBuilder builder = group.ContextBuilder;
+                int zone = IndexOf(zones, builder.AssignedZoneId);
+                if (zone == EnemyZoneAllocator.RESERVE)
+                {
+                    builder.ZoneGuardPoint = null;
+                    builder.ZoneHoldsBack = false;
+                    continue;
+                }
+                EnemyZonePlan plan = _allocator.GetPlan(zone);
+                builder.ZoneHoldsBack = EnemyZoneTaskRules.HoldsBack(plan, zones[zone]);
+                builder.ZoneGuardPoint = EnemyZoneTaskRules.GetGuardPoint(plan, zones[zone],
+                    _pool.GetPoolZoneCentre(zone), _pool.GetPoolHoldBackPoint(zone, home));
+            }
+        }
+
+        private bool IsNewlyAssigned(int zone)
+        {
+            for (int i = 0; i < _assignment.Count; i++)
+                if (_assignment[i] == zone && _current[i] != zone) return true;
+            return false;
+        }
+
+        private int FindFastestNewlyAssigned(int zone)
+        {
+            int fastest = EnemyZoneAllocator.RESERVE;
+            for (int i = 0; i < _assignment.Count; i++)
+                if (_assignment[i] == zone && _current[i] != zone && (fastest == EnemyZoneAllocator.RESERVE ||
+                    _poolShips[i].NavigationSpeed > _poolShips[fastest].NavigationSpeed)) fastest = i;
+            return fastest;
         }
 
         /// <summary>A zone force that retreats marks its zone; the weak-phase attack switches to another one.</summary>
@@ -366,6 +534,11 @@ namespace EmpireAtWar.Services.Enemy
         {
             foreach (EnemyShipTaskGroup existing in _zoneGroups)
                 if (existing.ContextBuilder.AssignedZoneId == zoneId) return existing;
+            if (_idleZoneGroups.Remove(zoneId, out EnemyShipTaskGroup parked))
+            {
+                _zoneGroups.Add(parked);
+                return parked;
+            }
             EnemyShipTaskGroup group = new EnemyShipTaskGroup(_contextBuilder.CreateGroupBuilder(),
                 new EnemyStrategicDecisionModel(), new EnemyTaskForceExecutor(_orders), isCaptureDetachment: true);
             group.ContextBuilder.AssignedZoneId = zoneId;
@@ -387,6 +560,17 @@ namespace EmpireAtWar.Services.Enemy
             return EnemyZoneAllocator.RESERVE;
         }
 
+        /// <summary>
+        /// W49: an emptied zone group leaves the active list but is kept per zone, so a force sent there again keeps
+        /// its decision state, retreat point and order memory instead of starting from nothing.
+        /// </summary>
+        private void ParkEmptyZoneGroups()
+        {
+            foreach (EnemyShipTaskGroup group in _zoneGroups)
+                if (group.Ships.Count == 0) _idleZoneGroups[group.ContextBuilder.AssignedZoneId] = group;
+            _zoneGroups.RemoveAll(group => group.Ships.Count == 0);
+        }
+
         // The reserve is listed first and evaluates first; an empty reserve is listed only when no force is out.
         private void RebuildGroups()
         {
@@ -402,14 +586,14 @@ namespace EmpireAtWar.Services.Enemy
             int gather = _allocator.GatherZone;
             Vector3 staging = _contextBuilder.ReserveStagingPoint ?? home;
             text.Append(FormattableString.Invariant(
-                $"pool={_poolShips.Count};reserve={_reserve.Ships.Count};gather={(gather == EnemyZoneAllocator.RESERVE ? "none" : zones[gather].Id)};staging=({staging.x:F0} {staging.z:F0});behind={behind};zones="));
+                $"pool={_poolShips.Count};reserve={_reserve.Ships.Count};gather={(gather == EnemyZoneAllocator.RESERVE ? "none" : zones[gather].Id)};staging=({staging.x:F0} {staging.z:F0});behind={behind};lastStand={IsLastStand};scout={(ScoutTarget.HasValue ? FormattableString.Invariant($"({ScoutTarget.Value.x:F0} {ScoutTarget.Value.z:F0})") : "none")};plannedWave={PlannedWaveTarget.HasValue};zones="));
             for (int zone = 0; zone < zones.Count; zone++)
             {
                 int assigned = 0;
                 foreach (int target in _assignment)
                     if (target == zone) assigned++;
                 text.Append(FormattableString.Invariant(
-                    $"{zones[zone].Id}:ships{assigned}:defenders{zones[zone].Defenders.UnitCount}:statics{zones[zone].StaticDefenders}{(zones[zone].IsDenied ? ":" + zones[zone].DenyReason : "")} "));
+                    $"{zones[zone].Id}:ships{assigned}:defenders{zones[zone].Defenders.UnitCount}:statics{zones[zone].StaticDefenders}:plan={_allocator.GetPlan(zone)}:garrison={_allocator.GetGarrison(zone)}{(zones[zone].IsDenied ? ":" + zones[zone].DenyReason : "")} "));
             }
             string allocation = text.ToString();
             if (allocation == _lastAllocation) return;

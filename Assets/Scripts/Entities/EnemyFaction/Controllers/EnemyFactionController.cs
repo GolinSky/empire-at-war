@@ -12,6 +12,7 @@ using EmpireAtWar.Controllers.Factions;
 using EmpireAtWar.Services.Stations;
 using EmpireAtWar.Entities.DefendPlatform;
 using EmpireAtWar.Entities.EnemyFaction.Models;
+using EmpireAtWar.Entities.EnemyFaction.Models.Combat;
 using EmpireAtWar.Entities.MiningFacility;
 using EmpireAtWar.Entities.Squadrons;
 using EmpireAtWar.Models.Economy;
@@ -49,9 +50,11 @@ namespace EmpireAtWar.Entities.EnemyFaction.Controllers
         private const int MINIMUM_REINFORCEMENT_WAVE = 3;
         private const float ASSAULT_WAVE_INTERVAL = 30f;
         private const float STATION_PLACEMENT_RETRY_SECONDS = 10f;
+        private const float STRUCTURE_PLACEMENT_RETRY_SECONDS = 5f;
 
         private readonly IEconomyProvider _economyProvider;
         private readonly IWallet _wallet;
+        private readonly IEconomyModelObserver _economyModel;
         private readonly SpaceStationFactory _stationFactory;
         private readonly UnitCombatProfileCatalog _profiles;
         private readonly IShipSpawnPoints _shipSpawnPoints;
@@ -75,6 +78,10 @@ namespace EmpireAtWar.Entities.EnemyFaction.Controllers
         private readonly Dictionary<ShipUnitRequest, (Vector3 Position, string Tier, bool Forced, bool Emergency)> _defenseLandings =
             new Dictionary<ShipUnitRequest, (Vector3, string, bool, bool)>();
         private readonly HashSet<long> _builtSquadrons = new HashSet<long>();
+        // Placement flags each platform was bought with; read when its build completes (W50).
+        private readonly Dictionary<UnitRequest, (bool AllowExtra, bool FirstOnly)> _defenseFlags =
+            new Dictionary<UnitRequest, (bool, bool)>();
+        private readonly HashSet<DefendPlatformEntity> _platforms = new HashSet<DefendPlatformEntity>();
         private readonly MiningFacilityFactory _miningFacilityFactory;
         private readonly DefendPlatformFactory _defendPlatformFactory;
         private readonly FactionResearchModel _research;
@@ -85,6 +92,9 @@ namespace EmpireAtWar.Entities.EnemyFaction.Controllers
         // Ships placed this tick are anchors for the next ship before the world snapshot sees them.
         private readonly List<Vector3> _landedShips = new List<Vector3>();
         private readonly Comparison<UnitRequest> _smallestShipFirst;
+        private readonly HashSet<string> _busyPipelines = new HashSet<string>();
+        // D3: while set, the ship being built lands beside a group ship fighting on its way.
+        private Vector3? _dropPoint;
 
         private bool _isInitialized;
 
@@ -97,6 +107,11 @@ namespace EmpireAtWar.Entities.EnemyFaction.Controllers
             _builds.Builds.Any(build => build.Request is SecondStationLevelUnitRequest);
         public bool HasActiveProduction => _builds.Builds.Any(build => build.TimeLeft > 0f);
         public IReadOnlyList<EnemyPendingBuild> PendingBuilds => _builds.Builds;
+        public bool HasPlatformInProgress =>
+            _builds.Builds.Any(build => build.Request is DefendPlatformUnitRequest) ||
+            _platforms.Any(platform => platform.IsConstructing);
+        /// <summary>W56: the own station (main or second) stands; without it an assault capital lands only on the body.</summary>
+        private bool HasOwnLivingStation => _productionAccess.ProductionHost == Owner && _productionAccess.HasHostBase;
 
         public bool CanQueue(string requestId, int maxCount) =>
             (requestId != SecondStationUnitRequest.REQUEST_ID ||
@@ -133,8 +148,10 @@ namespace EmpireAtWar.Entities.EnemyFaction.Controllers
             SpaceStationFactory stationFactory,
             UnitCombatProfileCatalog profiles,
             SecondStationLevelModel secondStation,
-            IEnemyForwardSpawnAnchors forwardAnchors) : base(model)
+            IEnemyForwardSpawnAnchors forwardAnchors,
+            IEconomyModelObserver economyModel) : base(model)
         {
+            _economyModel = economyModel;
             _secondStation = secondStation;
             _forwardAnchors = forwardAnchors;
             _smallestShipFirst = CompareHullSize;
@@ -206,7 +223,7 @@ namespace EmpireAtWar.Entities.EnemyFaction.Controllers
         public void Purchase(UnitRequest unitRequest)
         {
             if (unitRequest is SecondStationLevelUnitRequest secondLevel && !CanUpgradeSecondStation(secondLevel) ||
-                !CanQueue(unitRequest.Id, unitRequest.FactionData.MaxCount) ||
+                !CanQueue(unitRequest.Id, PlayerFactionModel.GetQueueLimit(unitRequest)) ||
                 unitRequest is SecondStationUnitRequest && !_enemyStructurePlacementService.TryGetSecondStationPosition(out _) ||
                 !_productionAccess.CanProduce ||
                 unitRequest is LevelUnitRequest &&
@@ -247,10 +264,15 @@ namespace EmpireAtWar.Entities.EnemyFaction.Controllers
 
             EnemyAiTelemetry.RecordEvent(_owner.Id, _owner.Faction, "purchaseAccepted",
                 $"unit={unitRequest.Id};population={_unitLimitModel.CurrentUnitCapacity}");
-            if (unitRequest is MiningFacilityUnitRequest or DefendPlatformUnitRequest)
-                ExecuteBuild(unitRequest);
-            else
-                _builds.Add(unitRequest, unitRequest.FactionData.BuildTime);
+            // Platforms and miners wait their queue build time like a human's, then are placed and built on site (W69).
+            _builds.Add(unitRequest, unitRequest.FactionData.BuildTime);
+        }
+
+        public void PurchaseDefense(UnitRequest unitRequest, bool allowExtra, bool firstOnly)
+        {
+            _defenseFlags[unitRequest] = (allowExtra, firstOnly);
+            Purchase(unitRequest);
+            if (!_builds.Builds.Any(build => build.Request == unitRequest)) _defenseFlags.Remove(unitRequest);
         }
 
         public void Tick()
@@ -264,6 +286,9 @@ namespace EmpireAtWar.Entities.EnemyFaction.Controllers
             _squadronCommander.SetWingPatrol(Model.CurrentLevel >= 2);
             bool hasRally = _aiState.TryGetReinforcementRally(out Vector3 rally, out bool defendHome);
             _squadronCommander.SetStationDefense(hasRally && defendHome ? rally : (Vector3?)null);
+            _squadronCommander.SetZoneScoutTarget(_aiState.ZoneScoutTarget);
+            _aiState.ReportReinforcementBudget(GetReinforcementBudget());
+            if (!defendHome) DropHeldReinforcement();
             bool hasStation = _productionAccess.TryGetProductionBase(out var station);
             if (Time.time >= _stationTelemetryAt || hasStation != _hadStation)
             {
@@ -279,6 +304,71 @@ namespace EmpireAtWar.Entities.EnemyFaction.Controllers
         {
             _aiState.TryGetReinforcementRally(out _, out bool defendHome);
             AdvanceBuilds(deltaTime, defendHome);
+        }
+
+        /// <summary>
+        /// W63 addendum: what this AI can still add to a fight: its bank, the credits its free unit capacity takes at the
+        /// average price per slot of its unlocked ships, and the seconds until a ship bought now is on the map (a free
+        /// production pipeline or the shortest running build, plus the average build time).
+        /// </summary>
+        private EnemyReinforcementBudget GetReinforcementBudget()
+        {
+            float price = 0f;
+            float slots = 0f;
+            float buildTime = 0f;
+            int types = 0;
+            foreach (KeyValuePair<ShipType, FactionData> ship in Model.ShipFactionData)
+            {
+                if (ship.Value.AvailableLevel > Model.CurrentLevel) continue;
+                price += ship.Value.Price;
+                slots += ship.Value.UnitCapacity;
+                buildTime += ship.Value.BuildTime;
+                types++;
+            }
+            int free = Math.Max(0, _reinforcementData.MaxUnitCapacity - _unitLimitModel.CurrentUnitCapacity);
+            float capacityCredits = slots > 0f ? free * price / slots : 0f;
+            float readySeconds = (types > 0 ? buildTime / types : 0f) + GetPipelineWaitSeconds();
+            return new EnemyReinforcementBudget(_economyModel.Money, capacityCredits, readySeconds);
+        }
+
+        /// <summary>Zero while a production pipeline is free; otherwise the time left on the shortest running build.</summary>
+        private float GetPipelineWaitSeconds()
+        {
+            _busyPipelines.Clear();
+            float shortest = float.PositiveInfinity;
+            foreach (EnemyPendingBuild build in _builds.Builds)
+            {
+                if (build.TimeLeft <= 0f) continue;
+                _busyPipelines.Add(build.Request.Id);
+                shortest = Mathf.Min(shortest, build.TimeLeft);
+            }
+            return _busyPipelines.Count >= PlayerFactionModel.MAX_ACTIVE_PIPELINES ? shortest : 0f;
+        }
+
+        /// <summary>
+        /// D3: a group ship fights on its way and the group keeps going. A finished ship held off-map lands at the
+        /// nearest valid spawn point beside it; without a held ship the request waits until it lapses.
+        /// </summary>
+        private void DropHeldReinforcement()
+        {
+            UnitRequest held = null;
+            foreach (EnemyPendingBuild build in _builds.Builds)
+            {
+                if (!build.IsReadyForDeployment || build.Request is not ShipUnitRequest) continue;
+                held = build.Request;
+                break;
+            }
+            if (held == null || !_aiState.TryTakeReinforcementDrop(out Vector3 point)) return;
+            _builds.RemoveAll(request => request == held);
+            _dropPoint = point;
+            try
+            {
+                ExecuteBuild(held);
+            }
+            finally
+            {
+                _dropPoint = null;
+            }
         }
 
         /// <summary>True when an unlocked assault capital fits the free unit capacity.</summary>
@@ -465,14 +555,20 @@ namespace EmpireAtWar.Entities.EnemyFaction.Controllers
             return false;
         }
 
-        /// <summary>Forward mode: beside the spawn beacon, wings, ships or structures nearest the ship's task.</summary>
-        private bool TryForwardSpawn(PlayerId home, ShipUnitRequest ship, Vector3 task, out Vector3 position,
-            out string anchor)
+        /// <summary>
+        /// Forward mode: beside the spawn beacon, wings, ships or structures nearest the ship's task. A planned attack
+        /// wave (W68) uses <see cref="IEnemyForwardSpawnAnchors.CollectPlannedWave"/>: the human spawn rule, no escort filter.
+        /// </summary>
+        private bool TryForwardSpawn(PlayerId home, ShipUnitRequest ship, Vector3 task, bool plannedWave,
+            out Vector3 position, out string anchor)
         {
             position = default;
             anchor = "none";
-            bool capital = IsAssaultCapital(ship);
-            if (!_forwardAnchors.Collect(task, _landedShips, capital, _anchors, out Vector3 awayFrom))
+            Vector3 awayFrom;
+            bool collected = plannedWave
+                ? _forwardAnchors.CollectPlannedWave(task, _landedShips, _anchors, out awayFrom)
+                : _forwardAnchors.Collect(task, _landedShips, IsAssaultCapital(ship), _anchors, out awayFrom);
+            if (!collected)
             {
                 EnemyAiTelemetry.RecordEvent(_owner.Id, _owner.Faction, "spawnAttempt",
                     $"unit={ship.Id};units=0;points=0;notOpen=0;notClear=0;found=False");
@@ -534,8 +630,7 @@ namespace EmpireAtWar.Entities.EnemyFaction.Controllers
             Track(platform, unitRequest);
         }
 
-        private void AdoptReservation(UnitRequest unitRequest) =>
-            _unitLimitModel.Adopt(UnitLimitKey.From(unitRequest), unitRequest.FactionData.UnitCapacity);
+        private void AdoptReservation(UnitRequest unitRequest) => _unitLimitModel.Adopt(unitRequest);
 
         private void Build(UnitRequest unitRequest)
         {
@@ -563,6 +658,21 @@ namespace EmpireAtWar.Entities.EnemyFaction.Controllers
                         hasRally = false;
                         defendHome = false;
                     }
+                    bool plannedWave = false;
+                    if (_dropPoint is Vector3 drop)
+                    {
+                        // D3: beside the group ship that fights on its way.
+                        rally = drop;
+                        hasRally = true;
+                        defendHome = false;
+                    }
+                    else if (!defendHome && _aiState.TryGetPlannedWave(out Vector3 wave))
+                    {
+                        // W68: the planned attack wave drops beside the scout or nearest own unit at the target.
+                        rally = wave;
+                        hasRally = true;
+                        plannedWave = true;
+                    }
                     // Ships arrive at the home of whichever team base builds them, borrowed from an ally or not.
                     PlayerId home = GetDeploymentHost();
                     float heldSeconds = _builds.GetDeploymentBlockedSeconds(shipUnitRequest);
@@ -573,6 +683,8 @@ namespace EmpireAtWar.Entities.EnemyFaction.Controllers
                     bool emergency;
                     string anchor;
                     bool anchorContested = false;
+                    // W56: with no living own station an assault capital lands beside the group body or not at all.
+                    bool bodyOnlyCapital = !defendHome && !HasOwnLivingStation && IsAssaultCapital(shipUnitRequest);
                     if (_defenseLandings.Remove(shipUnitRequest, out var landing))
                     {
                         _shipSpawnPoints.ReleaseDefenseLanding(shipUnitRequest);
@@ -583,13 +695,34 @@ namespace EmpireAtWar.Entities.EnemyFaction.Controllers
                         foundPosition = true;
                         anchor = "rear";
                     }
-                    else if (hasRally && !defendHome &&
-                             TryForwardSpawn(home, shipUnitRequest, rally, out position, out anchor))
+                    else if ((hasRally || bodyOnlyCapital) && !defendHome &&
+                             TryForwardSpawn(home, shipUnitRequest, rally, plannedWave, out position, out anchor))
                     {
                         tier = "F";
                         forced = false;
                         emergency = false;
                         foundPosition = true;
+                    }
+                    else if (bodyOnlyCapital)
+                    {
+                        // No escorted body to join: held, then refunded instead of landing alone at a relay or ally base.
+                        tier = "body";
+                        anchor = "none";
+                        forced = false;
+                        emergency = false;
+                        foundPosition = false;
+                        position = default;
+                        if (heldSeconds >= DEPLOYMENT_EMERGENCY_SECONDS || !_productionAccess.CanProduce)
+                        {
+                            EnemyAiTelemetry.RecordEvent(_owner.Id, _owner.Faction, "capitalRefunded",
+                                FormattableString.Invariant(
+                                    $"unit={shipUnitRequest.Id};reason=noStationNoBody;heldSeconds={heldSeconds:F1}"));
+                            _builds.ClearDeploymentBlock(shipUnitRequest);
+                            _unitLimitModel.CancelShipOrder();
+                            ReleaseUnit(shipUnitRequest);
+                            _wallet.Refund(shipUnitRequest);
+                            return;
+                        }
                     }
                     else
                     {
@@ -631,7 +764,7 @@ namespace EmpireAtWar.Entities.EnemyFaction.Controllers
                                 $"unit={shipUnitRequest.Id};rally={rally};spawn={position};tier={tier};heldSeconds={heldSeconds:F1}"));
                     EnemyAiTelemetry.RecordEvent(_owner.Id, _owner.Faction, "deployment",
                         FormattableString.Invariant(
-                            $"unit={shipUnitRequest.Id};homeDefense={defendHome};rally={rally};spawn={position};tier={tier};anchor={anchor};anchorContested={anchorContested};heldSeconds={heldSeconds:F1}"));
+                            $"unit={shipUnitRequest.Id};homeDefense={defendHome};rally={rally};spawn={position};tier={tier};anchor={anchor};anchorContested={anchorContested};heldSeconds={heldSeconds:F1};plannedWave={plannedWave};drop={_dropPoint.HasValue}"));
                     _builds.ClearDeploymentBlock(shipUnitRequest);
                     Track(_shipFactory.Create(Owner, shipUnitRequest.Key, position), shipUnitRequest);
                     _landedShips.Add(position);
@@ -657,7 +790,7 @@ namespace EmpireAtWar.Entities.EnemyFaction.Controllers
                     {
                         // The paid station waits for a point instead of a refund-and-rebuy loop.
                         _enemyStructurePlacementService.RecordDeferred(stationRequest.Id, 0f);
-                        _builds.RetryStationPlacement(stationRequest, STATION_PLACEMENT_RETRY_SECONDS);
+                        _builds.RetryStructurePlacement(stationRequest, STATION_PLACEMENT_RETRY_SECONDS);
                         return;
                     }
                     Track(_stationFactory.CreateSecond(Owner, _owner.Faction, stationPosition), stationRequest);
@@ -665,11 +798,14 @@ namespace EmpireAtWar.Entities.EnemyFaction.Controllers
                     _enemyStructurePlacementService.RecordPlacement(stationRequest.Id, stationPosition);
                     break;
                 case MiningFacilityUnitRequest miningFacilityUnitRequest:
-                    Track(_miningFacilityFactory.Create(Owner, miningFacilityUnitRequest.Key, GenerateMapCoordinates(unitRequest)),
+                    if (!TryGetStructurePosition(unitRequest, out Vector3 minerPosition)) return;
+                    Track(_miningFacilityFactory.Create(Owner, miningFacilityUnitRequest.Key, minerPosition),
                         miningFacilityUnitRequest);
                     break;
                 case DefendPlatformUnitRequest defendPlatformUnitRequest:
-                    Track(_defendPlatformFactory.Create(Owner, defendPlatformUnitRequest.Key, GenerateMapCoordinates(unitRequest)),
+                    if (!TryGetStructurePosition(unitRequest, out Vector3 platformPosition)) return;
+                    _defenseFlags.Remove(unitRequest);
+                    Track(_defendPlatformFactory.Create(Owner, defendPlatformUnitRequest.Key, platformPosition),
                         defendPlatformUnitRequest);
                     break;
             }
@@ -717,21 +853,22 @@ namespace EmpireAtWar.Entities.EnemyFaction.Controllers
                 ReleaseUnit(unitRequest);
             };
 
-        private void Track(DefendPlatformEntity platform, DefendPlatformUnitRequest unitRequest) =>
+        private void Track(DefendPlatformEntity platform, DefendPlatformUnitRequest unitRequest)
+        {
+            _platforms.Add(platform);
             platform.OnRelease += () =>
             {
+                _platforms.Remove(platform);
                 _enemyStructurePlacementService.RecordDestroyedPosition(platform.transform.position);
                 ReleaseUnit(unitRequest);
             };
+        }
 
         private bool TryReserveAndSpend(UnitRequest unitRequest)
         {
             FactionData factionData = unitRequest.FactionData;
-            if (!_unitLimitModel.TryReserve(
-                    UnitLimitKey.From(unitRequest),
-                    factionData.MaxCount,
-                    factionData.UnitCapacity,
-                    _reinforcementData.MaxUnitCapacity))
+            // The human purchase limits (D6): heroes once, structures to MaxCount, ships and squadrons by population only.
+            if (!_unitLimitModel.TryReserve(unitRequest, _reinforcementData.MaxUnitCapacity))
             {
                 EnemyAiTelemetry.RecordEvent(_owner.Id, _owner.Faction, "purchaseRejected",
                     $"unit={unitRequest.Id};reason=capacity or unit limit;population={_unitLimitModel.CurrentUnitCapacity};required={factionData.UnitCapacity}");
@@ -769,12 +906,7 @@ namespace EmpireAtWar.Entities.EnemyFaction.Controllers
             _secondStation.IsBuilt && request.Level == _secondStation.CurrentLevel &&
             _secondStation.CurrentLevel < Model.CurrentLevel;
 
-        private void ReleaseUnit(UnitRequest unitRequest)
-        {
-            _unitLimitModel.Release(
-                UnitLimitKey.From(unitRequest),
-                unitRequest.FactionData.UnitCapacity);
-        }
+        private void ReleaseUnit(UnitRequest unitRequest) => _unitLimitModel.Release(unitRequest);
 
         private void ExecuteBuild(UnitRequest unitRequest)
         {
@@ -787,6 +919,7 @@ namespace EmpireAtWar.Entities.EnemyFaction.Controllers
                       unitRequest is not SecondStationUnitRequest))
             {
                 if (unitRequest is ShipUnitRequest) _unitLimitModel.CancelShipOrder();
+                _defenseFlags.Remove(unitRequest);
                 ReleaseUnit(unitRequest);
                 _wallet.Refund(unitRequest);
                 return;
@@ -807,6 +940,7 @@ namespace EmpireAtWar.Entities.EnemyFaction.Controllers
                 {
                     _unitLimitModel.CancelShipOrder();
                 }
+                _defenseFlags.Remove(unitRequest);
                 ReleaseUnit(unitRequest);
                 _wallet.Refund(unitRequest);
                 Debug.LogError(
@@ -828,22 +962,43 @@ namespace EmpireAtWar.Entities.EnemyFaction.Controllers
             }
 
             _builds.Clear();
+            _defenseFlags.Clear();
         }
 
-        private Vector3 GenerateMapCoordinates(UnitRequest request)
+        /// <summary>
+        /// A platform uses the flags it was bought with (a restored build: extra platforms allowed, as before W50);
+        /// a miner the structure search. No point → the paid build stays queued and retries (W69).
+        /// </summary>
+        private bool TryGetStructurePosition(UnitRequest request, out Vector3 position)
         {
-            bool found = request is DefendPlatformUnitRequest
-                ? _enemyStructurePlacementService.TryGetDefensePosition(true, out Vector3 position)
-                : _enemyStructurePlacementService.TryGetPosition(out position);
+            bool found;
+            if (request is DefendPlatformUnitRequest)
+            {
+                (bool allowExtra, bool firstOnly) = _defenseFlags.TryGetValue(request, out var flags) ? flags : (true, false);
+                found = _enemyStructurePlacementService.TryGetDefensePosition(allowExtra, firstOnly,
+                    EnemyPlatformTier.IsBig(request.FactionData), out position);
+            }
+            else
+                found = _enemyStructurePlacementService.TryGetPosition(out position);
             if (found)
             {
                 _enemyStructurePlacementService.RecordPlacement(request.Id, position);
-                return position;
+                return true;
             }
 
-            _enemyStructurePlacementService.RecordDeferred(request.Id, request.FactionData.Price);
-            throw new InvalidOperationException(
-                "No clear enemy structure position is available near the station or captured zones.");
+            if (!_productionAccess.CanProduce)
+            {
+                // No team base: nothing places it, and a held build would keep a defeated faction alive.
+                _enemyStructurePlacementService.RecordDeferred(request.Id, request.FactionData.Price);
+                _defenseFlags.Remove(request);
+                ReleaseUnit(request);
+                _wallet.Refund(request);
+                return false;
+            }
+
+            _enemyStructurePlacementService.RecordDeferred(request.Id, 0f);
+            _builds.RetryStructurePlacement(request, STRUCTURE_PLACEMENT_RETRY_SECONDS);
+            return false;
         }
     }
 }

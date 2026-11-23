@@ -3,6 +3,7 @@ using EmpireAtWar.Models.Players;
 using DG.Tweening;
 using EmpireAtWar.Components.Radar;
 using EmpireAtWar.Components.Combat;
+using EmpireAtWar.Components.Ship.Health;
 using EmpireAtWar.Components.Weapon;
 using EmpireAtWar.Entities.BaseEntity;
 using EmpireAtWar.Entities.BaseEntity.EntityFacades;
@@ -283,7 +284,7 @@ namespace EmpireAtWar.Components.Ship.Movement
 
         public bool TrySettle(Vector3 destination, int revision)
         {
-            if (revision != _spacingRevision || !CanSettle) return false;
+            if (revision != _spacingRevision || !CanSettle || !KeepsHoldTargetInReach(destination)) return false;
             _isSettling = true;
             _hasArrivalCorrection = false;
             _isArrivalCorrectionPlan = false;
@@ -293,6 +294,21 @@ namespace EmpireAtWar.Components.Ship.Movement
             Plan(destination);
             DestinationChanged?.Invoke(Model.Destination.ToUnity());
             return IsMoving;
+        }
+
+        // Hull spacing never moves a held ship out of its guns' reach of the target. A ship already holding beyond
+        // that reach (artillery or siege standoff) may still settle, but not farther out.
+        private bool KeepsHoldTargetInReach(Vector3 destination)
+        {
+            Vector3 target = _combatHoldTransform.position;
+            float contact = NavigationRadius + (_combatHoldTarget.TryGetFacade(out INavigationFootprintFacade footprint)
+                ? footprint.NavigationRadius
+                : 0f);
+            ShipClass targetClass = _combatHoldTarget.HealthModel.ShipClass;
+            float goalDistance = PlanarGeometry.Distance(destination, target);
+            if (_weaponFacing.IsWithinReach(goalDistance, contact, targetClass)) return true;
+            float currentDistance = PlanarGeometry.Distance(transform.position, target);
+            return !_weaponFacing.IsWithinReach(currentDistance, contact, targetClass) && goalDistance <= currentDistance;
         }
 
         private void SetTargetPosition(Vector3 requestedPosition, bool preserveCourse = false)

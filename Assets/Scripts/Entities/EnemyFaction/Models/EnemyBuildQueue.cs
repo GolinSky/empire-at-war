@@ -20,6 +20,11 @@ namespace EmpireAtWar.Entities.EnemyFaction.Models
         public int Count => _builds.Count;
         public IReadOnlyList<EnemyPendingBuild> Builds => _builds;
 
+        /// <summary>
+        /// The human queue rule: at most <paramref name="maxCount"/> of the ID in production, on at most
+        /// <see cref="PlayerFactionModel.MAX_ACTIVE_PIPELINES"/> pipelines. A completed build held for deployment or
+        /// placement is the human's reserve pool, not the queue, so it counts against neither (D6).
+        /// </summary>
         public bool CanAdd(string requestId, int maxCount)
         {
             _pipelineIds.Clear();
@@ -27,7 +32,8 @@ namespace EmpireAtWar.Entities.EnemyFaction.Models
             int queuedCount = _externalPipelines.Contains(requestId) ? 1 : 0;
             foreach (EnemyPendingBuild build in _builds)
             {
-                if (build.TimeLeft > 0f) _pipelineIds.Add(build.Request.Id);
+                if (build.TimeLeft <= 0f) continue;
+                _pipelineIds.Add(build.Request.Id);
                 if (build.Request.Id == requestId) queuedCount++;
             }
 
@@ -48,8 +54,11 @@ namespace EmpireAtWar.Entities.EnemyFaction.Models
         public void RetrySquadronDeployment(SquadronUnitRequest request, float retryDelay) =>
             _builds.Add(new EnemyPendingBuild(request, 0f) { DeploymentRetryIn = retryDelay });
 
-        /// <summary>A paid second station with no placement point stays queued and tries again later.</summary>
-        public void RetryStationPlacement(SecondStationUnitRequest request, float retryDelay) =>
+        /// <summary>
+        /// A paid structure (second station, platform, miner) with no placement point stays queued and tries again
+        /// later, as a human's built structure waits in the reinforcement pool.
+        /// </summary>
+        public void RetryStructurePlacement(UnitRequest request, float retryDelay) =>
             _builds.Add(new EnemyPendingBuild(request, 0f) { DeploymentRetryIn = retryDelay });
 
         /// <summary>Seconds a completed ship has been held because its arrival area was blocked.</summary>

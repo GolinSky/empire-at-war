@@ -13,7 +13,8 @@ namespace EmpireAtWar.Services.Enemy
     /// changes or its destination moves more than <see cref="SAME_POINT_DISTANCE"/>. A ship whose move or attack-move
     /// ended gets it again at once (order repair); an attack on the same target that ended waits
     /// <see cref="REISSUE_SECONDS"/>, which breaks Attack → None loops. Other orders pass through and reset the ship's
-    /// memory.
+    /// memory. A ship fighting a warship that hit it on its attack-move keeps that fight: every order except a retreat
+    /// skips it, so its group keeps going without it (W66, D3).
     /// </summary>
     public sealed class AiOrderDeduplicator : IUnitOrderService
     {
@@ -30,6 +31,9 @@ namespace EmpireAtWar.Services.Enemy
         private bool _resent;
 
         public AiOrderDeduplicator(IUnitOrderService orders) => _orders = orders;
+
+        /// <summary>Orders passed on, counted per receiver (W57 per-minute order rows).</summary>
+        public int PassedOrders { get; private set; }
 
         public event Action<UnitOrder> OrderIssued
         {
@@ -57,15 +61,15 @@ namespace EmpireAtWar.Services.Enemy
 
         public void IssueAttack(IReadOnlyList<IEntity> receivers, IEntity target, IReadOnlyList<Vector3> offsets)
         {
-            Forget(receivers);
-            using (Tag()) _orders.IssueAttack(receivers, target, offsets);
+            if (!Pass(receivers, offsets)) return;
+            using (Tag()) _orders.IssueAttack(_receivers.ToArray(), target, _destinations.ToArray());
         }
 
         public void IssueHardPointAttack(IReadOnlyList<IEntity> receivers, IEntity target, int hardPointId,
             MovePace pace = MovePace.Formation)
         {
-            Forget(receivers);
-            using (Tag()) _orders.IssueHardPointAttack(receivers, target, hardPointId, pace);
+            if (!Pass(receivers)) return;
+            using (Tag()) _orders.IssueHardPointAttack(_receivers.ToArray(), target, hardPointId, pace);
         }
 
         public void IssueAttackMove(IReadOnlyList<IEntity> receivers, Vector3 point, MovePace pace = MovePace.Formation)
@@ -82,43 +86,46 @@ namespace EmpireAtWar.Services.Enemy
 
         public void IssueStop(IReadOnlyList<IEntity> receivers)
         {
-            Forget(receivers);
-            using (Tag()) _orders.IssueStop(receivers);
+            if (!Pass(receivers)) return;
+            using (Tag()) _orders.IssueStop(_receivers.ToArray());
         }
 
         public void IssueGuard(IReadOnlyList<IEntity> receivers, IEntity friendly)
         {
-            Forget(receivers);
-            using (Tag()) _orders.IssueGuard(receivers, friendly);
+            if (!Pass(receivers)) return;
+            using (Tag()) _orders.IssueGuard(_receivers.ToArray(), friendly);
         }
 
         public void IssueGuard(IReadOnlyList<IEntity> receivers, IEntity friendly, IReadOnlyList<Vector3> offsets)
         {
-            Forget(receivers);
-            using (Tag()) _orders.IssueGuard(receivers, friendly, offsets);
+            if (!Pass(receivers, offsets)) return;
+            using (Tag()) _orders.IssueGuard(_receivers.ToArray(), friendly, _destinations.ToArray());
         }
 
         public void IssueWaypointMove(IReadOnlyList<IEntity> receivers, IReadOnlyList<Vector3> waypoints)
         {
-            Forget(receivers);
-            using (Tag()) _orders.IssueWaypointMove(receivers, waypoints);
+            if (!Pass(receivers)) return;
+            using (Tag()) _orders.IssueWaypointMove(_receivers.ToArray(), waypoints);
         }
 
         public void IssueHunt(IReadOnlyList<IEntity> receivers)
         {
-            Forget(receivers);
-            using (Tag()) _orders.IssueHunt(receivers);
+            if (!Pass(receivers)) return;
+            using (Tag()) _orders.IssueHunt(_receivers.ToArray());
         }
 
+        // A retreat reaches every ship, a fighting one too.
         public void IssueRetreat(IReadOnlyList<IEntity> receivers)
         {
             Forget(receivers);
+            PassedOrders += receivers.Count;
             using (Tag()) _orders.IssueRetreat(receivers);
         }
 
         public void IssueRetreat(IReadOnlyList<IEntity> receivers, Vector3 point)
         {
             Forget(receivers);
+            PassedOrders += receivers.Count;
             using (Tag()) _orders.IssueRetreat(receivers, point);
         }
 
@@ -137,10 +144,11 @@ namespace EmpireAtWar.Services.Enemy
             _receivers.Clear();
             foreach (IEntity receiver in receivers)
             {
-                if (IsRepeat(receiver, type, target, point, now)) continue;
+                if (IsEngagingEnRoute(receiver) || IsRepeat(receiver, type, target, point, now)) continue;
                 _issued[receiver] = (type, target, point, now);
                 _receivers.Add(receiver);
             }
+            PassedOrders += _receivers.Count;
             return _receivers.Count > 0;
         }
 
@@ -152,13 +160,41 @@ namespace EmpireAtWar.Services.Enemy
             _destinations.Clear();
             for (int i = 0; i < receivers.Count; i++)
             {
-                if (IsRepeat(receivers[i], type, null, destinations[i], now)) continue;
+                if (IsEngagingEnRoute(receivers[i]) || IsRepeat(receivers[i], type, null, destinations[i], now)) continue;
                 _issued[receivers[i]] = (type, null, destinations[i], now);
                 _receivers.Add(receivers[i]);
                 _destinations.Add(destinations[i]);
             }
+            PassedOrders += _receivers.Count;
             return _receivers.Count > 0;
         }
+
+        /// <summary>Orders that are not filtered: every receiver except a ship engaged en route; resets their memory.</summary>
+        private bool Pass(IReadOnlyList<IEntity> receivers, IReadOnlyList<Vector3> offsets = null)
+        {
+            _receivers.Clear();
+            _destinations.Clear();
+            for (int i = 0; i < receivers.Count; i++)
+            {
+                if (IsEngagingEnRoute(receivers[i])) continue;
+                _issued.Remove(receivers[i]);
+                _receivers.Add(receivers[i]);
+                if (offsets != null) _destinations.Add(offsets[i]);
+            }
+            PassedOrders += _receivers.Count;
+            return _receivers.Count > 0;
+        }
+
+        /// <summary>
+        /// The last order this filter passed to <paramref name="receiver"/> was <paramref name="type"/> toward a point
+        /// within <paramref name="tolerance"/> of <paramref name="point"/>; any other order passed since clears it.
+        /// </summary>
+        public bool WasLastSent(IEntity receiver, UnitOrderType type, Vector3 point, float tolerance) =>
+            _issued.TryGetValue(receiver, out var last) && last.Type == type &&
+            new Vector2(last.Point.x - point.x, last.Point.z - point.z).sqrMagnitude <= tolerance * tolerance;
+
+        private static bool IsEngagingEnRoute(IEntity receiver) =>
+            receiver.TryGetFacade(out IUnitOrderObserverFacade orders) && orders.IsEngagingEnRoute;
 
         // Lost ships never get another order; their entries go once the memory grows.
         private void Prune()

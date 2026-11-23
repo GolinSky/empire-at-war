@@ -11,6 +11,8 @@ namespace EmpireAtWar.Tests.Editor
 
         public void SetStationDefense(Vector3? position) { }
 
+        public void SetZoneScoutTarget(Vector3? target) { }
+
         public void Command(ISquadron squadron, SquadronType squadronType) { }
 
         public void SetOuterWingCount(int count) { }

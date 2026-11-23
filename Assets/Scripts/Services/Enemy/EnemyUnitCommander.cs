@@ -58,6 +58,33 @@ namespace EmpireAtWar.Services.Enemy
         bool IsCapitalRallySafe(Vector3 rally) => true;
         void FillDefenseDeploymentThreats(PlacementThreatSnapshot threats) =>
             throw new InvalidOperationException("This AI does not provide station-defense deployment threats.");
+
+        /// <summary>
+        /// W68: the reinforcement rally is a rated zone still to be taken: finished ships land there as one planned wave
+        /// beside the nearest own unit, with the relaxed escort filters. Same point as the rally; false otherwise.
+        /// </summary>
+        bool TryGetPlannedWave(out Vector3 target)
+        {
+            target = default;
+            return false;
+        }
+
+        /// <summary>
+        /// D3: a group ship fights on its way and the group keeps going; one finished ship held off-map lands at the
+        /// nearest valid spawn point beside it. The request is consumed by this call; false when there is none.
+        /// </summary>
+        bool TryTakeReinforcementDrop(out Vector3 point)
+        {
+            point = default;
+            return false;
+        }
+
+        /// <summary>W68: centre of a zone a scouting wing should look at before the force commits; null when none.</summary>
+        Vector3? ZoneScoutTarget => null;
+
+        /// <summary>W63 addendum: production reports the bank, free-capacity credits and build delay every tick.</summary>
+        void ReportReinforcementBudget(EnemyReinforcementBudget budget) =>
+            throw new InvalidOperationException("This AI does not rate reinforcements.");
     }
 
     public sealed class EnemyUnitCommander :
@@ -69,6 +96,8 @@ namespace EmpireAtWar.Services.Enemy
         IEnemyAiStateProvider
     {
         private const float MINIMUM_WORLD_CHANGE_DECISION_GAP = 0.5f;
+        /// <summary>A reinforcement drop request (D3) lapses after this long without a held ship to drop.</summary>
+        private const float DROP_REQUEST_SECONDS = 15f;
 
         private readonly IShipService _shipService;
         private readonly IReinforcementZonesSystem _reinforcementZonesSystem;
@@ -115,6 +144,8 @@ namespace EmpireAtWar.Services.Enemy
         private float _recoveryStartedAt = -1f;
         private EnemyStrategicContext _lastContext;
         private string _actionReason;
+        private Vector3 _dropRequest;
+        private float _dropRequestUntil = float.NegativeInfinity;
 
         public event Action<EnemyStrategicDecision> DecisionChanged;
 
@@ -137,9 +168,29 @@ namespace EmpireAtWar.Services.Enemy
 
         public bool IsCapitalRallySafe(Vector3 rally) => _contextBuilder.IsCapitalRallySafe(rally);
 
-        public bool TryGetReinforcementRally(out Vector3 rally, out bool defendHome)
+        public Vector3? ZoneScoutTarget => _taskGroups.ScoutTarget;
+
+        public void ReportReinforcementBudget(EnemyReinforcementBudget budget) =>
+            _contextBuilder.OwnReinforcement = budget;
+
+        public bool TryTakeReinforcementDrop(out Vector3 point)
+        {
+            point = _dropRequest;
+            if (Time.time >= _dropRequestUntil) return false;
+            _dropRequestUntil = float.NegativeInfinity;
+            return true;
+        }
+
+        public bool TryGetPlannedWave(out Vector3 target) =>
+            ResolveReinforcementRally(out target, out bool defendHome, out bool plannedWave) && !defendHome && plannedWave;
+
+        public bool TryGetReinforcementRally(out Vector3 rally, out bool defendHome) =>
+            ResolveReinforcementRally(out rally, out defendHome, out _);
+
+        private bool ResolveReinforcementRally(out Vector3 rally, out bool defendHome, out bool plannedWave)
         {
             rally = default;
+            plannedWave = false;
             defendHome = _contextBuilder.TryGetDefendedStation(out rally);
             if (defendHome) return true;
             if (!_hasDecision) return false;
@@ -153,16 +204,24 @@ namespace EmpireAtWar.Services.Enemy
                 rally = liveStation.GetFacade<IEntityTransformFacade>().Transform.position;
                 return true;
             }
+            // W48/W56: under a last stand every new ship lands at the gather point beside the team station.
+            if (_taskGroups.IsLastStand && _taskGroups.LastStandPoint is Vector3 lastStand)
+            {
+                rally = lastStand;
+                return true;
+            }
             foreach (EnemyShipTaskGroup group in _taskGroups.Groups)
             {
                 if (!group.IsMainForce || group.Context == null) continue;
                 if (TryGetTaskRally(group, out rally)) return true;
             }
             // Every force is out at a zone: a new ship arrives at the held relay or station nearest the zone that needs
-            // ships most; without one it gathers for the next force instead of joining a fight alone.
+            // ships most; without one it gathers for the next force instead of joining a fight alone. A rated zone
+            // still to be taken gets them as one planned wave (W68).
             if ((_taskGroups.DeploymentPoint ?? _taskGroups.GatherPoint) is Vector3 gather)
             {
                 rally = gather;
+                plannedWave = _taskGroups.PlannedWaveTarget.HasValue && _taskGroups.DeploymentPoint.HasValue;
                 return true;
             }
             foreach (EnemyShipTaskGroup group in _taskGroups.Groups)
@@ -393,13 +452,19 @@ namespace EmpireAtWar.Services.Enemy
             using (EXECUTOR_MARKER.Auto())
 #endif
             {
-                if (!group.HasMarkerRequest && (group.Decision.State == EnemyStrategicState.RebuildFleet ||
-                    group.Decision.State == EnemyStrategicState.Hold &&
-                    (!group.IsMainForce || group.Context.Snapshot.IsRegrouped)))
+                // A group holding at its gather point leaves the spawn zone on that order (W55).
+                if (!group.HasMarkerRequest && !group.Executor.HoldsAtGatherPoint &&
+                    (group.Decision.State == EnemyStrategicState.RebuildFleet ||
+                     group.Decision.State == EnemyStrategicState.Hold &&
+                     (!group.IsMainForce || group.Context.Snapshot.IsRegrouped)))
                     MoveShipsOutOfDefaultZone(group.Ships);
                 else
                     foreach (IShipEntity ship in group.Ships) _zoneExitTargets.Remove(ship);
             }
+            RequestReinforcementDrop(group);
+            if (group.TryTakeOrderReport(Time.time, out int orders))
+                EnemyAiTelemetry.RecordEvent(_owner.Id, _owner.Faction, "groupOrders", FormattableString.Invariant(
+                    $"group={group.Id};orders={orders};ships={group.Ships.Count};state={group.Decision.State};seconds={EnemyShipTaskGroup.ORDER_REPORT_INTERVAL:F0}"));
             _cycleBodyCount += group.Executor.BodyCount;
             _cycleRallyingCount += group.Executor.RallyingCount;
             if (_cyclePrimary == null || _cyclePrimary.IsCaptureDetachment && !group.IsCaptureDetachment ||
@@ -409,6 +474,20 @@ namespace EmpireAtWar.Services.Enemy
                 $"{group.Ships.Count} ships, {group.Decision.State}.";
 
             return _nextGroupIndex >= _taskGroups.Groups.Count;
+        }
+
+        /// <summary>
+        /// D3: a group ship fighting on its way asks for one held reinforcement to drop beside it; the group keeps
+        /// going. One request per group per <see cref="EnemyShipTaskGroup.DROP_REQUEST_INTERVAL"/>.
+        /// </summary>
+        private void RequestReinforcementDrop(EnemyShipTaskGroup group)
+        {
+            // A last stand lands every ship at its gather point instead.
+            if (_taskGroups.IsLastStand || !group.TryRequestReinforcementDrop(Time.time, out Vector3 point)) return;
+            _dropRequest = point;
+            _dropRequestUntil = Time.time + DROP_REQUEST_SECONDS;
+            EnemyAiTelemetry.RecordEvent(_owner.Id, _owner.Faction, "reinforcementDrop", FormattableString.Invariant(
+                $"group={group.Id};request=({point.x:F0} {point.z:F0})"));
         }
 
         private void FinishDecisionCycle()
@@ -563,6 +642,7 @@ namespace EmpireAtWar.Services.Enemy
 
             Debug.Log(
                 $"[EnemyAI] BattleTime={BattleClock.CurrentElapsed:F1}, Player={_owner.Id}:{_owner.Faction}, Difficulty={_owner.Difficulty}, " +
+                $"Group={_cyclePrimary.Id}:{(_cyclePrimary.IsMainForce ? "main" : _cyclePrimary.ContextBuilder.AssignedZoneId)}, " +
                 $"Objective={_gameModel.VictoryCondition}, State={decision.State}, " +
                 $"Committed={decision.CommittedShipCount}/{LastSnapshot.OwnShipCount}, " +
                 $"EnemyShips={LastSnapshot.EnemyShipCount}, " +

@@ -5,6 +5,7 @@ using System.Reflection;
 using EmpireAtWar.Components.Radar;
 using EmpireAtWar.Components.Ship.Movement;
 using EmpireAtWar.Components.Combat;
+using EmpireAtWar.Components.Weapon;
 using EmpireAtWar.Entities.Map;
 using EmpireAtWar.Entities.Map.Hazards;
 using EmpireAtWar.Models.SkirmishCamera;
@@ -1124,6 +1125,32 @@ namespace EmpireAtWar.Tests.Movement
             finally { Object.DestroyImmediate(ship); }
         }
 
+        [Test]
+        public void CombatHold_SpacingNeverSettlesOutOfGunReachOfTheTarget()
+        {
+            var ship = new GameObject("Spacing within reach");
+            var targetObject = new GameObject("Held target");
+            try
+            {
+                const float REACH = 20f;
+                ShipMoveComponent component = CreateReadyComponent(ship, out var navigation,
+                    gunReach: new GunReach(REACH));
+                SetPrivateField(component, "_isNavigationRegistered", true);
+                navigation.IsDeferred = false;
+                component.HoldPosition(new SpacingTarget(targetObject.transform));
+                int plans = navigation.PlanCallCount;
+
+                Assert.That(component.TrySettle(Vector3.forward * (REACH + 5f), component.SpacingRevision), Is.False);
+                Assert.That(navigation.PlanCallCount, Is.EqualTo(plans));
+                Assert.That(component.TrySettle(Vector3.forward * (REACH - 5f), component.SpacingRevision), Is.True);
+            }
+            finally
+            {
+                Object.DestroyImmediate(ship);
+                Object.DestroyImmediate(targetObject);
+            }
+        }
+
         [TestCase(false)]
         [TestCase(true)]
         public void CombatHold_FinishedSettlingDoesNotStopAgainOnCancel(bool stationary)
@@ -1390,7 +1417,8 @@ namespace EmpireAtWar.Tests.Movement
             out RecordingShipNavigationService recordingShipNavigationService,
             bool isReady = true,
             bool ignoresMapObstacles = false,
-            CombatModifiers modifiers = null)
+            CombatModifiers modifiers = null,
+            GunReach gunReach = null)
         {
             recordingShipNavigationService = new RecordingShipNavigationService();
             modifiers ??= new CombatModifiers();
@@ -1406,7 +1434,8 @@ namespace EmpireAtWar.Tests.Movement
                 BindingFlags.Instance | BindingFlags.NonPublic);
             Assert.That(construct, Is.Not.Null);
             construct.Invoke(component, new object[] { new FakeMapModel(_mapRange), null,
-                recordingShipNavigationService, new IgnoredSpawnClearance(), null, null, null, model, modifiers,
+                recordingShipNavigationService, new IgnoredSpawnClearance(), null, null,
+                gunReach ?? new GunReach(float.PositiveInfinity), model, modifiers,
                 ShipType.Arquitens, Vector3.zero, TestPlayers.Human, ShipSpawnPose.Hyperspace, 1L,
                 new EmpireAtWar.Services.Ships.ShipFacingSolveScheduler() });
             System.Type motionType = typeof(ShipMoveComponent).Assembly.GetType(
@@ -1498,6 +1527,16 @@ namespace EmpireAtWar.Tests.Movement
             public void ReleaseLanding(object ship)
             {
             }
+        }
+
+        private sealed class GunReach : IWeaponFacing
+        {
+            private readonly float _reach;
+            public GunReach(float reach) => _reach = reach;
+            public float GetFiringTurnAngle(IEntity target, Vector3 pivot, float? targetBearing = null) =>
+                targetBearing.GetValueOrDefault();
+            public bool IsWithinReach(float distance, float contactDistance, ShipClass targetClass) =>
+                distance <= _reach;
         }
 
         private sealed class SpacingTarget : IEntity, IEntityTransformFacade, IHealthModelObserver

@@ -16,12 +16,96 @@ namespace EmpireAtWar.Entities.Ship.StateMachine
     {
         private const float STANDOFF_RANGE_FACTOR = 0.65f;
         private const float SIEGE_CLEARANCE_MARGIN = 1f;
+        /// <summary>
+        /// A ship already holding on a target keeps holding while the target is within this multiple of its reach;
+        /// without the margin a target drifting across the reach edge restarted the approach every few frames.
+        /// </summary>
+        public const float HELD_REACH_FACTOR = 1.1f;
+        /// <summary>Team-vision search radius for threats; reach is checked afterwards per contact.</summary>
+        public const float TEAM_THREAT_RADIUS = 1500f;
+        private const int STATION_ATTACKER_RANK = 2;
+        private const int SELF_ATTACKER_RANK = 1;
 
         public static bool CanEngage(IEntity enemy, IShipMovement movement,
             IWeaponComponent weapon)
         {
             return !enemy.HealthModel.IsDestroyed && enemy.HealthModel.HasUnits &&
                    IsInReach(movement, weapon, enemy, enemy.GetFacade<IEntityTransformFacade>().Transform.position);
+        }
+
+        /// <summary>
+        /// <see cref="CanEngage(IEntity, IShipMovement, IWeaponComponent)"/> with the leave margin when the ship
+        /// already holds on the enemy.
+        /// </summary>
+        public static bool CanEngage(IEntity enemy, IShipMovement movement, IWeaponComponent weapon, bool isHolding)
+        {
+            return !enemy.HealthModel.IsDestroyed && enemy.HealthModel.HasUnits &&
+                   IsInReach(movement, weapon, enemy, enemy.GetFacade<IEntityTransformFacade>().Transform.position,
+                       isHolding ? HELD_REACH_FACTOR : 1f);
+        }
+
+        /// <summary>A mobile ship of corvette size or bigger: no strikecraft, platform, satellite or mine.</summary>
+        public static bool IsWarship(IEntity enemy) =>
+            enemy.HealthModel.ShipClass.HullTier() > 0 && enemy.TryGetFacade(out IUnitOrderObserverFacade _);
+
+        /// <summary>2 = attacks a team station, 1 = attacks this ship, 0 = neither.</summary>
+        public static int ThreatRank(IEntity enemy, IShipThreatSense threats) =>
+            threats.IsAttackingTeamStation(enemy) ? STATION_ATTACKER_RANK :
+            threats.IsAttackingSelf(enemy) ? SELF_ATTACKER_RANK : 0;
+
+        /// <summary>
+        /// Main-target choice for ships without an attack order: attacker of a team station, then attacker of this
+        /// ship, then what the loadout prefers, then the biggest hull class, then the nearest. Dead or cloaked
+        /// candidates are skipped; null when none is left.
+        /// </summary>
+        public static IEntity SelectThreat(IReadOnlyList<IEntity> candidates, IShipMovement movement,
+            IWeaponComponent weapon, IShipThreatSense threats)
+        {
+            IEntity best = null;
+            int bestRank = -1;
+            bool bestPreferred = false;
+            int bestTier = -1;
+            float bestDistance = float.PositiveInfinity;
+            for (int i = 0; i < candidates.Count; i++)
+            {
+                IEntity enemy = candidates[i];
+                if (enemy.IsCloaked() || enemy.HealthModel.IsDestroyed || !enemy.HealthModel.HasUnits) continue;
+                int rank = ThreatRank(enemy, threats);
+                if (rank < bestRank) continue;
+                bool preferred = IsPreferred(enemy, weapon);
+                int tier = enemy.HealthModel.ShipClass.HullTier();
+                float distance = movement.GetRange(enemy.GetFacade<IEntityTransformFacade>().Transform.position);
+                if (rank == bestRank)
+                {
+                    if (bestPreferred && !preferred) continue;
+                    if (preferred == bestPreferred)
+                    {
+                        if (tier < bestTier) continue;
+                        if (tier == bestTier && distance >= bestDistance) continue;
+                    }
+                }
+
+                best = enemy;
+                bestRank = rank;
+                bestPreferred = preferred;
+                bestTier = tier;
+                bestDistance = distance;
+            }
+
+            return best;
+        }
+
+        /// <summary>
+        /// Whether a fresh <see cref="SelectThreat"/> pick should replace the held target: a higher threat rank, or
+        /// the same rank and a preferred enemy over one the loadout is not built for.
+        /// </summary>
+        public static bool Outranks(IEntity candidate, IEntity held, IWeaponComponent weapon,
+            IShipThreatSense threats)
+        {
+            int candidateRank = ThreatRank(candidate, threats);
+            int heldRank = ThreatRank(held, threats);
+            if (candidateRank != heldRank) return candidateRank > heldRank;
+            return IsPreferred(candidate, weapon) && !IsPreferred(held, weapon);
         }
 
         public static bool IsInRange(IShipMovement movement, IWeaponComponent weapon, IEntity target,
@@ -34,11 +118,14 @@ namespace EmpireAtWar.Entities.Ship.StateMachine
             return weapon.HasEnoughRange(distance, ContactDistance(movement, target), target.HealthModel.ShipClass);
         }
 
-        /// <summary>Full-reach test: an ordered ship holds while this is true and resumes only when it fails.</summary>
+        /// <summary>
+        /// Full-reach test: an ordered ship holds while this is true and resumes only when it fails.
+        /// <paramref name="reachFactor"/> scales every reach (<see cref="HELD_REACH_FACTOR"/> for a held ship).
+        /// </summary>
         public static bool IsInReach(IShipMovement movement, IWeaponComponent weapon, IEntity target,
-            Vector3 targetPosition)
+            Vector3 targetPosition, float reachFactor = 1f)
         {
-            float distance = movement.GetRange(targetPosition);
+            float distance = movement.GetRange(targetPosition) / reachFactor;
             if (UsesCloseSiegeApproach(movement, weapon, target))
                 return distance <= SiegeStandoffDistance(movement, target, targetPosition) + SIEGE_CLEARANCE_MARGIN;
 

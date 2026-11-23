@@ -21,6 +21,13 @@ namespace EmpireAtWar.Services.Enemy
         bool TryGetDefensePosition(bool allowExtra, bool firstOnly, out Vector3 position) =>
             TryGetDefensePosition(allowExtra, out position);
 
+        /// <summary>
+        /// As <see cref="TryGetDefensePosition(bool, bool, out Vector3)"/>; a <paramref name="bigPlatform"/> (Golan III,
+        /// Empress) also needs every known hostile beyond the big-platform stand-off range (W50).
+        /// </summary>
+        bool TryGetDefensePosition(bool allowExtra, bool firstOnly, bool bigPlatform, out Vector3 position) =>
+            TryGetDefensePosition(allowExtra, firstOnly, out position);
+
         bool TryGetSecondStationPosition(out Vector3 position)
         {
             position = default;

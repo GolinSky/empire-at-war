@@ -53,6 +53,10 @@ namespace EmpireAtWar.Services.Enemy
         private const float LOST_BASE_CLOSED_MARGIN = 400f;
         /// <summary>No miner while a known hostile stands this close to the living base.</summary>
         private const float MINER_HOSTILE_RANGE = 1000f;
+        /// <summary>A held zone takes a platform only after it has been own and uncontested this long (W50).</summary>
+        public const float PLATFORM_ZONE_HOLD_SECONDS = 60f;
+        /// <summary>No big platform (Golan III, Empress) with a known hostile this close to its point (W50).</summary>
+        public const float BIG_PLATFORM_HOSTILE_RANGE = 1100f;
 
 #if UNITY_EDITOR || DEVELOPMENT_BUILD
         private const float DEFENSE_BLOCKED_REPORT_INTERVAL = 30f;
@@ -85,6 +89,10 @@ namespace EmpireAtWar.Services.Enemy
         private readonly List<Bounds> _capturedZoneBounds = new List<Bounds>();
         private readonly Queue<Vector3> _recentDestroyedPositions = new Queue<Vector3>();
         private readonly List<Vector3> _lostBases = new List<Vector3>();
+        // Battle time each zone became own; polled at every defense search (production evaluates at least every second).
+        private readonly Dictionary<ReinforcementZonePresenter, float> _zoneHeldSince =
+            new Dictionary<ReinforcementZonePresenter, float>();
+        private bool _bigPlatformSearch;
         private IEntity _trackedBase;
         private Vector3 _trackedBaseCenter;
         private float _baseLostAt = float.NegativeInfinity;
@@ -183,21 +191,54 @@ namespace EmpireAtWar.Services.Enemy
         public bool TryGetDefensePosition(bool allowExtra, out Vector3 position) =>
             TryGetDefensePosition(allowExtra, false, out position);
 
-        public bool TryGetDefensePosition(bool allowExtra, bool firstOnly, out Vector3 position)
+        public bool TryGetDefensePosition(bool allowExtra, bool firstOnly, out Vector3 position) =>
+            TryGetDefensePosition(allowExtra, firstOnly, false, out position);
+
+        /// <summary>
+        /// Held zones count only after <see cref="PLATFORM_ZONE_HOLD_SECONDS"/> of own, uncontested hold; a
+        /// <paramref name="bigPlatform"/> point has no known hostile within <see cref="BIG_PLATFORM_HOSTILE_RANGE"/>.
+        /// </summary>
+        public bool TryGetDefensePosition(bool allowExtra, bool firstOnly, bool bigPlatform, out Vector3 position)
         {
             PrepareSearch();
             _world.EnsureCurrent();
-            // The home station ring first, then every held zone gets its first platform before any zone gets another.
-            _placementSource = "stationRing";
-            if (TryGetStationRingPosition(firstOnly, allowExtra, out position)) return true;
-            _placementSource = "heldZone";
-            int maxPlatforms = firstOnly ? 1 : MAX_ZONE_PLATFORMS;
-            for (int platforms = 0; platforms < maxPlatforms; platforms++)
-                if (TryGetZonePosition(platforms, allowExtra, out position)) return true;
-            RecordDefenseBlocked(allowExtra);
-            position = default;
-            return false;
+            UpdateZoneHolds();
+            _bigPlatformSearch = bigPlatform;
+            try
+            {
+                // The home station ring first, then every held zone gets its first platform before any zone gets another.
+                _placementSource = "stationRing";
+                if (TryGetStationRingPosition(firstOnly, allowExtra, out position)) return true;
+                _placementSource = "heldZone";
+                int maxPlatforms = firstOnly ? 1 : MAX_ZONE_PLATFORMS;
+                for (int platforms = 0; platforms < maxPlatforms; platforms++)
+                    if (TryGetZonePosition(platforms, allowExtra, out position)) return true;
+                RecordDefenseBlocked(allowExtra);
+                position = default;
+                return false;
+            }
+            finally
+            {
+                _bigPlatformSearch = false;
+            }
         }
+
+        private void UpdateZoneHolds()
+        {
+            float now = BattleClock.CurrentElapsed;
+            foreach (ReinforcementZonePresenter zone in _zoneSource.Zones)
+            {
+                if (zone.Owner != _owner.Id) _zoneHeldSince.Remove(zone);
+                else _zoneHeldSince.TryAdd(zone, now);
+            }
+        }
+
+        /// <summary>Own for at least <see cref="PLATFORM_ZONE_HOLD_SECONDS"/>, not contested, no hostile capturing it.</summary>
+        private bool IsSettledZone(ReinforcementZonePresenter zone) =>
+            _zoneHeldSince.TryGetValue(zone, out float since) &&
+            BattleClock.CurrentElapsed - since >= PLATFORM_ZONE_HOLD_SECONDS &&
+            !zone.IsContested &&
+            (zone.CapturingPlayer == PlayerId.None || !_relations.IsHostile(_owner.Id, zone.CapturingPlayer));
 
         /// <summary>
         /// Platforms ringing the living base: one from level 2, two from level 4 (one with <paramref name="firstOnly"/>),
@@ -241,12 +282,13 @@ namespace EmpireAtWar.Services.Enemy
             bool allowExtra) =>
             allowExtra ? MAX_ZONE_PLATFORMS : zone == centre ? CENTRE_PLATFORMS : ZONE_PLATFORMS;
 
-        // A contested zone still gets its platform: every candidate point passes the placement safety test.
+        // Only a settled zone (held long enough, uncontested) takes a platform (W50).
         private bool TryGetHeldZonePosition(ReinforcementZonePresenter zone, int platforms, int limit,
             out Vector3 position)
         {
             position = default;
-            if (zone.Owner != _owner.Id || platforms >= limit || CountZonePlatforms(zone) != platforms) return false;
+            if (zone.Owner != _owner.Id || platforms >= limit || !IsSettledZone(zone) ||
+                CountZonePlatforms(zone) != platforms) return false;
 
             // Place around the relay so the platform covers it without blocking the capture sites.
             return TryGetPositionNear(zone.Center, zone.Radius, out position);
@@ -538,6 +580,7 @@ namespace EmpireAtWar.Services.Enemy
             _hasPlacement = false;
             _recentDestroyedPositions.Clear();
             _lostBases.Clear();
+            _zoneHeldSince.Clear();
             _trackedBase = null;
             _baseLostAt = float.NegativeInfinity;
         }
@@ -590,6 +633,7 @@ namespace EmpireAtWar.Services.Enemy
             !IsInLostBaseArea(candidate) &&
             _spawnRule.IsOpenForStructure(_owner.Id, candidate) &&
             IsPlacementSafe(candidate) &&
+            (!_bigPlatformSearch || !_threats.HasThreatWithin(candidate.x, candidate.z, BIG_PLATFORM_HOSTILE_RANGE)) &&
             IsClear(candidate);
 
         /// <summary>Hidden by fog but not covered by a hostile or neutral blocker, so a scout can open it.</summary>

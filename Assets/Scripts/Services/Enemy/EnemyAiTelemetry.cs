@@ -44,7 +44,9 @@ namespace EmpireAtWar.Services.Enemy
         {
             "deployment", "deploymentBlocked", "deploymentForced", "deploymentEmergency", "economy", "station",
             "siteBuild", "placement", "placementDeferred", "recoveryMode", "surplusShip", "spawnBeacon", "patrolWing",
-            "wingZoneLeft", "raidSkip", "captureBlocked", "zoneOwner", "zoneAlloc", "production-wait", "armadaResponse"
+            "wingZoneLeft", "raidSkip", "captureBlocked", "zoneOwner", "zoneAlloc", "production-wait", "armadaResponse",
+            // W57: counter-pick reasons, one order count per group per minute, and D3 drop requests.
+            "counter-selection", "groupOrders", "reinforcementDrop"
         };
 
         /// <summary>Compact kinds written at most once per AI every <see cref="COMPACT_INTERVAL"/> seconds.</summary>
@@ -140,6 +142,10 @@ namespace EmpireAtWar.Services.Enemy
                     "; {0}; critical={1}; idleShips={2}; localOrigin={3}", context.AssaultGate,
                     context.StationPressure == null ? "none" : context.StationPressure.CriticalCause, idleShips,
                     context.LocalOrigin);
+                // Round 10: reach-based fleet rating (W63), trade correction (W67), late-game gate (W48), retreat latch (W49).
+                details += string.Format(CultureInfo.InvariantCulture,
+                    "; fleetRaw={0:F3}; tradeCorrection={1:F2}; lateGame={2}; retreatPointReached={3}",
+                    snapshot.FleetRaw, snapshot.TradeCorrection, snapshot.IsLateGame, snapshot.HasReachedRetreatPoint);
             }
             if (context != null && !_compact)
             {

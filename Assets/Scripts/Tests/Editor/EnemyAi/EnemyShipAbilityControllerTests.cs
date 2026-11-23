@@ -288,6 +288,7 @@ namespace EmpireAtWar.Tests.Editor
         {
             public UnitOrderType CurrentOrder { get; set; }
             public IEntity AttackTarget { get; set; }
+            public bool IsEngagingEnRoute => false;
             public IReadOnlyList<ShipAbilitySlot> Slots { get; }
             public CombatModifiers Modifiers { get; } = new CombatModifiers();
             public Vector3 WorldPosition => Vector3.zero;

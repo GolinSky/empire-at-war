@@ -8,6 +8,9 @@ reopened: 2026-11-21
 # Enemy AI Opening and Task Groups
 
 ## Status (2026-11-22, Round 9 implemented: W31–W40, W43; W44 partly; W29 blocked by W8)
+- **Round 10 implemented 2026-11-23 (W46–W57, W59, W61–W69); open: W58 (needs a development-build capture), W60 (user playtest gates).** Compiled in Unity, 0 errors. Tests run on the user's request: `EnemyAi` 707/707, `Combat` 342/342, `Navigation` 406/406, `Ships` 341/341, `Abilities` 238/238, `Core` 186/186, `Economy` 141/141, `Ui` 399/399, `GameFlow` 225/225, `Capture` 139/139, `Vision` 82/82; `BattleInput` 458/460 — the 2 failures (`UnitOrderServiceTests.Attack_ShipsAndSquadronsShareOnePaceAndStationsGetNone`) come from commit `d33d5b46b` (attack pace off near the target; test units stand on the target), not Round 10. → "Open work — implementation notes (Round 10)".
+- **Review 2026-11-23: AI cowardice traced to strength rating → W61–W66.** Correction: hostile stations were never counted as a Venator (stations have no `IUnitTypeFacade`, so intel never lists them); the real gap was that stations counted in no local fight on either side.
+- **Online 2v2 20:12 (2026-11-22, build `v0.1.77` = `6e7067b4c`, first battle on Round 9): both AIs lost after 50 min.** Log + source review → **Round 10 (W46–W60), planned, not started** → "Round 10 — online 2v2 20:12" and "Evidence — online match 2026-11-22 20:12". W28 cause found (→ W46). W23 garrison rule fails the user's check (→ W47).
 - **Round 9 implemented and compiled (0 errors) 2026-11-22 on the user's "read and execute".** Defaults taken: W34 = c, W36 = a, W41 = skip. Tests written, not run (local override). → "Open work — implementation notes (Round 9)". Open: W44 gaps, W45 playtest gates (user), W8 / W29, W14, W28 cause fix.
 - **Battle 14:32 (2026-11-22, first on W15–W30): AI lost after 55 min; user: "all working not bad".** Log review → Round 9 (W31–W45) → "Round 9 — battle 14:32"; implemented the same day (see first line).
 - **W23–W28 and W30 implemented and compiled (0 errors) 2026-11-22. Tests written, not run (local override).** → "Open work — implementation notes (W23–W30)". W29 waits for the W8 flag review; W28 cause fix waits for the next host log.
@@ -112,7 +115,7 @@ reopened: 2026-11-21
   - `HuntFleet` stays for a clearly stronger fleet; Intercept is the even / weaker case that is missing today (states seen in 40 min: no `HuntFleet`, no `AssaultBase`).
 - [x] **W26 Build the armada before committing (late game).** (scoped: see notes) While a hostile armada outmatches the main force and no team station is under pressure: new ships gather at the staging point (`reserve`) until the team's combined strength passes, then go as one. Counter-selection rates candidates against that armada, not against every sighting. No trickle of single ships into it.
 - [x] **W27 Platforms never outbid the fleet.** A platform is bought only when (a) the ship choice is blocked by the unit cap, or (b) it is the first platform of a station ring / held zone. Not while a team station is under pressure and a ship can still be bought. Player3: 153,000 credits on 24 platforms (7 Empress, 6 Golan III), 44,000 of it 20:00–24:00 with one ship bought while the ally's base fell.
-- [ ] **W28 Late-game money must be explained and spent.** (logging done; cause fix after the next host log) Bank 46,000–93,000 (28:00–32:00) with 8–14 ships alive. The compact log cannot say why: add `production-wait` to `_compactKinds` (one row per AI per `COMPACT_INTERVAL`). Compact `purchase` rows are also incomplete (deployments exceed purchases for 8 ship types; `surplusShip` buys write no `purchase` row) → write one. Then fix the cause from the next host log.
+- [ ] **W28 Late-game money must be explained and spent.** (logging done; cause found in the 20:12 host log 2026-11-22 → fix is W46) Bank 46,000–93,000 (28:00–32:00) with 8–14 ships alive. The compact log cannot say why: add `production-wait` to `_compactKinds` (one row per AI per `COMPACT_INTERVAL`). Compact `purchase` rows are also incomplete (deployments exceed purchases for 8 ship types; `surplusShip` buys write no `purchase` row) → write one. Then fix the cause from the next host log.
 - [ ] **W29 Unit choice by role (wires W8).** See "How the AI picks a unit" below. Critical-station buying drops the tier floor and ranks by arrival time → Player3 bought 11 Nebulon-B, 6 MC50 and 7 MC30c at level 5 (28:00–36:00). With roles: under pressure prefer `Brawler` / `AntiStrikecraft` / what answers the attackers inside the tier span; cheap low-tier ships only when nothing in the span arrives before the loss. **Blocked by the user's W8 flag review.**
 - [x] **W30 Tests (relations only).** (written, not run) Zone force not larger than needed; empty zone → detachment only; ally answers at pressure and in recovery; armada grouping (two clusters → two armadas; heading toward the nearer asset); Intercept chosen when combined strength passes, gather otherwise; platform not chosen while a ship is affordable and a station is pressed; `production-wait` in the compact kinds.
 
@@ -178,6 +181,109 @@ reopened: 2026-11-21
 - Repair sources (repair satellite, XQ6 `15d1cc0cd`): through `IRepairSourceFacade` in `EnemyZoneObjectiveCollector`.
 - Research: the AI bought Orbital Weapons I–V, Fortified Structures, Field Repairs. Viscount Prototype / Dreadnought: profiles and roles present.
 - Fewer, farther outer zones (`efa634819`, Medium 2): 8 AI ships died in transit 16:00–32:00; covered by W31 / W38, no own step.
+
+### Round 10 — online 2v2 20:12 (2026-11-22; implemented 2026-11-23 except W58, W60)
+- User report after the match (2 humans Empire vs 2 Rebellion AI, UltraHard): zone taken then abandoned; platform spam; AI does nothing against the armada at its station and wanders; attack-move does not engage; ships move too much in fights; AI thinks only about zones; Viscount shoots "random" ships; a Mediator above the Viscount idle under fire; end game = sabotage runs instead of one last stand.
+- Evidence → "Evidence — online match 2026-11-22 20:12". Source read 2026-11-22 on `6e7067b4c` (no AI code change since). Nothing implemented.
+- User rule kept: opening–mid game unchanged; rules switch on by situation, never by clock.
+- Order: W46 → W50 → W47, W48, W49 → W51, W52 (ship code, needs `Navigation` / `Ships` test review) → W53–W56 → W57–W60.
+- **Review 2026-11-23 (user: "AI is a coward; it beats my fleet at a zone, takes it and runs"): strength rating is the main cause → W61–W66, P0, before W47.** Later matches (user = client) have no AI log on this machine (`Player.log` 0 `[EnemyAI]` lines); evidence = 20:12 log + source.
+- User 2026-11-23: own attack-move oddities are verified and fixed by the user outside this plan; W51 here stays AI-facing plus the shared arrival bug.
+
+#### P0 — strength rating (review 2026-11-23)
+- [x] **W61 One lost straggler makes the whole group retreat.** `BuildLocalForces` (`EnemyStrategicContextBuilder:2296-2304`): a group ship that died ≥ 200 from the body in the last 10 s re-rates the fight at the death spot with only own units within 1,000 of it; the worse rating wins; `standAndFight` then commits **all** ships (`EnemyStrategicDecisionModel:363`). Log: 23 of 46 `RetreatValue` samples have `localOrigin=death`; 7:15–9:02 Player1 19 vs 19 ships, fleet ≈ 1.0, 5 retreats from death spots (`localRaw` 0.02–0.85). Fly-first attack-move spreads the group → stragglers die alone → feeds this.
+  - Options: (a) re-rate only when the death spot is inside the body's fight (≤ 1,000 from the body centre); a farther death pulls back only the ships near it (default); (b) weight both ratings by own strength at each point; (c) drop the rule, rely on telemetry of who is near the death.
+- [x] **W62 Stations rated wrong on both sides.** Intel reports a hostile station (`TeamHostileIntelService:140`, `IsPlayerBase`) with default `UnitTypeId` = `Ship(Venator)` → `ForceCompositionBuilder.BuildKnown` adds a Venator profile with the station's hull + shields to the hostile local and team force (also counted in `enemyShips`). Own side: `Build` reads `LivingUnits` (ships, squadrons only) → own stations never count. Fix: stations get a structure profile from their weapon data on both sides; stations count in local fights and base assaults, never in fleet advantage.
+- [x] **W63 Each group compares itself with the whole hostile team.** Group snapshot: `visibleAdvantage = strikeForce` (the group; main force + allied strike only if the ally published one) vs `_focusTeamForce` (every known ship of both humans, ≤ 240 s old, at full last-seen health) `/ economy pressure` (clamped 1–2, never a bonus) (`:1032-1040`). Log: 16:00–18:00 Player3 18 ships, team ≈ 30 vs 14–17 known → fleet 0.52–0.81 while winning local fights at 4–30.
+  - Options: (a) team vs team (both AIs vs both humans) for strategy, local rating for groups; (b) **reach-based**: own group + allies and reinforcements that can be there within T vs hostiles (and their reinforcements) that can be there within T (default; same model as W47 help time); (c) keep, but per hostile player and only within one battle area.
+- [x] **W64 Retreat is pessimistic by construction.** `EnemyAdvantageSmoother`: a lower value is taken at once, a higher one rises with a 4 s constant → one bad sample = retreat. UltraHard `retreatAdvantage` 0.8 > Hard 0.7 (`EnemyAiDifficultyProfile:17-19`): the hardest AI retreats first. Fix: retreat needs ≥ 1 s below the line unless far below it; UltraHard 0.5 (user 2026-11-23).
+- [x] **W65 "Cleared" while hostiles remain.** `EnemyZoneAllocator.IsCleared` (`:68-70`): ≤ 1 hostile unit ∧ ≤ 1 platform (`CLEARED_DEFENDERS` 1), capture not required → `Trim` keeps 1 ship and releases the rest at once to the next zone (ranked without travel cost). = "kills almost everyone and runs". Fix: cleared = 0 armed hostiles ∧ zone owned by the team; then W47 decides the garrison.
+- **Decisions (user 2026-11-23):**
+  - D1 = reach-based (W63) **+ W68** scout-first / spawn-on-demand.
+  - D2 = (a) **+ W67** loss exchange with plan-vs-actual correction.
+  - D3 = (c) group keeps going; reinforcement drops at the nearest valid spawn point.
+  - D4 = take-and-hold + take-with-escort merged (stay, build mine / satellite / platforms, wait for reinforcements; escort rule loses priority once reinforcements arrive and nobody attacks); the capturing force stays and defends while hostiles approach or are seen near; hold-back-and-counter and ally-combined = variations (ally-combined for an important zone after repeated failed captures); skip = explain (below).
+  - D5 = **0.5** UltraHard `retreatAdvantage` (retreat only when the enemy is 2× stronger locally; a safety floor once W67 decides by expected losses). D6 = every AI unit is bought and built under the human rules (W69).
+- [x] **W63 addendum (user):** strength within window T also counts what each side can add: bank + income × T, limited by free unit cap and build queue time (hostile side from estimated income, W63 data).
+- [x] **W67 Attack and retreat by expected losses, not a fixed ratio.** No loss tracking exists for the AI (`BattleLossTracker` feeds the end screen only). Plan: before an attack, predict losses on both sides (Lanchester survivors from `CombatMatchup`; defender platforms, station, repair and reinforcement access included, so the "3 : 1" for attackers emerges from the defence, never hardcoded) and add the zone value; attack when expected gain (hostile losses + zone value) − own losses > 0. During the fight, compare real value lost per side with the prediction; the ratio becomes a correction factor per AI vs that enemy (bounded, decays) → braver after good trades, more careful after bad ones. Replaces the W61 worst-spot rule as the retreat trigger.
+- [x] **W68 Scout first, spawn when ready.** Spawn rule (`ReinforcementSpawnRule.CanSpawnShip`, same for human and AI): visible, in bounds, not spawn-blocked, clear, reachable. AI adds stricter filters (`EnemyForwardSpawnAnchors`: no known hostile within 800; deep anchor needs 3 own ships within 600; capital needs 4). Plan: a cheap fast unit scouts the target; it rates the garrison (W67); a unit left near the zone gives vision → the attack force is built and held off-map (paid, as today) and dropped beside it when the force is complete; ships on the map stay a mobile group. Open: relax the deep / capital escort filters to the human rule when the drop is the planned attack wave.
+- [x] **W69 Same build rules as a human.** Ships: same 7 pipelines (`PlayerFactionModel.MAX_ACTIVE_PIPELINES`), same build times; log 20:12: 158 ships, none landed before build time (median 15 s after). Gaps: platforms and mines skip the queue (`EnemyFactionController.Purchase:250-253`, W50); per-type queue limit = unit `MaxCount` instead of `STANDARD_UNIT_QUEUE_LIMIT` 10; AI spawn filters stricter than human. "AI builds faster" is not explained by the ship queue; likely platforms + always-full pipelines + two AIs. Fix: platforms and mines through `_builds` with their queue time, then on-site construction as for a human.
+- [x] **W66 Group answers a ship that engages en route** (with W51). Ship already exposes `IsEngaging`. Options: (a) group joins when its local rating there ≥ 1, else keeps course and the ship disengages (default); (b) group always halts within reach; (c) group continues, a forward reinforcement drops at the nearest held anchor when money and capacity allow.
+
+#### P0
+- [x] **W46 Buy the ship that fits (W28 cause, W34 gap).**
+  - Fault: `EnemyProductionStrategy` `TrySelectCounterUnit(… ignoreUsedCapacity: true)` (`:713`) returns a ship that does not fit; `hasCounter` skips `TrySelectShip` (`:250`); `canBuildShip` false (`:255`) → no request. `bestFit` (`:284-286`) is telemetry only.
+  - Also: flagship priority `0f` (`EnemyProductionDecisionModel:115-119`) makes `NO_FIT_SAVING_PRIORITY_SCALE` × 2 a no-op; `bestPerSlot` (`:786-792`) has no fit check.
+  - Log: `production-wait` `reason=capacity` 238 of 298 rows; 147 of them name a `bestFit` (MC80b Remonda 118, Bothan 15, Nebula 10) that was not bought; free slots then 5–48 (median 17), median bank 161,731. Ship buys per AI per 10 min: 48–51 → 9–18 → 8–21 → 11–17 → 2–4.
+  - Fix: choice does not fit ∧ a fitting ship is affordable → buy the fitting ship when money ≥ choice price + fitting price (saving for the capital continues). `bestPerSlot` gets `FitsRemainingCapacity`. `TryBuySurplusShip` loops while money ≥ 2 × price (W18 + 7 pipelines bound it).
+- [x] **W47 Garrison after capture (changes W23; user 2026-11-22).**
+  - Fault: `EnemyZoneAllocator.IsCleared` (`:70-72`) + `Trim` (`:183-205`) → 1 ship, 0 when own wings stand there. Released ships go to the next ranked zone at once (`:127-136`); ranking has no travel cost.
+  - Log (Player3, human-side relay): 18:52 15 ships → captured 19:17 → 19:33 3 ships → 20:11 0 ships vs 3 defenders + 2 statics → lost 23:03. Same 6:46 → 14:34.
+  - Fix: `Trim` stops while remaining force + `OwnSupport` < ratio × the strongest known armada that can reach the zone (strength passed on `EnemyZoneObjective`); floor 2–3 ships for a set time after capture. User wording: "not the full armada, but bigger".
+  - Open (user): garrison size rule — armada-rated only, or a fixed share of the capturing force (e.g. one third)?
+  - User 2026-11-23: both fixed rules rejected; wants a situational rule. Proposal "hold until help arrives":
+    - Help time = min(nearest own / allied group travel time, build time + drop if money, capacity and a held spawn anchor nearby). Ship travel time: `UnitCombatProfileCatalog.GetShipTravelTime`.
+    - Threat = hostiles (and hostile reinforcements at their nearest spawn point, sized from estimated hostile income) that can reach the zone before help.
+    - Garrison = fewest ships that, with the zone's platforms, survive that threat ≥ 1.2 × help time (`CombatMatchup.TimeToDestroy`).
+    - Worth: zone value as a share of team income (+ relay access, + platforms already built) vs garrison as a share of team fleet strength. Early game one mine is a large income share → worth a real garrison.
+    - User: replace "threat memory" with a **caution level** per zone that picks a capture plan (raid-and-leave, take-and-hold, take-with-escort until platforms stand, hold back and counter the retake, combined with ally, skip). Inputs: retakes, losses there, hostile spawn access, armada distance, fleet rating (W63).
+- [x] **W48 Weak fleet gathers; last stand.**
+  - Fault: `EnemyStrategicDecisionModel` picks `CaptureZone` on `HasCaptureTarget` alone (`:203-205`); `RaidStructures` has no advantage gate (`:199-202`). No "much weaker → gather" rule; groups merge only at a critical station or in Turtle (`EnemyShipTaskGroupPlanner:100-104`). Turtle = flat 180 s after an own station loss and `Rally` stops ships where they stand.
+  - Log: after 25:00 fleet advantage 0.05–0.6; states `Hold` 37 %, `CaptureZone` 35 %, `RetreatValue` 14 %. 39:52–40:31 Player1 (8 ships, advantage 0.01–0.28): Raid → Capture → Retreat → Capture → Retreat → Gather → Intercept → Raid → Capture → Retreat.
+  - Fix: latched last stand in `EnemyShipTaskGroupPlanner.Allocate` beside the turtle branch: smoothed fleet advantage < ≈ 0.5 ∧ (team station pressed ∨ station lost ∨ armada threatens a station) → all ships to the reserve, gather at the living team station with the most platforms, only `DefendBase` / `GuardSite` there / `EngageLocal`; ≥ 60 s. Capture and Raid gated on fleet advantage outside the opening.
+- [x] **W49 Orders survive a decision.**
+  - Fault: decision every 0.5 s (UltraHard); `MIN_STATE_SECONDS` 8 covers 3 transitions only (`EnemyStrategicDecisionModel:333-338`); Retreat un-latches 1,000 from the threat; an emptied zone group is deleted and rebuilt without memory (`EnemyShipTaskGroupPlanner:163`, `:369-370`); `EnemyTaskForceExecutor.Execute` clears assignment memory on every state change (`:124-139`) → new move point each flip.
+  - Armada hold: `_armadaResponseSince` / `_armadaMarker` not reset on a null response (`EnemyStrategicContextBuilder:752-762`) → the 15 s hold (W37) is already spent when the response returns.
+  - Log: 772 `[EnemyAI]` lines in 50 min (one per 7.8 s per AI; bursts of one per 0.5 s); `armadaResponse` 207 rows, `none` 89; gather ↔ none ↔ intercept 1.5–12 s apart (39:23–40:31). The log line reports a "primary" group that changes per cycle (`EnemyUnitCommander:405-407`).
+  - Fix: state hold for every non-urgent switch; Retreat latched until the gather point is reached; group memory kept across an empty cycle; armada hold reset on null; a released ship keeps its zone a minimum dwell; zone score − travel cost.
+- [x] **W50 Platforms: same wait as a human, no forward spam.**
+  - Fault: `EnemyFactionController.Purchase` (`:250-253`) calls `ExecuteBuild` at once for platforms (skips the 75 s station queue; human = queue 75 s + on-site 75 s). Only limit: `DEFENSE_BUILD_INTERVAL` 20 s for every tier. Placement ignores the purchase flags: `TryGetDefensePosition(true, …)` (`:836`) → relaxed limits (ring 4, zone 3). Zone test = `zone.Owner` only, no hold time, contested allowed (`EnemyStructurePlacementService:244-249`). Destroyed platforms are rebought (cap per type: Golan III 2, Empress 2, XQ-6 5).
+  - Log: 33 platforms, 222,000 credits. Player3 7:45–8:25: Empress, Golan III, Empress (32,000) on the human-side relay 59–99 s after its capture, nearest hostile 923–1,400. Player1 22:59–27:39: 5 big platforms on one outer zone, nearest hostile 608–1,378.
+  - Fix: platform → `_builds` with `BuildTime` before placement; one platform queued or constructing per AI; interval by tier (XQ-6 20 s, Golan / Empress 90–120 s); zone held ≥ 60 s and uncontested; pass the purchase flags to placement; no big platform with a known hostile within 1,000–1,200.
+  - Open (user): numbers above; rebuy delay after a loss.
+- [x] **W51 Attack-move engages on the way (reverses `012594726`).**
+  - Fault: `AttackMoveState.Tick` (`:84-88`) returns while `!_hasArrived ∧ IsMoving` → no target, no stop; being shot changes nothing. On target loss it calls `MoveToPosition(_destination)` (`:95`), then re-targets ≤ 0.25 s later → a false start per kill. `AttackMoveEngagement.SelectTarget` (`:74-95`): preferred class → fewest attackers → nearest; a ship beside an enemy can be sent to a far one.
+  - Fix: en route, every 0.25 s look for a hostile in reach on own radar → hold and fight; resume when none is in reach. Search before moving on target loss. In-reach targets rank before "fewest attackers".
+  - Applies to players and AI. `ShipPursuitTests` pins fly-first → review.
+  - Revised 2026-11-23: **keep fly-first** (a revert brings back stopping for every fighter / satellite). False start (`:95`) and target order are attack-move bugs in the arrival fight, shared by players. En-route break-off only for a warship (corvette+) that hit the ship in the last 3 s and is in weapon reach; the group reacts per W66. AI side: W49 keeps the order point so ships arrive (`Enter` resets `_hasArrived`).
+- [x] **W52 Ships hold still in a fight.**
+  - Movers without a dead zone (source): hull-spacing settle (goal = blocker + radii + 0.1, cooldown 1 s; `ShipSpacingCoordinator:12-13`, `ShipSpacingJob:94`); hardpoint approach vs battlecruisers / dreadnoughts (enter 0.95 × mount range, 5 % band; `AttackTargetState:320-341`); stall retry 0.5 s ± 20° (`:418-438`); Hunt retarget every 1 s, nearest wins (`HuntState:57-64`); facing solve on any higher score (`WeaponFacingSolver:107-121`).
+  - Likely chain for capitals: standoff points at 0.65 × range converge → hulls overlap → spacing pushes one out → it leaves reach → pursues again; plus W51 false starts and W49 re-orders.
+  - Fix: leave margin (hold ≤ reach × 1.1); spacing only above ≈ 10 % penetration and never to a goal out of reach; facing turn only for a score margin or > 10°; Hunt keeps a target in reach.
+  - Not verified in a battle: which mover dominates. Needs `ai_orders` / movement telemetry from an Editor battle (→ W57).
+
+#### P1
+- [x] **W53 Fleet awareness.**
+  - Fault: an armada that threatens no asset is ignored (`EnemyStrategicContextBuilder:744`); `HuntFleet` needs no capture target left and advantage ≥ 1.0–2.2. `baseThreat` covers only the host's primary station, visible / damaging hostiles in weapon range of the hull (`:2433-2459`, `:2367-2374`) → second and allied stations and the platform ring read 0.00. "Team beats the armada" = reserve + allied main forces + structures within 1,000 of the asset vs one 1,000-unit sighting cluster, threshold 0.8, intercept point = armada centre away from the counted platforms (`:757-792`).
+  - Log: `baseThreat` > 0 in 24 of 376 samples; "Intercept: the team beats the armada" at fleet advantage 0.06–0.19; `HuntFleet` 4 transitions; `AssaultBase` 0.
+  - Fix: `baseThreat` over every team station and its ring; armada rating on the same scale as fleet advantage; intercept only where the counted platforms stand; shadow / harass rule for an armada in transit (bombers and fast ships on its tail or on the mines it left) when the main force cannot meet it.
+- [x] **W54 Capitals shoot threats first.**
+  - Fault: the executor gives one context target to all, none in `Hold`. Each hardpoint picks alone: listed groups sorted nearest hull centre first, first group in its arc (`WeaponComponent:908-975`, `WeaponTargetSelectionJob:64-136`); only preference = Ships / Strikecraft / Any. Guard takes the first radar contact within 240 of its slot (`GuardState:119-134`).
+  - Fix: Idle / Guard / AttackMove search scores team contacts: attacker of the own station > attacker of self > highest class > nearest → `MainTarget`.
+- [x] **W55 Never idle under fire.**
+  - Faults: `Hold` / `RebuildFleet` → `StopRemaining` → order `None` (`EnemyTaskForceExecutor:185-188`). A force with a Viscount is never "regrouped": `FleetCohesion.RADIUS` 800 < Viscount `NavigationRadius` 895 → Rally forever. Weapons list only own radar contacts: Mediator radar 800 vs Executor radius 1,059 → out-sighted, no fire; team vision adds no candidates. Guard leash 240. Idle never closes range.
+  - Log: `idleShips` > 0 in 65 of 376 samples (17 %), mostly `Hold` / Turtle.
+  - Fix: `Hold` → attack-move to the gather point instead of Stop; cohesion and guard leash add hull radii / weapon range; a ship damaged in the last 3 s or with a team-visible hostile in weapon reach attacks the best threat.
+  - Likely, not verified: the "AFK Mediator" = out-sighted above the Viscount with order `None`. Needs the `idleUnderFire` row (W57).
+- [x] **W56 No capital landing without a base.** 43:45 Viscount Dreadnought (80,500) landed alone at (−349, 4418) by `relayOrStation` with no living station and 3 ships left; 43:14 another beside the destroyed home. W38 checks relay safety, not "is there a force or base to join". Fix: with no living station tier A lands on the body or is not bought; under last stand (W48) every spawn lands at the gather point.
+
+#### P2
+- [x] **W57 Telemetry.** `idleUnderFire` row (unit, order, state, radar contacts, nearest team-visible hostile, seconds); group id in the `[EnemyAI]` line; `counter-selection` in `_compactKinds`; a compact per-minute order count per group (player builds write no `ai_orders.csv`).
+- [ ] **W58 Route fallback.** 160 × `Tangent route build failed (code 1)` = `FAILURE_NO_TANGENT` (one route circle inside another; `ShipTangentRouteJob:14`). Fallback polyline → speed 0 and a turn in place at every corner. Capture a `ShipTangentFailureSnapshot` in a development build before changing the builder.
+- [x] **W59 Tests (relations only; written with each step, run only on the user's request).** Fitting ship bought when the choice does not fit; garrison grows with the reachable armada; last stand merges groups and blocks Capture / Raid; state not changed inside the hold; platform waits its build time, none on a zone held < hold time; attack-move stops for a hostile in reach and resumes; held ship does not move inside the leave margin; station attacker outranks a nearer corvette; no order `None` with a hostile in reach.
+- [ ] **W60 Playtest gates (user; 2v2 vs 2 AI).** Bank > 50,000 with free capacity ≥ 8 for < 2 min; a captured zone keeps ≥ 2 ships until the next owner change or 3 min; ≤ 1 state change per group per 8 s outside urgent switches; no Capture / Raid at fleet advantage < 0.5 with a team station pressed; big platforms ≥ 150 s from payment to armed; `idleUnderFire` 0 rows > 10 s.
+
+### Open work — implementation notes (Round 10, 2026-11-23)
+- Rating: `EnemyFleetRating` (reach window `REACH_WINDOW_SECONDS` 60, credits on both sides), `EnemyReinforcementBudget` (set each tick by `EnemyFactionController`), `EnemyTradeLedger` + `EnemyFightRecorder` (correction 0.5–2, fades 240 s, multiplies local / fleet rating), `CombatMatchup.PredictLossShares` / `ExpectedGain`. Economy pressure no longer divides fleet rating. Stations rated by their hardpoint weapons (`ForceCompositionBuilder.AddStation`) in local fights on both sides; never in fleet rating. Smoother: drop between ½ line and line needs 1 s. UltraHard retreat 0.5.
+- Decision model: Capture / Raid blocked when `IsLateGame` ∧ fleet < retreat line; hold on every non-urgent switch except leaving Hold / RebuildFleet; retreat latched until the point is reached.
+- Zones: `IsCleared` = owned ∧ no armed hostile. `EnemyZoneHoldAssessor` (help time, threat before help, worth), `EnemyZoneCaution` → `EnemyZonePlan` (TakeAndHold, HoldBackAndCounter, AllyCombined, RaidAndLeave, Skip). Capturing force stays 60 s and while hostiles are near; then garrison by `TimeToDestroy ≥ 1.2 × help`; no token garrison. Attack Go = trade-corrected expected gain > 0 (unpriced test forces keep the old line). Ranking − travel cost. AllyCombined via `TeamAiCooperation.RequestZoneStrike` (90 s). Dwell is per zone, not per ship.
+- Groups: `EnemyLastStandLatch` (fleet < 0.5 ∧ station threat, ≥ 60 s; spawns land at the last-stand point); emptied zone groups parked; executor keeps memory for an order point within 200; Hold / Rebuild attack-move to the gather point; `FleetCohesion` measures hull gaps. `IUnitOrderObserverFacade.IsEngagingEnRoute` → ship not re-ordered, one drop request per group per 30 s (lands only a ship already held off-map). Scout gate (`EnemyZoneScoutGate`): stale zone → wing scout, after 20 s fastest ship, commit after 45 s; planned wave lands via `CollectPlannedWave`.
+- Production: fitting ship bought when money covers choice + fitting; platforms / miners through the queue; one platform in progress; tiers by build time (`EnemyPlatformTier`, 20 s / 120 s); zone held ≥ 60 s, uncontested; big platform needs no known hostile within 1,100; per-type limits = human rules (`EnemyUnitLimitModel.GetPurchaseLimit`); capital without own station only beside the body or refunded.
+- Ships: `ShipThreatSense`; en-route break-off only for a warship attacking this ship; in-reach targets first; hold margin × 1.1; spacing ≥ 10 % penetration and never out of gun reach; facing dead zone 10° / 10 % score; Hunt keeps an in-reach target; Idle / Guard pick `SelectThreat` (station attacker > attacker of self > loadout-preferred > class > nearest) and use team-visible hostiles under fire; Guard leash = chase + hull radius + weapon range; `idleUnderFire` row (dev builds).
+- Known gaps: population is taken at purchase (human: at landing) — stricter for the AI; shadow / harass rule for an armada in transit not built; Idle cannot answer an attacker out of reach (needs an order); station attackers on attack-move (no order target) are not ranked as station attackers; `EnemyTaskForceExecutor` (~1,100 lines) and `EnemyShipTaskGroupPlanner` (~600) want a split.
+- W58 not started: needs a `ShipTangentFailureSnapshot` from a development build first.
+- Tooling: `Tools/Tests/Run-EditModeTests.ps1` treated status `no_tests` (no run since Editor start) as an active run → fixed. Pass categories via `pwsh -Command "& ./Tools/Tests/Run-EditModeTests.ps1 -Category A,B"`; with `-File` the list arrives as one string and runs 0 tests.
+- Reusable guidance: none beyond the test-runner note above.
 
 ### How the AI picks a unit (answer, source 2026-11-22)
 - Not by price alone. `EnemyCounterProductionModel.TrySelect`: score = (gain in advantage against the known hostile force when one such unit is added) ÷ (price share of the money, or slot share of the free unit cap, whichever is larger) × designer class matchup preference ÷ √(owned of that type + 1).
@@ -255,6 +361,58 @@ reopened: 2026-11-21
 
 ### Closed or ignored (no work)
 - Rebellion levels 4–5 balance (ignored, other task). Ship life gate (user balances). Opening asteroid trigger (any unit, accepted). Spawn telemetry counter (accepted). Wing vision fallback (closed). Surplus buying (explained, kept). Republic ARC-170 / V-Wing at level 5 (balance owner, not this plan). "Held zone with no site left" risk (fixed by E3c in round 5).
+
+## Evidence — online match 2026-11-22 20:12 (host log; 2v2, Empire humans Player0 / Player2 vs Rebellion AI Player1 / Player3, UltraHard, 12,000 start, build `v0.1.77` = `6e7067b4c`, 3,004 s)
+- Files (`%USERPROFILE%\AppData\LocalLow\GolinSkyCompany\EmpireAtWar`): `Player.log`, `BattleTelemetry\Loading_20261122_201249_ai.csv` (4,109 rows, compact), `…201250_Host_net.csv`, `_Host_links.csv`. No `ai_orders`, `squadrons` or `Battle_*.csv` in a player build → ship orders, targets and movement are **not** in the log; W51, W52, W54, W55 rest on source only.
+- CSV `time` = battle time + 70 s. Times below are battle time.
+- Result: `PlayerVictory`, `DestroyEnemyFleet`. No exception in `Player.log`.
+- Map: AI stations (3426, −2442) and (3852, 2322); centre zone 0 (0, 0); zone 1 (−51, −3784); zone 2 (51, 3784); zone 3 AI-side relay (3678, −126); zone 4 human-side relay (−3678, 126). Unit capacity 120.
+
+### Timeline (AI bank Player1 / Player3; ships alive Player1 + Player3 : known hostile; fleet advantage)
+| Time | Bank | Income AI : human | Ships | Fleet adv. | Note |
+|---|---|---|---|---|---|
+| 05:00 | 3,537 / 3,367 | 475 : 441 | 19 + 26 : 19 | 0.99 / 1.82 | peak fleets 21 (10:07) and 27 (7:18) |
+| 10:15 | 4,378 / 2,798 | 597 : 527 | 21 + 17 : 26 | 1.02 / 0.71 | zone 4 held 6:46–14:34 |
+| 15:15 | 5,578 / 116,725 | 623 : 676 | 13 + 18 : 15 | 0.56 / 0.52 | capacity 116–119 / 120 |
+| 20:15 | 53,399 / 108,894 | 583 : 630 | 7 + 10 : 16 | 0.54 / 0.60 | zone 4 retaken 19:17, emptied 20:11 |
+| 25:15 | 125,192 / 212,385 | 541 : 716 | 9 + 6 : 22 | 0.78 / 0.42 | Player1 main station lost ≈ 21:00–24:30, its second ≈ 26:00 |
+| 30:15 | 93,070 / 270,417 | 343–378 : 730 | 5 + 6 : 24 | 0.20 / 0.31 | Turtle; centre taken 30:40, lost 34:17 |
+| 35:15 | 190,445 / 269,558 | 322–357 : 550 | 7 + 4 : 25 | 0.28 / 0.36 | Player3 main station lost ≈ 33:00–36:00 |
+| 40:15 | 175,036 / 298,815 | 212–247 : 737 | 8 + 6 : 12 | 0.16 / 0.15 | last station lost ≈ 42:00 |
+| 45:15 | 150,529 / 254,672 | 191 : 737 | 4 + 2 : 13 | 0.06 / 0.13 | no station; 8 min hunt |
+| 50:15 | 206,413 / 311,161 | 144 : 744 | 1 + 1 : 13 | 0.02 / 0.01 | end 50:04 |
+- State share (samples): CaptureZone 46 %, Hold 28 %, RetreatValue 12 %, EngageLocal 6 %, DefendBase 4 %. After 25:00: Hold 37 %, CaptureZone 35 %, RetreatValue 14 %. `AssaultBase` 0, `HuntFleet` 4 transitions.
+- Human bank at the end: 527,646 and 941,338 (same cap problem as 14:32; balance owner).
+
+### Worked
+- Opening: 5 mines each by 0:05; relays 0:50–1:18; centre 1:41; second station 3:03 / 3:30, level 5 by 16:30.
+- W24: "Answering an allied station under pressure" 20 transitions; Player1's armada responses name Player3's second station (4272, 2750).
+- W36: `critical` set in 10 of 376 samples (`arrival` 3, `fallback` 7). W38: `anchorContested=True` 0 rows.
+- W27: platforms 222,000 vs ships ≈ 1,160,000 (16 %).
+- W32: `localOrigin` body 216, all 118, death 42.
+- W16c: 11 repair satellites. Satellites 83 in total; `siteBuild` `oneWaiting` 259 (W42, watch only).
+
+### Faults
+- **Money not spent** → W46. Bank ≥ 100,000 from 15:00 (Player3) and 25:00 (Player1) to the end; free capacity 5–48.
+- **Zone abandoned after capture** → W47. Relay owner changes 41 in the match; zone 4: AI 6:46 → lost 14:34 → AI 19:17 → lost 23:03.
+- **Pool crosses the map every allocation** → W49. Player3: 11:47 zone 1 (20 ships) → 14:29 zone 0 (16) → 16:25 zone 4 (17) → 19:33 zone 0 (10).
+- **Weak fleet still expands and raids** → W48. Example 39:52–40:31 in W48.
+- **Platforms** → W50. Purchases 20–21 s apart: 7:25–8:25 Player3 Golan III, Empress, Golan III, Empress (44,000 in 60 s).
+- **Armada response flips** → W49, W53.
+- **Idle ships** → W55. `idleShips` > 0 in 17 % of samples; `body=0` with own ships > 0 in 86 samples.
+- **Dreadnought landings with no base** → W56.
+- **Route fallback** → W58. 160 warnings ≈ one per 19 s.
+- Bombers: `raidSkip` `noBombers` 38, `notWinnable` 34, `noKnownMine` 11, `holding` 8.
+
+### W23–W28 late-game gate (played in this match; queue line removed 2026-11-22)
+- Ally answers a pressed station: pass. `armadaResponse` rows: pass (unstable → W49). Host `_ai.csv` for W28: read → W46.
+- Zone forces shrink to what they need: built as planned, **rejected by the user** → W47. Fewer platforms while ships can be bought: **fail** → W50.
+
+### Round 9 gates (W45) against this log
+- `saving` / capacity rows for a unit that does not fit: **fail** (238). Bank > 50,000 for < 10 min: **fail** (≈ 25–35 min per AI).
+- `armadaResponse` ≤ 30 s after station pressure: present (207 rows) but unstable → W49.
+- No tier-A landing at a contested relay: pass by the flag; W56 shows the gap.
+- Idle > 30 s, `localAdvantage` 100 after a death, critical buys: not measurable without `ai_orders` / `Battle` files. `AssaultBase` hold: never reached (fleet advantage < 2 from 5:00).
 
 ## Evidence — battle 2026-11-22 14:32 (Medium 1v1, Empire AI Player1 vs Rebellion human Player0, code `e45399955` dirty, 3,298 s)
 - Files: `Loading_20261122_143203_ai.csv`, `_ai_orders.csv`, `_squadrons.csv`, `Battle_20261122_143309.csv`, `Battle_20261122_143207_map.csv`. First battle on W15–W30, hull × 2 and the Rebellion buff.

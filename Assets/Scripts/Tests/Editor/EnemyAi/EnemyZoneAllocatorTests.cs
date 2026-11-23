@@ -51,20 +51,100 @@ namespace EmpireAtWar.Tests.Editor
         }
 
         [Test]
-        public void Allocate_ClearedZoneKeepsOnlyItsNearestShip()
+        public void IsCleared_NeedsNoArmedHostileLeftAndTheCaptureFinished()
         {
-            EnemyZoneObjective zone = Zone("cleared", defenders: EnemyZoneAllocator.CLEARED_DEFENDERS);
+            EnemyZoneObjective capturing = Zone("capturing");
+            EnemyZoneObjective oneDefender = Captured("oneDefender");
+            AddShips(oneDefender.Defenders, 1);
+            EnemyZoneObjective onePlatform = new EnemyZoneObjective();
+            onePlatform.Reset("onePlatform", false, false, 500f, 30f, staticDefenders: 1, denyReason: null);
+            onePlatform.SetWorth(true, 0f, 1f);
 
-            List<int> assignment = Allocate(new EnemyZoneAllocator(), new[] { zone }, ships: 5, current: 0);
+            Assert.That(EnemyZoneAllocator.IsCleared(capturing), Is.False, "Not cleared before the capture is finished.");
+            Assert.That(EnemyZoneAllocator.IsCleared(oneDefender), Is.False, "One hostile ship left is not cleared.");
+            Assert.That(EnemyZoneAllocator.IsCleared(onePlatform), Is.False, "One hostile platform left is not cleared.");
+            Assert.That(EnemyZoneAllocator.IsCleared(Captured("cleared")), Is.True);
+        }
 
-            Assert.That(assignment[0], Is.EqualTo(0), "The nearest ship stays as the detachment.");
-            Assert.That(assignment.Skip(1), Is.All.EqualTo(RESERVE));
+        [Test]
+        public void Allocate_CapturingForceStaysUntilTheZoneIsTakenAndNoHostileIsNear()
+        {
+            EnemyZoneObjective capturing = Zone("capturing");
+            EnemyZoneObjective approached = Captured("approached", hostileNear: true);
+            EnemyZoneObjective fresh = Captured("fresh", heldSeconds: 0f);
+            EnemyZoneObjective quiet = Captured("quiet");
+
+            Assert.That(Allocate(new EnemyZoneAllocator(), new[] { capturing }, ships: 4, current: 0), Is.All.EqualTo(0),
+                "No ship leaves before the capture is finished.");
+            Assert.That(Allocate(new EnemyZoneAllocator(), new[] { approached }, ships: 4, current: 0), Is.All.EqualTo(0),
+                "The whole force defends while hostiles approach.");
+            Assert.That(Allocate(new EnemyZoneAllocator(), new[] { fresh }, ships: 4, current: 0), Is.All.EqualTo(0),
+                "A released ship keeps its zone for the dwell after the capture.");
+            Assert.That(Allocate(new EnemyZoneAllocator(), new[] { quiet }, ships: 4, current: 0), Is.All.EqualTo(RESERVE),
+                "With no threat to outlast, no ship stays behind.");
+        }
+
+        [Test]
+        public void Allocate_GarrisonGrowsWithTheThreatThatReachesTheZoneBeforeHelp()
+        {
+            var smallAllocator = new EnemyZoneAllocator();
+            var largeAllocator = new EnemyZoneAllocator();
+
+            List<int> small = Allocate(smallAllocator, new[] { Captured("small", threat: 1, help: 30f) }, ships: 10,
+                current: 0);
+            List<int> large = Allocate(largeAllocator, new[] { Captured("large", threat: 3, help: 30f) }, ships: 10,
+                current: 0);
+
+            Assert.That(smallAllocator.GetGarrison(0), Is.GreaterThan(1), "No token garrison of one ship.");
+            Assert.That(largeAllocator.GetGarrison(0), Is.GreaterThan(smallAllocator.GetGarrison(0)));
+            Assert.That(small.Count(target => target == 0), Is.EqualTo(smallAllocator.GetGarrison(0)));
+            Assert.That(large.Count(target => target == 0), Is.EqualTo(largeAllocator.GetGarrison(0)));
+            Assert.That(small[0], Is.EqualTo(0), "The nearest ship stays.");
+        }
+
+        [Test]
+        public void Allocate_GarrisonShrinksWhenHelpIsNearer()
+        {
+            var farHelp = new EnemyZoneAllocator();
+            var nearHelp = new EnemyZoneAllocator();
+
+            Allocate(farHelp, new[] { Captured("far", threat: 3, help: 30f) }, ships: 10, current: 0);
+            Allocate(nearHelp, new[] { Captured("near", threat: 3, help: 10f) }, ships: 10, current: 0);
+
+            Assert.That(nearHelp.GetGarrison(0), Is.LessThan(farHelp.GetGarrison(0)));
+        }
+
+        [Test]
+        public void Allocate_ZoneNotWorthARealGarrisonIsRaidedAndLeft()
+        {
+            var poorAllocator = new EnemyZoneAllocator();
+            var richAllocator = new EnemyZoneAllocator();
+
+            List<int> poor = Allocate(poorAllocator, new[] { Captured("poor", threat: 1, help: 30f, worth: 0.05f) },
+                ships: 10, current: 0);
+            Allocate(richAllocator, new[] { Captured("rich", threat: 1, help: 30f, worth: 1f) }, ships: 10, current: 0);
+
+            Assert.That(poor, Is.All.EqualTo(RESERVE), "No one-ship garrison where a real one is not worth it.");
+            Assert.That(poorAllocator.GetPlan(0), Is.EqualTo(EnemyZonePlan.RaidAndLeave));
+            Assert.That(richAllocator.GetGarrison(0), Is.GreaterThan(0));
+            Assert.That(richAllocator.GetPlan(0), Is.EqualTo(EnemyZonePlan.TakeAndHold));
+        }
+
+        [Test]
+        public void Allocate_NearerZoneOfEqualScoreIsServedFirst()
+        {
+            EnemyZoneObjective[] zones = { Zone("far"), Zone("near") };
+
+            List<int> assignment = Allocate(new EnemyZoneAllocator(), zones, ships: 1,
+                distance: (ship, zone) => zone == 0 ? 3000f : 100f);
+
+            Assert.That(assignment.Single(), Is.EqualTo(1));
         }
 
         [Test]
         public void Allocate_ClearedZoneHeldByOwnWingsNeedsNoShip()
         {
-            EnemyZoneObjective kept = Zone("kept");
+            EnemyZoneObjective kept = Captured("kept");
             AddWings(kept.OwnSupport, 1);
             EnemyZoneObjective free = Zone("free");
             AddWings(free.OwnSupport, 1);
@@ -333,6 +413,17 @@ namespace EmpireAtWar.Tests.Editor
             var zone = new EnemyZoneObjective();
             zone.Reset(id, centre, ownSide, priority, 30f, 0, denyReason, threatened, held, ownStructures);
             AddShips(zone.Defenders, defenders);
+            return zone;
+        }
+
+        // A captured zone with no hostile left, past the dwell unless given, with a threat of equal ships.
+        private static EnemyZoneObjective Captured(string id, float heldSeconds = EnemyZoneAllocator.GARRISON_DWELL_SECONDS,
+            bool hostileNear = false, int threat = 0, float help = 30f, float worth = 1f)
+        {
+            EnemyZoneObjective zone = Zone(id, held: true);
+            zone.SetWorth(true, 0f, worth);
+            zone.SetHold(heldSeconds, hostileNear, help, 1f);
+            AddShips(zone.Threat, threat);
             return zone;
         }
 

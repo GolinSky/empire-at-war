@@ -97,10 +97,17 @@ namespace EmpireAtWar.Entities.EnemyFaction.Models
         private const int FLAGSHIP_MAX_COUNT = 3;
         private const int FLAGSHIP_MIN_CAPACITY = 5;
         private const float FLAGSHIP_PRIORITY = 0f;
+        /// <summary>Priority penalty (lower builds first) for a ship that does not fit the free unit capacity.</summary>
+        private const float NO_FIT_SAVING_PRIORITY_SCALE = 2f;
 
         /// <summary>Squadrons do not count toward the fleet, so a fleet below the minimum must buy ships.</summary>
         public bool NeedsMinimumFleet(int shipCount) => shipCount < MINIMUM_FLEET_SIZE;
 
+        /// <param name="fitsCapacity">
+        /// False: the ship does not fit the free unit capacity. It may still be saved for (dreadnoughts, battlecruisers
+        /// are built for the future), at <see cref="NO_FIT_SAVING_PRIORITY_SCALE"/> × its balance priority and without
+        /// the flagship shortcut, so a fitting ship ranks before it (W34, W46).
+        /// </param>
         public float CalculateShipPriority(
             EnemyStrategicState state,
             int shipCount,
@@ -108,11 +115,12 @@ namespace EmpireAtWar.Entities.EnemyFaction.Models
             int buildTime,
             int unitCapacity,
             int maxCount,
-            float combatValuePerCredit = 1f)
+            float combatValuePerCredit = 1f,
+            bool fitsCapacity = true)
         {
             // Scarce flagship types (e.g. Rothana, Malevolence) never win the balance below,
             // so an established fleet without one builds it first. Scarce small ships (IPV-2C) are not flagships.
-            if (shipCount >= MINIMUM_FLEET_SIZE && reservedCount == 0 &&
+            if (fitsCapacity && shipCount >= MINIMUM_FLEET_SIZE && reservedCount == 0 &&
                 maxCount <= FLAGSHIP_MAX_COUNT && unitCapacity >= FLAGSHIP_MIN_CAPACITY)
             {
                 return FLAGSHIP_PRIORITY;
@@ -127,7 +135,8 @@ namespace EmpireAtWar.Entities.EnemyFaction.Models
 
             // Balance the active and queued fleet; lower priority values build first. Value per credit scales the
             // balance, so strong ships are built more often and a quick but weak unit never wins on build time alone.
-            return (reservedCount + 1f) * weight / combatValuePerCredit;
+            float priority = (reservedCount + 1f) * weight / combatValuePerCredit;
+            return fitsCapacity ? priority : priority * NO_FIT_SAVING_PRIORITY_SCALE;
         }
 
         public EnemyProductionCategory Evaluate(EnemyProductionSnapshot snapshot)

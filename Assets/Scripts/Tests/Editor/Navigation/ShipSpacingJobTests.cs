@@ -139,6 +139,21 @@ namespace EmpireAtWar.Tests.Movement
         }
 
         [Test]
+        public void ShallowOverlap_IsReportedButNotCorrected()
+        {
+            var ships = new[] { Ship(1, float2.zero), Ship(2, float2.zero) };
+            float contact = ships[0].Radius + ships[1].Radius;
+            ships[1].Position = new float2(contact * (1f - ShipSpacingJob.MIN_PENETRATION_FRACTION * 0.5f), 0f);
+
+            ShipSpacingResult shallow = Solve(ships, 1);
+            Assert.That(shallow.HasOverlap, Is.True);
+            Assert.That(shallow.HasCorrection, Is.False);
+
+            ships[1].Position = new float2(contact * (1f - ShipSpacingJob.MIN_PENETRATION_FRACTION * 2f), 0f);
+            Assert.That(Solve(ships, 1).HasCorrection, Is.True);
+        }
+
+        [Test]
         public void ExactPlanarContact_IsClearAndPreservesSnapshotIdentity()
         {
             var ships = new[] { Ship(1, float2.zero), Ship(2, new float2(10f, 0f)) };

@@ -23,6 +23,15 @@ namespace EmpireAtWar.Services.Enemy
         void ReserveExternalPipeline(string requestId);
         void ReleaseExternalPipeline(string requestId);
 
+        /// <summary>A station-bought platform is queued or under on-site construction (W50: one at a time).</summary>
+        bool HasPlatformInProgress => false;
+
         void Purchase(UnitRequest unitRequest);
+
+        /// <summary>
+        /// Buys a platform; when its build completes, placement uses these purchase-time flags (see
+        /// <see cref="IEnemyStructurePlacementService.TryGetDefensePosition(bool, bool, bool, out UnityEngine.Vector3)"/>).
+        /// </summary>
+        void PurchaseDefense(UnitRequest unitRequest, bool allowExtra, bool firstOnly) => Purchase(unitRequest);
     }
 }

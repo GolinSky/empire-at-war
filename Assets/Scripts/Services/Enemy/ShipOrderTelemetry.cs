@@ -58,6 +58,8 @@ namespace EmpireAtWar.Services.Enemy
 
 #if UNITY_EDITOR || DEVELOPMENT_BUILD
         private const float SAMPLE_INTERVAL = 5f;
+        // W57: a ship hit for this long without firing writes one idleUnderFire row per spell.
+        private const float IDLE_UNDER_FIRE_SECONDS = 10f;
         private const float FLUSH_INTERVAL = 10f;
         private const string HEADER = "timeScaledSinceStartup,timeUnscaledSinceStartup,kind,player,entityId," +
             "order,state,targetId,destinationX,destinationZ,x,z,moving,contacts,preferredContactId," +
@@ -113,6 +115,15 @@ namespace EmpireAtWar.Services.Enemy
         {
 #if UNITY_EDITOR || DEVELOPMENT_BUILD
             if (!Application.isPlaying) return;
+            float idleUnderFire = source.IdleUnderFireSeconds;
+            if (idleUnderFire > IDLE_UNDER_FIRE_SECONDS && !source.IsIdleUnderFireReported)
+            {
+                source.IsIdleUnderFireReported = true;
+                Record(source, caster, orders, movement, weapon, radar, "idleUnderFire",
+                    string.Format(CultureInfo.InvariantCulture, "Hit for {0:F1} s without firing.", idleUnderFire),
+                    state, attack, attackMoveTarget, heldInReach);
+                return;
+            }
             if (_nextSample.TryGetValue(orders, out float next) && Time.time < next) return;
             Record(source, caster, orders, movement, weapon, radar, "sample", "Periodic order/contact state.",
                 state, attack, attackMoveTarget, heldInReach);

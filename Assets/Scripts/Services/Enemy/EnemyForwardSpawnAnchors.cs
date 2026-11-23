@@ -17,7 +17,7 @@ namespace EmpireAtWar.Services.Enemy
     /// platform, satellite or station within <see cref="HOSTILE_CLEAR_RADIUS"/>; a deep unit (nearer a hostile station
     /// or relay than any own one) without <see cref="DEEP_ESCORT_SHIPS"/> own ships near; for a capital, any unit
     /// without <see cref="CAPITAL_ESCORT_SHIPS"/> own ships near. Ships move away from the known hostile ships' centre,
-    /// else from the map centre.
+    /// else from the map centre. A planned attack wave (<see cref="CollectPlannedWave"/>, W68) skips both escort filters.
     /// </summary>
     public sealed class EnemyForwardSpawnAnchors : IEnemyForwardSpawnAnchors
     {
@@ -66,6 +66,19 @@ namespace EmpireAtWar.Services.Enemy
         public bool Collect(Vector3 task, IReadOnlyList<Vector3> landedShips, bool capital,
             List<ForwardSpawnAnchor> anchors, out Vector3 awayFrom)
         {
+            FillPicture(landedShips, out awayFrom);
+            return Select(_picture, task, capital, anchors);
+        }
+
+        public bool CollectPlannedWave(Vector3 task, IReadOnlyList<Vector3> landedShips,
+            List<ForwardSpawnAnchor> anchors, out Vector3 awayFrom)
+        {
+            FillPicture(landedShips, out awayFrom);
+            return Select(_picture, task, false, anchors, plannedWave: true);
+        }
+
+        private void FillPicture(IReadOnlyList<Vector3> landedShips, out Vector3 awayFrom)
+        {
             _picture.Clear();
             CollectHostileShips(Time.time);
             awayFrom = GetAwayPoint();
@@ -92,12 +105,12 @@ namespace EmpireAtWar.Services.Enemy
             IReadOnlyList<AiWorldSnapshot.Entry> structures = _world.RaidStructures;
             for (int i = 0; i < structures.Count; i++)
                 if (structures[i].Owner == _owner.Id) _picture.Candidates.Add((structures[i].Position, STRUCTURE));
-
-            return Select(_picture, task, capital, anchors);
         }
 
         /// <summary>The ranking and rejection rules on plain positions.</summary>
-        public static bool Select(AnchorPicture picture, Vector3 task, bool capital, List<ForwardSpawnAnchor> anchors)
+        /// <param name="plannedWave">A planned attack wave (W68): no deep or capital escort filter.</param>
+        public static bool Select(AnchorPicture picture, Vector3 task, bool capital, List<ForwardSpawnAnchor> anchors,
+            bool plannedWave = false)
         {
             anchors.Clear();
             List<(Vector3 Position, int Kind, float Distance)> ranked = picture.Ranked;
@@ -105,7 +118,7 @@ namespace EmpireAtWar.Services.Enemy
             for (int i = 0; i < picture.Candidates.Count; i++)
             {
                 (Vector3 position, int kind) = picture.Candidates[i];
-                if (IsRejected(picture, position, capital)) continue;
+                if (IsRejected(picture, position, capital, plannedWave)) continue;
                 ranked.Add((position, kind, PlanarDistanceSquared(position, task)));
             }
 
@@ -137,10 +150,11 @@ namespace EmpireAtWar.Services.Enemy
             ranked.Insert(0, entry);
         }
 
-        private static bool IsRejected(AnchorPicture picture, Vector3 position, bool capital)
+        private static bool IsRejected(AnchorPicture picture, Vector3 position, bool capital, bool plannedWave)
         {
             foreach (Vector3 hostile in picture.Hostiles)
                 if (PlanarDistanceSquared(hostile, position) <= HOSTILE_CLEAR_RADIUS * HOSTILE_CLEAR_RADIUS) return true;
+            if (plannedWave) return false;
             int escorts = CountWithin(picture.OwnShips, position, ESCORT_RADIUS);
             if (capital && escorts < CAPITAL_ESCORT_SHIPS) return true;
             return IsDeep(picture, position) && escorts < DEEP_ESCORT_SHIPS;

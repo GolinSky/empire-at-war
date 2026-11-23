@@ -67,6 +67,8 @@ namespace EmpireAtWar.Entities.Ship.Orders
         public IEntity AttackTarget =>
             !_replicaOrder.HasValue && CurrentOrder == UnitOrderType.Attack ? _orders.Target : null;
         public int OrderRevision => _orders.Revision;
+        /// <summary>Attack-move ship stopped on the way to fight a warship that hit it (W66: the AI group reads this).</summary>
+        public bool IsEngagingEnRoute => _stateMachine.CurrentState == _attackMoveState && _attackMoveState.IsEngagingEnRoute;
         /// <summary>Online client: the host just gave this ship a new order.</summary>
         public event Action<UnitOrderType> ReplicaOrderIssued;
 

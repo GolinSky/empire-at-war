@@ -26,6 +26,7 @@ namespace EmpireAtWar.Entities.Ship.StateMachine
         private readonly PlayerId _side;
 
         private float _retargetTimer;
+        private bool _isHolding;
 
         private readonly IVisionService _visionService;
 
@@ -49,36 +50,46 @@ namespace EmpireAtWar.Entities.Ship.StateMachine
         public void Enter()
         {
             _retargetTimer = 0f;
+            _isHolding = false;
             FindTarget();
         }
 
         public void Tick(float deltaTime)
         {
             _retargetTimer -= deltaTime;
-            if (_retargetTimer <= 0f || _target != null &&
-                (_target.HealthModel.IsDestroyed || _target.IsCloaked() ||
-                 !_visionService.IsVisible(_side, _target)))
+            bool isLost = _target != null && (_target.HealthModel.IsDestroyed || _target.IsCloaked() ||
+                                              !_visionService.IsVisible(_side, _target));
+            // A target the guns still reach is kept; a nearer enemy is no reason to break off and turn.
+            if (isLost || _retargetTimer <= 0f &&
+                (_target == null || !ShipEngagement.CanEngage(_target, _movement, _weapon, _isHolding)))
             {
                 FindTarget();
                 _retargetTimer = _settings.HuntRetargetInterval;
             }
+            else if (_retargetTimer <= 0f) _retargetTimer = _settings.HuntRetargetInterval;
 
             if (_target == null)
             {
                 if (_movement.IsMoving) _movement.Stop();
                 return;
             }
-            if (ShipEngagement.CanEngage(_target, _movement, _weapon))
+            if (ShipEngagement.CanEngage(_target, _movement, _weapon, _isHolding))
             {
+                _isHolding = true;
                 _movement.HoldPosition(_target);
                 _movement.LookAtTarget(_target);
             }
-            else ShipEngagement.Pursue(_movement, _weapon, _target);
+            else
+            {
+                _isHolding = false;
+                ShipEngagement.Pursue(_movement, _weapon, _target);
+            }
         }
 
         public void Exit()
         {
             _movement.CancelCombatHold();
+            _isHolding = false;
             _target = null;
             _weapon.ResetTarget();
         }
@@ -106,6 +117,7 @@ namespace EmpireAtWar.Entities.Ship.StateMachine
 
             if (closest == _target) return;
             _movement.CancelCombatHold();
+            _isHolding = false;
             _target = closest;
             _weapon.ResetTarget();
             if (_target != null)

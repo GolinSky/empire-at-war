@@ -76,6 +76,23 @@ namespace EmpireAtWar.Entities.EnemyFaction.Models
         /// <summary>The station is losing hull fast enough that the whole fleet must defend it.</summary>
         public bool IsStationCritical { get; }
 
+        /// <summary>
+        /// Outside the opening, by situation (W48): a team station is under pressure or a hostile armada threatens a
+        /// team asset. Capture and raid then need fleet advantage at the retreat line.
+        /// </summary>
+        public bool IsLateGame { get; }
+
+        /// <summary>
+        /// False while the group retreats and has not reached its gathering point: the retreat stays latched (W49).
+        /// </summary>
+        public bool HasReachedRetreatPoint { get; }
+
+        /// <summary>
+        /// Plan-vs-actual loss exchange against the focused hostile team (W67), already multiplied into
+        /// <see cref="LocalAdvantage"/>, <see cref="FleetAdvantage"/> and their raw values; 1 without fights.
+        /// </summary>
+        public float TradeCorrection { get; }
+
         public EnemyStrategicSnapshot(
             BattleVictoryCondition victoryCondition,
             EnemyAiDifficulty difficulty,
@@ -98,8 +115,12 @@ namespace EmpireAtWar.Entities.EnemyFaction.Models
             float localRaw = float.NaN, float fleetRaw = float.NaN, bool recoveryMode = false,
             bool isStationCritical = false, bool hasGuardSite = false, bool isCentreGuardGoal = false,
             bool canAssaultBase = false, bool canHuntFleet = false, bool hasSecuredCentre = false,
-            bool canDisengage = false, bool raidWhenBehind = false)
+            bool canDisengage = false, bool raidWhenBehind = false, bool isLateGame = false,
+            bool hasReachedRetreatPoint = true, float tradeCorrection = 1f)
         {
+            IsLateGame = isLateGame;
+            HasReachedRetreatPoint = hasReachedRetreatPoint;
+            TradeCorrection = tradeCorrection;
             CanDisengage = canDisengage;
             RaidWhenBehind = raidWhenBehind;
             IsStationCritical = isStationCritical;
@@ -271,6 +292,7 @@ namespace EmpireAtWar.Entities.EnemyFaction.Models
             EnemyStrategicRule best = _rules[_rules.Length - 1];
             float bestScore = 0f;
             float runnerUp = 0f;
+            float lastStateScore = 0f;
             SwitchHeld = false;
             StateHeldSeconds = _hasLastState && !float.IsNaN(now) ? Math.Max(0f, now - _stateStartedAt) : 0f;
             Bypass = snapshot.OwnShipCount == 0 ? "noShips" :
@@ -289,7 +311,13 @@ namespace EmpireAtWar.Entities.EnemyFaction.Models
                     rule.State != EnemyStrategicState.GuardSite &&
                     rule.State != EnemyStrategicState.RebuildFleet &&
                     rule.State != EnemyStrategicState.Hold) continue;
+                // W48: outside the opening a fleet below the retreat line gathers instead of capturing or raiding.
+                if (snapshot.IsLateGame && snapshot.FleetAdvantage < profile.RetreatAdvantage &&
+                    rule.State is EnemyStrategicState.CaptureZone or EnemyStrategicState.RaidStructures) continue;
                 float score = rule.Score(snapshot, profile);
+                if (_hasLastState && (rule.State == _lastState || _lastState == EnemyStrategicState.Consolidate &&
+                        rule.State == EnemyStrategicState.GuardSite))
+                    lastStateScore = Math.Max(lastStateScore, score);
                 if (score > 0f && _hasLastState && rule.State == _lastState)
                     score += HYSTERESIS;
                 if (score > bestScore)
@@ -328,14 +356,26 @@ namespace EmpireAtWar.Entities.EnemyFaction.Models
             if (Bypass == "none" && state == EnemyStrategicState.DefendBase &&
                 snapshot.HasStationPressure && (!_hasLastState || _lastState != EnemyStrategicState.DefendBase))
                 Bypass = "defend";
+            // W49: a retreat runs until the group reaches its gathering point; only urgent switches stop it.
+            bool retreatLatched = Bypass == "none" && _hasLastState && _lastState == EnemyStrategicState.RetreatValue &&
+                state != EnemyStrategicState.RetreatValue && !snapshot.HasReachedRetreatPoint && snapshot.OwnShipCount > 0;
+            if (retreatLatched)
+            {
+                state = EnemyStrategicState.RetreatValue;
+                reason = "The retreat continues until the gathering point is reached.";
+            }
             BestScore = bestScore;
             RunnerUpScore = runnerUp;
+            // W49: every non-urgent switch waits MIN_STATE_SECONDS while the current state still has its reason. Idle
+            // states (Hold, RebuildFleet) have nothing to keep: a new task starts at once.
+            bool lastStillValid = _lastState switch
+            {
+                EnemyStrategicState.EngageLocal or EnemyStrategicState.RetreatValue => snapshot.HasLocalThreat,
+                EnemyStrategicState.Hold or EnemyStrategicState.RebuildFleet => false,
+                _ => lastStateScore > 0f
+            };
             bool held = _hasLastState && state != _lastState && Bypass == "none" &&
-                !float.IsNaN(now) && StateHeldSeconds < MIN_STATE_SECONDS &&
-                (_lastState == EnemyStrategicState.EngageLocal && snapshot.HasLocalThreat ||
-                 _lastState == EnemyStrategicState.RetreatValue && snapshot.HasLocalThreat ||
-                 _lastState == EnemyStrategicState.CaptureZone && snapshot.HasCaptureTarget &&
-                 state == EnemyStrategicState.EngageLocal);
+                !float.IsNaN(now) && StateHeldSeconds < MIN_STATE_SECONDS && lastStillValid;
             if (held)
             {
                 BlockedState = state;
@@ -359,7 +399,8 @@ namespace EmpireAtWar.Entities.EnemyFaction.Models
             }
             return new EnemyStrategicDecision(
                 state: state,
-                committedShipCount: standAndFight && state is EnemyStrategicState.EngageLocal or EnemyStrategicState.RetreatValue
+                committedShipCount: (standAndFight || retreatLatched) &&
+                    state is EnemyStrategicState.EngageLocal or EnemyStrategicState.RetreatValue
                     ? snapshot.OwnShipCount : CalculateCommittedShipCount(state, snapshot, profile),
                 reason: reason);
         }

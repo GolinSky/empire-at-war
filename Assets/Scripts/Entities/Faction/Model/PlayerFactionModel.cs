@@ -127,10 +127,13 @@ namespace EmpireAtWar.Models.Factions
                     queue.Count >= queueLimit);
         }
 
-        internal static int GetQueueLimit(UnitRequest unitRequest)
+        internal static int GetQueueLimit(UnitRequest unitRequest) =>
+            GetQueueLimit(unitRequest.FactionData, unitRequest is ShipUnitRequest or SquadronUnitRequest);
+
+        /// <summary>Per-type queue limit; <paramref name="isCombatUnit"/> = ship or squadron. Shared with the AI (W69).</summary>
+        internal static int GetQueueLimit(FactionData data, bool isCombatUnit)
         {
-            FactionData data = unitRequest.FactionData;
-            if (data.MaxCount <= 1 || unitRequest is not (ShipUnitRequest or SquadronUnitRequest))
+            if (data.MaxCount <= 1 || !isCombatUnit)
                 return data.MaxCount;
 
             return data.IsHero ? 1 : STANDARD_UNIT_QUEUE_LIMIT;

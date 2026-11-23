@@ -1,6 +1,7 @@
 using System;
 using System.Collections.Generic;
 using EmpireAtWar.Components.AttackComponent;
+using EmpireAtWar.Components.Ship.Health;
 using EmpireAtWar.Components.Hangar;
 using EmpireAtWar.Entities.DefendPlatform;
 using EmpireAtWar.Entities.EnemyFaction.Models.Combat;
@@ -29,6 +30,7 @@ namespace EmpireAtWar.Services.Enemy
             new Dictionary<UnitTypeId, UnitCombatProfile>();
         private readonly Dictionary<DefendPlatformType, UnitCombatProfile> _platformProfiles =
             new Dictionary<DefendPlatformType, UnitCombatProfile>();
+        private FactionCatalog _factions;
 
         public UnitCombatProfileCatalog(
             IAssetService assetService,
@@ -74,8 +76,35 @@ namespace EmpireAtWar.Services.Enemy
 
             return UnitCombatProfileFactory.Create(data.ShipClass, data.Hull, data.Shields,
                 data.WeaponLoadout, _weaponsData, _damageMatrix, hangar,
-                shieldRegen: data.ShieldRegenerateValue / data.ShieldRegenerateDelay);
+                shieldRegen: data.ShieldRegenerateValue / data.ShieldRegenerateDelay, speed: data.Speed,
+                price: GetShipPrice(shipType));
         }
+
+        /// <summary>
+        /// A structure rated from the weapons it fires now (a station's live hardpoints): no stored loadout exists for
+        /// stations, and their weapons change with the station level and with destroyed hardpoints.
+        /// </summary>
+        public UnitCombatProfile CreateStructure(ShipClass shipClass, float hull, float shields,
+            IReadOnlyList<WeaponLoadoutEntry> loadout) =>
+            UnitCombatProfileFactory.Create(shipClass, hull, shields, loadout, _weaponsData, _damageMatrix,
+                Array.Empty<UnitCombatProfile>());
+
+        // Ships and squadrons are sold by the faction that lists them; a type nobody sells has no price.
+        private float GetShipPrice(ShipType shipType)
+        {
+            foreach (FactionDefinition faction in GetFactions().Factions)
+                if (faction.Ships.TryGetValue(shipType, out FactionData data)) return data.Price;
+            return 0f;
+        }
+
+        private float GetSquadronPrice(SquadronType squadronType)
+        {
+            foreach (FactionDefinition faction in GetFactions().Factions)
+                if (faction.Squadrons.TryGetValue(squadronType, out FactionData data)) return data.Price;
+            return 0f;
+        }
+
+        private FactionCatalog GetFactions() => _factions ??= _assetService.Load<FactionCatalog>(nameof(FactionCatalog));
 
         /// <summary>A satellite or platform rated from its weapon loadout: turbolasers hurt wings little, quad lasers a lot.</summary>
         public UnitCombatProfile GetPlatform(DefendPlatformType type)
@@ -110,7 +139,8 @@ namespace EmpireAtWar.Services.Enemy
                 data.TotalShields,
                 data.WeaponLoadout, _weaponsData, _damageMatrix,
                 Array.Empty<UnitCombatProfile>(), data.WarheadDamageMultiplier, data.WarheadReloadMultiplier,
-                data.ShieldRegenerateValue * data.MemberCount / data.ShieldRegenerateDelay);
+                data.ShieldRegenerateValue * data.MemberCount / data.ShieldRegenerateDelay, data.CruiseSpeed,
+                GetSquadronPrice(squadronType));
         }
     }
 }

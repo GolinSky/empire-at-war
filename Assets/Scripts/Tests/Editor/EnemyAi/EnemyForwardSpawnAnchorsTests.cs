@@ -102,6 +102,23 @@ namespace EmpireAtWar.Tests.Editor
             Assert.That(Select(capital: true), Is.True);
         }
 
+        // W68: a planned attack wave drops under the human spawn rule: no deep or capital escort filter, but known
+        // hostiles still reject an anchor.
+        [Test]
+        public void PlannedWave_SkipsTheEscortFiltersButNotTheHostileClearance()
+        {
+            _picture.HostileFronts.Clear();
+            _picture.HostileFronts.Add(new Vector3(0f, 0f, 3000f));
+            Vector3 deepWing = new Vector3(0f, 0f, 2000f);
+            _picture.Candidates.Add((deepWing, EnemyForwardSpawnAnchors.WING));
+
+            Assert.That(Select(capital: true), Is.False, "A normal drop needs escorts here.");
+            Assert.That(EnemyForwardSpawnAnchors.Select(_picture, TASK, true, _anchors, plannedWave: true), Is.True);
+
+            _picture.Hostiles.Add(deepWing + new Vector3(500f, 0f, 0f));
+            Assert.That(EnemyForwardSpawnAnchors.Select(_picture, TASK, true, _anchors, plannedWave: true), Is.False);
+        }
+
         private bool Select(bool capital) =>
             EnemyForwardSpawnAnchors.Select(_picture, TASK, capital, _anchors);
     }

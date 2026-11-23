@@ -16,7 +16,7 @@ namespace EmpireAtWar.Entities.EnemyFaction.Models
         private static readonly EnemyAiDifficultyProfile _hard =
             new EnemyAiDifficultyProfile(decisionInterval: 1.25f, requiredAttackRatio: 1.15f, huntAdvantage: 1f, retreatAdvantage: 0.7f, committedFleetRatio: 0.8f, defenseThreatRatio: 1f, superWeaponMinFireDelay: 8f, superWeaponMaxFireDelay: 18f, superWeaponTargetChoices: 2);
         private static readonly EnemyAiDifficultyProfile _ultraHard =
-            new EnemyAiDifficultyProfile(decisionInterval: 0.5f, requiredAttackRatio: 1.1f, huntAdvantage: 1f, retreatAdvantage: 0.8f, committedFleetRatio: 0.85f, defenseThreatRatio: 0.75f, superWeaponMinFireDelay: 4f, superWeaponMaxFireDelay: 10f, superWeaponTargetChoices: 1);
+            new EnemyAiDifficultyProfile(decisionInterval: 0.5f, requiredAttackRatio: 1.1f, huntAdvantage: 1f, retreatAdvantage: 0.5f, committedFleetRatio: 0.85f, defenseThreatRatio: 0.75f, superWeaponMinFireDelay: 4f, superWeaponMaxFireDelay: 10f, superWeaponTargetChoices: 1);
 
         public float DecisionInterval { get; }
 
@@ -26,7 +26,11 @@ namespace EmpireAtWar.Entities.EnemyFaction.Models
         /// <summary>Fleet advantage needed to seek out the enemy fleet.</summary>
         public float HuntAdvantage { get; }
 
-        /// <summary>Local strength threshold for standing and fighting, and a safety margin for route and recovery checks.</summary>
+        /// <summary>
+        /// Local strength threshold for standing and fighting, and a safety margin for route and recovery checks. A
+        /// harder AI never retreats earlier than an easier one: the value falls with difficulty (UltraHard 0.5 = retreat
+        /// only when the hostiles are twice as strong, user 2026-11-23).
+        /// </summary>
         public float RetreatAdvantage { get; }
         public float CommittedFleetRatio { get; }
 

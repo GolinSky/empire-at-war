@@ -91,6 +91,32 @@ namespace EmpireAtWar.Entities.EnemyFaction.Models.Combat
         }
 
         /// <summary>
+        /// Shares of each side lost when a fight at <paramref name="advantage"/> is fought to the end (Lanchester square
+        /// law): the stronger side keeps √(1 − 1/advantage²) of its force and the weaker side is destroyed.
+        /// </summary>
+        public static (float Own, float Hostile) PredictLossShares(float advantage)
+        {
+            if (advantage >= 1f)
+                return (1f - (float)Math.Sqrt(1f - 1f / (advantage * advantage)), 1f);
+            return (1f, 1f - (float)Math.Sqrt(1f - advantage * advantage));
+        }
+
+        /// <summary>
+        /// Value an attack is expected to gain (W67): the hostile value it destroys plus the objective it takes, minus
+        /// the own value it loses, from <see cref="PredictLossShares"/>. The objective counts only when the attack wins
+        /// (advantage ≥ 1); a lost attack takes nothing. Positive = worth attacking.
+        /// </summary>
+        /// <param name="advantage">Own over hostile strength at the target (<see cref="Advantage"/>, times a trade correction).</param>
+        /// <param name="ownValue">Price of the own units that fight there.</param>
+        /// <param name="hostileValue">Price of the hostile units (and structures) that defend there.</param>
+        /// <param name="objectiveValue">What taking the target is worth, in credits.</param>
+        public static float ExpectedGain(float advantage, float ownValue, float hostileValue, float objectiveValue)
+        {
+            (float ownLoss, float hostileLoss) = PredictLossShares(advantage);
+            return hostileLoss * hostileValue + (advantage >= 1f ? objectiveValue : 0f) - ownLoss * ownValue;
+        }
+
+        /// <summary>
         /// Shields absorb shield-blocked weapons while piercing weapons already strip the hull;
         /// once shields fall, every weapon hits the hull. Focus fire meets one unit's shield regeneration and hull
         /// repair at a time: <paramref name="shieldRegen"/> and <paramref name="hullRepair"/> are per unit and second.

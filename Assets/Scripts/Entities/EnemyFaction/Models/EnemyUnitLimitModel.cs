@@ -1,5 +1,7 @@
 using System.Collections.Generic;
 using EmpireAtWar.Controllers.Factions;
+using EmpireAtWar.Models.Factions;
+using EmpireAtWar.Models.Reinforcement;
 using EmpireAtWar.Mvc;
 
 namespace EmpireAtWar.Entities.EnemyFaction.Models
@@ -22,6 +24,39 @@ namespace EmpireAtWar.Entities.EnemyFaction.Models
         {
             ShipOrdersCount--;
         }
+
+        /// <summary>
+        /// Reserves a purchase under the human limits (D6, W69): see <see cref="GetPurchaseLimit"/> and
+        /// <see cref="GetCapacity"/>. The AI takes the population slot at purchase, not at deployment.
+        /// </summary>
+        public bool TryReserve(UnitRequest request, int maxUnitCapacity)
+        {
+            bool isCombatUnit = IsCombatUnit(request);
+            return TryReserve(UnitLimitKey.From(request), GetPurchaseLimit(request.FactionData, isCombatUnit),
+                GetCapacity(request.FactionData, isCombatUnit), maxUnitCapacity);
+        }
+
+        /// <summary>Takes a reservation for a unit restored from a save, which already passed the limits once.</summary>
+        public void Adopt(UnitRequest request) =>
+            Adopt(UnitLimitKey.From(request), GetCapacity(request.FactionData, IsCombatUnit(request)));
+
+        public void Release(UnitRequest request) =>
+            Release(UnitLimitKey.From(request), GetCapacity(request.FactionData, IsCombatUnit(request)));
+
+        /// <summary>
+        /// The human purchase limit (<c>PlayerFactionModel.IsUnitLimitReached</c>): a ship or squadron type has none
+        /// except a hero, which exists once while queued, held or alive; a structure is limited to its
+        /// <see cref="FactionData.MaxCount"/> queued or built; research and upgrades to <see cref="FactionData.MaxCount"/>
+        /// in production, as the human queue limit.
+        /// </summary>
+        /// <param name="isCombatUnit">Ship or squadron.</param>
+        public static int GetPurchaseLimit(FactionData data, bool isCombatUnit) =>
+            !isCombatUnit ? data.MaxCount : data.IsHero ? 1 : int.MaxValue;
+
+        /// <summary>Only ships and squadrons use population, as for a human (<c>ReinforcementModel.UsesCapacity</c>).</summary>
+        public static int GetCapacity(FactionData data, bool isCombatUnit) => isCombatUnit ? data.UnitCapacity : 0;
+
+        private static bool IsCombatUnit(UnitRequest request) => ReinforcementModel.UsesCapacity(request);
 
         public bool TryReserve(
             UnitLimitKey unitId,

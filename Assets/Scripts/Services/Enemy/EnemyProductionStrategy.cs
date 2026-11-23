@@ -32,7 +32,6 @@ namespace EmpireAtWar.Services.Enemy
         private const int SHIPS_PER_SQUADRON = 2;
         private const int MINIMUM_CAPTURE_WINGS = 3;
         private const float COMBAT_RESEARCH_INTERVAL = 30f;
-        private const float DEFENSE_BUILD_INTERVAL = 20f;
         private const float STATION_PLACEMENT_RETRY_SECONDS = 10f;
         private const int MAX_LEVEL1_CORVETTES = 2;
         /// <summary>Bombers are wanted only to raid: at most this many per known hostile mine.</summary>
@@ -42,8 +41,6 @@ namespace EmpireAtWar.Services.Enemy
         private const float NON_COMPETING_RESEARCH_SHARE = 0.25f;
         private const float PATROL_WING_RETRY_SECONDS = 60f;
         private const int SAVING_MIN_SHIPS = 10;
-        /// <summary>Priority penalty (lower builds first) for a ship that does not fit the free unit capacity.</summary>
-        private const float NO_FIT_SAVING_PRIORITY_SCALE = 2f;
         private const float SAVING_MIN_ADVANTAGE = 1f;
         private const float SURPLUS_SHIP_FACTOR = 2f;
         /// <summary>Ships more than this many levels below the station level are no longer bought.</summary>
@@ -82,10 +79,13 @@ namespace EmpireAtWar.Services.Enemy
             _criticalShips = new List<(KeyValuePair<ShipType, FactionData>, float, float, float)>();
         private readonly List<UnitTypeId> _candidateIds = new List<UnitTypeId>();
         private readonly List<FactionData> _candidateData = new List<FactionData>();
+        private readonly Dictionary<DefendPlatformType, int> _platformCounts = new Dictionary<DefendPlatformType, int>();
 
         private int _observedReleaseVersion;
         private float _nextCombatResearchTime;
-        private float _nextDefenseBuildTime;
+        // Each platform tier has its own purchase interval, also the rebuy delay after a loss (W50).
+        private float _nextSmallPlatformTime;
+        private float _nextBigPlatformTime;
         private float _nextStationPlacementCheck;
         private string _savingUnit = "";
         /// <summary>The last evaluation's ship choice was affordable but blocked by the unit cap (W34 b).</summary>
@@ -219,6 +219,7 @@ namespace EmpireAtWar.Services.Enemy
             _peakMiningCount = Math.Max(_peakMiningCount, miningFacilityCount);
             bool hasMiningOption = canPlaceStructure && hasMiningSelection && minerAllowed;
             bool canBuildMining = hasMiningOption && IsAffordable(mining.Value);
+            TrackPlatformLosses();
             // A small fleet takes the cheapest platform: a big one would cost it the ships of its opening.
             bool hasDefenseSelection = TrySelectDefense(shipCount < SAVING_MIN_SHIPS,
                 out KeyValuePair<DefendPlatformType, FactionData> defense);
@@ -251,6 +252,25 @@ namespace EmpireAtWar.Services.Enemy
                                out ship, requireAffordable: buyNow);
             bool hasShipOption = hasCounter || hasShip || hasSquadronFallback;
             FactionData shipChoice = hasCounter ? counterData : hasShip ? ship.Value : squadron.Value;
+            // W46: a choice that does not fit the free capacity keeps being saved for, but money for both it and an
+            // affordable ship that fits buys the fitting ship now.
+            KeyValuePair<ShipType, FactionData> fitting = default;
+            bool buysFittingShip = !critical && hasShipOption && canOrderShips && !FitsRemainingCapacity(shipChoice) &&
+                TrySelectShip(shipCount, out fitting, requireAffordable: true) &&
+                _economyModel.Money >= shipChoice.Price + fitting.Value.Price;
+            if (buysFittingShip)
+            {
+                UnitTypeId savedFor = hasCounter ? counterId : hasShip
+                    ? UnitTypeId.Ship(ship.Key) : UnitTypeId.Squadron(squadron.Key);
+                EnemyAiTelemetry.RecordEvent(_owner.Id, _owner.Faction, "fittingShip",
+                    FormattableString.Invariant(
+                        $"unit={fitting.Key};cost={fitting.Value.Price};savingFor={savedFor};savingCost={shipChoice.Price};money={_economyModel.Money:F1}"));
+                ship = fitting;
+                hasShip = true;
+                hasCounter = false;
+                hasSquadronFallback = false;
+                shipChoice = fitting.Value;
+            }
             DefenseReserve = hasShipOption ? shipChoice.Price : 0f;
             bool canBuildShip = hasShipOption && IsAffordable(shipChoice) && FitsRemainingCapacity(shipChoice);
             // A fleet at the unit limit cannot spend on ships, so held zones take further platforms.
@@ -259,9 +279,11 @@ namespace EmpireAtWar.Services.Enemy
             // or of a held zone is placed, and none while a team station is under pressure.
             bool platformsBlockedByPressure = canBuildShip && _stateProvider.HasTeamStationPressure;
             bool firstPlatformsOnly = hasShipOption && !shipBlockedByCapacity;
-            bool canBuildDefense = BattleClock.CurrentElapsed >= _nextDefenseBuildTime &&
+            // One platform queued or under construction at a time; its tier interval already filtered the selection (W50).
+            bool canBuildDefense = !_purchaseProcessor.HasPlatformInProgress &&
                 !platformsBlockedByPressure && hasDefenseSelection && IsAffordable(defense.Value) &&
-                _enemyStructurePlacementService.TryGetDefensePosition(shipBlockedByCapacity, firstPlatformsOnly, out _);
+                _enemyStructurePlacementService.TryGetDefensePosition(shipBlockedByCapacity, firstPlatformsOnly,
+                    EnemyPlatformTier.IsBig(defense.Value), out _);
             UnitTypeId combatChoice = hasCounter ? counterId : hasShip
                 ? UnitTypeId.Ship(ship.Key) : UnitTypeId.Squadron(squadron.Key);
             if (_stationPressure.IsStationCritical && !hasShipOption)
@@ -282,8 +304,8 @@ namespace EmpireAtWar.Services.Enemy
                 string waitReason = !IsAffordable(shipChoice) ? "saving" : "capacity";
                 // Capacity rows name the best ship that fits and can be paid now ("none" when nothing fits).
                 string bestFit = !choiceFits && canOrderShips &&
-                    TrySelectShip(shipCount, out KeyValuePair<ShipType, FactionData> fitting, requireAffordable: true)
-                    ? fitting.Key.ToString() : "none";
+                    TrySelectShip(shipCount, out KeyValuePair<ShipType, FactionData> bestFitShip, requireAffordable: true)
+                    ? bestFitShip.Key.ToString() : "none";
                 EnemyAiTelemetry.RecordEvent(_owner.Id, _owner.Faction, "production-wait",
                     FormattableString.Invariant($"unit={combatChoice};capacity={_unitLimitModel.CurrentUnitCapacity}/{_reinforcementData.MaxUnitCapacity};required={shipChoice.UnitCapacity};cost={shipChoice.Price};money={_economyModel.Money:F1};critical={_stationPressure.IsStationCritical};criticalCause={_stationPressure.CriticalCause};etaSeconds={GetArrivalSeconds(combatChoice, shipChoice):F1};timeToLoss={_stationPressure.EstimatedTimeToLossSeconds:F1};saving={_savingUnit};savingFor={savingForSeconds:F1};fits={choiceFits};bestFit={bestFit};reason={waitReason}"));
             }
@@ -398,7 +420,7 @@ namespace EmpireAtWar.Services.Enemy
                 combatChoice = UnitTypeId.Ship(ship.Key);
             }
 
-            bool buildSquadron = !_stationPressure.IsStationCritical && !hasCounter &&
+            bool buildSquadron = !_stationPressure.IsStationCritical && !hasCounter && !buysFittingShip &&
                                  category == EnemyProductionCategory.Ship &&
                                  (hasSquadronFallback ||
                                   !_decisionModel.NeedsMinimumFleet(shipCount) &&
@@ -469,11 +491,16 @@ namespace EmpireAtWar.Services.Enemy
                 _savingSince = -1f;
             }
             float moneyBefore = _economyModel.Money;
-            _purchaseProcessor.Purchase(request);
+            if (category == EnemyProductionCategory.Defense)
+            {
+                // Placement at completion uses the flags this purchase was checked with (W50).
+                _purchaseProcessor.PurchaseDefense(request, shipBlockedByCapacity, firstPlatformsOnly);
+                DelayPlatformTier(request.FactionData);
+            }
+            else
+                _purchaseProcessor.Purchase(request);
             if (category == EnemyProductionCategory.Ship && request is ShipUnitRequest)
                 TryBuySurplusShip(moneyBefore, request.FactionData);
-            if (category == EnemyProductionCategory.Defense)
-                _nextDefenseBuildTime = BattleClock.CurrentElapsed + DEFENSE_BUILD_INTERVAL;
             if (category == EnemyProductionCategory.Mining && isMinerRebuy)
                 _nextMinerRebuyTime = BattleClock.CurrentElapsed + MINER_REBUY_INTERVAL;
             if (category == EnemyProductionCategory.Research && !canResearchIncome)
@@ -762,6 +789,9 @@ namespace EmpireAtWar.Services.Enemy
                     option.Key.ToString());
                 float combatValuePerCredit = _profileCatalog.Get(unitType).GetCombatValue() /
                     Math.Max(1, option.Value.Price);
+                bool fits = FitsRemainingCapacity(option.Value);
+                // Saving for a ship that does not fit the free capacity stays allowed (dreadnoughts, battlecruisers
+                // are built for the future), at a lower priority than ships that fit (W34, user 2026-11-22; W46).
                 float priority = _decisionModel.CalculateShipPriority(
                     _stateProvider.CurrentState,
                     shipCount,
@@ -769,10 +799,8 @@ namespace EmpireAtWar.Services.Enemy
                     option.Value.BuildTime,
                     option.Value.UnitCapacity,
                     option.Value.MaxCount,
-                    combatValuePerCredit);
-                // Saving for a ship that does not fit the free capacity stays allowed (dreadnoughts, battlecruisers
-                // are built for the future), at a lower priority than ships that fit (W34, user 2026-11-22).
-                if (!FitsRemainingCapacity(option.Value)) priority *= NO_FIT_SAVING_PRIORITY_SCALE;
+                    combatValuePerCredit,
+                    fits);
                 if (_stationPressure.IsStationCritical)
                 {
                     if (combatValuePerCredit <= 0f) continue;
@@ -785,7 +813,7 @@ namespace EmpireAtWar.Services.Enemy
                 }
                 float perSlot = _profileCatalog.Get(unitType).GetCombatValue() / Math.Max(1, option.Value.UnitCapacity);
                 dearest = Math.Max(dearest, option.Value.Price);
-                if (perSlot > bestSlotValue)
+                if (fits && perSlot > bestSlotValue)
                 {
                     bestPerSlot = option;
                     bestSlotValue = perSlot;
@@ -907,22 +935,30 @@ namespace EmpireAtWar.Services.Enemy
         }
 
         /// <summary>
-        /// With money at <see cref="SURPLUS_SHIP_FACTOR"/> times the price of the ship just bought, the best ship
-        /// affordable with what is left is bought in the same cycle. From level 2: level-1 corvettes stay one at a time.
+        /// While money stays at <see cref="SURPLUS_SHIP_FACTOR"/> times the price of the ship just bought, the best ship
+        /// that fits and is affordable with what is left is bought in the same cycle (W46). The 7 production pipelines
+        /// and one waiting build per type (W18) end the loop; so does a purchase that spends nothing. From level 2:
+        /// level-1 corvettes stay one at a time.
         /// </summary>
         private void TryBuySurplusShip(float moneyBefore, FactionData bought)
         {
-            if (_factionModel.CurrentLevel < 2 || moneyBefore < SURPLUS_SHIP_FACTOR * bought.Price ||
-                _stationPressure.IsStationCritical ||
-                !CanOrderAnyShip() ||
-                !TrySelectShip(CountReservedShips(), out KeyValuePair<ShipType, FactionData> extra,
-                    requireAffordable: true))
-                return;
-            EnemyAiTelemetry.RecordEvent(_owner.Id, _owner.Faction, "surplusShip",
-                FormattableString.Invariant($"unit={extra.Key};cost={extra.Value.Price};money={_economyModel.Money:F1}"));
-            UnitRequest request = _requestFactory.ConstructUnitRequest(extra.Value, extra.Key);
-            RecordExtraPurchase(request);
-            _purchaseProcessor.Purchase(request);
+            if (_factionModel.CurrentLevel < 2 || _stationPressure.IsStationCritical) return;
+            float money = moneyBefore;
+            float price = bought.Price;
+            while (money >= SURPLUS_SHIP_FACTOR * price && CanOrderAnyShip() &&
+                   TrySelectShip(CountReservedShips(), out KeyValuePair<ShipType, FactionData> extra,
+                       requireAffordable: true))
+            {
+                EnemyAiTelemetry.RecordEvent(_owner.Id, _owner.Faction, "surplusShip",
+                    FormattableString.Invariant($"unit={extra.Key};cost={extra.Value.Price};money={_economyModel.Money:F1}"));
+                UnitRequest request = _requestFactory.ConstructUnitRequest(extra.Value, extra.Key);
+                RecordExtraPurchase(request);
+                float beforePurchase = _economyModel.Money;
+                _purchaseProcessor.Purchase(request);
+                if (_economyModel.Money >= beforePurchase) return;
+                money = _economyModel.Money;
+                price = extra.Value.Price;
+            }
         }
 
         private void TrackSaving(string unit)
@@ -1213,7 +1249,8 @@ namespace EmpireAtWar.Services.Enemy
 
         /// <summary>
         /// Prefers an affordable type with fewer existing copies, then the strongest platform within budget.
-        /// With <paramref name="cheapestOnly"/> the cheapest buildable type is the only choice.
+        /// With <paramref name="cheapestOnly"/> the cheapest buildable type is the only choice. A type whose tier
+        /// interval runs (<see cref="EnemyPlatformTier"/>) is skipped.
         /// </summary>
         private bool TrySelectDefense(
             bool cheapestOnly,
@@ -1224,7 +1261,7 @@ namespace EmpireAtWar.Services.Enemy
             foreach (KeyValuePair<DefendPlatformType, FactionData> option
                      in _factionModel.DefendPlatforms)
             {
-                if (!IsAvailable(option.Value) ||
+                if (!IsAvailable(option.Value) || !IsPlatformTierReady(option.Value) ||
                     !CanReserve<DefendPlatformUnitRequest>(
                         option.Key.ToString(),
                         option.Value))
@@ -1259,6 +1296,29 @@ namespace EmpireAtWar.Services.Enemy
             }
 
             return found;
+        }
+
+        private bool IsPlatformTierReady(FactionData data) => BattleClock.CurrentElapsed >=
+            (EnemyPlatformTier.IsBig(data) ? _nextBigPlatformTime : _nextSmallPlatformTime);
+
+        /// <summary>Starts the tier's interval: after a purchase, and after a loss as the rebuy delay (W50).</summary>
+        private void DelayPlatformTier(FactionData data)
+        {
+            float until = BattleClock.CurrentElapsed + EnemyPlatformTier.GetPurchaseInterval(data);
+            if (EnemyPlatformTier.IsBig(data)) _nextBigPlatformTime = Math.Max(_nextBigPlatformTime, until);
+            else _nextSmallPlatformTime = Math.Max(_nextSmallPlatformTime, until);
+        }
+
+        /// <summary>A platform type whose reserved count dropped since the last evaluation lost one: its tier waits.</summary>
+        private void TrackPlatformLosses()
+        {
+            foreach (KeyValuePair<DefendPlatformType, FactionData> option in _factionModel.DefendPlatforms)
+            {
+                int count = _unitLimitModel.GetReservedCount<DefendPlatformUnitRequest>(option.Key.ToString());
+                if (_platformCounts.TryGetValue(option.Key, out int previous) && count < previous)
+                    DelayPlatformTier(option.Value);
+                _platformCounts[option.Key] = count;
+            }
         }
 
         /// <summary>
@@ -1337,15 +1397,28 @@ namespace EmpireAtWar.Services.Enemy
 
         private bool CanReserve<TRequest>(string requestId, FactionData data, bool ignoreUsedCapacity = false)
         {
-            return _purchaseProcessor.CanQueue(requestId, data.MaxCount) &&
+            bool isCombatUnit = typeof(TRequest) == typeof(ShipUnitRequest) || typeof(TRequest) == typeof(SquadronUnitRequest);
+            // The per-type queue and purchase limits are the human ones (W69, D6).
+            return _purchaseProcessor.CanQueue(requestId, PlayerFactionModel.GetQueueLimit(data, isCombatUnit)) &&
                 (typeof(TRequest) != typeof(ShipUnitRequest) || !_purchaseProcessor.HasWaitingBuild(requestId)) &&
-                _unitLimitModel.GetReservedCount<TRequest>(requestId) < data.MaxCount &&
-                data.UnitCapacity <= _reinforcementData.MaxUnitCapacity -
+                _unitLimitModel.GetReservedCount<TRequest>(requestId) <
+                    EnemyUnitLimitModel.GetPurchaseLimit(data, isCombatUnit) &&
+                EnemyUnitLimitModel.GetCapacity(data, isCombatUnit) <= _reinforcementData.MaxUnitCapacity -
                     (ignoreUsedCapacity ? 0 : _unitLimitModel.CurrentUnitCapacity);
         }
 
         private bool IsShipClassAllowed(UnitTypeId shipId) =>
-            _factionModel.CurrentLevel != 1 || _profileCatalog.Get(shipId).ShipClass == ShipClass.Corvette;
+            (_factionModel.CurrentLevel != 1 || _profileCatalog.Get(shipId).ShipClass == ShipClass.Corvette) &&
+            CanLandShip(shipId);
+
+        /// <summary>
+        /// W56: with no living own station an assault capital lands only beside the group body, whose forward anchor needs
+        /// <see cref="EnemyForwardSpawnAnchors.CAPITAL_ESCORT_SHIPS"/> own ships; with fewer it is not bought.
+        /// </summary>
+        private bool CanLandShip(UnitTypeId shipId) =>
+            _productionAccess.ProductionHost == _owner.Id && _productionAccess.HasHostBase ||
+            _stateProvider.ActiveShipCount >= EnemyForwardSpawnAnchors.CAPITAL_ESCORT_SHIPS ||
+            !_factionModel.IsAssaultCapital(shipId.ShipType, _profileCatalog.Get(shipId).ShipClass);
 
         private bool IsAvailable(FactionData data)
         {

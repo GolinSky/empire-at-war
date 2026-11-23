@@ -129,7 +129,7 @@ namespace EmpireAtWar.Tests.Movement
                 Radar radar = new Radar();
                 AttackTargetState attack = new AttackTargetState(null, _weapon, _movement);
                 ShipOrderRunner runner = new ShipOrderRunner(_movement, _weapon, null, orders, machine,
-                    new IdleState(_movement, _weapon, radar), null, attack, null, null, null, null, abilities, caster, radar, null, new NoTeamContacts(), TestPlayers.Human);
+                    new IdleState(_movement, _weapon, radar, new AttackDataFactory(), new FakeShipThreats()), null, attack, null, null, null, null, abilities, caster, radar, null, new NoTeamContacts(), TestPlayers.Human);
                 runner.Start();
                 runner.Attack(_target, Vector3.forward * 20f);
                 runner.Tick(0.1f);
@@ -162,7 +162,7 @@ namespace EmpireAtWar.Tests.Movement
                 Radar radar = new Radar();
                 AttackTargetState attack = new AttackTargetState(null, _weapon, _movement);
                 ShipOrderRunner runner = new ShipOrderRunner(_movement, _weapon, null, new UnitOrderModel(),
-                    new ShipStateMachine(), new IdleState(_movement, _weapon, radar), null, attack, null, null, null,
+                    new ShipStateMachine(), new IdleState(_movement, _weapon, radar, new AttackDataFactory(), new FakeShipThreats()), null, attack, null, null, null,
                     null, abilities, caster, radar, null, new NoTeamContacts(), TestPlayers.Human);
                 PaceCluster pace = new PaceCluster();
                 float slower = _movement.PaceSpeed * 0.8f;
@@ -205,7 +205,7 @@ namespace EmpireAtWar.Tests.Movement
                 Radar radar = new Radar();
                 NavigateState navigate = new NavigateState(_movement);
                 ShipOrderRunner runner = new ShipOrderRunner(_movement, _weapon, null, new UnitOrderModel(),
-                    new ShipStateMachine(), new IdleState(_movement, _weapon, radar), navigate, null, null, null, null,
+                    new ShipStateMachine(), new IdleState(_movement, _weapon, radar, new AttackDataFactory(), new FakeShipThreats()), navigate, null, null, null, null,
                     null, abilities, caster, radar, null, new NoTeamContacts(), TestPlayers.Human);
                 PaceClusterTuning tuning = PaceClusterTuning.Default;
                 PaceCluster cluster = new PaceCluster(orderId: 1, issuePace: 20f, tuning: tuning);
@@ -286,7 +286,7 @@ namespace EmpireAtWar.Tests.Movement
                 ShipStateMachine machine = new ShipStateMachine();
                 AttackTargetState attack = new AttackTargetState(null, _weapon, _movement);
                 ShipOrderRunner runner = new ShipOrderRunner(_movement, _weapon, null, orders, machine,
-                    new IdleState(_movement, _weapon, radar), null, attack, null, null, null, null, abilities, caster, radar, null, new NoTeamContacts(), TestPlayers.Human);
+                    new IdleState(_movement, _weapon, radar, new AttackDataFactory(), new FakeShipThreats()), null, attack, null, null, null, null, abilities, caster, radar, null, new NoTeamContacts(), TestPlayers.Human);
                 runner.Start();
                 Vector3 offset = formation ? Vector3.forward * 20f : Vector3.zero;
                 runner.Attack(_target, offset);
@@ -524,8 +524,8 @@ namespace EmpireAtWar.Tests.Movement
             Radar radar = new Radar();
             UnitOrderModel orders = new UnitOrderModel();
             ShipStateMachine machine = new ShipStateMachine();
-            IdleState idle = new IdleState(_movement, _weapon, radar);
-            AttackMoveState attackMove = new AttackMoveState(_movement, _weapon, radar, null);
+            IdleState idle = new IdleState(_movement, _weapon, radar, new AttackDataFactory(), new FakeShipThreats());
+            AttackMoveState attackMove = new AttackMoveState(_movement, _weapon, radar, null, new FakeShipThreats());
             ShipOrderRunner runner = new ShipOrderRunner(_movement, _weapon, null, orders, machine,
                 idle, null, new AttackTargetState(null, _weapon, _movement), attackMove, null, null, null, abilities, caster, radar, null, new NoTeamContacts(), TestPlayers.Human);
             runner.Start();
@@ -844,7 +844,7 @@ namespace EmpireAtWar.Tests.Movement
             UnitOrderSettings settings = ScriptableObject.CreateInstance<UnitOrderSettings>();
             try
             {
-                GuardState state = new GuardState(_movement, _weapon, new Radar(), null, settings);
+                GuardState state = new GuardState(_movement, _weapon, new Radar(), null, settings, new FakeShipThreats());
                 state.SetData(_target, Vector3.zero);
                 state.Enter();
                 _target.Transform.position = new Vector3(900f, 0f, 0f);
@@ -928,7 +928,7 @@ namespace EmpireAtWar.Tests.Movement
             orders.Replace(UnitOrderType.WaypointMove, first, waypoints: new[] { first, second });
             orders.AdvanceWaypoint(out _);
             ShipStateMachine machine = new ShipStateMachine();
-            IdleState idle = new IdleState(_movement, _weapon, new Radar());
+            IdleState idle = new IdleState(_movement, _weapon, new Radar(), new AttackDataFactory(), new FakeShipThreats());
             machine.SetState(idle);
             NavigateState navigate = new NavigateState(_movement);
             ShipOrderRunner runner = new ShipOrderRunner(_movement, _weapon, null, orders, machine,
@@ -954,7 +954,7 @@ namespace EmpireAtWar.Tests.Movement
         {
             // Seeded so the random first delay is above zero; edit-mode time does not advance between ticks.
             UnityEngine.Random.InitState(7);
-            AttackMoveState state = new AttackMoveState(_movement, _weapon, new Radar(), null);
+            AttackMoveState state = new AttackMoveState(_movement, _weapon, new Radar(), null, new FakeShipThreats());
             state.SetData(Vector3.zero, new AttackMoveEngagement());
             state.Enter();
             _movement.FinishLeg();
@@ -971,7 +971,7 @@ namespace EmpireAtWar.Tests.Movement
             Radar radar = new Radar();
             radar.Enemies.Add(_target);
             AttackMoveEngagement engagement = new AttackMoveEngagement();
-            AttackMoveState state = new AttackMoveState(_movement, _weapon, radar, null);
+            AttackMoveState state = new AttackMoveState(_movement, _weapon, radar, null, new FakeShipThreats());
             state.SetData(Vector3.forward * 100f, engagement);
             state.Enter();
 
@@ -993,7 +993,7 @@ namespace EmpireAtWar.Tests.Movement
             Radar radar = new Radar();
             radar.Enemies.Add(_target);
             AttackMoveEngagement engagement = new AttackMoveEngagement();
-            AttackMoveState state = new AttackMoveState(_movement, _weapon, radar, null);
+            AttackMoveState state = new AttackMoveState(_movement, _weapon, radar, null, new FakeShipThreats());
             state.SetData(Vector3.zero, engagement);
             state.Enter();
             _movement.FinishLeg();
@@ -1019,7 +1019,7 @@ namespace EmpireAtWar.Tests.Movement
             _target.Transform.position = Vector3.right * 90f;
             Radar radar = new Radar();
             radar.Enemies.Add(_target);
-            AttackMoveState state = new AttackMoveState(_movement, _weapon, radar, null);
+            AttackMoveState state = new AttackMoveState(_movement, _weapon, radar, null, new FakeShipThreats());
             state.SetData(Vector3.zero, new AttackMoveEngagement());
             state.Enter();
             _movement.FinishLeg();
@@ -1039,6 +1039,150 @@ namespace EmpireAtWar.Tests.Movement
             Assert.That(_movement.MoveCount, Is.EqualTo(moves + 1));
             Assert.That(_movement.Destination, Is.EqualTo(Vector3.zero));
             state.Exit();
+        }
+
+        [Test]
+        public void AttackMove_AfterAKillPicksTheNextTargetWithoutHeadingBackFirst()
+        {
+            const BindingFlags PRIVATE_INSTANCE = BindingFlags.Instance | BindingFlags.NonPublic;
+            GameObject nextObject = new GameObject("Next enemy");
+            try
+            {
+                _target.Transform.position = Vector3.right * 50f;
+                nextObject.transform.position = Vector3.forward * 60f;
+                Target next = new Target(nextObject.transform) { Id = 2 };
+                Radar radar = new Radar();
+                radar.Enemies.Add(_target);
+                radar.Enemies.Add(next);
+                AttackMoveState state = new AttackMoveState(_movement, _weapon, radar, new AttackDataFactory(),
+                    new FakeShipThreats());
+                state.SetData(Vector3.zero, new AttackMoveEngagement());
+                state.Enter();
+                _movement.FinishLeg();
+                typeof(AttackMoveState).GetField("_engagementTarget", PRIVATE_INSTANCE).SetValue(state, _target);
+                state.Tick(0.1f);
+                Assert.That(_movement.HeldTarget, Is.SameAs(_target));
+                int moves = _movement.MoveCount;
+
+                _target.Health.IsDestroyed = true;
+                state.Tick(0.1f);
+                typeof(AttackMoveState).GetField("_nextSearchTime", PRIVATE_INSTANCE)
+                    .SetValue(state, float.NegativeInfinity);
+                state.Tick(0.1f);
+
+                Assert.That(state.IsEngaging, Is.True);
+                Assert.That(_movement.HeldTarget, Is.SameAs(next));
+                Assert.That(_movement.MoveCount, Is.EqualTo(moves), "No leg back to the point before the next target.");
+                state.Exit();
+            }
+            finally { Object.DestroyImmediate(nextObject); }
+        }
+
+        [TestCase(ShipClass.Fighter, true, true, false)]
+        [TestCase(ShipClass.Corvette, false, true, false)]
+        [TestCase(ShipClass.Capital, true, false, false)]
+        [TestCase(ShipClass.Corvette, true, true, true)]
+        [TestCase(ShipClass.Capital, true, true, true)]
+        public void AttackMove_EnRouteBreaksOffOnlyForAWarshipThatHitsIt(ShipClass shipClass, bool takesOrders,
+            bool isAttacker, bool breaksOff)
+        {
+            _target.Transform.position = Vector3.right * 50f;
+            _target.Health.ShipClass = shipClass;
+            _target.HasOrders = takesOrders;
+            Radar radar = new Radar();
+            radar.Enemies.Add(_target);
+            FakeShipThreats threats = new FakeShipThreats { WasDamagedRecently = true };
+            if (isAttacker) threats.SelfAttackers.Add(_target);
+            Vector3 point = Vector3.forward * 1000f;
+            AttackMoveState state = new AttackMoveState(_movement, _weapon, radar, new AttackDataFactory(), threats);
+            state.SetData(point, new AttackMoveEngagement());
+            state.Enter();
+
+            state.Tick(0.1f);
+
+            Assert.That(state.IsEngagingEnRoute, Is.EqualTo(breaksOff));
+            Assert.That(_movement.IsMoving, Is.EqualTo(!breaksOff), "Fly-first holds for everything else.");
+            if (!breaksOff)
+            {
+                Assert.That(_movement.Destination, Is.EqualTo(point));
+                state.Exit();
+                return;
+            }
+
+            Assert.That(_movement.HeldTarget, Is.SameAs(_target));
+            _target.Health.IsDestroyed = true;
+            state.Tick(0.1f);
+            Assert.That(state.IsEngagingEnRoute, Is.False);
+            Assert.That(_movement.IsMoving, Is.True, "The flight resumes once the attacker is gone.");
+            Assert.That(_movement.Destination, Is.EqualTo(point));
+            state.Exit();
+        }
+
+        [Test]
+        public void Attack_HeldShipKeepsHoldingInsideTheLeaveMargin()
+        {
+            _target.Transform.position = Vector3.right * 95f;
+            AttackTargetState state = new AttackTargetState(null, _weapon, _movement);
+            state.SetData(_target);
+            state.Tick(0.1f);
+            Assert.That(_movement.HeldTarget, Is.SameAs(_target));
+            float reach = _weapon.GetEngagementRange(_target.Health.ShipClass);
+
+            // Just beyond reach, still inside reach x the leave margin: no new approach.
+            _target.Transform.position = Vector3.right *
+                (reach * (1f + ShipEngagement.HELD_REACH_FACTOR) * 0.5f);
+            for (int i = 0; i < 5; i++) state.Tick(0.1f);
+            Assert.That(_movement.MoveCount, Is.Zero);
+            Assert.That(_movement.HeldTarget, Is.SameAs(_target));
+
+            _target.Transform.position = Vector3.right * (reach * ShipEngagement.HELD_REACH_FACTOR + 5f);
+            state.Tick(0.1f);
+            Assert.That(_movement.MoveCount, Is.EqualTo(1));
+        }
+
+        [Test]
+        public void Idle_StationAttackerOutranksANearerCorvetteAsMainTarget()
+        {
+            GameObject corvetteObject = new GameObject("Near corvette");
+            try
+            {
+                corvetteObject.transform.position = Vector3.right * 30f;
+                Target corvette = new Target(corvetteObject.transform) { Id = 2, HasOrders = true };
+                corvette.Health.ShipClass = ShipClass.Corvette;
+                _target.Transform.position = Vector3.forward * 90f;
+                _target.Health.ShipClass = ShipClass.Frigate;
+                Radar radar = new Radar();
+                radar.Enemies.Add(corvette);
+                radar.Enemies.Add(_target);
+                FakeShipThreats threats = new FakeShipThreats();
+                threats.StationAttackers.Add(_target);
+                IdleState state = new IdleState(_movement, _weapon, radar, new AttackDataFactory(), threats);
+
+                state.Tick(0.1f);
+
+                Assert.That(_movement.LookTarget, Is.SameAs(_target));
+                Assert.That(_movement.MoveCount, Is.Zero, "Idle never moves, not even to fight.");
+                Assert.That(ShipEngagement.SelectThreat(new IEntity[] { corvette, _target }, _movement, _weapon,
+                    new FakeShipThreats()), Is.SameAs(_target), "Without threats the bigger hull still wins.");
+                threats.StationAttackers.Clear();
+                threats.SelfAttackers.Add(corvette);
+                Assert.That(ShipEngagement.SelectThreat(new IEntity[] { corvette, _target }, _movement, _weapon,
+                    threats), Is.SameAs(corvette), "An attacker of this ship outranks a bigger hull.");
+            }
+            finally { Object.DestroyImmediate(corvetteObject); }
+        }
+
+        [Test]
+        public void Idle_UnderFireTargetsATeamVisibleHostileInReachBeyondOwnRadar()
+        {
+            _target.Transform.position = Vector3.forward * 90f;
+            FakeShipThreats threats = new FakeShipThreats { WasDamagedRecently = true };
+            threats.TeamVisible.Add(_target);
+            IdleState state = new IdleState(_movement, _weapon, new Radar(), new AttackDataFactory(), threats);
+
+            state.Tick(0.1f);
+
+            Assert.That(_movement.LookTarget, Is.SameAs(_target));
         }
 
         [Test]
@@ -1099,8 +1243,8 @@ namespace EmpireAtWar.Tests.Movement
             UnitOrderModel orders = new UnitOrderModel();
             ShipStateMachine machine = new ShipStateMachine();
             _orderSettings = ScriptableObject.CreateInstance<UnitOrderSettings>();
-            GuardState guard = new GuardState(_movement, _weapon, new Radar(), null, _orderSettings);
-            IdleState idle = new IdleState(_movement, _weapon, new Radar());
+            GuardState guard = new GuardState(_movement, _weapon, new Radar(), null, _orderSettings, new FakeShipThreats());
+            IdleState idle = new IdleState(_movement, _weapon, new Radar(), new AttackDataFactory(), new FakeShipThreats());
             ShipOrderRunner runner = new ShipOrderRunner(_movement, _weapon, null, orders, machine,
                 idle, null, null, null, guard, null, new AbilityApproachState(_movement), abilities, caster, new Radar(), null, new NoTeamContacts(), TestPlayers.Human);
             runner.Start();
@@ -1127,9 +1271,9 @@ namespace EmpireAtWar.Tests.Movement
             UnitOrderModel orders = new UnitOrderModel();
             ShipStateMachine machine = new ShipStateMachine();
             _orderSettings = ScriptableObject.CreateInstance<UnitOrderSettings>();
-            GuardState guard = new GuardState(_movement, _weapon, new Radar(), null, _orderSettings);
+            GuardState guard = new GuardState(_movement, _weapon, new Radar(), null, _orderSettings, new FakeShipThreats());
             ShipOrderRunner runner = new ShipOrderRunner(_movement, _weapon, null, orders, machine,
-                new IdleState(_movement, _weapon, new Radar()), null, null, null, guard, null, null, abilities, caster,
+                new IdleState(_movement, _weapon, new Radar(), new AttackDataFactory(), new FakeShipThreats()), null, null, null, guard, null, null, abilities, caster,
                 new Radar(), null, new NoTeamContacts(), TestPlayers.Human);
             runner.Start();
             runner.Guard(_target, Vector3.forward * 20f);
@@ -1152,9 +1296,9 @@ namespace EmpireAtWar.Tests.Movement
             ShipAbilityService abilities = new ShipAbilityService(new AbilityFactory(new RecordingAbility()),
                 abilityRelations, new VisionService(abilityRelations, fogEnabled: false));
             Radar radar = new Radar();
-            AttackMoveState attackMove = new AttackMoveState(_movement, _weapon, radar, null);
+            AttackMoveState attackMove = new AttackMoveState(_movement, _weapon, radar, null, new FakeShipThreats());
             ShipOrderRunner runner = new ShipOrderRunner(_movement, _weapon, null, new UnitOrderModel(),
-                new ShipStateMachine(), new IdleState(_movement, _weapon, radar), null, null, attackMove,
+                new ShipStateMachine(), new IdleState(_movement, _weapon, radar, new AttackDataFactory(), new FakeShipThreats()), null, null, attackMove,
                 null, null, null, abilities, caster, radar, null, new NoTeamContacts(), TestPlayers.Human);
             runner.Start();
             AttackMoveEngagement first = new AttackMoveEngagement();
@@ -1183,7 +1327,7 @@ namespace EmpireAtWar.Tests.Movement
             ShipStateMachine machine = new ShipStateMachine();
             AttackTargetState attack = new AttackTargetState(null, _weapon, _movement);
             ShipOrderRunner runner = new ShipOrderRunner(_movement, _weapon, null, orders, machine,
-                new IdleState(_movement, _weapon, radar), null, attack, null, null, null,
+                new IdleState(_movement, _weapon, radar, new AttackDataFactory(), new FakeShipThreats()), null, attack, null, null, null,
                 new AbilityApproachState(_movement), abilities, caster, radar, null, new NoTeamContacts(), TestPlayers.Human);
             runner.Start();
             caster.Modifiers.AddMovementAnchor();
@@ -1215,7 +1359,7 @@ namespace EmpireAtWar.Tests.Movement
             Radar radar = new Radar();
             UnitOrderModel orders = new UnitOrderModel();
             ShipStateMachine machine = new ShipStateMachine();
-            IdleState idle = new IdleState(_movement, _weapon, radar);
+            IdleState idle = new IdleState(_movement, _weapon, radar, new AttackDataFactory(), new FakeShipThreats());
             AttackTargetState attack = new AttackTargetState(null, _weapon, _movement);
             AbilityApproachState approach = new AbilityApproachState(_movement);
             ShipOrderRunner runner = new ShipOrderRunner(_movement, _weapon, null, orders, machine,
@@ -1248,7 +1392,7 @@ namespace EmpireAtWar.Tests.Movement
             UnitOrderModel orders = new UnitOrderModel();
             ShipStateMachine machine = new ShipStateMachine();
             ShipOrderRunner runner = new ShipOrderRunner(_movement, _weapon, null, orders, machine,
-                new IdleState(_movement, _weapon, radar), new NavigateState(_movement), null, null, null, null,
+                new IdleState(_movement, _weapon, radar, new AttackDataFactory(), new FakeShipThreats()), new NavigateState(_movement), null, null, null, null,
                 new AbilityApproachState(_movement), abilities, caster, radar, null, new NoTeamContacts(), TestPlayers.Human);
             runner.Start();
             Assert.That(abilities.TryActivate(caster, ShipAbilityId.Interdict, null), Is.True);
@@ -1305,7 +1449,7 @@ namespace EmpireAtWar.Tests.Movement
             if (branch == "attack-move")
             {
                 _target.Transform.position = Vector3.right * 95f;
-                var attackMove = new AttackMoveState(_movement, _weapon, radar, null);
+                var attackMove = new AttackMoveState(_movement, _weapon, radar, null, new FakeShipThreats());
                 attackMove.SetData(Vector3.zero, new AttackMoveEngagement());
                 attackMove.Enter();
                 // Attack-move fights only once the ship has reached its point.
@@ -1315,7 +1459,7 @@ namespace EmpireAtWar.Tests.Movement
             }
             else if (branch == "guard")
             {
-                var guard = new GuardState(_movement, _weapon, radar, null, _orderSettings);
+                var guard = new GuardState(_movement, _weapon, radar, null, _orderSettings, new FakeShipThreats());
                 guard.SetData(_target, Vector3.zero);
                 typeof(GuardState).GetField("_engagementTarget", PRIVATE_INSTANCE).SetValue(guard, _target);
                 state = guard;
@@ -1388,7 +1532,7 @@ namespace EmpireAtWar.Tests.Movement
             _movement.CurrentPosition = _target.Transform.position;
             var radar = new Radar();
             radar.Enemies.Add(_target);
-            var state = new GuardState(_movement, _weapon, radar, null, _orderSettings);
+            var state = new GuardState(_movement, _weapon, radar, null, _orderSettings, new FakeShipThreats());
             state.SetData(_target, Vector3.zero);
             typeof(GuardState).GetField("_engagementTarget", PRIVATE_INSTANCE).SetValue(state, _target);
             state.Tick(0.1f);
@@ -1527,7 +1671,7 @@ namespace EmpireAtWar.Tests.Movement
         }
 
         private sealed class Target : IEntity, IEntityTransformFacade, INavigationFootprintFacade, IStationHullFacade,
-            IHealthFacade
+            IHealthFacade, IUnitOrderObserverFacade
         {
             public long Id { get; set; } = 1;
             public Health Health { get; } = new Health();
@@ -1538,6 +1682,11 @@ namespace EmpireAtWar.Tests.Movement
             public float HullRadius { get; set; }
             public bool HasStationHull { get; set; } = true;
             public bool HasHealthFacade { get; set; }
+            // Mobile units (ships, squadrons) take orders; structures such as satellites do not.
+            public bool HasOrders { get; set; }
+            public UnitOrderType CurrentOrder => UnitOrderType.None;
+            public IEntity AttackTarget => null;
+            public bool IsEngagingEnRoute => false;
             public float HullBottom => -1f;
             public float HullTop => 1f;
             public float GetHullRadius(Vector3 center) => HullRadius;
@@ -1548,7 +1697,8 @@ namespace EmpireAtWar.Tests.Movement
             public bool TryGetFacade<T>(out T facade) where T : IEntityFacade
             {
                 if ((HasStationHull || typeof(T) != typeof(IStationHullFacade)) &&
-                    (HasHealthFacade || typeof(T) != typeof(IHealthFacade)) && this is T found)
+                    (HasHealthFacade || typeof(T) != typeof(IHealthFacade)) &&
+                    (HasOrders || typeof(T) != typeof(IUnitOrderObserverFacade)) && this is T found)
                 { facade = found; return true; }
                 facade = default;
                 return false;

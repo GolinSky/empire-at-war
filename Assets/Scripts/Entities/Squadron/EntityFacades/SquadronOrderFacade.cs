@@ -14,6 +14,8 @@ namespace EmpireAtWar.Entities.Squadrons.EntityFacades
 
         public UnitOrderType CurrentOrder => _squadron.CurrentOrder;
         public IEntity AttackTarget => _squadron.AttackTarget;
+        // Squadrons swarm what their radar finds; only ships break off an attack-move for a warship (W66).
+        public bool IsEngagingEnRoute => false;
         public int OrderRevision => _squadron.OrderRevision;
 
         public void ApplyReplicaOrder(UnitOrderType order, bool isNewOrder) =>

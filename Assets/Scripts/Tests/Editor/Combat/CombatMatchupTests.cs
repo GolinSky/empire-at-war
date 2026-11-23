@@ -470,6 +470,94 @@ namespace EmpireAtWar.Tests.Editor
             Assert.That(CombatMatchup.Advantage(own, withPlatform), Is.LessThan(CombatMatchup.Advantage(own, Force(frigate))));
         }
 
+        // W67: Lanchester survivors decide the predicted losses.
+        [TestCase(1.2f)]
+        [TestCase(2f)]
+        [TestCase(5f)]
+        public void PredictedLosses_StrongerSideLosesLessAndTheWeakerSideEverything(float advantage)
+        {
+            (float own, float hostile) = CombatMatchup.PredictLossShares(advantage);
+            (float weakOwn, float weakHostile) = CombatMatchup.PredictLossShares(1f / advantage);
+
+            Assert.That(own, Is.InRange(0f, 1f).And.LessThan(hostile));
+            Assert.That(hostile, Is.EqualTo(1f));
+            Assert.That(weakOwn, Is.EqualTo(1f));
+            Assert.That(weakHostile, Is.EqualTo(own).Within(1e-5f), "The rating is symmetric for the other side.");
+            Assert.That(CombatMatchup.PredictLossShares(advantage * 2f).Own, Is.LessThan(own),
+                "A larger edge costs less.");
+        }
+
+        [Test]
+        public void PredictedLosses_EvenFightDestroysBothSides()
+        {
+            (float own, float hostile) = CombatMatchup.PredictLossShares(1f);
+
+            Assert.That(own, Is.EqualTo(1f));
+            Assert.That(hostile, Is.EqualTo(1f));
+        }
+
+        [Test]
+        public void ExpectedGain_CountsTheObjectiveOnlyForAWinningAttack()
+        {
+            const float VALUE = 1000f;
+            const float OBJECTIVE = 500f;
+
+            Assert.That(CombatMatchup.ExpectedGain(2f, VALUE, VALUE, OBJECTIVE),
+                Is.EqualTo(CombatMatchup.ExpectedGain(2f, VALUE, VALUE, 0f) + OBJECTIVE).Within(1e-3f));
+            Assert.That(CombatMatchup.ExpectedGain(0.5f, VALUE, VALUE, OBJECTIVE),
+                Is.EqualTo(CombatMatchup.ExpectedGain(0.5f, VALUE, VALUE, 0f)).Within(1e-3f));
+            Assert.That(CombatMatchup.ExpectedGain(2f, VALUE, VALUE, OBJECTIVE), Is.GreaterThan(0f));
+            Assert.That(CombatMatchup.ExpectedGain(0.5f, VALUE, VALUE, OBJECTIVE), Is.LessThan(0f));
+            Assert.That(CombatMatchup.ExpectedGain(3f, VALUE, VALUE, OBJECTIVE),
+                Is.GreaterThan(CombatMatchup.ExpectedGain(2f, VALUE, VALUE, OBJECTIVE)));
+        }
+
+        // W63: reach-based fleet rating.
+        [Test]
+        public void FleetRating_ReachNeedsSpeedOutsideTheArea()
+        {
+            Assert.That(EnemyFleetRating.CanReach(500f, 1000f, 0f, 60f), Is.True, "Inside the area always counts.");
+            Assert.That(EnemyFleetRating.CanReach(1500f, 1000f, 0f, 60f), Is.False, "A structure never comes.");
+            Assert.That(EnemyFleetRating.CanReach(1500f, 1000f, 10f, 60f), Is.True);
+            Assert.That(EnemyFleetRating.CanReach(1500f, 1000f, 10f, 40f), Is.False);
+        }
+
+        [Test]
+        public void FleetRating_CreditsMoveTheRatingTowardTheSideThatHasThem()
+        {
+            UnitCombatProfile frigate = Profile(ShipClass.Frigate, 1000f, 500f, (ShipClass.Frigate, 20f));
+            ForceComposition own = Force(frigate);
+            ForceComposition hostile = Force(frigate, frigate);
+            var ownTotal = new ForceComposition();
+            var hostileTotal = new ForceComposition();
+            const float VALUE = 1000f;
+            float bare = EnemyFleetRating.Rate(own, hostile, own, VALUE, 0f, 0f, ownTotal, hostileTotal);
+
+            Assert.That(bare, Is.EqualTo(CombatMatchup.Advantage(own, hostile)).Within(1e-5f));
+            Assert.That(EnemyFleetRating.Rate(own, hostile, own, VALUE, VALUE, 0f, ownTotal, hostileTotal),
+                Is.GreaterThan(bare));
+            Assert.That(EnemyFleetRating.Rate(own, hostile, own, VALUE, 0f, VALUE, ownTotal, hostileTotal),
+                Is.LessThan(bare));
+            float shared = EnemyFleetRating.Rate(own, hostile, own, VALUE, VALUE, VALUE, ownTotal, hostileTotal);
+            Assert.That(shared, Is.GreaterThan(bare).And.LessThan(1f),
+                "Equal income on both sides brings the weaker side closer to even, never past it.");
+            Assert.That(EnemyFleetRating.Rate(own, hostile, own, 0f, VALUE, 0f, ownTotal, hostileTotal),
+                Is.EqualTo(bare).Within(1e-5f), "Without a priced reference credits are left out.");
+        }
+
+        [Test]
+        public void ReinforcementBudget_ArrivesAfterTheBuildDelayAndStopsAtTheCapacity()
+        {
+            const float WINDOW = 60f;
+            var ready = new EnemyReinforcementBudget(1000f, float.PositiveInfinity, 10f);
+
+            Assert.That(new EnemyReinforcementBudget(1000f, float.PositiveInfinity, WINDOW).CreditsWithin(10f, WINDOW),
+                Is.Zero, "Nothing bought now lands inside the window.");
+            Assert.That(ready.CreditsWithin(10f, WINDOW), Is.GreaterThan(ready.CreditsWithin(0f, WINDOW)));
+            Assert.That(ready.CreditsWithin(0f, WINDOW), Is.EqualTo(ready.Bank));
+            Assert.That(new EnemyReinforcementBudget(1000f, 300f, 10f).CreditsWithin(10f, WINDOW), Is.EqualTo(300f));
+        }
+
         private static UnitCombatProfile Regenerating(UnitCombatProfile unit, float regen)
         {
             float[] hullDps = new float[ForceComposition.ClassSlots];

@@ -1,6 +1,7 @@
 using System.Linq;
 using EmpireAtWar.Entities.BaseEntity;
 using EmpireAtWar.Entities.EnemyFaction.Models;
+using EmpireAtWar.Entities.EnemyFaction.Models.Combat;
 using EmpireAtWar.Models.Players;
 
 namespace EmpireAtWar.Services.Enemy
@@ -18,6 +19,8 @@ namespace EmpireAtWar.Services.Enemy
         }
         public int ActiveShipCount => _entities.Entities.Count(entity =>
             entity.Owner == _owner.Id && !entity.HealthModel.IsDestroyed);
+        // Direct combat attacks without rating fights, so the reinforcement budget has no reader.
+        public void ReportReinforcementBudget(EnemyReinforcementBudget budget) { }
         public DirectCombatAiState(IEntityLocator entities, PlayerSlot owner) { _entities = entities; _owner = owner; }
     }
 }

@@ -131,8 +131,11 @@ namespace EmpireAtWar.Services.Enemy
         private bool _isRunning;
 
         private Vector3? _stationDefense;
+        private Vector3? _zoneScoutTarget;
 
         public void SetStationDefense(Vector3? position) => _stationDefense = position;
+
+        public void SetZoneScoutTarget(Vector3? target) => _zoneScoutTarget = target;
 
         public void SetOuterWingCount(int count) => _outerWingCount = count;
 
@@ -348,8 +351,9 @@ namespace EmpireAtWar.Services.Enemy
         }
 
         /// <summary>
-        /// One non-escort squadron scouts: first for build space when none is visible, otherwise to refresh the
-        /// team's most valuable stale intel, or to find the enemy at its nearest base when nothing is known.
+        /// One non-escort squadron scouts: first a zone the ships wait to attack (W68), then for build space when none
+        /// is visible, otherwise to refresh the team's most valuable stale intel, or to find the enemy at its nearest base
+        /// when nothing is known. A zone scout may take a group A wing and the last capture wing.
         /// </summary>
         private void AssignScout(int captureWings)
         {
@@ -366,6 +370,13 @@ namespace EmpireAtWar.Services.Enemy
                 foreach (ISquadron wing in _centreGroup.Members)
                     if (!_raids.ContainsKey(wing)) _scoutPool.Add(wing);
                 keep = 1;
+            }
+            if (_zoneScoutTarget.HasValue)
+            {
+                if (_scoutPool.Count == 0)
+                    foreach (ISquadron wing in _centreGroup.Members)
+                        if (!_raids.ContainsKey(wing)) _scoutPool.Add(wing);
+                keep = 0;
             }
             if (_scoutPool.Count == 0 ||
                 _captureAssignments.HasTargets && _scoutPool.Count <= keep || _stationDefense.HasValue)
@@ -394,6 +405,11 @@ namespace EmpireAtWar.Services.Enemy
 
         private bool TryGetScoutTarget(ISquadron scout, out Vector3 target)
         {
+            if (_zoneScoutTarget is Vector3 zone)
+            {
+                target = zone;
+                return true;
+            }
             Vector3 origin = scout.WorldPosition;
             foreach (IEnemyCaptureObjectiveSource source in _captureSources)
                 if (source is AllyAiMarkerSource markers &&

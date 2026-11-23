@@ -2,15 +2,26 @@ using System.Collections.Generic;
 using EmpireAtWar.Entities.EnemyFaction.Models;
 using EmpireAtWar.Ship;
 using EmpireAtWar.Services.TacticalMarkers;
+using UnityEngine;
 
 namespace EmpireAtWar.Services.Enemy
 {
     public sealed class EnemyShipTaskGroup
     {
+        /// <summary>A group asks for one reinforcement drop beside a ship fighting on its way at most this often (D3).</summary>
+        public const float DROP_REQUEST_INTERVAL = 30f;
+        /// <summary>One order-count row per group this often (W57).</summary>
+        public const float ORDER_REPORT_INTERVAL = 60f;
+
         private static int _nextGroupId;
         private readonly int _groupId = ++_nextGroupId;
         private bool _hasDecision;
         private readonly bool _unbuiltMinesOnly;
+        private float _nextDropRequestAt = float.NegativeInfinity;
+        private float _nextOrderReportAt = float.NegativeInfinity;
+        private int _reportedOrders;
+        /// <summary>Stable id of this group for its whole life, also across an empty cycle (W49, W57).</summary>
+        public int Id => _groupId;
         public List<IShipEntity> Ships { get; } = new List<IShipEntity>();
         public EnemyStrategicContextBuilder ContextBuilder { get; }
         public EnemyStrategicDecisionModel DecisionModel { get; }
@@ -29,6 +40,11 @@ namespace EmpireAtWar.Services.Enemy
         public float NoViableCaptureSince { get; internal set; } = -1f;
         /// <summary>A station was lost: only defend or gather until the turtle time ends (no raid, capture or move out).</summary>
         public bool Turtle { get; set; }
+        /// <summary>
+        /// W48 last stand: the whole fleet gathers at one team station and only defends it, guards it or fights what is
+        /// in front of it; no capture, raid, hunt, assault or answered request.
+        /// </summary>
+        public bool LastStand { get; set; }
 
         public EnemyShipTaskGroup(EnemyStrategicContextBuilder contextBuilder,
             EnemyStrategicDecisionModel decisionModel, EnemyTaskForceExecutor executor,
@@ -73,12 +89,19 @@ namespace EmpireAtWar.Services.Enemy
             }
             if (request == null && IsMainForce)
                 request = ContextBuilder.SelectArmadaResponse(next.State, out requestReason);
+            // W47 AllyCombined: a free main force joins an allied player's combined zone strike.
+            if (request == null && IsMainForce)
+                request = ContextBuilder.SelectAllyZoneStrike(next.State, out requestReason);
             if (Turtle && request != null && request.Type != TacticalMarkerType.Retreat) request = null;
+            if (LastStand) request = null;
             IsAnsweringTeam = request != null && requestReason != null;
             if (Turtle && next.State is not (EnemyStrategicState.DefendBase or EnemyStrategicState.Hold or
                     EnemyStrategicState.RebuildFleet or EnemyStrategicState.RetreatValue))
                 next = new EnemyStrategicDecision("Turtle: a station was lost; the fleet gathers at home.",
                     EnemyStrategicState.Hold, Ships.Count);
+            if (LastStand && !IsLastStandState(next.State))
+                next = new EnemyStrategicDecision("Last stand: the weak fleet gathers at the team station.",
+                    EnemyStrategicState.GuardSite, Ships.Count);
             if (request != null)
             {
                 next = new EnemyStrategicDecision(requestReason ?? $"Accepted allied {request.Type} request.",
@@ -112,6 +135,36 @@ namespace EmpireAtWar.Services.Enemy
                 Executor.BodyCount > 0 ? Context.CaptureObjective : null;
             ContextBuilder.ReportCaptureExecution(executedObjective, now);
             if (executedObjective != null) reservedObjectives.Add(executedObjective.Id);
+        }
+
+        /// <summary>W48: under a last stand the fleet only defends the station, guards its gather point or fights locally.</summary>
+        public static bool IsLastStandState(EnemyStrategicState state) =>
+            state is EnemyStrategicState.DefendBase or EnemyStrategicState.GuardSite or
+                EnemyStrategicState.EngageLocal or EnemyStrategicState.RebuildFleet;
+
+        /// <summary>
+        /// D3: a group ship fights on its way; the group keeps going and asks for one reinforcement drop beside it, at
+        /// most once per <see cref="DROP_REQUEST_INTERVAL"/>. False before the first decision.
+        /// </summary>
+        public bool TryRequestReinforcementDrop(float now, out Vector3 point)
+        {
+            point = default;
+            if (Context == null || now < _nextDropRequestAt || !Executor.TryFindEngagedEnRoute(Context, out point))
+                return false;
+            _nextDropRequestAt = now + DROP_REQUEST_INTERVAL;
+            return true;
+        }
+
+        /// <summary>Orders this group's executor passed on since the last report; one report per <see cref="ORDER_REPORT_INTERVAL"/> (W57).</summary>
+        public bool TryTakeOrderReport(float now, out int orders)
+        {
+            orders = 0;
+            if (now < _nextOrderReportAt) return false;
+            bool first = float.IsNegativeInfinity(_nextOrderReportAt);
+            _nextOrderReportAt = now + ORDER_REPORT_INTERVAL;
+            orders = Executor.IssuedOrderCount - _reportedOrders;
+            _reportedOrders = Executor.IssuedOrderCount;
+            return !first;
         }
     }
 }

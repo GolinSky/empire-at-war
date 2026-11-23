@@ -5,6 +5,7 @@ using EmpireAtWar.Entities.BaseEntity.EntityFacades;
 using EmpireAtWar.Entities.EnemyFaction.Models.Combat;
 using EmpireAtWar.Entities.EnemyFaction.Models.Intel;
 using EmpireAtWar.Entities.EnemyFaction.Models.Objectives;
+using EmpireAtWar.Entities.MiningFacility;
 using EmpireAtWar.Models.Players;
 using EmpireAtWar.Presenters.ReinforcementZones;
 using EmpireAtWar.Services.ReinforcementZones;
@@ -21,7 +22,8 @@ namespace EmpireAtWar.Services.Enemy
     /// site outside every zone. Defenders are the known hostile units around the zone plus its visible armed
     /// hostile structures, so a fortified zone is a stronger target, never a hidden one. The AI's own armed
     /// structures and wings in the zone are its support; a zone whose relay the team holds or where the AI has a
-    /// satellite standing is held. No zone is denied for the route to it: ships path around.
+    /// satellite standing is held. No zone is denied for the route to it: ships path around. Each zone is worth its
+    /// share of the team income plus relay access and the own platforms standing there (W47, W67).
     /// </summary>
     public sealed class EnemyZoneObjectiveCollector
     {
@@ -36,6 +38,16 @@ namespace EmpireAtWar.Services.Enemy
         public const float STATIC_DEFENSE_REACH = 500f;
         /// <summary>Before this battle time a zone nobody has seen is rated empty, so the opening is not stalled.</summary>
         public const float UNSCOUTED_GRACE_SECONDS = 180f;
+        /// <summary>Team income before any mine: the station income floor (same estimate as the strategic context).</summary>
+        public const float TEAM_BASE_INCOME = 15f;
+        /// <summary>Worth of holding a relay (a forward drop point), as a share of the team income.</summary>
+        public const float RELAY_ACCESS_SHARE = 0.15f;
+        /// <summary>Worth of each own platform or satellite already standing in the zone, as a share of the team income.</summary>
+        public const float PLATFORM_WORTH_SHARE = 0.05f;
+        /// <summary>A zone's value in credits is its worth share of the team income over this time.</summary>
+        public const float ZONE_VALUE_HORIZON_SECONDS = 180f;
+        /// <summary>A held-back garrison waits this far outside the zone edge: one common ship weapon range.</summary>
+        public const float HOLD_BACK_MARGIN = 500f;
 
         private readonly IReinforcementZoneSource _zones;
         private readonly IPlayerRoster _roster;
@@ -52,6 +64,7 @@ namespace EmpireAtWar.Services.Enemy
         private readonly List<float> _priorities = new List<float>();
         private readonly List<bool> _threatened = new List<bool>();
         private readonly List<int> _openSites = new List<int>();
+        private readonly List<int> _unbuiltMines = new List<int>();
         private readonly List<ReinforcementZonePresenter> _areaZones = new List<ReinforcementZonePresenter>();
         private readonly Dictionary<EnemyCaptureObjective, int> _areaOf = new Dictionary<EnemyCaptureObjective, int>();
         private readonly Dictionary<ReinforcementZonePresenter, int> _zoneArea =
@@ -87,6 +100,24 @@ namespace EmpireAtWar.Services.Enemy
         /// <summary>The reinforcement zone of the area; null for a lone site.</summary>
         public ReinforcementZonePresenter GetZone(int area) => _areaZones[area];
 
+        /// <summary>The zone's radius; a lone site's capture radius.</summary>
+        public float GetRadius(int area) => _radii[area];
+
+        /// <summary>
+        /// Where a held-back garrison waits (<see cref="EnemyZonePlan.HoldBackAndCounter"/>): just outside the zone edge,
+        /// toward the area's staging point.
+        /// </summary>
+        public Vector3 GetHoldBackPoint(int area, Vector3 home)
+        {
+            Vector3 centre = _centres[area];
+            Vector3 direction = GetStagingPoint(area, home) - centre;
+            direction.y = 0f;
+            if (direction.sqrMagnitude < 1f) direction = home - centre;
+            direction.y = 0f;
+            if (direction.sqrMagnitude < 1f) return centre;
+            return centre + direction.normalized * (_radii[area] + HOLD_BACK_MARGIN);
+        }
+
         /// <param name="priorities">Per candidate, value minus travel cost (same order); null rates every zone 0.</param>
         public void Collect(IReadOnlyList<EnemyCaptureObjective> candidates, IReadOnlyList<float> priorities,
             Vector3 origin, float speed, Func<Vector3, bool> isNearHostileBase)
@@ -97,6 +128,7 @@ namespace EmpireAtWar.Services.Enemy
             _priorities.Clear();
             _threatened.Clear();
             _openSites.Clear();
+            _unbuiltMines.Clear();
             _areaZones.Clear();
             _areaOf.Clear();
             _zoneArea.Clear();
@@ -113,6 +145,7 @@ namespace EmpireAtWar.Services.Enemy
                     _priorities.Add(priority);
                     _threatened.Add(false);
                     _openSites.Add(0);
+                    _unbuiltMines.Add(0);
                     _areaZones.Add(zone);
                     if (zone != null) _zoneArea.Add(zone, area);
                 }
@@ -120,7 +153,10 @@ namespace EmpireAtWar.Services.Enemy
                 _priorities[area] = Mathf.Max(_priorities[area], priority);
                 _threatened[area] |= candidate.IsThreatened;
                 if (!_roster.IsAllied(_owner, candidate.Owner)) _openSites[area]++;
+                if (candidate.IsMine && !candidate.BlockingFacilityId.HasValue) _unbuiltMines[area]++;
             }
+
+            float teamIncome = GetTeamIncome(out float mineIncome);
 
             for (int area = 0; area < _centres.Count; area++)
             {
@@ -142,8 +178,53 @@ namespace EmpireAtWar.Services.Enemy
                     isCentre, ownSide, _priorities[area],
                     PlanarDistance(origin, centre) / Mathf.Max(1f, speed), statics, deny, _threatened[area], held,
                     ownStructures, _openSites[area]);
+                bool owned = zone != null ? !zone.Owner.IsNone && _roster.IsAllied(_owner, zone.Owner) : _openSites[area] == 0;
+                float worthShare = (GetZoneIncome(area, mineIncome) + (zone != null ? RELAY_ACCESS_SHARE * teamIncome : 0f)) /
+                    teamIncome + ownStructures * PLATFORM_WORTH_SHARE;
+                objective.SetWorth(owned, worthShare * teamIncome * ZONE_VALUE_HORIZON_SECONDS, worthShare);
                 _objectives.Add(objective);
             }
+        }
+
+        /// <summary>
+        /// Team income: <see cref="TEAM_BASE_INCOME"/> plus every running allied mine. <paramref name="mineIncome"/> is the
+        /// average running mine on the map (the base income while none runs): what an unbuilt mine site is worth.
+        /// </summary>
+        private float GetTeamIncome(out float mineIncome)
+        {
+            float team = TEAM_BASE_INCOME;
+            float all = 0f;
+            int running = 0;
+            IReadOnlyList<AiWorldSnapshot.Entry> structures = _world.RaidStructures;
+            for (int i = 0; i < structures.Count; i++)
+            {
+                AiWorldSnapshot.Entry entry = structures[i];
+                if (!entry.IsMiningFacility || entry.Entity.HealthModel.IsDestroyed) continue;
+                float income = entry.Entity.GetFacade<IMiningFacilityFacade>().GrossIncome;
+                if (income <= 0f) continue;
+                all += income;
+                running++;
+                if (_roster.IsAllied(_owner, entry.Owner)) team += income;
+            }
+            mineIncome = running > 0 ? all / running : TEAM_BASE_INCOME;
+            return team;
+        }
+
+        /// <summary>Income of the running mines in the area (any owner) plus its unbuilt mine sites at <paramref name="mineIncome"/>.</summary>
+        private float GetZoneIncome(int area, float mineIncome)
+        {
+            float income = _unbuiltMines[area] * mineIncome;
+            ReinforcementZonePresenter zone = _areaZones[area];
+            IReadOnlyList<AiWorldSnapshot.Entry> structures = _world.RaidStructures;
+            for (int i = 0; i < structures.Count; i++)
+            {
+                AiWorldSnapshot.Entry entry = structures[i];
+                if (!entry.IsMiningFacility || entry.Entity.HealthModel.IsDestroyed ||
+                    (zone != null ? !EnemyShipTaskGroupPlanner.IsInZone(zone, entry.Position)
+                        : PlanarDistance(entry.Position, _centres[area]) > _radii[area])) continue;
+                income += entry.Entity.GetFacade<IMiningFacilityFacade>().GrossIncome;
+            }
+            return income;
         }
 
         /// <summary>

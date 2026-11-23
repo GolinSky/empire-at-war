@@ -54,6 +54,8 @@ namespace EmpireAtWar.Entities.Ship.StateMachine
         private bool _hasPursuitDestination;
         private bool _wasMoving;
         private bool _hasHeldPosition;
+        // Holding right now (no approach leg since the last hold); enables the leave margin.
+        private bool _isHolding;
         private int _artilleryRevision = -1;
         private ShipClass _artilleryTargetClass;
         private float _artilleryReach;
@@ -78,6 +80,9 @@ namespace EmpireAtWar.Entities.Ship.StateMachine
             _mainTargetEntity, TargetPosition);
         private bool IsInReach => ShipEngagement.IsInReach(_shipMoveComponent, _weaponComponent,
             _mainTargetEntity, TargetPosition);
+        // Reach with the leave margin: a ship holding on its target only re-approaches beyond this.
+        private bool IsInHeldReach => ShipEngagement.IsInReach(_shipMoveComponent, _weaponComponent,
+            _mainTargetEntity, TargetPosition, ShipEngagement.HELD_REACH_FACTOR);
         private float PursuitDestinationUpdateDistance => Mathf.Max(
             _shipMoveComponent.NavigationRadius,
             EngagementRange * 0.1f);
@@ -91,7 +96,7 @@ namespace EmpireAtWar.Entities.Ship.StateMachine
         private bool _holdPosition;
 
         public bool IsComplete => _mainTarget == null || _mainTarget.IsDestroyed || !_mainTarget.HasUnits ||
-                                  _mainTargetEntity.IsCloaked() || _holdPosition && !IsInReach;
+                                  _mainTargetEntity.IsCloaked() || _holdPosition && !IsInHeldReach;
 
         public AttackTargetState(
             IAttackDataFactory attackDataFactory,
@@ -237,6 +242,7 @@ namespace EmpireAtWar.Entities.Ship.StateMachine
         {
             _hasPursuitDestination = false;
             _hasHeldPosition = false;
+            _isHolding = false;
             _stallAttempt = 0;
             _wasMoving = false;
             _hasHardPointApproach = false;
@@ -258,7 +264,7 @@ namespace EmpireAtWar.Entities.Ship.StateMachine
                 TryUpdateHardPointApproach(deltaTime)) return;
 
             if (_artilleryCapability != null && TryUpdateArtilleryMove(deltaTime)) return;
-            if (IsInReach)
+            if (_isHolding ? IsInHeldReach : IsInReach)
             {
                 HoldAndLookAtTarget("inReach");
                 return;
@@ -310,6 +316,7 @@ namespace EmpireAtWar.Entities.Ship.StateMachine
 #endif
             NoteHold(reason);
             _hasHeldPosition = HasReachedRange = true;
+            _isHolding = true;
             _hasPursuitDestination = false;
             _wasMoving = false;
             _stallAttempt = 0;
@@ -319,7 +326,9 @@ namespace EmpireAtWar.Entities.Ship.StateMachine
 
         private void UpdateHardPointApproach(Vector3 offset, float deltaTime)
         {
-            if (offset == Vector3.zero)
+            // A held ship whose nearest mount drifted just out of range keeps holding (leave margin).
+            float heldSlack = _weaponComponent.AttackDistance * (ShipEngagement.HELD_REACH_FACTOR - 1f);
+            if (offset == Vector3.zero || _isHolding && offset.sqrMagnitude <= heldSlack * heldSlack)
             {
                 HoldAndLookAtTarget("hardPointInReach");
                 return;
@@ -375,7 +384,8 @@ namespace EmpireAtWar.Entities.Ship.StateMachine
             if (!useArtillery) return false;
 
             float distanceSquared = PlanarGeometry.DistanceSquared(_shipMoveComponent.CurrentPosition, targetPosition);
-            if (IsInReach || distanceSquared <= _artilleryReach * _artilleryReach)
+            float holdReach = _isHolding ? _artilleryReach * ShipEngagement.HELD_REACH_FACTOR : _artilleryReach;
+            if ((_isHolding ? IsInHeldReach : IsInReach) || distanceSquared <= holdReach * holdReach)
             {
                 HoldAndLookAtTarget("artilleryInReach");
                 return true;
@@ -460,6 +470,7 @@ namespace EmpireAtWar.Entities.Ship.StateMachine
 #endif
             _pursuitDestination = destination;
             _hasPursuitDestination = true;
+            _isHolding = false;
             _lastAttemptPosition = _shipMoveComponent.CurrentPosition;
             _stallRetryTimer = STALL_RETRY_INTERVAL;
             _shipMoveComponent.MoveToPosition(destination, preserveCourse);

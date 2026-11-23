@@ -29,6 +29,7 @@ namespace EmpireAtWar.Entities.Ship.EntityFacades
         public void EndAbilityFacing() => _orders.EndAbilityFacing();
         public UnitOrderType CurrentOrder => _orders.CurrentOrder;
         public IEntity AttackTarget => _orders.AttackTarget;
+        public bool IsEngagingEnRoute => _orders.IsEngagingEnRoute;
         public int OrderRevision => _orders.OrderRevision;
 
         public void ApplyReplicaOrder(UnitOrderType order, bool isNewOrder) =>

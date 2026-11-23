@@ -83,6 +83,31 @@ namespace EmpireAtWar.Tests.Editor
             Assert.That(score, Is.Zero);
         }
 
+        [TestCase(1, false)]
+        [TestCase(5, true)]
+        public void SmallTurnNeedsAScoreMarginOverAHeadingThatAlreadyFires(int narrowWeight, bool turns)
+        {
+            var solver = new WeaponFacingSolver();
+            solver.AddTarget(Vector3.forward * 100f);
+            solver.AddMount(Vector3.zero, Quaternion.identity, 150f, -180f, 180f, 10, mainBattery: true);
+            // Reaches the target only after a turn of a few degrees.
+            solver.AddMount(Vector3.zero, Quaternion.identity, 150f, 4f, 8f, narrowWeight, mainBattery: true);
+
+            float turn = solver.FindTurn(out int score);
+
+            if (turns)
+            {
+                Assert.That(turn, Is.Not.Zero);
+                Assert.That(Mathf.Abs(turn), Is.LessThanOrEqualTo(WeaponFacingSolver.FACING_DEAD_ZONE_DEGREES));
+                Assert.That(score, Is.EqualTo(10 + narrowWeight));
+            }
+            else
+            {
+                Assert.That(turn, Is.Zero, "A marginal gain keeps the current heading.");
+                Assert.That(score, Is.EqualTo(10));
+            }
+        }
+
         [TestCase(257)]
         [TestCase(1031)]
         public void SeededLayoutsPreserveReferenceTurnAndScore(int seed)
@@ -153,6 +178,20 @@ namespace EmpireAtWar.Tests.Editor
         {
             bestScore = 0;
             float bestTurn = 0f;
+            int currentScore = 0;
+            int maximumScore = 0;
+            foreach (var mount in mounts)
+            {
+                if (mount.Main != main) continue;
+                foreach (Vector3 offset in targets)
+                {
+                    if (Mathf.Abs(new Vector2(offset.x, offset.z).magnitude -
+                                  new Vector2(mount.Offset.x, mount.Offset.z).magnitude) > mount.Range) continue;
+                    maximumScore += mount.Weight;
+                    break;
+                }
+            }
+
             for (int step = 0; step < 180; step++)
             {
                 int turn = (step + 1) / 2 * 2 * (step % 2 == 0 ? -1 : 1);
@@ -178,9 +217,19 @@ namespace EmpireAtWar.Tests.Editor
                         break;
                     }
                 }
+                if (step == 0) currentScore = score;
                 if (score <= bestScore) continue;
                 bestScore = score;
                 bestTurn = turn;
+            }
+
+            // Dead zone: a small turn must add the score margin over a heading that already fires.
+            if (bestTurn != 0f && Mathf.Abs(bestTurn) <= WeaponFacingSolver.FACING_DEAD_ZONE_DEGREES &&
+                currentScore > 0 && bestScore - currentScore <
+                Mathf.Max(1, Mathf.CeilToInt(maximumScore * WeaponFacingSolver.FACING_SCORE_MARGIN)))
+            {
+                bestScore = currentScore;
+                bestTurn = 0f;
             }
             return bestTurn;
         }

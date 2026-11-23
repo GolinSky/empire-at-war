@@ -19,7 +19,9 @@ namespace EmpireAtWar.Services.Enemy
             IReadOnlyList<UnitCombatProfile> hangar,
             float warheadDamageMultiplier = 1f,
             float warheadReloadMultiplier = 1f,
-            float shieldRegen = 0f)
+            float shieldRegen = 0f,
+            float speed = 0f,
+            float price = 0f)
         {
             float[] hullDps = new float[ForceComposition.ClassSlots];
             float[] shieldDps = new float[ForceComposition.ClassSlots];
@@ -58,7 +60,8 @@ namespace EmpireAtWar.Services.Enemy
                 }
             }
 
-            return new UnitCombatProfile(shipClass, hull, shields, hullDps, shieldDps, piercingDps, hangar, shieldRegen);
+            return new UnitCombatProfile(shipClass, hull, shields, hullDps, shieldDps, piercingDps, hangar, shieldRegen,
+                speed, price);
         }
     }
 }

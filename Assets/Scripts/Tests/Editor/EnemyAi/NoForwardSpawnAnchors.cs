@@ -17,5 +17,9 @@ namespace EmpireAtWar.Tests.Editor
             awayFrom = default;
             return false;
         }
+
+        public bool CollectPlannedWave(Vector3 task, IReadOnlyList<Vector3> landedShips,
+            List<ForwardSpawnAnchor> anchors, out Vector3 awayFrom) =>
+            Collect(task, landedShips, false, anchors, out awayFrom);
     }
 }

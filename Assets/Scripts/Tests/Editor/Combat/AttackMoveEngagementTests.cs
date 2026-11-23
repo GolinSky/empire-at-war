@@ -77,6 +77,26 @@ namespace EmpireAtWar.Tests.Editor
         }
 
         [Test]
+        public void SelectTarget_InReachEnemyRanksBeforeAFarOneWithFewerAttackers()
+        {
+            AttackMoveEngagement engagement = new AttackMoveEngagement();
+            FakeEntity inReach = new FakeEntity(1);
+            FakeEntity far = new FakeEntity(2);
+            int other = engagement.Join();
+            int member = engagement.Join();
+            engagement.Report(other, new IEntity[] { inReach, far });
+            Func<IEntity, int> priority = enemy => enemy == inReach ? 1 : 0;
+            Assert.That(engagement.SelectTarget(other, BY_ID, ANY, priority: priority), Is.SameAs(inReach));
+
+            // Without the priority the far enemy wins on fewer attackers; with it the enemy in reach comes first.
+            Assert.That(engagement.SelectTarget(member, BY_ID, ANY), Is.SameAs(far));
+            Assert.That(engagement.SelectTarget(member, BY_ID, ANY, priority: priority), Is.SameAs(inReach));
+            Func<IEntity, bool> isPreferred = enemy => enemy == far;
+            Assert.That(engagement.SelectTarget(member, BY_ID, isPreferred, priority: priority), Is.SameAs(far),
+                "The preferred class still comes first.");
+        }
+
+        [Test]
         public void Contains_DropsDestroyedAndUnreportedEnemies()
         {
             AttackMoveEngagement engagement = new AttackMoveEngagement();

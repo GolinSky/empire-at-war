@@ -29,6 +29,7 @@ namespace EmpireAtWar.Services.Enemy
         private const float CAPTURE_APPROACH_STALL_SECONDS = 5f;
 
         private readonly IUnitOrderService _unitOrderService;
+        private readonly AiOrderDeduplicator _orderFilter;
         private readonly Dictionary<string, (List<GameEntity> Receivers, List<Vector3> Offsets)> _retargetReceivers =
             new Dictionary<string, (List<GameEntity>, List<Vector3>)>();
         private GameEntity _battleTarget;
@@ -41,6 +42,11 @@ namespace EmpireAtWar.Services.Enemy
         private const int READY_KEEP_QUARTERS = 2;
         private const float ANCHOR_DPS_SWITCH_FACTOR = 1.25f;
         private const float DEFENSE_POINT_CHANGE_SQUARED = 200f * 200f;
+        /// <summary>
+        /// A state change keeps the ships' assignments when the new order point lies this close to the last one (W49):
+        /// ships keep their order and arrive instead of being sent to the same place again.
+        /// </summary>
+        public const float ORDER_POINT_KEEP_DISTANCE = 200f;
         private readonly Dictionary<IShipEntity, Vector3> _defensePoints = new Dictionary<IShipEntity, Vector3>();
         private readonly Dictionary<IShipEntity, GameEntity> _defenseTargets = new Dictionary<IShipEntity, GameEntity>();
         private float _noFiringSince = -1f;
@@ -73,7 +79,7 @@ namespace EmpireAtWar.Services.Enemy
         /// <summary>Gather point each uncommitted main-force ship was last sent to (W31).</summary>
         private readonly Dictionary<IShipEntity, Vector3> _holdPoints = new Dictionary<IShipEntity, Vector3>();
         private Vector3? _retreatAnchor;
-        private Vector3? _guardPosition;
+        private readonly List<IShipEntity> _guardShips = new List<IShipEntity>();
         public string ActionReason { get; private set; } = "";
         private EnemyStrategicState _lastState;
         private readonly HashSet<IShipEntity> _assignedShips = new HashSet<IShipEntity>();
@@ -86,10 +92,24 @@ namespace EmpireAtWar.Services.Enemy
         private long _markerId = -1;
         private Vector3 _markerPoint;
         private readonly HashSet<IShipEntity> _markerShips = new HashSet<IShipEntity>();
+        private Vector3? _lastOrderPoint;
 
-        // Orders pass a filter: the same order to the same target or point is not sent again (E9 churn).
-        public EnemyTaskForceExecutor(IUnitOrderService unitOrderService) =>
-            _unitOrderService = new AiOrderDeduplicator(unitOrderService);
+        // Orders pass a filter: the same order to the same target or point is not sent again (E9 churn), and a ship
+        // fighting on its way keeps that fight (W66).
+        public EnemyTaskForceExecutor(IUnitOrderService unitOrderService)
+        {
+            _orderFilter = new AiOrderDeduplicator(unitOrderService);
+            _unitOrderService = _orderFilter;
+        }
+
+        /// <summary>Orders this executor passed on since it was created, counted per ship (W57).</summary>
+        public int IssuedOrderCount => _orderFilter.PassedOrders;
+
+        /// <summary>
+        /// The last Hold, RebuildFleet or rally sent the ships to the group's gather point: they leave the spawn zone on
+        /// that order, so nothing else moves them out (W55).
+        /// </summary>
+        public bool HoldsAtGatherPoint { get; private set; }
 
         /// <summary>Ships committed with the main body by the last offensive order; 0 for other states.</summary>
         public int BodyCount => _body.Count;
@@ -121,7 +141,14 @@ namespace EmpireAtWar.Services.Enemy
         {
             _markerId = -1;
             _markerShips.Clear();
-            if (_lastState != decision.State)
+            HoldsAtGatherPoint = false;
+            ForgetEngagedEnRoute(context);
+            // W49: a new state that sends the ships to the point they already hold or head for keeps their assignments.
+            Vector3? orderPoint = GetOrderPoint(decision.State, context);
+            bool samePoint = orderPoint.HasValue && _lastOrderPoint.HasValue &&
+                PlanarDistance(orderPoint.Value, _lastOrderPoint.Value) <= ORDER_POINT_KEEP_DISTANCE;
+            _lastOrderPoint = orderPoint;
+            if (_lastState != decision.State && !samePoint)
             {
                 _assignedShips.Clear();
                 _rallyAnchors.Clear();
@@ -153,6 +180,10 @@ namespace EmpireAtWar.Services.Enemy
             foreach (IShipEntity ship in _strikeTargets.Keys)
                 if (!context.Receivers.ContainsKey(ship)) _lostShips.Add(ship);
             foreach (IShipEntity ship in _lostShips) _strikeTargets.Remove(ship);
+            _lostShips.Clear();
+            foreach (IShipEntity ship in _holdPoints.Keys)
+                if (!context.Receivers.ContainsKey(ship)) _lostShips.Add(ship);
+            foreach (IShipEntity ship in _lostShips) _holdPoints.Remove(ship);
             if (context.Ships.Count == 0) return;
             switch (decision.State)
             {
@@ -184,12 +215,64 @@ namespace EmpireAtWar.Services.Enemy
                     return;
                 case EnemyStrategicState.Hold:
                 case EnemyStrategicState.RebuildFleet:
+                    HoldsAtGatherPoint = context.GuardPosition.HasValue;
+                    if (HoldsAtGatherPoint) context.OrderDestination = context.GuardPosition;
                     StopRemaining(context, context.Ships, 0);
                     return;
                 default:
                     throw new ArgumentOutOfRangeException(nameof(decision.State));
             }
         }
+
+        /// <summary>
+        /// Where a point-based state sends the ships: the capture target, the gather or guard point, or the retreat
+        /// anchor. Target-based states (attack, hunt, defense, engage) have none.
+        /// </summary>
+        private static Vector3? GetOrderPoint(EnemyStrategicState state, EnemyStrategicContext context) => state switch
+        {
+            EnemyStrategicState.CaptureZone => context.CaptureTarget,
+            EnemyStrategicState.GuardSite or EnemyStrategicState.Consolidate or EnemyStrategicState.Hold or
+                EnemyStrategicState.RebuildFleet => context.GuardPosition,
+            EnemyStrategicState.RetreatValue => context.RetreatAnchor,
+            _ => null
+        };
+
+        /// <summary>
+        /// A ship fighting a warship that hit it on its attack-move is not ordered (the order filter skips it, W66);
+        /// its assignment is dropped so it is placed afresh once the fight ends.
+        /// </summary>
+        private void ForgetEngagedEnRoute(EnemyStrategicContext context)
+        {
+            foreach (IShipEntity ship in context.Ships)
+            {
+                if (!IsEngagingEnRoute(context, ship)) continue;
+                _assignedShips.Remove(ship);
+                _holdPoints.Remove(ship);
+                _rallyAnchors.Remove(ship);
+                _strikeTargets.Remove(ship);
+                _captureApproaches.Remove(ship);
+                _captureEntered.Remove(ship);
+                _captureEscortPoints.Remove(ship);
+                _defensePoints.Remove(ship);
+                _defenseTargets.Remove(ship);
+            }
+        }
+
+        /// <summary>A group ship fighting on its way (W66, D3): the group keeps going and may ask for a reinforcement there.</summary>
+        public bool TryFindEngagedEnRoute(EnemyStrategicContext context, out Vector3 position)
+        {
+            foreach (IShipEntity ship in context.Ships)
+            {
+                if (!IsEngagingEnRoute(context, ship)) continue;
+                position = ship.WorldPosition;
+                return true;
+            }
+            position = default;
+            return false;
+        }
+
+        private static bool IsEngagingEnRoute(EnemyStrategicContext context, IShipEntity ship) =>
+            context.Receivers[ship].GetFacade<IUnitOrderObserverFacade>().IsEngagingEnRoute;
 
         private void ExecuteLocalEngagement(EnemyStrategicDecision decision, EnemyStrategicContext context)
         {
@@ -208,25 +291,18 @@ namespace EmpireAtWar.Services.Enemy
             IssueStrikeAttack(context, target, keepTargets: true);
         }
 
+        // Guarding and holding share one bookkeeping: a ship sent to the point by Hold keeps it under GuardSite (W49).
         private void ExecuteSiteGuard(EnemyStrategicContext context, List<IShipEntity> excluded = null)
         {
-            Vector3 point = context.GuardPosition.Value;
-            bool samePoint = _guardPosition == point;
-            _guardPosition = point;
-            context.OrderDestination = point;
-            var receivers = new List<GameEntity>();
+            _guardShips.Clear();
             foreach (IShipEntity ship in context.Ships)
             {
                 if (excluded != null && excluded.Contains(ship)) continue;
                 _body.Add(ship);
-                bool insideGuardArea = PlanarDistance(ship.WorldPosition, point) <= FleetCohesion.RADIUS;
-                bool alreadyGuarding = _assignedShips.Contains(ship) && samePoint &&
-                    (ship.CurrentOrder == UnitOrderType.AttackMove ||
-                     insideGuardArea && ship.CurrentOrder is UnitOrderType.None or UnitOrderType.Attack);
-                if (!alreadyGuarding) receivers.Add(context.Receivers[ship]);
-                _assignedShips.Add(ship);
+                _guardShips.Add(ship);
             }
-            if (receivers.Count > 0) _unitOrderService.IssueAttackMove(receivers, point);
+            HoldAtPoint(context, _guardShips, 0, context.GuardPosition.Value);
+            context.OrderDestination = context.GuardPosition;
         }
 
         private void ExecuteDefense(EnemyStrategicDecision decision, EnemyStrategicContext context)
@@ -555,19 +631,31 @@ namespace EmpireAtWar.Services.Enemy
                 GuardSupport(context, _supportShips, anchor);
                 return;
             }
-            Vector3 point = context.GuardPosition.Value;
+            HoldAtPoint(context, ships, start, context.GuardPosition.Value);
+        }
+
+        /// <summary>
+        /// Ships from <paramref name="start"/> on attack-move to <paramref name="point"/>; one that holds there already
+        /// (on its way there, or arrived and idle or fighting) is left alone (W31, W55). A point moved less than
+        /// <see cref="ORDER_POINT_KEEP_DISTANCE"/> counts as the same, so a ship keeps its order and arrives (W49).
+        /// </summary>
+        private void HoldAtPoint(EnemyStrategicContext context, IReadOnlyList<IShipEntity> ships, int start, Vector3 point)
+        {
             List<GameEntity> receivers = null;
             for (int i = start; i < ships.Count; i++)
             {
                 IShipEntity ship = ships[i];
                 _rallyAnchors.Remove(ship);
                 bool holding = _holdPoints.TryGetValue(ship, out Vector3 previous) &&
-                    (previous - point).sqrMagnitude <= CAPTURE_TARGET_EPSILON_SQUARED &&
-                    (ship.CurrentOrder == UnitOrderType.AttackMove ||
+                    PlanarDistance(previous, point) <= ORDER_POINT_KEEP_DISTANCE &&
+                    (ship.CurrentOrder == UnitOrderType.AttackMove && _orderFilter.WasLastSent(context.Receivers[ship],
+                         UnitOrderType.AttackMove, previous, AiOrderDeduplicator.SAME_POINT_DISTANCE) ||
                      ship.CurrentOrder is UnitOrderType.None or UnitOrderType.Attack &&
-                     PlanarDistance(ship.WorldPosition, point) <= FleetCohesion.RADIUS);
+                     PlanarDistance(ship.WorldPosition, point) <= FleetCohesion.RADIUS + ship.NavigationRadius);
+                if (holding) continue;
+                // The point a ship was last sent to stays its hold point until it is sent again.
                 _holdPoints[ship] = point;
-                if (!holding) (receivers ??= new List<GameEntity>()).Add(context.Receivers[ship]);
+                (receivers ??= new List<GameEntity>()).Add(context.Receivers[ship]);
             }
             if (receivers != null) _unitOrderService.IssueAttackMove(receivers, point);
         }
@@ -589,6 +677,8 @@ namespace EmpireAtWar.Services.Enemy
             {
                 if (marker.Type == TacticalMarkerType.Retreat &&
                     !AllyAiMarkerSource.Near(ship.WorldPosition, marker.Point)) continue;
+                // A ship fighting on its way takes the marker once its fight ends (W66).
+                if (marker.Type != TacticalMarkerType.Retreat && IsEngagingEnRoute(context, ship)) continue;
                 if (!_markerShips.Add(ship)) continue;
                 receivers.Add(context.Receivers[ship]);
             }
@@ -613,19 +703,31 @@ namespace EmpireAtWar.Services.Enemy
             }
         }
 
+        /// <summary>
+        /// The main force gathers around its anchor ship. With a gather point the anchor attack-moves there and the rest
+        /// guards it, so the force arrives together; it never stops away from the point (W55).
+        /// </summary>
         public void Rally(EnemyStrategicContext context)
         {
             _markerId = -1;
             _markerShips.Clear();
+            HoldsAtGatherPoint = context.GuardPosition.HasValue;
             if (context.Ships.Count == 0) return;
+            ForgetEngagedEnRoute(context);
             IShipEntity anchor = SplitBody(context.Ships, context.Ships.Count);
-            RallyBody(context, anchor);
+            RallyBody(context, anchor, context.GuardPosition);
             ActionReason = $"Assembling main force: {_body.Count}/{context.Ships.Count} ships in the body.";
         }
 
-        private void RallyBody(EnemyStrategicContext context, IShipEntity anchor)
+        private void RallyBody(EnemyStrategicContext context, IShipEntity anchor, Vector3? gatherPoint = null)
         {
-            if (anchor.CurrentOrder != UnitOrderType.None)
+            if (gatherPoint.HasValue)
+            {
+                _anchorHold.Clear();
+                _anchorHold.Add(anchor);
+                HoldAtPoint(context, _anchorHold, 0, gatherPoint.Value);
+            }
+            else if (anchor.CurrentOrder != UnitOrderType.None)
                 _unitOrderService.IssueStop(new[] { context.Receivers[anchor] });
             _supportShips.Clear();
             foreach (IShipEntity ship in _body)
@@ -649,7 +751,8 @@ namespace EmpireAtWar.Services.Enemy
             {
                 bool arrived = _assignedShips.Contains(ship) && ship.CurrentOrder == UnitOrderType.None &&
                     (!context.RetreatAnchor.HasValue ||
-                     PlanarDistance(ship.WorldPosition, context.RetreatAnchor.Value) <= FleetCohesion.RADIUS);
+                     PlanarDistance(ship.WorldPosition, context.RetreatAnchor.Value) <=
+                     FleetCohesion.RADIUS + ship.NavigationRadius);
                 if (!anchorChanged && (ship.CurrentOrder == UnitOrderType.Retreat || arrived)) continue;
                 receivers.Add(context.Receivers[ship]);
             }
@@ -911,6 +1014,8 @@ namespace EmpireAtWar.Services.Enemy
         private bool _wasReady;
         private GameEntity _readyTarget;
         private readonly List<IShipEntity> _newSlotShips = new List<IShipEntity>();
+        private readonly List<IShipEntity> _anchorHold = new List<IShipEntity>(1);
+        private readonly List<float> _cohesionRadii = new List<float>();
 
         /// <summary>
         /// Splits the first <paramref name="count"/> ships into the main body around the anchor and the stragglers.
@@ -921,18 +1026,23 @@ namespace EmpireAtWar.Services.Enemy
             _body.Clear();
             _stragglers.Clear();
             _cohesionPoints.Clear();
-            for (int i = 0; i < count; i++) _cohesionPoints.Add(ToPoint(ships[i].WorldPosition));
+            _cohesionRadii.Clear();
+            for (int i = 0; i < count; i++)
+            {
+                _cohesionPoints.Add(ToPoint(ships[i].WorldPosition));
+                _cohesionRadii.Add(ships[i].NavigationRadius);
+            }
             int heldIndex = -1;
             for (int i = 0; i < count; i++)
                 if (ships[i] == _heldAnchor) heldIndex = i;
-            int anchorIndex = FleetCohesion.FindAnchor(_cohesionPoints, FleetCohesion.RADIUS, heldIndex);
+            int anchorIndex = FleetCohesion.FindAnchor(_cohesionPoints, _cohesionRadii, FleetCohesion.RADIUS, heldIndex);
             _heldAnchor = ships[anchorIndex];
             FormationPoint anchorPoint = _cohesionPoints[anchorIndex];
             for (int i = 0; i < count; i++)
             {
                 IShipEntity ship = ships[i];
-                bool inBody = FleetCohesion.IsInBody(anchorPoint, _cohesionPoints[i], FleetCohesion.RADIUS,
-                    _bodyMembers.Contains(ship));
+                bool inBody = FleetCohesion.IsInBody(anchorPoint, _cohesionRadii[anchorIndex], _cohesionPoints[i],
+                    _cohesionRadii[i], FleetCohesion.RADIUS, _bodyMembers.Contains(ship));
                 (inBody ? _body : _stragglers).Add(ship);
             }
             _bodyMembers.Clear();
@@ -996,9 +1106,18 @@ namespace EmpireAtWar.Services.Enemy
             return false;
         }
 
+        /// <summary>
+        /// Ships from <paramref name="start"/> on with no task attack-move to the group's gather point and hold there:
+        /// never order <c>None</c> away from a hold point (W55). Only a group without a gather point stops them.
+        /// </summary>
         private void StopRemaining(EnemyStrategicContext context,
             IReadOnlyList<IShipEntity> ships, int start)
         {
+            if (context.GuardPosition.HasValue)
+            {
+                HoldAtPoint(context, ships, start, context.GuardPosition.Value);
+                return;
+            }
             List<GameEntity> idleCandidates = new List<GameEntity>();
             for (int i = start; i < ships.Count; i++)
                 if (ships[i].CurrentOrder != UnitOrderType.None)

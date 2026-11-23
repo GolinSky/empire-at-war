@@ -10,6 +10,9 @@ namespace EmpireAtWar.Services.ShipNavigation
     {
         internal const int MAX_VISITED = 64;
         internal const float SEPARATION_MARGIN = 0.1f;
+        // Overlap below this share of the pair's contact distance is left alone: navigation circles are larger
+        // than the hulls, and nudging held ships for a few metres moved them out of their firing positions.
+        internal const float MIN_PENETRATION_FRACTION = 0.1f;
 
         [ReadOnly] public NativeArray<ShipSpacingInput> Inputs;
         [ReadOnly] public NativeParallelHashMap<int2, int2> Ranges;
@@ -82,6 +85,7 @@ namespace EmpireAtWar.Services.ShipNavigation
                 if (other.Eligible && !other.Anchored && own.RegistrationId < other.RegistrationId) continue;
                 float distance = math.sqrt(squaredDistance);
                 float penetration = radius - distance;
+                if (penetration < radius * MIN_PENETRATION_FRACTION) continue;
                 if (result.HasCorrection && (penetration < result.Penetration ||
                     penetration == result.Penetration && other.RegistrationId > result.BlockerId)) continue;
                 float2 direction = distance > 0.0001f

@@ -59,6 +59,7 @@ namespace EmpireAtWar.Tests.Editor
             _recovery.HasAnchor = false;
             _recovery.Safe = true;
             _recovery.Threat = null;
+            new BattleClock(null);
             _root =new GameObject(nameof(EnemyStructurePlacementServiceTests));
             _map = new MapStub();
             _zones = new ZonesStub();
@@ -167,6 +168,7 @@ namespace EmpireAtWar.Tests.Editor
         public void TearDown()
         {
             UnityEngine.Object.DestroyImmediate(_root);
+            new BattleClock(null);
         }
 
         [Test]
@@ -323,6 +325,7 @@ namespace EmpireAtWar.Tests.Editor
             Vector3 relay = new Vector3(400f, 0f, 0f);
             AddZone(TestPlayers.Enemy, relay);
 
+            SettleHeldZones();
             Assert.That(_enemyStructurePlacementService.TryGetDefensePosition(false, out Vector3 first), Is.True);
             // The platform ring lies outside the doubled zone radius, where the zone itself ends.
             Assert.That(first.magnitude, Is.GreaterThan(2f * HELD_ZONE_RADIUS));
@@ -344,6 +347,7 @@ namespace EmpireAtWar.Tests.Editor
             AddPlatform(new Vector3(-70f, 0f, 0f));
             AddPlatform(relay + new Vector3(70f, 0f, 0f));
 
+            SettleHeldZones();
             Assert.That(_enemyStructurePlacementService.TryGetDefensePosition(false, out _), Is.False);
             Assert.That(_enemyStructurePlacementService.TryGetDefensePosition(true, out Vector3 extra), Is.True);
             // The relay has fewer platforms, so its extra comes first.
@@ -357,6 +361,7 @@ namespace EmpireAtWar.Tests.Editor
             AddZone(TestPlayers.Enemy, Vector3.zero, isMain: true);
             AddPlatform(new Vector3(70f, 0f, 0f));
 
+            SettleHeldZones();
             Assert.That(_enemyStructurePlacementService.TryGetDefensePosition(false, out _), Is.True,
                 "The centre takes a second platform when ships do not compete.");
             Assert.That(_enemyStructurePlacementService.TryGetDefensePosition(false, true, out _), Is.False,
@@ -372,6 +377,7 @@ namespace EmpireAtWar.Tests.Editor
             AddPlatform(relay + new Vector3(70f, 0f, 0f), DefendPlatformType.QuadLaserSatellite);
             AddPlatform(relay + new Vector3(-70f, 0f, 0f), DefendPlatformType.BattleAsteroid);
 
+            SettleHeldZones();
             Assert.That(_enemyStructurePlacementService.TryGetDefensePosition(false, out _), Is.True);
             AddPlatform(relay + new Vector3(0f, 0f, 70f));
             Assert.That(_enemyStructurePlacementService.TryGetDefensePosition(false, out _), Is.False);
@@ -400,6 +406,7 @@ namespace EmpireAtWar.Tests.Editor
             AddZone(TestPlayers.Enemy, relay);
             int atCentre = 0;
             int atRelay = 0;
+            SettleHeldZones();
             while (_enemyStructurePlacementService.TryGetDefensePosition(true, out Vector3 position))
             {
                 AddPlatform(position);
@@ -423,10 +430,82 @@ namespace EmpireAtWar.Tests.Editor
             Assert.That(_enemyStructurePlacementService.TryGetDefensePosition(true, out _), Is.False);
         }
 
-        private void AddZone(PlayerId owner, Vector3 center, bool isMain = false) =>
-            _zoneSource.Items.Add(new ReinforcementZonePresenter(new HeldZoneView(center),
+        // W50: zones count once held, uncontested, for the hold time.
+        [Test]
+        public void DefensePosition_ZoneHeldShorterThanTheHoldTime_GetsNoPlatform()
+        {
+            _map.SetBounds(-1000f, 1000f);
+            AddZone(TestPlayers.Enemy, new Vector3(400f, 0f, 0f));
+
+            Assert.That(_enemyStructurePlacementService.TryGetDefensePosition(false, out _), Is.False,
+                "A zone just taken gets no platform.");
+            new BattleClock(null).Restore(EnemyStructurePlacementService.PLATFORM_ZONE_HOLD_SECONDS * 0.5f);
+            Assert.That(_enemyStructurePlacementService.TryGetDefensePosition(false, out _), Is.False);
+            new BattleClock(null).Restore(EnemyStructurePlacementService.PLATFORM_ZONE_HOLD_SECONDS);
+            Assert.That(_enemyStructurePlacementService.TryGetDefensePosition(false, out _), Is.True);
+        }
+
+        [Test]
+        public void DefensePosition_ContestedZone_GetsNoPlatform()
+        {
+            _map.SetBounds(-1000f, 1000f);
+            ReinforcementZonePresenter relay = AddZone(TestPlayers.Enemy, new Vector3(400f, 0f, 0f));
+            SettleHeldZones();
+            Assert.That(_enemyStructurePlacementService.TryGetDefensePosition(false, out _), Is.True);
+
+            relay.Restore(TestPlayers.Enemy, TestPlayers.Human, 0.5f, true);
+
+            Assert.That(_enemyStructurePlacementService.TryGetDefensePosition(false, out _), Is.False);
+        }
+
+        [Test]
+        public void DefensePosition_RetakenZone_WaitsTheHoldTimeAgain()
+        {
+            _map.SetBounds(-1000f, 1000f);
+            ReinforcementZonePresenter relay = AddZone(TestPlayers.Enemy, new Vector3(400f, 0f, 0f));
+            SettleHeldZones();
+            relay.Restore(TestPlayers.Human, PlayerId.None, 0f, false);
+            Assert.That(_enemyStructurePlacementService.TryGetDefensePosition(false, out _), Is.False);
+
+            relay.Restore(TestPlayers.Enemy, PlayerId.None, 0f, false);
+
+            Assert.That(_enemyStructurePlacementService.TryGetDefensePosition(false, out _), Is.False,
+                "The hold time counts from the retake.");
+        }
+
+        [Test]
+        public void DefensePosition_BigPlatform_NeedsKnownHostilesBeyondTheStandOffRange()
+        {
+            _map.SetBounds(-3000f, 3000f);
+            Vector3 relay = new Vector3(400f, 0f, 0f);
+            AddZone(TestPlayers.Enemy, relay);
+            SettleHeldZones();
+            // Far enough for a small platform's safety test, inside the big-platform stand-off range.
+            _recovery.Threat = relay + Vector3.forward * (EnemyStructurePlacementService.BIG_PLATFORM_HOSTILE_RANGE * 0.8f);
+
+            Assert.That(_enemyStructurePlacementService.TryGetDefensePosition(false, false, false, out _), Is.True);
+            Assert.That(_enemyStructurePlacementService.TryGetDefensePosition(false, false, true, out _), Is.False);
+
+            _recovery.Threat = relay + Vector3.forward * (EnemyStructurePlacementService.BIG_PLATFORM_HOSTILE_RANGE * 1.5f);
+            Assert.That(_enemyStructurePlacementService.TryGetDefensePosition(false, false, true, out _), Is.True);
+        }
+
+        /// <summary>Lets the service see the held zones now, then moves the battle clock past the hold time.</summary>
+        private void SettleHeldZones()
+        {
+            float now = BattleClock.CurrentElapsed;
+            _enemyStructurePlacementService.TryGetDefensePosition(false, out _);
+            new BattleClock(null).Restore(now + EnemyStructurePlacementService.PLATFORM_ZONE_HOLD_SECONDS);
+        }
+
+        private ReinforcementZonePresenter AddZone(PlayerId owner, Vector3 center, bool isMain = false)
+        {
+            var zone = new ReinforcementZonePresenter(new HeldZoneView(center),
                 TestPlayers.CreateLocalPlayer(_zoneRoster),
-                new ReinforcementZoneModel(_zoneRoster, owner, 10f, 1f, true), isMain));
+                new ReinforcementZoneModel(_zoneRoster, owner, 10f, 1f, true), isMain);
+            _zoneSource.Items.Add(zone);
+            return zone;
+        }
 
         private void AddPlatform(Vector3 position, DefendPlatformType type = DefendPlatformType.Xq6)
         {

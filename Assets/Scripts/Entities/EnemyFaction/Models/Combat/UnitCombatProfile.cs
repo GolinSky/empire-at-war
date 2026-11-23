@@ -29,10 +29,18 @@ namespace EmpireAtWar.Entities.EnemyFaction.Models.Combat
         /// <summary>Squadrons the unit fields at the same time from its hangar.</summary>
         public IReadOnlyList<UnitCombatProfile> Hangar { get; }
 
+        /// <summary>Cruise speed in units per second; 0 for a unit that cannot move (structures).</summary>
+        public float Speed { get; }
+
+        /// <summary>Purchase price in credits; 0 for a unit no faction sells (map heroes, hangar-only wings, structures).</summary>
+        public float Price { get; }
+
         /// <param name="hullDps">Hull damage per second of shield-blocked weapons, indexed by <see cref="ShipClass"/>.</param>
         /// <param name="shieldDps">Shield damage per second of the same weapons, indexed by <see cref="ShipClass"/>.</param>
         /// <param name="piercingDps">Hull damage per second of shield-piercing weapons, indexed by <see cref="ShipClass"/>.</param>
         /// <param name="shieldRegen">Shield points restored per second.</param>
+        /// <param name="speed">Cruise speed in units per second.</param>
+        /// <param name="price">Purchase price in credits.</param>
         public UnitCombatProfile(
             ShipClass shipClass,
             float hull,
@@ -41,9 +49,13 @@ namespace EmpireAtWar.Entities.EnemyFaction.Models.Combat
             float[] shieldDps,
             float[] piercingDps,
             IReadOnlyList<UnitCombatProfile> hangar,
-            float shieldRegen = 0f)
+            float shieldRegen = 0f,
+            float speed = 0f,
+            float price = 0f)
         {
             ShipClass = shipClass;
+            Speed = speed;
+            Price = price;
             Hull = hull;
             Shields = shields;
             ShieldRegen = shieldRegen;

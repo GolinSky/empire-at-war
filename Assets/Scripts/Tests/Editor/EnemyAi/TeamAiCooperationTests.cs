@@ -144,6 +144,65 @@ namespace EmpireAtWar.Tests.Editor
             Assert.That(combined.UnitCount, Is.EqualTo(3), "Both available allies join; the unavailable one and self do not.");
         }
 
+        // W47 AllyCombined: an idle ally's main force gathers at the staging point, then hits the zone once the requester
+        // commits; the requester never answers itself.
+        [Test]
+        public void ZoneStrike_IdleAllyGoesToTheStagingPointThenTheZone()
+        {
+            var cooperation = new TeamAiCooperation();
+            Vector3 centre = Vector3.right * 3000f;
+            Vector3 staging = Vector3.right * 2500f;
+            cooperation.PublishStrike(HIGH, Force(2), FOCUS, Vector3.zero, true, 0f);
+            cooperation.PublishStrike(LOW, Force(1), FOCUS, Vector3.zero, true, 0f);
+            cooperation.RequestZoneStrike(LOW, "zone:1", centre, staging, Force(3), committed: false, now: 0f);
+
+            Assert.That(cooperation.TryGetZoneStrikeAssignment(HIGH, 1f, out PlayerId requester, out Vector3 point), Is.True);
+            Assert.That(requester, Is.EqualTo(LOW));
+            Assert.That(point, Is.EqualTo(staging));
+            Assert.That(cooperation.TryGetZoneStrikeAssignment(LOW, 1f, out _, out _), Is.False,
+                "The requester does not answer its own request.");
+
+            cooperation.RequestZoneStrike(LOW, "zone:1", centre, staging, Force(3), committed: true, now: 2f);
+            cooperation.TryGetZoneStrikeAssignment(HIGH, 2f, out _, out point);
+            Assert.That(point, Is.EqualTo(centre), "Both attack together once the requester commits.");
+        }
+
+        [Test]
+        public void ZoneStrike_AllyUnderStationPressureIgnoresIt()
+        {
+            var cooperation = new TeamAiCooperation();
+            // The main force of a player under station pressure is published as unavailable.
+            cooperation.PublishStrike(HIGH, Force(2), FOCUS, Vector3.zero, false, 0f);
+            cooperation.RequestZoneStrike(LOW, "zone:1", Vector3.zero, Vector3.one, Force(1), false, 0f);
+
+            Assert.That(cooperation.TryGetZoneStrikeAssignment(HIGH, 1f, out _, out _), Is.False);
+        }
+
+        [Test]
+        public void ZoneStrike_ExpiresIsClearedAndAnsweredOneAtATime()
+        {
+            var cooperation = new TeamAiCooperation();
+            var third = new PlayerId(4);
+            cooperation.RequestZoneStrike(LOW, "zone:1", Vector3.zero, Vector3.one, Force(1), false, 0f);
+            cooperation.RequestZoneStrike(third, "zone:2", Vector3.zero, Vector3.forward, Force(1), false, 5f);
+            float late = TeamAiCooperation.ZONE_STRIKE_SECONDS - 1f;
+            cooperation.PublishStrike(HIGH, Force(2), FOCUS, Vector3.zero, true, late);
+
+            // Repeating the request for the same zone does not extend it.
+            cooperation.RequestZoneStrike(LOW, "zone:1", Vector3.zero, Vector3.one, Force(1), false, late);
+            Assert.That(cooperation.TryGetZoneStrikeAssignment(HIGH, late, out PlayerId requester, out _), Is.True);
+            Assert.That(requester, Is.EqualTo(LOW), "The oldest request is answered, and only one.");
+
+            float expired = TeamAiCooperation.ZONE_STRIKE_SECONDS + 1f;
+            cooperation.PublishStrike(HIGH, Force(2), FOCUS, Vector3.zero, true, expired);
+            Assert.That(cooperation.TryGetZoneStrikeAssignment(HIGH, expired, out requester, out _), Is.True);
+            Assert.That(requester, Is.EqualTo(third), "An expired request ends; the next one is answered.");
+
+            cooperation.ClearZoneStrike(third);
+            Assert.That(cooperation.TryGetZoneStrikeAssignment(HIGH, expired, out _, out _), Is.False,
+                "A request for an owned or abandoned zone is cleared.");
+        }
+
         private static ForceComposition Force(int units)
         {
             var damage = new float[ForceComposition.ClassSlots];

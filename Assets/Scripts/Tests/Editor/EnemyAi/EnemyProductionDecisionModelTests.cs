@@ -221,6 +221,24 @@ namespace EmpireAtWar.Tests.Editor
             Assert.That(corvette, Is.GreaterThan(0f));
         }
 
+        // W46: the saving penalty applies to a flagship too, so a ship that fits ranks before a flagship that does not.
+        [Test]
+        public void FlagshipThatDoesNotFit_RanksAfterAFittingShip()
+        {
+            EnemyProductionDecisionModel model = new EnemyProductionDecisionModel();
+            float light = model.CalculateShipPriority(EnemyStrategicState.CaptureZone, 3, 0, 5, 1, 20);
+            float flagship = model.CalculateShipPriority(EnemyStrategicState.CaptureZone, 3, 0, 90, 5, 1);
+            float flagshipNoFit = model.CalculateShipPriority(EnemyStrategicState.CaptureZone, 3, 0, 90, 5, 1,
+                fitsCapacity: false);
+            float sameShipNotScarce = model.CalculateShipPriority(EnemyStrategicState.CaptureZone, 3, 0, 90, 5, 20);
+            float sameShipNotScarceNoFit = model.CalculateShipPriority(EnemyStrategicState.CaptureZone, 3, 0, 90, 5, 20,
+                fitsCapacity: false);
+
+            Assert.That(flagship, Is.LessThan(light), "A flagship that fits still builds first.");
+            Assert.That(flagshipNoFit, Is.GreaterThan(light));
+            Assert.That(sameShipNotScarceNoFit, Is.GreaterThan(sameShipNotScarce));
+        }
+
         private static EnemyProductionSnapshot Snapshot(
             EnemyStrategicState state = EnemyStrategicState.CaptureZone,
             int mines = 5, int ships = 3, int shipsOrdered = 1, int platforms = 1, int level = 2,
@@ -410,16 +428,10 @@ namespace EmpireAtWar.Tests.Editor
 
                 FactionData preferredData =
                     factionModel.ShipFactionData[preferredShip];
-                SetBackingField(
-                    preferredData,
-                    nameof(FactionData.MaxCount),
-                    1);
+                // D6: the only human per-type limit on a ship is a hero, which exists once while queued or alive.
+                typeof(FactionData).GetField("isHero", PRIVATE_INSTANCE).SetValue(preferredData, true);
                 Assert.That(
-                    unitLimitModel.TryReserve(
-                        GetUnitId<ShipUnitRequest>(preferredShip.ToString()),
-                        preferredData.MaxCount,
-                        preferredData.UnitCapacity,
-                        MAX_UNIT_CAPACITY),
+                    unitLimitModel.TryReserve(new ShipUnitRequest(preferredData, preferredShip), MAX_UNIT_CAPACITY),
                     Is.True);
 
                 RecordingPurchaseProcessor purchaseProcessor =
@@ -672,6 +684,172 @@ namespace EmpireAtWar.Tests.Editor
                 UnityEngine.Object.DestroyImmediate(reinforcementData);
                 UnityEngine.Object.DestroyImmediate(definition);
             }
+        }
+
+        // W46: the preferred ship does not fit the free capacity; money for it and a fitting ship buys the fitting ship
+        // now (saving continues), less money keeps saving.
+        [TestCase(true)]
+        [TestCase(false)]
+        public void ChoiceThatDoesNotFit_BuysTheFittingShipOnlyWhenMoneyCoversBoth(bool moneyForBoth)
+        {
+            ReinforcementData reinforcementData = ScriptableObject.CreateInstance<ReinforcementData>();
+            FactionDefinition definition =
+                CopyDefinition(FactionType.Separatist, ShipType.Munificent, ShipType.Recusant);
+            FactionData small = definition.Ships[ShipType.Munificent];
+            FactionData big = definition.Ships[ShipType.Recusant];
+            SetBackingField(small, nameof(FactionData.BuildTime), 20);
+            SetBackingField(big, nameof(FactionData.BuildTime), 30);
+            SetBackingField(small, nameof(FactionData.Price), 3000);
+            SetBackingField(big, nameof(FactionData.Price), 4000);
+            SetBackingField(small, nameof(FactionData.UnitCapacity), 2);
+            SetBackingField(big, nameof(FactionData.UnitCapacity), 6);
+            // Not a scarce flagship type, so only the balance and the fit decide.
+            SetBackingField(big, nameof(FactionData.MaxCount), 5);
+            SetBackingField(small, nameof(FactionData.AvailableLevel), 5);
+            SetBackingField(big, nameof(FactionData.AvailableLevel), 5);
+            try
+            {
+                EnemyFactionModel factionModel = CreateFactionModel(definition);
+                factionModel.CurrentLevel = 5;
+                var limits = new EnemyUnitLimitModel();
+                ReserveEconomicFloor(factionModel, limits, factionModel.MiningFactions.First().Value.MaxCount);
+                ReserveDefensePlatform(factionModel, limits);
+                ReserveCaptureWings(factionModel, limits);
+                // A fleet of 10 that beats what it knows may save; the big ship (fewer copies) is the choice.
+                for (int i = 0; i < 10; i++)
+                    limits.Adopt(GetUnitId<ShipUnitRequest>(ShipType.Munificent.ToString()), small.UnitCapacity);
+                // Room for the small ship only.
+                SetBackingField(reinforcementData, nameof(ReinforcementData.MaxUnitCapacity),
+                    limits.CurrentUnitCapacity + small.UnitCapacity);
+                float money = moneyForBoth ? big.Price + small.Price : big.Price + small.Price - 1f;
+                var purchases = new RecordingPurchaseProcessor();
+
+                RunOneEvaluation(definition, factionModel, limits, reinforcementData, money, purchases,
+                    new StructurePlacementServiceStub(), new OperationalProductionAccess(),
+                    UniformValueCatalog(definition));
+
+                Assert.That(purchases.Purchases.OfType<ShipUnitRequest>().Any(ship => ship.Key == ShipType.Recusant),
+                    Is.False, "The ship that does not fit is never queued.");
+                if (moneyForBoth)
+                    Assert.That(purchases.Purchases.OfType<ShipUnitRequest>().FirstOrDefault()?.Key,
+                        Is.EqualTo(ShipType.Munificent));
+                else
+                    Assert.That(purchases.Purchases.OfType<ShipUnitRequest>(), Is.Empty,
+                        "Money for the fitting ship alone keeps saving for the big one.");
+            }
+            finally
+            {
+                UnityEngine.Object.DestroyImmediate(reinforcementData);
+                UnityEngine.Object.DestroyImmediate(definition);
+            }
+        }
+
+        // W50: one platform queued or under construction at a time.
+        [TestCase(false)]
+        [TestCase(true)]
+        public void PlatformInProgress_BlocksTheNextPlatform(bool inProgress)
+        {
+            ReinforcementData reinforcementData = ScriptableObject.CreateInstance<ReinforcementData>();
+            FactionDefinition definition =
+                CopyDefinition(FactionType.Separatist, ShipType.Munificent, ShipType.Recusant);
+            try
+            {
+                EnemyFactionModel factionModel = CreateFactionModel(definition);
+                factionModel.CurrentLevel = 5;
+                SetBackingField(reinforcementData, nameof(ReinforcementData.MaxUnitCapacity), 1000);
+                var limits = new EnemyUnitLimitModel();
+                ReserveEconomicFloor(factionModel, limits, factionModel.MiningFactions.First().Value.MaxCount);
+                ReserveDefensePlatform(factionModel, limits);
+                ReserveCaptureWings(factionModel, limits);
+                FactionData munificent = factionModel.ShipFactionData[ShipType.Munificent];
+                for (int i = 0; i < 10; i++)
+                    limits.Adopt(GetUnitId<ShipUnitRequest>(ShipType.Munificent.ToString()), munificent.UnitCapacity);
+                var purchases = new RecordingPurchaseProcessor { HasPlatformInProgress = inProgress };
+
+                RunOneEvaluation(definition, factionModel, limits, reinforcementData, 1e7f, purchases,
+                    new OpenDefensePlacement(), new OperationalProductionAccess(), UniformValueCatalog(definition));
+
+                Assert.That(purchases.Purchases.OfType<DefendPlatformUnitRequest>().Any(), Is.EqualTo(!inProgress));
+            }
+            finally
+            {
+                UnityEngine.Object.DestroyImmediate(reinforcementData);
+                UnityEngine.Object.DestroyImmediate(definition);
+            }
+        }
+
+        // W56: with no living own station and too few own ships for an escorted landing, no assault capital is bought.
+        [TestCase(true)]
+        [TestCase(false)]
+        public void AssaultCapital_IsBoughtOnlyWithAnOwnStationOrABodyToLandBeside(bool ownStation)
+        {
+            ReinforcementData reinforcementData = ScriptableObject.CreateInstance<ReinforcementData>();
+            FactionDefinition definition = CopyDefinition(FactionType.Separatist, ShipType.Recusant);
+            SetBackingField(definition.Ships[ShipType.Recusant], nameof(FactionData.AvailableLevel), 4);
+            try
+            {
+                EnemyFactionModel factionModel = CreateFactionModel(definition);
+                factionModel.CurrentLevel = 5;
+                SetBackingField(reinforcementData, nameof(ReinforcementData.MaxUnitCapacity), 1000);
+                var limits = new EnemyUnitLimitModel();
+                ReserveEconomicFloor(factionModel, limits, factionModel.MiningFactions.First().Value.MaxCount);
+                ReserveDefensePlatform(factionModel, limits);
+                ReserveCaptureWings(factionModel, limits);
+                var purchases = new RecordingPurchaseProcessor();
+                Assert.That(new StateProviderStub().ActiveShipCount,
+                    Is.LessThan(EnemyForwardSpawnAnchors.CAPITAL_ESCORT_SHIPS), "Too few ships to escort a landing.");
+
+                RunOneEvaluation(definition, factionModel, limits, reinforcementData,
+                    definition.Ships[ShipType.Recusant].Price * 4f, purchases, new StructurePlacementServiceStub(),
+                    // An allied base still produces when the own station is gone.
+                    new OperationalProductionAccess { HasHostBaseOverride = ownStation },
+                    UniformValueCatalog(definition, ShipClass.Capital));
+
+                Assert.That(purchases.Purchases.OfType<ShipUnitRequest>().Any(ship => ship.Key == ShipType.Recusant),
+                    Is.EqualTo(ownStation));
+            }
+            finally
+            {
+                UnityEngine.Object.DestroyImmediate(reinforcementData);
+                UnityEngine.Object.DestroyImmediate(definition);
+            }
+        }
+
+        private static void RunOneEvaluation(FactionDefinition definition, EnemyFactionModel factionModel,
+            EnemyUnitLimitModel limits, ReinforcementData reinforcementData, float money,
+            RecordingPurchaseProcessor purchases, IEnemyStructurePlacementService placement,
+            OperationalProductionAccess access, UnitCombatProfileCatalog catalog)
+        {
+            var entities = new EntityLocator();
+            var scheduler = new EnemyAiScheduler(new ReplayNotifier<BattleState>(BattleState.Running));
+            scheduler.Initialize();
+            var strategy = new EnemyProductionStrategy(
+                factionModel: factionModel,
+                research: CreateCompletedResearch(definition),
+                purchaseProcessor: purchases,
+                requestFactory: new UnitRequestFactory(),
+                economyModel: new EconomyModelStub(money),
+                stateProvider: new StateProviderStub(),
+                decisionModel: new EnemyProductionDecisionModel(),
+                unitLimitModel: limits,
+                reinforcementData: reinforcementData,
+                enemyStructurePlacementService: placement,
+                productionAccess: access,
+                // No hostile is known, so the fleet wins its matchup.
+                forceBuilder: new ForceCompositionBuilder(entities,
+                    new UnitCombatProfileCatalog(null, null, null, null), new AiWorldSnapshot(entities)),
+                profileCatalog: catalog,
+                counterModel: new EnemyCounterProductionModel(new NeutralShipClassMatchups()),
+                intelRegistry: new TeamIntelRegistry(),
+                owner: TestPlayers.CreateDuel(EnemyAiDifficulty.UltraHard).Get(TestPlayers.Enemy),
+                stationPressure: new EnemyStationPressureTracker(),
+                scheduler: scheduler,
+                squadrons: new NoPatrolSquadronCommander(),
+                secondStation: new SecondStationLevelModel());
+
+            strategy.Start();
+            strategy.Tick(0f);
+            scheduler.Step(0f);
         }
 
         [Test]
@@ -1309,12 +1487,44 @@ namespace EmpireAtWar.Tests.Editor
             }
         }
 
+        /// <summary>Every structure and platform search finds a point.</summary>
+        private sealed class OpenDefensePlacement : IEnemyStructurePlacementService
+        {
+            public bool IsRecovering => false;
+
+            public bool TryGetDefensePosition(bool allowExtra, bool firstOnly, bool bigPlatform, out Vector3 position)
+            {
+                position = Vector3.zero;
+                return true;
+            }
+
+            public bool TryGetPosition(out Vector3 position)
+            {
+                position = Vector3.zero;
+                return true;
+            }
+
+            public bool TryGetScoutTarget(out Vector3 position)
+            {
+                position = default;
+                return false;
+            }
+
+            public void RecordPlacement(string request, Vector3 position) { }
+            public void RecordDeferred(string request, float refund) { }
+            public void RecordStationBuilt(Vector3 position) { }
+            public void RecordDestroyedPosition(Vector3 position) { }
+            public void Reset() { }
+        }
+
         private sealed class OperationalProductionAccess : IProductionAccess
         {
             public PlayerId ProductionHost => TestPlayers.Enemy;
 
             public bool CanProduce { get; set; } = true;
-            public bool HasHostBase => CanProduce;
+            /// <summary>False: the own station is gone while an allied base still produces.</summary>
+            public bool? HasHostBaseOverride { get; set; }
+            public bool HasHostBase => HasHostBaseOverride ?? CanProduce;
 
             // No station entity in these fixtures: the second station is never the production base here.
             public bool TryGetProductionBase(out IEntity station)
@@ -1331,6 +1541,7 @@ namespace EmpireAtWar.Tests.Editor
             public int RequestCount => Purchases.Count;
             public bool IsUpgradingStation { get; set; }
             public bool PriorityConstructionPending { get; set; }
+            public bool HasPlatformInProgress { get; set; }
 
             public bool CanQueue(string requestId, int maxCount) => true;
             public float GetQueueRemainingTime(string requestId) => 0f;

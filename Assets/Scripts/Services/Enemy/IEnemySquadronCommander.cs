@@ -7,6 +7,9 @@ namespace EmpireAtWar.Services.Enemy
         /// <summary>Takes over orders for a station-launched AI squadron until it is released.</summary>
         void SetStationDefense(UnityEngine.Vector3? position);
 
+        /// <summary>W68: a zone the ships wait to attack until a scout sees its defenders; null when none.</summary>
+        void SetZoneScoutTarget(UnityEngine.Vector3? target);
+
         void Command(ISquadron squadron, SquadronType squadronType);
 
         /// <summary>Wings sent to the own-side outer zone at the opening: 2 when fighter wings are cheap, else 1.</summary>

@@ -1,5 +1,9 @@
+using System.Reflection;
 using EmpireAtWar.Controllers.Factions;
+using EmpireAtWar.Entities.DefendPlatform;
 using EmpireAtWar.Entities.EnemyFaction.Models;
+using EmpireAtWar.Entities.Squadrons;
+using EmpireAtWar.Models.Factions;
 using NUnit.Framework;
 
 namespace EmpireAtWar.Tests.Editor
@@ -136,6 +140,62 @@ namespace EmpireAtWar.Tests.Editor
         private sealed class DerivedShipRequest : ShipUnitRequest
         {
             public DerivedShipRequest() : base(null, default) { }
+        }
+
+        // D6: the AI's purchase limits are the human ones (PlayerFactionModel.IsUnitLimitReached).
+        [Test]
+        public void HumanRules_AShipTypeHasNoPurchaseLimit_AHeroExistsOnce()
+        {
+            var model = new EnemyUnitLimitModel();
+            FactionData ship = CreateData(maxCount: 1, unitCapacity: 1);
+            for (int i = 0; i < ship.MaxCount + 2; i++)
+                Assert.That(model.TryReserve(new ShipUnitRequest(ship, ShipType.Venator), 100), Is.True,
+                    "MaxCount does not limit a ship type.");
+
+            FactionData hero = CreateData(maxCount: 1, unitCapacity: 1, isHero: true);
+            var heroRequest = new ShipUnitRequest(hero, ShipType.Recusant);
+            Assert.That(model.TryReserve(heroRequest, 100), Is.True);
+            Assert.That(model.TryReserve(heroRequest, 100), Is.False, "A hero exists once while queued or alive.");
+            model.Release(heroRequest);
+            Assert.That(model.TryReserve(heroRequest, 100), Is.True, "A destroyed hero can be bought again.");
+        }
+
+        [Test]
+        public void HumanRules_StructuresStopAtMaxCountAndUseNoPopulation()
+        {
+            var model = new EnemyUnitLimitModel();
+            FactionData platform = CreateData(maxCount: 2, unitCapacity: 5);
+            var request = new DefendPlatformUnitRequest(platform, DefendPlatformType.Xq6);
+            for (int i = 0; i < platform.MaxCount; i++)
+                Assert.That(model.TryReserve(request, 0), Is.True);
+
+            Assert.That(model.TryReserve(request, 100), Is.False);
+            Assert.That(model.CurrentUnitCapacity, Is.Zero);
+            model.Release(request);
+            Assert.That(model.GetReservedCount(UnitLimitKey.From(request)), Is.EqualTo(platform.MaxCount - 1));
+            Assert.That(model.CurrentUnitCapacity, Is.Zero);
+        }
+
+        [Test]
+        public void HumanRules_PopulationLimitsShipsAndSquadrons()
+        {
+            var model = new EnemyUnitLimitModel();
+            FactionData ship = CreateData(maxCount: 10, unitCapacity: 3);
+            int maxCapacity = ship.UnitCapacity * 2 - 1;
+
+            Assert.That(model.TryReserve(new ShipUnitRequest(ship, ShipType.Venator), maxCapacity), Is.True);
+            Assert.That(model.TryReserve(new SquadronUnitRequest(ship, default), maxCapacity), Is.False);
+            Assert.That(model.CurrentUnitCapacity, Is.EqualTo(ship.UnitCapacity));
+        }
+
+        private static FactionData CreateData(int maxCount, int unitCapacity, bool isHero = false)
+        {
+            var data = new FactionData();
+            const BindingFlags PRIVATE_INSTANCE = BindingFlags.Instance | BindingFlags.NonPublic;
+            typeof(FactionData).GetField("<MaxCount>k__BackingField", PRIVATE_INSTANCE).SetValue(data, maxCount);
+            typeof(FactionData).GetField("<UnitCapacity>k__BackingField", PRIVATE_INSTANCE).SetValue(data, unitCapacity);
+            typeof(FactionData).GetField("isHero", PRIVATE_INSTANCE).SetValue(data, isHero);
+            return data;
         }
 
         private sealed class FakeRequest

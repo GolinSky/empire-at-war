@@ -97,6 +97,7 @@ namespace EmpireAtWar.Ship
         private void RegisterOrders(IContainerBuilder builder)
         {
             builder.Register<ShipStateMachine>(Lifetime.Singleton);
+            builder.Register<ShipThreatSense>(Lifetime.Singleton).AsImplementedInterfaces();
             builder.Register<AttackTargetState>(Lifetime.Singleton).AsSelf().AsImplementedInterfaces()
                 .WithParameter<IArtilleryCapability>(resolver =>
                     Data.UsesArtilleryStandoff ? resolver.Resolve<IArtilleryCapability>() : null);

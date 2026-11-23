@@ -68,16 +68,18 @@ namespace EmpireAtWar.Entities.BaseEntity.Orders
         }
 
         /// <summary>
-        /// Claims a live enemy: preferred enemies first, then the fewest other attackers, nearest first on ties.
-        /// Only enemies passing <paramref name="isEligible"/> (all when null) count. Returns null and drops the
-        /// member's claim when none qualifies.
+        /// Claims a live enemy: preferred enemies first, then the highest <paramref name="priority"/> (for ships:
+        /// in weapon reach, then threat), then the fewest other attackers, nearest first on ties.
+        /// Only enemies passing <paramref name="isEligible"/> (all when null) count; a null priority ranks all
+        /// equal. Returns null and drops the member's claim when none qualifies.
         /// </summary>
         public IEntity SelectTarget(int member, Func<IEntity, float> distance, Func<IEntity, bool> isPreferred,
-            Func<IEntity, bool> isEligible = null)
+            Func<IEntity, bool> isEligible = null, Func<IEntity, int> priority = null)
         {
             DropClaim(member);
             IEntity best = null;
             bool bestPreferred = false;
+            int bestPriority = int.MinValue;
             int fewestAttackers = int.MaxValue;
             float nearest = float.PositiveInfinity;
             foreach (IEntity enemy in _reporters.Keys)
@@ -85,13 +87,17 @@ namespace EmpireAtWar.Entities.BaseEntity.Orders
                 if (!IsAlive(enemy) || (isEligible != null && !isEligible(enemy))) continue;
                 bool preferred = isPreferred(enemy);
                 if (bestPreferred && !preferred) continue;
-                _attackers.TryGetValue(enemy, out int attackers);
                 bool outranks = preferred && !bestPreferred;
+                int rank = priority == null ? 0 : priority(enemy);
+                if (!outranks && rank < bestPriority) continue;
+                outranks |= rank > bestPriority;
+                _attackers.TryGetValue(enemy, out int attackers);
                 if (!outranks && attackers > fewestAttackers) continue;
                 float range = distance(enemy);
                 if (!outranks && attackers == fewestAttackers && range >= nearest) continue;
                 best = enemy;
                 bestPreferred = preferred;
+                bestPriority = rank;
                 fewestAttackers = attackers;
                 nearest = range;
             }

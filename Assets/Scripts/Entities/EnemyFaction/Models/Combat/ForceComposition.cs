@@ -36,6 +36,11 @@ namespace EmpireAtWar.Entities.EnemyFaction.Models.Combat
 
         public int UnitCount { get; private set; }
         public bool IsEmpty => UnitCount == 0;
+        /// <summary>
+        /// Summed purchase price of the units in credits (<see cref="UnitCombatProfile.Price"/>); 0 for units no faction
+        /// sells (structures, heroes). What losing the force costs, for <see cref="CombatMatchup.ExpectedGain"/>.
+        /// </summary>
+        public float Value { get; private set; }
 
         /// <summary>Adds one unit at its current health.</summary>
         /// <param name="offenseScale">Share of the unit's weapons still firing (0..1).</param>
@@ -51,6 +56,7 @@ namespace EmpireAtWar.Entities.EnemyFaction.Models.Combat
             _units[unitClass] += 1f;
             _maxHull[unitClass] += profile.Hull;
             _shieldRegen[unitClass] += shieldRegen;
+            Value += profile.Price;
             // Indexed: foreach over the IReadOnlyList boxes an enumerator, and the AI adds hundreds of units per frame.
             for (int i = 0; i < Classes.Count; i++)
             {
@@ -122,6 +128,7 @@ namespace EmpireAtWar.Entities.EnemyFaction.Models.Combat
             _siegeBonusPiercingDps += other._siegeBonusPiercingDps;
             AddRepair(other);
             UnitCount += other.UnitCount;
+            Value += other.Value;
         }
 
         private void AddRepair(ForceComposition other)
@@ -131,7 +138,10 @@ namespace EmpireAtWar.Entities.EnemyFaction.Models.Combat
             _repairHealersPerTarget = Math.Max(_repairHealersPerTarget, other._repairHealersPerTarget);
         }
 
-        /// <summary>Adds <paramref name="share"/> (0..1) of <paramref name="other"/>: an estimate of a part of a force.</summary>
+        /// <summary>
+        /// Adds <paramref name="share"/> (≥ 0) of <paramref name="other"/>: an estimate of a part of a force, or of
+        /// several such forces when the share exceeds 1.
+        /// </summary>
         public void AddShare(ForceComposition other, float share)
         {
             for (int i = 0; i < ClassSlots; i++)
@@ -150,6 +160,7 @@ namespace EmpireAtWar.Entities.EnemyFaction.Models.Combat
             _siegeBonusPiercingDps += other._siegeBonusPiercingDps * share;
             AddRepair(other);
             UnitCount += other.UnitCount;
+            Value += other.Value * share;
         }
 
         public void CopyFrom(ForceComposition other)
@@ -169,6 +180,7 @@ namespace EmpireAtWar.Entities.EnemyFaction.Models.Combat
             _repairFractionPerSource = other._repairFractionPerSource;
             _repairHealersPerTarget = other._repairHealersPerTarget;
             UnitCount = other.UnitCount;
+            Value = other.Value;
         }
 
         public void Clear()
@@ -188,6 +200,7 @@ namespace EmpireAtWar.Entities.EnemyFaction.Models.Combat
             _repairFractionPerSource = 0f;
             _repairHealersPerTarget = 0;
             UnitCount = 0;
+            Value = 0f;
         }
 
         public float Units(ShipClass shipClass) => _units[(int)shipClass];

@@ -561,8 +561,11 @@ namespace EmpireAtWar.Tests.Editor
                 null, null, null, new TeamIntelRegistry(), owner, null, null, state, snapshot, scheduler, null);
 
         private sealed class TestEntity : IEntity, IEntityTransformFacade, ICombatModifiersFacade, IUnitTypeFacade,
-            IMiningFacilityFacade, IPlayerBaseFacade
+            IMiningFacilityFacade, IPlayerBaseFacade, IUnitOrderObserverFacade
         {
+            public UnitOrderType CurrentOrder => UnitOrderType.None;
+            public IEntity AttackTarget => null;
+            public bool IsEngagingEnRoute => false;
             public bool IsUnit { get; set; }
             public bool IsMiningFacility { get; set; }
             public float GrossIncome { get; set; }
