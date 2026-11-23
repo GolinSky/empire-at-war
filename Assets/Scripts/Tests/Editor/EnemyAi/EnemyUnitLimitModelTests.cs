@@ -188,6 +188,23 @@ namespace EmpireAtWar.Tests.Editor
             Assert.That(model.CurrentUnitCapacity, Is.EqualTo(ship.UnitCapacity));
         }
 
+        // Heroes and dreadnoughts (isUnique) share the human one-at-a-time limit; a destroyed one can be rebuilt.
+        [TestCase("isHero")]
+        [TestCase("isUnique")]
+        public void HumanRules_AUniqueShipExistsOnce_AndIsRebuiltAfterItsLoss(string uniqueFlag)
+        {
+            var model = new EnemyUnitLimitModel();
+            FactionData data = CreateData(maxCount: 1, unitCapacity: 1);
+            typeof(FactionData).GetField(uniqueFlag, BindingFlags.Instance | BindingFlags.NonPublic).SetValue(data, true);
+            var request = new ShipUnitRequest(data, ShipType.Venator);
+
+            Assert.That(data.IsUnique, Is.True);
+            Assert.That(model.TryReserve(request, 100), Is.True);
+            Assert.That(model.TryReserve(request, 100), Is.False, "One exists while queued or alive.");
+            model.Release(request);
+            Assert.That(model.TryReserve(request, 100), Is.True, "A destroyed one can be bought again.");
+        }
+
         private static FactionData CreateData(int maxCount, int unitCapacity, bool isHero = false)
         {
             var data = new FactionData();

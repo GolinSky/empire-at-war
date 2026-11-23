@@ -77,6 +77,7 @@ follows: "[[TODOs/Bugs/Enemy_AI_Opening_And_Task_Groups]]"
   - Fix: add `&& !NeedsMinimumFleet(shipCount)`; comment the rule.
 - [x] **I4 Critical threshold inverted (Q7).** `EnemyStationPressureTracker:40-42`: no affordable defender → 120 s; 400 s arrival → 800 s.
   - Fix: `EPS.GetQuickestDefenderArrival` falls back to the quickest unlocked defender ignoring money.
+  - 2026-11-23 (dreadnought limit, commit `14685b67e`): the arrival also skips types `CanReserve` refuses, so a unique ship (hero, dreadnought) already queued or alive is no defender candidate. Verified: every AI ship choice path applies the one-at-a-time limit through `CanReserve`; a dead AI ship releases its slot (`EnemyFactionController` `OnRelease → ReleaseUnit`). Test (not run): `EnemyUnitLimitModelTests.HumanRules_AUniqueShipExistsOnce_AndIsRebuiltAfterItsLoss` (`isHero`, `isUnique`). Still open: P13 tier helpers ignore types at their limit (now also dreadnoughts; no effect with the current roster).
 - [x] **P7 Second station in an emergency (Q8).** `EPS:348` before `Evaluate`; only guard `!critical && PriorityConstructionPending` (`:515-517`).
   - Fix: early return on `critical`; call moved below `Evaluate`, skipped for `Mining` / `Level` / due level.
 - [x] **P5 Platforms outbid the fleet (W27).** `firstPlatformsOnly = hasShipOption && !shipBlockedByCapacity` (`EPS:281`) → false when no ship is affordable → second ring / centre platform allowed.

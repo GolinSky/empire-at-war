@@ -959,8 +959,10 @@ namespace EmpireAtWar.Services.Enemy
             foreach (KeyValuePair<ShipType, FactionData> option in _factionModel.ShipFactionData)
             {
                 UnitTypeId unitType = UnitTypeId.Ship(option.Key);
+                // A unique type (hero, dreadnought) already queued or alive cannot be bought as a defender.
                 if (!IsAvailable(option.Value) || !FitsRemainingCapacity(option.Value) ||
-                    !IsShipClassAllowed(unitType) || _profileCatalog.Get(unitType).GetCombatValue() <= 0f) continue;
+                    !IsShipClassAllowed(unitType) || _profileCatalog.Get(unitType).GetCombatValue() <= 0f ||
+                    !CanReserve<ShipUnitRequest>(option.Key.ToString(), option.Value, true)) continue;
                 float arrival = GetArrivalSeconds(unitType, option.Value);
                 quickestUnpaid = Math.Min(quickestUnpaid, arrival);
                 if (IsAffordable(option.Value)) quickest = Math.Min(quickest, arrival);
