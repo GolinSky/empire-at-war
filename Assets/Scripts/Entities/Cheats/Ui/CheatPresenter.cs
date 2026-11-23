@@ -82,6 +82,7 @@ namespace EmpireAtWar.Presenters.Cheats
             _view.GrantAllSuperWeaponsRequested += GrantAllSuperWeapons;
             _view.RangeDebugToggled += SetRangeDebug;
             _view.DestroyOwnShipsRequested += DestroyOwnShips;
+            _view.DamageSelectedRequested += DamageSelected;
             _view.LevelUpStationRequested += LevelUpStation;
             _view.SpawnAllShipsRequested += SpawnAllShips;
             _view.AddPlatformReinforcementRequested += AddPlatformReinforcement;
@@ -102,6 +103,7 @@ namespace EmpireAtWar.Presenters.Cheats
             _view.GrantAllSuperWeaponsRequested -= GrantAllSuperWeapons;
             _view.RangeDebugToggled -= SetRangeDebug;
             _view.DestroyOwnShipsRequested -= DestroyOwnShips;
+            _view.DamageSelectedRequested -= DamageSelected;
             _view.LevelUpStationRequested -= LevelUpStation;
             _view.SpawnAllShipsRequested -= SpawnAllShips;
             _view.AddPlatformReinforcementRequested -= AddPlatformReinforcement;
@@ -187,6 +189,14 @@ namespace EmpireAtWar.Presenters.Cheats
             _view.SetStatus(destroyed > 0
                 ? $"Destroyed {destroyed} of your ships."
                 : "You have no ships to destroy.");
+        }
+
+        private void DamageSelected(float hullFraction)
+        {
+            int damaged = _cheatService.DamageSelectedUnits(hullFraction);
+            _view.SetStatus(damaged > 0
+                ? $"Took {hullFraction * 100f:0}% hull from {damaged} selected units."
+                : "Select units to damage.");
         }
 
         private void LevelUpStation()

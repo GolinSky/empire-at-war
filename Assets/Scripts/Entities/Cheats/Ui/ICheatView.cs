@@ -45,6 +45,9 @@ namespace EmpireAtWar.Views.Cheats
 
         event Action DestroyOwnShipsRequested;
 
+        /// <summary>Fraction of max hull to take from each selected unit.</summary>
+        event Action<float> DamageSelectedRequested;
+
         void SetFactions(IReadOnlyList<FactionType> factions);
 
         void SetShips(IReadOnlyList<ShipType> ships);

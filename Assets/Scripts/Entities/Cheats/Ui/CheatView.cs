@@ -25,6 +25,7 @@ namespace EmpireAtWar.Views.Cheats
 
         private static readonly string[] TAB_NAMES =
             { "Economy", "Ships", "Station", "Defend", "Enemy", "Superweapons", "Debug", "Tutorial" };
+        private static readonly float[] DAMAGE_FRACTIONS = { 0.1f, 0.25f, 0.5f };
         private static readonly Color WINDOW_BACKGROUND = new Color32(16, 26, 41, 245);
         private IReadOnlyList<DefendPlatformType> _platforms = Array.Empty<DefendPlatformType>();
         private static readonly SuperWeaponType[] SUPER_WEAPONS =
@@ -89,6 +90,8 @@ namespace EmpireAtWar.Views.Cheats
         public event Action<bool> NetworkStatusToggled;
 
         public event Action DestroyOwnShipsRequested;
+
+        public event Action<float> DamageSelectedRequested;
 
         public void SetFactions(IReadOnlyList<FactionType> factions)
         {
@@ -394,6 +397,16 @@ namespace EmpireAtWar.Views.Cheats
             {
                 DestroyOwnShipsRequested?.Invoke();
             }
+
+            GUILayout.Label("Damage selected units (hull only, ignores shields)");
+            GUILayout.BeginHorizontal();
+            foreach (float fraction in DAMAGE_FRACTIONS)
+            {
+                if (GUILayout.Button($"-{fraction * 100f:0}% Hull", GUILayout.Height(36f)))
+                    DamageSelectedRequested?.Invoke(fraction);
+            }
+            GUILayout.EndHorizontal();
+            GUILayout.Space(8f);
 
             GUILayout.Label("Select faction");
             GUILayout.BeginHorizontal();

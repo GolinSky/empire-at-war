@@ -5,7 +5,10 @@ using EmpireAtWar.Controllers.Factions;
 using EmpireAtWar.Entities.BaseEntity;
 using EmpireAtWar.Entities.BaseEntity.EntityFacades;
 using EmpireAtWar.Entities.SuperWeapons;
+using EmpireAtWar.Components.AttackComponent;
 using EmpireAtWar.Models.Economy;
+using EmpireAtWar.Models.Health;
+using EmpireAtWar.Services.Battle;
 using EmpireAtWar.Models.Factions;
 using EmpireAtWar.Models.Reinforcement;
 using EmpireAtWar.Services.ShipSpawning;
@@ -28,6 +31,9 @@ namespace EmpireAtWar.Services.Cheats
         void SetRangeDebug(bool isEnabled);
 
         int DestroyOwnShips();
+
+        /// <summary>Takes <paramref name="hullFraction"/> of max hull from each selected unit. Returns how many were hit.</summary>
+        int DamageSelectedUnits(float hullFraction);
     }
 
     public sealed class CheatService : ICheatService
@@ -41,7 +47,9 @@ namespace EmpireAtWar.Services.Cheats
         private readonly ShipFactory _shipFactory;
         private readonly SuperWeaponModel _superWeaponModel;
         private readonly RangeDebugModel _rangeDebugModel;
+        private readonly ISelectionService _selectionService;
         private readonly List<IEntity> _ownEntities = new List<IEntity>();
+        private readonly List<IEntity> _selectedEntities = new List<IEntity>();
 
         public CheatService(
             IShipSpawnPoints shipSpawnPoints,
@@ -51,6 +59,7 @@ namespace EmpireAtWar.Services.Cheats
             ShipFactory shipFactory,
             SuperWeaponModel superWeaponModel,
             RangeDebugModel rangeDebugModel,
+            ISelectionService selectionService,
             PlayerSlot owner)
         {
             _owner = owner;
@@ -61,6 +70,7 @@ namespace EmpireAtWar.Services.Cheats
             _entityLocator = entityLocator;
             _superWeaponModel = superWeaponModel;
             _rangeDebugModel = rangeDebugModel;
+            _selectionService = selectionService;
         }
 
         public void AddMoney(float amount)
@@ -152,6 +162,30 @@ namespace EmpireAtWar.Services.Cheats
 
             _ownEntities.Clear();
             return destroyed;
+        }
+
+        public int DamageSelectedUnits(float hullFraction)
+        {
+            if (hullFraction <= 0f) throw new ArgumentOutOfRangeException(nameof(hullFraction));
+
+            // Copied first: a unit killed by the hit leaves the selection while we iterate.
+            _selectedEntities.Clear();
+            _selectedEntities.AddRange(_selectionService.PlayerSelectionContext.Entities);
+            int damaged = 0;
+            foreach (IEntity entity in _selectedEntities)
+            {
+                IHealthModelObserver health = entity.HealthModel;
+                if (health.IsDestroyed || health.HullPercentage <= 0f ||
+                    !entity.TryGetFacade(out IHealthFacade healthFacade)) continue;
+
+                float maxHull = health.Hull / health.HullPercentage;
+                // Precision strike goes straight to the hull: no shields, no hardpoints.
+                healthFacade.ApplyDamage(maxHull * hullFraction, DamageType.PrecisionStrike, 0);
+                damaged++;
+            }
+
+            _selectedEntities.Clear();
+            return damaged;
         }
 
         private void HandleShipDestroying(ShipType shipType)

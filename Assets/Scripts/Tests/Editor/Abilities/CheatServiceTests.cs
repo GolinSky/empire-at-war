@@ -42,6 +42,7 @@ namespace EmpireAtWar.Tests.Editor
                 entityLocator: new EmptyEntityLocator(),
                 superWeaponModel: _superWeaponModel,
                 rangeDebugModel: new RangeDebugModel(),
+                selectionService: null,
                 owner: TestPlayers.CreateDuel().Get(TestPlayers.Human));
         }
 
