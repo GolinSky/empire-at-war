@@ -66,6 +66,10 @@ verification: Read the shared menu button variants and sampled Skirmish prefab
 
 - Shared prefabs in `Assets/Prefabs/Ui/ButtonsTemplate/`: `CommonMenuButton.prefab` uses off-white text on slate, `PrimaryMenuButton.prefab` uses navy text on gold, `DestructiveMenuButton.prefab` uses a red outline.
 - Inherit typography, tint and interaction states. Override labels, tooltip keys, layout and availability on instances. Main Menu QUIT uses common and Pause EXIT uses destructive. Close/X controls and compound list rows have specialized layouts.
+- Every call-to-action (confirm, accept, invite, start, return, buy) is a nested `PrimaryMenuButton` instance; its secondary partner (decline, refresh, turn off) is `CommonMenuButton`. Never hand-build a gold/cyan/navy action button in a screen, popup or HUD.
+- Compact HUD instances may override size and enable label autosize (`fontSizeMax` = authored size, `fontSizeMin` 6). Fill, outline, font asset and font color stay inherited.
+- Templates default to `Navigation.Mode.Automatic`; battle prefab instances override it to `None` (`BattleInputPrefabTests.BattleHudControls_DoNotAcquireKeyboardFocusOrNavigate`).
+- 2026-11-23: converted `AcceptPopupUi`, `SteamInvitePopupUi`, `EndGameUi`, `HintUi`, `SurvivalHudUi`, `SimulationHudUi` and the `CoreGameUi` orbital "Buy charge" buttons (15 instances).
 
 ### Header Banners (`HeaderBanner`)
 
