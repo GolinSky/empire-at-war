@@ -55,7 +55,7 @@ Material:
     - _HullDamageMarkScale: 2.2921767
     - _HullDamageOpacityScale: 1
     - _Metallic: 0.1
-    - _OcclusionStrength: 0.65
+    - _OcclusionStrength: 1
     - _Smoothness: 0.25
     - _TeamEmissionTint: 0.5
     - _TeamLiveryHue: 0
@@ -77,7 +77,7 @@ Material:
     - _WreckTiltSpeed: 2
     - _WreckTornEdgeWidth: 4
     m_Colors:
-    - _BaseColor: {r: 1, g: 1, b: 1, a: 1}
+    - _BaseColor: {r: 0.58, g: 0.58, b: 0.6, a: 1}
     - _EmissionColor: {r: 0, g: 0, b: 0, a: 1}
     - _WreckAxis: {r: 1, g: 0, b: 0, a: 0}
     - _WreckAxisRange: {r: -1, g: 1, b: 0, a: 0}
