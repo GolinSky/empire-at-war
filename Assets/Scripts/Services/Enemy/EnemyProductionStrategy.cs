@@ -39,6 +39,8 @@ namespace EmpireAtWar.Services.Enemy
         /// <summary>Wings capture the opening; the first corvette may be bought from this battle time.</summary>
         public const float OPENING_NO_CORVETTE_SECONDS = 30f;
         private const float NON_COMPETING_RESEARCH_SHARE = 0.25f;
+        /// <summary>An own ship lost this recently means the fleet is fighting: a replacement is kept paid (P6).</summary>
+        public const float RECENT_SHIP_LOSS_SECONDS = 60f;
         private const float PATROL_WING_RETRY_SECONDS = 60f;
         private const int SAVING_MIN_SHIPS = 10;
         private const float SAVING_MIN_ADVANTAGE = 1f;
@@ -91,6 +93,8 @@ namespace EmpireAtWar.Services.Enemy
         /// <summary>The last evaluation's ship choice was affordable but blocked by the unit cap (W34 b).</summary>
         private bool _capacityBlocked;
         private float _savingSince = -1f;
+        private int _lastShipCount = -1;
+        private float _lastShipLossAt = float.NegativeInfinity;
         private float _patrolWingRetryAt = float.NegativeInfinity;
         private int _peakMiningCount;
         private float _nextMinerRebuyTime = float.NegativeInfinity;
@@ -271,7 +275,8 @@ namespace EmpireAtWar.Services.Enemy
                 hasSquadronFallback = false;
                 shipChoice = fitting.Value;
             }
-            DefenseReserve = hasShipOption ? shipChoice.Price : 0f;
+            NoteShipLosses(shipCount);
+            DefenseReserve = GetShipReserve(hasShipOption, shipChoice);
             bool canBuildShip = hasShipOption && IsAffordable(shipChoice) && FitsRemainingCapacity(shipChoice);
             // A fleet at the unit limit cannot spend on ships, so held zones take further platforms.
             bool shipBlockedByCapacity = hasShipOption && IsAffordable(shipChoice) && !canBuildShip;
@@ -598,6 +603,69 @@ namespace EmpireAtWar.Services.Enemy
 
         private bool FitsRemainingCapacity(FactionData data) =>
             data.UnitCapacity <= _reinforcementData.MaxUnitCapacity - _unitLimitModel.CurrentUnitCapacity;
+
+        private void NoteShipLosses(int shipCount)
+        {
+            if (_lastShipCount >= 0 && shipCount < _lastShipCount) _lastShipLossAt = BattleClock.CurrentElapsed;
+            _lastShipCount = shipCount;
+        }
+
+        /// <summary>
+        /// Money optional satellites leave alone for the fleet (P6, user 2026-11-23). A choice that fits the free
+        /// capacity keeps its whole price. A choice that does not fit (the unit cap) keeps money only while the fleet
+        /// fights, and then only <see cref="GetReplacementPrice"/>: in a quiet phase the money arms pads instead.
+        /// </summary>
+        private float GetShipReserve(bool hasShipOption, FactionData shipChoice)
+        {
+            if (!hasShipOption) return 0f;
+            bool fits = FitsRemainingCapacity(shipChoice);
+            bool fighting = !fits && IsFleetFighting();
+            return SelectShipReserve(shipChoice.Price, fits, fighting, fighting ? GetReplacementPrice(shipChoice) : 0f);
+        }
+
+        /// <summary>P6 rule: the whole price of a choice that fits; at the cap a replacement's price while fighting, else none.</summary>
+        public static float SelectShipReserve(float choicePrice, bool choiceFits, bool fleetFighting,
+            float replacementPrice) =>
+            choiceFits ? choicePrice : fleetFighting ? Math.Min(choicePrice, replacementPrice) : 0f;
+
+        /// <summary>A ship of <paramref name="unitCapacity"/> fits once the largest own ship type is lost.</summary>
+        public static bool FitsAfterOneLoss(int unitCapacity, int freeCapacity, int largestOwnCapacity) =>
+            unitCapacity <= freeCapacity + largestOwnCapacity;
+
+        /// <summary>
+        /// Own or team station under pressure, the main force in a combat or retreat state, or an own ship lost within
+        /// <see cref="RECENT_SHIP_LOSS_SECONDS"/>.
+        /// </summary>
+        private bool IsFleetFighting() =>
+            _stationPressure.HasPressure || _stateProvider.HasTeamStationPressure ||
+            _stateProvider.CurrentState is (EnemyStrategicState.EngageLocal or EnemyStrategicState.DefendBase or
+                EnemyStrategicState.HuntFleet or EnemyStrategicState.AssaultBase or
+                EnemyStrategicState.RaidStructures or EnemyStrategicState.RetreatValue) ||
+            BattleClock.CurrentElapsed - _lastShipLossAt < RECENT_SHIP_LOSS_SECONDS;
+
+        /// <summary>
+        /// Price of the ship that one loss would make room for (P6 option D): the choice itself when losing the
+        /// largest own ship type frees enough capacity, otherwise the dearest orderable ship that would fit then.
+        /// </summary>
+        private float GetReplacementPrice(FactionData shipChoice)
+        {
+            int largestOwn = 0;
+            foreach (KeyValuePair<ShipType, FactionData> option in _factionModel.ShipFactionData)
+                if (_unitLimitModel.GetReservedCount<ShipUnitRequest>(option.Key.ToString()) > 0)
+                    largestOwn = Math.Max(largestOwn, option.Value.UnitCapacity);
+            int free = _reinforcementData.MaxUnitCapacity - _unitLimitModel.CurrentUnitCapacity;
+            if (FitsAfterOneLoss(shipChoice.UnitCapacity, free, largestOwn)) return shipChoice.Price;
+            int dearest = 0;
+            foreach (KeyValuePair<ShipType, FactionData> option in _factionModel.ShipFactionData)
+            {
+                UnitTypeId unitType = UnitTypeId.Ship(option.Key);
+                if (FitsAfterOneLoss(option.Value.UnitCapacity, free, largestOwn) && IsAvailable(option.Value) &&
+                    IsShipClassAllowed(unitType) && IsShipTierAllowed(option.Value, unitType) &&
+                    CanReserve<ShipUnitRequest>(option.Key.ToString(), option.Value, true))
+                    dearest = Math.Max(dearest, option.Value.Price);
+            }
+            return dearest;
+        }
 
         private int CountReservedShips()
         {

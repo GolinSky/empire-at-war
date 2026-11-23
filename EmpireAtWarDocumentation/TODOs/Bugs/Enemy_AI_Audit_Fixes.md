@@ -14,7 +14,7 @@ follows: "[[TODOs/Bugs/Enemy_AI_Opening_And_Task_Groups]]"
 ## Status (2026-11-23)
 - **Phases 1–3 implemented** (A1–A5, A7, R1; P1–P7, I4; X1–X6, X8, X9). Compile clean (`unity recompile`, 0 errors). Tests written and reviewed, **not run** (local override).
 - Next: user battle gate (Order step 2), then Phases 4–5; Phase 6 any time.
-- Open from Phase 2: P6 — drop `DefenseReserve` at the unit cap too? Not changed.
+- P6 reserve question decided (user 2026-11-23, options C + D): see the P6 item.
 - Implementation notes (deviations / details):
   - A2: blocked set passed as `EnemyZoneAllocator.BlockedZoneIds` (property, like `StrongEconomy`), not an `Allocate` parameter.
   - A4: "held" structures count inside the zone radius (`AddOwnArmedStructures(..., out inside)`); `OwnStructures`/`OwnSupport` still use 2 × radius.
@@ -82,7 +82,15 @@ follows: "[[TODOs/Bugs/Enemy_AI_Opening_And_Task_Groups]]"
 - [x] **P5 Platforms outbid the fleet (W27).** `firstPlatformsOnly = hasShipOption && !shipBlockedByCapacity` (`EPS:281`) → false when no ship is affordable → second ring / centre platform allowed.
   - Fix: true when a ship type fits free capacity but none is affordable.
 - [x] **P6 "Saving" at the unit cap.** `savingForShip` true for an affordable ship blocked only by capacity (`EPS:298`) → research capped at 25 % (`:329-336`), `DefenseReserve` held (`:274`).
-  - Fix: research cap only when `!shipBlockedByCapacity`. Open: drop `DefenseReserve` at the cap too?
+  - Fix: research cap only when `!shipBlockedByCapacity`.
+  - `DefenseReserve` (user 2026-11-23, C + D): it only shields money from optional satellites (scored, fill, repair); mandatory satellites, platforms, research and levels ignore it.
+    - Choice fits the free capacity → whole price (unchanged).
+    - Choice does not fit (unit cap) and the fleet is quiet → 0: money arms pads.
+    - Does not fit and fighting → price of the ship one loss makes room for: the choice when it fits once the largest own ship type is lost, else the dearest orderable ship that would fit then; never above the choice.
+    - Fighting = own or team station pressure, main force in EngageLocal / DefendBase / HuntFleet / AssaultBase / RaidStructures / RetreatValue, or an own ship lost within `RECENT_SHIP_LOSS_SECONDS` 60 s.
+    - Code: `EnemyProductionStrategy.GetShipReserve`, `SelectShipReserve`, `FitsAfterOneLoss`, `GetReplacementPrice`. "At the cap" = choice does not fit (not only "affordable but does not fit"), so a quiet AI does not flip between 0 and the full price.
+    - Tests (not run): `EnemyProductionDecisionModelTests.ShipReserve_AtTheCapOnlyWhileFighting_AndNeverAboveTheChoice`, `FitsAfterOneLoss_FreeCapacityPlusTheLargestOwnShip`. Not covered: the strategy-level fight signal and the replacement price.
+    - Battle check: `production-wait reason=capacity` rows vs empty owned pads; a freed slot refilled within one production pass during a fight.
 
 ## Phase 3 — No ship without an order (P0)
 - [x] **X1 + X8 Support ships in a targeted attack.** `EXE.IssueAttackOrHunt:863-872`: without a secured centre, support = ships in `eligibleShips` only → in AssaultBase every non-capital gets no order. Reachable only on a map with no centre zone (`canAssault` needs `centre == null || securedCentre`, `CB:1421`). Hunt / Raid support Guards the anchor into the fight.

@@ -105,6 +105,33 @@ namespace EmpireAtWar.Tests.Editor
             Assert.That(new EnemyProductionDecisionModel().Evaluate(snapshot), Is.EqualTo(EnemyProductionCategory.Ship));
         }
 
+        // P6 (user 2026-11-23): at the unit cap money is held only while fighting, and only for what one loss makes room for.
+        [Test]
+        public void ShipReserve_AtTheCapOnlyWhileFighting_AndNeverAboveTheChoice()
+        {
+            const float CHOICE = 3000f;
+            const float REPLACEMENT = 1200f;
+
+            Assert.That(EnemyProductionStrategy.SelectShipReserve(CHOICE, true, false, 0f), Is.EqualTo(CHOICE),
+                "A ship that fits keeps its whole price.");
+            Assert.That(EnemyProductionStrategy.SelectShipReserve(CHOICE, false, false, REPLACEMENT), Is.Zero,
+                "A quiet fleet at the cap lets satellites spend.");
+            Assert.That(EnemyProductionStrategy.SelectShipReserve(CHOICE, false, true, REPLACEMENT),
+                Is.EqualTo(REPLACEMENT), "A fighting fleet at the cap keeps one replacement paid.");
+            Assert.That(EnemyProductionStrategy.SelectShipReserve(REPLACEMENT, false, true, CHOICE),
+                Is.EqualTo(REPLACEMENT), "Never more than the chosen ship.");
+        }
+
+        [TestCase(4, 0, 4, true)]
+        [TestCase(5, 0, 4, false)]
+        [TestCase(5, 1, 4, true)]
+        [TestCase(1, 0, 0, false)]
+        public void FitsAfterOneLoss_FreeCapacityPlusTheLargestOwnShip(int capacity, int free, int largestOwn,
+            bool expected)
+        {
+            Assert.That(EnemyProductionStrategy.FitsAfterOneLoss(capacity, free, largestOwn), Is.EqualTo(expected));
+        }
+
         // P2: ship orders never drop when ships die, so a wiped fleet must not wait for a due level.
         [Test]
         public void WipedFleet_RebuildsBeforeALevelDueByOrders()

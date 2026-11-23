@@ -66,7 +66,7 @@
 ### Bugs
 
 - [ ] **Enemy AI audit fixes (rule collisions, dead paths, wrong inputs after Round 10)** → [[TODOs/Bugs/Enemy_AI_Audit_Fixes]]; follows [[TODOs/Bugs/Enemy_AI_Opening_And_Task_Groups]]
-  - 2026-11-23: Phases 1–3 implemented (zones keep their force, production never freezes, no ship without an order); compile clean, 7 new `EnemyAi` tests written, tests not run. Next: user battle gate, then Phases 4–5. Open: P6 `DefenseReserve` at the unit cap.
+  - 2026-11-23: Phases 1–3 implemented (zones keep their force, production never freezes, no ship without an order); compile clean, 7 new `EnemyAi` tests written, tests not run. Next: user battle gate, then Phases 4–5. P6 reserve decided same day (C + D): at the unit cap money is held from optional satellites only while fighting, sized to the ship one loss makes room for.
   - 2026-11-23: plan created from `Enemy AI Audit.md` (repo root). 68 findings re-checked on `fc774bb4c`: 51 confirmed, 15 narrowed, 1 fixed, 1 never true. 6 phases (zones, production, ship orders, strength picture, wings, cleanup). Not started. User answers the same day: Q1, Q5, Q5a, Q6 decided (bomber escort preferred but never a blocker; mine raids sized to mine hull and damage reduction, read from the enemy's research). Open: Q2–Q4, Q7–Q12 (defaults recorded).
 - [ ] **Enemy AI opening and task groups** → [[TODOs/Bugs/Enemy_AI_Opening_And_Task_Groups]]; follows [[TODOs/Bugs/Enemy_AI_Economy_Strategy]]
   - 2026-11-23: Round 10 implemented (W46–W57, W59, W61–W69), related test categories green. Open: W58 (dev-build capture), W60 playtest gates.
