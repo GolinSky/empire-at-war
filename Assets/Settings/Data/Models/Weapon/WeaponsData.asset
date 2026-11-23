@@ -2208,10 +2208,11 @@ MonoBehaviour:
     scope: 2
     faction: 3
     unit: TIEBomber
-    damageMultiplier: 0.77037036
+    damageMultiplier: 1
     reloadMultiplier: 1
     rangeMultiplier: 1
-    reason: TIEBomber squadron rebalance damage target.
+    reason: 'TIEBomber torpedo +30% (2026-11-23): Empire bombers too weak against
+      capitals.'
     overrideVisual: 0
     shotPrefab: {fileID: 0}
     beamPrefab: {fileID: 0}
@@ -2246,11 +2247,12 @@ MonoBehaviour:
     scope: 2
     faction: 3
     unit: TIEPunisher
-    damageMultiplier: 1.028
+    damageMultiplier: 1.336
     reloadMultiplier: 1
     rangeMultiplier: 1
-    reason: 'Previous battery: TIEPunisher squadron rebalance damage target. Consolidated
-      fighter weapon channel; damage per shot includes the former battery (2x).'
+    reason: 'TIEPunisher torpedo +30% (2026-11-23): Empire bombers too weak against
+      capitals. Consolidated fighter weapon channel; damage per shot includes the
+      former battery (2x).'
     overrideVisual: 0
     shotPrefab: {fileID: 0}
     beamPrefab: {fileID: 0}

@@ -605,3 +605,7 @@ created: "2026-10-29\r"
 - [ ] [[Done/Features/Resurgent_Import]] — Balance check of user values: hull/shields 70,000/35,000, regen delay 0.8 s, price 18,000, population 20; provisional hangar 4/2/3 reserves, build 110 s, max 2; medium-calibre swap of 28 light guns.
 - [ ] [[Done/Features/Resurgent_Import]] — Team colour: source albedo has no hue or alpha mask; decide stripes or a painted mask later.
 - [ ] [[Done/Features/Resurgent_Import]] — Run `Ships`, `Map`, `Health`, `Combat`, `Audio`, `Balance` when authorized; compile passed, tests not run.
+
+## Empire Bomber Damage
+
+- [ ] [[Done/Bugs/Empire_Bomber_Capital_Damage]] — Battle Empire vs Rebellion: TIE Bombers/Punishers should visibly hurt MC80s; compare torpedo hits per squadron and bomber lifetime against `Battle_20261123_182426.csv` (549 hits / 106 squadrons, median life 13 s). Check Rebel bombers are not now too strong vs Empire ships. Run `Combat`, `Balance` when authorized; tests not run.

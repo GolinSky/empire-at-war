@@ -520,7 +520,7 @@ MonoBehaviour:
         description: 'Imperial squadron: six TIE Bombers, each with 100 hull, no
           shields, a laser cannon and a proton torpedo launcher. Attacks larger ships;
           vulnerable to fighters and anti-fighter weapons. Full squadron torpedo
-          volley: 332.8 damage, 4 s reload.'
+          volley: 432.0 damage, 4 s reload.'
         role: Bomber / Anti-ship
         iconKey: 6deef1e660f9c3a41b4d343f91418382:21300000
         isHero: 0
@@ -597,7 +597,7 @@ MonoBehaviour:
         description: 'Six TIE Punishers, each with 110 hull, 6 shields, one laser
           cannon, two proton-torpedo launchers and two missile launchers. Advanced-loadout
           carrier bomber. Each surviving craft regenerates 0.095 shield HP/s. Full
-          squadron torpedo volley: 444.1 damage, 4 s reload.'
+          squadron torpedo volley: 577.2 damage, 4 s reload.'
         role: Bomber / Anti-ship
         iconKey: fe8c1e85b0bf680479b5946516c3041f:21300000
         isHero: 0
