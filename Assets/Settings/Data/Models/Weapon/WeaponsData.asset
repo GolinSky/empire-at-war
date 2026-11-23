@@ -310,7 +310,7 @@ MonoBehaviour:
   - family: 23
     platform: 1
     damageType: 6
-    damage: 72
+    damage: 144
     shotsPerSalvo: 1
     shotInterval: 0.4
     reload: 4
