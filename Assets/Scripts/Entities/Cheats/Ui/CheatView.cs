@@ -15,16 +15,22 @@ namespace EmpireAtWar.Views.Cheats
     {
         private const int WINDOW_ID = 90421;
 
-        private const float WINDOW_WIDTH = 680f;
-        private const float WINDOW_HEIGHT = 700f;
+        private const float WINDOW_WIDTH = 960f;
+        private const float WINDOW_HEIGHT = 940f;
         private const float WINDOW_MARGIN = 16f;
         private const float WINDOW_ANIMATION_DURATION = 0.18f;
         private const float WINDOW_COLLAPSED_SCALE = 0.85f;
+        private const int FONT_SIZE = 20;
+        private const int HINT_FONT_SIZE = 16;
+        private const int TAB_COLUMNS = 5;
+        private const float BUTTON_HEIGHT = 48f;
+        private const float SHIP_GRID_HEIGHT = 340f;
+        private const string CLOSE_HINT = "Press Ctrl + Shift + F12 to close the cheats panel";
 
         private const string DEFAULT_MONEY_AMOUNT = "10000";
 
         private static readonly string[] TAB_NAMES =
-            { "Economy", "Ships", "Station", "Defend", "Enemy", "Superweapons", "Debug", "Tutorial" };
+            { "Economy", "Ships", "Squadrons", "Station", "Defend", "Enemy", "Superweapons", "Debug", "Tutorial" };
         private static readonly float[] DAMAGE_FRACTIONS = { 0.1f, 0.25f, 0.5f };
         private static readonly Color WINDOW_BACKGROUND = new Color32(16, 26, 41, 245);
         private IReadOnlyList<DefendPlatformType> _platforms = Array.Empty<DefendPlatformType>();
@@ -47,6 +53,8 @@ namespace EmpireAtWar.Views.Cheats
         private float _windowVisibility;
         private UiHitTest _uiHitTest;
         private GUIStyle _windowStyle;
+        private GUIStyle _hintStyle;
+        private GUISkin _skin;
         private Texture2D _windowBackground;
 
         private float EasedVisibility => Mathf.SmoothStep(0f, 1f, _windowVisibility);
@@ -90,6 +98,8 @@ namespace EmpireAtWar.Views.Cheats
         public event Action<bool> NetworkStatusToggled;
 
         public event Action DestroyOwnShipsRequested;
+
+        public event Action DestroyOwnSquadronsRequested;
 
         public event Action<float> DamageSelectedRequested;
 
@@ -144,10 +154,17 @@ namespace EmpireAtWar.Views.Cheats
             _networkStatusAvailable = available;
         }
 
+        private void DrawSquadronsTab()
+        {
+            GUILayout.Label("Destroy every squadron you own");
+            if (GUILayout.Button("Destroy All My Squadrons", GUILayout.Height(BUTTON_HEIGHT)))
+                DestroyOwnSquadronsRequested?.Invoke();
+        }
+
         private void DrawStationTab()
         {
             GUILayout.Label("Upgrade your station instantly for free");
-            if (GUILayout.Button("Level Up Station", GUILayout.Height(36f)))
+            if (GUILayout.Button("Level Up Station", GUILayout.Height(BUTTON_HEIGHT)))
                 LevelUpStationRequested?.Invoke();
         }
 
@@ -157,9 +174,9 @@ namespace EmpireAtWar.Views.Cheats
             {
                 GUILayout.Label(platform.ToString());
                 GUILayout.BeginHorizontal();
-                if (GUILayout.Button("Add to Reinforcement", GUILayout.Height(36f)))
+                if (GUILayout.Button("Add to Reinforcement", GUILayout.Height(BUTTON_HEIGHT)))
                     AddPlatformReinforcementRequested?.Invoke(platform);
-                if (GUILayout.Button("Spawn in Home Area", GUILayout.Height(36f)))
+                if (GUILayout.Button("Spawn in Home Area", GUILayout.Height(BUTTON_HEIGHT)))
                     SpawnPlatformRequested?.Invoke(platform);
                 GUILayout.EndHorizontal();
                 GUILayout.Space(8f);
@@ -178,19 +195,19 @@ namespace EmpireAtWar.Views.Cheats
             _moneyAmount = GUILayout.TextField(_moneyAmount, 16);
             foreach (PlayerSlot enemy in _enemies)
             {
-                if (GUILayout.Button($"Add Money: {enemy.Id} ({enemy.Faction.GetDisplayName()})", GUILayout.Height(36f)))
+                if (GUILayout.Button($"Add Money: {enemy.Id} ({enemy.Faction.GetDisplayName()})", GUILayout.Height(BUTTON_HEIGHT)))
                     AddEnemyMoneyRequested?.Invoke(enemy.Id, _moneyAmount);
             }
             GUILayout.Space(8f);
-            if (GUILayout.Button("Add Money to All Enemies", GUILayout.Height(36f)))
+            if (GUILayout.Button("Add Money to All Enemies", GUILayout.Height(BUTTON_HEIGHT)))
                 AddAllEnemiesMoneyRequested?.Invoke(_moneyAmount);
             GUILayout.Space(8f);
             foreach (PlayerSlot enemy in _enemies)
             {
-                if (GUILayout.Button($"Level Up Station: {enemy.Id} ({enemy.Faction.GetDisplayName()})", GUILayout.Height(36f)))
+                if (GUILayout.Button($"Level Up Station: {enemy.Id} ({enemy.Faction.GetDisplayName()})", GUILayout.Height(BUTTON_HEIGHT)))
                     LevelUpEnemyStationRequested?.Invoke(enemy.Id);
             }
-            if (GUILayout.Button("Level Up All Enemy Stations", GUILayout.Height(36f)))
+            if (GUILayout.Button("Level Up All Enemy Stations", GUILayout.Height(BUTTON_HEIGHT)))
                 LevelUpAllEnemyStationsRequested?.Invoke();
         }
 
@@ -211,6 +228,11 @@ namespace EmpireAtWar.Views.Cheats
             if (_windowBackground != null)
             {
                 Destroy(_windowBackground);
+            }
+
+            if (_skin != null)
+            {
+                Destroy(_skin);
             }
         }
 
@@ -250,11 +272,27 @@ namespace EmpireAtWar.Views.Cheats
 
             if (_windowStyle == null)
             {
+                _skin = Instantiate(GUI.skin);
+                foreach (GUIStyle style in new[]
+                         {
+                             _skin.label, _skin.button, _skin.toggle, _skin.textField, _skin.window
+                         })
+                {
+                    style.fontSize = FONT_SIZE;
+                }
+
+                _hintStyle = new GUIStyle(_skin.label)
+                {
+                    fontSize = HINT_FONT_SIZE,
+                    fontStyle = FontStyle.Italic,
+                    alignment = TextAnchor.MiddleCenter
+                };
+
                 _windowBackground = new Texture2D(1, 1, TextureFormat.RGBA32, false);
                 _windowBackground.SetPixel(0, 0, WINDOW_BACKGROUND);
                 _windowBackground.Apply(false, true);
 
-                GUIStyle defaultWindow = GUI.skin.window;
+                GUIStyle defaultWindow = _skin.window;
                 _windowStyle = new GUIStyle(defaultWindow)
                 {
                     border = new RectOffset(),
@@ -271,6 +309,8 @@ namespace EmpireAtWar.Views.Cheats
                 };
             }
 
+            GUISkin previousSkin = GUI.skin;
+            GUI.skin = _skin;
             GUI.depth = -1000;
             float easedVisibility = EasedVisibility;
             float scale = WindowScale;
@@ -298,11 +338,13 @@ namespace EmpireAtWar.Views.Cheats
             GUI.enabled = wasEnabled;
             GUI.color = previousColor;
             GUI.matrix = previousMatrix;
+            GUI.skin = previousSkin;
         }
 
         private void DrawWindow(int windowId)
         {
-            int selectedTab = GUILayout.SelectionGrid(_selectedTab, TAB_NAMES, 4);
+            int selectedTab = GUILayout.SelectionGrid(
+                _selectedTab, TAB_NAMES, TAB_COLUMNS, GUILayout.Height(BUTTON_HEIGHT * 2f));
             if (selectedTab != _selectedTab)
             {
                 _selectedTab = selectedTab;
@@ -315,16 +357,18 @@ namespace EmpireAtWar.Views.Cheats
             {
                 case 0: DrawEconomyTab(); break;
                 case 1: DrawShipsTab(); break;
-                case 2: DrawStationTab(); break;
-                case 3: DrawDefendTab(); break;
-                case 4: DrawEnemyTab(); break;
-                case 5: DrawSuperWeaponsTab(); break;
-                case 6: DrawDebugTab(); break;
-                case 7: DrawTutorialTab(); break;
+                case 2: DrawSquadronsTab(); break;
+                case 3: DrawStationTab(); break;
+                case 4: DrawDefendTab(); break;
+                case 5: DrawEnemyTab(); break;
+                case 6: DrawSuperWeaponsTab(); break;
+                case 7: DrawDebugTab(); break;
+                case 8: DrawTutorialTab(); break;
             }
 
             GUILayout.EndScrollView();
             if (!string.IsNullOrEmpty(_status)) GUILayout.Label(_status);
+            GUILayout.Label(CLOSE_HINT, _hintStyle);
 
             GUI.DragWindow();
         }
@@ -334,7 +378,7 @@ namespace EmpireAtWar.Views.Cheats
             GUILayout.Label("Money amount");
             _moneyAmount = GUILayout.TextField(_moneyAmount, 16);
 
-            if (GUILayout.Button("Add Money", GUILayout.Height(36f)))
+            if (GUILayout.Button("Add Money", GUILayout.Height(BUTTON_HEIGHT)))
             {
                 AddMoneyRequested?.Invoke(_moneyAmount);
             }
@@ -345,14 +389,14 @@ namespace EmpireAtWar.Views.Cheats
             GUILayout.Label("Grant a ready-to-fire charge");
             foreach (SuperWeaponType type in SUPER_WEAPONS)
             {
-                if (GUILayout.Button(type.ToString(), GUILayout.Height(36f)))
+                if (GUILayout.Button(type.ToString(), GUILayout.Height(BUTTON_HEIGHT)))
                 {
                     GrantSuperWeaponRequested?.Invoke(type);
                 }
             }
 
             GUILayout.Space(8f);
-            if (GUILayout.Button("Grant All", GUILayout.Height(36f)))
+            if (GUILayout.Button("Grant All", GUILayout.Height(BUTTON_HEIGHT)))
             {
                 GrantAllSuperWeaponsRequested?.Invoke();
             }
@@ -361,7 +405,7 @@ namespace EmpireAtWar.Views.Cheats
         private void DrawTutorialTab()
         {
             GUILayout.Label("Forgets every seen hint and starts again from the first basic hint.");
-            if (GUILayout.Button("Reset and Restart Hints", GUILayout.Height(36f)))
+            if (GUILayout.Button("Reset and Restart Hints", GUILayout.Height(BUTTON_HEIGHT)))
                 RestartHintsRequested?.Invoke();
         }
 
@@ -388,12 +432,12 @@ namespace EmpireAtWar.Views.Cheats
             GUILayout.Label("Spawn one of every ship at your default zone");
             foreach (FactionType faction in _factions)
             {
-                if (GUILayout.Button($"Spawn All {faction.GetDisplayName()} Ships", GUILayout.Height(36f)))
+                if (GUILayout.Button($"Spawn All {faction.GetDisplayName()} Ships", GUILayout.Height(BUTTON_HEIGHT)))
                     SpawnAllShipsRequested?.Invoke(faction);
             }
             GUILayout.Space(8f);
 
-            if (GUILayout.Button("Destroy All My Ships", GUILayout.Height(36f)))
+            if (GUILayout.Button("Destroy All My Ships", GUILayout.Height(BUTTON_HEIGHT)))
             {
                 DestroyOwnShipsRequested?.Invoke();
             }
@@ -402,7 +446,7 @@ namespace EmpireAtWar.Views.Cheats
             GUILayout.BeginHorizontal();
             foreach (float fraction in DAMAGE_FRACTIONS)
             {
-                if (GUILayout.Button($"-{fraction * 100f:0}% Hull", GUILayout.Height(36f)))
+                if (GUILayout.Button($"-{fraction * 100f:0}% Hull", GUILayout.Height(BUTTON_HEIGHT)))
                     DamageSelectedRequested?.Invoke(fraction);
             }
             GUILayout.EndHorizontal();
@@ -432,14 +476,14 @@ namespace EmpireAtWar.Views.Cheats
                 _selectedShip,
                 _shipNames,
                 2,
-                GUILayout.Height(250f));
+                GUILayout.Height(SHIP_GRID_HEIGHT));
 
-            if (GUILayout.Button("Add to Reinforcement", GUILayout.Height(36f)))
+            if (GUILayout.Button("Add to Reinforcement", GUILayout.Height(BUTTON_HEIGHT)))
             {
                 AddReinforcementRequested?.Invoke(_ships[_selectedShip]);
             }
 
-            if (GUILayout.Button("Spawn at Default Zone", GUILayout.Height(36f)))
+            if (GUILayout.Button("Spawn at Default Zone", GUILayout.Height(BUTTON_HEIGHT)))
             {
                 SpawnForceRequested?.Invoke(_ships[_selectedShip]);
             }

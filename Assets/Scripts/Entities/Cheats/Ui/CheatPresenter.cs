@@ -82,6 +82,7 @@ namespace EmpireAtWar.Presenters.Cheats
             _view.GrantAllSuperWeaponsRequested += GrantAllSuperWeapons;
             _view.RangeDebugToggled += SetRangeDebug;
             _view.DestroyOwnShipsRequested += DestroyOwnShips;
+            _view.DestroyOwnSquadronsRequested += DestroyOwnSquadrons;
             _view.DamageSelectedRequested += DamageSelected;
             _view.LevelUpStationRequested += LevelUpStation;
             _view.SpawnAllShipsRequested += SpawnAllShips;
@@ -103,6 +104,7 @@ namespace EmpireAtWar.Presenters.Cheats
             _view.GrantAllSuperWeaponsRequested -= GrantAllSuperWeapons;
             _view.RangeDebugToggled -= SetRangeDebug;
             _view.DestroyOwnShipsRequested -= DestroyOwnShips;
+            _view.DestroyOwnSquadronsRequested -= DestroyOwnSquadrons;
             _view.DamageSelectedRequested -= DamageSelected;
             _view.LevelUpStationRequested -= LevelUpStation;
             _view.SpawnAllShipsRequested -= SpawnAllShips;
@@ -189,6 +191,14 @@ namespace EmpireAtWar.Presenters.Cheats
             _view.SetStatus(destroyed > 0
                 ? $"Destroyed {destroyed} of your ships."
                 : "You have no ships to destroy.");
+        }
+
+        private void DestroyOwnSquadrons()
+        {
+            int destroyed = _cheatService.DestroyOwnSquadrons();
+            _view.SetStatus(destroyed > 0
+                ? $"Destroyed {destroyed} of your squadrons."
+                : "You have no squadrons to destroy.");
         }
 
         private void DamageSelected(float hullFraction)

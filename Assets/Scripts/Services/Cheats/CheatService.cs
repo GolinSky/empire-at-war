@@ -13,6 +13,7 @@ using EmpireAtWar.Models.Factions;
 using EmpireAtWar.Models.Reinforcement;
 using EmpireAtWar.Services.ShipSpawning;
 using EmpireAtWar.Ship;
+using EmpireAtWar.Entities.Units;
 using UnityEngine;
 using ShipEntity = EmpireAtWar.Ship.Ship;
 
@@ -31,6 +32,8 @@ namespace EmpireAtWar.Services.Cheats
         void SetRangeDebug(bool isEnabled);
 
         int DestroyOwnShips();
+
+        int DestroyOwnSquadrons();
 
         /// <summary>Takes <paramref name="hullFraction"/> of max hull from each selected unit. Returns how many were hit.</summary>
         int DamageSelectedUnits(float hullFraction);
@@ -140,13 +143,18 @@ namespace EmpireAtWar.Services.Cheats
         }
 
         /// <summary>Destroys every ship the player owns. Returns how many were destroyed.</summary>
-        public int DestroyOwnShips()
+        public int DestroyOwnShips() => DestroyOwn(EntityRoles.IsShip);
+
+        /// <summary>Destroys every squadron the player owns. Returns how many were destroyed.</summary>
+        public int DestroyOwnSquadrons() => DestroyOwn(EntityRoles.IsSquadron);
+
+        private int DestroyOwn(Func<IEntity, bool> isTarget)
         {
-            // Copied first: destroyed ships leave the locator while we iterate.
+            // Copied first: destroyed units leave the locator while we iterate.
             _ownEntities.Clear();
             foreach (IEntity entity in _entityLocator.Entities)
             {
-                if (entity.Owner == _owner.Id) _ownEntities.Add(entity);
+                if (entity.Owner == _owner.Id && isTarget(entity)) _ownEntities.Add(entity);
             }
 
             int destroyed = 0;

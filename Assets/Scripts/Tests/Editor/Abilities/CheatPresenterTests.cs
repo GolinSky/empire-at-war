@@ -126,6 +126,7 @@ namespace EmpireAtWar.Tests.Editor
             public bool GrantSuperWeapon(SuperWeaponType type) => throw new NotSupportedException();
             public void SetRangeDebug(bool isEnabled) => throw new NotSupportedException();
             public int DestroyOwnShips() => throw new NotSupportedException();
+            public int DestroyOwnSquadrons() => throw new NotSupportedException();
             public int DamageSelectedUnits(float hullFraction) => throw new NotSupportedException();
         }
 
@@ -161,6 +162,7 @@ namespace EmpireAtWar.Tests.Editor
             public event Action<bool> NetworkStatusToggled { add { } remove { } }
             public void SetNetworkStatusAvailable(bool available) { }
             public event Action DestroyOwnShipsRequested { add { } remove { } }
+            public event Action DestroyOwnSquadronsRequested { add { } remove { } }
             public event Action<float> DamageSelectedRequested { add { } remove { } }
         }
     }
