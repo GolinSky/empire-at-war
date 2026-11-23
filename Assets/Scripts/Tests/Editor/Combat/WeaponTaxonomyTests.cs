@@ -83,6 +83,32 @@ namespace EmpireAtWar.Tests.Editor
                 Assert.That(weapons.GetProfile(type).DamagePerSecond, Is.GreaterThan(0f), type.ToString());
         }
 
+        // Bolt color follows the unit's faction: the owner's when its roster lists the unit,
+        // otherwise a faction that does, so a ship spawned for another faction keeps its colors.
+        [Test]
+        public void RosterUnits_ResolveToTheOwnerOrAFactionThatListsThem()
+        {
+            FactionCatalog catalog = AssetDatabase.LoadAssetAtPath<FactionCatalog>(FACTIONS + "/Shared/FactionCatalog.asset");
+            foreach (FactionDefinition faction in catalog.Factions)
+            {
+                foreach (FactionDefinition owner in catalog.Factions)
+                {
+                    foreach (ShipType ship in faction.Ships.Keys)
+                    {
+                        FactionType resolved = catalog.GetShipFaction(ship, owner.FactionType);
+                        Assert.That(catalog.Get(resolved).Ships.ContainsKey(ship), ship.ToString());
+                        if (owner == faction) Assert.That(resolved, Is.EqualTo(owner.FactionType), ship.ToString());
+                    }
+                    foreach (SquadronType squadron in faction.Squadrons.Keys)
+                    {
+                        FactionType resolved = catalog.GetSquadronFaction(squadron, owner.FactionType);
+                        Assert.That(catalog.Get(resolved).Squadrons.ContainsKey(squadron), squadron.ToString());
+                        if (owner == faction) Assert.That(resolved, Is.EqualTo(owner.FactionType), squadron.ToString());
+                    }
+                }
+            }
+        }
+
         [Test]
         public void EveryFamilyCaliberAndMount_HasExactlyOneRule()
         {

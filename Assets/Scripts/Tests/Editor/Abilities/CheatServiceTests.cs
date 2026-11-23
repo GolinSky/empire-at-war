@@ -37,7 +37,7 @@ namespace EmpireAtWar.Tests.Editor
             _cheatService = new CheatService(
                 economyModel: _economyModel,
                 reinforcementModel: _reinforcementModel,
-                shipFactory: new ShipFactory(null, null, null, null, null, null),
+                shipFactory: new ShipFactory(null, null, null, null, null, null, null, null),
                 shipSpawnPoints: new NoShipSpawnPoints(),
                 entityLocator: new EmptyEntityLocator(),
                 superWeaponModel: _superWeaponModel,

@@ -1557,7 +1557,7 @@ namespace EmpireAtWar.Tests.Editor
             public List<ShipType> Created { get; } = new List<ShipType>();
             public List<Vector3> Positions { get; } = new List<Vector3>();
 
-            public TrackingShipFactory(ShipEntity ship) : base(null, null, null, null, null, null)
+            public TrackingShipFactory(ShipEntity ship) : base(null, null, null, null, null, null, null, null)
             {
                 _ship = ship;
             }

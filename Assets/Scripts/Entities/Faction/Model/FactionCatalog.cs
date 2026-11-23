@@ -27,6 +27,27 @@ namespace EmpireAtWar.Models.Factions
             throw new KeyNotFoundException($"No faction data for ship {shipType}.");
         }
 
+        /// <summary>
+        /// The faction this ship belongs to: <paramref name="owner"/> when its roster builds the ship
+        /// (ships such as the Tector sit in several rosters), otherwise the first faction that builds it.
+        /// </summary>
+        public FactionType GetShipFaction(ShipType shipType, FactionType owner)
+        {
+            if (Get(owner).Ships.ContainsKey(shipType)) return owner;
+            foreach (FactionDefinition faction in factions)
+                if (faction.Ships.ContainsKey(shipType)) return faction.FactionType;
+            throw new KeyNotFoundException($"No faction builds ship {shipType}.");
+        }
+
+        /// <summary>The faction this squadron belongs to; same rule as <see cref="GetShipFaction"/>.</summary>
+        public FactionType GetSquadronFaction(SquadronType squadronType, FactionType owner)
+        {
+            if (Get(owner).Squadrons.ContainsKey(squadronType)) return owner;
+            foreach (FactionDefinition faction in factions)
+                if (faction.Squadrons.ContainsKey(squadronType)) return faction.FactionType;
+            throw new KeyNotFoundException($"No faction fields squadron {squadronType}.");
+        }
+
         public FactionData GetSquadronFactionData(SquadronType squadronType)
         {
             foreach (FactionDefinition faction in factions)

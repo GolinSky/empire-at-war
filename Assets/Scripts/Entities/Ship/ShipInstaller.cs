@@ -30,13 +30,15 @@ namespace EmpireAtWar.Ship
     {
         private readonly ShipType _shipType;
         private readonly ShipSpawnPose _pose;
+        private readonly FactionType _shipFaction;
 
         public ShipInstaller(Ship view, ShipData data, ILocalPlayer localPlayer, PlayerId owner,
-            long entityId, Vector3 position, ShipType shipType, ShipSpawnPose pose)
+            long entityId, Vector3 position, ShipType shipType, ShipSpawnPose pose, FactionType shipFaction)
             : base(view, data, localPlayer, owner, entityId, position)
         {
             _shipType = shipType;
             _pose = pose;
+            _shipFaction = shipFaction;
         }
 
         protected override void InstallFeatures(IContainerBuilder builder)
@@ -63,6 +65,7 @@ namespace EmpireAtWar.Ship
             {
                 weapon.ConfigureWeaponPower(Data.Abilities.Contains(ShipAbilityId.BoostWeaponPower));
                 weapon.ConfigureArtillery(Data.UsesArtilleryStandoff);
+                weapon.ConfigureUnitFaction(_shipFaction);
             }
             EntityFeatureBindings.RegisterFog(builder, Bindings, !LocalPlayer.IsFriendly(Owner));
             builder.Register<ShipHullObstacle>(Lifetime.Singleton).AsImplementedInterfaces();

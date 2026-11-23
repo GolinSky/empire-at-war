@@ -8,6 +8,7 @@ using EmpireAtWar.Entities.Ship.EntityFacades.Health;
 using EmpireAtWar.Entities.Squadrons.Data;
 using EmpireAtWar.Entities.Squadrons.EntityFacades;
 using EmpireAtWar.Entities.Units;
+using EmpireAtWar.Models.Factions;
 using EmpireAtWar.Models.Players;
 using EmpireAtWar.Models.Selection;
 using EmpireAtWar.Services.Audio;
@@ -23,13 +24,15 @@ namespace EmpireAtWar.Entities.Squadrons
     {
         private readonly SquadronType _squadronType;
         private readonly Quaternion _rotation;
+        private readonly FactionType _squadronFaction;
 
         public SquadronInstaller(Squadron view, SquadronData data, ILocalPlayer localPlayer, PlayerId owner,
-            long entityId, Vector3 position, SquadronType squadronType, Quaternion rotation)
+            long entityId, Vector3 position, SquadronType squadronType, Quaternion rotation, FactionType squadronFaction)
             : base(view, data, localPlayer, owner, entityId, position)
         {
             _squadronType = squadronType;
             _rotation = rotation;
+            _squadronFaction = squadronFaction;
         }
 
         protected override void InstallFeatures(IContainerBuilder builder)
@@ -46,7 +49,10 @@ namespace EmpireAtWar.Entities.Squadrons
             EntityFeatureBindings.RegisterRadar(builder, Bindings);
             EntityFeatureBindings.RegisterWeapons(builder, Bindings, Data.ShipClass);
             foreach (var weapon in Bindings.Weapons)
+            {
                 weapon.ConfigureWarheads(Data.WarheadDamageMultiplier, Data.WarheadReloadMultiplier);
+                weapon.ConfigureUnitFaction(_squadronFaction);
+            }
             EntityFeatureBindings.RegisterFog(builder, Bindings, !LocalPlayer.IsFriendly(Owner));
             builder.Register<CombatModifiers>(Lifetime.Singleton);
             builder.Register<CombatModifiersFacade>(Lifetime.Singleton).AsImplementedInterfaces();

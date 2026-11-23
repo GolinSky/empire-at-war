@@ -17,13 +17,18 @@ namespace EmpireAtWar.Ship
         private readonly ShipsData _shipsData;
         private readonly ILocalPlayer _localPlayer;
         private readonly IUniqueIdGenerator _ids;
+        private readonly FactionCatalog _factions;
+        private readonly IPlayerRoster _players;
 
         public ShipFactory(IAssetService assets, LifetimeScope scope, EntityScopeOwnership ownership, ShipsData shipsData,
-            ILocalPlayer localPlayer, IUniqueIdGenerator ids) : base(assets, scope, ownership)
+            ILocalPlayer localPlayer, IUniqueIdGenerator ids, FactionCatalog factions, IPlayerRoster players)
+            : base(assets, scope, ownership)
         {
             _shipsData = shipsData;
             _localPlayer = localPlayer;
             _ids = ids;
+            _factions = factions;
+            _players = players;
         }
 
         public virtual Ship Create(PlayerId owner, ShipType shipType, Vector3 position) =>
@@ -37,9 +42,10 @@ namespace EmpireAtWar.Ship
         public Ship Create(PlayerId owner, ShipType shipType, Vector3 position, long entityId, ShipSpawnPose pose)
         {
             ShipData data = Assets.Load<ShipData>(_shipsData.GetShipDataPath(shipType));
+            FactionType shipFaction = _factions.GetShipFaction(shipType, _players.Get(owner).Faction);
             return Spawn(Assets.LoadComponent<Ship>(shipType + "ShipView"), position, Quaternion.identity,
-                (builder, view) => new ShipInstaller(view, data, _localPlayer, owner, entityId, position, shipType, pose)
-                    .Install(builder));
+                (builder, view) => new ShipInstaller(view, data, _localPlayer, owner, entityId, position, shipType, pose,
+                    shipFaction).Install(builder));
         }
     }
 }

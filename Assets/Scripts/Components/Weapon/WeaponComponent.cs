@@ -54,6 +54,8 @@ namespace EmpireAtWar.Components.Weapon
         private long _entityId;
         private ShipClass _attackerClass;
         private FactionType _faction;
+        // Faction the unit was designed for; bolts take its color even when another faction owns the unit.
+        private FactionType? _unitFaction;
         private string _telemetryName;
 
         [SerializeField] private List<WeaponHardPoint> hardPoints;
@@ -175,6 +177,8 @@ namespace EmpireAtWar.Components.Weapon
             _warheadReloadMultiplier = reloadMultiplier;
         }
 
+        public void ConfigureUnitFaction(FactionType faction) => _unitFaction = faction;
+
         public void ConfigureWeaponPower(bool enabled) => _hasWeaponPower = enabled;
 
         public void ConfigureArtillery(bool enabled) =>
@@ -191,6 +195,7 @@ namespace EmpireAtWar.Components.Weapon
             // Every hardpoint fires to its own weapon's range; nebulae and other vision effects scale it.
             FactionType faction = _playerRoster.Get(_owner).Faction;
             _faction = faction;
+            FactionType boltFaction = _unitFaction ?? faction;
             _telemetryName = _viewTransform.name.Replace("(Clone)", string.Empty);
             List<WeaponProfile> profiles = new List<WeaponProfile>(hardPoints.Count);
             float reloadMultiplier = 1f;
@@ -204,7 +209,7 @@ namespace EmpireAtWar.Components.Weapon
             for (int i = 0; i < hardPoints.Count; i++)
             {
                 WeaponHardPoint hardPoint = hardPoints[i];
-                WeaponProfile profile = _weaponsData.GetProfile(hardPoint.WeaponType, faction)
+                WeaponProfile profile = _weaponsData.GetProfile(hardPoint.WeaponType, boltFaction)
                     .WithRangeMultiplier(rangeMultiplier)
                     .WithWarheadMultipliers(_warheadDamageMultiplier, _warheadReloadMultiplier);
                 profiles.Add(profile);
