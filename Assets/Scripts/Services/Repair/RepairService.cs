@@ -163,7 +163,15 @@ namespace EmpireAtWar.Services.Repair
                    _relations.IsAllied(repairer.Entity.Owner, entity.Owner) &&
                    entity.TryGetFacade(out repairable) && repairable.NeedsRepair &&
                    entity.TryGetFacade(out IEntityTransformFacade transform) &&
-                   (transform.Transform.position - origin).sqrMagnitude <= radiusSquared;
+                   PlanarDistanceSquared(transform.Transform.position, origin) <= radiusSquared;
+        }
+
+        // The range ring is flat: ships fly at height tiers far above or below a repairer, so height is ignored.
+        private static float PlanarDistanceSquared(Vector3 a, Vector3 b)
+        {
+            float x = a.x - b.x;
+            float z = a.z - b.z;
+            return x * x + z * z;
         }
 
         private void HandleEntityAdded(IEntity entity)

@@ -6,7 +6,7 @@ namespace EmpireAtWar.Services.Repair
     [CreateAssetMenu(fileName = nameof(RepairProfile), menuName = "Data/Repair Profile")]
     public sealed class RepairProfile : ScriptableObject
     {
-        [field: SerializeField, Min(1f), Tooltip("World units from the repairer to the target centre.")]
+        [field: SerializeField, Min(1f), Tooltip("Flat (top-down) world units from the repairer to the target centre; height is ignored.")]
         public float Radius { get; private set; } = 400f;
 
         [field: SerializeField, Min(0.1f), Tooltip("Seconds between repair ticks.")]

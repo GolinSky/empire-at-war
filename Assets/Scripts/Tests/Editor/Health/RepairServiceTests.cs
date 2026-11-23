@@ -64,6 +64,24 @@ namespace EmpireAtWar.Tests.Editor
         }
 
         [Test]
+        public void RadiusIgnoresTheTargetsFlightHeight()
+        {
+            CreateService(new OfflineSession(TestPlayers.Human));
+            RepairProfile profile = CreateProfile(radius: 100f);
+            AddRepairer(TestPlayers.Human, Vector3.zero, profile);
+            // Dreadnoughts fly far below the plane a satellite sits on; only the flat ring counts.
+            FakeEntity deepInside = AddUnit(TestPlayers.Human, new Vector3(90f, -400f, 0f), 0.5f);
+            FakeEntity highInside = AddUnit(TestPlayers.Human, new Vector3(0f, 300f, 90f), 0.5f);
+            FakeEntity deepOutside = AddUnit(TestPlayers.Human, new Vector3(101f, -400f, 0f), 0.5f);
+
+            _service.Advance(0.1f);
+
+            Assert.That(deepInside.Repairable.RepairCount, Is.EqualTo(1));
+            Assert.That(highInside.Repairable.RepairCount, Is.EqualTo(1));
+            Assert.That(deepOutside.Repairable.RepairCount, Is.Zero);
+        }
+
+        [Test]
         public void FillsUpToMaxTargetsMostDamagedFirst()
         {
             CreateService(new OfflineSession(TestPlayers.Human));
