@@ -148,8 +148,8 @@ namespace EmpireAtWar.Services.Factions
                         ? !_productionAccess.HasHostBase
                         : !_productionAccess.CanProduce && _productionAccess.ProductionHost != _owner.Id)
             {
-                if (PlayerFactionModel.IsHeroRequest(unitRequest, out UnitTypeId hero))
-                    _model.SetHeroReserved(hero, false);
+                if (PlayerFactionModel.IsUniqueRequest(unitRequest, out UnitTypeId unique))
+                    _model.SetUniqueReserved(unique, false);
                 if (unitRequest is MiningFacilityUnitRequest ||
                     unitRequest is DefendPlatformUnitRequest ||
                     unitRequest is SecondStationUnitRequest)
@@ -217,23 +217,23 @@ namespace EmpireAtWar.Services.Factions
         private static bool NeedsHostBase(UnitRequest unitRequest) =>
             unitRequest is LevelUnitRequest || unitRequest is SuperWeaponUnitRequest;
 
-        private bool IsOwnedHero(IEntity entity, out UnitTypeId hero)
+        private bool IsOwnedUniqueUnit(IEntity entity, out UnitTypeId unique)
         {
-            hero = default;
+            unique = default;
             if (entity.Owner != _owner.Id || !entity.TryGetFacade(out IUnitTypeFacade type)) return false;
-            hero = type.UnitTypeId;
-            return _model.IsHeroUnit(hero);
+            unique = type.UnitTypeId;
+            return _model.IsUniqueUnit(unique);
         }
 
         private void HandleEntityAdded(IEntity entity)
         {
-            if (IsOwnedHero(entity, out UnitTypeId hero)) _model.SetHeroReserved(hero, true);
+            if (IsOwnedUniqueUnit(entity, out UnitTypeId unique)) _model.SetUniqueReserved(unique, true);
         }
 
         private void HandleEntityRemoved(IEntity entity)
         {
-            if (IsOwnedHero(entity, out UnitTypeId hero) && entity.HealthModel.IsDestroyed)
-                _model.SetHeroReserved(hero, false);
+            if (IsOwnedUniqueUnit(entity, out UnitTypeId unique) && entity.HealthModel.IsDestroyed)
+                _model.SetUniqueReserved(unique, false);
         }
 
         public void CancelBuilding(string id)

@@ -405,7 +405,7 @@ namespace EmpireAtWar.Tests.Editor
                     Is.Not.EqualTo(SquadronType.HanSoloMillenniumFalcon));
 
             var model = player.Container.Resolve<PlayerFactionModel>();
-            Assert.That(model.IsHeroReserved(UnitTypeId.Squadron(SquadronType.HanSoloMillenniumFalcon)), Is.False);
+            Assert.That(model.IsUniqueReserved(UnitTypeId.Squadron(SquadronType.HanSoloMillenniumFalcon)), Is.False);
         }
 
         [Test]

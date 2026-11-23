@@ -14,12 +14,16 @@ namespace EmpireAtWar.Models.Factions
         [SerializeField] private string role;
         [SerializeField] private string iconKey;
         [SerializeField] private bool isHero;
+        [SerializeField, Tooltip("Only one may be queued, in reserve or alive at a time, as a hero (dreadnoughts).")]
+        private bool isUnique;
 
         public string Description => description;
         public string DisplayName => displayName;
         public string Role => role;
         public string IconKey => iconKey;
         public bool IsHero => isHero;
+        /// <summary>One of this type may be queued, in reserve or alive at a time. Every hero is unique.</summary>
+        public bool IsUnique => isHero || isUnique;
         public UnitMatchupData Matchups => matchups;
         [field:SerializeField] public string Name { get; private set; }
         [field:SerializeField] public int MaxCount { get; private set; }

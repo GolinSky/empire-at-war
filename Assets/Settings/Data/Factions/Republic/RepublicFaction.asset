@@ -25,6 +25,7 @@ MonoBehaviour:
         role: "Capital \xB7 Heavy gunship / carrier"
         iconKey: d899a22bd6d129e46a5aed14df2b81fa:21300000
         isHero: 0
+        isUnique: 0
         <Name>k__BackingField: Venator I
         <MaxCount>k__BackingField: 30
         <AvailableLevel>k__BackingField: 4
@@ -44,6 +45,7 @@ MonoBehaviour:
         role: "Capital \xB7 Heavy gunship"
         iconKey: 8ee3ff50731492c43b11469ff405c5d6:21300000
         isHero: 0
+        isUnique: 0
         <Name>k__BackingField: Venator II
         <MaxCount>k__BackingField: 30
         <AvailableLevel>k__BackingField: 5
@@ -61,6 +63,7 @@ MonoBehaviour:
         role: "Frigate \xB7 Escort"
         iconKey: ae699c8c0850c9245b84a34c5fb8d767:21300000
         isHero: 0
+        isUnique: 0
         <Name>k__BackingField: Arquitens
         <MaxCount>k__BackingField: 20
         <AvailableLevel>k__BackingField: 3
@@ -80,6 +83,7 @@ MonoBehaviour:
         role: "Capital \xB7 Multirole support"
         iconKey: 2ce1aa3deeeb0a541bb85a35a38c9390:21300000
         isHero: 0
+        isUnique: 0
         <Name>k__BackingField: Acclamator
         <MaxCount>k__BackingField: 20
         <AvailableLevel>k__BackingField: 2
@@ -97,6 +101,7 @@ MonoBehaviour:
         role: "Frigate \xB7 Shield breaker"
         iconKey: 003f227a5109a5745879774b3be70886:21300000
         isHero: 0
+        isUnique: 0
         <Name>k__BackingField: Heavy Dreadnought
         <MaxCount>k__BackingField: 20
         <AvailableLevel>k__BackingField: 3
@@ -117,6 +122,7 @@ MonoBehaviour:
         role: "Capital \xB7 Heavy gunship / carrier"
         iconKey: 677a9fb4a7566e14d932893ee85f3357:21300000
         isHero: 0
+        isUnique: 0
         <Name>k__BackingField: Rothana Star Destroyer
         <MaxCount>k__BackingField: 3
         <AvailableLevel>k__BackingField: 5
@@ -138,6 +144,7 @@ MonoBehaviour:
         role: "Hero \xB7 Fleet command carrier"
         iconKey: 8ee3ff50731492c43b11469ff405c5d6:21300000
         isHero: 1
+        isUnique: 0
         <Name>k__BackingField: "Resolute \u2014 Admiral Yularen"
         <MaxCount>k__BackingField: 1
         <AvailableLevel>k__BackingField: 3
@@ -159,6 +166,7 @@ MonoBehaviour:
         role: "Mandator II \xB7 Dreadnought"
         iconKey: 771dbf8529c7a394b864ffcb0bd556d7:21300000
         isHero: 0
+        isUnique: 1
         <Name>k__BackingField: Pride of the Core
         <MaxCount>k__BackingField: 1
         <AvailableLevel>k__BackingField: 5
@@ -180,6 +188,7 @@ MonoBehaviour:
         role: Capital / Battleship / Heavy direct fire
         iconKey: 467453f64c3f87547aa904ce3fda10b9:21300000
         isHero: 0
+        isUnique: 0
         <Name>k__BackingField: Imperator-class Star Destroyer
         <MaxCount>k__BackingField: 30
         <AvailableLevel>k__BackingField: 5
@@ -199,6 +208,7 @@ MonoBehaviour:
         role: "Stealth \xB7 Reconnaissance"
         iconKey: 2556b3b94de26234e872c9e6cc31a730:21300000
         isHero: 0
+        isUnique: 0
         <Name>k__BackingField: IPV-2C Stealth Corvette
         <MaxCount>k__BackingField: 1
         <AvailableLevel>k__BackingField: 2
@@ -220,6 +230,7 @@ MonoBehaviour:
         role: Heavy cruiser / Anti-corvette / Anti-frigate
         iconKey: 552ac5636e4f65c44994f1337d051b8a:21300000
         isHero: 0
+        isUnique: 0
         <Name>k__BackingField: Victory-class Star Destroyer
         <MaxCount>k__BackingField: 10
         <AvailableLevel>k__BackingField: 4
@@ -239,6 +250,7 @@ MonoBehaviour:
         role: Corvette / Escort
         iconKey: 7e5117ae6840c8d4a9252e2b589de44f:21300000
         isHero: 0
+        isUnique: 0
         <Name>k__BackingField: CR70 Corvette
         <MaxCount>k__BackingField: 10
         <AvailableLevel>k__BackingField: 1
@@ -257,6 +269,7 @@ MonoBehaviour:
         role: Frigate / Multirole escort
         iconKey: 8759435b430b0024899c5095289c56b5:21300000
         isHero: 0
+        isUnique: 0
         <Name>k__BackingField: Pelta-class Frigate
         <MaxCount>k__BackingField: 20
         <AvailableLevel>k__BackingField: 2
@@ -276,6 +289,7 @@ MonoBehaviour:
         role: Cruiser / Anti-fighter Escort
         iconKey: ee8c2cac9ed92d8499f6b865153f7ff3:21300000
         isHero: 0
+        isUnique: 0
         <Name>k__BackingField: Carrack-class Cruiser
         <MaxCount>k__BackingField: 10
         <AvailableLevel>k__BackingField: 2
@@ -296,6 +310,7 @@ MonoBehaviour:
         role: Heavy Frigate / Assault Escort
         iconKey: c7ed8d3ae8343e24a8ef2eca2a1a0e8f:21300000
         isHero: 0
+        isUnique: 0
         <Name>k__BackingField: Centax-class Heavy Frigate
         <MaxCount>k__BackingField: 10
         <AvailableLevel>k__BackingField: 2
@@ -313,6 +328,7 @@ MonoBehaviour:
         role: Battlecruiser / Battle carrier
         iconKey: 5cce3c98ec18d704b8fcd6fd28baef17:21300000
         isHero: 0
+        isUnique: 0
         <Name>k__BackingField: Secutor-class Star Destroyer
         <MaxCount>k__BackingField: 3
         <AvailableLevel>k__BackingField: 5
@@ -331,6 +347,7 @@ MonoBehaviour:
         role: Dreadnought / Defensive battlecruiser
         iconKey: d984efa2c59c0e2488e1bb83e5bc3935:21300000
         isHero: 0
+        isUnique: 1
         <Name>k__BackingField: Praetor-class Battlecruiser
         <MaxCount>k__BackingField: 1
         <AvailableLevel>k__BackingField: 5
@@ -351,6 +368,7 @@ MonoBehaviour:
         role: Battlecruiser / Fleet anchor
         iconKey: b1f55dd8e83a85345a26f49b8c3deebf:21300000
         isHero: 0
+        isUnique: 0
         <Name>k__BackingField: Procurator-class Battlecruiser
         <MaxCount>k__BackingField: 2
         <AvailableLevel>k__BackingField: 5
@@ -373,6 +391,7 @@ MonoBehaviour:
         role: Ship of the Line / Capital Ship
         iconKey: f0a9b1821246f484dbc3d7fcaa7828d1:21300000
         isHero: 0
+        isUnique: 0
         <Name>k__BackingField: Tector Star Destroyer
         <MaxCount>k__BackingField: 3
         <AvailableLevel>k__BackingField: 4
@@ -396,6 +415,7 @@ MonoBehaviour:
         role: "Heavy fighter \xB7 Fighter-bomber"
         iconKey: 14a57369a6b0b6447917d19a5a8114c8:21300000
         isHero: 0
+        isUnique: 0
         <Name>k__BackingField: ARC-170 Squadron
         <MaxCount>k__BackingField: 10
         <AvailableLevel>k__BackingField: 5
@@ -416,6 +436,7 @@ MonoBehaviour:
         role: "Heavy bomber \xB7 Anti-capital strikecraft"
         iconKey: 8aec8fa8b8581064dbf2721ad11585bb:21300000
         isHero: 0
+        isUnique: 0
         <Name>k__BackingField: BTL-B Y-Wing Squadron
         <MaxCount>k__BackingField: 10
         <AvailableLevel>k__BackingField: 2
@@ -436,6 +457,7 @@ MonoBehaviour:
         role: "Naval bomber \xB7 Anti-capital strikecraft"
         iconKey: 83b847ad5990b534c940f6bcc1abfbf1:21300000
         isHero: 0
+        isUnique: 0
         <Name>k__BackingField: NTB-630 Naval Bomber Squadron
         <MaxCount>k__BackingField: 10
         <AvailableLevel>k__BackingField: 1
@@ -455,6 +477,7 @@ MonoBehaviour:
         role: Fighter / Squadron screen
         iconKey: 47bb7927ce6b11a40a4930c0e6e95426:21300000
         isHero: 0
+        isUnique: 0
         <Name>k__BackingField: V-19 Torrent Squadron
         <MaxCount>k__BackingField: 10
         <AvailableLevel>k__BackingField: 1
@@ -475,6 +498,7 @@ MonoBehaviour:
         role: Interceptor / Anti-bomber
         iconKey: 6db48aa8ac87e0e4faf79f796d5b3f37:21300000
         isHero: 0
+        isUnique: 0
         <Name>k__BackingField: V-Wing Squadron
         <MaxCount>k__BackingField: 10
         <AvailableLevel>k__BackingField: 5
@@ -492,6 +516,7 @@ MonoBehaviour:
         role: Hero / Balanced fighter
         iconKey: 1ff6ed4901c849a3b9b3b62d802b2974:21300000
         isHero: 1
+        isUnique: 0
         <Name>k__BackingField: "Plo Koon \u2014 Delta-7B"
         <MaxCount>k__BackingField: 1
         <AvailableLevel>k__BackingField: 2
@@ -509,6 +534,7 @@ MonoBehaviour:
         role: Hero / Durable fighter
         iconKey: 6de8ee785958456fa2a7a988106d3be1:21300000
         isHero: 1
+        isUnique: 0
         <Name>k__BackingField: "Obi-Wan Kenobi \u2014 Eta-2 Actis"
         <MaxCount>k__BackingField: 1
         <AvailableLevel>k__BackingField: 3
@@ -526,6 +552,7 @@ MonoBehaviour:
         role: Hero / Heavy fighter
         iconKey: 98a9def4b3404d5a843243b37768b618:21300000
         isHero: 1
+        isUnique: 0
         <Name>k__BackingField: "Mace Windu \u2014 Eta-2 Actis"
         <MaxCount>k__BackingField: 1
         <AvailableLevel>k__BackingField: 4
@@ -543,6 +570,7 @@ MonoBehaviour:
         role: Hero / Attack fighter
         iconKey: 7a6957f9f1c843079f92b6cff955f684:21300000
         isHero: 1
+        isUnique: 0
         <Name>k__BackingField: "Anakin Skywalker \u2014 Eta-2 Actis"
         <MaxCount>k__BackingField: 1
         <AvailableLevel>k__BackingField: 3
@@ -564,6 +592,7 @@ MonoBehaviour:
             role: Research
             iconKey: 1ef035bcae2fad145ab8ce8fa5776004:21300000
             isHero: 0
+            isUnique: 0
             <Name>k__BackingField: Increased Production I
             <MaxCount>k__BackingField: 1
             <AvailableLevel>k__BackingField: 1
@@ -584,6 +613,7 @@ MonoBehaviour:
             role: Research
             iconKey: 1ef035bcae2fad145ab8ce8fa5776004:21300000
             isHero: 0
+            isUnique: 0
             <Name>k__BackingField: Increased Production II
             <MaxCount>k__BackingField: 1
             <AvailableLevel>k__BackingField: 2
@@ -607,6 +637,7 @@ MonoBehaviour:
             role: Research
             iconKey: 84c93b9211168f64bb4f04d91c77bf0a:21300000
             isHero: 0
+            isUnique: 0
             <Name>k__BackingField: Improved Weapons I
             <MaxCount>k__BackingField: 1
             <AvailableLevel>k__BackingField: 2
@@ -627,6 +658,7 @@ MonoBehaviour:
             role: Research
             iconKey: 84c93b9211168f64bb4f04d91c77bf0a:21300000
             isHero: 0
+            isUnique: 0
             <Name>k__BackingField: Improved Weapons II
             <MaxCount>k__BackingField: 1
             <AvailableLevel>k__BackingField: 3
@@ -647,6 +679,7 @@ MonoBehaviour:
             role: Research
             iconKey: 84c93b9211168f64bb4f04d91c77bf0a:21300000
             isHero: 0
+            isUnique: 0
             <Name>k__BackingField: Improved Weapons III
             <MaxCount>k__BackingField: 1
             <AvailableLevel>k__BackingField: 4
@@ -670,6 +703,7 @@ MonoBehaviour:
             role: Research
             iconKey: 46e861879378cc441bb7260e899b7559:21300000
             isHero: 0
+            isUnique: 0
             <Name>k__BackingField: Enhanced Shields I
             <MaxCount>k__BackingField: 1
             <AvailableLevel>k__BackingField: 2
@@ -690,6 +724,7 @@ MonoBehaviour:
             role: Research
             iconKey: 46e861879378cc441bb7260e899b7559:21300000
             isHero: 0
+            isUnique: 0
             <Name>k__BackingField: Enhanced Shields II
             <MaxCount>k__BackingField: 1
             <AvailableLevel>k__BackingField: 3
@@ -710,6 +745,7 @@ MonoBehaviour:
             role: Research
             iconKey: 46e861879378cc441bb7260e899b7559:21300000
             isHero: 0
+            isUnique: 0
             <Name>k__BackingField: Enhanced Shields III
             <MaxCount>k__BackingField: 1
             <AvailableLevel>k__BackingField: 4
@@ -733,6 +769,7 @@ MonoBehaviour:
             role: Research
             iconKey: 129f6cb74bcbfd146abb8dcd483d2864:21300000
             isHero: 0
+            isUnique: 0
             <Name>k__BackingField: Enhanced Engines I
             <MaxCount>k__BackingField: 1
             <AvailableLevel>k__BackingField: 2
@@ -753,6 +790,7 @@ MonoBehaviour:
             role: Research
             iconKey: 129f6cb74bcbfd146abb8dcd483d2864:21300000
             isHero: 0
+            isUnique: 0
             <Name>k__BackingField: Enhanced Engines II
             <MaxCount>k__BackingField: 1
             <AvailableLevel>k__BackingField: 3
@@ -773,6 +811,7 @@ MonoBehaviour:
             role: Research
             iconKey: 129f6cb74bcbfd146abb8dcd483d2864:21300000
             isHero: 0
+            isUnique: 0
             <Name>k__BackingField: Enhanced Engines III
             <MaxCount>k__BackingField: 1
             <AvailableLevel>k__BackingField: 4
@@ -796,6 +835,7 @@ MonoBehaviour:
             role: Research
             iconKey: fd2f2005d81ff1545af20e1feec39c0e:21300000
             isHero: 0
+            isUnique: 0
             <Name>k__BackingField: Improved Defenses I
             <MaxCount>k__BackingField: 1
             <AvailableLevel>k__BackingField: 1
@@ -816,6 +856,7 @@ MonoBehaviour:
             role: Research
             iconKey: fd2f2005d81ff1545af20e1feec39c0e:21300000
             isHero: 0
+            isUnique: 0
             <Name>k__BackingField: Improved Defenses II
             <MaxCount>k__BackingField: 1
             <AvailableLevel>k__BackingField: 2
@@ -836,6 +877,7 @@ MonoBehaviour:
             role: Research
             iconKey: fd2f2005d81ff1545af20e1feec39c0e:21300000
             isHero: 0
+            isUnique: 0
             <Name>k__BackingField: Improved Defenses III
             <MaxCount>k__BackingField: 1
             <AvailableLevel>k__BackingField: 3
@@ -859,6 +901,7 @@ MonoBehaviour:
             role: Research
             iconKey: b73f9718576eb694bb3badc9b47afc43:21300000
             isHero: 0
+            isUnique: 0
             <Name>k__BackingField: Reinforced Structures
             <MaxCount>k__BackingField: 1
             <AvailableLevel>k__BackingField: 2
@@ -881,6 +924,7 @@ MonoBehaviour:
             role: Research
             iconKey: 5555e458b6d140f9aeeee10a133cb94b:21300000
             isHero: 0
+            isUnique: 0
             <Name>k__BackingField: Increased Station Income I
             <MaxCount>k__BackingField: 1
             <AvailableLevel>k__BackingField: 4
@@ -900,6 +944,7 @@ MonoBehaviour:
             role: Research
             iconKey: 5555e458b6d140f9aeeee10a133cb94b:21300000
             isHero: 0
+            isUnique: 0
             <Name>k__BackingField: Increased Station Income II
             <MaxCount>k__BackingField: 1
             <AvailableLevel>k__BackingField: 5
@@ -922,6 +967,7 @@ MonoBehaviour:
             role: Research
             iconKey: 632f1f446bdb46678c7eeeced2c6917d:21300000
             isHero: 0
+            isUnique: 0
             <Name>k__BackingField: Orbital Weapons I
             <MaxCount>k__BackingField: 1
             <AvailableLevel>k__BackingField: 2
@@ -938,6 +984,7 @@ MonoBehaviour:
             role: Research
             iconKey: 632f1f446bdb46678c7eeeced2c6917d:21300000
             isHero: 0
+            isUnique: 0
             <Name>k__BackingField: Orbital Weapons II
             <MaxCount>k__BackingField: 1
             <AvailableLevel>k__BackingField: 3
@@ -954,6 +1001,7 @@ MonoBehaviour:
             role: Research
             iconKey: 632f1f446bdb46678c7eeeced2c6917d:21300000
             isHero: 0
+            isUnique: 0
             <Name>k__BackingField: Orbital Weapons III
             <MaxCount>k__BackingField: 1
             <AvailableLevel>k__BackingField: 4
@@ -970,6 +1018,7 @@ MonoBehaviour:
             role: Research
             iconKey: 632f1f446bdb46678c7eeeced2c6917d:21300000
             isHero: 0
+            isUnique: 0
             <Name>k__BackingField: Orbital Weapons IV
             <MaxCount>k__BackingField: 1
             <AvailableLevel>k__BackingField: 5
@@ -986,6 +1035,7 @@ MonoBehaviour:
             role: Research
             iconKey: 632f1f446bdb46678c7eeeced2c6917d:21300000
             isHero: 0
+            isUnique: 0
             <Name>k__BackingField: Orbital Weapons V
             <MaxCount>k__BackingField: 1
             <AvailableLevel>k__BackingField: 5
@@ -1007,6 +1057,7 @@ MonoBehaviour:
             role: Research
             iconKey: d846cedf6810ffb4ea05703dbeeee74c:21300000
             isHero: 0
+            isUnique: 0
             <Name>k__BackingField: Field Repairs
             <MaxCount>k__BackingField: 1
             <AvailableLevel>k__BackingField: 3
@@ -1027,6 +1078,7 @@ MonoBehaviour:
             role: Research
             iconKey: b73f9718576eb694bb3badc9b47afc43:21300000
             isHero: 0
+            isUnique: 0
             <Name>k__BackingField: Fortified Structures I
             <MaxCount>k__BackingField: 1
             <AvailableLevel>k__BackingField: 1
@@ -1050,6 +1102,7 @@ MonoBehaviour:
             role: Research
             iconKey: b73f9718576eb694bb3badc9b47afc43:21300000
             isHero: 0
+            isUnique: 0
             <Name>k__BackingField: Fortified Structures II
             <MaxCount>k__BackingField: 1
             <AvailableLevel>k__BackingField: 2
@@ -1073,6 +1126,7 @@ MonoBehaviour:
             role: Research
             iconKey: b73f9718576eb694bb3badc9b47afc43:21300000
             isHero: 0
+            isUnique: 0
             <Name>k__BackingField: Fortified Structures III
             <MaxCount>k__BackingField: 1
             <AvailableLevel>k__BackingField: 3
@@ -1096,6 +1150,7 @@ MonoBehaviour:
             role: Research
             iconKey: b73f9718576eb694bb3badc9b47afc43:21300000
             isHero: 0
+            isUnique: 0
             <Name>k__BackingField: Fortified Structures IV
             <MaxCount>k__BackingField: 1
             <AvailableLevel>k__BackingField: 4
@@ -1119,6 +1174,7 @@ MonoBehaviour:
             role: Research
             iconKey: b73f9718576eb694bb3badc9b47afc43:21300000
             isHero: 0
+            isUnique: 0
             <Name>k__BackingField: Fortified Structures V
             <MaxCount>k__BackingField: 1
             <AvailableLevel>k__BackingField: 5

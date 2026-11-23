@@ -57,9 +57,9 @@ namespace EmpireAtWar.Services.Saves
                 if (request is MiningFacilityUnitRequest || request is DefendPlatformUnitRequest ||
                     request is SecondStationUnitRequest)
                     _faction.ReserveStructure(request);
-                // So does a built hero ship or squadron: only one may be queued, in reserve or deployed.
-                if (PlayerFactionModel.IsHeroRequest(request, out UnitTypeId hero))
-                    _faction.SetHeroReserved(hero, true);
+                // So does a built unique ship or squadron (hero, dreadnought): only one may be queued, in reserve or deployed.
+                if (PlayerFactionModel.IsUniqueRequest(request, out UnitTypeId unique))
+                    _faction.SetUniqueReserved(unique, true);
                 _reinforcementService.Add(request);
             }
         }

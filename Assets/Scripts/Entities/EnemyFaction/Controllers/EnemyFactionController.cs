@@ -867,7 +867,7 @@ namespace EmpireAtWar.Entities.EnemyFaction.Controllers
         private bool TryReserveAndSpend(UnitRequest unitRequest)
         {
             FactionData factionData = unitRequest.FactionData;
-            // The human purchase limits (D6): heroes once, structures to MaxCount, ships and squadrons by population only.
+            // The human purchase limits (D6): unique units (heroes, dreadnoughts) once, structures to MaxCount, other ships and squadrons by population only.
             if (!_unitLimitModel.TryReserve(unitRequest, _reinforcementData.MaxUnitCapacity))
             {
                 EnemyAiTelemetry.RecordEvent(_owner.Id, _owner.Faction, "purchaseRejected",

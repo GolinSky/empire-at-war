@@ -18,7 +18,7 @@ namespace EmpireAtWar.Models.Factions
         SelectionType SelectionType { get; }
         /// <summary>The selected base is the second station, so its own level-up card shows instead of the main one.</summary>
         bool IsSecondStationSelected { get; }
-        bool IsHeroReserved(UnitTypeId unitType);
+        bool IsUniqueReserved(UnitTypeId unitType);
         bool IsUnitLimitReached(UnitRequest unitRequest);
         bool CanQueueUnit(UnitRequest unitRequest);
         FactionType FactionType { get; }
@@ -39,8 +39,8 @@ namespace EmpireAtWar.Models.Factions
         private readonly Dictionary<(Type, string), int> _structureCounts = new();
 
         private SelectionType _selectionType;
-        // Hero ships and squadrons queued, in reserve or alive; each may exist only once until destroyed.
-        private readonly HashSet<UnitTypeId> _reservedHeroes = new();
+        // Unique ships and squadrons (heroes, dreadnoughts) queued, in reserve or alive; each may exist only once until destroyed.
+        private readonly HashSet<UnitTypeId> _reservedUniqueUnits = new();
 
         private int _currentLevel = 1;
 
@@ -112,7 +112,7 @@ namespace EmpireAtWar.Models.Factions
                 throw new ArgumentNullException(nameof(unitRequest));
             }
 
-            if (IsHeroRequest(unitRequest, out UnitTypeId hero) && _reservedHeroes.Contains(hero)) return true;
+            if (IsUniqueRequest(unitRequest, out UnitTypeId unique) && _reservedUniqueUnits.Contains(unique)) return true;
 
             if (IsStructureRequest(unitRequest) &&
                 GetStructureCount(unitRequest.GetType(), unitRequest.Id) >=
@@ -136,7 +136,7 @@ namespace EmpireAtWar.Models.Factions
             if (data.MaxCount <= 1 || !isCombatUnit)
                 return data.MaxCount;
 
-            return data.IsHero ? 1 : STANDARD_UNIT_QUEUE_LIMIT;
+            return data.IsUnique ? 1 : STANDARD_UNIT_QUEUE_LIMIT;
         }
 
         public void QueueUnit(UnitRequest unitRequest)
@@ -164,7 +164,7 @@ namespace EmpireAtWar.Models.Factions
             }
 
             queue.Enqueue(new ProductionQueueItem(unitRequest));
-            if (IsHeroRequest(unitRequest, out UnitTypeId hero)) _reservedHeroes.Add(hero);
+            if (IsUniqueRequest(unitRequest, out UnitTypeId unique)) _reservedUniqueUnits.Add(unique);
             NotifyProductionChanged();
         }
 
@@ -180,7 +180,7 @@ namespace EmpireAtWar.Models.Factions
         }
 
         /// <summary>
-        /// Queues saved items as they were, already paid for. Structures and hero ships take their reservations
+        /// Queues saved items as they were, already paid for. Structures and unique ships take their reservations
         /// again, as a purchase does.
         /// </summary>
         public void RestoreQueue(IEnumerable<ProductionQueueItem> items)
@@ -195,7 +195,7 @@ namespace EmpireAtWar.Models.Factions
                 }
 
                 queue.Enqueue(item);
-                if (IsHeroRequest(unitRequest, out UnitTypeId hero)) _reservedHeroes.Add(hero);
+                if (IsUniqueRequest(unitRequest, out UnitTypeId unique)) _reservedUniqueUnits.Add(unique);
                 if (IsStructureRequest(unitRequest)) ReserveStructure(unitRequest);
             }
 
@@ -210,10 +210,10 @@ namespace EmpireAtWar.Models.Factions
         {
             _productionQueues.Clear();
             _structureCounts.Clear();
-            _reservedHeroes.Clear();
+            _reservedUniqueUnits.Clear();
             foreach (UnitRequest request in reservations)
             {
-                if (IsHeroRequest(request, out UnitTypeId hero)) _reservedHeroes.Add(hero);
+                if (IsUniqueRequest(request, out UnitTypeId unique)) _reservedUniqueUnits.Add(unique);
                 if (IsStructureRequest(request)) ReserveStructure(request);
             }
 
@@ -231,15 +231,15 @@ namespace EmpireAtWar.Models.Factions
             NotifyProductionChanged();
         }
 
-        /// <summary>Purchase slots retained by queued, reserve and deployed structures or heroes.</summary>
+        /// <summary>Purchase slots retained by queued, reserve and deployed structures or unique units.</summary>
         public IEnumerable<UnitRequest> PurchaseReservations
         {
             get
             {
-                foreach (UnitTypeId hero in _reservedHeroes)
-                    yield return hero.IsShip
-                        ? new ShipUnitRequest(_roster.Ships[hero.ShipType], hero.ShipType)
-                        : new SquadronUnitRequest(_roster.Squadrons[hero.SquadronType], hero.SquadronType);
+                foreach (UnitTypeId unique in _reservedUniqueUnits)
+                    yield return unique.IsShip
+                        ? new ShipUnitRequest(_roster.Ships[unique.ShipType], unique.ShipType)
+                        : new SquadronUnitRequest(_roster.Squadrons[unique.SquadronType], unique.SquadronType);
                 foreach (var entry in _roster.MiningFacilities)
                 {
                     var request = new MiningFacilityUnitRequest(entry.Value, entry.Key);
@@ -273,7 +273,7 @@ namespace EmpireAtWar.Models.Factions
             }
 
             unitRequest = queue.Dequeue().UnitRequest;
-            if (IsHeroRequest(unitRequest, out UnitTypeId hero)) _reservedHeroes.Remove(hero);
+            if (IsUniqueRequest(unitRequest, out UnitTypeId unique)) _reservedUniqueUnits.Remove(unique);
             if (IsStructureRequest(unitRequest))
             {
                 ReleaseStructure(unitRequest);
@@ -292,24 +292,24 @@ namespace EmpireAtWar.Models.Factions
             ReleaseStructure(unitRequest.GetType(), unitRequest.Id);
         }
 
-        public bool IsHeroReserved(UnitTypeId unitType) => _reservedHeroes.Contains(unitType);
+        public bool IsUniqueReserved(UnitTypeId unitType) => _reservedUniqueUnits.Contains(unitType);
 
-        public bool IsHeroUnit(UnitTypeId unitType)
+        public bool IsUniqueUnit(UnitTypeId unitType)
         {
             FactionData data = null;
             bool found = unitType.IsShip
                 ? _roster.Ships.TryGetValue(unitType.ShipType, out data)
                 : _roster.Squadrons.TryGetValue(unitType.SquadronType, out data);
-            return found && data.IsHero;
+            return found && data.IsUnique;
         }
 
-        public void SetHeroReserved(UnitTypeId unitType, bool reserved)
+        public void SetUniqueReserved(UnitTypeId unitType, bool reserved)
         {
-            if (reserved ? _reservedHeroes.Add(unitType) : _reservedHeroes.Remove(unitType))
+            if (reserved ? _reservedUniqueUnits.Add(unitType) : _reservedUniqueUnits.Remove(unitType))
                 NotifyProductionChanged();
         }
 
-        public static bool IsHeroRequest(UnitRequest unitRequest, out UnitTypeId unitType)
+        public static bool IsUniqueRequest(UnitRequest unitRequest, out UnitTypeId unitType)
         {
             switch (unitRequest)
             {
@@ -324,7 +324,7 @@ namespace EmpireAtWar.Models.Factions
                     return false;
             }
 
-            return unitRequest.FactionData.IsHero;
+            return unitRequest.FactionData.IsUnique;
         }
 
         public void ReleaseStructure<TRequest>(string id) where TRequest : UnitRequest

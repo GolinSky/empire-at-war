@@ -85,7 +85,7 @@ namespace EmpireAtWar.Tests.Editor
             });
 
             Assert.That(faction.QueuedItems.Select(item => item.RemainingBuildTime), Is.EqualTo(new[] { 12f, 5f }));
-            Assert.That(faction.IsHeroReserved(UnitTypeId.Ship(ShipType.HomeOne)), Is.True);
+            Assert.That(faction.IsUniqueReserved(UnitTypeId.Ship(ShipType.HomeOne)), Is.True);
             Assert.That(faction.CanQueueUnit(mine), Is.False, "The queued facility holds the only structure slot.");
         }
 

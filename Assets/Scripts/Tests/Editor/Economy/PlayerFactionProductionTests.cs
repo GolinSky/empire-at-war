@@ -1,8 +1,11 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Reflection;
+using EmpireAtWar.Components.Ship.Health;
 using EmpireAtWar.Controllers.Factions;
+using EmpireAtWar.Entities.EnemyFaction.Models;
 using EmpireAtWar.Entities.MiningFacility;
+using EmpireAtWar.Entities.Ship.Data;
 using EmpireAtWar.Entities.DefendPlatform;
 using EmpireAtWar.Entities.Units;
 using EmpireAtWar.Models.Factions;
@@ -120,22 +123,56 @@ namespace EmpireAtWar.Tests.Editor
             Assert.That(model.GetProductionQueueSnapshots(), Is.Empty);
         }
 
-        [Test]
-        public void HeroShip_StaysReservedAfterCompletionUntilReleased()
+        // Heroes and dreadnoughts (isUnique) share the one-at-a-time limit.
+        [TestCase("isHero")]
+        [TestCase("isUnique")]
+        public void UniqueShip_StaysReservedAfterCompletionUntilReleased(string flag)
         {
             PlayerFactionModel model = CreateModel();
             FactionData factionData = CreateFactionData(maxCount: 1, buildTime: 10);
-            typeof(FactionData).GetField("isHero", BindingFlags.Instance | BindingFlags.NonPublic)
-                .SetValue(factionData, true);
+            typeof(FactionData).GetField(flag, PRIVATE_INSTANCE).SetValue(factionData, true);
             ShipUnitRequest request = new ShipUnitRequest(factionData, ShipType.HomeOne);
 
             model.QueueUnit(request);
             model.Advance(10f);
 
             Assert.That(model.GetProductionQueueSnapshots(), Is.Empty);
-            Assert.That(model.CanQueueUnit(request), Is.False, "A built hero is in reserve or deployed.");
-            model.SetHeroReserved(UnitTypeId.Ship(ShipType.HomeOne), false);
-            Assert.That(model.CanQueueUnit(request), Is.True, "A destroyed hero can be rebuilt.");
+            Assert.That(model.CanQueueUnit(request), Is.False, "A built unique ship is in reserve or deployed.");
+            model.SetUniqueReserved(UnitTypeId.Ship(ShipType.HomeOne), false);
+            Assert.That(model.CanQueueUnit(request), Is.True, "A destroyed unique ship can be rebuilt.");
+        }
+
+        [Test]
+        public void UniqueShip_AiMayHoldOnlyOne()
+        {
+            FactionData factionData = CreateFactionData(maxCount: 1, buildTime: 10);
+            typeof(FactionData).GetField("isUnique", PRIVATE_INSTANCE).SetValue(factionData, true);
+
+            Assert.That(EnemyUnitLimitModel.GetPurchaseLimit(factionData, isCombatUnit: true), Is.EqualTo(1));
+        }
+
+        [Test]
+        public void EveryDreadnoughtInRosters_IsUniqueAndNotHero()
+        {
+            ShipsData shipsData = AssetDatabase.LoadAssetAtPath<ShipsData>(
+                "Assets/Settings/Data/Ship/Shared/ShipsData.asset");
+            int dreadnoughts = 0;
+            foreach (string guid in AssetDatabase.FindAssets("t:" + nameof(FactionDefinition), new[] { "Assets/Settings/Data/Factions" }))
+            {
+                FactionDefinition definition = AssetDatabase.LoadAssetAtPath<FactionDefinition>(AssetDatabase.GUIDToAssetPath(guid));
+                foreach (KeyValuePair<ShipType, FactionData> ship in definition.Ships)
+                {
+                    ShipData data = AssetDatabase.LoadAssetAtPath<ShipData>(
+                        AssetDatabase.GUIDToAssetPath(shipsData.GetShipDataPath(ship.Key)));
+                    bool isDreadnought = data.ShipClass == ShipClass.Dreadnought;
+                    if (isDreadnought) dreadnoughts++;
+                    Assert.That(ship.Value.IsUnique, Is.EqualTo(isDreadnought || ship.Value.IsHero),
+                        $"{definition.FactionType} {ship.Key}: only heroes and dreadnoughts are limited to one.");
+                    if (isDreadnought) Assert.That(ship.Value.IsHero, Is.False, $"{ship.Key} is a dreadnought, not a hero.");
+                }
+            }
+
+            Assert.That(dreadnoughts, Is.GreaterThan(0));
         }
 
         [Test]

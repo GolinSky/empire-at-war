@@ -45,13 +45,13 @@ namespace EmpireAtWar.Entities.EnemyFaction.Models
 
         /// <summary>
         /// The human purchase limit (<c>PlayerFactionModel.IsUnitLimitReached</c>): a ship or squadron type has none
-        /// except a hero, which exists once while queued, held or alive; a structure is limited to its
+        /// except a unique one (hero, dreadnought), which exists once while queued, held or alive; a structure is limited to its
         /// <see cref="FactionData.MaxCount"/> queued or built; research and upgrades to <see cref="FactionData.MaxCount"/>
         /// in production, as the human queue limit.
         /// </summary>
         /// <param name="isCombatUnit">Ship or squadron.</param>
         public static int GetPurchaseLimit(FactionData data, bool isCombatUnit) =>
-            !isCombatUnit ? data.MaxCount : data.IsHero ? 1 : int.MaxValue;
+            !isCombatUnit ? data.MaxCount : data.IsUnique ? 1 : int.MaxValue;
 
         /// <summary>Only ships and squadrons use population, as for a human (<c>ReinforcementModel.UsesCapacity</c>).</summary>
         public static int GetCapacity(FactionData data, bool isCombatUnit) => isCombatUnit ? data.UnitCapacity : 0;

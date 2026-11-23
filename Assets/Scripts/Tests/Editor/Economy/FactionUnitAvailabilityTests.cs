@@ -497,7 +497,7 @@ namespace EmpireAtWar.Tests.Editor
                 Assert.That(marker.activeSelf, Is.False, "Completion clears the marker when the queue is empty.");
 
                 if (kind is "Structure" or "Defense") model.ReleaseStructure(request);
-                if (kind == "Hero") model.SetHeroReserved(UnitTypeId.Ship(ShipType.HomeOne), false);
+                if (kind == "Hero") model.SetUniqueReserved(UnitTypeId.Ship(ShipType.HomeOne), false);
                 view.RefreshAvailability(0f, false);
                 Assert.That(card.gameObject.activeSelf, Is.True, "Releasing a hero restores its card.");
                 Assert.That(button.interactable, Is.True, "Releasing a lifetime reservation re-enables the card.");

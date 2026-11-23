@@ -380,10 +380,10 @@ namespace EmpireAtWar.Entities.Faction.Ui
             return false;
         }
 
-        // Heroes, structure population caps, station upgrades and research tiers hide at their limit.
+        // Unique units (heroes, dreadnoughts), structure population caps, station upgrades and research tiers hide at their limit.
         // Ship and squadron queue limits only block the card: it becomes buyable again as the queue drains.
         private static bool HidesAtLimit(FactionUnitUi unit) =>
-            unit.FactionData.IsHero || unit.Request is MiningFacilityUnitRequest or DefendPlatformUnitRequest
+            unit.FactionData.IsUnique || unit.Request is MiningFacilityUnitRequest or DefendPlatformUnitRequest
                 or LevelUnitRequest or ResearchUnitRequest or SecondStationUnitRequest or SecondStationLevelUnitRequest;
 
         private bool IsInProductionMenu(FactionUnitUi card, SelectionType selectionType) => card.Request switch
@@ -536,8 +536,8 @@ namespace EmpireAtWar.Entities.Faction.Ui
                 switch (unitUi.Request)
                 {
                     case ShipUnitRequest:
-                        // Hints ask for several of the marked ship (Queue 6); a hero is built only once.
-                        bool isRepeatable = !unitUi.FactionData.IsHero;
+                        // Hints ask for several of the marked ship (Queue 6); a unique ship is built only once.
+                        bool isRepeatable = !unitUi.FactionData.IsUnique;
                         if (firstShip == null && isRepeatable) firstShip = unitUi;
                         if (_presenter.IsUnlockedAtCurrentLevel(unitUi.FactionData) &&
                             IsBetterNewShip(unitUi, newShip, isNewShipCarrier, out bool isCarrier))
