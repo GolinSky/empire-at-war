@@ -962,6 +962,7 @@ GameObject:
   - component: {fileID: 7034581761447063345}
   - component: {fileID: 3584545534577125526}
   - component: {fileID: 4490677965028390318}
+  - component: {fileID: 6135884636645465980}
   m_Layer: 0
   m_Name: MalevolenceShipView
   m_TagString: Untagged
@@ -1027,7 +1028,7 @@ BoxCollider:
   m_LayerOverridePriority: 0
   m_IsTrigger: 0
   m_ProvidesContacts: 0
-  m_Enabled: 1
+  m_Enabled: 0
   serializedVersion: 3
   m_Size: {x: 146.11325, y: 89.22207, z: 523.97955}
   m_Center: {x: 0, y: 0, z: 0}
@@ -1440,6 +1441,28 @@ MonoBehaviour:
   - {fileID: 4703472814532491777}
   - {fileID: 2844445098785279374}
   - {fileID: 4880128746935975292}
+--- !u!64 &6135884636645465980
+MeshCollider:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1335263148668547494}
+  m_Material: {fileID: 0}
+  m_IncludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_ExcludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_LayerOverridePriority: 0
+  m_IsTrigger: 0
+  m_ProvidesContacts: 0
+  m_Enabled: 1
+  serializedVersion: 5
+  m_Convex: 1
+  m_CookingOptions: 30
+  m_Mesh: {fileID: 4300000, guid: 0859939eb8ad739499d8fb80ec5040db, type: 2}
 --- !u!1 &1358500386073421041
 GameObject:
   m_ObjectHideFlags: 0

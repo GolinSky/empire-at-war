@@ -2670,6 +2670,7 @@ GameObject:
   - component: {fileID: 2175150077616534316}
   - component: {fileID: 145009327239395243}
   - component: {fileID: 2058095944541234613}
+  - component: {fileID: 5462933405933606185}
   m_Layer: 0
   m_Name: ProcuratorShipView
   m_TagString: Untagged
@@ -2729,7 +2730,7 @@ BoxCollider:
   m_LayerOverridePriority: 0
   m_IsTrigger: 0
   m_ProvidesContacts: 0
-  m_Enabled: 1
+  m_Enabled: 0
   serializedVersion: 3
   m_Size: {x: 165.82858, y: 58.15486, z: 260}
   m_Center: {x: 0, y: -0.0000019073486, z: 0}
@@ -3042,6 +3043,28 @@ MonoBehaviour:
   - {fileID: 9180572867351530701}
   - {fileID: 7866332780049922002}
   - {fileID: 145009327239395243}
+--- !u!64 &5462933405933606185
+MeshCollider:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 7202574757982607978}
+  m_Material: {fileID: 0}
+  m_IncludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_ExcludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_LayerOverridePriority: 0
+  m_IsTrigger: 0
+  m_ProvidesContacts: 0
+  m_Enabled: 1
+  serializedVersion: 5
+  m_Convex: 1
+  m_CookingOptions: 30
+  m_Mesh: {fileID: 4300000, guid: 8131130f5e668ab48900681cc091d11a, type: 2}
 --- !u!1 &7204806264034012004
 GameObject:
   m_ObjectHideFlags: 0

@@ -11250,6 +11250,7 @@ GameObject:
   - component: {fileID: 1283754632722916796}
   - component: {fileID: 7532020912885601778}
   - component: {fileID: 3448713331516355117}
+  - component: {fileID: 8256971481430820828}
   m_Layer: 0
   m_Name: ExecutorShipView
   m_TagString: Untagged
@@ -11606,7 +11607,7 @@ BoxCollider:
   m_LayerOverridePriority: 0
   m_IsTrigger: 0
   m_ProvidesContacts: 0
-  m_Enabled: 1
+  m_Enabled: 0
   serializedVersion: 3
   m_Size: {x: 678.5321, y: 147.90305, z: 1994.9728}
   m_Center: {x: 0, y: 0, z: 0.00006408604}
@@ -12873,6 +12874,28 @@ MonoBehaviour:
   - {fileID: 438439427493379398}
   - {fileID: 668254796245371010}
   - {fileID: 427164610020070237}
+--- !u!64 &8256971481430820828
+MeshCollider:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 3806449680888156439}
+  m_Material: {fileID: 0}
+  m_IncludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_ExcludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_LayerOverridePriority: 0
+  m_IsTrigger: 0
+  m_ProvidesContacts: 0
+  m_Enabled: 1
+  serializedVersion: 5
+  m_Convex: 1
+  m_CookingOptions: 30
+  m_Mesh: {fileID: 4300000, guid: d3a83603c66e65944bc8f3338dcd9db5, type: 2}
 --- !u!1 &3812754458305457951
 GameObject:
   m_ObjectHideFlags: 0

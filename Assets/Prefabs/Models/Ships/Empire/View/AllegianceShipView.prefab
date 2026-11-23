@@ -5970,6 +5970,7 @@ GameObject:
   - component: {fileID: 1283754632722916796}
   - component: {fileID: 7532020912885601778}
   - component: {fileID: 7256685330956268558}
+  - component: {fileID: 1944212884067127300}
   m_Layer: 0
   m_Name: AllegianceShipView
   m_TagString: Untagged
@@ -6133,7 +6134,7 @@ BoxCollider:
   m_LayerOverridePriority: 0
   m_IsTrigger: 0
   m_ProvidesContacts: 0
-  m_Enabled: 1
+  m_Enabled: 0
   serializedVersion: 3
   m_Size: {x: 141.93431, y: 62.622246, z: 230.99033}
   m_Center: {x: 0, y: 0.0000038146973, z: -0.0000076293945}
@@ -6695,6 +6696,28 @@ MonoBehaviour:
   - {fileID: 4675043855651339827}
   - {fileID: 6372236002948457153}
   - {fileID: 7532020912885601778}
+--- !u!64 &1944212884067127300
+MeshCollider:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 3806449680888156439}
+  m_Material: {fileID: 0}
+  m_IncludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_ExcludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_LayerOverridePriority: 0
+  m_IsTrigger: 0
+  m_ProvidesContacts: 0
+  m_Enabled: 1
+  serializedVersion: 5
+  m_Convex: 1
+  m_CookingOptions: 30
+  m_Mesh: {fileID: 4300000, guid: c386ceee5d422364f89dc1c754d376ec, type: 2}
 --- !u!1 &3854304360027945035
 GameObject:
   m_ObjectHideFlags: 0

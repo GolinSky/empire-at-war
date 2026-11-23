@@ -2847,6 +2847,7 @@ GameObject:
   - component: {fileID: 6698126527802799869}
   - component: {fileID: 7469138526702055200}
   - component: {fileID: 847620812274506484}
+  - component: {fileID: 3348527327290840864}
   m_Layer: 0
   m_Name: TitanShipView
   m_TagString: Untagged
@@ -3125,7 +3126,7 @@ BoxCollider:
   m_LayerOverridePriority: 0
   m_IsTrigger: 0
   m_ProvidesContacts: 0
-  m_Enabled: 1
+  m_Enabled: 0
   serializedVersion: 3
   m_Size: {x: 207.054, y: 80.11231, z: 472.49353}
   m_Center: {x: 0, y: 0, z: -0.000015258789}
@@ -3889,6 +3890,28 @@ MonoBehaviour:
   - {fileID: 382134064026637443}
   - {fileID: 538770414619266565}
   - {fileID: 7469138526702055200}
+--- !u!64 &3348527327290840864
+MeshCollider:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 4574325545387188949}
+  m_Material: {fileID: 0}
+  m_IncludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_ExcludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_LayerOverridePriority: 0
+  m_IsTrigger: 0
+  m_ProvidesContacts: 0
+  m_Enabled: 1
+  serializedVersion: 5
+  m_Convex: 1
+  m_CookingOptions: 30
+  m_Mesh: {fileID: 4300000, guid: 614b99eefc10b9542823a9c19c3063a9, type: 2}
 --- !u!1 &4574805878626608642
 GameObject:
   m_ObjectHideFlags: 0

@@ -278,6 +278,7 @@ GameObject:
   - component: {fileID: 7210706146173139904}
   - component: {fileID: 2864000064739453644}
   - component: {fileID: 1132184978028998606}
+  - component: {fileID: 8223287484288279416}
   m_Layer: 0
   m_Name: LucrehulkShipView
   m_TagString: Untagged
@@ -341,10 +342,10 @@ BoxCollider:
   m_LayerOverridePriority: 0
   m_IsTrigger: 0
   m_ProvidesContacts: 0
-  m_Enabled: 1
+  m_Enabled: 0
   serializedVersion: 3
-  m_Size: {x: 296.7768, y: 89.072136, z: 334.64453}
-  m_Center: {x: -0.25035143, y: 11.748027, z: 18.010841}
+  m_Size: {x: 294.38223, y: 92.6571, z: 332.84546}
+  m_Center: {x: 0.000045776367, y: 9.40593, z: -18.921097}
 --- !u!120 &8078452989035194832
 LineRenderer:
   serializedVersion: 3
@@ -636,6 +637,28 @@ MonoBehaviour:
   - {fileID: 9085686361187355198}
   - {fileID: 350060869458704868}
   - {fileID: 1841021078175852817}
+--- !u!64 &8223287484288279416
+MeshCollider:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1424789333044179663}
+  m_Material: {fileID: 0}
+  m_IncludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_ExcludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_LayerOverridePriority: 0
+  m_IsTrigger: 0
+  m_ProvidesContacts: 0
+  m_Enabled: 1
+  serializedVersion: 5
+  m_Convex: 1
+  m_CookingOptions: 30
+  m_Mesh: {fileID: 4300000, guid: 2bafbf0db0f0c2047bbb1ae6fb9b09ff, type: 2}
 --- !u!1 &1542133818148398054
 GameObject:
   m_ObjectHideFlags: 0

@@ -4928,6 +4928,7 @@ GameObject:
   - component: {fileID: 2769387705763600715}
   - component: {fileID: 5053218396512207102}
   - component: {fileID: 5887631233076512169}
+  - component: {fileID: 5465986846083574673}
   m_Layer: 0
   m_Name: MandatorShipView
   m_TagString: Untagged
@@ -4989,7 +4990,7 @@ BoxCollider:
   m_LayerOverridePriority: 0
   m_IsTrigger: 0
   m_ProvidesContacts: 0
-  m_Enabled: 1
+  m_Enabled: 0
   serializedVersion: 3
   m_Size: {x: 325.964, y: 113.39082, z: 856.7884}
   m_Center: {x: 0, y: 0, z: -0.000026791733}
@@ -5383,6 +5384,28 @@ MonoBehaviour:
   - {fileID: 6382360941920134404}
   - {fileID: 532131652679304566}
   - {fileID: 1829063693958915486}
+--- !u!64 &5465986846083574673
+MeshCollider:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 7736716621605267874}
+  m_Material: {fileID: 0}
+  m_IncludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_ExcludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_LayerOverridePriority: 0
+  m_IsTrigger: 0
+  m_ProvidesContacts: 0
+  m_Enabled: 1
+  serializedVersion: 5
+  m_Convex: 1
+  m_CookingOptions: 30
+  m_Mesh: {fileID: 4300000, guid: 0617f8c0231677446a9bb99afc45a8fd, type: 2}
 --- !u!1 &7764998863657663370
 GameObject:
   m_ObjectHideFlags: 0

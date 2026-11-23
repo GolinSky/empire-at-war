@@ -1183,8 +1183,8 @@ BoxCollider:
   m_ProvidesContacts: 0
   m_Enabled: 1
   serializedVersion: 3
-  m_Size: {x: 25.235964, y: 13.429682, z: 34.12669}
-  m_Center: {x: 0, y: 0, z: 0}
+  m_Size: {x: 14.882964, y: 7.190463, z: 34.12454}
+  m_Center: {x: -0.0839262, y: 1.5074098, z: 0.0010738373}
 --- !u!120 &6476203660060066556
 LineRenderer:
   serializedVersion: 3

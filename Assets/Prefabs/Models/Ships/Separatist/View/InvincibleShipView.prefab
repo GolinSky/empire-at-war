@@ -786,6 +786,7 @@ GameObject:
   - component: {fileID: 5509266779482782160}
   - component: {fileID: 611303127687484165}
   - component: {fileID: 4988929849037749453}
+  - component: {fileID: 6299890960639915502}
   m_Layer: 0
   m_Name: InvincibleShipView
   m_TagString: Untagged
@@ -845,7 +846,7 @@ BoxCollider:
   m_LayerOverridePriority: 0
   m_IsTrigger: 0
   m_ProvidesContacts: 0
-  m_Enabled: 1
+  m_Enabled: 0
   serializedVersion: 3
   m_Size: {x: 59.28171, y: 109.3766, z: 318.23566}
   m_Center: {x: 0, y: 0.0000038146973, z: 0}
@@ -1160,6 +1161,28 @@ MonoBehaviour:
   - {fileID: 2992988319696786810}
   - {fileID: 7538880081450636815}
   - {fileID: 6218978201972530819}
+--- !u!64 &6299890960639915502
+MeshCollider:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 768847652777248752}
+  m_Material: {fileID: 0}
+  m_IncludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_ExcludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_LayerOverridePriority: 0
+  m_IsTrigger: 0
+  m_ProvidesContacts: 0
+  m_Enabled: 1
+  serializedVersion: 5
+  m_Convex: 1
+  m_CookingOptions: 30
+  m_Mesh: {fileID: 4300000, guid: 325fa62cb2cc6ec4eb7aca172612c44e, type: 2}
 --- !u!1 &961371664996494354
 GameObject:
   m_ObjectHideFlags: 0

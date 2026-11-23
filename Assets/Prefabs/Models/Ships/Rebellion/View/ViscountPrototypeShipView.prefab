@@ -4086,6 +4086,7 @@ GameObject:
   - component: {fileID: 6698126527802799869}
   - component: {fileID: 7469138526702055200}
   - component: {fileID: 512475285687182114}
+  - component: {fileID: 310135298090778488}
   m_Layer: 0
   m_Name: ViscountPrototypeShipView
   m_TagString: Untagged
@@ -4147,7 +4148,7 @@ BoxCollider:
   m_LayerOverridePriority: 0
   m_IsTrigger: 0
   m_ProvidesContacts: 0
-  m_Enabled: 1
+  m_Enabled: 0
   serializedVersion: 3
   m_Size: {x: 95.91512, y: 70.80967, z: 315}
   m_Center: {x: 0, y: 0, z: 0}
@@ -4528,6 +4529,28 @@ MonoBehaviour:
   - {fileID: 3703731468456783591}
   - {fileID: 5911116317997034445}
   - {fileID: 7469138526702055200}
+--- !u!64 &310135298090778488
+MeshCollider:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 4574325545387188949}
+  m_Material: {fileID: 0}
+  m_IncludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_ExcludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_LayerOverridePriority: 0
+  m_IsTrigger: 0
+  m_ProvidesContacts: 0
+  m_Enabled: 1
+  serializedVersion: 5
+  m_Convex: 1
+  m_CookingOptions: 30
+  m_Mesh: {fileID: 4300000, guid: 26eac8eb04912bf4e922c7028ddb2032, type: 2}
 --- !u!1 &4595004402831137037
 GameObject:
   m_ObjectHideFlags: 0

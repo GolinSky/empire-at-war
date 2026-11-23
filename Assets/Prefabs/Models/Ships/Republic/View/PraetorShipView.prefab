@@ -1651,6 +1651,7 @@ GameObject:
   - component: {fileID: 6482921712100383197}
   - component: {fileID: 1198449855059096245}
   - component: {fileID: 5029483243991142089}
+  - component: {fileID: 8433802046584319658}
   m_Layer: 0
   m_Name: PraetorShipView
   m_TagString: Untagged
@@ -1725,7 +1726,7 @@ BoxCollider:
   m_LayerOverridePriority: 0
   m_IsTrigger: 0
   m_ProvidesContacts: 0
-  m_Enabled: 1
+  m_Enabled: 0
   serializedVersion: 3
   m_Size: {x: 325.8116, y: 108.12191, z: 425}
   m_Center: {x: 0, y: 0, z: 0}
@@ -2286,6 +2287,28 @@ MonoBehaviour:
   - {fileID: 3072412153962279610}
   - {fileID: 8397360581829294896}
   - {fileID: 1198449855059096245}
+--- !u!64 &8433802046584319658
+MeshCollider:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1093144146988064630}
+  m_Material: {fileID: 0}
+  m_IncludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_ExcludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_LayerOverridePriority: 0
+  m_IsTrigger: 0
+  m_ProvidesContacts: 0
+  m_Enabled: 1
+  serializedVersion: 5
+  m_Convex: 1
+  m_CookingOptions: 30
+  m_Mesh: {fileID: 4300000, guid: dbfc55cacb5dc534ea118c141817f81b, type: 2}
 --- !u!1 &1097960408165166290
 GameObject:
   m_ObjectHideFlags: 0

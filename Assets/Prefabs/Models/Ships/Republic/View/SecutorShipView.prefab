@@ -4721,6 +4721,7 @@ GameObject:
   - component: {fileID: 1640839976071417423}
   - component: {fileID: 337367842837974268}
   - component: {fileID: 4899242494803847185}
+  - component: {fileID: 4596194190457812472}
   m_Layer: 0
   m_Name: SecutorShipView
   m_TagString: Untagged
@@ -4848,7 +4849,7 @@ BoxCollider:
   m_LayerOverridePriority: 0
   m_IsTrigger: 0
   m_ProvidesContacts: 0
-  m_Enabled: 1
+  m_Enabled: 0
   serializedVersion: 3
   m_Size: {x: 232.04169, y: 47.411835, z: 279.99997}
   m_Center: {x: 0, y: -0.0000076293945, z: 0}
@@ -5401,6 +5402,28 @@ MonoBehaviour:
   - {fileID: 5316995786388418635}
   - {fileID: 3497448399495530217}
   - {fileID: 4894415688631653439}
+--- !u!64 &4596194190457812472
+MeshCollider:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 7512844796439849380}
+  m_Material: {fileID: 0}
+  m_IncludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_ExcludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_LayerOverridePriority: 0
+  m_IsTrigger: 0
+  m_ProvidesContacts: 0
+  m_Enabled: 1
+  serializedVersion: 5
+  m_Convex: 1
+  m_CookingOptions: 30
+  m_Mesh: {fileID: 4300000, guid: c772382a59d178b4f82fe227681e9ee0, type: 2}
 --- !u!1 &7585978572552257708
 GameObject:
   m_ObjectHideFlags: 0

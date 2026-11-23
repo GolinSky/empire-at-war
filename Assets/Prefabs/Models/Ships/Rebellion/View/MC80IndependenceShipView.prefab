@@ -3327,6 +3327,7 @@ GameObject:
   - component: {fileID: 6698126527802799869}
   - component: {fileID: 7469138526702055200}
   - component: {fileID: 512475285687182114}
+  - component: {fileID: 5954976406101406242}
   m_Layer: 0
   m_Name: MC80IndependenceShipView
   m_TagString: Untagged
@@ -3396,7 +3397,7 @@ BoxCollider:
   m_LayerOverridePriority: 0
   m_IsTrigger: 0
   m_ProvidesContacts: 0
-  m_Enabled: 1
+  m_Enabled: 0
   serializedVersion: 3
   m_Size: {x: 97.61139, y: 57.34158, z: 399.1016}
   m_Center: {x: -0.0000034601178, y: 0, z: 0}
@@ -3815,6 +3816,28 @@ MonoBehaviour:
   - {fileID: 4052276192300696200}
   - {fileID: 1940892426179745541}
   - {fileID: 874735731960389865}
+--- !u!64 &5954976406101406242
+MeshCollider:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 4574325545387188949}
+  m_Material: {fileID: 0}
+  m_IncludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_ExcludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_LayerOverridePriority: 0
+  m_IsTrigger: 0
+  m_ProvidesContacts: 0
+  m_Enabled: 1
+  serializedVersion: 5
+  m_Convex: 1
+  m_CookingOptions: 30
+  m_Mesh: {fileID: 4300000, guid: 6c6af7cfcff1e15419ee1c0a078b6702, type: 2}
 --- !u!1 &4598064445572580561
 GameObject:
   m_ObjectHideFlags: 0

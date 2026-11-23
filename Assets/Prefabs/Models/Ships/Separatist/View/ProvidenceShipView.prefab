@@ -441,8 +441,8 @@ BoxCollider:
   m_ProvidesContacts: 0
   m_Enabled: 1
   serializedVersion: 3
-  m_Size: {x: 16.741444, y: 17.156263, z: 107.215485}
-  m_Center: {x: -0.16071899, y: 1.5987059, z: 2.0667677}
+  m_Size: {x: 21.280602, y: 39.26329, z: 114.23844}
+  m_Center: {x: 0.000016212463, y: 7.6155853, z: 4.878418}
 --- !u!120 &3530062372041149202
 LineRenderer:
   serializedVersion: 3

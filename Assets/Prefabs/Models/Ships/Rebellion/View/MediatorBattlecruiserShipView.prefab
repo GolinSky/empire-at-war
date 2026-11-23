@@ -3030,6 +3030,7 @@ GameObject:
   - component: {fileID: 6698126527802799869}
   - component: {fileID: 7469138526702055200}
   - component: {fileID: 512475285687182114}
+  - component: {fileID: 3586397363186417615}
   m_Layer: 0
   m_Name: MediatorBattlecruiserShipView
   m_TagString: Untagged
@@ -3106,10 +3107,10 @@ BoxCollider:
   m_LayerOverridePriority: 0
   m_IsTrigger: 0
   m_ProvidesContacts: 0
-  m_Enabled: 1
+  m_Enabled: 0
   serializedVersion: 3
-  m_Size: {x: 46.61839, y: 28.372032, z: 178.49799}
-  m_Center: {x: -0.0000038146973, y: 0, z: 0}
+  m_Size: {x: 60.635273, y: 36.902546, z: 232.16727}
+  m_Center: {x: 0, y: 0.000009536743, z: 0.0000076293945}
 --- !u!120 &4370777078217985959
 LineRenderer:
   serializedVersion: 3
@@ -3459,6 +3460,28 @@ MonoBehaviour:
   - {fileID: 911546752496323775}
   - {fileID: 6269136517459001323}
   - {fileID: 2153656140967238429}
+--- !u!64 &3586397363186417615
+MeshCollider:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 4574325545387188949}
+  m_Material: {fileID: 0}
+  m_IncludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_ExcludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_LayerOverridePriority: 0
+  m_IsTrigger: 0
+  m_ProvidesContacts: 0
+  m_Enabled: 1
+  serializedVersion: 5
+  m_Convex: 1
+  m_CookingOptions: 30
+  m_Mesh: {fileID: 4300000, guid: 10c42e4ef1b1be442913e2903fdbf81a, type: 2}
 --- !u!1 &4654178145798460229
 GameObject:
   m_ObjectHideFlags: 0
