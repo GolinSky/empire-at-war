@@ -21,8 +21,8 @@ namespace EmpireAtWar.Services.Enemy
     /// Groups capture candidates into zone objectives: one per reinforcement zone holding a candidate, one per lone
     /// site outside every zone. Defenders are the known hostile units around the zone plus its visible armed
     /// hostile structures, so a fortified zone is a stronger target, never a hidden one. The AI's own armed
-    /// structures and wings in the zone are its support; a zone whose relay the team holds or where the AI has a
-    /// satellite standing is held. No zone is denied for the route to it: ships path around. Each zone is worth its
+    /// structures and wings in the zone are its support; a zone whose relay the team holds, or whose relay no hostile
+    /// holds while the AI has a satellite standing inside its radius, is held (A4). No zone is denied for the route to it: ships path around. Each zone is worth its
     /// share of the team income plus relay access and the own platforms standing there (W47, W67).
     /// </summary>
     public sealed class EnemyZoneObjectiveCollector
@@ -30,8 +30,8 @@ namespace EmpireAtWar.Services.Enemy
         /// <summary>Hostiles this close to a zone's edge fight for it: twice the common ship weapon range (500).</summary>
         public const float DEFENDER_REACH = 1000f;
         /// <summary>
-        /// Hostiles this close to a zone's edge defend it: one common ship weapon range. A force fighting just
-        /// outside the zone is not counted against it.
+        /// Hostiles this close to a zone's edge, or to any capture site of the zone, defend it: one common ship weapon
+        /// range. A force fighting just outside the zone and its sites is not counted against it (R1).
         /// </summary>
         public const float ZONE_DEFENDER_MARGIN = 500f;
         /// <summary>Weapon reach assumed for every armed structure: the common ship weapon range.</summary>
@@ -66,6 +66,8 @@ namespace EmpireAtWar.Services.Enemy
         private readonly List<int> _openSites = new List<int>();
         private readonly List<int> _unbuiltMines = new List<int>();
         private readonly List<ReinforcementZonePresenter> _areaZones = new List<ReinforcementZonePresenter>();
+        private readonly List<Vector3> _sitePositions = new List<Vector3>();
+        private readonly List<int> _siteAreas = new List<int>();
         private readonly Dictionary<EnemyCaptureObjective, int> _areaOf = new Dictionary<EnemyCaptureObjective, int>();
         private readonly Dictionary<ReinforcementZonePresenter, int> _zoneArea =
             new Dictionary<ReinforcementZonePresenter, int>();
@@ -74,6 +76,7 @@ namespace EmpireAtWar.Services.Enemy
         private readonly ForceComposition _knownHostileForce = new ForceComposition();
         private Vector3 _defenderCentre;
         private float _defenderRadiusSquared;
+        private int _defenderArea;
 
         public EnemyZoneObjectiveCollector(IReinforcementZoneSource zones, IPlayerRoster roster, AiWorldSnapshot world,
             IVisionService vision, TeamAiPicture picture, ForceCompositionBuilder forceBuilder, HostileIntelModel intel,
@@ -132,6 +135,8 @@ namespace EmpireAtWar.Services.Enemy
             _areaZones.Clear();
             _areaOf.Clear();
             _zoneArea.Clear();
+            _sitePositions.Clear();
+            _siteAreas.Clear();
             for (int i = 0; i < candidates.Count; i++)
             {
                 EnemyCaptureObjective candidate = candidates[i];
@@ -150,6 +155,8 @@ namespace EmpireAtWar.Services.Enemy
                     if (zone != null) _zoneArea.Add(zone, area);
                 }
                 _areaOf.Add(candidate, area);
+                _sitePositions.Add(candidate.Position);
+                _siteAreas.Add(area);
                 _priorities[area] = Mathf.Max(_priorities[area], priority);
                 _threatened[area] |= candidate.IsThreatened;
                 if (!_roster.IsAllied(_owner, candidate.Owner)) _openSites[area]++;
@@ -164,12 +171,16 @@ namespace EmpireAtWar.Services.Enemy
                 EnemyZoneObjective objective = _pool[area];
                 Vector3 centre = _centres[area];
                 ReinforcementZonePresenter zone = _areaZones[area];
-                int statics = BuildDefenders(objective.Defenders, centre, _radii[area]);
+                int statics = BuildDefenders(objective.Defenders, area);
                 objective.OwnSupport.Clear();
-                int ownStructures = AddOwnArmedStructures(objective.OwnSupport, centre, 2f * _radii[area]);
+                int ownStructures = AddOwnArmedStructures(objective.OwnSupport, centre, 2f * _radii[area],
+                    _radii[area], out int structuresInside);
                 AddOwnWings(objective.OwnSupport, centre, 2f * _radii[area]);
                 AddAlliedRepairSources(objective.OwnSupport, _world, _roster, _owner, centre);
-                bool held = ownStructures > 0 || zone != null && !zone.Owner.IsNone && _roster.IsAllied(_owner, zone.Owner);
+                // A4: a satellite holds a zone only inside its radius and only while no hostile owns the relay.
+                bool relayTeam = zone != null && !zone.Owner.IsNone && _roster.IsAllied(_owner, zone.Owner);
+                bool relayHostile = zone != null && !zone.Owner.IsNone && _roster.IsHostile(_owner, zone.Owner);
+                bool held = relayTeam || !relayHostile && structuresInside > 0;
                 bool isCentre = zone != null && zone.IsMain;
                 bool ownSide = IsOwnSide(centre);
                 string deny = !_threatened[area] && isNearHostileBase(centre) ? "hostileBase" : null;
@@ -359,11 +370,14 @@ namespace EmpireAtWar.Services.Enemy
         }
 
         /// <summary>
-        /// Adds this AI's living armed structures within <paramref name="reach"/> of the zone centre and returns how many.
+        /// Adds this AI's living armed structures within <paramref name="reach"/> of the zone centre and returns how many;
+        /// <paramref name="inside"/> counts those within <paramref name="radius"/>.
         /// </summary>
-        private int AddOwnArmedStructures(ForceComposition support, Vector3 centre, float reach)
+        private int AddOwnArmedStructures(ForceComposition support, Vector3 centre, float reach, float radius,
+            out int inside)
         {
             int count = 0;
+            inside = 0;
             IReadOnlyList<AiWorldSnapshot.Entry> structures = _world.RaidStructures;
             for (int i = 0; i < structures.Count; i++)
             {
@@ -374,6 +388,7 @@ namespace EmpireAtWar.Services.Enemy
                     PlanarDistance(entry.Position, centre) > reach) continue;
                 _forceBuilder.AddStructure(support, entry.Entity);
                 count++;
+                if (PlanarDistance(entry.Position, centre) <= radius) inside++;
             }
             return count;
         }
@@ -405,9 +420,12 @@ namespace EmpireAtWar.Services.Enemy
             AddArmedStructures(defenders, _world, _roster, _vision, _forceBuilder, _intel, _owner, position,
                 STATIC_DEFENSE_REACH);
 
-        private int BuildDefenders(ForceComposition defenders, Vector3 centre, float radius)
+        private int BuildDefenders(ForceComposition defenders, int area)
         {
+            Vector3 centre = _centres[area];
+            float radius = _radii[area];
             _defenderCentre = centre;
+            _defenderArea = area;
             float reach = ZONE_DEFENDER_MARGIN + radius;
             _defenderRadiusSquared = reach * reach;
             _picture.BuildKnownFromConfident(defenders, _includeDefender);
@@ -419,9 +437,15 @@ namespace EmpireAtWar.Services.Enemy
         private bool IncludeDefender(HostileSighting sighting)
         {
             if (!_roster.IsHostile(_owner, sighting.Owner)) return false;
-            Vector3 offset = ToVector(sighting.Position) - _defenderCentre;
+            Vector3 position = ToVector(sighting.Position);
+            Vector3 offset = position - _defenderCentre;
             offset.y = 0f;
-            return offset.sqrMagnitude <= _defenderRadiusSquared;
+            if (offset.sqrMagnitude <= _defenderRadiusSquared) return true;
+            // R1: a hostile at an edge site of the zone defends it too.
+            for (int i = 0; i < _sitePositions.Count; i++)
+                if (_siteAreas[i] == _defenderArea &&
+                    PlanarDistance(position, _sitePositions[i]) <= ZONE_DEFENDER_MARGIN) return true;
+            return false;
         }
 
         private ReinforcementZonePresenter FindZone(Vector3 position)

@@ -230,9 +230,9 @@ namespace EmpireAtWar.Services.Enemy
                 ? GetQuickestDefenderArrival() : float.PositiveInfinity;
             bool critical = _stationPressure.IsStationCritical;
             bool canOrderShips = CanOrderAnyShip();
-            // A threatened station saves for the best ship that still arrives in time. It never falls back to
-            // level-1 corvettes: buying the cheapest hull every few seconds leaves no money for a ship that matters.
-            bool hasDefenseShip = critical && canOrderShips && TrySelectShip(shipCount, out ship);
+            // P1 (user 2026-11-23): a station about to fall buys the best defender it can pay for now and that arrives
+            // in time; with none payable the counter path below buys what it can.
+            bool hasDefenseShip = critical && canOrderShips && TrySelectShip(shipCount, out ship, requireAffordable: true);
             bool hasSquadronRoom = HasSquadronRoom(shipCount);
             bool needsCaptureWings = !critical && CountReservedSquadrons() + CountHangarSquadrons() <
                 GetCaptureWingTarget();
@@ -278,7 +278,8 @@ namespace EmpireAtWar.Services.Enemy
             // Platforms never outbid the fleet: while a ship can be bought, only the first platform of the station ring
             // or of a held zone is placed, and none while a team station is under pressure.
             bool platformsBlockedByPressure = canBuildShip && _stateProvider.HasTeamStationPressure;
-            bool firstPlatformsOnly = hasShipOption && !shipBlockedByCapacity;
+            // P5: also while a ship type fits the free capacity but none can be paid yet: the money goes to the fleet.
+            bool firstPlatformsOnly = hasShipOption ? !shipBlockedByCapacity : canOrderShips && HasFittingShipType();
             // One platform queued or under construction at a time; its tier interval already filtered the selection (W50).
             bool canBuildDefense = !_purchaseProcessor.HasPlatformInProgress &&
                 !platformsBlockedByPressure && hasDefenseSelection && IsAffordable(defense.Value) &&
@@ -326,7 +327,8 @@ namespace EmpireAtWar.Services.Enemy
                                          out ResearchTierData combatTier) &&
                                      IsAffordable(combatTier.FactionData) &&
                                      BattleClock.CurrentElapsed >= _nextCombatResearchTime;
-            if (savingForShip)
+            // P6: at the unit cap the ship waits for a free slot, not for money: research is not held back.
+            if (savingForShip && !shipBlockedByCapacity)
             {
                 float nonCompetingCap = shipChoice.Price * NON_COMPETING_RESEARCH_SHARE;
                 if (canResearchIncome && !canResearchPriorityIncome && incomeTier.FactionData.Price > nonCompetingCap)
@@ -345,7 +347,6 @@ namespace EmpireAtWar.Services.Enemy
             _factionModel.HasAssaultSurplus = _economyModel.Money >=
                 EnemyFactionModel.MINIMUM_ASSAULT_CAPITALS * cheapestCapital + (levelData?.Price ?? 0f) + (incomeTier?.FactionData.Price ?? 0f);
 
-            if (TryBuySecondStation(critical)) return;
             bool secondStationLevelDue = IsSecondStationLevelDue(critical, out FactionData secondLevelData);
             // From level 2 the second station's price is held before ships, like a due station level, so buying what
             // fights now cannot starve it; after the main station falls the second station's upgrades are held the same way.
@@ -383,6 +384,11 @@ namespace EmpireAtWar.Services.Enemy
                 _stationPressure.IsStationCritical,
                 canResearchPriorityIncome);
             EnemyProductionCategory category = _decisionModel.Evaluate(snapshot);
+            // P7: the second station follows miners and a due station level, and is never bought while critical.
+            bool minersMissing = snapshot.MiningFacilityCount < snapshot.MiningFacilityTarget && snapshot.HasMiningOption;
+            if (category is not (EnemyProductionCategory.Mining or EnemyProductionCategory.Level) && !minersMissing &&
+                !_decisionModel.IsLevelDue(snapshot) && TryBuySecondStation(critical))
+                return;
             // A second-station upgrade follows miners, priority income research and a due station level, and comes
             // before combat research, platforms and ships.
             if (secondStationLevelDue && IsAffordable(secondLevelData) &&
@@ -391,8 +397,11 @@ namespace EmpireAtWar.Services.Enemy
                 !(category == EnemyProductionCategory.None && _decisionModel.IsLevelDue(snapshot)) &&
                 TryBuySecondStationLevel(secondLevelData, critical))
                 return;
+            // One build at a time while a satellite or mine waits, a level is due or an income tier is unaffordable,
+            // except while the fleet is below its minimum: rebuilding the fleet is never throttled (P4).
             if (!_purchaseProcessor.IsUpgradingStation && _purchaseProcessor.HasActiveProduction &&
-                !critical && category is (EnemyProductionCategory.Ship or EnemyProductionCategory.Defense) &&
+                !critical && !_decisionModel.NeedsMinimumFleet(shipCount) &&
+                category is (EnemyProductionCategory.Ship or EnemyProductionCategory.Defense) &&
                 (PriorityConstructionPending || _decisionModel.IsLevelDue(snapshot) ||
                  incomeTier != null && !canResearchIncome))
                 return;
@@ -508,13 +517,16 @@ namespace EmpireAtWar.Services.Enemy
             if (needsCaptureWings) TryBuyParallelInterceptor(shipCount, mandatoryCosts);
         }
 
-        /// <summary>From level 2, once its price is paid and no mandatory satellite or mine waits.</summary>
+        /// <summary>
+        /// From level 2, once its price is paid and no mandatory satellite or mine waits. Never while the station is
+        /// critical (P7): that money buys defenders.
+        /// </summary>
         private bool TryBuySecondStation(bool critical)
         {
             float now = BattleClock.CurrentElapsed;
-            if (now < _nextStationPlacementCheck || _factionModel.CurrentLevel < 2 ||
+            if (critical || now < _nextStationPlacementCheck || _factionModel.CurrentLevel < 2 ||
                 _factionModel.AdditionalStationsBuilt != 0 || _productionAccess.ProductionHost != _owner.Id ||
-                !_productionAccess.HasHostBase || !critical && PriorityConstructionPending)
+                !_productionAccess.HasHostBase || PriorityConstructionPending)
                 return false;
             FactionData data = _factionModel.SecondStationData;
             if (_economyModel.Money < data.Price ||
@@ -868,18 +880,36 @@ namespace EmpireAtWar.Services.Enemy
             return found;
         }
 
-        /// <summary>Arrival time of the quickest affordable ship that fits the free capacity (W36 critical rule).</summary>
+        /// <summary>
+        /// Arrival time of the quickest affordable ship that fits the free capacity (W36 critical rule). With none
+        /// affordable, the quickest unlocked one that fits (I4): no money must not make the station look safer.
+        /// </summary>
         private float GetQuickestDefenderArrival()
         {
             float quickest = float.PositiveInfinity;
+            float quickestUnpaid = float.PositiveInfinity;
             foreach (KeyValuePair<ShipType, FactionData> option in _factionModel.ShipFactionData)
             {
                 UnitTypeId unitType = UnitTypeId.Ship(option.Key);
-                if (!IsAvailable(option.Value) || !IsAffordable(option.Value) || !FitsRemainingCapacity(option.Value) ||
+                if (!IsAvailable(option.Value) || !FitsRemainingCapacity(option.Value) ||
                     !IsShipClassAllowed(unitType) || _profileCatalog.Get(unitType).GetCombatValue() <= 0f) continue;
-                quickest = Math.Min(quickest, GetArrivalSeconds(unitType, option.Value));
+                float arrival = GetArrivalSeconds(unitType, option.Value);
+                quickestUnpaid = Math.Min(quickestUnpaid, arrival);
+                if (IsAffordable(option.Value)) quickest = Math.Min(quickest, arrival);
             }
-            return quickest;
+            return float.IsPositiveInfinity(quickest) ? quickestUnpaid : quickest;
+        }
+
+        /// <summary>A ship type that may be ordered now and fits the free capacity, whatever its price (P5).</summary>
+        private bool HasFittingShipType()
+        {
+            foreach (KeyValuePair<ShipType, FactionData> option in _factionModel.ShipFactionData)
+            {
+                UnitTypeId unitType = UnitTypeId.Ship(option.Key);
+                if (IsAvailable(option.Value) && IsShipClassAllowed(unitType) && FitsRemainingCapacity(option.Value) &&
+                    CanReserve<ShipUnitRequest>(option.Key.ToString(), option.Value, true)) return true;
+            }
+            return false;
         }
 
         /// <summary>Queue wait + build time, plus travel to the station threat when one is known.</summary>

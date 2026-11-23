@@ -162,10 +162,11 @@ namespace EmpireAtWar.Entities.EnemyFaction.Models
             (pad.IsThreatened ? 1000f : 0f) + (pad.IsHomePad ? 100f : 0f) +
             (pad.IsCentrePad ? 20f : pad.IsZonePad ? 10f : 0f) + pad.ProtectedMineShare - (pad.IsFreePad ? 1f : 0f);
 
-        public bool HasMandatoryPad(EnemyDefenseSnapshot snapshot)
+        /// <param name="isPadWaiting">Pads that may get no satellite now (lost twice within a minute); null skips none.</param>
+        public bool HasMandatoryPad(EnemyDefenseSnapshot snapshot, Predicate<int> isPadWaiting = null)
         {
             foreach (EnemyDefensePad pad in snapshot.Pads)
-                if (NeedsMandatorySatellite(pad)) return true;
+                if (NeedsMandatorySatellite(pad) && (isPadWaiting == null || !isPadWaiting(pad.SiteIndex))) return true;
             return false;
         }
 

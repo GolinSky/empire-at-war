@@ -78,10 +78,11 @@ namespace EmpireAtWar.Entities.EnemyFaction.Models.Objectives
         /// <summary>
         /// Fills <paramref name="results"/> with one assessment per zone (same order) and returns the chosen index,
         /// or -1 when every zone is denied. Behind on zones: own-side zones come first and the centre is only an
-        /// assembly target until nothing else remains.
+        /// assembly target until nothing else remains or the economy stands (<paramref name="strongEconomy"/>, A7: the
+        /// same tiers as the allocator).
         /// </summary>
         public int Select(IReadOnlyList<EnemyZoneObjective> zones, ForceComposition force, float commitAdvantage,
-            bool behindOnZones, List<EnemyZoneAssessment> results)
+            bool behindOnZones, List<EnemyZoneAssessment> results, bool strongEconomy = false)
         {
             results.Clear();
             int best = -1;
@@ -92,7 +93,7 @@ namespace EmpireAtWar.Entities.EnemyFaction.Models.Objectives
                 EnemyZoneAssessment assessment = Assess(zones[i], force, commitAdvantage);
                 results.Add(assessment);
                 if (assessment.Verdict == EnemyZoneVerdict.Deny) continue;
-                int tier = GetTier(zones[i], assessment.Verdict, behindOnZones);
+                int tier = GetTier(zones[i], assessment.Verdict, behindOnZones, strongEconomy);
                 if (tier > bestTier || tier == bestTier && assessment.Score <= bestScore) continue;
                 best = i;
                 bestTier = tier;

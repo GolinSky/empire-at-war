@@ -181,11 +181,17 @@ namespace EmpireAtWar.Entities.EnemyFaction.Models
             return EnemyProductionCategory.None;
         }
 
+        /// <summary>
+        /// Level 1 always upgrades first. From level 2 a level is due once enough ships were ordered, but never while
+        /// the fleet is below <see cref="MINIMUM_FLEET_SIZE"/>: orders never drop when ships die, so a wiped fleet would
+        /// otherwise wait for the upgrade instead of rebuilding (P2).
+        /// </summary>
         public bool IsLevelDue(EnemyProductionSnapshot snapshot) =>
             snapshot.HasLevelUpOption &&
             (snapshot.CurrentFactionLevel == 1 ||
              snapshot.StrategicState != EnemyStrategicState.DefendBase &&
              (!snapshot.CanOrderShips ||
+              !NeedsMinimumFleet(snapshot.ShipCount) &&
               snapshot.ShipsOrdered >= snapshot.CurrentFactionLevel * SHIP_ORDERS_PER_LEVEL));
     }
 }

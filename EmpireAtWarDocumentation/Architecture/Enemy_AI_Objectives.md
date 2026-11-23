@@ -27,16 +27,17 @@ verification: Reviewed affected source and regression fixtures. Unity 6000.4.7f1
 - Groups land on mining spots (`AssignInZone`): base-side first; ≥ 6 wings split over two spots; contested only when advantage ≥ 1; no spot → nearest-home site; never idle. Uncontested spot → `MoveTo` within 2 × spot radius.
 - One outer group per outer zone: 1 wing each, the nearer zone up to 2 (cheap wings); bombers → nearest outer group. Zone kept until taken or below half of peak.
 - Opening wing cap before the first ship: 6 cheap / 4 otherwise (`EnemyWingPricing`); bombers ≤ 3 per known hostile mine; pending satellites/mines block extra wings.
-- Held zone (relay allied or own satellite) with hostiles → tier −1; with own satellites → free ships sent below an even fight. Own wings in the zone count as support.
+- Held zone (relay allied, or own satellite inside the zone radius while no hostile owns the relay; A4 2026-11-23) with hostiles → tier −1; with own satellites → free ships sent below an even fight. Own wings in the zone count as support.
 - New ships arrive at the held relay/station nearest `EnemyZoneAllocator.DeployZone` (gather zone → best served zone → weak target).
 - Armed structures are rated by platform type (`IDefendPlatformTypeFacade` → `UnitCombatProfileCatalog.GetPlatform` from the weapon loadout); supersedes the flat 60 DPS profile below.
 - Bombers: mine → hostile satellite in their zone (together, power rule) → relay. Ships in a hostile zone: known hostile satellites (blocking-facility candidates, +2000) → relay (+1000) → pads.
 - Raids (2026-11-20): a group's raiders go together, rated as one force vs the mine and its cover; one group per mine. Outer groups never share a zone; a held home zone under attack is defended first.
-- Stalled siege: a zone force below an even fight for 90 s is released and its zone marked like a retreat (held zones under attack exempt).
+- Stalled siege: a zone force whose verdict is not `Go` for 90 s is released and its zone blocked like a retreat (held zones under attack exempt). No-flip rule (120 s without a site turning) skips cleared zones and zones with no open site, so a garrison stays (A5).
+- Blocked zones (2026-11-23, A2/A3): every retreated or stalled zone is blocked 90 s (`WEAK_ZONE_SWITCH_SECONDS`), several at once; a blocked zone gets no new force, no leftover ship and is no weak-phase target. A held zone under attack is never blocked.
 
 ### Rounds 3–4 (2026-11-20) — current
 - No drip-feed: a free ship joins a zone force only if the force with it is a `Go`; else it gathers in the reserve. Held-zone defence below even only at advantage ≥ 0.6 (`DEFEND_FLOOR`); weak-phase attack only at pool advantage ≥ 0.6.
-- Stalled siege: released when advantage stays < 1.25 for 90 s (held zones under attack exempt).
+- Stalled siege: released when the force is not a `Go` for 90 s (held zones under attack exempt). `STALL_CLEAR_ADVANTAGE` 1.25 removed (A1).
 - Armed structures seen once stay defenders while they stand (`HostileIntelModel.RememberStructure`).
 - Station lost → 180 s turtle: every force recalled, ships gather at home.
 - Wings: zone-less groups without a raid work group A's zone together; no one-per-target spread.
@@ -72,7 +73,7 @@ verification: Reviewed affected source and regression fixtures. Unity 6000.4.7f1
 - Allocator: sent force keeps its zone until its own local fight is lost; no idle ship (leftovers join the nearest force; none out → all attack `WeakTarget`); centre force led by the most durable ship. New forces pause only while the station is critical.
 - Weak loop: a zone group in `RetreatValue` marks its zone 90 s; `WeakTarget` = best outer zone by pool advantage, never the centre or the marked zone; reinforcements gather at its staging point.
 - Centre never excluded: behind + Assemble → tier 4, or 3 with an outer zone + own mine; behind + Go → 2. Own satellites/platforms (`EnemyZoneObjective.OwnSupport`) fight beside the force in `Assess`.
-- Zone defenders: units within radius + 500. Allocator-sent group commits to its zone regardless of verdict.
+- Zone defenders: units within radius + 500 of the centre, or within 500 of any candidate site of the zone (R1). Allocator-sent group commits to its zone regardless of verdict.
 - Wings: station-hangar wings are free; carrier wings stay on Guard and are the only escorts. Group A → centre, group B (1–2 wings + bombers) → nearest outer zone with a target, then raids (power rule at the mine). In-zone: free site, pads first, base-side first; contested → next free site; none → bait at the edge. Last 400 → move order (hold inside the pad circle).
 - Production: level-1 corvette only at level 1, from 30 s, max 2. Ships wait while a mandatory satellite or mine is pending. Wings: fighter/interceptor types alternate; bombers once a hostile mine is known. Ships deploy singly until an outer zone is held.
 - Station defence target: ship attacking the station → nearest threatening ship → wing; kept while it threatens.

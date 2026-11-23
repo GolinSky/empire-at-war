@@ -105,6 +105,20 @@ namespace EmpireAtWar.Tests.Editor
             Assert.That(new EnemyProductionDecisionModel().Evaluate(snapshot), Is.EqualTo(EnemyProductionCategory.Ship));
         }
 
+        // P2: ship orders never drop when ships die, so a wiped fleet must not wait for a due level.
+        [Test]
+        public void WipedFleet_RebuildsBeforeALevelDueByOrders()
+        {
+            var model = new EnemyProductionDecisionModel();
+            EnemyProductionSnapshot wiped = Snapshot(ships: 0, shipsOrdered: 10, canLevelUp: true);
+            EnemyProductionSnapshot standing = Snapshot(ships: 10, shipsOrdered: 10, canLevelUp: true);
+
+            Assert.That(model.NeedsMinimumFleet(wiped.ShipCount), Is.True);
+            Assert.That(model.IsLevelDue(wiped), Is.False);
+            Assert.That(model.Evaluate(wiped), Is.EqualTo(EnemyProductionCategory.Ship));
+            Assert.That(model.IsLevelDue(standing), Is.True, "A standing fleet still upgrades once enough ships were ordered.");
+        }
+
         [Test]
         public void DepletedFleet_SavesForSelectedShip()
         {

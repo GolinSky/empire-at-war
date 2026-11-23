@@ -1,3 +1,4 @@
+using System;
 using System.Collections.Generic;
 using EmpireAtWar.Entities.CaptureSites;
 using EmpireAtWar.Services.Saves;
@@ -49,6 +50,7 @@ namespace EmpireAtWar.Services.Enemy
         private readonly HashSet<int> _ownedPads = new HashSet<int>();
         private readonly Dictionary<int, List<float>> _padLosses = new Dictionary<int, List<float>>();
         private readonly Dictionary<int, float> _padWaitUntil = new Dictionary<int, float>();
+        private readonly Predicate<int> _isPadWaitingNow;
 
         public EnemySiteConstructionController(ICaptureSiteDirectory sites, ICaptureSitePresence presence,
             ICaptureSiteConstruction construction,
@@ -68,6 +70,7 @@ namespace EmpireAtWar.Services.Enemy
             _stationPressure = stationPressure;
             _production = production;
             _zones = zones;
+            _isPadWaitingNow = IsPadWaitingNow;
         }
 
         public void Tick()
@@ -85,8 +88,11 @@ namespace EmpireAtWar.Services.Enemy
             TrackZoneLosses();
             TrackPadLosses(BattleClock.CurrentElapsed);
             int mineSite = FindMineSite(centre);
-            bool mandatorySatellite = _defense.HasMandatoryPad(snapshot);
-            _production.PriorityConstructionPending = mandatorySatellite || mineSite >= 0;
+            // P3: a pad in its churn wait asks for nothing, and a satellite already under construction is the one
+            // allowed at a time: neither holds the ship money back.
+            bool mandatorySatellite = _defense.HasMandatoryPad(snapshot, _isPadWaitingNow);
+            _production.PriorityConstructionPending = mineSite >= 0 ||
+                mandatorySatellite && !HasSatelliteUnderConstruction();
             string reason = "";
             SiteFacilityType spotFacility = mineSite >= 0
                 ? ChooseSpotFacility(_sites.Sites[mineSite], out reason) : SiteFacilityType.Mining;
@@ -197,6 +203,8 @@ namespace EmpireAtWar.Services.Enemy
         /// <summary>A satellite pad lost twice within a minute gets no new satellite for a while.</summary>
         internal bool IsPadWaiting(int siteIndex, float now) =>
             _padWaitUntil.TryGetValue(siteIndex, out float until) && now < until;
+
+        private bool IsPadWaitingNow(int siteIndex) => IsPadWaiting(siteIndex, BattleClock.CurrentElapsed);
 
         internal void TrackPadLosses(float now)
         {

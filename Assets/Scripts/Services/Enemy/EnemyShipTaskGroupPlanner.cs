@@ -20,20 +20,24 @@ namespace EmpireAtWar.Services.Enemy
     /// </summary>
     public sealed class EnemyShipTaskGroupPlanner
     {
-        /// <summary>After a retreat the weak-phase attack avoids that zone this long and tries another.</summary>
+        /// <summary>
+        /// After a retreat or a stall the zone is blocked this long: no ship is sent there and the weak-phase attack
+        /// tries another zone. A held zone under attack is never blocked (A2).
+        /// </summary>
         public const float WEAK_ZONE_SWITCH_SECONDS = 90f;
         /// <summary>
-        /// A zone force kept below an even fight this long is a stalled siege: it is released and its zone marked
-        /// like a retreat. A held zone under attack is never released this way.
+        /// A zone force kept below its attack line (its verdict is not Go) this long is a stalled siege: it is released
+        /// and its zone blocked like a retreat. A held zone under attack is never released this way.
         /// </summary>
         public const float STALLED_SIEGE_SECONDS = 90f;
-        /// <summary>The stall clock restarts only once the force clearly wins: a fight hovering at 1.0 is a stall.</summary>
-        public const float STALL_CLEAR_ADVANTAGE = 1.25f;
         /// <summary>After an own station is lost no new force leaves this long: ships gather at home in waves.</summary>
         public const float TURTLE_SECONDS = 180f;
         /// <summary>The weak-phase attack needs the whole pool to reach this share of the target's defenders.</summary>
         public const float WEAK_ATTACK_FLOOR = 0.6f;
-        /// <summary>A zone force at a zone where no site changed hands this long is stalled by result.</summary>
+        /// <summary>
+        /// A zone force at a zone where no site changed hands this long is stalled by result. A cleared zone or one with
+        /// no open site has nothing left to take: its garrison is never released this way (A5).
+        /// </summary>
         public const float STALL_NO_FLIP_SECONDS = 120f;
 
         private readonly EnemyStrategicContextBuilder _contextBuilder;
@@ -65,8 +69,10 @@ namespace EmpireAtWar.Services.Enemy
         private readonly EnemyZoneScoutGate _scoutGate = new EnemyZoneScoutGate();
         private int _stationCount = -1;
         private float _turtleUntil = float.NegativeInfinity;
-        private string _retreatedZoneId;
-        private float _retreatedUntil;
+        // A3: every zone a force retreated or stalled from, with the time it is blocked until.
+        private readonly Dictionary<string, float> _blockedUntil = new Dictionary<string, float>();
+        private readonly HashSet<string> _blockedZoneIds = new HashSet<string>();
+        private readonly List<string> _expiredBlocks = new List<string>();
         private string _lastAllocation;
 
         public IReadOnlyList<EnemyShipTaskGroup> Groups => _groups;
@@ -145,6 +151,7 @@ namespace EmpireAtWar.Services.Enemy
             ScoutTarget = null;
             PlannedWaveTarget = null;
             NoteRetreats(now);
+            PruneBlocks(now);
             if (CollectPool(ships))
             {
                 Vector3 home = _pool.GetHome(_poolShips[0].WorldPosition);
@@ -156,15 +163,15 @@ namespace EmpireAtWar.Services.Enemy
                 foreach (IShipEntity ship in _poolShips)
                 {
                     EnemyShipTaskGroup group = FindZoneGroup(ship);
-                    // A retreating force is free again: the weak-phase loop sends it to another zone.
-                    _current.Add(group == null || group.ContextBuilder.AssignedZoneId == _retreatedZoneId &&
-                        now < _retreatedUntil ? EnemyZoneAllocator.RESERVE :
-                        IndexOf(zones, group.ContextBuilder.AssignedZoneId));
+                    // A retreating or stalled force is free again: the weak-phase loop sends it to another zone.
+                    _current.Add(group == null || _blockedZoneIds.Contains(group.ContextBuilder.AssignedZoneId)
+                        ? EnemyZoneAllocator.RESERVE : IndexOf(zones, group.ContextBuilder.AssignedZoneId));
                 }
                 bool behind = _pool.IsBehindOnZones();
                 _allocator.StrongEconomy = _pool.HasStrongEconomy();
                 _allocator.LeanZones = _contextBuilder.LateGameSituation;
-                _allocator.WeakTarget = SelectWeakTarget(zones, now);
+                _allocator.BlockedZoneIds = _blockedZoneIds;
+                _allocator.WeakTarget = SelectWeakTarget(zones);
                 _allocator.Allocate(zones, _poolForces, _current, _distance, behind, _assignment);
                 if (stationPressure)
                     for (int i = 0; i < _assignment.Count; i++)
@@ -368,21 +375,37 @@ namespace EmpireAtWar.Services.Enemy
             return fastest;
         }
 
-        /// <summary>A zone force that retreats marks its zone; the weak-phase attack switches to another one.</summary>
+        /// <summary>A zone force that retreats blocks its zone; the weak-phase attack switches to another one.</summary>
         private void NoteRetreats(float now)
         {
             foreach (EnemyShipTaskGroup group in _zoneGroups)
             {
                 if (group.Context == null || group.Decision.State != EnemyStrategicState.RetreatValue) continue;
-                _retreatedZoneId = group.ContextBuilder.AssignedZoneId;
-                _retreatedUntil = now + WEAK_ZONE_SWITCH_SECONDS;
+                Block(group.ContextBuilder.AssignedZoneId, now);
             }
         }
 
+        private void Block(string zoneId, float now)
+        {
+            _blockedUntil[zoneId] = now + WEAK_ZONE_SWITCH_SECONDS;
+            _blockedZoneIds.Add(zoneId);
+        }
+
+        /// <summary>A3: drops expired blocks and refreshes the set of blocked zone ids.</summary>
+        private void PruneBlocks(float now)
+        {
+            _expiredBlocks.Clear();
+            foreach (KeyValuePair<string, float> block in _blockedUntil)
+                if (now >= block.Value) _expiredBlocks.Add(block.Key);
+            foreach (string zoneId in _expiredBlocks) _blockedUntil.Remove(zoneId);
+            _blockedZoneIds.Clear();
+            foreach (string zoneId in _blockedUntil.Keys) _blockedZoneIds.Add(zoneId);
+        }
+
         /// <summary>
-        /// A zone force whose ships do not clearly win (<see cref="STALL_CLEAR_ADVANTAGE"/>) for <see cref="STALLED_SIEGE_SECONDS"/>
-        /// takes nothing and only waits to be caught: its zone is marked like a retreat, so the ships are free again
-        /// and the weak-phase attack switches to another zone.
+        /// A zone force whose verdict is not Go for <see cref="STALLED_SIEGE_SECONDS"/> takes nothing and only waits to be
+        /// caught: its zone is blocked like a retreat, so the ships are free again and the weak-phase attack switches to
+        /// another zone. A1: the clock restarts whenever the force is a Go, the same line the late-game trim keeps.
         /// </summary>
         private void NoteStalledSieges(IReadOnlyList<EnemyZoneObjective> zones, float now)
         {
@@ -409,8 +432,7 @@ namespace EmpireAtWar.Services.Enemy
                 {
                     _belowEvenSince.Remove(zoneId);
                     _flipWatch.Remove(zoneId);
-                    _retreatedZoneId = zoneId;
-                    _retreatedUntil = now + WEAK_ZONE_SWITCH_SECONDS;
+                    Block(zoneId, now);
                     _pool.RecordZoneAllocation(FormattableString.Invariant(
                         $"stall=noFlip;zone={zoneId};seconds={STALL_NO_FLIP_SECONDS:F0}"));
                     continue;
@@ -418,8 +440,8 @@ namespace EmpireAtWar.Services.Enemy
                 _groupForce.Clear();
                 for (int i = 0; i < _poolShips.Count; i++)
                     if (group.Ships.Contains(_poolShips[i])) _groupForce.Add(_poolForces[i]);
-                if (_evaluator.Assess(zones[zone], _groupForce, EnemyZoneEvaluator.COMMIT_ADVANTAGE).Advantage >=
-                    STALL_CLEAR_ADVANTAGE)
+                if (_evaluator.Assess(zones[zone], _groupForce, EnemyZoneEvaluator.COMMIT_ADVANTAGE).Verdict ==
+                    EnemyZoneVerdict.Go)
                 {
                     _belowEvenSince.Remove(zoneId);
                     continue;
@@ -431,17 +453,22 @@ namespace EmpireAtWar.Services.Enemy
                 }
                 if (now - since < STALLED_SIEGE_SECONDS) continue;
                 _belowEvenSince.Remove(zoneId);
-                _retreatedZoneId = zoneId;
-                _retreatedUntil = now + WEAK_ZONE_SWITCH_SECONDS;
+                Block(zoneId, now);
             }
         }
 
         /// <summary>
         /// A zone force stalls by result when no site in its zone turned to the team for
-        /// <see cref="STALL_NO_FLIP_SECONDS"/>. Destroyed or rebuilt structures are no progress.
+        /// <see cref="STALL_NO_FLIP_SECONDS"/>. Destroyed or rebuilt structures are no progress. A cleared zone or one
+        /// with no open site has nothing to take: its garrison never stalls this way (A5).
         /// </summary>
         private bool IsStalledByResult(string zoneId, EnemyZoneObjective zone, float now)
         {
+            if (EnemyZoneAllocator.IsCleared(zone) || zone.OpenSites == 0)
+            {
+                _flipWatch.Remove(zoneId);
+                return false;
+            }
             bool watched = _flipWatch.TryGetValue(zoneId, out var watch);
             bool progress = !watched || IsStallProgress(watch.OpenSites, watch.Held, zone.OpenSites, zone.IsHeld);
             _flipWatch[zoneId] = (zone.OpenSites, zone.IsHeld, progress ? now : watch.Since);
@@ -460,11 +487,11 @@ namespace EmpireAtWar.Services.Enemy
         }
 
         /// <summary>
-        /// Weak phase target: the outer zone the whole pool rates best against its defenders, never the zone a force
-        /// just retreated from, and only while the pool reaches <see cref="WEAK_ATTACK_FLOOR"/>. The centre is never a
-        /// weak-phase target.
+        /// Weak phase target: the outer zone the whole pool rates best against its defenders, never a blocked zone (a
+        /// force retreated or stalled there), and only while the pool reaches <see cref="WEAK_ATTACK_FLOOR"/>. The
+        /// centre is never a weak-phase target.
         /// </summary>
-        private int SelectWeakTarget(IReadOnlyList<EnemyZoneObjective> zones, float now)
+        private int SelectWeakTarget(IReadOnlyList<EnemyZoneObjective> zones)
         {
             _poolTotal.Clear();
             foreach (ForceComposition force in _poolForces) _poolTotal.Add(force);
@@ -473,8 +500,7 @@ namespace EmpireAtWar.Services.Enemy
             for (int zone = 0; zone < zones.Count; zone++)
             {
                 EnemyZoneObjective objective = zones[zone];
-                if (objective.IsDenied || objective.IsCentre ||
-                    objective.Id == _retreatedZoneId && now < _retreatedUntil) continue;
+                if (objective.IsDenied || objective.IsCentre || _blockedZoneIds.Contains(objective.Id)) continue;
                 float advantage = objective.Defenders.IsEmpty ? float.PositiveInfinity :
                     CombatMatchup.Advantage(_poolTotal, objective.Defenders);
                 if (advantage <= bestAdvantage) continue;

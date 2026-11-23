@@ -79,6 +79,15 @@ namespace EmpireAtWar.Entities.EnemyFaction.Models.Objectives
         public bool LeanZones { get; set; }
 
         /// <summary>
+        /// A2: zones a force just retreated or stalled from. A blocked zone gets no new force and no leftover ship, so
+        /// the freed ships are not sent straight back; a held zone under attack is never blocked. Null blocks none.
+        /// </summary>
+        public ISet<string> BlockedZoneIds { get; set; }
+
+        private bool IsBlocked(EnemyZoneObjective zone) =>
+            BlockedZoneIds != null && !zone.IsHeldUnderAttack && BlockedZoneIds.Contains(zone.Id);
+
+        /// <summary>
         /// The capture is finished and no armed hostile is left (no unit, no platform): from now on the garrison rule
         /// decides who stays (W65).
         /// </summary>
@@ -160,7 +169,7 @@ namespace EmpireAtWar.Entities.EnemyFaction.Models.Objectives
                 _tiers.Add(EnemyZoneEvaluator.GetTier(zones[zone], assessment.Verdict, behindOnZones, StrongEconomy));
                 _scores.Add(assessment.Score -
                     TRAVEL_COST_SCALE * NearestFreeDistance(zone, ships.Count, distance, assignment));
-                if (!_served[zone] && !zones[zone].IsDenied) _order.Add(zone);
+                if (!_served[zone] && !zones[zone].IsDenied && !IsBlocked(zones[zone])) _order.Add(zone);
             }
             _order.Sort(_compareZones);
 
@@ -333,7 +342,8 @@ namespace EmpireAtWar.Entities.EnemyFaction.Models.Objectives
             Func<int, int, float> distance, List<int> assignment)
         {
             bool anyServed = _served.Contains(true);
-            int weak = WeakTarget >= 0 && WeakTarget < zones.Count && !zones[WeakTarget].IsDenied ? WeakTarget : RESERVE;
+            int weak = WeakTarget >= 0 && WeakTarget < zones.Count && !zones[WeakTarget].IsDenied &&
+                !IsBlocked(zones[WeakTarget]) ? WeakTarget : RESERVE;
             for (int ship = 0; ship < ships.Count; ship++)
             {
                 if (assignment[ship] != RESERVE) continue;
@@ -346,7 +356,7 @@ namespace EmpireAtWar.Entities.EnemyFaction.Models.Objectives
                 float nearestDistance = float.PositiveInfinity;
                 for (int zone = 0; zone < zones.Count; zone++)
                 {
-                    if (!_served[zone]) continue;
+                    if (!_served[zone] || IsBlocked(zones[zone])) continue;
                     float candidate = distance(ship, zone);
                     if (candidate >= nearestDistance || !WinsWith(zone, ship, zones, ships, assignment)) continue;
                     nearest = zone;

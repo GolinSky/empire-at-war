@@ -50,6 +50,37 @@ namespace EmpireAtWar.Tests.Editor
                 "A zone with no armed hostile needs a capture detachment, not more ships.");
         }
 
+        // A2, A3: zones a force just retreated or stalled from get no ship from the same pool; two can be blocked at once.
+        [Test]
+        public void Allocate_BlockedZonesGetNoShip_TheOpenZoneTakesThePool()
+        {
+            EnemyZoneObjective[] zones = { Zone("a", defenders: 1), Zone("b", defenders: 1), Zone("c", defenders: 1) };
+            var allocator = new EnemyZoneAllocator
+            {
+                BlockedZoneIds = new HashSet<string> { "a", "b" },
+                WeakTarget = 0
+            };
+
+            List<int> assignment = Allocate(allocator, zones, ships: 4);
+
+            Assert.That(assignment, Has.None.EqualTo(0), "A blocked zone is no weak-phase target and takes no leftover.");
+            Assert.That(assignment, Has.None.EqualTo(1));
+            Assert.That(assignment, Has.Some.EqualTo(2));
+        }
+
+        // A2: a held zone under attack is never blocked: its satellites need the ships.
+        [Test]
+        public void Allocate_BlockedHeldZoneUnderAttack_StillGetsShips()
+        {
+            EnemyZoneObjective zone = Zone("held", defenders: 1, held: true, ownStructures: 1);
+            var allocator = new EnemyZoneAllocator { BlockedZoneIds = new HashSet<string> { "held" } };
+
+            List<int> assignment = Allocate(allocator, new[] { zone }, ships: 3);
+
+            Assert.That(zone.IsHeldUnderAttack, Is.True);
+            Assert.That(assignment, Has.Some.EqualTo(0));
+        }
+
         [Test]
         public void IsCleared_NeedsNoArmedHostileLeftAndTheCaptureFinished()
         {

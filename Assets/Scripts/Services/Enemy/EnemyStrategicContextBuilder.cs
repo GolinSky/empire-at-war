@@ -1494,6 +1494,13 @@ namespace EmpireAtWar.Services.Enemy
             if (captureObjective?.BlockingFacilityId is long facilityId &&
                 _entityLocator.TryGetEntity(facilityId, out GameEntity facility) && !facility.HealthModel.IsDestroyed)
                 blockingFacility = facility;
+            // X2: a zone force with a capture objective has no guard site, but ships with no task still need a point to
+            // hold: the zone's staging point, else home. The decision still sees no guard site.
+            if (!guardPosition.HasValue && AssignedZoneId != null)
+            {
+                int assignedArea = FindZoneArea(AssignedZoneId);
+                guardPosition = assignedArea >= 0 ? GetStagingPoint(assignedArea, home) : home;
+            }
             return new EnemyStrategicContext(
                 snapshot: snapshot,
                 ships: ownShips,
@@ -1932,13 +1939,15 @@ namespace EmpireAtWar.Services.Enemy
             }
             float commit = EnemyZoneEvaluator.COMMIT_ADVANTAGE;
             _zoneObjectives.Collect(_zoneCandidates, _zonePriorities, origin, GetGroupSpeed(), _isNearHostileBase);
+            bool strongEconomy = HasStrongEconomy();
             _selectedArea = _zoneEvaluator.Select(_zoneObjectives.Objectives, _assessedForce, commit, _behindOnZones,
-                _zoneAssessments);
+                _zoneAssessments, strongEconomy);
             // A group the allocator sent takes sites only in its own zone.
             if (AssignedZoneId != null) _selectedArea = FindZoneArea(AssignedZoneId);
             RecordZoneEvaluations();
             int selectedTier = _selectedArea < 0 ? -1 : EnemyZoneEvaluator.GetTier(
-                _zoneObjectives.Objectives[_selectedArea], _zoneAssessments[_selectedArea].Verdict, _behindOnZones);
+                _zoneObjectives.Objectives[_selectedArea], _zoneAssessments[_selectedArea].Verdict, _behindOnZones,
+                strongEconomy);
             _rankedCaptures.Sort(RANK_CAPTURES);
             foreach (RankedCapture ranked in _rankedCaptures)
             {

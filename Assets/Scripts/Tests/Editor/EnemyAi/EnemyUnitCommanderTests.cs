@@ -1651,6 +1651,38 @@ namespace EmpireAtWar.Tests.Editor
             finally { UnityEngine.Object.DestroyImmediate(view); }
         }
 
+        // X1, X8: without a secured centre the assault force is the capitals; every other ship still gets an order.
+        [Test]
+        public void AssaultBase_ShipsOutsideTheCapitalForceHoldAtTheGatherPoint()
+        {
+            var capital = new FakeShip(Vector3.zero, 1);
+            var corvette = new FakeShip(Vector3.right, 2);
+            GameObject view = new GameObject("Base");
+            try
+            {
+                var station = new FakeEntity(new FakeHealthModel(view.transform) { Hull = 100f, Shields = 0f },
+                    TestPlayers.Human, 3);
+                var forces = new Dictionary<IShipEntity, ForceComposition>
+                {
+                    [capital] = CombatForce(100f, 20f),
+                    [corvette] = CombatForce(100f, 20f)
+                };
+                Vector3 gather = new Vector3(-500f, 0f, 0f);
+                var orders = new FakeOrderService();
+                var executor = new EnemyTaskForceExecutor(orders);
+                executor.Execute(new EnemyStrategicDecision(state: EnemyStrategicState.AssaultBase,
+                        committedShipCount: 2, reason: "test"),
+                    Context(new IShipEntity[] { capital, corvette }, shipForces: forces, baseTarget: station,
+                        assaultCapitals: new IShipEntity[] { capital }, guardPosition: gather));
+
+                OrderCall attack = orders.Calls.Single(call => call.Action == UnitActionId.Attack);
+                Assert.That(attack.Receivers.Select(entity => entity.Id), Is.EqualTo(new long[] { capital.EntityId }));
+                OrderCall hold = orders.Calls.Single(call => call.Action == UnitActionId.AttackMove);
+                Assert.That(hold.Receivers.Select(entity => entity.Id), Is.EqualTo(new long[] { corvette.EntityId }));
+            }
+            finally { UnityEngine.Object.DestroyImmediate(view); }
+        }
+
         [Test]
         public void HuntFleet_SelectedAntiFighterCounterActivelyEngagesDefenders()
         {
@@ -3988,7 +4020,7 @@ namespace EmpireAtWar.Tests.Editor
             IEntity localThreatTarget = null,
             EnemyStationPressureTracker stationPressure = null,
             Func<Vector3, float, bool> isPointClear = null, IEntity captureBlockingFacility = null,
-            Vector3? guardPosition = null)
+            Vector3? guardPosition = null, IEntity baseTarget = null, IReadOnlyList<IShipEntity> assaultCapitals = null)
         {
             if (ownBase != null && stationPressure == null)
             {
@@ -4009,7 +4041,7 @@ namespace EmpireAtWar.Tests.Editor
                 defaultShipForces.Add(ship, CombatForce(100f, 10f));
             }
             var defaultTargetForces = new Dictionary<IEntity, ForceComposition>();
-            foreach (IEntity target in new[] { fleetTarget, defenseTarget, localThreatTarget })
+            foreach (IEntity target in new[] { fleetTarget, defenseTarget, localThreatTarget, baseTarget })
                 if (target != null) defaultTargetForces[target] = new ForceComposition();
             EnemyStrategicSnapshot snapshot = new EnemyStrategicSnapshot(
                 victoryCondition: BattleVictoryCondition.DestroyEnemyFleet, difficulty: EnemyAiDifficulty.UltraHard,
@@ -4021,7 +4053,8 @@ namespace EmpireAtWar.Tests.Editor
                 "relay-1", EnemyCaptureObjectiveType.ReinforcementZone, PlayerId.None,
                 new Vector3(55f, 0f, -55f), 10f, 0f);
             return new EnemyStrategicContext(snapshot: snapshot, ships: ships,
-                captureTarget: objective.Position, enemyFleetTarget: fleetTarget, enemyBaseTarget: null,
+                captureTarget: objective.Position, enemyFleetTarget: fleetTarget, enemyBaseTarget: baseTarget,
+                assaultCapitals: assaultCapitals,
                 ownBase: ownBase, receivers: receivers, captureObjective: objective,
                 defenseTarget: defenseTarget, retreatAnchor: retreatAnchor,
                 shipForces: shipForces ?? defaultShipForces, targetForces: targetForces ?? defaultTargetForces,

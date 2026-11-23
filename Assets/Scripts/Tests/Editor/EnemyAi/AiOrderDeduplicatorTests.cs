@@ -48,6 +48,59 @@ namespace EmpireAtWar.Tests.Editor
             Assert.That(orders.Issued, Is.EqualTo(new[] { "Attack:1", "Attack:1" }));
         }
 
+        // X5: another issuer re-targeted the ship; the same attack is not a repeat.
+        [Test]
+        public void Attack_IsSentAgainWhenTheShipNowAttacksAnotherTarget()
+        {
+            var orders = new RecordingOrders();
+            var filter = new AiOrderDeduplicator(orders);
+            var target = new OrderedEntity(UnitOrderType.None);
+            var other = new OrderedEntity(UnitOrderType.None);
+            var ship = new OrderedEntity(UnitOrderType.Attack) { AttackTarget = target };
+
+            filter.IssueAttack(new IEntity[] { ship }, target);
+            filter.IssueAttack(new IEntity[] { ship }, target);
+            ship.AttackTarget = other;
+            filter.IssueAttack(new IEntity[] { ship }, target);
+
+            Assert.That(orders.Issued, Is.EqualTo(new[] { "Attack:1", "Attack:1" }));
+        }
+
+        // X6: an attack with formation offsets is filtered like any attack and passes again for a moved slot.
+        [Test]
+        public void OffsetAttack_EndedOnTheSameTargetWaits_ANewSlotPasses()
+        {
+            var orders = new RecordingOrders();
+            var filter = new AiOrderDeduplicator(orders);
+            var stopped = new OrderedEntity(UnitOrderType.None);
+            var target = new OrderedEntity(UnitOrderType.None);
+            var slot = new[] { Vector3.zero };
+            var movedSlot = new[] { new Vector3(2f * AiOrderDeduplicator.SAME_POINT_DISTANCE, 0f, 0f) };
+
+            filter.IssueAttack(new IEntity[] { stopped }, target, slot);
+            filter.IssueAttack(new IEntity[] { stopped }, target, slot);
+            filter.IssueAttack(new IEntity[] { stopped }, target, movedSlot);
+
+            Assert.That(orders.Issued, Is.EqualTo(new[] { "Attack:1", "Attack:1" }));
+        }
+
+        // X5: a ship that left the group keeps no memory; back in the group, the same order reaches it.
+        [Test]
+        public void RetainOnly_ForgetsShipsOutsideTheGroup()
+        {
+            var orders = new RecordingOrders();
+            var filter = new AiOrderDeduplicator(orders);
+            var kept = new OrderedEntity(UnitOrderType.AttackMove);
+            var left = new OrderedEntity(UnitOrderType.AttackMove);
+
+            filter.IssueAttackMove(new IEntity[] { kept, left }, Vector3.zero);
+            filter.RetainOnly(new IEntity[] { kept });
+            filter.IssueAttackMove(new IEntity[] { kept, left }, Vector3.zero);
+
+            Assert.That(orders.Issued, Is.EqualTo(new[] { "AttackMove:2", "AttackMove:1" }));
+            Assert.That(orders.Receivers[1], Is.EqualTo(new IEntity[] { left }));
+        }
+
         [Test]
         public void EndedMove_IsRepairedAtOnceButEndedAttackOnTheSameTargetWaits()
         {
@@ -157,7 +210,7 @@ namespace EmpireAtWar.Tests.Editor
             public IHealthModelObserver HealthModel => null;
             public PlayerId Owner => TestPlayers.Enemy;
             public UnitOrderType CurrentOrder { get; }
-            public IEntity AttackTarget => null;
+            public IEntity AttackTarget { get; set; }
             public bool IsEngagingEnRoute { get; set; }
 
             public OrderedEntity(UnitOrderType currentOrder) => CurrentOrder = currentOrder;

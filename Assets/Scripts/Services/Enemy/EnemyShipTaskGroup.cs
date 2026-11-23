@@ -16,6 +16,7 @@ namespace EmpireAtWar.Services.Enemy
         private static int _nextGroupId;
         private readonly int _groupId = ++_nextGroupId;
         private bool _hasDecision;
+        private int _executedShipCount = -1;
         private readonly bool _unbuiltMinesOnly;
         private float _nextDropRequestAt = float.NegativeInfinity;
         private float _nextOrderReportAt = float.NegativeInfinity;
@@ -108,8 +109,10 @@ namespace EmpireAtWar.Services.Enemy
                     request.Type == TacticalMarkerType.Retreat ? EnemyStrategicState.RetreatValue :
                     EnemyStrategicState.Hold, Ships.Count);
             }
+            // X2: a steady Hold or Rebuild executes again when ships joined or left, so a new ship gets the hold order.
             bool execute = HasMarkerRequest || !_hasDecision || Decision.State != next.State ||
-                next.State != EnemyStrategicState.Hold && next.State != EnemyStrategicState.RebuildFleet;
+                next.State != EnemyStrategicState.Hold && next.State != EnemyStrategicState.RebuildFleet ||
+                Ships.Count != _executedShipCount;
             HasMarkerRequest = request != null;
             Context.StateHeldSeconds = DecisionModel.StateHeldSeconds;
             string group = _groupId.ToString();
@@ -131,9 +134,11 @@ namespace EmpireAtWar.Services.Enemy
             else if (IsMainForce && Decision.State == EnemyStrategicState.Hold && !Context.Snapshot.IsRegrouped)
                 Executor.Rally(Context);
             else if (execute) Executor.Execute(Decision, Context, now);
+            if (request != null || execute) _executedShipCount = Ships.Count;
             EnemyCaptureObjective executedObjective = Decision.State == EnemyStrategicState.CaptureZone &&
                 Executor.BodyCount > 0 ? Context.CaptureObjective : null;
-            ContextBuilder.ReportCaptureExecution(executedObjective, now);
+            // X9: a force holding while its body assembles is not stalled on its capture.
+            ContextBuilder.ReportCaptureExecution(Executor.IsAssemblingCapture ? null : executedObjective, now);
             if (executedObjective != null) reservedObjectives.Add(executedObjective.Id);
         }
 
