@@ -592,7 +592,8 @@ created: "2026-10-29\r"
 
 - [ ] [[Done/Features/Xyston_Import]] — In battle (Empire, level 5): build Xyston; check superlaser beam leaves the ventral cannon, kills a full-health ISD I, auto-targets capitals; turret/stripe/team colours, engine plumes, shield fit, wreck.
 - [ ] [[Done/Features/Xyston_Import]] — Balance check: provisional price 14,000 / build 80 s / capacity 15 / max 2; 1v1 vs ISD II and Allegiance.
-- [ ] [[Done/Features/Xyston_Import]] — Selection fix (enabled hull box) and 2,406 m scale: click-select in battle; red armor band shows owner colour. `Ships`/`Abilities`/`Audio` passed; `Health`, `Combat`, `Balance` not run.
+- [ ] [[Done/Features/Xyston_Import]] — Battlecruiser pick hull and 2,406 m scale: click-select in battle; red armor band shows owner colour. `Ships`/`Abilities`/`Audio` passed before the class change; not rerun since.
+- [ ] [[Done/Features/Xyston_Import]] — Superlaser update: red beam; targets stations, defend platforms, mining facilities and other structures; battlecruiser shield regen feels right.
 
 ## Uncompressed Texture Review 2026-11-23
 

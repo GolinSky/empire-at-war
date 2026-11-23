@@ -11,7 +11,7 @@ using NUnit.Framework;
 
 namespace EmpireAtWar.Tests.Editor
 {
-    /// <summary>Xyston superlaser: frigates and larger plus stations; auto target prefers capital ships.</summary>
+    /// <summary>Xyston superlaser: frigates and larger plus stations and structures; auto target prefers capital ships.</summary>
     [Category("Abilities")]
     public sealed class SuperlaserTargetRuleTests
     {
@@ -38,18 +38,31 @@ namespace EmpireAtWar.Tests.Editor
             Assert.That(_settings.CanTarget(null, Station()), Is.True);
 
         [Test]
-        public void AutoTarget_PrefersCapitalThenBattleCruiserThenDreadnoughtThenStation()
+        public void Structure_IsAValidTarget() =>
+            Assert.That(_settings.CanTarget(null, Ship(ShipClass.Structure)), Is.True);
+
+        [Test]
+        public void AutoTarget_PrefersCapitalThenBattleCruiserThenDreadnoughtThenStationOrStructure()
         {
             int capital = _settings.GetTargetPriority(Ship(ShipClass.Capital));
             int battleCruiser = _settings.GetTargetPriority(Ship(ShipClass.BattleCruiser));
             int dreadnought = _settings.GetTargetPriority(Ship(ShipClass.Dreadnought));
             int station = _settings.GetTargetPriority(Station());
+            int structure = _settings.GetTargetPriority(Ship(ShipClass.Structure));
             int frigate = _settings.GetTargetPriority(Ship(ShipClass.Frigate));
 
             Assert.That(capital, Is.GreaterThan(battleCruiser));
             Assert.That(battleCruiser, Is.GreaterThan(dreadnought));
             Assert.That(dreadnought, Is.GreaterThan(station));
+            Assert.That(structure, Is.EqualTo(station));
             Assert.That(station, Is.GreaterThan(frigate));
+        }
+
+        [Test]
+        public void BeamColor_IsRed()
+        {
+            UnityEngine.Color color = _settings.BeamColor;
+            Assert.That(color.r, Is.GreaterThan(color.g).And.GreaterThan(color.b));
         }
 
         private static IEntity Ship(ShipClass shipClass) => new FakeEntity(new FakeHealth(shipClass));

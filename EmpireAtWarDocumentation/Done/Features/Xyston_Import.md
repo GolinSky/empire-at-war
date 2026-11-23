@@ -21,8 +21,8 @@ acceptance: pending-user
 
 | Item | Value |
 |---|---|
-| Superlaser | `46,800` Beam damage (36k raised +30% on 2026-11-23; now also kills a full ISD II) over `6 s`, recovery `60 s`, range `1000`; frigate+ and stations only; auto-power `Target` (Capital > BattleCruiser > Dreadnought > station) |
-| Hull / shields | `28,000 / 11,000` (ISD I level), class Capital |
+| Superlaser | `46,800` Beam damage (36k raised +30% on 2026-11-23; now also kills a full ISD II) over `6 s`, recovery `60 s`, range `1000`; frigate+, stations and every `ShipClass.Structure` (user, 2026-11-23); auto-power `Target` (Capital > BattleCruiser > Dreadnought > station = structure); beam colour red `(1, 0.12, 0.08)` via `SuperlaserSettings.beamColor` → `WeaponProfile.WithColor` (LaserBeam profile stays light blue) |
+| Hull / shields | `28,000 / 11,000`, class BattleCruiser, shield regen tier `BattleCruiser`, delay `1` (user, 2026-11-23; was Capital tier) |
 | Guns | source-like: 6 `DualHeavyTurboLaser`, 6 `HeavyDualLaser`, 5 `DualMediumTurboLaser`, 2 `HeavyDualIonCannon`, 2 `HeavyTripleIonCannon` |
 | Hangar | none (source TIE Defender/Scimitar dropped) |
 | Abilities | Superlaser + Tractor Beam (source tractor hardpoint) |
@@ -31,7 +31,9 @@ acceptance: pending-user
 
 - Length `2,406 m` → `252.63` units (0.105 u/m); saved `141.75 × 74.66 × 252.63`, nav radius 129 (user, 2026-11-23; was ISD I 168).
 - Team colour: albedo hue livery (hue `0`, range `0.07`, min sat `0.4`, strength `1`) on `Hull_Armor_Red` only; foredeck stripes removed (user).
-- Selection: Capital → enabled root `BoxCollider`, no pick hull (`ShipPickHullBaker.NeedsPickHull`). Allegiance donor box was disabled → ship unselectable; fixed.
+- Selection: BattleCruiser → convex `Xyston_PickHull` MeshCollider, root box disabled (`ShipPickHullBaker.NeedsPickHull`; `XystonBuilder.BakePickHull` bakes the Xyston only). Earlier Capital fix (enabled box) superseded.
+- Roles unchanged after the class move: proposer gives Fragile for the 4 Empire battlecruisers (Titan, Allegiance, Resurgent, Xyston); Allegiance/Titan/Resurgent proposals match their saved roles.
+- Ring: `2abaf7e31` set `ringSize` to 1.15× diameter over all hull renderers (audit ratio 0.986). `BuildXyston.cs` still writes the old 0.920 ring → re-apply that fix after a full rebuild.
 - Superlaser SFX: `ShipSfxData.abilities` row cloned from `ExecutorLaserBeam` (spawn threw `Missing ship SFX for XystonSuperlaser`).
 - Why 36k: Beam hits shields ×1, Capital hull ×1.5 → raw needed from full: Venator 21k, Interdictor 25.7k, ISD I/Imperator 29.7k, Tector 34k, Mon Cal 36.5k, ISD II 40.7k.
 - Avoid: new weapon types; `HardPointType` for the cannon (superlaser is not a destroyable subsystem).

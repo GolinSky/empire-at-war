@@ -73,7 +73,9 @@ public static class XystonVerify
             Expect(livery.Length > 0 && livery.All(r => r.name == "Hull_Armor_Red"), "red-hue livery must be on Hull_Armor_Red only");
             Expect(visible.All(r => r.sharedMaterials.All(m => !m.HasProperty("_TeamMaskStrength") || m.GetFloat("_TeamMaskStrength") == 0f)), "team mask strength left on");
             var box = root.GetComponent<BoxCollider>();
-            Expect(box.enabled && root.GetComponents<MeshCollider>().Length == 0, "capital must be picked by its enabled hull box");
+            var pick = root.GetComponents<MeshCollider>();
+            Expect(!box.enabled && pick.Length == 1 && pick[0].enabled && pick[0].convex && pick[0].sharedMesh != null &&
+                pick[0].sharedMesh.name == "Xyston_PickHull", "battlecruiser must be picked by its convex pick hull, box disabled");
             Expect(root.GetComponentsInChildren<MeshRenderer>(true).All(r => !r.name.StartsWith("Shadow") && r.name != "Collision" &&
                 !r.name.StartsWith("Cannon_Collision") && !r.name.StartsWith("Barrel_Shadow") && (r.name != "Shield" || r.GetComponent<Shield>() != null)),
                 "helper meshes left in view");
@@ -81,7 +83,8 @@ public static class XystonVerify
             Bounds hull = visible.Select(r => r.bounds).Aggregate((a, b) => { a.Encapsulate(b); return a; });
             var selection = new SerializedObject(Find("SelectionComponent"));
             float ring = selection.FindProperty("ringSize").vector2Value.x * 0.8f * (1038f / 1254f) / Mathf.Max(hull.size.x, hull.size.z);
-            Expect(ring >= 0.88f && ring <= 0.96f, $"selection ring ratio {ring:F3}");
+            // 2abaf7e31 resized the ring to 1.15x the diameter measured over all hull renderers (ratio ~0.99 here).
+            Expect(ring >= 0.88f && ring <= 1.02f, $"selection ring ratio {ring:F3}");
             Expect(Mathf.Abs(hull.size.z - 2406f * 0.105f) < 0.5f, $"length {hull.size.z:F2} != 2,406 m");
             Expect(AssetDatabase.GetDependencies(VIEW, true).All(p => !p.Contains("/Allegiance")), "view still depends on Allegiance assets");
 
@@ -93,12 +96,13 @@ public static class XystonVerify
             PrefabUtility.UnloadPrefabContents(root);
         }
 
-        Expect(data.Hull == 28000f && data.Shields == 11000f && data.ShipClass == ShipClass.Capital, "hull/shields/class");
+        Expect(data.Hull == 28000f && data.Shields == 11000f && data.ShipClass == ShipClass.BattleCruiser &&
+            data.ShieldRegenTier == ShieldRegenTier.BattleCruiser && data.ShieldRegenerateDelay == 1f, "hull/shields/class/shield regen");
         Expect(data.Abilities.SequenceEqual(new[] { ShipAbilityId.XystonSuperlaser, ShipAbilityId.TractorBeam }), "abilities");
         Expect(data.HangarBays.Count == 0 && data.Wreck != null, "bays/wreck");
         var catalog = AssetDatabase.LoadAssetAtPath<ShipAbilityCatalog>("Assets/Settings/Data/Models/ShipAbilities/ShipAbilityCatalog.asset");
         ShipAbilityDefinition superlaser = catalog.Get(ShipAbilityId.XystonSuperlaser);
-        Expect(superlaser != null && superlaser.Settings is SuperlaserSettings s && s.Damage == 36000f && s.DamageType == DamageType.Beam &&
+        Expect(superlaser != null && superlaser.Settings is SuperlaserSettings s && s.Damage == 46800f && s.BeamColor.r > s.BeamColor.g && s.BeamColor.r > s.BeamColor.b && s.DamageType == DamageType.Beam &&
                superlaser.Duration == 6f && superlaser.RecoveryDelay == 60f && superlaser.Range == 1000f && superlaser.RequiresEnemyTarget &&
                superlaser.AutoPower == AutoPowerRole.Target && superlaser.Icon != null, "superlaser catalog entry");
 

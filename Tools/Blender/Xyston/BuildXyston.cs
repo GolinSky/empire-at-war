@@ -2,10 +2,12 @@ using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
+using System.Reflection;
 using EmpireAtWar.Components.Ship.Health;
 using EmpireAtWar.Editor;
 using EmpireAtWar.Editor.Rendering;
 using EmpireAtWar.Editor.Ship;
+using EmpireAtWar.Entities.Ship.Data;
 using EmpireAtWar.Services.ShipAbilities;
 using EmpireAtWar.Services.ShipAbilities.Abilities;
 using EmpireAtWar.ViewComponents.Health;
@@ -62,6 +64,8 @@ public static class XystonBuilder
     // User decisions 2026-11-23: glass cannon, 36k superlaser (raised to 46.8k, +30%), source-like guns, no hangar. Roster values provisional.
     private const float HULL = 28000f;
     private const float SHIELDS = 11000f;
+    // User 2026-11-23: battlecruiser class with battlecruiser shield regen (BattleCruiser tier; Allegiance delay 1).
+    private const float SHIELD_REGEN_DELAY = 1f;
     private static readonly int[] ABILITIES = { (int)ShipAbilityId.XystonSuperlaser, (int)ShipAbilityId.TractorBeam };
     // ShipRoleProposal gives Fragile; AntiCapital is the superlaser's role, which the gun-only proposal cannot see.
     private const int ROLES = (1 << 3) | (1 << 12); // Fragile | AntiCapital
@@ -69,7 +73,7 @@ public static class XystonBuilder
     private const string FULL_NAME = "Xyston-class Star Destroyer";
     private const string ROLE = "Anti-capital artillery / Glass cannon";
     private const string DESCRIPTION = "28,000 hull; 11,000 shields; speed 20. Built around a spinal axial superlaser: " +
-        "46,800 base beam damage over 6 s against a frigate, capital ship or station, enough to destroy an ISD II outright; " +
+        "46,800 base beam damage over 6 s against a frigate, capital ship, station or structure, enough to destroy an ISD II outright; " +
         "recovers for 60 s and cannot target fighters or corvettes. Six heavy dual turbolaser batteries, six heavy dual " +
         "laser cannons, five medium dual turbolasers, two heavy dual and two heavy triple ion cannons. Shield generator, " +
         "two engines and tractor beam can be destroyed. Tractor Beam slows enemy ships of a lower class. No hangar.";
@@ -88,6 +92,7 @@ public static class XystonBuilder
         string visual = BuildVisual();
         Fit fit = BuildView();
         BuildData(fit);
+        BakePickHull();
         BuildPreview(fit.Bounds);
         RenderIcon();
         AssetDatabase.SaveAssets();
@@ -404,12 +409,12 @@ public static class XystonBuilder
             var healthConfig = new SerializedObject(health);
             healthConfig.FindProperty("ionFieldBounds").boundsValue = new Bounds(banked.center, banked.size * 1.05f);
             Save(healthConfig);
-            // Capital ships are picked by their hull box (ShipPickHullBaker.NeedsPickHull); the Allegiance donor's
-            // box is disabled because battlecruisers use a convex pick hull instead.
+            // Battlecruisers are picked by a convex hull (ShipPickHullBaker.NeedsPickHull), baked after the data
+            // exists; the box stays disabled as the hull bounds spawn clearance reads.
             var collider = root.GetComponent<BoxCollider>();
             collider.center = bounds.center;
             collider.size = bounds.size;
-            collider.enabled = true;
+            collider.enabled = false;
 
             // Selection ring: visible part spans hull diameter x 1.15 after the 0.8 single-selection scale.
             var selection = Config(root, "SelectionComponent");
@@ -463,6 +468,15 @@ public static class XystonBuilder
         Save(config);
     }
 
+    // Same bake as Tools > Units > Ships > Bake Pick Hulls, for the Xyston only (BakeAll rebakes every battlecruiser).
+    public static string BakePickHull()
+    {
+        MethodInfo bake = typeof(ShipPickHullBaker).GetMethod("Bake", BindingFlags.NonPublic | BindingFlags.Static);
+        var mesh = (Mesh)bake.Invoke(null, new object[] { AssetDatabase.LoadAssetAtPath<ShipData>(DATA), VIEW });
+        AssetDatabase.SaveAssets();
+        return $"{AssetDatabase.GetAssetPath(mesh)}: {mesh.vertexCount} hull points";
+    }
+
     // ---------- Data, wreck, preview, icon ----------
 
     private static void BuildData(Fit fit)
@@ -479,7 +493,9 @@ public static class XystonBuilder
         data.targetObject.name = NAME + "ShipData";
         data.FindProperty("<Hull>k__BackingField").floatValue = HULL;
         data.FindProperty("<Shields>k__BackingField").floatValue = SHIELDS;
-        data.FindProperty("<ShipClass>k__BackingField").intValue = (int)ShipClass.Capital;
+        data.FindProperty("<ShipClass>k__BackingField").intValue = (int)ShipClass.BattleCruiser;
+        data.FindProperty("<ShieldRegenTier>k__BackingField").intValue = (int)ShieldRegenTier.BattleCruiser;
+        data.FindProperty("<ShieldRegenerateDelay>k__BackingField").floatValue = SHIELD_REGEN_DELAY;
         data.FindProperty("<HullBottom>k__BackingField").floatValue = fit.Bottom;
         data.FindProperty("<HullTop>k__BackingField").floatValue = fit.Top;
         data.FindProperty("<NavigationRadius>k__BackingField").floatValue = fit.Radius;
@@ -614,7 +630,7 @@ public static class XystonBuilder
         value.FindPropertyRelative("icon").objectReferenceValue = beamIcon;
         value.FindPropertyRelative("displayName").stringValue = "Superlaser";
         value.FindPropertyRelative("description").stringValue =
-            "Fire the spinal superlaser at a frigate, capital ship or station. Deals 46,800 base beam damage over 6 s, " +
+            "Fire the spinal superlaser at a frigate, capital ship, station or structure. Deals 46,800 base beam damage over 6 s, " +
             "then recovers for 60 s. Cannot target fighters or corvettes.";
         value.FindPropertyRelative("duration").floatValue = SUPERLASER_DURATION;
         value.FindPropertyRelative("recoveryDelay").floatValue = SUPERLASER_RECOVERY;
