@@ -50,13 +50,13 @@ Material:
         m_Offset: {x: 0, y: 0}
     m_Ints: []
     m_Floats:
-    - _BumpScale: 1
+    - _BumpScale: 2
     - _Cutoff: 0.5
     - _HullDamageMarkScale: 2.2921767
     - _HullDamageOpacityScale: 1
-    - _Metallic: 0.1
+    - _Metallic: 0.3
     - _OcclusionStrength: 1
-    - _Smoothness: 0.25
+    - _Smoothness: 0.5
     - _TeamEmissionTint: 0.5
     - _TeamLiveryHue: 0
     - _TeamLiveryHueRange: 0.07
@@ -66,7 +66,7 @@ Material:
     - _TeamRimPower: 3
     - _TeamRimStrength: 0.6
     m_Colors:
-    - _BaseColor: {r: 0.58, g: 0.58, b: 0.6, a: 1}
+    - _BaseColor: {r: 0.8, g: 0.8, b: 0.816, a: 1}
     - _EmissionColor: {r: 0, g: 0, b: 0, a: 1}
   m_BuildTextureStacks: []
   m_AllowLocking: 1
