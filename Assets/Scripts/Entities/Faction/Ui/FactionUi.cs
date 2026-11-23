@@ -17,6 +17,9 @@ namespace EmpireAtWar.Entities.Faction.Ui
 {
     public class FactionUi : BaseUi
     {
+        private const float CATEGORY_BAR_HEIGHT = 28f;
+        private const float FILTER_BAR_HEIGHT = 56f;
+
         private enum RosterCategory
         {
             All,
@@ -39,6 +42,11 @@ namespace EmpireAtWar.Entities.Faction.Ui
         [SerializeField] private Button allUnitsFilter;
         [SerializeField] private Button squadronsFilter;
         [SerializeField] private Button shipsFilter;
+        [SerializeField] private Image squadronsFilterIcon;
+        [SerializeField] private Image shipsFilterIcon;
+        [SerializeField] private RectTransform categoryUnderline;
+        [SerializeField] private RectTransform filterSurface;
+        [SerializeField] private RectTransform typeFilterSection;
         [SerializeField] private RectTransform unitTypeFilters;
         [SerializeField] private FactionTypeFilterButton unitTypeButtonTemplate;
 
@@ -144,6 +152,8 @@ namespace EmpireAtWar.Entities.Faction.Ui
             _secondStation.OnLevelUpgraded += UpdateSecondLevelUnit;
             _secondStation.BuiltChanged += HandleSecondStationBuiltChanged;
             _research.OnResearchCompleted += UpdateResearchUnit;
+            squadronsFilterIcon.sprite = GetCategoryIcon(RosterCategory.Squadrons, ShipClass.Fighter);
+            shipsFilterIcon.sprite = GetCategoryIcon(RosterCategory.Ships, ShipClass.Capital);
             allUnitsFilter.onClick.AddListener(ShowAllUnits);
             squadronsFilter.onClick.AddListener(ShowSquadrons);
             shipsFilter.onClick.AddListener(ShowShips);
@@ -396,22 +406,34 @@ namespace EmpireAtWar.Entities.Faction.Ui
         {
             _category = category;
             _unitClass = null;
-            SetFilterSelected(allUnitsFilter, category == RosterCategory.All);
-            SetFilterSelected(squadronsFilter, category == RosterCategory.Squadrons);
-            SetFilterSelected(shipsFilter, category == RosterCategory.Ships);
+            var activeButton = category switch
+            {
+                RosterCategory.Squadrons => squadronsFilter,
+                RosterCategory.Ships => shipsFilter,
+                _ => allUnitsFilter
+            };
+            categoryUnderline.SetParent(activeButton.transform, false);
+            categoryUnderline.SetAsLastSibling();
+            SetCategorySelected(allUnitsFilter, activeButton);
+            SetCategorySelected(squadronsFilter, activeButton);
+            SetCategorySelected(shipsFilter, activeButton);
 
             ClearTypeFilterButtons();
-            unitTypeFilters.gameObject.SetActive(category != RosterCategory.All);
-            if (category != RosterCategory.All)
+            bool showTypes = category != RosterCategory.All;
+            typeFilterSection.gameObject.SetActive(showTypes);
+            filterSurface.SetSizeWithCurrentAnchors(RectTransform.Axis.Vertical,
+                showTypes ? FILTER_BAR_HEIGHT : CATEGORY_BAR_HEIGHT);
+            if (showTypes)
             {
-                AddTypeFilterButton("All types", null);
-                var classes = _factionUnitsUi
+                AddTypeFilterButton("All types", null, null);
+                var cardsByClass = _factionUnitsUi
                     .Where(card => MatchesCategory(card, category))
                     .OrderBy(card => _presenter.GetUnitSortOrder(card.Request))
-                    .Select(card => card.UnitClass)
-                    .Distinct();
-                foreach (ShipClass type in classes)
+                    .ThenBy(card => card.FactionData.Price)
+                    .GroupBy(card => card.UnitClass);
+                foreach (var cards in cardsByClass)
                 {
+                    ShipClass type = cards.Key;
                     string label = type switch
                     {
                         ShipClass.HeroStrikecraft => "Hero Strikecraft",
@@ -419,26 +441,39 @@ namespace EmpireAtWar.Entities.Faction.Ui
                         ShipClass.BattleCruiser => "Battle Cruiser",
                         _ => type.ToString()
                     };
-                    AddTypeFilterButton(label, type);
+                    AddTypeFilterButton(label, type, cards.First().FactionData.Icon);
                 }
             }
 
             RefreshUnitVisibility(_model.SelectionType);
         }
 
-        private static void SetFilterSelected(Button button, bool selected)
+        private Sprite GetCategoryIcon(RosterCategory category, ShipClass preferredClass) =>
+            _factionUnitsUi.Where(card => MatchesCategory(card, category))
+                .OrderByDescending(card => card.UnitClass == preferredClass)
+                .ThenBy(card => card.FactionData.Price)
+                .Select(card => card.FactionData.Icon)
+                .FirstOrDefault();
+
+        private static void SetCategorySelected(Button button, Button activeButton) =>
+            button.targetGraphic.color = button == activeButton
+                ? new Color32(32, 46, 64, 255) : new Color32(23, 35, 55, 255);
+
+        private static void SetTypeFilterSelected(Button button, bool selected)
         {
             var background = (MPImage)button.targetGraphic;
-            background.OutlineColor = selected ? new Color32(210, 169, 94, 255) : new Color32(52, 67, 87, 255);
+            background.OutlineWidth = selected ? 1f : 0f;
+            background.OutlineColor = new Color32(156, 129, 79, 255);
+            background.color = selected ? new Color32(59, 53, 45, 255) : new Color32(23, 35, 55, 255);
         }
 
-        private void AddTypeFilterButton(string label, ShipClass? unitClass)
+        private void AddTypeFilterButton(string label, ShipClass? unitClass, Sprite sprite)
         {
             FactionTypeFilterButton filter = Instantiate(unitTypeButtonTemplate, unitTypeFilters);
-            filter.Label.text = label;
+            filter.Render(label, sprite, !unitClass.HasValue);
             Button button = filter.Button;
             button.onClick.AddListener(() => SetUnitClassFilter(unitClass));
-            SetFilterSelected(button, unitClass == _unitClass);
+            SetTypeFilterSelected(button, unitClass == _unitClass);
             _typeButtons.Add((button, unitClass));
             button.gameObject.SetActive(true);
         }
@@ -458,7 +493,7 @@ namespace EmpireAtWar.Entities.Faction.Ui
         {
             _unitClass = unitClass;
             foreach (var (button, type) in _typeButtons)
-                SetFilterSelected(button, type == unitClass);
+                SetTypeFilterSelected(button, type == unitClass);
             RefreshUnitVisibility(_model.SelectionType);
         }
 

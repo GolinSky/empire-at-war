@@ -253,6 +253,11 @@ namespace EmpireAtWar.Tests.Editor
             var all = (Button)serializedView.FindProperty("allUnitsFilter").objectReferenceValue;
             var squadrons = (Button)serializedView.FindProperty("squadronsFilter").objectReferenceValue;
             var ships = (Button)serializedView.FindProperty("shipsFilter").objectReferenceValue;
+            var squadronIcon = (Image)serializedView.FindProperty("squadronsFilterIcon").objectReferenceValue;
+            var shipIcon = (Image)serializedView.FindProperty("shipsFilterIcon").objectReferenceValue;
+            var underline = (RectTransform)serializedView.FindProperty("categoryUnderline").objectReferenceValue;
+            var surface = (RectTransform)serializedView.FindProperty("filterSurface").objectReferenceValue;
+            var typeSection = (RectTransform)serializedView.FindProperty("typeFilterSection").objectReferenceValue;
             var types = (RectTransform)serializedView.FindProperty("unitTypeFilters").objectReferenceValue;
             var grid = (RectTransform)cards.First().transform.parent;
             var viewport = (RectTransform)grid.parent;
@@ -260,38 +265,55 @@ namespace EmpireAtWar.Tests.Editor
             Assert.That(viewport.rect.height, Is.EqualTo(210f).Within(0.01f));
             Assert.That(header.rect.height + viewport.rect.height,
                 Is.EqualTo(((RectTransform)view.transform).rect.height).Within(0.01f));
-            Assert.That(types.gameObject.activeSelf, Is.False);
+            Assert.That(squadronIcon.sprite, Is.Not.Null);
+            Assert.That(shipIcon.sprite, Is.Not.Null);
+            Assert.That(cards.Any(card => card.Request is SquadronUnitRequest && card.FactionData.Icon == squadronIcon.sprite), Is.True);
+            Assert.That(cards.Any(card => card.Request is ShipUnitRequest && card.FactionData.Icon == shipIcon.sprite), Is.True);
+            Assert.That(typeSection.gameObject.activeSelf, Is.False);
+            Assert.That(underline.parent, Is.EqualTo(all.transform));
+            float collapsedHeight = surface.rect.height;
 
             squadrons.onClick.Invoke();
-            Assert.That(types.gameObject.activeSelf, Is.True);
+            Assert.That(typeSection.gameObject.activeSelf, Is.True);
+            Assert.That(underline.parent, Is.EqualTo(squadrons.transform));
+            Assert.That(surface.rect.height, Is.GreaterThan(collapsedHeight));
+            Assert.That(viewport.rect.height, Is.EqualTo(210f).Within(0.01f));
             Assert.That(cards.Any(card => card.gameObject.activeSelf && card.Request is SquadronUnitRequest), Is.True);
             Assert.That(cards.Any(card => card.gameObject.activeSelf && card.Request is ShipUnitRequest), Is.False);
-            FindTypeButton("Hero Strikecraft").onClick.Invoke();
+            var heroButton = FindTypeButton("Hero Strikecraft");
+            var heroIcon = (Image)new SerializedObject(heroButton).FindProperty("icon").objectReferenceValue;
+            Assert.That(heroIcon.sprite, Is.Not.Null);
+            Assert.That(cards.Any(card => card.Request is SquadronUnitRequest &&
+                card.UnitClass == ShipClass.HeroStrikecraft && card.FactionData.Icon == heroIcon.sprite), Is.True);
+            heroButton.Button.onClick.Invoke();
             view.RefreshAvailability(10000f, false);
             var shownSquadrons = cards.Where(card => card.gameObject.activeSelf && card.Request is SquadronUnitRequest);
             Assert.That(shownSquadrons, Is.Not.Empty);
             Assert.That(shownSquadrons.All(card => card.UnitClass == ShipClass.HeroStrikecraft), Is.True);
             Assert.That(cards.Any(card => card.gameObject.activeSelf && card.Request is LevelUnitRequest), Is.True);
 
-            FindTypeButton("All types").onClick.Invoke();
+            FindTypeButton("All types").Button.onClick.Invoke();
             Assert.That(shownSquadrons.Any(card => card.UnitClass == ShipClass.Fighter), Is.True);
 
             ships.onClick.Invoke();
-            Assert.That(types.gameObject.activeSelf, Is.True);
+            Assert.That(typeSection.gameObject.activeSelf, Is.True);
+            Assert.That(underline.parent, Is.EqualTo(ships.transform));
             Assert.That(types.GetComponentsInChildren<FactionTypeFilterButton>(true)
                 .Where(filter => filter.gameObject.activeSelf).Select(filter => filter.Label.text),
                 Is.EqualTo(new[] { "All types", "Capital" }));
-            FindTypeButton("Capital").onClick.Invoke();
+            FindTypeButton("Capital").Button.onClick.Invoke();
             Assert.That(cards.Any(card => card.gameObject.activeSelf && card.Request is ShipUnitRequest), Is.True);
             Assert.That(cards.Any(card => card.gameObject.activeSelf && card.Request is SquadronUnitRequest), Is.False);
 
             all.onClick.Invoke();
-            Assert.That(types.gameObject.activeSelf, Is.False);
+            Assert.That(typeSection.gameObject.activeSelf, Is.False);
+            Assert.That(surface.rect.height, Is.EqualTo(collapsedHeight).Within(0.01f));
+            Assert.That(underline.parent, Is.EqualTo(all.transform));
             Assert.That(cards.Any(card => card.gameObject.activeSelf && card.Request is ShipUnitRequest), Is.True);
             Assert.That(cards.Any(card => card.gameObject.activeSelf && card.Request is SquadronUnitRequest), Is.True);
 
-            Button FindTypeButton(string label) => types.GetComponentsInChildren<FactionTypeFilterButton>(true)
-                .Single(filter => filter.gameObject.activeSelf && filter.Label.text == label).Button;
+            FactionTypeFilterButton FindTypeButton(string label) => types.GetComponentsInChildren<FactionTypeFilterButton>(true)
+                .Single(filter => filter.gameObject.activeSelf && filter.Label.text == label);
         }
 
         [TestCase(false, false, false)]
