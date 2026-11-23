@@ -98,13 +98,16 @@ namespace EmpireAtWar.Components.Ship.Health.HardPointOverlay
 
         private void UpdateInspection(Vector2 cursor)
         {
+            bool hasUnderCursor = _selectionQuery.TryFindAt(cursor, out SelectionEntry underCursor);
             IEntity ship = _model.InspectedShip;
             int hovered = UnitOrderModel.NO_HARD_POINT;
-            // Retain inspection only while actually over an icon, never over a displaced layout region.
-            if (ship != null && IsVisible(ship)) hovered = FindMarkerAt(ship, cursor);
+            // Retain inspection only while actually over an icon, never over a displaced layout region, and
+            // only while no other unit is in front: a big hull's icons must not hide the ships flying above it.
+            if (ship != null && IsVisible(ship) && (!hasUnderCursor || underCursor.Entity.Id == ship.Id))
+                hovered = FindMarkerAt(ship, cursor);
             if (hovered == UnitOrderModel.NO_HARD_POINT)
             {
-                ship = GetShipUnderCursor(cursor);
+                ship = hasUnderCursor ? AsInspectable(underCursor.Entity) : null;
                 if (ship != null) hovered = FindMarkerAt(ship, cursor);
             }
 
@@ -260,16 +263,8 @@ namespace EmpireAtWar.Components.Ship.Health.HardPointOverlay
             return index >= 0;
         }
 
-        private IEntity GetShipUnderCursor(Vector2 cursor)
-        {
-            if (!_selectionQuery.TryFindAt(cursor, out SelectionEntry selection))
-            {
-                return null;
-            }
-
-            IEntity entity = selection.Entity;
-            return entity.TryGetFacade(out IHardPointsFacade _) && IsVisible(entity) ? entity : null;
-        }
+        private IEntity AsInspectable(IEntity entity) =>
+            entity.TryGetFacade(out IHardPointsFacade _) && IsVisible(entity) ? entity : null;
 
         private bool IsTargetStillValid()
         {

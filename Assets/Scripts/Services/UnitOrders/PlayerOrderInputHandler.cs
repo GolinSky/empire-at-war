@@ -148,7 +148,7 @@ namespace EmpireAtWar.Services.UnitOrders
         private void HandleCommandPressed(Vector2 screen)
         {
             _pressedMarker = default;
-            _hasPressedHardPoint = _hardPointHover.TryGetAttackTarget(out _pressedHardPointOwner, out _pressedHardPointId);
+            _hasPressedHardPoint = TryGetEnemyHardPoint(out _pressedHardPointOwner, out _pressedHardPointId);
             if (!_hasPressedHardPoint)
                 _query.TryFindMarkerAt(screen, out _pressedMarker);
         }
@@ -181,7 +181,7 @@ namespace EmpireAtWar.Services.UnitOrders
             _pressedHardPointOwner = null;
             _hasPressedHardPoint = false;
             if (!hasHardPoint && !capturedMarker)
-                hasHardPoint = _hardPointHover.TryGetAttackTarget(out hardPointOwner, out hardPointId);
+                hasHardPoint = TryGetEnemyHardPoint(out hardPointOwner, out hardPointId);
             bool hasUnit = capturedMarker || hasHardPoint || _query.TryFindAt(screen, out hit);
             IEntity target = hasHardPoint ? hardPointOwner : hasUnit ? hit.Entity : null;
             if (_superWeapons.Pending != null)
@@ -193,6 +193,9 @@ namespace EmpireAtWar.Services.UnitOrders
 
             if (_abilities.IsWaitingForTarget)
             {
+                if (!capturedMarker && !hasHardPoint && !IsEnemy(target) &&
+                    TryFindEnemyAt(screen, out SelectionEntry enemy))
+                    target = enemy.Entity;
                 if (target != null && _localPlayer.IsHostile(target.Owner))
                     _abilities.SubmitTarget(target);
                 else _abilities.CancelTargeting();
@@ -220,19 +223,12 @@ namespace EmpireAtWar.Services.UnitOrders
             }
             UnitActionId? pending = _targeting.Pending;
             if (!capturedMarker && !hasHardPoint && !IsEnemy(target) &&
-                (pending == null || pending == UnitActionId.Attack))
+                (pending == null || pending == UnitActionId.Attack) &&
+                TryFindEnemyAt(screen, out SelectionEntry enemyBelow))
             {
-                // Friendly hulls must not block attacks on an enemy underneath them.
-                _attackCandidates.Clear();
-                _query.CollectAt(screen, _attackCandidates);
-                foreach (SelectionEntry candidate in _attackCandidates)
-                {
-                    if (!IsEnemy(candidate.Entity)) continue;
-                    hit = candidate;
-                    target = candidate.Entity;
-                    hasUnit = true;
-                    break;
-                }
+                hit = enemyBelow;
+                target = enemyBelow.Entity;
+                hasUnit = true;
             }
             if (pending == UnitActionId.Attack)
             {
@@ -357,6 +353,26 @@ namespace EmpireAtWar.Services.UnitOrders
         private bool IsEnemy(IEntity entity) =>
             entity != null && _localPlayer.IsHostile(entity.Owner) &&
             !entity.HealthModel.IsDestroyed && entity.HealthModel.HasUnits;
+
+        // Friendly hardpoint markers only show status; a command over them goes to the hull or space beneath.
+        private bool TryGetEnemyHardPoint(out IEntity owner, out int hardPointId) =>
+            _hardPointHover.TryGetAttackTarget(out owner, out hardPointId) && IsEnemy(owner);
+
+        // Friendly hulls must not block attacks or ability targets on an enemy underneath them.
+        private bool TryFindEnemyAt(Vector2 screen, out SelectionEntry enemy)
+        {
+            _attackCandidates.Clear();
+            _query.CollectAt(screen, _attackCandidates);
+            foreach (SelectionEntry candidate in _attackCandidates)
+            {
+                if (!IsEnemy(candidate.Entity)) continue;
+                enemy = candidate;
+                return true;
+            }
+
+            enemy = default;
+            return false;
+        }
 
         private bool IsObstacle(Vector2 screen)
         {

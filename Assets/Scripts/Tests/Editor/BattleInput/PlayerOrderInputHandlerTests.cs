@@ -222,6 +222,36 @@ namespace EmpireAtWar.Tests.Editor
             Assert.That(_orders.LastAction, Is.Null);
         }
 
+        [Test]
+        public void Ability_FriendlyShipDoesNotBlockEnemyUnderneath()
+        {
+            _query.Target = _receiver;
+            _query.BehindTarget = _enemy;
+            _abilities.IsWaitingForTarget = true;
+
+            _input.RightClick(Vector2.zero);
+
+            Assert.That(_abilities.Submitted, Is.SameAs(_enemy));
+        }
+
+        [TestCase(false)]
+        [TestCase(true)]
+        public void FriendlyHardPointMarker_DoesNotSwallowTheCommand(bool abilityTargeting)
+        {
+            // A friendly dreadnought's marker under the cursor: the command goes to whatever is beneath it.
+            _hardPointHover.Inspect(_receiver, 0, true);
+            _query.Target = _receiver;
+            _query.BehindTarget = abilityTargeting ? _enemy : null;
+            _query.Command = new FakeFacilitySelection { SelectionType = SelectionType.Ship };
+            _abilities.IsWaitingForTarget = abilityTargeting;
+
+            _input.PressRight(Vector2.zero);
+            _input.RightClick(Vector2.zero);
+
+            if (abilityTargeting) Assert.That(_abilities.Submitted, Is.SameAs(_enemy));
+            else Assert.That(_orders.LastAction, Is.EqualTo(UnitActionId.Move));
+        }
+
         private HardPointModel[] InstallHardPoints()
         {
             HardPointModel[] points =
