@@ -45,10 +45,13 @@ namespace EmpireAtWar.Components.TeamColor
         /// <summary>Quantizes hull (1 = intact) into 32 damage levels (0-31); any lost hull shows at least level 1.</summary>
         public void SetHullDamage(float hullPercentage)
         {
-            uint level = (uint)Mathf.Clamp(Mathf.CeilToInt((1f - hullPercentage) * HULL_DAMAGE_MAX_LEVEL), 0,
-                HULL_DAMAGE_MAX_LEVEL);
+            uint level = (uint)GetHullDamageLevel(hullPercentage);
             ApplyUserValue((_userValue & ~HULL_DAMAGE_LEVEL_MASK) | (level << HULL_DAMAGE_LEVEL_SHIFT));
         }
+
+        /// <summary>Hull scorch level 0-31 shown for this hull; each higher level switches on more marks.</summary>
+        public static int GetHullDamageLevel(float hullPercentage) =>
+            Mathf.Clamp(Mathf.CeilToInt((1f - hullPercentage) * HULL_DAMAGE_MAX_LEVEL), 0, HULL_DAMAGE_MAX_LEVEL);
 
         // The entity factory writes team and damage while the unit is still inactive. The GPU Resident Drawer
         // registers renderers on activation into reused instance slots, so a value written before that can lose to

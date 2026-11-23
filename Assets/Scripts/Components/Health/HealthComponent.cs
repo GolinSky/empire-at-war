@@ -28,7 +28,7 @@ namespace EmpireAtWar.Components.Ship.Health
     [LifecycleOrder(Initialize = LifecycleOrders.HEALTH_INITIALIZE)]
     public class HealthComponent : MonoComponent<HealthModel>, IInitializable, ILateDisposable,
         IHealthComponent, IHealthAudioEvents, IHealthModelObserver, IHealthTooltipObserver, IShieldTarget, ITickable, IHardPointsSource, IIonStunViewSource,
-        IHealthUpgrade, IIonFieldShape
+        IHealthUpgrade, IIonFieldShape, IHullBlastSpots
     {
         private ITimer _refreshShieldsTimer;
         private readonly ITimer _shieldRecoveryTimer = TimerFactory.ConstructTimer();
@@ -71,6 +71,17 @@ namespace EmpireAtWar.Components.Ship.Health
         }
 
         [field: SerializeField] public List<HardPoint> ShipUnits { get; set; }
+
+        event Action IHullBlastSpots.Restored
+        {
+            add => Model.OnRestored += value;
+            remove => Model.OnRestored -= value;
+        }
+
+        int IHullBlastSpots.SpotCount => ShipUnits.Count;
+
+        bool IHullBlastSpots.TryGetSpot(int index, out Transform anchor, out float scale) =>
+            ShipUnits[index].TryGetSurfaceVfx(out anchor, out scale);
 
         public bool Destroyed => Model.IsDestroyed;
         public IHealthModelObserver HealthModelObserver => this;

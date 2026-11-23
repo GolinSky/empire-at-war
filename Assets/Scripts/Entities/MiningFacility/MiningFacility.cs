@@ -59,9 +59,9 @@ namespace EmpireAtWar.Entities.MiningFacility
 
         public override string Id => GetType().Name;
 
-        public void PlayExplosion()
+        public void PlayExplosion(UnitExplosionKind kind)
         {
-            _unitExplosionService.Spawn(explosionHullRenderers);
+            _unitExplosionService.Spawn(explosionHullRenderers, kind);
         }
 
         /// <summary>One team member's share; every allied economy receives this amount.</summary>
@@ -134,7 +134,7 @@ namespace EmpireAtWar.Entities.MiningFacility
             {
                 OnRelease?.Invoke();
                 EntityComponentData componentData = Data.ComponentData;
-                PlayExplosion();
+                PlayExplosion(UnitExplosionKind.Destruction);
                 // The explosion hides the swap: the wreck appears as the facility entity is destroyed.
                 if (Data.Wreck != null)
                 {

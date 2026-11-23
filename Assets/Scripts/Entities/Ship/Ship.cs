@@ -85,9 +85,9 @@ namespace EmpireAtWar.Ship
 
         public override string Id => GetType().Name;
 
-        public void PlayExplosion()
+        public void PlayExplosion(UnitExplosionKind kind)
         {
-            _unitExplosionService.Spawn(explosionHullRenderers);
+            _unitExplosionService.Spawn(explosionHullRenderers, kind);
         }
 
         public PlayerId Owner => _owner;
@@ -238,7 +238,7 @@ namespace EmpireAtWar.Ship
             if (playDeathEffects && gameObject.activeInHierarchy)
             {
                 OnRelease?.Invoke(ShipType);
-                PlayExplosion();
+                PlayExplosion(UnitExplosionKind.Destruction);
                 // The explosion hides the swap: the wreck appears as the ship entity is destroyed.
                 if (Data.Wreck != null)
                 {

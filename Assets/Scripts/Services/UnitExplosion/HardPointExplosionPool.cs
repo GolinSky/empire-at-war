@@ -15,9 +15,8 @@ namespace EmpireAtWar.Services.UnitExplosion
     /// </summary>
     public sealed class HardPointExplosionPool : IHardPointExplosionPool, IInitializable, ITickable, ILateDisposable
     {
-        private const int PREWARM_COUNT = 16;
-
         private readonly ExplosionVfx _prefab;
+        private readonly int _prewarmCount;
         private readonly UnityEngine.Camera _camera;
         private readonly Plane[] _planes = new Plane[6];
         private readonly List<ExplosionVfx> _idle = new List<ExplosionVfx>();
@@ -25,17 +24,20 @@ namespace EmpireAtWar.Services.UnitExplosion
         private readonly List<ExplosionVfx> _fading = new List<ExplosionVfx>();
 
         private Transform _root;
+        private int _peakInUse;
+        private int _grownCount;
 
-        public HardPointExplosionPool(ExplosionVfx prefab, UnityEngine.Camera camera)
+        public HardPointExplosionPool(ExplosionVfx prefab, UnityEngine.Camera camera, int prewarmCount)
         {
             _prefab = prefab;
             _camera = camera;
+            _prewarmCount = prewarmCount;
         }
 
         public void Initialize()
         {
-            _root = new GameObject(nameof(HardPointExplosionPool)).transform;
-            for (int i = 0; i < PREWARM_COUNT; i++)
+            _root = new GameObject(_prefab.name + "Pool").transform;
+            for (int i = 0; i < _prewarmCount; i++)
             {
                 _idle.Add(Object.Instantiate(_prefab, _root));
             }
@@ -43,6 +45,11 @@ namespace EmpireAtWar.Services.UnitExplosion
 
         public void LateDispose()
         {
+#if UNITY_EDITOR || DEVELOPMENT_BUILD
+            // Data for sizing the prewarm count: peak effects in use at once, and instances created mid-battle.
+            if (Application.isPlaying)
+                Debug.Log($"[VfxPools] {_prefab.name} prewarm={_prewarmCount} peak={_peakInUse} grown={_grownCount}");
+#endif
             // In play the unloading battle scene destroys the scene-root pool in no guaranteed order; only an edit-mode
             // scope, which has no scene unload, must remove it.
             if (!Application.isPlaying && _root != null) Object.DestroyImmediate(_root.gameObject);
@@ -57,6 +64,7 @@ namespace EmpireAtWar.Services.UnitExplosion
             active.Follow(_planes);
             explosion.Play();
             _active.Add(active);
+            _peakInUse = Mathf.Max(_peakInUse, _active.Count + _fading.Count);
         }
 
         public void Stop(Transform anchor)
@@ -143,6 +151,7 @@ namespace EmpireAtWar.Services.UnitExplosion
             int last = _idle.Count - 1;
             if (last < 0)
             {
+                _grownCount++;
                 return Object.Instantiate(_prefab, _root);
             }
 

@@ -84,6 +84,14 @@ namespace EmpireAtWar.ViewComponents.Health
             if (_hasExploded) ExplosionPool.Extinguish(destroyedVfxAnchor, immediately);
         }
 
+        /// <summary>Hull-surface VFX point and world scale; false when this hardpoint shows no destruction VFX or is not installed.</summary>
+        public bool TryGetSurfaceVfx(out Transform anchor, out float scale)
+        {
+            anchor = destroyedVfxAnchor;
+            scale = destroyedVfxScale;
+            return spawnDestroyedExplosion && _isInstalled;
+        }
+
         public void SetInstalled(bool installed)
         {
             _isInstalled = installed;

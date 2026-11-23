@@ -12,6 +12,7 @@ using EmpireAtWar.Models.Health;
 using EmpireAtWar.Models.Factions;
 using EmpireAtWar.Services.Audio;
 using EmpireAtWar.Services.Player;
+using EmpireAtWar.Services.UnitExplosion;
 using EmpireAtWar.ViewComponents.Weapon;
 using UnityEngine;
 using VContainer;
@@ -232,10 +233,11 @@ namespace EmpireAtWar.Services.SuperWeapons
 
             Vector3 impactPosition = target.GetFacade<IEntityTransformFacade>().Transform.position;
             ApplyDamage(target, profile.GetDamage(salvo.ResearchTier), profile);
-            // The target's own destruction explosion, sized to its hull; a killing hit already plays it on death.
-            if (salvo.Type != SuperWeaponType.IonCannon && !target.HealthModel.IsDestroyed)
+            // One orbital-hit explosion sized to the target's hull, on the salvo's last impact only; a killing hit plays
+            // the destruction explosion instead.
+            if (salvo.Type != SuperWeaponType.IonCannon && salvo.IsComplete && !target.HealthModel.IsDestroyed)
             {
-                target.GetFacade<IUnitExplosionFacade>().PlayExplosion();
+                target.GetFacade<IUnitExplosionFacade>().PlayExplosion(UnitExplosionKind.OrbitalHit);
             }
 
             if (!target.HealthModel.IsDestroyed && profile.StunDuration > 0f &&

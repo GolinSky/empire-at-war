@@ -36,7 +36,7 @@ namespace EmpireAtWar.Tests.Editor
 
             _anchor = Track(new GameObject("HardPoint")).transform;
             var camera = Track(new GameObject("Battle Camera")).AddComponent<UnityEngine.Camera>();
-            _pool = new HardPointExplosionPool(explosion, camera);
+            _pool = new HardPointExplosionPool(explosion, camera, PREWARM_COUNT);
             _pool.Initialize();
             Track(Root().gameObject);
         }
@@ -319,7 +319,7 @@ namespace EmpireAtWar.Tests.Editor
             Assert.That(finished.IsPlaying, Is.True);
         }
 
-        private Transform Root() => GameObject.Find(nameof(HardPointExplosionPool)).transform;
+        private Transform Root() => GameObject.Find("ExplosionVfxPool").transform;
 
         private static ParticleSystemRenderer Renderer(ExplosionVfx explosion) =>
             explosion.GetComponent<ParticleSystemRenderer>();

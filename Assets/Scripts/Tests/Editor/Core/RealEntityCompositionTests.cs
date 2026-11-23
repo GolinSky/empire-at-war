@@ -359,7 +359,7 @@ namespace EmpireAtWar.Tests.Editor
         {
             public string Id => nameof(StationDeathEffectsStub);
 
-            public void Spawn(IReadOnlyList<Renderer> hullRenderers, float coverageScale) { }
+            public void Spawn(IReadOnlyList<Renderer> hullRenderers, UnitExplosionKind kind, float coverageScale) { }
 
             public void Spawn(UnitWreckData data, Transform unit, uint renderUserValue, float delay) { }
         }

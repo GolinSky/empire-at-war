@@ -50,9 +50,9 @@ namespace EmpireAtWar.Entities.SpaceStation
 
         public override string Id => GetType().Name;
 
-        public void PlayExplosion()
+        public void PlayExplosion(UnitExplosionKind kind)
         {
-            _unitExplosionService.Spawn(explosionHullRenderers, DESTRUCTION_BURST_SCALE);
+            _unitExplosionService.Spawn(explosionHullRenderers, kind, DESTRUCTION_BURST_SCALE);
         }
 
         public BoxCollider HullCollider => levelView.HullCollider;
@@ -140,7 +140,7 @@ namespace EmpireAtWar.Entities.SpaceStation
             if (playDeathAnimation)
             {
                 EntityComponentData componentData = Data.ComponentData;
-                PlayExplosion();
+                PlayExplosion(UnitExplosionKind.Destruction);
                 // The explosion hides the swap: the wreck appears as the station entity is destroyed.
                 if (Data.TryGetWrecks(_factionType, out StationLevelWrecks wrecks))
                 {

@@ -954,11 +954,15 @@ MonoBehaviour:
   hullDamageSettings: {fileID: 11400000, guid: 5f501570d07921f4f9a17f1b20037c6b, type: 2}
   fighterExplosion: {fileID: 6075391245261940467, guid: 54f8def27abde8249aeb5df35d3462d9,
     type: 3}
-  hardPointExplosion: {fileID: 6307781649551483135, guid: 17a65e70ac12d8e4b839ac0bd03f953b,
+  hardPointExplosion: {fileID: 740519944979529028, guid: 002aa685285f23644b193b0a7c98a62e,
+    type: 3}
+  hullScorchBlast: {fileID: 1293930440358859497, guid: 2092befb15d8c35498875dfde226d7cd,
     type: 3}
   impactEffectPrefab: {fileID: 2053978733039751709, guid: 11b47c313b274964b8d7b31e5eb9fdf7,
     type: 3}
-  unitExplosionPrefab: {fileID: 3090607528868399422, guid: f10908be1d4de884d9dc2c25b8094618,
+  unitExplosionPrefab: {fileID: 7217128803201176634, guid: 3870d387cb3056d48bfa4f5c795008e0,
+    type: 3}
+  orbitalHitExplosionPrefab: {fileID: 4027118099577662190, guid: 9f3527459975a724daf387e46a150d4b,
     type: 3}
   rangeDebugLineMaterial: {fileID: 2100000, guid: 27a86eafd4192de41a9c9f1f84540b4c,
     type: 2}

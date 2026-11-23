@@ -82,6 +82,10 @@ namespace EmpireAtWar.Services.VContainer
     public sealed class SkirmishScope : AssetLifetimeScope
     {
         private static readonly ProfilerMarker CONFIGURE_MARKER = new ProfilerMarker("SkirmishScope.Configure");
+        // Prewarmed effects; resize from the "[VfxPools]" peak/grown log line written when a battle closes.
+        private const int HARD_POINT_EXPLOSION_PREWARM = 16;
+        // Blasts last ~2 s and a scorch step plays 1-3, so fewer are alive at once than burning hardpoints.
+        private const int HULL_SCORCH_BLAST_PREWARM = 8;
         [SerializeField] private FogOfWarSystem fogOfWarSystem;
         [SerializeField] private SpawnAreaOverlay spawnAreaOverlay;
         [SerializeField] private ReinforcementZoneData reinforcementZoneData;
@@ -92,8 +96,10 @@ namespace EmpireAtWar.Services.VContainer
         [SerializeField] private HullDamageSettings hullDamageSettings;
         [SerializeField] private ExplosionVfx fighterExplosion;
         [SerializeField] private ExplosionVfx hardPointExplosion;
+        [SerializeField] private ExplosionVfx hullScorchBlast;
         [SerializeField] private ImpactEffectView impactEffectPrefab;
         [SerializeField] private UnitExplosionView unitExplosionPrefab;
+        [SerializeField] private UnitExplosionView orbitalHitExplosionPrefab;
         [SerializeField] private Material rangeDebugLineMaterial;
         [SerializeField] private Material battleMarkerIconMaterial;
         [SerializeField] private Material battleMarkerFrameMaterial;
@@ -286,12 +292,16 @@ namespace EmpireAtWar.Services.VContainer
             builder.Register<FighterExplosionPool>(Lifetime.Singleton).AsImplementedInterfaces().AsSelf()
                 .WithParameter(fighterExplosion);
             builder.Register<HardPointExplosionPool>(Lifetime.Singleton).AsImplementedInterfaces().AsSelf()
-                .WithParameter(hardPointExplosion).WithParameter(cameraService.SceneCamera);
+                .WithParameter(hardPointExplosion).WithParameter(cameraService.SceneCamera)
+                .WithParameter("prewarmCount", HARD_POINT_EXPLOSION_PREWARM);
+            builder.Register<HullScorchBlastPool>(Lifetime.Singleton).AsImplementedInterfaces().AsSelf()
+                .WithParameter(hullScorchBlast).WithParameter(cameraService.SceneCamera)
+                .WithParameter("prewarmCount", HULL_SCORCH_BLAST_PREWARM);
             builder.Register<SlowTickService>(Lifetime.Singleton).AsImplementedInterfaces().AsSelf();
             builder.Register<BattleAreaService>(Lifetime.Singleton).AsImplementedInterfaces().AsSelf();
             builder.RegisterComponent(spawnAreaOverlay).AsImplementedInterfaces().AsSelf();
             SkirmishServiceRegistrations.Register(builder, Assets, transform, impactEffectPrefab,
-                unitExplosionPrefab, rangeDebugLineMaterial, shipSfxData, interfaceSfxData, shipAmbienceData,
+                unitExplosionPrefab, orbitalHitExplosionPrefab, rangeDebugLineMaterial, shipSfxData, interfaceSfxData, shipAmbienceData,
                 shipSfxSourcesPrefab, cameraService, battleMarkerIconMaterial, battleMarkerFrameMaterial);
             MapRegistrations.Register(builder, settings, mapLayoutView, reinforcementZonesSystem, atmosphereView);
             builder.RegisterComponent(hazardEffectsView).AsImplementedInterfaces();

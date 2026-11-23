@@ -143,6 +143,9 @@
 
 
 
+- [ ] **Cinematic explosion VFX: pool sizes from `[VfxPools]` log, overdraw capture** → [[TODOs/Optimization/Cinematic_Explosion_Vfx_Optimization|Cinematic Explosion VFX Optimization]]
+  - 2026-11-23: textures capped 2048 + compressed (≈ 680 → 49 MB Editor), lights removed, Lit → Unlit, per-pool prewarm + peak logging.
+
 - [ ] **Online battle low FPS (3 humans vs 4 AI, 10–20 FPS) + release-build telemetry** → [[TODOs/Optimization/Online_Battle_Low_FPS]]
   - 2026-11-18: logs archived and split per battle; release `Player.log` has no timing data. Decided: keep `Maximum Allowed Timestep` 0.333 (no slow motion above 3 FPS); move radar scans from fixed steps to one batched pass per frame. Next: Phase 0 release telemetry, Phase 1 Development capture.
 - [ ] **[AGY] Online Battle 10-20 FPS Host and Client Performance Optimization** → [[TODOs/Optimization/Online_Battle_Low_FPS_Host_And_Client_AGY|Plan]]

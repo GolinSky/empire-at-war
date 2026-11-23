@@ -32,6 +32,7 @@ using EmpireAtWar.Services.Saves;
 using EmpireAtWar.Services.ShipAbilities;
 using EmpireAtWar.Services.Stations;
 using EmpireAtWar.Services.SuperWeapons;
+using EmpireAtWar.Services.UnitExplosion;
 using EmpireAtWar.Services.Vision;
 using EmpireAtWar.Components.Hangar;
 using EmpireAtWar.Mvc;
@@ -228,7 +229,12 @@ namespace EmpireAtWar.Tests.Editor
             public int HitCount { get; private set; }
             public float LastDamage { get; private set; }
             public int ExplosionCount { get; private set; }
-            public void PlayExplosion() => ExplosionCount++;
+            public UnitExplosionKind LastExplosionKind { get; private set; }
+            public void PlayExplosion(UnitExplosionKind kind)
+            {
+                ExplosionCount++;
+                LastExplosionKind = kind;
+            }
             public bool Destroyed { get; set; }
             public void ApplyDamage(float damage, DamageType damageType, int id)
             {
@@ -310,16 +316,18 @@ namespace EmpireAtWar.Tests.Editor
                 Assert.That(health.ExplosionCount, Is.Zero);
                 advance.Invoke(restored, new object[] { loaded, 0.11f });
                 Assert.That(health.HitCount, Is.EqualTo(1));
-                Assert.That(health.ExplosionCount, Is.EqualTo(explosive ? 1 : 0),
-                    "Explosive orbital hits play the target's own hull-sized explosion; the ion cannon never does.");
+                Assert.That(health.ExplosionCount, Is.Zero, "Only the salvo's last impact explodes.");
                 Assert.That(loaded.IsComplete, Is.False);
                 advance.Invoke(restored, new object[] { loaded, 0.2f });
                 Assert.That(health.HitCount, Is.EqualTo(2));
                 Assert.That(loaded.IsComplete, Is.True);
+                Assert.That(health.ExplosionCount, Is.EqualTo(explosive ? 1 : 0),
+                    "An explosive salvo plays one hull-sized explosion on its last impact; the ion cannon never does.");
+                if (explosive) Assert.That(health.LastExplosionKind, Is.EqualTo(UnitExplosionKind.OrbitalHit));
                 Assert.That(restoredAudio.Clips, Is.Empty, "Restoring and resolving already-fired impacts must not replay launch SFX.");
                 advance.Invoke(restored, new object[] { loaded, 1f });
                 Assert.That(health.HitCount, Is.EqualTo(2), "Loaded impacts must apply exactly once.");
-                Assert.That(health.ExplosionCount, Is.EqualTo(explosive ? 2 : 0));
+                Assert.That(health.ExplosionCount, Is.EqualTo(explosive ? 1 : 0));
                 health.Destroyed = true;
                 new SuperWeaponCombatSaveSource(fire, entities, data).Capture(save);
                 Assert.That(save.SuperWeaponSalvos, Is.Empty, "Dead targets are absent from the saved entities.");

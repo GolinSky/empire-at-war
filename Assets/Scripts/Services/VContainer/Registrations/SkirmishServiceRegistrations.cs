@@ -33,11 +33,11 @@ namespace EmpireAtWar.Services.VContainer
     {
         public static void Register(IContainerBuilder builder, IAssetService assets, Transform owner,
             ImpactEffectView impactEffectPrefab, UnitExplosionView unitExplosionPrefab,
+            UnitExplosionView orbitalHitExplosionPrefab,
             Material rangeDebugLineMaterial, ShipSfxData shipSfxData, InterfaceSfxData interfaceSfxData,
             ShipAmbienceData shipAmbienceData, ShipSfxSources shipSfxSourcesPrefab,
             CameraService cameraService, Material battleMarkerIconMaterial, Material battleMarkerFrameMaterial)
         {
-            builder.RegisterInstance(unitExplosionPrefab);
             builder.RegisterInstance(shipSfxData);
             builder.RegisterInstance(interfaceSfxData);
             builder.RegisterInstance(shipAmbienceData);
@@ -99,7 +99,9 @@ namespace EmpireAtWar.Services.VContainer
             builder.Register<ShipNavigationMapPreparer>(Lifetime.Singleton).AsImplementedInterfaces().AsSelf();
             builder.Register<RadarScanService>(Lifetime.Singleton).AsImplementedInterfaces().AsSelf();
             builder.Register<UnitWreckService>(Lifetime.Singleton).AsImplementedInterfaces().AsSelf();
-            builder.Register<UnitExplosionService>(Lifetime.Singleton).AsImplementedInterfaces().AsSelf();
+            builder.Register<UnitExplosionService>(Lifetime.Singleton).AsImplementedInterfaces().AsSelf()
+                .WithParameter("destructionPrefab", unitExplosionPrefab)
+                .WithParameter("orbitalHitPrefab", orbitalHitExplosionPrefab);
             builder.Register<SelectionQuery>(Lifetime.Singleton).AsImplementedInterfaces().AsSelf();
             builder.Register<SelectionService>(Lifetime.Singleton).AsImplementedInterfaces().AsSelf();
             builder.Register<SelectionSfx>(Lifetime.Singleton).AsImplementedInterfaces();
