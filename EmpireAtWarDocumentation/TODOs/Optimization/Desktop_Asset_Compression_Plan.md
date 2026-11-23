@@ -153,6 +153,14 @@ created: 2026-10-11
 - Reusable guidance: existing [[Rules/EMPIRE_AT_WAR_OPTIMIZATION_COOKBOOK]] strict gates apply. Explicit BC7 resolved Titan's prior automatic-DXT quality failure; HQ alone does not establish the actual GPU format.
 
 
+## Implementation — 2026-11-23 uncompressed texture review (slot-aware gates)
+- Inventory of every project texture still uncompressed on desktop: additive 30, colour/mask 26, UI 109, normal 3, mixed 2, no-material 2 (vendor/Editor/font 1,593 excluded). Script `Tools/DesktopAssetCompression/DesktopCompressionUncompressed20261123.cs` (`Inventory`, `Screen(offset,count)`, `Summary`); results, before|after|diff×8 images and `INDEX.md` in `output/DesktopAssetCompression/Uncompressed20261123/`.
+- Decision (user): gate what reaches the screen, per consumer slot. `Ship Lit`/`Ship Wreck` read only `_BaseMap.rgb` (output alpha forced to 1, no clip) → RGB gate, DXT1 first. Additive SrcAlpha/One → visible `rgb × a` gate (RMSE ≤ 2/255, p99 ≤ 8/255). Normals DXT5 → BC7. UI, gloss maps and unknown slots keep the strict RGBA gate. `_MainTex` is the URP alias of `_BaseMap`. Hazard data textures excluded.
+- Result: 59 of 168 retained (34 DXT5, 17 DXT1, 8 BC7); Editor memory 1,104.8 → 388.8 MB. Additive 28/30, colour/mask 20/24, normal 2/3, mixed 2/2, UI 7/109 (85 fail max alpha, 17 not block-sized).
+- Resurgent hangar-light glow: BC7 by user choice (DXT5 also passed; BC7 visible RMSE 0.19 vs 0.33).
+- Still uncompressed: planet clouds, MonCal girders, CIS girder (alpha-blended, max alpha 12–36); Dauntless shield base and Empire station lights (visible p99 18 / 10); Mandator windows albedo + normal (640×128 stays RGBA32 under DXT/BC7).
+- Pending: user visual acceptance in game (hull albedos at DXT1, additive glows, 7 UI icons). Editor memory includes CPU copies; not a Player measurement.
+
 ## Implementation — 2026-11-23 Resurgent import textures
 - Scope: 45 textures under `Assets/Art/Textures/Models/EmpireShips/Resurgent*` (hull + 5 turrets). Script `Tools/DesktopAssetCompression/DesktopCompressionResurgent.cs` (`Main(offset,count)`, `Summary()`); results `output/DesktopAssetCompression/Resurgent20261123/`.
 - Baseline: Uncompressed at the existing 2048 import ceiling (4K sources stay capped at 2048; no resolution change). Before this pass they used unscreened Unity default Normal compression.

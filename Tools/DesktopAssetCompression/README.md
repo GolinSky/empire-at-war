@@ -82,3 +82,14 @@ API references: [texture format resolution](https://docs.unity3d.com/6000.4/Docu
 unity command script run --file Tools/DesktopAssetCompression/DesktopCompressionResurgent.cs --entry DesktopCompressionResurgent.Main --args '[0,45]' --timeout 1500 --json
 unity command script run --file Tools/DesktopAssetCompression/DesktopCompressionResurgent.cs --entry DesktopCompressionResurgent.Summary --json
 ```
+
+## Uncompressed texture review — 2026-11-23
+
+- `DesktopCompressionUncompressed20261123.cs` inventories every texture still uncompressed on desktop, then screens 168 project textures with slot-aware gates: Ship Lit/Wreck base maps RGB only (DXT1 first), additive SrcAlpha/One by visible `rgb × a`, normal maps by angle, UI/gloss/unknown by strict RGBA.
+- 59 retained (34 DXT5, 17 DXT1, 8 BC7); Editor memory 1,104.8 → 388.8 MB. Review sheet `output/DesktopAssetCompression/Uncompressed20261123/INDEX.md` with before | after | diff×8 images.
+
+```powershell
+unity command script run --file Tools/DesktopAssetCompression/DesktopCompressionUncompressed20261123.cs --entry DesktopCompressionUncompressed20261123.Inventory --timeout 900 --json
+unity command script run --file Tools/DesktopAssetCompression/DesktopCompressionUncompressed20261123.cs --entry DesktopCompressionUncompressed20261123.Screen --args '[0,40]' --timeout 3000 --json
+unity command script run --file Tools/DesktopAssetCompression/DesktopCompressionUncompressed20261123.cs --entry DesktopCompressionUncompressed20261123.Summary --json
+```

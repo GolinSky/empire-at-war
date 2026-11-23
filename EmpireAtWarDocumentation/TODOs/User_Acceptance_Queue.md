@@ -594,6 +594,10 @@ created: "2026-10-29\r"
 - [ ] [[Done/Features/Xyston_Import]] — Balance check: provisional price 14,000 / build 80 s / capacity 15 / max 2; 1v1 vs ISD II and Allegiance.
 - [ ] [[Done/Features/Xyston_Import]] — Selection fix (enabled hull box) and 2,406 m scale: click-select in battle; red armor band shows owner colour. `Ships`/`Abilities`/`Audio` passed; `Health`, `Combat`, `Balance` not run.
 
+## Uncompressed Texture Review 2026-11-23
+
+- [ ] [[TODOs/Optimization/Desktop_Asset_Compression_Plan]] — Visual check of 59 newly compressed textures (index `output/DesktopAssetCompression/Uncompressed20261123/INDEX.md`): hull albedos at DXT1 (Victory, Bulwark, Carrack, Centax, C9979, Dispatcher, Pelta, Raider, NebulonB, Wavecrest, Diamond, Lupus, Golan III), additive glows (ISD I hangar, Resurgent hangar BC7, engine exhausts), 7 UI icons (Xyston, BulwarkII, Lupus, Repair Satellite, Orbital Weapons, two minimap structure icons).
+
 ## Resurgent Import
 
 - [ ] [[Done/Features/Resurgent_Import]] — In battle (Empire, level 5): build Resurgent; check 306-unit scale vs ISD II / Executor, turret seating, engine plumes, shield fit, pick-hull selection, hangar launches (Avenger, Defender, Interceptor), wreck.
