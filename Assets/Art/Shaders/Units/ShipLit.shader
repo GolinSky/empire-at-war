@@ -116,33 +116,25 @@ Shader "EmpireAtWar/Ship Lit"
         }
 
         // ---------------------------------------------------------------------
-        // Drawn by UnitOutlineRenderPass for highlighted ships only, right before ShipOutline.
-        // Marks user stencil mask 8 over the ship's whole silhouette so its outline skips the
-        // interior (hard-normal seams, overlapping parts). Unhighlighted ships never write it,
-        // so an outline stays visible over neighbouring hulls.
+        // Drawn by UnitOutlineRenderPass for highlighted ships only, into its own owner-id
+        // target and depth, right before ShipOutline. Each pixel keeps the id of the nearest
+        // highlighted unit, so an outline skips its own interior (hard-normal seams,
+        // overlapping parts) yet stays visible over every other hull, highlighted or not.
         // ---------------------------------------------------------------------
         Pass
         {
-            Name "ShipOutlineMask"
-            Tags { "LightMode" = "ShipOutlineMask" }
+            Name "ShipOutlineOwner"
+            Tags { "LightMode" = "ShipOutlineOwner" }
 
             Cull Off
-            ZWrite Off
-            ZTest Always
-            ColorMask 0
-
-            Stencil
-            {
-                Ref 8
-                WriteMask 8
-                Comp Always
-                Pass Replace
-            }
+            ZWrite On
+            ZTest LEqual
+            ColorMask R
 
             HLSLPROGRAM
             #pragma target 3.5
-            #pragma vertex ShipOutlineMaskVertex
-            #pragma fragment ShipOutlineMaskFragment
+            #pragma vertex ShipOutlineOwnerVertex
+            #pragma fragment ShipOutlineOwnerFragment
             #pragma multi_compile_instancing
             #pragma instancing_options renderinglayer
             #include_with_pragmas "Packages/com.unity.render-pipelines.universal/ShaderLibrary/DOTS.hlsl"
@@ -152,10 +144,10 @@ Shader "EmpireAtWar/Ship Lit"
         }
 
         // ---------------------------------------------------------------------
-        // Drawn after ShipOutlineMask by UnitOutlineRenderPass.
+        // Drawn after ShipOutlineOwner by UnitOutlineRenderPass.
         // Both faces are expanded: many imported hulls are open, single-sided meshes, so back
-        // faces alone leave view-dependent gaps. The mask already hides the interior, and the
-        // pass claims each pixel it draws so overlapping expanded faces blend only once.
+        // faces alone leave view-dependent gaps. The owner ids already hide the interior, and
+        // the pass claims each pixel in stencil bit 8 so overlapping expanded faces blend once.
         // ---------------------------------------------------------------------
         Pass
         {

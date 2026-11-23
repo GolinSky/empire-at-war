@@ -8,6 +8,9 @@ half4 _UnitOutlineSelectedColor;
 half4 _UnitOutlineAttackColor;
 float _UnitOutlineWidth;
 
+// Written by the ShipOutlineOwner pass: per pixel, the owner id of the nearest highlighted unit, 0 for none.
+TEXTURE2D_FLOAT(_UnitOutlineOwnerTexture);
+
 struct OutlineAttributes
 {
     float4 positionOS : POSITION;
@@ -20,8 +23,14 @@ struct OutlineVaryings
     float4 positionCS : SV_POSITION;
     nointerpolation half4 color : TEXCOORD0;
     half fogFactor : TEXCOORD1;
+    nointerpolation float ownerId : TEXCOORD2;
     UNITY_VERTEX_OUTPUT_STEREO
 };
+
+float GetOutlineOwnerId()
+{
+    return (float)((unity_RendererUserValue >> OUTLINE_OWNER_USER_VALUE_SHIFT) & OUTLINE_OWNER_USER_VALUE_MASK);
+}
 
 half4 GetOutlineColor()
 {
@@ -41,6 +50,7 @@ OutlineVaryings ShipOutlineVertex(OutlineAttributes input)
     UNITY_SETUP_INSTANCE_ID(input);
     UNITY_INITIALIZE_VERTEX_OUTPUT_STEREO(output);
     output.color = GetOutlineColor();
+    output.ownerId = GetOutlineOwnerId();
 
     // Collapse inactive geometry before rasterization; no per-pixel hull work is needed.
     if (output.color.a <= 0.0h || _UnitOutlineWidth <= 0.0)
@@ -71,28 +81,34 @@ half4 ShipOutlineFragment(OutlineVaryings input) : SV_Target
 {
     UNITY_SETUP_STEREO_EYE_INDEX_POST_VERTEX(input);
     clip(input.color.a - 0.001h);
+    // Skip only this unit's own silhouette (hard-normal seams, overlapping parts). Another highlighted
+    // unit's silhouette does not hide this outline: depth already hides it where that unit is in front.
+    float owner = LOAD_TEXTURE2D(_UnitOutlineOwnerTexture, uint2(input.positionCS.xy)).r;
+    clip(abs(owner - input.ownerId) - 0.5);
     return half4(MixFog(input.color.rgb, input.fogFactor), input.color.a);
 }
 
-struct OutlineMaskVaryings
+struct OutlineOwnerVaryings
 {
     float4 positionCS : SV_POSITION;
+    nointerpolation float ownerId : TEXCOORD0;
     UNITY_VERTEX_OUTPUT_STEREO
 };
 
-OutlineMaskVaryings ShipOutlineMaskVertex(OutlineAttributes input)
+OutlineOwnerVaryings ShipOutlineOwnerVertex(OutlineAttributes input)
 {
-    OutlineMaskVaryings output = (OutlineMaskVaryings)0;
+    OutlineOwnerVaryings output = (OutlineOwnerVaryings)0;
     UNITY_SETUP_INSTANCE_ID(input);
     UNITY_INITIALIZE_VERTEX_OUTPUT_STEREO(output);
     output.positionCS = TransformObjectToHClip(input.positionOS.xyz);
+    output.ownerId = GetOutlineOwnerId();
     return output;
 }
 
-// Stencil-only: the pass writes no color.
-half4 ShipOutlineMaskFragment(OutlineMaskVaryings input) : SV_Target
+// Writes the unit's owner id; the pass's own depth keeps the nearest highlighted surface per pixel.
+float4 ShipOutlineOwnerFragment(OutlineOwnerVaryings input) : SV_Target
 {
-    return 0;
+    return float4(input.ownerId, 0.0, 0.0, 0.0);
 }
 
 #endif // SHIP_OUTLINE_PASS_INCLUDED

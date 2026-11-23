@@ -15,6 +15,7 @@ namespace EmpireAtWar.Tests.Editor
         private const uint HIGHLIGHT_MASK = 0x7u << 8;
         private const uint DAMAGE_MASK = 0x1Fu << 11;
         private const uint SEED_MASK = 0x1Fu << 16;
+        private const uint OWNER_MASK = 0x7FFu << 21;
 
         private GameObject _root;
         private MeshRenderer _renderer;
@@ -117,11 +118,28 @@ namespace EmpireAtWar.Tests.Editor
         }
 
         [Test]
-        public void Construct_WritesTeamAndOnlyTeamAndSeedBits()
+        public void Construct_WritesTeamAndOnlyTeamSeedAndOutlineOwnerBits()
         {
             Assert.That(_base & TEAM_MASK, Is.EqualTo(2u));
             Assert.That(_base & (HIGHLIGHT_MASK | DAMAGE_MASK), Is.Zero);
-            Assert.That(_base & ~(TEAM_MASK | SEED_MASK), Is.Zero);
+            Assert.That(_base & ~(TEAM_MASK | SEED_MASK | OWNER_MASK), Is.Zero);
+            // Owner 0 means "no highlighted unit" in the outline pass, so a unit never uses it.
+            Assert.That(_base & OWNER_MASK, Is.Not.Zero);
+        }
+
+        [Test]
+        public void OutlineOwner_SurvivesHighlightDamageAndReconstruct()
+        {
+            uint owner = _base & OWNER_MASK;
+            _component.SetHighlight(UnitHighlight.Selected);
+            _component.SetHullDamage(0.5f);
+            Assert.That(_renderer.GetShaderUserValue() & OWNER_MASK, Is.EqualTo(owner));
+
+            typeof(UnitRenderStateComponent).GetMethod("Construct", BindingFlags.Instance | BindingFlags.NonPublic)
+                .Invoke(_component, new object[] { _roster, TestPlayers.Enemy });
+
+            Assert.That(_renderer.GetShaderUserValue() & OWNER_MASK, Is.EqualTo(owner),
+                "Every renderer of a unit must keep one owner id for its whole life.");
         }
 
         [TestCase(1f, 0u)]

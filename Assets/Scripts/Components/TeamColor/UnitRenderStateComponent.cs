@@ -20,6 +20,8 @@ namespace EmpireAtWar.Components.TeamColor
         private const int HULL_DAMAGE_MAX_LEVEL = 31;
         private const int HULL_DAMAGE_SEED_SHIFT = 16;
         private const uint HULL_DAMAGE_SEED_MASK = 0x1Fu << HULL_DAMAGE_SEED_SHIFT;
+        private const int OUTLINE_OWNER_SHIFT = 21;
+        private const uint OUTLINE_OWNER_COUNT = 0x7FFu;
 
         [SerializeField] private MeshRenderer[] meshRenderers;
 
@@ -31,7 +33,7 @@ namespace EmpireAtWar.Components.TeamColor
         [Inject]
         private void Construct(IPlayerRoster playerRoster, PlayerId owner)
         {
-            ApplyUserValue(GetTeamUserValue(owner, playerRoster) | GetSeedBits() |
+            ApplyUserValue(GetTeamUserValue(owner, playerRoster) | GetSeedBits() | GetOutlineOwnerBits() |
                 (_userValue & (HIGHLIGHT_MASK | HULL_DAMAGE_LEVEL_MASK)));
         }
 
@@ -88,6 +90,13 @@ namespace EmpireAtWar.Components.TeamColor
         {
             uint seed = unchecked((uint)GetEntityId().GetHashCode() * 2654435761u) >> 27;
             return seed << HULL_DAMAGE_SEED_SHIFT;
+        }
+
+        // 1-2047, shared by all of this unit's renderers: an outline hides only over its own unit's pixels.
+        private uint GetOutlineOwnerBits()
+        {
+            uint owner = 1u + unchecked((uint)GetEntityId().GetHashCode() * 2246822519u) % OUTLINE_OWNER_COUNT;
+            return owner << OUTLINE_OWNER_SHIFT;
         }
 
         private static uint GetTeamUserValue(PlayerId owner, IPlayerRoster playerRoster)

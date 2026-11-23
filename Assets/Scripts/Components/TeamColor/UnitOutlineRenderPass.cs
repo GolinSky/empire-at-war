@@ -1,3 +1,5 @@
+using UnityEngine;
+using UnityEngine.Experimental.Rendering;
 using UnityEngine.Rendering;
 using UnityEngine.Rendering.RenderGraphModule;
 using UnityEngine.Rendering.Universal;
@@ -7,8 +9,11 @@ namespace EmpireAtWar.Components.TeamColor
     public sealed class UnitOutlineRenderPass : ScriptableRenderPass
     {
         private const string PASS_NAME = "Ship Outlines";
-        private static readonly ShaderTagId _outlineMaskPassTag = new("ShipOutlineMask");
+        private const string OWNER_PASS_NAME = "Ship Outline Owners";
+        private static readonly ShaderTagId _outlineOwnerPassTag = new("ShipOutlineOwner");
         private static readonly ShaderTagId _outlinePassTag = new("ShipOutline");
+        private static readonly int _ownerTextureId = Shader.PropertyToID("_UnitOutlineOwnerTexture");
+        private readonly ProfilingSampler _ownerSampler = new(OWNER_PASS_NAME);
 
         public UnitOutlineRenderPass()
         {
@@ -30,22 +35,46 @@ namespace EmpireAtWar.Components.TeamColor
                 renderingLayerMask = UnitOutlineRendererFeature.OUTLINE_RENDERING_LAYER
             };
 
-            using var builder = renderGraph.AddRasterRenderPass<PassData>(PASS_NAME,
-                out var passData, profilingSampler);
-            passData.MaskList = CreateRendererList(renderGraph, _outlineMaskPassTag, renderingData,
-                cameraData, lightData, filteringSettings);
-            passData.OutlineList = CreateRendererList(renderGraph, _outlinePassTag, renderingData,
-                cameraData, lightData, filteringSettings);
-            builder.UseRendererList(passData.MaskList);
-            builder.UseRendererList(passData.OutlineList);
-            builder.SetRenderAttachment(resources.activeColorTexture, 0, AccessFlags.ReadWrite);
-            builder.SetRenderAttachmentDepth(resources.activeDepthTexture, AccessFlags.ReadWrite);
-            builder.SetRenderFunc(static (PassData data, RasterGraphContext context) =>
+            // Per pixel, the owner id of the nearest highlighted unit. Unlike one shared stencil bit, it lets an
+            // outline skip only its own silhouette, so a highlighted dreadnought cannot hide the ships above it.
+            TextureDesc ownerDesc = renderGraph.GetTextureDesc(resources.activeColorTexture);
+            ownerDesc.name = "_UnitOutlineOwners";
+            ownerDesc.format = GraphicsFormat.R16_SFloat;
+            ownerDesc.msaaSamples = MSAASamples.None;
+            ownerDesc.bindTextureMS = false;
+            ownerDesc.clearBuffer = true;
+            ownerDesc.clearColor = Color.clear;
+            TextureHandle owners = renderGraph.CreateTexture(ownerDesc);
+            TextureDesc ownerDepthDesc = ownerDesc;
+            ownerDepthDesc.name = "_UnitOutlineOwnerDepth";
+            ownerDepthDesc.depthBufferBits = DepthBits.Depth32;
+            TextureHandle ownerDepth = renderGraph.CreateTexture(ownerDepthDesc);
+
+            using (var builder = renderGraph.AddRasterRenderPass<PassData>(OWNER_PASS_NAME,
+                       out var ownerData, _ownerSampler))
             {
-                // The mask stencils each highlighted silhouette before any outline is drawn.
-                context.cmd.DrawRendererList(data.MaskList);
-                context.cmd.DrawRendererList(data.OutlineList);
-            });
+                ownerData.Renderers = CreateRendererList(renderGraph, _outlineOwnerPassTag, renderingData,
+                    cameraData, lightData, filteringSettings);
+                builder.UseRendererList(ownerData.Renderers);
+                builder.SetRenderAttachment(owners, 0, AccessFlags.Write);
+                builder.SetRenderAttachmentDepth(ownerDepth, AccessFlags.Write);
+                builder.SetGlobalTextureAfterPass(owners, _ownerTextureId);
+                builder.SetRenderFunc(static (PassData data, RasterGraphContext context) =>
+                    context.cmd.DrawRendererList(data.Renderers));
+            }
+
+            using (var builder = renderGraph.AddRasterRenderPass<PassData>(PASS_NAME,
+                       out var passData, profilingSampler))
+            {
+                passData.Renderers = CreateRendererList(renderGraph, _outlinePassTag, renderingData,
+                    cameraData, lightData, filteringSettings);
+                builder.UseRendererList(passData.Renderers);
+                builder.UseTexture(owners);
+                builder.SetRenderAttachment(resources.activeColorTexture, 0, AccessFlags.ReadWrite);
+                builder.SetRenderAttachmentDepth(resources.activeDepthTexture, AccessFlags.ReadWrite);
+                builder.SetRenderFunc(static (PassData data, RasterGraphContext context) =>
+                    context.cmd.DrawRendererList(data.Renderers));
+            }
         }
 
         private static RendererListHandle CreateRendererList(RenderGraph renderGraph, ShaderTagId passTag,
@@ -60,8 +89,7 @@ namespace EmpireAtWar.Components.TeamColor
 
         private sealed class PassData
         {
-            public RendererListHandle MaskList;
-            public RendererListHandle OutlineList;
+            public RendererListHandle Renderers;
         }
     }
 }
