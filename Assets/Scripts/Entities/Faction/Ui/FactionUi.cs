@@ -2,18 +2,29 @@ using System;
 using EmpireAtWar.Components.Ui.Tooltip;
 using System.Collections.Generic;
 using System.Linq;
+using EmpireAtWar.Components.Ship.Health;
 using EmpireAtWar.Controllers.Factions;
 using EmpireAtWar.Models.Factions;
 using EmpireAtWar.Entities.TutorialUi;
 using EmpireAtWar.Services.Selection;
 using EmpireAtWar.Services.Tutorial;
 using EmpireAtWar.Ui.Base;
+using MPUIKIT;
+using TMPro;
 using UnityEngine;
+using UnityEngine.UI;
 
 namespace EmpireAtWar.Entities.Faction.Ui
 {
     public class FactionUi : BaseUi
     {
+        private enum RosterCategory
+        {
+            All,
+            Squadrons,
+            Ships
+        }
+
         private IPlayerFactionModelObserver _model;
         private IFactionResearchModelObserver _research;
         private IFactionPresenter _presenter;
@@ -26,6 +37,14 @@ namespace EmpireAtWar.Entities.Faction.Ui
         [SerializeField] private UnityEngine.UI.ContentSizeFitter layoutFitter;
         [Tooltip("The panel's BuildPanel anchor also marks individual production cards.")]
         [SerializeField] private TutorialAnchor tutorialAnchor;
+        [SerializeField] private Button allUnitsFilter;
+        [SerializeField] private Button squadronsFilter;
+        [SerializeField] private Button shipsFilter;
+        [SerializeField] private TMP_Dropdown unitTypeFilter;
+
+        private RosterCategory _category;
+        private ShipClass? _unitClass;
+        private ShipClass[] _filterClasses = Array.Empty<ShipClass>();
         private readonly List<FactionUnitUi> _factionUnitsUi =
             new List<FactionUnitUi>();
         private readonly Dictionary<ResearchType, FactionUnitUi> _researchUnitsUi =
@@ -125,8 +144,12 @@ namespace EmpireAtWar.Entities.Faction.Ui
             _secondStation.OnLevelUpgraded += UpdateSecondLevelUnit;
             _secondStation.BuiltChanged += HandleSecondStationBuiltChanged;
             _research.OnResearchCompleted += UpdateResearchUnit;
+            allUnitsFilter.onClick.AddListener(ShowAllUnits);
+            squadronsFilter.onClick.AddListener(ShowSquadrons);
+            shipsFilter.onClick.AddListener(ShowShips);
+            unitTypeFilter.onValueChanged.AddListener(SetUnitClassFilter);
             _isInitialized = true;
-            RefreshUnitVisibility(_model.SelectionType);
+            ShowAllUnits();
         }
 
         public void Dispose()
@@ -141,6 +164,10 @@ namespace EmpireAtWar.Entities.Faction.Ui
             _secondStation.OnLevelUpgraded -= UpdateSecondLevelUnit;
             _secondStation.BuiltChanged -= HandleSecondStationBuiltChanged;
             _research.OnResearchCompleted -= UpdateResearchUnit;
+            allUnitsFilter.onClick.RemoveListener(ShowAllUnits);
+            squadronsFilter.onClick.RemoveListener(ShowSquadrons);
+            shipsFilter.onClick.RemoveListener(ShowShips);
+            unitTypeFilter.onValueChanged.RemoveListener(SetUnitClassFilter);
             _productionMenus.Close();
             tooltipHover.Unregister(_productionMenus.ResearchTooltip);
             foreach (ResearchBuffIcon buff in _researchBuffs.Values)
@@ -358,7 +385,66 @@ namespace EmpireAtWar.Entities.Faction.Ui
                                 selectionType == SelectionType.Base && !_model.IsSecondStationSelected,
             SecondStationLevelUnitRequest => card.transform.parent != unitsRow ||
                                              selectionType == SelectionType.Base && _model.IsSecondStationSelected,
-            _ => selectionType == SelectionType.Base
+            _ => selectionType == SelectionType.Base && MatchesCategory(card, _category) &&
+                 (!_unitClass.HasValue || card.UnitClass == _unitClass.Value)
+        };
+
+        private void ShowAllUnits() => SetCategory(RosterCategory.All);
+        private void ShowSquadrons() => SetCategory(RosterCategory.Squadrons);
+        private void ShowShips() => SetCategory(RosterCategory.Ships);
+
+        private void SetCategory(RosterCategory category)
+        {
+            _category = category;
+            _unitClass = null;
+            SetFilterSelected(allUnitsFilter, category == RosterCategory.All);
+            SetFilterSelected(squadronsFilter, category == RosterCategory.Squadrons);
+            SetFilterSelected(shipsFilter, category == RosterCategory.Ships);
+
+            unitTypeFilter.gameObject.SetActive(category != RosterCategory.All);
+            if (category != RosterCategory.All)
+            {
+                _filterClasses = _factionUnitsUi
+                    .Where(card => MatchesCategory(card, category))
+                    .OrderBy(card => _presenter.GetUnitSortOrder(card.Request))
+                    .Select(card => card.UnitClass)
+                    .Distinct()
+                    .ToArray();
+                var labels = new List<string>
+                {
+                    category == RosterCategory.Squadrons ? "All squadron types" : "All ship types"
+                };
+                labels.AddRange(_filterClasses.Select(type => type switch
+                {
+                    ShipClass.HeroStrikecraft => "Hero Strikecraft",
+                    ShipClass.HeavyCruiser => "Heavy Cruiser",
+                    ShipClass.BattleCruiser => "Battle Cruiser",
+                    _ => type.ToString()
+                }));
+                unitTypeFilter.ClearOptions();
+                unitTypeFilter.AddOptions(labels);
+            }
+
+            RefreshUnitVisibility(_model.SelectionType);
+        }
+
+        private static void SetFilterSelected(Button button, bool selected)
+        {
+            var background = (MPImage)button.targetGraphic;
+            background.OutlineColor = selected ? new Color32(210, 169, 94, 255) : new Color32(52, 67, 87, 255);
+        }
+
+        private void SetUnitClassFilter(int index)
+        {
+            _unitClass = index == 0 ? null : _filterClasses[index - 1];
+            RefreshUnitVisibility(_model.SelectionType);
+        }
+
+        private static bool MatchesCategory(FactionUnitUi card, RosterCategory category) => category switch
+        {
+            RosterCategory.Squadrons => card.Request is SquadronUnitRequest,
+            RosterCategory.Ships => card.Request is ShipUnitRequest,
+            _ => true
         };
 
         private void HandleSelectionChanged(SelectionType selectionType)

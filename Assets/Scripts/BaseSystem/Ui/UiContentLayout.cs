@@ -9,7 +9,7 @@ namespace EmpireAtWar.Ui.Base
         private const float SHIP_LEFT = 554f;
         private const float RIGHT_MARGIN = 8f;
         private const float BOTTOM_MARGIN = 22f;
-        private const float FACTION_HEIGHT = 234f;
+        private const float FACTION_HEIGHT = 294f;
         private const float FACTION_BOTTOM_MARGIN = 10f;
         private const float SHIP_HEIGHT = 244f;
 

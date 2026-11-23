@@ -38,9 +38,11 @@ namespace EmpireAtWar.Entities.Faction.Ui
         public string RequestId => _unitRequest.Id;
         public UnitRequest Request => _unitRequest;
         public FactionData FactionData { get; private set; }
+        public ShipClass UnitClass { get; private set; }
 
         public void SetClassFrame(ShipClass shipClass)
         {
+            UnitClass = shipClass;
             if (shipClass == ShipClass.Structure) return;
 
             cardBackground.OutlineColor = shipClass switch

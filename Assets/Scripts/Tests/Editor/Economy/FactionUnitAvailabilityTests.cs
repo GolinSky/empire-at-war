@@ -166,6 +166,9 @@ namespace EmpireAtWar.Tests.Editor
                 }
                 Assert.That(structures.All(card => card.gameObject.activeSelf), Is.True);
 
+                if (selectionType == SelectionType.Base && !secondStation)
+                    VerifyRosterFilters(view, cards);
+
                 var menus = hud.ProductionMenus;
                 var serializedMenus = new SerializedObject(menus);
                 var popup = (RectTransform)serializedMenus.FindProperty("popup").objectReferenceValue;
@@ -242,6 +245,45 @@ namespace EmpireAtWar.Tests.Editor
                 view.Dispose();
                 PrefabUtility.UnloadPrefabContents(root);
             }
+        }
+
+        private static void VerifyRosterFilters(FactionUi view, FactionUnitUi[] cards)
+        {
+            var serializedView = new SerializedObject(view);
+            var all = (Button)serializedView.FindProperty("allUnitsFilter").objectReferenceValue;
+            var squadrons = (Button)serializedView.FindProperty("squadronsFilter").objectReferenceValue;
+            var ships = (Button)serializedView.FindProperty("shipsFilter").objectReferenceValue;
+            var types = (TMP_Dropdown)serializedView.FindProperty("unitTypeFilter").objectReferenceValue;
+            var grid = (RectTransform)cards.First().transform.parent;
+            var viewport = (RectTransform)grid.parent;
+            var header = (RectTransform)all.transform.parent;
+            Assert.That(viewport.rect.height, Is.EqualTo(210f).Within(0.01f));
+            Assert.That(header.rect.height + viewport.rect.height,
+                Is.EqualTo(((RectTransform)view.transform).rect.height).Within(0.01f));
+            Assert.That(types.gameObject.activeSelf, Is.False);
+
+            squadrons.onClick.Invoke();
+            Assert.That(types.gameObject.activeSelf, Is.True);
+            Assert.That(types.options.Select(option => option.text), Does.Contain("Hero Strikecraft"));
+            Assert.That(cards.Any(card => card.gameObject.activeSelf && card.Request is SquadronUnitRequest), Is.True);
+            Assert.That(cards.Any(card => card.gameObject.activeSelf && card.Request is ShipUnitRequest), Is.False);
+            types.value = types.options.FindIndex(option => option.text == "Hero Strikecraft");
+            view.RefreshAvailability(10000f, false);
+            var shownSquadrons = cards.Where(card => card.gameObject.activeSelf && card.Request is SquadronUnitRequest);
+            Assert.That(shownSquadrons, Is.Not.Empty);
+            Assert.That(shownSquadrons.All(card => card.UnitClass == ShipClass.HeroStrikecraft), Is.True);
+            Assert.That(cards.Any(card => card.gameObject.activeSelf && card.Request is LevelUnitRequest), Is.True);
+
+            ships.onClick.Invoke();
+            Assert.That(types.options[0].text, Is.EqualTo("All ship types"));
+            Assert.That(types.value, Is.Zero);
+            Assert.That(cards.Any(card => card.gameObject.activeSelf && card.Request is ShipUnitRequest), Is.True);
+            Assert.That(cards.Any(card => card.gameObject.activeSelf && card.Request is SquadronUnitRequest), Is.False);
+
+            all.onClick.Invoke();
+            Assert.That(types.gameObject.activeSelf, Is.False);
+            Assert.That(cards.Any(card => card.gameObject.activeSelf && card.Request is ShipUnitRequest), Is.True);
+            Assert.That(cards.Any(card => card.gameObject.activeSelf && card.Request is SquadronUnitRequest), Is.True);
         }
 
         [TestCase(false, false, false)]
@@ -504,8 +546,12 @@ namespace EmpireAtWar.Tests.Editor
             public bool IsUnitLimitReached(UnitRequest request) =>
                 request is LevelUnitRequest or SecondStationLevelUnitRequest &&
                 _stationPresenter.IsUnitLimitReached(request);
-            public ShipClass GetUnitClass(UnitRequest request) =>
-                request is SquadronUnitRequest ? ShipClass.Fighter : ShipClass.Capital;
+            public ShipClass GetUnitClass(UnitRequest request) => request switch
+            {
+                SquadronUnitRequest when request.FactionData.IsHero => ShipClass.HeroStrikecraft,
+                SquadronUnitRequest => ShipClass.Fighter,
+                _ => ShipClass.Capital
+            };
             public int GetUnitSortOrder(UnitRequest request) =>
                 request is LevelUnitRequest or SecondStationLevelUnitRequest
                     ? _stationPresenter.GetUnitSortOrder(request)
