@@ -37,11 +37,11 @@ function Get-GitHubCollection {
     } while ($items.Count -eq 100)
 }
 
-function Assert-MatchingDraft {
+# A release published before its upload finished is repaired: only missing assets are added; existing assets must match.
+function Assert-MatchingRelease {
     param($Release)
-    if (-not $Release.draft) { throw "Release $tag is already published; it will not be changed." }
     if ($Release.tag_name -cne $tag -or -not ([string]$Release.body).Contains($marker) -or $Release.prerelease -ne $prerelease) {
-        throw 'Existing draft does not match this source build, ZIP checksum, tag, and prerelease setting.'
+        throw 'Existing release does not match this source build, ZIP checksum, tag, and prerelease setting.'
     }
 }
 
@@ -115,7 +115,7 @@ try {
     $marker = "<!-- empire-at-war:source=EmpireAtWar-Windows-Local#$sourceBuild;commit=$sha;zip-sha256=$zipHash -->"
     $releases = @(Get-GitHubCollection -Resource 'releases' | Where-Object { $_.tag_name -ceq $tag })
     if ($releases.Count -gt 1) { throw 'Multiple releases use this tag; resolve the ambiguity manually.' }
-    if ($releases.Count -eq 1) { Assert-MatchingDraft $releases[0] }
+    if ($releases.Count -eq 1) { Assert-MatchingRelease $releases[0] }
     $ref = Invoke-GitHubApi -Resource "git/ref/tags/$tag" -AllowMissing
     if ($ref.Status -eq 404) {
         if ($releases.Count -gt 0) { throw 'Existing draft has no tag; inspect it before retrying.' }
@@ -141,7 +141,7 @@ try {
         if ($releases.Count -ne 1) { throw 'Created draft could not be uniquely resolved.' }
     }
     $release = $releases[0]
-    Assert-MatchingDraft $release
+    Assert-MatchingRelease $release
     $report.ReleaseUrl = $release.html_url
     $report.ReleaseId = $release.id
     $report.Status = 'Uploading'
@@ -155,22 +155,25 @@ try {
     }
     foreach ($file in $files) {
         if (@($assets | Where-Object { $_.name -ceq $file.Name }).Count -eq 1) { Write-Host "Already verified: $($file.Name)"; continue }
-        Assert-MatchingDraft (Invoke-GitHubApi -Resource "releases/$($release.id)").Data
+        Assert-MatchingRelease (Invoke-GitHubApi -Resource "releases/$($release.id)").Data
         Assert-OnlyReleaseForTag $release.id
         & $gh release upload $tag $file.Path --repo $repo
         if ($LASTEXITCODE -ne 0) { throw "Upload failed for $($file.Name). The draft is preserved; rerun with the same build and tag to resume, or inspect incomplete assets." }
     }
-    Assert-MatchingDraft (Invoke-GitHubApi -Resource "releases/$($release.id)").Data
+    Assert-MatchingRelease (Invoke-GitHubApi -Resource "releases/$($release.id)").Data
     $assets = @(Get-GitHubCollection -Resource "releases/$($release.id)/assets")
     foreach ($file in $files) {
         $uploaded = @($assets | Where-Object { $_.name -ceq $file.Name })
         if ($uploaded.Count -ne 1) { throw "Uploaded asset not uniquely found: $($file.Name)" }
         Assert-MatchingAsset $uploaded[0] $file
     }
-    $report.Status = 'VerifiedDraft'
+    $published = -not (Invoke-GitHubApi -Resource "releases/$($release.id)").Data.draft
+    $report.Draft = -not $published
+    $report.Status = if ($published) { 'VerifiedPublished' } else { 'VerifiedDraft' }
     $report | ConvertTo-Json -Depth 5 | Set-Content -LiteralPath $reportPath -Encoding UTF8
     Remove-Item -LiteralPath "F:\Jenkins\velopack-cache\$tag" -Recurse -Force
-    Write-Host "Verified draft: $($release.html_url). Review and publish manually on GitHub."
+    if ($published) { Write-Host "Verified published release: $($release.html_url). Launchers can update now." }
+    else { Write-Host "Verified draft: $($release.html_url). Review and publish manually on GitHub." }
     exit 0
 } catch {
     $report.Status = 'Failed'

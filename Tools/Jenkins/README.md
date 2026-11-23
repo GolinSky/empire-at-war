@@ -140,7 +140,8 @@ Before changing GitHub, the job requires SUCCESS, all four archived inputs, matc
 ### Resume and troubleshoot
 
 - Retry with the same build, tag, and prerelease setting. A matching draft is reused; verified assets are skipped and missing assets are uploaded.
-- Published releases, conflicting source markers/tags, and mismatched/incomplete assets are never overwritten or deleted. Inspect the draft and resolve conflicts manually before retrying.
+- Published too early (before `VerifiedDraft`) → launchers can't see the release (no `releases.win.json`). Rerun the publish job with the same `SOURCE_BUILD`: it uploads only the missing assets to the published release and reports `VerifiedPublished`. It needs `F:\Jenkins\velopack-cache\<tag>` (kept until success); without it the repack differs and the job fails on mismatched assets.
+- Existing assets, conflicting source markers/tags, and mismatched/incomplete assets are never overwritten or deleted. Inspect the release and resolve conflicts manually before retrying.
 - Expired artifacts fail explicitly; the job does not substitute a newer build. Preserve the source build while publishing or recovering an upload.
 - A failed upload leaves its tag/draft on GitHub. The archived report includes the release URL once resolved and the failure reason; failures before credential binding can leave the earlier `ArtifactsValidated` report.
 - Job timeout: 180 minutes (pack + ~3.5 GiB upload); concurrent publish runs queue. The existing single Windows executor serializes copying/uploading with Unity builds.
