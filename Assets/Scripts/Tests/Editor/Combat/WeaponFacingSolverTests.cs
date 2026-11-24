@@ -83,6 +83,22 @@ namespace EmpireAtWar.Tests.Editor
             Assert.That(score, Is.Zero);
         }
 
+        [Test]
+        public void CombatFacingKeepsBowOnWhenAftMainsOnlyReachAbeam()
+        {
+            // Star Destroyer layout: one main battery per flank, aft of the pivot, arcs covering one side plus the bow.
+            var solver = new WeaponFacingSolver();
+            solver.AddTarget(Vector3.forward * 100f);
+            solver.AddMount(new Vector3(20f, 0f, -40f), Quaternion.identity, 130f, -15f, 170f, 1, mainBattery: true);
+            solver.AddMount(new Vector3(-20f, 0f, -40f), Quaternion.identity, 130f, -170f, 15f, 1, mainBattery: true);
+
+            float turn = solver.FindTurn(out int score, targetBearing: 0f);
+
+            Assert.That(Mathf.Abs(turn), Is.LessThanOrEqualTo(WeaponFacingSolver.MAIN_BATTERY_SECTOR_DEGREES),
+                "A broadside turn brings one flank into range but silences the other.");
+            Assert.That(score, Is.Zero);
+        }
+
         [TestCase(1, false)]
         [TestCase(5, true)]
         public void SmallTurnNeedsAScoreMarginOverAHeadingThatAlreadyFires(int narrowWeight, bool turns)

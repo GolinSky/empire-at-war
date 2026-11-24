@@ -78,11 +78,13 @@ namespace EmpireAtWar.Entities.Ship.StateMachine
             _hasHeldPosition ? Vector3.zero : _formationOffset);
         private bool IsInRange => ShipEngagement.IsInRange(_shipMoveComponent, _weaponComponent,
             _mainTargetEntity, TargetPosition);
+        // Both reach tests also need the forward main batteries in range bow-on (see ShipEngagement.CanHoldOn).
         private bool IsInReach => ShipEngagement.IsInReach(_shipMoveComponent, _weaponComponent,
-            _mainTargetEntity, TargetPosition);
+            _mainTargetEntity, TargetPosition) && _weaponComponent.MainBatteryReaches(_mainTargetEntity, 1f);
         // Reach with the leave margin: a ship holding on its target only re-approaches beyond this.
         private bool IsInHeldReach => ShipEngagement.IsInReach(_shipMoveComponent, _weaponComponent,
-            _mainTargetEntity, TargetPosition, ShipEngagement.HELD_REACH_FACTOR);
+            _mainTargetEntity, TargetPosition, ShipEngagement.HELD_REACH_FACTOR) &&
+            _weaponComponent.MainBatteryReaches(_mainTargetEntity, ShipEngagement.HELD_REACH_FACTOR);
         private float PursuitDestinationUpdateDistance => Mathf.Max(
             _shipMoveComponent.NavigationRadius,
             EngagementRange * 0.1f);

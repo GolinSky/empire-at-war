@@ -28,6 +28,12 @@ namespace EmpireAtWar.Components.Weapon
         /// <summary>True while the guns reach the target at full engagement range, not just the pursuit stop distance.</summary>
         bool IsWithinReach(float distance, float contactDistance, ShipClass targetClass);
 
+        /// <summary>
+        /// False while no live main battery would reach a live target hardpoint with the bow turned at the target;
+        /// true for a loadout without main batteries that can fire on it. Ranges scale by <paramref name="reachFactor"/>.
+        /// </summary>
+        bool MainBatteryReaches(IEntity target, float reachFactor);
+
         /// <summary>Offset to bring a target hardpoint into a live mount's range, or zero if already in reach.</summary>
         bool TryGetHardPointApproach(AttackData target, out Vector3 offset);
 

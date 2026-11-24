@@ -22,21 +22,22 @@ namespace EmpireAtWar.Components.Weapon
         public int MaximumScore;
         public bool LimitToForwardSector;
         public float TargetBearing;
+        public float SectorHalfAngle;
 
         internal static int GetTurn(int step) =>
             (step + 1) / 2 * TURN_STEP * (step % 2 == 0 ? -1 : 1);
 
-        internal static bool KeepsTargetAhead(int step, float targetBearing)
+        internal static bool KeepsTargetAhead(int step, float targetBearing, float sectorHalfAngle)
         {
             float difference = math.abs(targetBearing - GetTurn(step));
-            return difference <= 90f || difference >= 270f;
+            return difference <= sectorHalfAngle || difference >= 360f - sectorHalfAngle;
         }
 
         public void Execute()
         {
             for (int step = 0; step < Scores.Length; step++)
             {
-                if (LimitToForwardSector && !KeepsTargetAhead(step, TargetBearing)) continue;
+                if (LimitToForwardSector && !KeepsTargetAhead(step, TargetBearing, SectorHalfAngle)) continue;
                 Vector2 rotation = Rotations[step];
                 for (int i = 0; i < Offsets.Length; i++)
                 {

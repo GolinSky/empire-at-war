@@ -18,6 +18,10 @@ namespace EmpireAtWar.Components.Weapon
         // FACING_SCORE_MARGIN of the battery's total weight; tiny gains made capitals swing back and forth.
         internal const float FACING_DEAD_ZONE_DEGREES = 10f;
         internal const float FACING_SCORE_MARGIN = 0.1f;
+        // With a target bearing, main batteries only count with the target this close to the bow: they share a
+        // forward firing sector, so a broadside turn leaves one side silent. Secondaries may turn the target abeam.
+        internal const float MAIN_BATTERY_SECTOR_DEGREES = 15f;
+        private const float SECONDARY_SECTOR_DEGREES = 90f;
         private static readonly Vector2[] _headingRotations = BuildHeadingRotations();
 #if UNITY_EDITOR || DEVELOPMENT_BUILD
         private static readonly ProfilerMarker<int, int> _mainMarker =
@@ -84,17 +88,17 @@ namespace EmpireAtWar.Components.Weapon
 #if UNITY_EDITOR || DEVELOPMENT_BUILD
             using (_mainMarker.Auto(_mainBatteries.Count, _targets.Count))
 #endif
-                turn = FindTurn(_mainBatteries, targetBearing, out score);
+                turn = FindTurn(_mainBatteries, targetBearing, MAIN_BATTERY_SECTOR_DEGREES, out score);
             if (score > 0) return turn;
 
 #if UNITY_EDITOR || DEVELOPMENT_BUILD
             using (_secondaryMarker.Auto(_secondaryBatteries.Count, _targets.Count))
 #endif
-                turn = FindTurn(_secondaryBatteries, targetBearing, out score);
+                turn = FindTurn(_secondaryBatteries, targetBearing, SECONDARY_SECTOR_DEGREES, out score);
             return score > 0 ? turn : targetBearing.GetValueOrDefault();
         }
 
-        private float FindTurn(List<Mount> mounts, float? targetBearing, out int bestScore)
+        private float FindTurn(List<Mount> mounts, float? targetBearing, float sectorHalfAngle, out int bestScore)
         {
             bestScore = 0;
             if (mounts.Count == 0) return 0f;
@@ -105,8 +109,9 @@ namespace EmpireAtWar.Components.Weapon
             float bestTurn = 0f;
             if (_reachableTargets.Count >= BURST_PAIR_THRESHOLD)
             {
-                bestTurn = FindTurnBurst(mounts, maximumScore, targetBearing, out bestScore);
-                return KeepCurrentHeading(mounts, maximumScore, targetBearing, bestTurn, ref bestScore);
+                bestTurn = FindTurnBurst(mounts, maximumScore, targetBearing, sectorHalfAngle, out bestScore);
+                return KeepCurrentHeading(mounts, maximumScore, targetBearing, sectorHalfAngle, bestTurn,
+                    ref bestScore);
             }
 #if UNITY_EDITOR || DEVELOPMENT_BUILD
             _aimChecks = 0;
@@ -115,7 +120,8 @@ namespace EmpireAtWar.Components.Weapon
             int step = 0;
             for (; step < HEADING_COUNT; step++)
             {
-                if (targetBearing.HasValue && !WeaponFacingSweepJob.KeepsTargetAhead(step, targetBearing.Value))
+                if (targetBearing.HasValue &&
+                    !WeaponFacingSweepJob.KeepsTargetAhead(step, targetBearing.Value, sectorHalfAngle))
                     continue;
                 int score = Score(mounts, step);
                 if (score > bestScore)
@@ -131,18 +137,20 @@ namespace EmpireAtWar.Components.Weapon
             using (_sweepMarker.Auto(Mathf.Min(step + 1, HEADING_COUNT), _aimChecks,
                        step < HEADING_COUNT - 1 ? 1 : 0)) { }
 #endif
-            return KeepCurrentHeading(mounts, maximumScore, targetBearing, bestTurn, ref bestScore);
+            return KeepCurrentHeading(mounts, maximumScore, targetBearing, sectorHalfAngle, bestTurn,
+                ref bestScore);
         }
 
         /// <summary>
         /// Dead zone: the current heading (turn 0) wins over a best turn of at most
         /// <see cref="FACING_DEAD_ZONE_DEGREES"/> when it already fires and the turn gains less than the margin.
         /// </summary>
-        private float KeepCurrentHeading(List<Mount> mounts, int maximumScore, float? targetBearing, float bestTurn,
-            ref int bestScore)
+        private float KeepCurrentHeading(List<Mount> mounts, int maximumScore, float? targetBearing,
+            float sectorHalfAngle, float bestTurn, ref int bestScore)
         {
             if (bestTurn == 0f || Mathf.Abs(bestTurn) > FACING_DEAD_ZONE_DEGREES) return bestTurn;
-            if (targetBearing.HasValue && !WeaponFacingSweepJob.KeepsTargetAhead(0, targetBearing.Value))
+            if (targetBearing.HasValue &&
+                !WeaponFacingSweepJob.KeepsTargetAhead(0, targetBearing.Value, sectorHalfAngle))
                 return bestTurn;
             int currentScore = Score(mounts, 0, reuseRotation: false);
             int margin = Mathf.Max(1, Mathf.CeilToInt(maximumScore * FACING_SCORE_MARGIN));
@@ -151,7 +159,8 @@ namespace EmpireAtWar.Components.Weapon
             return 0f;
         }
 
-        private float FindTurnBurst(List<Mount> mounts, int maximumScore, float? targetBearing, out int bestScore)
+        private float FindTurnBurst(List<Mount> mounts, int maximumScore, float? targetBearing, float sectorHalfAngle,
+            out int bestScore)
         {
             using var targets = new NativeArray<Vector2>(_targets.Count, Allocator.TempJob,
                 NativeArrayOptions.UninitializedMemory);
@@ -165,7 +174,8 @@ namespace EmpireAtWar.Components.Weapon
             {
                 Offsets = offsets, Rotations = rotations, Heights = heights, Targets = targets,
                 Indices = indices, Mounts = input, Scores = bounds, MaximumScore = maximumScore,
-                LimitToForwardSector = targetBearing.HasValue, TargetBearing = targetBearing.GetValueOrDefault()
+                LimitToForwardSector = targetBearing.HasValue, TargetBearing = targetBearing.GetValueOrDefault(),
+                SectorHalfAngle = sectorHalfAngle
             };
             for (int i = 0; i < offsets.Length; i++)
             {
@@ -222,7 +232,9 @@ namespace EmpireAtWar.Components.Weapon
                         rotation.x * target.x + rotation.y * target.z,
                         -rotation.y * target.x + rotation.x * target.z);
                 }
-                if (reuseRotation) _preparedHeadings = step + 1;
+                // Only an unbroken run from step 0 is cached: sector-limited sweeps skip steps, and a later
+                // sweep with a wider sector must not read those skipped steps as prepared.
+                if (reuseRotation && step == _preparedHeadings) _preparedHeadings = step + 1;
             }
 
             int score = 0;

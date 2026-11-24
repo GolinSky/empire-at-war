@@ -73,7 +73,7 @@ namespace EmpireAtWar.Entities.Ship.StateMachine
                 if (_movement.IsMoving) _movement.Stop();
                 return;
             }
-            if (ShipEngagement.CanEngage(_target, _movement, _weapon, _isHolding))
+            if (ShipEngagement.CanHoldOn(_target, _movement, _weapon, _isHolding))
             {
                 _isHolding = true;
                 _movement.HoldPosition(_target);

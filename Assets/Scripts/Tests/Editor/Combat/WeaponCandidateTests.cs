@@ -272,6 +272,34 @@ namespace EmpireAtWar.Tests.Weapon
             Assert.That(_weapon.GetFiringTurnAngle(group.TargetEntity, Vector3.zero), Is.Zero);
         }
 
+        [Test]
+        public void MainBatteryReaches_MeasuresAftMainsBowOnNotAtTheCurrentBroadsideHeading()
+        {
+            List<WeaponHardPoint> mounts = ConfigureMounts(2);
+            WeaponHardPoint main = mounts[0];
+            WeaponHardPoint secondary = mounts[1];
+            main.transform.SetParent(_weapon.transform);
+            secondary.transform.SetParent(_weapon.transform);
+            main.transform.localPosition = Vector3.back * 40f;
+            typeof(WeaponHardPoint).GetField("mainBattery", PRIVATE_INSTANCE).SetValue(main, true);
+            typeof(HardPoint).GetField("spawnDestroyedExplosion", PRIVATE_INSTANCE).SetValue(main, false);
+            // Turned abeam, the aft main already reaches the target; bow-on it sits 40 units further away.
+            _weapon.transform.rotation = Quaternion.Euler(0f, 90f, 0f);
+            AttackData group = Group(1);
+            group.Units[0].Transform.position = Vector3.forward * 80f;
+
+            Assert.That(_weapon.MainBatteryReaches(group.TargetEntity, 1f), Is.False);
+            Assert.That(_weapon.MainBatteryReaches(group.TargetEntity, 1.25f), Is.True);
+
+            group.Units[0].Transform.position = Vector3.forward * 50f;
+            Assert.That(_weapon.MainBatteryReaches(group.TargetEntity, 1f), Is.True);
+
+            group.Units[0].Transform.position = Vector3.forward * 80f;
+            main.UpdateData(0f);
+            Assert.That(_weapon.MainBatteryReaches(group.TargetEntity, 1f), Is.True,
+                "Without a live main battery the secondaries' reach decides.");
+        }
+
         private List<WeaponHardPoint> ConfigureMounts(int count, TargetPreference preference = TargetPreference.Any)
         {
             CombatModifiers modifiers = new CombatModifiers();

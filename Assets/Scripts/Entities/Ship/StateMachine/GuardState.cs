@@ -126,7 +126,7 @@ namespace EmpireAtWar.Entities.Ship.StateMachine
             {
                 // Any chase move replaces the follow course, so the next Follow must re-path.
                 _isFollowing = false;
-                if (ShipEngagement.CanEngage(_engagementTarget, _movement, _weapon, _isHolding))
+                if (ShipEngagement.CanHoldOn(_engagementTarget, _movement, _weapon, _isHolding))
                 {
                     _isHolding = true;
                     _movement.HoldPosition(_engagementTarget);

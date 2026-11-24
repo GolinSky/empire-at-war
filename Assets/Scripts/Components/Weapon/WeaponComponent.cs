@@ -477,6 +477,38 @@ namespace EmpireAtWar.Components.Weapon
             return distance <= Mathf.Max(GetEngagementRange(targetClass), contactDistance * CONTACT_ENGAGE_FACTOR);
         }
 
+        public bool MainBatteryReaches(IEntity target, float reachFactor)
+        {
+            Vector3 pivot = _viewTransform.position;
+            Vector3 bearing = PlanarGeometry.Flatten(target.GetFacade<IEntityTransformFacade>().Transform.position - pivot);
+            if (bearing.sqrMagnitude <= Mathf.Epsilon) return true;
+
+            IHardPointModel focusedHardPoint = _mainAttackData != null && _mainAttackData.IsFocused &&
+                _mainAttackData.TargetEntity == target ? _mainAttackData.Units[0] : null;
+            CollectFacingTargets(target, _facingTargetPositions, _facingTargetUnits, focusedHardPoint);
+            if (_facingTargetPositions.Count == 0) return true;
+
+            // Main batteries share a forward sector: place each one where it sits with the bow turned at the target.
+            Quaternion bowOnTarget = Quaternion.FromToRotation(PlanarGeometry.Flatten(_viewTransform.forward), bearing);
+            ShipClass targetClass = target.HealthModel.ShipClass;
+            bool hasMainBattery = false;
+            for (int i = 0; i < hardPoints.Count; i++)
+            {
+                WeaponHardPoint mount = hardPoints[i];
+                if (!mount.IsMainBattery || !mount.CanContributeToFacing(targetClass, _modifiers) ||
+                    targetClass.IsStrikecraft() && IgnoresStrikecraft(mount)) continue;
+
+                hasMainBattery = true;
+                Vector3 origin = pivot + bowOnTarget * (mount.transform.position - pivot);
+                float range = mount.MaxAttackDistance * reachFactor;
+                for (int j = 0; j < _facingTargetPositions.Count; j++)
+                    if (PlanarGeometry.DistanceSquared(origin, _facingTargetPositions[j]) <= range * range)
+                        return true;
+            }
+
+            return !hasMainBattery;
+        }
+
         public bool TryGetHardPointApproach(AttackData target, out Vector3 offset)
         {
             offset = Vector3.zero;

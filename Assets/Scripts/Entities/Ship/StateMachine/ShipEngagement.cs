@@ -156,6 +156,15 @@ namespace EmpireAtWar.Entities.Ship.StateMachine
             return weapon.IsWithinReach(distance, ContactDistance(movement, target), target.HealthModel.ShipClass);
         }
 
+        /// <summary>
+        /// Hold-or-close-in test for a ship engaging <paramref name="enemy"/>: <see cref="CanEngage(IEntity, IShipMovement, IWeaponComponent, bool)"/>
+        /// and the forward main batteries reach it bow-on. Mains sit well aft of the hull centre, so a centre distance
+        /// inside reach can leave them short; the ship then held and swung broadside to use one side only.
+        /// </summary>
+        public static bool CanHoldOn(IEntity enemy, IShipMovement movement, IWeaponComponent weapon, bool isHolding) =>
+            CanEngage(enemy, movement, weapon, isHolding) &&
+            weapon.MainBatteryReaches(enemy, isHolding ? HELD_REACH_FACTOR : 1f);
+
         /// <summary>Whether the ship's guns would reach the target from <paramref name="origin"/>.</summary>
         public static bool IsInReachFrom(Vector3 origin, IShipMovement movement, IWeaponComponent weapon,
             IEntity target)
