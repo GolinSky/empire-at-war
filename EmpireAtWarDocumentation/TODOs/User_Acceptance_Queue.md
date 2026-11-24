@@ -613,3 +613,7 @@ created: "2026-10-29\r"
 ## Main Battery Hold Distance
 
 - [ ] [[Done/Bugs/Main_Battery_Hold_Distance]] — Ion bolts at 214 (was 107) look right. Hold-distance fix accepted by user 2026-11-24. Run `Combat`, `Navigation`, `Ships` when authorized; tests not run. Run `Combat`, `Navigation`, `Ships` when authorized; compile passed, tests not run.
+
+## ISD I vs Venator Balance
+
+- [ ] [[Done/Bugs/ISD_I_Venator_Balance]] — 1v1 ISD I vs Venator I: ISD I wins or is close; all 14 heavy duals fire at hold; Venator beam no longer dominates hull loss; Imperator shows Boost Weapon Power. Run `Combat`, `Ships`, `Abilities`, `Balance` when authorized; compile passed, tests not run.

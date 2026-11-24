@@ -733,11 +733,12 @@ MonoBehaviour:
     scope: 0
     faction: 0
     unit: 
-    damageMultiplier: 2
+    damageMultiplier: 1
     reloadMultiplier: 1
     rangeMultiplier: 1
-    reason: Shared heavy laser beam damage raised 4x (0.5 to 2); Executor uses its
-      separate ability profile.
+    reason: 'Shared heavy laser beam damage raised 4x (0.5 to 2), then halved to
+      1 (2026-11-24): Venator-class beam did 2/3 of ISD I hull loss once its shields
+      dropped. Executor uses its separate ability profile.'
     overrideVisual: 0
     shotPrefab: {fileID: 0}
     beamPrefab: {fileID: 0}

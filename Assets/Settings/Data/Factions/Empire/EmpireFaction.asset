@@ -43,8 +43,8 @@ MonoBehaviour:
         displayName: ISD I
         description: '14,000 hull; 11,000 shields; speed 20. Twenty-four targetable
           weapons: six dual heavy turbolaser main batteries, two heavy dual ion cannons,
-          two medium dual ion cannons, eight dual medium turbolasers and six medium
-          dual laser cannons, plus four point-defense guns. Two shield generators,
+          two medium dual ion cannons, eight more dual heavy turbolasers and six
+          medium dual laser cannons, plus four point-defense guns. Two shield generators,
           two engines, tractor beam and hangar are targetable. Boost Weapon Power
           halves weapon reload and time between shots and halves speed and shield
           regeneration for 7 s. Recovers in 50 s. Tractor Beam slows enemy ships
@@ -58,7 +58,7 @@ MonoBehaviour:
         <Name>k__BackingField: ISD I
         <MaxCount>k__BackingField: 3
         <AvailableLevel>k__BackingField: 4
-        <Price>k__BackingField: 7500
+        <Price>k__BackingField: 7000
         <BuildTime>k__BackingField: 65
         <UnitCapacity>k__BackingField: 10
         <Icon>k__BackingField: {fileID: 21300000, guid: b8f66d736a9c0a841b8957320119ca55,

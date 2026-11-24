@@ -181,10 +181,10 @@ MonoBehaviour:
         displayName: Imperator
         description: Late Clone Wars Republic prototype battleship. Six heavy twin
           turbolasers, two heavy twin ion cannons, fourteen turbolaser batteries
-          and five ion batteries deliver heavy direct fire. Laser Beam replaces Tractor
-          Beam. A lack of point defense leaves it vulnerable to bombers. Deploys
-          1 fighter squadron, 1 interceptor squadron, 1 bomber squadron at once.
-          Carries 6 total squadron launches, including the initial deployment.
+          and five ion batteries deliver heavy direct fire. Boost Weapon Power and
+          Tractor Beam. A lack of point defense leaves it vulnerable to bombers.
+          Deploys 1 fighter squadron, 1 interceptor squadron, 1 bomber squadron at
+          once. Carries 6 total squadron launches, including the initial deployment.
         role: Capital / Battleship / Heavy direct fire
         iconKey: 467453f64c3f87547aa904ce3fda10b9:21300000
         isHero: 0

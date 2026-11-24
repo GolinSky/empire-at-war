@@ -169,7 +169,7 @@ MonoBehaviour:
     <Min>k__BackingField: -142
     <Max>k__BackingField: 143
   mainBattery: 0
-  <WeaponType>k__BackingField: 5
+  <WeaponType>k__BackingField: 3
 --- !u!135 &3798494072087654210
 SphereCollider:
   m_ObjectHideFlags: 0
@@ -5875,7 +5875,7 @@ MonoBehaviour:
     <Min>k__BackingField: -15
     <Max>k__BackingField: 162
   mainBattery: 0
-  <WeaponType>k__BackingField: 5
+  <WeaponType>k__BackingField: 3
 --- !u!135 &2118757405989055179
 SphereCollider:
   m_ObjectHideFlags: 0
@@ -5955,7 +5955,7 @@ MonoBehaviour:
     <Min>k__BackingField: -94
     <Max>k__BackingField: 95
   mainBattery: 0
-  <WeaponType>k__BackingField: 5
+  <WeaponType>k__BackingField: 3
 --- !u!135 &270395685707138467
 SphereCollider:
   m_ObjectHideFlags: 0
@@ -6614,11 +6614,6 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   shieldView: {fileID: 6726589032486533280}
-  ionStunPrefab: {fileID: 6241401996787714037, guid: f49dbb9fe33e5814f8900d78fb93f2e9,
-    type: 3}
-  ionFieldBounds:
-    m_Center: {x: 0, y: 0, z: 0}
-    m_Extent: {x: 47.131626, y: 24.823048, z: 83.998856}
   <ShipUnits>k__BackingField:
   - {fileID: 9115428535522438523}
   - {fileID: 6954410492256412303}
@@ -6978,7 +6973,7 @@ MonoBehaviour:
     <Min>k__BackingField: -161
     <Max>k__BackingField: 16
   mainBattery: 0
-  <WeaponType>k__BackingField: 5
+  <WeaponType>k__BackingField: 3
 --- !u!135 &7439671852275327898
 SphereCollider:
   m_ObjectHideFlags: 0
@@ -13056,7 +13051,7 @@ MonoBehaviour:
     <Min>k__BackingField: -160
     <Max>k__BackingField: 15
   mainBattery: 0
-  <WeaponType>k__BackingField: 5
+  <WeaponType>k__BackingField: 3
 --- !u!135 &5234639964737289373
 SphereCollider:
   m_ObjectHideFlags: 0
@@ -13313,7 +13308,7 @@ MonoBehaviour:
     <Min>k__BackingField: -94
     <Max>k__BackingField: 95
   mainBattery: 0
-  <WeaponType>k__BackingField: 5
+  <WeaponType>k__BackingField: 3
 --- !u!135 &5192775537757932242
 SphereCollider:
   m_ObjectHideFlags: 0
@@ -13455,7 +13450,7 @@ MonoBehaviour:
     <Min>k__BackingField: -15
     <Max>k__BackingField: 161
   mainBattery: 0
-  <WeaponType>k__BackingField: 5
+  <WeaponType>k__BackingField: 3
 --- !u!135 &7421419238237858492
 SphereCollider:
   m_ObjectHideFlags: 0
@@ -20252,7 +20247,7 @@ MonoBehaviour:
     <Min>k__BackingField: -160
     <Max>k__BackingField: 39
   mainBattery: 0
-  <WeaponType>k__BackingField: 5
+  <WeaponType>k__BackingField: 3
 --- !u!135 &740678788837030541
 SphereCollider:
   m_ObjectHideFlags: 0

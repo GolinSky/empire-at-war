@@ -18,7 +18,7 @@ namespace EmpireAtWar.Tests.Editor
         public void VenatorLaserBeamWeapon_IsBlue() =>
             AssertBlue(AssetDatabase.LoadAssetAtPath<WeaponsData>(WEAPONS_PATH).GetProfile(WeaponType.LaserBeam).Color);
 
-        [TestCase(ShipAbilityId.LaserBeam)] // Imperator
+        [TestCase(ShipAbilityId.LaserBeam)] // Catalog entry; no ship carries it since the Imperator took Boost Weapon Power
         [TestCase(ShipAbilityId.ProtonBeam)] // Resolute (Venator class)
         public void BeamAbility_IsBlue(ShipAbilityId id) => AssertBlue(BeamColor(id));
 
