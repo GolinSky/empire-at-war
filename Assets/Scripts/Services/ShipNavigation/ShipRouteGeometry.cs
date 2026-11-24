@@ -8,6 +8,8 @@ namespace EmpireAtWar.Services.ShipNavigation
     internal static class ShipRouteGeometry
     {
         public const float EPSILON = 0.0001f;
+        // Float spacing near the 3450-unit map edge is ~0.00024; touching circles there miss EPSILON.
+        private const float CONTACT_TOLERANCE = 0.001f;
 
         public static float2 Right(float2 direction) => new float2(direction.y, -direction.x);
         public static float Cross(float2 a, float2 b) => a.x * b.y - a.y * b.x;
@@ -19,9 +21,9 @@ namespace EmpireAtWar.Services.ShipNavigation
             float2 delta = b.Center - a.Center;
             float distance = math.length(delta);
             float offset = a.Sign * a.Radius - b.Sign * b.Radius;
-            // Circles touching within EPSILON keep a degenerate tangent at the contact point:
-            // consecutive corner fillets capped at half their shared leg touch exactly.
-            if (distance <= EPSILON || distance < math.abs(offset) - EPSILON)
+            // Touching circles keep a degenerate tangent at the contact point: consecutive corner
+            // fillets capped at half their shared leg, or both meeting its midpoint, touch exactly.
+            if (distance <= EPSILON || distance < math.abs(offset) - CONTACT_TOLERANCE)
             {
                 from = a.Center;
                 to = b.Center;

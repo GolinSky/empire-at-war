@@ -93,7 +93,9 @@ namespace EmpireAtWar.Services.ShipNavigation
                     // Funnel corners approximate the arc: a hint just below PI can still
                     // require a tangent sweep above PI. Choose the winding nearest the hint.
                     if (sweep < 0f && sweep + math.PI < a.SweepHint) sweep += 2f * math.PI;
-                    if (sweep <= ShipRouteGeometry.EPSILON)
+                    // Only a corner the route does not wrap is dropped. A nearly collinear corner can turn
+                    // under EPSILON yet still keep its leg out of the disk; dropping it re-inserts it forever.
+                    if (sweep <= 0f)
                     {
                         ShipRouteCircle previous = Circles[a.Previous];
                         previous.Next = a.Next;
@@ -272,7 +274,7 @@ namespace EmpireAtWar.Services.ShipNavigation
                 {
                     float sweep = ShipRouteGeometry.Sweep(entry - circle.Center, exit - circle.Center, circle.Sign);
                     if (sweep < -ShipRouteGeometry.EPSILON) sweep += 2f * math.PI;
-                    if (sweep > ShipRouteGeometry.EPSILON)
+                    if (sweep > 0f)
                         Pieces.Add(ShipRouteGeometry.Arc(circle, entry, sweep, Height));
                 }
                 if (math.distancesq(exit, nextEntry) > ShipRouteGeometry.EPSILON * ShipRouteGeometry.EPSILON)

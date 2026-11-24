@@ -21,10 +21,30 @@ namespace EmpireAtWar.Tests.Editor
         {
             // Full builder input captured from battle frame 78862, registration 77.
             // Keep waypoint tags, endpoint link, bounds and all clearance-expanded disks exact.
+            AssertCapturedRouteBuilds(1696, ShipTangentRouteJob.FAILURE_ARC_REPAIR);
+        }
+
+        [Test]
+        public void Battle7145_TouchingSameSideFilletsKeepTheirContactTangent()
+        {
+            // Two same-side fillets meet the midpoint of a short leg; one lies inside the other,
+            // touching it 0.00014 units short of the exact radius difference at x ~2000.
+            AssertCapturedRouteBuilds(7145, ShipTangentRouteJob.FAILURE_NO_TANGENT);
+        }
+
+        [Test]
+        public void Battle10694_NearlyCollinearCornerIsNotReinsertedUntilTheRepairLimit()
+        {
+            // The leg past an overlapping disk pierces it by ~0.005 units; its corner turns 8e-5 rad.
+            AssertCapturedRouteBuilds(10694, ShipTangentRouteJob.FAILURE_LINE_REPAIR);
+        }
+
+        private static void AssertCapturedRouteBuilds(long buildId, int capturedFailure)
+        {
             var snapshot = JsonUtility.FromJson<ShipTangentFailureSnapshot>(File.ReadAllText(
-                Path.Combine(Application.dataPath, "Scripts/Tests/Editor/Navigation/ShipTangentBattle1696.json")));
-            Assert.That(snapshot.BuildId, Is.EqualTo(1696));
-            Assert.That(snapshot.FailureCode, Is.EqualTo(ShipTangentRouteJob.FAILURE_ARC_REPAIR));
+                Path.Combine(Application.dataPath, $"Scripts/Tests/Editor/Navigation/ShipTangentBattle{buildId}.json")));
+            Assert.That(snapshot.BuildId, Is.EqualTo(buildId));
+            Assert.That(snapshot.FailureCode, Is.EqualTo(capturedFailure));
             using var graph = new CapturedGraph(snapshot);
 
             ShipRoute route = ShipTangentRouteBuilder.Build(graph, snapshot.Waypoints,

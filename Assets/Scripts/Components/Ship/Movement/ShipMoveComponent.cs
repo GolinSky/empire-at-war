@@ -245,6 +245,8 @@ namespace EmpireAtWar.Components.Ship.Movement
             _isReleased = true;
             _pendingFacingTarget = null;
             _hasQueuedPlan = false;
+            // A ship destroyed mid-brake still ticks; Stop would reach the unregistered navigation agent.
+            _isAnchorBraking = false;
             _modifiers.Changed -= HandleModifiersChanged;
             _shipSpawnClearance.ReleaseLanding(this);
             if (_isNavigationRegistered)
