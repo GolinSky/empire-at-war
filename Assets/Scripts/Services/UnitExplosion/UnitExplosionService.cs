@@ -12,6 +12,8 @@ namespace EmpireAtWar.Services.UnitExplosion
     public sealed class UnitExplosionService : Service, IUnitExplosionService, ITickable, IOrderedDisposable
     {
         private const float COVERAGE_PADDING = 1.2f;
+        // An orbital hit the unit survives stays a local blast: at most a Star Destroyer's hull, not a dreadnought's.
+        private const float MAX_ORBITAL_HIT_DIAMETER = 240f;
 
         private const int MAX_IDLE_EXPLOSIONS = 32;
         // Largest share of the camera distance an explosion moves towards the camera.
@@ -72,6 +74,7 @@ namespace EmpireAtWar.Services.UnitExplosion
             // The enclosing sphere covers every corner, even for a long or rotated hull.
             float diameter = bounds.extents.magnitude * 2f * COVERAGE_PADDING * coverageScale;
             bool isOrbitalHit = kind == UnitExplosionKind.OrbitalHit;
+            if (isOrbitalHit) diameter = Mathf.Min(diameter, MAX_ORBITAL_HIT_DIAMETER);
             ViewPool<UnitExplosionView> pool = isOrbitalHit ? _orbitalHitPool : _destructionPool;
             UnitExplosionView prefab = isOrbitalHit ? _orbitalHitPrefab : _destructionPrefab;
             UnitExplosionView view = pool.Get();
