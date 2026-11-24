@@ -132,6 +132,29 @@ namespace EmpireAtWar.Tests.Editor
         }
 
         [Test]
+        public void ShowAndHide_FadeAlphaInAndOut_AndDeactivateOnlyWhenFullyFaded()
+        {
+            CanvasGroup canvasGroup = _marker.GetComponent<CanvasGroup>();
+            Assert.That(canvasGroup.blocksRaycasts, Is.False);
+
+            _marker.Show(Vector2.zero, new HardPointMarkerData(null, Vector2.zero, 1f, false, false, false, 1f));
+            Assert.That(canvasGroup.alpha, Is.Zero);
+            _marker.Fade(0.01f);
+            Assert.That(canvasGroup.alpha, Is.InRange(0.01f, 0.99f));
+            _marker.Fade(10f);
+            Assert.That(canvasGroup.alpha, Is.EqualTo(1f));
+
+            _marker.Hide();
+            Assert.That(_marker.gameObject.activeSelf, Is.True, "Hide must fade out, not vanish.");
+            _marker.Fade(0.01f);
+            Assert.That(canvasGroup.alpha, Is.InRange(0.01f, 0.99f));
+            Assert.That(_marker.gameObject.activeSelf, Is.True);
+            _marker.Fade(10f);
+            Assert.That(canvasGroup.alpha, Is.Zero);
+            Assert.That(_marker.gameObject.activeSelf, Is.False);
+        }
+
+        [Test]
         public void IconGradient_IsBlackAtBottomAndHealthTintAtTop_PreservingAlpha()
         {
             _icon.color = new Color(0.8f, 0.6f, 0.4f, 0.35f);

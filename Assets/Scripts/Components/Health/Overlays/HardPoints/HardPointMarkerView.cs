@@ -3,7 +3,7 @@ using UnityEngine.UI;
 
 namespace EmpireAtWar.Components.Ship.Health.HardPointOverlay
 {
-    /// <summary>One screen-space hardpoint icon tinted by its remaining health.</summary>
+    /// <summary>One screen-space hardpoint icon tinted by its remaining health; fades in on show and out on hide.</summary>
     public sealed class HardPointMarkerView : MonoBehaviour
     {
         private const float ICON_BOX_SIZE = 28f;
@@ -11,10 +11,13 @@ namespace EmpireAtWar.Components.Ship.Health.HardPointOverlay
         private const float HEALTH_HUE_RANGE = 1f / 3f;
         private const float HEALTH_SATURATION = 0.55f;
         private const float HEALTH_BRIGHTNESS = 0.75f;
+        private const float FADE_DURATION = 0.15f;
 
         private RectTransform _root;
         private Image _icon;
         private HardPointTargetRing _targetRing;
+        private CanvasGroup _canvasGroup;
+        private float _targetAlpha;
 
         public static HardPointMarkerView Create(RectTransform parent)
         {
@@ -46,6 +49,8 @@ namespace EmpireAtWar.Components.Ship.Health.HardPointOverlay
             _targetRing.gameObject.SetActive(data.IsTargeted);
             if (data.IsTargeted) _root.SetAsLastSibling();
 
+            _targetAlpha = 1f;
+            enabled = _canvasGroup.alpha < 1f;
             if (!gameObject.activeSelf)
             {
                 gameObject.SetActive(true);
@@ -54,15 +59,38 @@ namespace EmpireAtWar.Components.Ship.Health.HardPointOverlay
 
         public void Hide()
         {
-            if (gameObject.activeSelf)
+            _targetAlpha = 0f;
+            if (_canvasGroup.alpha <= 0f)
             {
-                gameObject.SetActive(false);
+                if (gameObject.activeSelf) gameObject.SetActive(false);
+                return;
             }
+
+            enabled = true;
+        }
+
+        private void Update()
+        {
+            Fade(Time.unscaledDeltaTime);
+        }
+
+        internal void Fade(float deltaTime)
+        {
+            _canvasGroup.alpha = Mathf.MoveTowards(_canvasGroup.alpha, _targetAlpha, deltaTime / FADE_DURATION);
+            if (_canvasGroup.alpha != _targetAlpha) return;
+
+            enabled = false;
+            if (_targetAlpha <= 0f) gameObject.SetActive(false);
         }
 
         private void Build(RectTransform root)
         {
             _root = root;
+            _canvasGroup = root.gameObject.AddComponent<CanvasGroup>();
+            _canvasGroup.alpha = 0f;
+            _canvasGroup.blocksRaycasts = false;
+            _canvasGroup.interactable = false;
+            enabled = false;
 
             GameObject iconObject = new("Icon", typeof(RectTransform));
             iconObject.layer = root.gameObject.layer;
