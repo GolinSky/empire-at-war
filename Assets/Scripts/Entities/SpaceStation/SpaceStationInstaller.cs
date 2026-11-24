@@ -62,6 +62,7 @@ namespace EmpireAtWar.SpaceStation
             EntityFeatureBindings.RegisterHullDamage(builder);
             EntityFeatureBindings.RegisterRadar(builder, Bindings);
             EntityFeatureBindings.RegisterWeapons(builder, Bindings, Data.ComponentData.ShipClass);
+            EntityFeatureBindings.RegisterMuzzleBlasts(builder);
             EntityFeatureBindings.RegisterStationaryCombat(builder);
             EntityFeatureBindings.RegisterFog(builder, Bindings, !LocalPlayer.IsFriendly(Owner));
             builder.Register<StationHangarData>(Lifetime.Singleton).As<IHangarData>();

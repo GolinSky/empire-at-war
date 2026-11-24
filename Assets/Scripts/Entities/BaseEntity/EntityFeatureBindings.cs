@@ -43,6 +43,12 @@ namespace EmpireAtWar.Entities.BaseEntity
             builder.Register<UnitHullScorchBlasts>(Lifetime.Singleton).AsImplementedInterfaces();
         }
 
+        /// <summary>One muzzle blast per main-battery salvo for ships, stations and platforms. Needs <see cref="RegisterWeapons"/>.</summary>
+        public static void RegisterMuzzleBlasts(IContainerBuilder builder)
+        {
+            builder.Register<UnitMuzzleBlasts>(Lifetime.Singleton).AsImplementedInterfaces();
+        }
+
         public static void RegisterSelection(IContainerBuilder builder, EntityBindings bindings,
             SelectionType selectionType, SelectionType selectedAs)
         {

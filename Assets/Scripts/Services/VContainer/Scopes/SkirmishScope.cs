@@ -86,6 +86,8 @@ namespace EmpireAtWar.Services.VContainer
         private const int HARD_POINT_EXPLOSION_PREWARM = 16;
         // Blasts last ~2 s and a scorch step plays 1-3, so fewer are alive at once than burning hardpoints.
         private const int HULL_SCORCH_BLAST_PREWARM = 8;
+        // One blast per main-battery salvo, ~2 s each.
+        private const int MUZZLE_BLAST_PREWARM = 32;
         [SerializeField] private FogOfWarSystem fogOfWarSystem;
         [SerializeField] private SpawnAreaOverlay spawnAreaOverlay;
         [SerializeField] private ReinforcementZoneData reinforcementZoneData;
@@ -97,6 +99,7 @@ namespace EmpireAtWar.Services.VContainer
         [SerializeField] private ExplosionVfx fighterExplosion;
         [SerializeField] private ExplosionVfx hardPointExplosion;
         [SerializeField] private ExplosionVfx hullScorchBlast;
+        [SerializeField] private ExplosionVfx muzzleBlast;
         [SerializeField] private ImpactEffectView impactEffectPrefab;
         [SerializeField] private UnitExplosionView unitExplosionPrefab;
         [SerializeField] private UnitExplosionView orbitalHitExplosionPrefab;
@@ -297,6 +300,9 @@ namespace EmpireAtWar.Services.VContainer
             builder.Register<HullScorchBlastPool>(Lifetime.Singleton).AsImplementedInterfaces().AsSelf()
                 .WithParameter(hullScorchBlast).WithParameter(cameraService.SceneCamera)
                 .WithParameter("prewarmCount", HULL_SCORCH_BLAST_PREWARM);
+            builder.Register<MuzzleBlastPool>(Lifetime.Singleton).AsImplementedInterfaces().AsSelf()
+                .WithParameter(muzzleBlast).WithParameter(cameraService.SceneCamera)
+                .WithParameter("prewarmCount", MUZZLE_BLAST_PREWARM);
             builder.Register<SlowTickService>(Lifetime.Singleton).AsImplementedInterfaces().AsSelf();
             builder.Register<BattleAreaService>(Lifetime.Singleton).AsImplementedInterfaces().AsSelf();
             builder.RegisterComponent(spawnAreaOverlay).AsImplementedInterfaces().AsSelf();

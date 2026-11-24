@@ -22,6 +22,8 @@ system:
 | `UnitDeathExplosion` | Explosion 1 | `UnitExplosionService` destruction pool | hull sphere × 1.2 × `sizeMultiplier` 2 |
 | `OrbitalHitExplosion` | Explosion 3 | `UnitExplosionService` orbital pool (`UnitExplosionKind.OrbitalHit`); one per salvo, on the last impact (`salvo.IsComplete` in `SuperWeaponFireService.ApplyHit`) | hull sphere × 1.2 × `sizeMultiplier` 1.5 |
 
+| `MuzzleBlastVfx` (2026-11-24) | Explosion FREE 3 | `MuzzleBlastPool` (prewarm 32), `UnitMuzzleBlasts` (ships, stations, platforms; not squadrons) | diameter = `WeaponProfile.Size.x × 6`; **main batteries only**, one per salvo (`WeaponHardPoint.MainBatterySalvoStarted` → `IWeaponFireEvents`); offset 0.25 × diameter along mount `up` + 0.15 × diameter towards the aim point, kept in mount space while it follows; skipped when fog-hidden; streak `MuzzleFlashView` kept |
+
 - Hardpoint VFX scale per ship: Raider 1, ISD II 2.2, Executor 8.
 - Smoke loop: lifetime 4–6 s, 2/s, flipbook frames 24→127 of 128 (first 3 rows = start burst, skipped), random 0–360° rotation, alpha fade-in 0→1 over first 25 %, out after 85 %, World space, 0.4 s start delay.
 - Removed from copies: Cinemachine impulse, disabled force fields + Animator, all lights (vendor particle lights, death flash light; `UnitExplosionView.flashLight` removed from code). `CinematicExplosionLight.prefab` deleted.

@@ -41,8 +41,12 @@ namespace EmpireAtWar.ViewComponents.Health
         public event System.Action<WeaponProfile, Transform, float> ShotEmitted;
         public event System.Action<AttackData> AttackEmitted;
         internal event System.Action DestructionChanged;
+        // Sequence generation of the last emitted shot; a new generation marks a salvo's first shot.
+        private int _lastShotGeneration = -1;
 
         [field:SerializeField] public WeaponType WeaponType { get; private set; }
+        /// <summary>Raised with a main-battery salvo's first emitted shot: profile, muzzle, aim point.</summary>
+        public event System.Action<WeaponProfile, Transform, Vector3> MainBatterySalvoStarted;
         protected IWeaponPresenter WeaponPresenter { get; private set; }
         public bool Destroyed { get; private set; }
         public bool IsBusy => _sequence.IsBusy || !_reloadTimer.IsComplete || Time.time < _turnEndTime;
@@ -232,6 +236,12 @@ namespace EmpireAtWar.ViewComponents.Health
             if (isHit)
                 WeaponPresenter.ApplyDamage(attackData, hardPointModel, _profile, duration, shot.DamageDuration, missile);
         }
+            if (_lastShotGeneration != sequenceGeneration)
+            {
+                _lastShotGeneration = sequenceGeneration;
+                if (mainBattery && MainBatterySalvoStarted != null)
+                    MainBatterySalvoStarted.Invoke(_profile, transform, aimPoint);
+            }
 
         internal void PrepareEffects() => GetVisuals();
 

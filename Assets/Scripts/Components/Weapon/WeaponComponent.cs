@@ -126,6 +126,7 @@ namespace EmpireAtWar.Components.Weapon
         private bool _followsHost;
 
         public event Action<WeaponProfile, Transform, float> ShotEmitted;
+        public event Action<WeaponProfile, Transform, Vector3> MainBatterySalvoStarted;
         public event Action<AttackData, AttackType> TargetAdded;
         public event Action TargetReset;
 
@@ -205,6 +206,7 @@ namespace EmpireAtWar.Components.Weapon
                     _attackerClass.IsStrikecraft());
                 hardPoint.PrepareEffects();
                 hardPoint.ShotEmitted += OnShotEmitted;
+                hardPoint.MainBatterySalvoStarted += OnMainBatterySalvoStarted;
                 hardPoint.AttackEmitted += OnAttackEmitted;
                 if (_artillery != null)
                     _artillery.RegisterMount(hardPoint, profile.Family, _viewTransform.position);
@@ -264,6 +266,7 @@ namespace EmpireAtWar.Components.Weapon
             foreach (WeaponHardPoint hardPoint in hardPoints)
             {
                 hardPoint.ShotEmitted -= OnShotEmitted;
+                hardPoint.MainBatterySalvoStarted -= OnMainBatterySalvoStarted;
                 hardPoint.AttackEmitted -= OnAttackEmitted;
                 hardPoint.ReleaseAttackSequence();
             }
@@ -298,6 +301,11 @@ namespace EmpireAtWar.Components.Weapon
         {
             BattleTelemetry.RecordShot(_faction, _telemetryName);
             if (ShotEmitted != null) ShotEmitted.Invoke(profile, muzzle, effectiveInterval);
+        }
+
+        private void OnMainBatterySalvoStarted(WeaponProfile profile, Transform muzzle, Vector3 aimPoint)
+        {
+            if (MainBatterySalvoStarted != null) MainBatterySalvoStarted.Invoke(profile, muzzle, aimPoint);
         }
 
         private void OnAttackEmitted(AttackData attackData)

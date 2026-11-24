@@ -61,6 +61,7 @@ namespace EmpireAtWar.Ship
             EntityFeatureBindings.RegisterHullDamage(builder);
             EntityFeatureBindings.RegisterRadar(builder, Bindings);
             EntityFeatureBindings.RegisterWeapons(builder, Bindings, Data.ShipClass);
+            EntityFeatureBindings.RegisterMuzzleBlasts(builder);
             foreach (var weapon in Bindings.Weapons)
             {
                 weapon.ConfigureArtillery(Data.UsesArtilleryStandoff);

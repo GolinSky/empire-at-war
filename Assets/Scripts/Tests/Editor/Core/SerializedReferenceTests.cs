@@ -65,6 +65,7 @@ namespace EmpireAtWar.Tests.Editor
             new SerializedReference(typeof(SkirmishScope), "hullDamageSettings"),
             new SerializedReference(typeof(SkirmishScope), "hardPointExplosion"),
             new SerializedReference(typeof(SkirmishScope), "hullScorchBlast"),
+            new SerializedReference(typeof(SkirmishScope), "muzzleBlast"),
             new SerializedReference(typeof(SkirmishScope), "unitExplosionPrefab"),
             new SerializedReference(typeof(SkirmishScope), "orbitalHitExplosionPrefab"),
             new SerializedReference(typeof(BattleAtmosphereView), "sun"),

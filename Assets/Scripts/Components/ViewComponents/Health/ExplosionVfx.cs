@@ -12,6 +12,7 @@ namespace EmpireAtWar.ViewComponents.Health
         private bool _emitting = true;
 
         public IReadOnlyList<Renderer> Renderers => renderers;
+        public float StartSize => particles.main.startSize.constant;
         public bool HasSustainedEmission => sustainedEmitters.Length > 0;
 
         public void SetSustainedEmission(bool enabled)

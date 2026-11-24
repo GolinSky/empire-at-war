@@ -958,6 +958,8 @@ MonoBehaviour:
     type: 3}
   hullScorchBlast: {fileID: 1293930440358859497, guid: 2092befb15d8c35498875dfde226d7cd,
     type: 3}
+  muzzleBlast: {fileID: 154364686753786765, guid: 850cd8b37b6a6174e98b34586cbe4265,
+    type: 3}
   impactEffectPrefab: {fileID: 2053978733039751709, guid: 11b47c313b274964b8d7b31e5eb9fdf7,
     type: 3}
   unitExplosionPrefab: {fileID: 7217128803201176634, guid: 3870d387cb3056d48bfa4f5c795008e0,

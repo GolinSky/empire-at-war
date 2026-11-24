@@ -26,6 +26,7 @@ namespace EmpireAtWar.Services.Battle
         private readonly FighterExplosionPool _fighters;
         private readonly HardPointExplosionPool _hardPoints;
         private readonly HullScorchBlastPool _scorchBlasts;
+        private readonly MuzzleBlastPool _muzzleBlasts;
         private readonly ImpactEffectView _impacts;
         private readonly BattleVictoryService _victory;
         private readonly TeamIntelRegistry _intel;
@@ -37,12 +38,12 @@ namespace EmpireAtWar.Services.Battle
         public SimulationResetService(PlayerScopeBootstrap players, PlayerRoster roster, ShotPoolPrewarmer shots,
             BoltFlightBatch bolts, IncomingMissileRegistry missiles, UnitWreckService wrecks,
             UnitExplosionService explosions, FighterExplosionPool fighters, HardPointExplosionPool hardPoints,
-            HullScorchBlastPool scorchBlasts, ImpactEffectView impacts, BattleVictoryService victory, TeamIntelRegistry intel, ShipAbilityService abilities,
+            HullScorchBlastPool scorchBlasts, MuzzleBlastPool muzzleBlasts, ImpactEffectView impacts, BattleVictoryService victory, TeamIntelRegistry intel, ShipAbilityService abilities,
             CombatAttackCoordinator attacks, HarmonicBombService bombs, RepairService repairs)
         {
             _players = players; _roster = roster; _shots = shots; _bolts = bolts;
             _missiles = missiles; _wrecks = wrecks; _explosions = explosions; _fighters = fighters;
-            _hardPoints = hardPoints; _scorchBlasts = scorchBlasts; _impacts = impacts; _victory = victory;
+            _hardPoints = hardPoints; _scorchBlasts = scorchBlasts; _muzzleBlasts = muzzleBlasts; _impacts = impacts; _victory = victory;
             _intel = intel; _abilities = abilities; _attacks = attacks;
             _bombs = bombs;
             _repairs = repairs;
@@ -57,7 +58,7 @@ namespace EmpireAtWar.Services.Battle
             _attacks.ClearPendingAttacks();
             _intel.Clear();
             _shots.Clear(); _bolts.Clear(); _missiles.Clear();
-            _wrecks.Clear(); _explosions.Clear(); _fighters.Clear(); _hardPoints.Clear(); _scorchBlasts.Clear(); _impacts.Clear();
+            _wrecks.Clear(); _explosions.Clear(); _fighters.Clear(); _hardPoints.Clear(); _scorchBlasts.Clear(); _muzzleBlasts.Clear(); _impacts.Clear();
             await Awaitable.NextFrameAsync(cancellationToken);
             _roster.Replace(SimulationPreset.Create(setup).Build().Slots);
             _players.Initialize();

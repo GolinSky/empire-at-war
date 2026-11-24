@@ -55,11 +55,15 @@ namespace EmpireAtWar.Services.UnitExplosion
             if (!Application.isPlaying && _root != null) Object.DestroyImmediate(_root.gameObject);
         }
 
-        public void Play(Transform anchor, IFogVisibilityFacade fogVisibility, float scale)
+        public void Play(Transform anchor, IFogVisibilityFacade fogVisibility, float scale) =>
+            Play(anchor, fogVisibility, scale, Vector3.zero);
+
+        /// <summary>Plays at <paramref name="localOffset"/> in the anchor's space, following it as it moves and turns.</summary>
+        public void Play(Transform anchor, IFogVisibilityFacade fogVisibility, float scale, Vector3 localOffset)
         {
             ExplosionVfx explosion = TakeIdle();
             explosion.transform.localScale = Vector3.one * scale;
-            ActiveExplosion active = new ActiveExplosion(explosion, anchor, fogVisibility);
+            ActiveExplosion active = new ActiveExplosion(explosion, anchor, fogVisibility, localOffset);
             GeometryUtility.CalculateFrustumPlanes(_camera, _planes);
             active.Follow(_planes);
             explosion.Play();
@@ -173,15 +177,17 @@ namespace EmpireAtWar.Services.UnitExplosion
         {
             private readonly Transform _anchor;
             private readonly IFogVisibilityFacade _fogVisibility;
+            private readonly Vector3 _localOffset;
 
             public ExplosionVfx Explosion { get; }
 
             public ActiveExplosion(ExplosionVfx explosion, Transform anchor, IFogVisibilityFacade fogVisibility,
-                bool isExtinguished = false)
+                Vector3 localOffset, bool isExtinguished = false)
             {
                 Explosion = explosion;
                 _anchor = anchor;
                 _fogVisibility = fogVisibility;
+                _localOffset = localOffset;
                 IsExtinguished = isExtinguished;
             }
 
@@ -190,14 +196,16 @@ namespace EmpireAtWar.Services.UnitExplosion
             /// <summary>Stopped on a healed unit: still follows the anchor, never resumes emitting.</summary>
             public bool IsExtinguished { get; }
 
-            public ActiveExplosion Extinguish() => new ActiveExplosion(Explosion, _anchor, _fogVisibility, true);
+            public ActiveExplosion Extinguish() =>
+                new ActiveExplosion(Explosion, _anchor, _fogVisibility, _localOffset, true);
 
             public void Follow(Plane[] planes)
             {
-                Explosion.transform.position = _anchor.position;
+                Vector3 position = _localOffset == Vector3.zero ? _anchor.position : _anchor.TransformPoint(_localOffset);
+                Explosion.transform.position = position;
                 bool isHidden = _fogVisibility != null && _fogVisibility.IsHiddenByFog;
                 IReadOnlyList<Renderer> renderers = Explosion.Renderers;
-                bool visible = !isHidden && GeometryUtility.TestPlanesAABB(planes, new Bounds(_anchor.position, Vector3.zero));
+                bool visible = !isHidden && GeometryUtility.TestPlanesAABB(planes, new Bounds(position, Vector3.zero));
                 for (int i = 0; i < renderers.Count; i++)
                 {
                     Renderer renderer = renderers[i];
