@@ -17,5 +17,5 @@ MonoBehaviour:
   cruiser: 200
   heavyCruiser: 350
   capital: 650
-  battleCruiser: 850
+  battleCruiser: 900
   dreadnought: 1400

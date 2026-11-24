@@ -13,9 +13,9 @@ MonoBehaviour:
   m_Name: EmpireShipShieldRegenTiersData
   m_EditorClassIdentifier: Assembly-CSharp::EmpireAtWar.Entities.Ship.Data.ShipShieldRegenTiersData
   corvette: 15
-  frigate: 60
-  cruiser: 165
-  heavyCruiser: 250
-  capital: 550
-  battleCruiser: 750
-  dreadnought: 1250
+  frigate: 65
+  cruiser: 175
+  heavyCruiser: 300
+  capital: 600
+  battleCruiser: 850
+  dreadnought: 1300
