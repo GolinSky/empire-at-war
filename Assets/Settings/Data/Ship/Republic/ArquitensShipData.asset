@@ -41,7 +41,7 @@ MonoBehaviour:
   - {x: -7.086371, y: 3.109821}
   - {x: -7.100202, y: 3.0640647}
   - {x: -7.5544486, y: -10.381245}
-  <Speed>k__BackingField: 40
+  <Speed>k__BackingField: 45
   heightTiers: {fileID: 11400000, guid: f4dc0cc9c112ddb4d8209fb4b8d1d9de, type: 2}
   <HeightTier>k__BackingField: 7
   <HullBottom>k__BackingField: -5.632104
@@ -61,7 +61,7 @@ MonoBehaviour:
   shieldRegenTiers: {fileID: 11400000, guid: 7e2a305c4ff871a4e888501384d8b05d, type: 2}
   <ShieldRegenTier>k__BackingField: 2
   <ShieldRegenMultiplier>k__BackingField: 1
-  <ShieldRegenerateDelay>k__BackingField: 1
+  <ShieldRegenerateDelay>k__BackingField: 0.8
   <Range>k__BackingField: 730
   <Delay>k__BackingField: 0.25
   abilities: 03000000
