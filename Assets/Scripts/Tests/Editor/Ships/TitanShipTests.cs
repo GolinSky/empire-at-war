@@ -18,6 +18,7 @@ using EmpireAtWar.ViewComponents.Health;
 using NUnit.Framework;
 using UnityEditor;
 using UnityEngine;
+using ShipEngineGlowSetup = EmpireAtWar.Editor.Ship.ShipEngineGlowSetup;
 using ShipEntity = EmpireAtWar.Ship.Ship;
 
 namespace EmpireAtWar.Tests.Editor
@@ -53,7 +54,9 @@ namespace EmpireAtWar.Tests.Editor
             foreach (var point in view.GetComponentsInChildren<HardPoint>(true))
                 Assert.That(ship.Bindings.Injectables.Contains(point), Is.True, point.name);
             var renderers = new SerializedObject(view.GetComponent<UnitRenderStateComponent>()).FindProperty("meshRenderers");
-            Assert.That(renderers.arraySize, Is.EqualTo(view.GetComponentsInChildren<MeshRenderer>(true).Length));
+            // Engine glow renderers leave the render state: their user value carries the glow fade.
+            Assert.That(renderers.arraySize, Is.EqualTo(view.GetComponentsInChildren<MeshRenderer>(true)
+                .Count(renderer => !ShipEngineGlowSetup.UsesEngineGlow(renderer))));
         }
 
         [Test]

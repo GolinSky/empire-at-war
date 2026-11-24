@@ -52,12 +52,15 @@ namespace EmpireAtWar.Editor.Balance
                 MatrixValue(draft, profile.DamageType, "damage", targetClass)));
 
         /// <summary>Shield damage per second from the unit's Ion weapons only, with the draft Ion vs shield value.</summary>
-        public BalanceDpsEstimate EstimateIonVsShields(BalanceUnit unit, BalanceDraft draft)
-        {
-            float shieldMultiplier = float.Parse(_matrix["matrix/" + (int)DamageType.Ion + "/vsShield"].DraftValue(draft),
+        public BalanceDpsEstimate EstimateIonVsShields(BalanceUnit unit, BalanceDraft draft) =>
+            Sum(unit, draft, profile => profile.DamageType == DamageType.Ion
+                ? profile.DamagePerSecond * IonShieldMultiplier(unit, draft)
+                : 0f);
+
+        // Read only for Ion weapons, like MatrixValue, so registries without the damage matrix still estimate.
+        private float IonShieldMultiplier(BalanceUnit unit, BalanceDraft draft) =>
+            float.Parse(_matrix["matrix/" + (int)DamageType.Ion + "/vsShield"].DraftValue(draft),
                 CultureInfo.InvariantCulture) * _ionShipShieldMultiplier * FactionIonScale(unit);
-            return Sum(unit, draft, profile => profile.DamageType == DamageType.Ion ? profile.DamagePerSecond * shieldMultiplier : 0f);
-        }
 
         // Shared and neutral units have no faction and fire at the unscaled rate.
         private float FactionIonScale(BalanceUnit unit) =>

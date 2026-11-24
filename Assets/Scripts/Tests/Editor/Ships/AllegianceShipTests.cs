@@ -3,6 +3,7 @@ using System.Linq;
 using EmpireAtWar.Components.AttackComponent;
 using EmpireAtWar.Components.Combat;
 using EmpireAtWar.Components.Hangar;
+using EmpireAtWar.Components.Ship.EngineGlow;
 using EmpireAtWar.Components.Ship.Health;
 using EmpireAtWar.Editor.Balance;
 using EmpireAtWar.Editor.BattleSimulator;
@@ -35,8 +36,9 @@ namespace EmpireAtWar.Tests.Editor
             var bindings = view.GetComponent<EntityBindings>();
             var points = view.GetComponentsInChildren<HealthComponent>(true).Single().ShipUnits;
             var team = view.GetComponentsInChildren<UnitRenderStateComponent>(true).Single();
+            var engineGlow = view.GetComponentsInChildren<ShipEngineGlowComponent>(true).Single();
             Assert.That(bindings.Injectables, Is.All.Not.Null);
-            Assert.That(bindings.Injectables, Is.EquivalentTo(points.Cast<MonoBehaviour>().Append(team)));
+            Assert.That(bindings.Injectables, Is.EquivalentTo(points.Cast<MonoBehaviour>().Append(team).Append(engineGlow)));
             var builder = new ContainerBuilder();
             Assert.DoesNotThrow(() =>
             {

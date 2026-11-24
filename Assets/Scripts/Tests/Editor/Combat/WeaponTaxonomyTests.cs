@@ -388,8 +388,9 @@ namespace EmpireAtWar.Tests.Editor
                     string context = $"{unit} mounts {definition.WeaponType}";
                     if (definition.Scope == WeaponScope.Unit)
                         Assert.That(unit, Is.EqualTo(definition.Unit), context);
-                    if (definition.Scope == WeaponScope.Faction)
-                        Assert.That(unitFactions[unit], Is.EqualTo(new[] { definition.Faction }), context);
+                    // Retired ships keep their data but sit on no faction roster (RetiredShipRosterTests).
+                    if (definition.Scope == WeaponScope.Faction && unitFactions.TryGetValue(unit, out FactionType[] factions))
+                        Assert.That(factions, Is.EqualTo(new[] { definition.Faction }), context);
                 }
             }
         }

@@ -2,6 +2,7 @@ using System.Linq;
 using EmpireAtWar.Components.AttackComponent;
 using EmpireAtWar.Components.Combat;
 using EmpireAtWar.Components.Hangar;
+using EmpireAtWar.Components.Ship.EngineGlow;
 using EmpireAtWar.Components.Ship.Health;
 using EmpireAtWar.Components.TeamColor;
 using EmpireAtWar.Entities.Ship.Data;
@@ -96,8 +97,9 @@ namespace EmpireAtWar.Tests.Editor
             var ship = view.GetComponent<ShipEntity>();
             var health = view.GetComponentsInChildren<HealthComponent>(true).Single();
             var teamColor = view.GetComponentsInChildren<UnitRenderStateComponent>(true).Single();
+            var engineGlow = view.GetComponentsInChildren<ShipEngineGlowComponent>(true).Single();
             Assert.That(ship.Bindings.Injectables, Is.All.Not.Null, "Deleted donor components must not remain in injection slots.");
-            Assert.That(ship.Bindings.Injectables, Is.EquivalentTo(health.ShipUnits.Cast<MonoBehaviour>().Append(teamColor)));
+            Assert.That(ship.Bindings.Injectables, Is.EquivalentTo(health.ShipUnits.Cast<MonoBehaviour>().Append(teamColor).Append(engineGlow)));
         }
 
         [Test]

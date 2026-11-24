@@ -1,6 +1,7 @@
 using System.Collections.Generic;
 using System.IO;
 using System.Reflection;
+using EmpireAtWar.Components.Ship.EngineGlow;
 using EmpireAtWar.Components.Ship.Selection;
 using EmpireAtWar.Models.Players;
 using EmpireAtWar.Models.Selection;
@@ -47,11 +48,20 @@ namespace EmpireAtWar.Tests.Editor
 
                 selection.Initialize();
 
+                // Engine glow discs sit behind the hull; the ring fits the hull alone.
+                HashSet<Object> engineGlows = new HashSet<Object>();
+                foreach (ShipEngineGlowComponent engineGlow in root.GetComponentsInChildren<ShipEngineGlowComponent>(true))
+                {
+                    SerializedProperty glowRenderers = new SerializedObject(engineGlow).FindProperty("glowRenderers");
+                    for (int i = 0; i < glowRenderers.arraySize; i++)
+                        engineGlows.Add(glowRenderers.GetArrayElementAtIndex(i).objectReferenceValue);
+                }
+
                 Bounds hullBounds = default;
                 bool hasHull = false;
                 foreach (MeshRenderer hull in root.GetComponentsInChildren<MeshRenderer>())
                 {
-                    if (!hull.enabled || hull.GetComponent<Shield>() != null ||
+                    if (!hull.enabled || hull.GetComponent<Shield>() != null || engineGlows.Contains(hull) ||
                         hull.localBounds.extents == Vector3.zero)
                         continue;
 

@@ -47,7 +47,8 @@ namespace EmpireAtWar.Tests.Editor
             Assert.That(view.GetComponentsInChildren<HealthComponent>(true).Single().ShipUnits, Is.EquivalentTo(view.GetComponentsInChildren<HardPoint>(true)));
             var bindings = view.GetComponents<EntityBindings>().Single();
             Assert.That(bindings.Injectables, Is.All.Not.Null);
-            Assert.That(bindings.Injectables.Distinct().Count(), Is.EqualTo(12));
+            // Hardpoints, team color view and engine glow.
+            Assert.That(bindings.Injectables.Distinct().Count(), Is.EqualTo(13));
             Assert.That(bindings.Injectables.OfType<WeaponHardPoint>(), Is.EquivalentTo(weapons));
             var profiles = AssetDatabase.LoadAssetAtPath<WeaponsData>("Assets/Settings/Data/Models/Weapon/WeaponsData.asset");
             foreach (WeaponType weaponType in weapons.Select(w => w.WeaponType).Distinct())
