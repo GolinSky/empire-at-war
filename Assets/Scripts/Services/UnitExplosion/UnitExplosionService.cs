@@ -14,6 +14,8 @@ namespace EmpireAtWar.Services.UnitExplosion
         private const float COVERAGE_PADDING = 1.2f;
 
         private const int MAX_IDLE_EXPLOSIONS = 32;
+        // Largest share of the camera distance an explosion moves towards the camera.
+        private const float MAX_CAMERA_SHARE = 0.5f;
 
         private readonly UnitExplosionView _destructionPrefab;
         private readonly UnitExplosionView _orbitalHitPrefab;
@@ -23,8 +25,12 @@ namespace EmpireAtWar.Services.UnitExplosion
         private int _peakDestruction;
         private int _peakOrbitalHit;
 
-        public UnitExplosionService(UnitExplosionView destructionPrefab, UnitExplosionView orbitalHitPrefab)
+        private readonly UnityEngine.Camera _camera;
+
+        public UnitExplosionService(UnitExplosionView destructionPrefab, UnitExplosionView orbitalHitPrefab,
+            UnityEngine.Camera camera)
         {
+            _camera = camera;
             _destructionPrefab = destructionPrefab;
             _orbitalHitPrefab = orbitalHitPrefab;
             _destructionPool = new ViewPool<UnitExplosionView>(prefab: destructionPrefab, rootName: "UnitExplosions",
@@ -69,8 +75,9 @@ namespace EmpireAtWar.Services.UnitExplosion
             ViewPool<UnitExplosionView> pool = isOrbitalHit ? _orbitalHitPool : _destructionPool;
             UnitExplosionView prefab = isOrbitalHit ? _orbitalHitPrefab : _destructionPrefab;
             UnitExplosionView view = pool.Get();
-            view.Play(bounds.center, diameter / prefab.Diameter);
-            _active.Add(new ActiveExplosion(view, pool));
+            float radius = diameter * 0.5f;
+            view.Play(InFrontOfHull(bounds.center, radius), diameter / prefab.Diameter);
+            _active.Add(new ActiveExplosion(view, pool, bounds.center, radius));
             int alive = 0;
             foreach (ActiveExplosion active in _active)
             {
@@ -90,20 +97,38 @@ namespace EmpireAtWar.Services.UnitExplosion
                 {
                     active.Pool.Release(active.View);
                     _active.RemoveAt(i);
+                    continue;
                 }
+
+                active.View.transform.position = InFrontOfHull(active.Center, active.Radius);
             }
+        }
+
+        // The explosion is one camera-facing billboard. At the hull's center the hull's own depth hides half of it, so
+        // it sits on the hull sphere's camera side; ships and planets truly in front still cover it.
+        private Vector3 InFrontOfHull(Vector3 center, float radius)
+        {
+            Vector3 toCamera = _camera.transform.position - center;
+            float distance = toCamera.magnitude;
+            if (distance <= Mathf.Epsilon) return center;
+            // Stay well in front of the camera when it is zoomed inside the hull sphere.
+            return center + toCamera * (Mathf.Min(radius, distance * MAX_CAMERA_SHARE) / distance);
         }
 
         private readonly struct ActiveExplosion
         {
-            public ActiveExplosion(UnitExplosionView view, ViewPool<UnitExplosionView> pool)
+            public ActiveExplosion(UnitExplosionView view, ViewPool<UnitExplosionView> pool, Vector3 center, float radius)
             {
                 View = view;
                 Pool = pool;
+                Center = center;
+                Radius = radius;
             }
 
             public UnitExplosionView View { get; }
             public ViewPool<UnitExplosionView> Pool { get; }
+            public Vector3 Center { get; }
+            public float Radius { get; }
         }
     }
 }

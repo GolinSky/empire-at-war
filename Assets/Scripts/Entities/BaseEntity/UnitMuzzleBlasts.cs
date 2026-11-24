@@ -18,8 +18,8 @@ namespace EmpireAtWar.Entities.BaseEntity
         // Offsets as fractions of the blast diameter: along the mount's up axis, and towards the aim point.
         private const float UP_OFFSET = 0.25f;
         private const float AIM_OFFSET = 0.15f;
-        // Same white mix as the shot's streak flash (MuzzleFlashView), so blast and flash share one color.
-        private const float WHITE_MIX = 0.35f;
+        // Share of white mixed into the shot color: the blast keeps the battery's hue at lower contrast.
+        private const float WHITE_MIX = 0.6f;
 
         private readonly IWeaponFireEvents _fireEvents;
         private readonly IMuzzleBlastPool _pool;

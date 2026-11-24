@@ -101,7 +101,8 @@ namespace EmpireAtWar.Services.VContainer
             builder.Register<UnitWreckService>(Lifetime.Singleton).AsImplementedInterfaces().AsSelf();
             builder.Register<UnitExplosionService>(Lifetime.Singleton).AsImplementedInterfaces().AsSelf()
                 .WithParameter("destructionPrefab", unitExplosionPrefab)
-                .WithParameter("orbitalHitPrefab", orbitalHitExplosionPrefab);
+                .WithParameter("orbitalHitPrefab", orbitalHitExplosionPrefab)
+                .WithParameter("camera", cameraService.SceneCamera);
             builder.Register<SelectionQuery>(Lifetime.Singleton).AsImplementedInterfaces().AsSelf();
             builder.Register<SelectionService>(Lifetime.Singleton).AsImplementedInterfaces().AsSelf();
             builder.Register<SelectionSfx>(Lifetime.Singleton).AsImplementedInterfaces();
