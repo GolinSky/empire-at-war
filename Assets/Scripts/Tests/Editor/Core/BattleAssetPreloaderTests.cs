@@ -119,13 +119,6 @@ namespace EmpireAtWar.Tests.Editor
                         Assert.That(deferred, Does.Not.Contain("ProvidenceShipView"));
                         assets.LoadComponent<ShipEntity>("CR70ShipView");
                         assets.LoadComponent<ShipEntity>("ProvidenceShipView");
-                        ShipsData ships = assets.Load<ShipsData>(nameof(ShipsData));
-                        foreach (ShipType ship in new[] { ShipType.Recalcitrant, ShipType.Peleset })
-                        {
-                            string wreckKey = assets.Load<ShipData>(ships.GetShipDataPath(ship)).Wreck.PrefabKey;
-                            Assert.That(deferred, Does.Not.Contain(wreckKey));
-                            assets.Load<GameObject>(wreckKey);
-                        }
                         Assert.That(loader.Handles.Count, Is.EqualTo(requiredCount));
                     }
 

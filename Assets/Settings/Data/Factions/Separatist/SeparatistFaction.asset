@@ -206,26 +206,6 @@ MonoBehaviour:
         <UnitCapacity>k__BackingField: 20
         <Icon>k__BackingField: {fileID: 21300000, guid: af913e547595237409f81ee21d82b267,
           type: 3}
-    - key: 110
-      value:
-        matchups: {fileID: 11400000, guid: 4caf5be368a29b847ad73b04abb8aec1, type: 2}
-        displayName: Peleset
-        description: 6,500 hull and 5,850 shields. Six dual turbolaser batteries,
-          two ion cannons, two point-defense cannons, two concussion missile launchers
-          and one proton torpedo launcher. All weapons use medium caliber. Engines,
-          shields and every weapon mount can be targeted separately. No hangar.
-        role: Cruiser / Ordnance support
-        iconKey: 24f8965bbafc2b848a0264f86b98ec21:21300000
-        isHero: 0
-        isUnique: 0
-        <Name>k__BackingField: Peleset-class Cruiser
-        <MaxCount>k__BackingField: 10
-        <AvailableLevel>k__BackingField: 4
-        <Price>k__BackingField: 4000
-        <BuildTime>k__BackingField: 35
-        <UnitCapacity>k__BackingField: 5
-        <Icon>k__BackingField: {fileID: 21300000, guid: 24f8965bbafc2b848a0264f86b98ec21,
-          type: 3}
     - key: 112
       value:
         matchups: {fileID: 11400000, guid: 4868432cc9a1c1943bac947eb30cc8c1, type: 2}
@@ -268,28 +248,6 @@ MonoBehaviour:
         <BuildTime>k__BackingField: 25
         <UnitCapacity>k__BackingField: 4
         <Icon>k__BackingField: {fileID: 21300000, guid: 6659a938f240057468564cb0ee980865,
-          type: 3}
-    - key: 113
-      value:
-        matchups: {fileID: 11400000, guid: 097392c440411f24986bc3e16be0db4e, type: 2}
-        displayName: Recalcitrant
-        description: 3,640 hull and 3,250 shields with cruiser shield regeneration.
-          Eight dual turbolaser batteries, six concussion missile launchers and one
-          dual ion cannon battery, all medium caliber. All 17 mounts are targetable,
-          including engines and shield generator. Boost Weapon Power halves weapon
-          reload and time between shots and halves speed and shield regeneration
-          for 7 s. Recovers in 50 s.
-        role: Cruiser / Missile support
-        iconKey: cc08d3ef304a00a4999b7602cc4d17d0:21300000
-        isHero: 0
-        isUnique: 0
-        <Name>k__BackingField: Recalcitrant-class Light Cruiser
-        <MaxCount>k__BackingField: 10
-        <AvailableLevel>k__BackingField: 3
-        <Price>k__BackingField: 3600
-        <BuildTime>k__BackingField: 30
-        <UnitCapacity>k__BackingField: 4
-        <Icon>k__BackingField: {fileID: 21300000, guid: cc08d3ef304a00a4999b7602cc4d17d0,
           type: 3}
     - key: 114
       value:

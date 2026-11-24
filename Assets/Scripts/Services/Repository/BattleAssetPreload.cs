@@ -65,12 +65,6 @@ namespace EmpireAtWar.Repository
             foreach (string key in PreviewKeys(assets, battle, factions)) assets.BeginPreload<GameObject>(key);
             await assets.CompletePreloadsAsync(cancellationToken);
 
-            foreach (FactionType faction in Factions(battle))
-            {
-                foreach (ShipType ship in factions.Get(faction).Ships.Keys)
-                    if (PreloadWreckBeforeRunning(ship))
-                        assets.BeginPreload<GameObject>(assets.Load<ShipData>(ships.GetShipDataPath(ship)).Wreck.PrefabKey);
-            }
             foreach (SquadronType squadron in Squadrons(assets, battle))
             {
                 assets.BeginPreload<SquadronData>(squadron + "SquadronData");
@@ -97,8 +91,7 @@ namespace EmpireAtWar.Repository
                 foreach (ShipType ship in factions.Get(faction).Ships.Keys)
                 {
                     if (!PreloadShipViewBeforeRunning(ship)) views.Add(ship + "ShipView");
-                    if (!PreloadWreckBeforeRunning(ship))
-                        AddWreck(wrecks, assets.Load<ShipData>(ships.GetShipDataPath(ship)).Wreck);
+                    AddWreck(wrecks, assets.Load<ShipData>(ships.GetShipDataPath(ship)).Wreck);
                 }
                 if (stations.TryGetWrecks(faction, out StationLevelWrecks stationWrecks))
                     foreach (UnitWreckData stationWreck in stationWrecks.Levels) AddWreck(wrecks, stationWreck);
@@ -121,7 +114,6 @@ namespace EmpireAtWar.Repository
 
         // These two packed first-spawn waits exceeded a frame. Keep other ship views in the paced warmup.
         private static bool PreloadShipViewBeforeRunning(ShipType ship) => ship is ShipType.CR70 or ShipType.Providence;
-        private static bool PreloadWreckBeforeRunning(ShipType ship) => ship is ShipType.Recalcitrant or ShipType.Peleset;
 
         private static HashSet<FactionType> Factions(BattleDefinition battle)
         {
