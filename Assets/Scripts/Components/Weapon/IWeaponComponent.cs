@@ -29,10 +29,12 @@ namespace EmpireAtWar.Components.Weapon
         bool IsWithinReach(float distance, float contactDistance, ShipClass targetClass);
 
         /// <summary>
-        /// False while no live main battery would reach a live target hardpoint with the bow turned at the target;
-        /// true for a loadout without main batteries that can fire on it. Ranges scale by <paramref name="reachFactor"/>.
+        /// False while a live main battery that bears on the target with the bow turned at it is still short of every
+        /// live target hardpoint. Mains that cannot bear bow-on, or would stay short even at
+        /// <paramref name="contactDistance"/> (hull to hull), are ignored; if none bears, any main in reach suffices.
+        /// True for a loadout without main batteries that can fire on it. Ranges scale by <paramref name="reachFactor"/>.
         /// </summary>
-        bool MainBatteryReaches(IEntity target, float reachFactor);
+        bool MainBatteryReaches(IEntity target, float contactDistance, float reachFactor);
 
         /// <summary>Offset to bring a target hardpoint into a live mount's range, or zero if already in reach.</summary>
         bool TryGetHardPointApproach(AttackData target, out Vector3 offset);

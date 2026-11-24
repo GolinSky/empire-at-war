@@ -297,6 +297,7 @@ tags:
 - `AttackSequenceDiagnostics` has battle-wide totals only; per-family ranking needs new counters.
 - Editor eval (`unity command script eval`): Pipeline 0.6 had a 5 s main-thread limit; 1.0 defaults to `--timeout 30` s. Keep `BattleSimulation` ≤10 seeds per call.
 - Plan → [[Done/Optimization/Projectile_Visual_Reduction_Plan]].
+- 2026-11-24: cadence spread, laser/ion speed ×2 and single-shot ×4/×2 DPS passes were tried and fully reverted (user: worse in game). Patch kept at `Logs/Patches/weapon_cadence_2026-11-24.patch`. → [[Done/Optimization/Weapon_Cadence_Spread_Plan]].
 
 ### Squadron budgets and model flashes · 2026-11-18
 

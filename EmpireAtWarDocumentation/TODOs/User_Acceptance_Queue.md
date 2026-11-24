@@ -609,3 +609,7 @@ created: "2026-10-29\r"
 ## Empire Bomber Damage
 
 - [ ] [[Done/Bugs/Empire_Bomber_Capital_Damage]] — Battle Empire vs Rebellion: TIE Bombers/Punishers should visibly hurt MC80s; compare torpedo hits per squadron and bomber lifetime against `Battle_20261123_182426.csv` (549 hits / 106 squadrons, median life 13 s). Check Rebel bombers are not now too strong vs Empire ships. Run `Combat`, `Balance` when authorized; tests not run.
+
+## Main Battery Hold Distance
+
+- [ ] [[Done/Bugs/Main_Battery_Hold_Distance]] — Ion bolts at 214 (was 107) look right. Hold-distance fix accepted by user 2026-11-24. Run `Combat`, `Navigation`, `Ships` when authorized; tests not run. Run `Combat`, `Navigation`, `Ships` when authorized; compile passed, tests not run.

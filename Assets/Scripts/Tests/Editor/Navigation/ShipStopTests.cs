@@ -75,7 +75,7 @@ namespace EmpireAtWar.Tests.Editor
 
             public bool HasEnoughRange(float distance, float contactDistance, ShipClass targetClass) => true;
             public bool IsWithinReach(float distance, float contactDistance, ShipClass targetClass) => true;
-            public bool MainBatteryReaches(IEntity target, float reachFactor) => true;
+            public bool MainBatteryReaches(IEntity target, float contactDistance, float reachFactor) => true;
             public bool CanUseSiegeApproach(IEntity target) => false;
             public bool TryGetHardPointApproach(AttackData target, out Vector3 offset) =>
                 throw new System.NotSupportedException();

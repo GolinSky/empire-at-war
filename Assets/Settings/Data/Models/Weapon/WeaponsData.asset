@@ -87,7 +87,7 @@ MonoBehaviour:
       type: 3}
     octupleShotPrefab: {fileID: 4723455029226909166, guid: bb4021ab222bd2946a6f49cb77df03d1,
       type: 3}
-    projectileSpeed: 107
+    projectileSpeed: 214
     factionColored: 0
     color: {r: 0.4, g: 0.87, b: 0.99, a: 1}
     size: {x: 0.35, y: 1, z: 1}
@@ -1352,7 +1352,7 @@ MonoBehaviour:
     shotPrefab: {fileID: 4723455029226909166, guid: d08e869a202dee742b31818cc8c5b23b,
       type: 3}
     beamPrefab: {fileID: 0}
-    projectileSpeed: 107
+    projectileSpeed: 214
     size: {x: 0.35, y: 1, z: 1}
     overrideColor: 0
     color: {r: 1, g: 1, b: 1, a: 1}

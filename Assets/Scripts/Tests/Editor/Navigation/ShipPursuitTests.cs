@@ -1662,7 +1662,7 @@ namespace EmpireAtWar.Tests.Movement
                 distance <= Mathf.Max(80f, contactDistance * 1.15f);
             public bool IsWithinReach(float distance, float contactDistance, ShipClass targetClass) =>
                 distance <= Mathf.Max(100f, contactDistance * 1.15f);
-            public bool MainBatteryReaches(IEntity target, float reachFactor) => true;
+            public bool MainBatteryReaches(IEntity target, float contactDistance, float reachFactor) => true;
             public bool CanUseSiegeApproach(IEntity target) => UseSiegeApproach;
             public bool TryGetHardPointApproach(AttackData target, out Vector3 offset)
             {

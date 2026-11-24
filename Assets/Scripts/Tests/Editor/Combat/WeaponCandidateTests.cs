@@ -288,16 +288,49 @@ namespace EmpireAtWar.Tests.Weapon
             AttackData group = Group(1);
             group.Units[0].Transform.position = Vector3.forward * 80f;
 
-            Assert.That(_weapon.MainBatteryReaches(group.TargetEntity, 1f), Is.False);
-            Assert.That(_weapon.MainBatteryReaches(group.TargetEntity, 1.25f), Is.True);
+            Assert.That(_weapon.MainBatteryReaches(group.TargetEntity, 0f, 1f), Is.False);
+            Assert.That(_weapon.MainBatteryReaches(group.TargetEntity, 0f, 1.25f), Is.True);
 
             group.Units[0].Transform.position = Vector3.forward * 50f;
-            Assert.That(_weapon.MainBatteryReaches(group.TargetEntity, 1f), Is.True);
+            Assert.That(_weapon.MainBatteryReaches(group.TargetEntity, 0f, 1f), Is.True);
 
             group.Units[0].Transform.position = Vector3.forward * 80f;
             main.UpdateData(0f);
-            Assert.That(_weapon.MainBatteryReaches(group.TargetEntity, 1f), Is.True,
+            Assert.That(_weapon.MainBatteryReaches(group.TargetEntity, 0f, 1f), Is.True,
                 "Without a live main battery the secondaries' reach decides.");
+        }
+
+        [Test]
+        public void MainBatteryReaches_NeedsEveryBearingMainInRange_AndSkipsMainsThatCannotHelp()
+        {
+            const float CONTACT_DISTANCE = 30f;
+            List<WeaponHardPoint> mounts = ConfigureMounts(4);
+            WeaponHardPoint forward = mounts[0];
+            WeaponHardPoint aft = mounts[1];
+            WeaponHardPoint stern = mounts[2];
+            WeaponHardPoint farAft = mounts[3];
+            foreach (WeaponHardPoint mount in mounts)
+            {
+                mount.transform.SetParent(_weapon.transform);
+                typeof(WeaponHardPoint).GetField("mainBattery", PRIVATE_INSTANCE).SetValue(mount, true);
+                typeof(HardPoint).GetField("spawnDestroyedExplosion", PRIVATE_INSTANCE).SetValue(mount, false);
+            }
+            forward.transform.localPosition = Vector3.forward * 20f;
+            aft.transform.localPosition = Vector3.back * 40f;
+            // Rear-facing arc: bow-on it can never bear, so closing in cannot help it.
+            stern.transform.localPosition = Vector3.back * 60f;
+            SetYawArc(stern, 135f, 180f);
+            // So far aft that even hull to hull it stays out of range: closing in cannot help it either.
+            farAft.transform.localPosition = Vector3.back * 250f;
+            AttackData group = Group(1);
+            group.Units[0].Transform.position = Vector3.forward * 90f;
+
+            Assert.That(_weapon.MainBatteryReaches(group.TargetEntity, CONTACT_DISTANCE, 1f), Is.False,
+                "The forward main reaches but the aft main is still short: keep closing.");
+
+            group.Units[0].Transform.position = Vector3.forward * 55f;
+            Assert.That(_weapon.MainBatteryReaches(group.TargetEntity, CONTACT_DISTANCE, 1f), Is.True,
+                "Both mains that can reach do; the stern and far-aft mains do not block the hold.");
         }
 
         private List<WeaponHardPoint> ConfigureMounts(int count, TargetPreference preference = TargetPreference.Any)

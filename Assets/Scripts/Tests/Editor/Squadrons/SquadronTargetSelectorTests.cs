@@ -590,7 +590,7 @@ namespace EmpireAtWar.Tests.Editor
             public bool HasTarget(IHealthFacade healthFacade) => throw new NotSupportedException();
             public bool HasEnoughRange(float distance, float contactDistance, ShipClass targetClass) => throw new NotSupportedException();
             public bool IsWithinReach(float distance, float contactDistance, ShipClass targetClass) => throw new NotSupportedException();
-            public bool MainBatteryReaches(IEntity target, float reachFactor) => throw new NotSupportedException();
+            public bool MainBatteryReaches(IEntity target, float contactDistance, float reachFactor) => throw new NotSupportedException();
             public bool CanUseSiegeApproach(IEntity target) => throw new NotSupportedException();
             public bool TryGetHardPointApproach(AttackData target, out Vector3 offset) =>
                 throw new NotSupportedException();

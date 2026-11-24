@@ -477,11 +477,14 @@ namespace EmpireAtWar.Components.Weapon
             return distance <= Mathf.Max(GetEngagementRange(targetClass), contactDistance * CONTACT_ENGAGE_FACTOR);
         }
 
-        public bool MainBatteryReaches(IEntity target, float reachFactor)
+        public bool MainBatteryReaches(IEntity target, float contactDistance, float reachFactor)
         {
             Vector3 pivot = _viewTransform.position;
             Vector3 bearing = PlanarGeometry.Flatten(target.GetFacade<IEntityTransformFacade>().Transform.position - pivot);
             if (bearing.sqrMagnitude <= Mathf.Epsilon) return true;
+            // How far the target would move toward the ship if the hulls closed to contact.
+            float bearingDistance = bearing.magnitude;
+            Vector3 toContact = bearing / bearingDistance * Mathf.Max(0f, bearingDistance - contactDistance);
 
             IHardPointModel focusedHardPoint = _mainAttackData != null && _mainAttackData.IsFocused &&
                 _mainAttackData.TargetEntity == target ? _mainAttackData.Units[0] : null;
@@ -489,9 +492,14 @@ namespace EmpireAtWar.Components.Weapon
             if (_facingTargetPositions.Count == 0) return true;
 
             // Main batteries share a forward sector: place each one where it sits with the bow turned at the target.
+            // Every main battery whose arc covers the target bow-on must reach it, so the ship closes until the whole
+            // forward battery fires. Mains that cannot bear bow-on, or would stay short even hull to hull, gain
+            // nothing from closing in and are skipped.
             Quaternion bowOnTarget = Quaternion.FromToRotation(PlanarGeometry.Flatten(_viewTransform.forward), bearing);
             ShipClass targetClass = target.HealthModel.ShipClass;
             bool hasMainBattery = false;
+            bool anyBearing = false;
+            bool anyReach = false;
             for (int i = 0; i < hardPoints.Count; i++)
             {
                 WeaponHardPoint mount = hardPoints[i];
@@ -499,14 +507,33 @@ namespace EmpireAtWar.Components.Weapon
                     targetClass.IsStrikecraft() && IgnoresStrikecraft(mount)) continue;
 
                 hasMainBattery = true;
-                Vector3 origin = pivot + bowOnTarget * (mount.transform.position - pivot);
+                Transform mountTransform = mount.transform;
+                Vector3 origin = pivot + bowOnTarget * (mountTransform.position - pivot);
+                Quaternion parentRotation = bowOnTarget * mountTransform.parent.rotation;
                 float range = mount.MaxAttackDistance * reachFactor;
+                bool bears = false;
+                bool reaches = false;
+                bool reachesAtContact = false;
                 for (int j = 0; j < _facingTargetPositions.Count; j++)
-                    if (PlanarGeometry.DistanceSquared(origin, _facingTargetPositions[j]) <= range * range)
-                        return true;
+                {
+                    Vector3 point = _facingTargetPositions[j];
+                    bool inRange = PlanarGeometry.DistanceSquared(origin, point) <= range * range;
+                    anyReach |= inRange;
+                    if (!WeaponTargetSelector.TryCalculateAim(point, origin, parentRotation, float.PositiveInfinity,
+                            mount.MinYaw, mount.MaxYaw, out _, out _)) continue;
+                    bears = true;
+                    reaches |= inRange;
+                    reachesAtContact |= PlanarGeometry.DistanceSquared(origin, point - toContact) <= range * range;
+                    if (reaches) break;
+                }
+
+                if (!bears || !reachesAtContact && !reaches) continue;
+                anyBearing = true;
+                if (!reaches) return false;
             }
 
-            return !hasMainBattery;
+            // No main battery bears bow-on: fall back to any main reaching the target.
+            return !hasMainBattery || anyBearing || anyReach;
         }
 
         public bool TryGetHardPointApproach(AttackData target, out Vector3 offset)
