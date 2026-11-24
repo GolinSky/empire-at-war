@@ -167,6 +167,11 @@ namespace EmpireAtWar.Tests.Editor
                 Assert.That(shipCanvas, Is.Not.Null);
                 Assert.That(shipCanvas.overrideSorting, Is.False);
                 Assert.That(placement.ShipLayoutCanvas, Is.SameAs(shipCanvas));
+                // MPImage adds these channels only to an enabled canvas; cards spawn while this one is
+                // disabled, so without them every MPImage on the cards draws collapsed.
+                AdditionalCanvasShaderChannels mpImageChannels =
+                    AdditionalCanvasShaderChannels.TexCoord1 | AdditionalCanvasShaderChannels.TexCoord2;
+                Assert.That(shipCanvas.additionalShaderChannels & mpImageChannels, Is.EqualTo(mpImageChannels));
                 Assert.That(shipLayout.GetComponent<GraphicRaycaster>(), Is.Not.Null);
                 Assert.That(root.GetComponentsInChildren<Canvas>(true), Has.Length.EqualTo(5));
             }
