@@ -12,6 +12,7 @@ namespace EmpireAtWar.Services.ShipAbilities
         private AutoPowerRole _decision;
         private int _checks;
         private float _manualUntil;
+        private float _seenAt = float.NaN;
 
         public AutoPowerMonitor(AutoPowerTuning tuning)
         {
@@ -58,6 +59,14 @@ namespace EmpireAtWar.Services.ShipAbilities
         }
 
         public bool IsHeld(float now) => now < _manualUntil;
+
+        // The first check starts the caster's clock; Suspend keeps it, so start delays run once per caster.
+        public void MarkSeen(float now)
+        {
+            if (float.IsNaN(_seenAt)) _seenAt = now;
+        }
+
+        public bool IsWarmedUp(float now, float delay) => now - _seenAt >= delay;
 
         // Keeps the manual hold: a paused ship still waits out the delay after a manual press.
         public void Suspend()

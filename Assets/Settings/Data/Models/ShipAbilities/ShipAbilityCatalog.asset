@@ -28,6 +28,7 @@ MonoBehaviour:
         requiresEnemyTarget: 1
         range: 1000
         autoPower: 3
+        autoUseStartDelay: 0
         settings:
           rid: 6801466862182334539
     - key: 10
@@ -43,6 +44,7 @@ MonoBehaviour:
         requiresEnemyTarget: 1
         range: 500
         autoPower: 2
+        autoUseStartDelay: 0
         settings:
           rid: 7607833764655792234
     - key: 33
@@ -58,6 +60,7 @@ MonoBehaviour:
         requiresEnemyTarget: 1
         range: 1500
         autoPower: 2
+        autoUseStartDelay: 0
         settings:
           rid: 7607833764655792233
     - key: 25
@@ -74,6 +77,7 @@ MonoBehaviour:
         requiresEnemyTarget: 1
         range: 375
         autoPower: 3
+        autoUseStartDelay: 0
         settings:
           rid: 6801466921437888600
     - key: 1
@@ -89,6 +93,7 @@ MonoBehaviour:
         requiresEnemyTarget: 1
         range: 500
         autoPower: 3
+        autoUseStartDelay: 0
         settings:
           rid: 7607833764655792203
     - key: 2
@@ -103,6 +108,7 @@ MonoBehaviour:
         requiresEnemyTarget: 0
         range: 0
         autoPower: 5
+        autoUseStartDelay: 0
         settings:
           rid: 7607833764655792204
     - key: 39
@@ -119,6 +125,7 @@ MonoBehaviour:
         requiresEnemyTarget: 0
         range: 500
         autoPower: 5
+        autoUseStartDelay: 0
         settings:
           rid: 6801467062609510483
     - key: 42
@@ -134,6 +141,7 @@ MonoBehaviour:
         requiresEnemyTarget: 0
         range: 0
         autoPower: 4
+        autoUseStartDelay: 0
         settings:
           rid: 6801467062609510486
     - key: 3
@@ -149,6 +157,7 @@ MonoBehaviour:
         requiresEnemyTarget: 0
         range: 0
         autoPower: 1
+        autoUseStartDelay: 0
         settings:
           rid: 7607833764655792205
     - key: 18
@@ -164,6 +173,7 @@ MonoBehaviour:
         requiresEnemyTarget: 0
         range: 0
         autoPower: 0
+        autoUseStartDelay: 0
         settings:
           rid: 6801466898397790291
     - key: 4
@@ -179,6 +189,7 @@ MonoBehaviour:
         requiresEnemyTarget: 0
         range: 0
         autoPower: 7
+        autoUseStartDelay: 0
         settings:
           rid: 7607833764655792206
     - key: 24
@@ -195,6 +206,7 @@ MonoBehaviour:
         requiresEnemyTarget: 0
         range: 0
         autoPower: 2
+        autoUseStartDelay: 0
         settings:
           rid: 6801466921437888601
     - key: 5
@@ -210,6 +222,7 @@ MonoBehaviour:
         requiresEnemyTarget: 0
         range: 0
         autoPower: 2
+        autoUseStartDelay: 0
         settings:
           rid: 7607833764655792207
     - key: 30
@@ -226,6 +239,7 @@ MonoBehaviour:
         requiresEnemyTarget: 0
         range: 500
         autoPower: 7
+        autoUseStartDelay: 0
         settings:
           rid: 6801466944227639371
     - key: 6
@@ -241,6 +255,7 @@ MonoBehaviour:
         requiresEnemyTarget: 1
         range: 500
         autoPower: 3
+        autoUseStartDelay: 0
         settings:
           rid: 7607833764655792208
     - key: 16
@@ -256,6 +271,7 @@ MonoBehaviour:
         requiresEnemyTarget: 1
         range: 500
         autoPower: 3
+        autoUseStartDelay: 0
         settings:
           rid: 6801466898397790289
     - key: 7
@@ -272,6 +288,7 @@ MonoBehaviour:
         requiresEnemyTarget: 1
         range: 750
         autoPower: 3
+        autoUseStartDelay: 0
         settings:
           rid: 7607833764655792209
     - key: 9
@@ -287,6 +304,7 @@ MonoBehaviour:
         requiresEnemyTarget: 1
         range: 100
         autoPower: 3
+        autoUseStartDelay: 0
         settings:
           rid: 6801466898397790283
     - key: 11
@@ -303,6 +321,7 @@ MonoBehaviour:
         requiresEnemyTarget: 0
         range: 0
         autoPower: 6
+        autoUseStartDelay: 0
         settings:
           rid: 6801466898397790284
     - key: 35
@@ -318,6 +337,7 @@ MonoBehaviour:
         requiresEnemyTarget: 0
         range: 0
         autoPower: 4
+        autoUseStartDelay: 0
         settings:
           rid: 6801466989490733131
     - key: 19
@@ -334,6 +354,7 @@ MonoBehaviour:
         requiresEnemyTarget: 0
         range: 0
         autoPower: 4
+        autoUseStartDelay: 0
         settings:
           rid: 6801466921437888590
     - key: 22
@@ -351,6 +372,7 @@ MonoBehaviour:
         requiresEnemyTarget: 1
         range: 500
         autoPower: 3
+        autoUseStartDelay: 0
         settings:
           rid: 6801466921437888597
     - key: 36
@@ -366,6 +388,7 @@ MonoBehaviour:
         requiresEnemyTarget: 0
         range: 0
         autoPower: 4
+        autoUseStartDelay: 0
         settings:
           rid: 6801467062609510478
     - key: 50
@@ -382,6 +405,7 @@ MonoBehaviour:
         requiresEnemyTarget: 0
         range: 0
         autoPower: 4
+        autoUseStartDelay: 0
         settings:
           rid: 6801467062609510480
     - key: 51
@@ -397,6 +421,7 @@ MonoBehaviour:
         requiresEnemyTarget: 0
         range: 0
         autoPower: 4
+        autoUseStartDelay: 0
         settings:
           rid: 6801467062609510485
     - key: 52
@@ -413,6 +438,7 @@ MonoBehaviour:
         requiresEnemyTarget: 0
         range: 0
         autoPower: 4
+        autoUseStartDelay: 0
         settings:
           rid: 6801467062609510488
     - key: 54
@@ -429,6 +455,7 @@ MonoBehaviour:
         requiresEnemyTarget: 0
         range: 0
         autoPower: 0
+        autoUseStartDelay: 0
         settings:
           rid: 7607833764655792235
     - key: 55
@@ -444,6 +471,7 @@ MonoBehaviour:
         requiresEnemyTarget: 0
         range: 0
         autoPower: 0
+        autoUseStartDelay: 0
         settings:
           rid: 2035977045847834708
     - key: 56
@@ -461,6 +489,7 @@ MonoBehaviour:
         requiresEnemyTarget: 1
         range: 350
         autoPower: 0
+        autoUseStartDelay: 0
         settings:
           rid: 2035977048858300924
     - key: 57
@@ -476,6 +505,7 @@ MonoBehaviour:
         requiresEnemyTarget: 0
         range: 900
         autoPower: 0
+        autoUseStartDelay: 5
         settings:
           rid: 2035977070347550801
     - key: 58
@@ -492,6 +522,7 @@ MonoBehaviour:
         requiresEnemyTarget: 1
         range: 1000
         autoPower: 3
+        autoUseStartDelay: 10
         settings:
           rid: 2035977204905279572
   autoPower:

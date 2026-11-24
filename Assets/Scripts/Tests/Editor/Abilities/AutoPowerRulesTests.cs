@@ -131,6 +131,19 @@ namespace EmpireAtWar.Tests.Editor
         }
 
         [Test]
+        public void StartDelayCountsFromFirstSightAndSurvivesSuspend()
+        {
+            AutoPowerMonitor monitor = new AutoPowerMonitor(_catalog.AutoPower);
+            Assert.That(monitor.IsWarmedUp(0f, 0f), Is.False, "An unseen caster has no clock yet.");
+            monitor.MarkSeen(10f);
+            monitor.MarkSeen(12f);
+            Assert.That(monitor.IsWarmedUp(10f, 0f), Is.True);
+            Assert.That(monitor.IsWarmedUp(14.9f, 5f), Is.False);
+            monitor.Suspend();
+            Assert.That(monitor.IsWarmedUp(15f, 5f), Is.True);
+        }
+
+        [Test]
         public void SuppressionBetweenSamplesIsNotDamage()
         {
             AutoPowerMonitor monitor = new AutoPowerMonitor(_catalog.AutoPower);

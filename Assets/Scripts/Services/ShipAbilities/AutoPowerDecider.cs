@@ -65,6 +65,7 @@ namespace EmpireAtWar.Services.ShipAbilities
         public bool Check(IEntity entity, IShipAbilityFacade caster, IShipAutoPowerFacade automation, float now)
         {
             AutoPowerMonitor monitor = GetMonitor(entity.Id);
+            monitor.MarkSeen(now);
             AutoPowerShieldLoss shieldLoss = automation == null ? AutoPowerShieldLoss.None
                 : monitor.Sample(now, caster.Health.Shields, automation.MaxShields, automation.ShieldSuppressed,
                     automation.ShieldRevision);
@@ -91,6 +92,7 @@ namespace EmpireAtWar.Services.ShipAbilities
             {
                 ShipAbilitySlot slot = caster.Slots[i];
                 if (!slot.CanActivate || !ShipAbilityAutoUse.HasRule(slot.Definition) ||
+                    !monitor.IsWarmedUp(now, slot.Definition.AutoUseStartDelay) ||
                     !_autoUse.ShouldActivate(caster, slot.Definition)) continue;
                 // A targeted rule ability takes the same target an auto-power role would.
                 IEntity ruleTarget = slot.Definition.RequiresEnemyTarget ? _combat.FindTarget(caster, slot.Definition) : null;
@@ -99,27 +101,28 @@ namespace EmpireAtWar.Services.ShipAbilities
             }
             if (automation == null || !automation.Eligible) return false;
             AutoPowerSituation situation = _combat.Assess(caster, automation, shieldLoss, IsTravelling(entity));
-            AutoPowerRole decision = Choose(caster, situation, shieldsBoosted, out _, out _);
+            AutoPowerRole decision = Choose(caster, monitor, now, situation, shieldsBoosted, out _, out _);
             // A drained shield with a warship in reach cannot wait for a second check.
             bool urgent = situation.Urgent && decision == AutoPowerRole.Shields;
             if (!urgent && !monitor.Confirm(decision)) return false;
             monitor.ResetConfirmation();
             // Recheck right before spending: the target or readiness can change between checks.
-            return Choose(caster, situation, shieldsBoosted, out ShipAbilitySlot chosen, out IEntity target) == decision &&
+            return Choose(caster, monitor, now, situation, shieldsBoosted, out ShipAbilitySlot chosen, out IEntity target) == decision &&
                    decision != AutoPowerRole.None && _activate(caster, chosen.Id, target);
         }
 
         // First wanted role with a ready slot; a recovering power never swaps Shields for Weapons or back.
-        // While shields are boosted only Weapons may be added on top.
-        private AutoPowerRole Choose(IShipAbilityFacade caster, AutoPowerSituation situation, bool weaponsOnly,
-            out ShipAbilitySlot chosen, out IEntity target)
+        // While shields are boosted only Weapons may be added on top. A slot inside its start delay is skipped.
+        private AutoPowerRole Choose(IShipAbilityFacade caster, AutoPowerMonitor monitor, float now,
+            AutoPowerSituation situation, bool weaponsOnly, out ShipAbilitySlot chosen, out IEntity target)
         {
             foreach (AutoPowerRole role in AutoPowerSituation.Priority)
             {
                 if (!situation.Wants(role) || weaponsOnly && role != AutoPowerRole.Weapons) continue;
                 foreach (ShipAbilitySlot slot in caster.Slots)
                 {
-                    if (slot.Definition.AutoPower != role || !slot.CanActivate) continue;
+                    if (slot.Definition.AutoPower != role || !slot.CanActivate ||
+                        !monitor.IsWarmedUp(now, slot.Definition.AutoUseStartDelay)) continue;
                     target = slot.Definition.RequiresEnemyTarget ? _combat.FindTarget(caster, slot.Definition) : null;
                     if (slot.Definition.RequiresEnemyTarget && target == null) continue;
                     chosen = slot;

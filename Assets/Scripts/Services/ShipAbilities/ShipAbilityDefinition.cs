@@ -22,6 +22,7 @@ namespace EmpireAtWar.Services.ShipAbilities
         [SerializeField] private float range;
         [Header("Auto Power")]
         [SerializeField] private AutoPowerRole autoPower;
+        [SerializeField, Min(0f)] private float autoUseStartDelay;
         [Header("Ability")]
         [SerializeReference, SubclassSelector] private ShipAbilitySettings settings;
 
@@ -41,6 +42,8 @@ namespace EmpireAtWar.Services.ShipAbilities
         public bool RequiresEnemyTarget => requiresEnemyTarget;
         public float Range => range;
         public AutoPowerRole AutoPower => autoPower;
+        /// <summary>Seconds after auto-power or the AI first sees the caster before they may start this ability; manual use is never delayed.</summary>
+        public float AutoUseStartDelay => autoUseStartDelay;
         public ShipAbilitySettings Settings => settings;
         internal bool IssuesAttackOrder => settings is AssaultSettings or ConcentrateFireSettings or LuckyShotSettings;
     }
