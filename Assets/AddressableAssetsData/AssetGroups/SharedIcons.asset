@@ -150,6 +150,11 @@ MonoBehaviour:
     m_ReadOnly: 0
     m_SerializedLabels: []
     FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 38de4e8d48bc5ef40a05bce0a73b598e
+    m_Address: Assets/Art/Textures/Ui/Icons/Research/FieldRepairsIcon.png
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
   - m_GUID: 3d8c2c187dbb7c149b2b91ea81cc45fd
     m_Address: Assets/Art/Textures/Ui/Icons/MiniMap/SpaceStationWhite.png
     m_ReadOnly: 0
@@ -162,6 +167,11 @@ MonoBehaviour:
     FlaggedDuringContentUpdateRestriction: 0
   - m_GUID: 3f8628327c2f7ab4d905d41954f545b1
     m_Address: Assets/Art/Textures/Ui/SuperWeapons/PlasmaCannonIcon.png
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 3ff66a9c1b175d843b4d7f0d774d8742
+    m_Address: Assets/Art/Textures/Ui/Icons/Research/FortifiedStructuresIcon.png
     m_ReadOnly: 0
     m_SerializedLabels: []
     FlaggedDuringContentUpdateRestriction: 0

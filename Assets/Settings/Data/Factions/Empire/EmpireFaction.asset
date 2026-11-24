@@ -1144,7 +1144,7 @@ MonoBehaviour:
               seconds without taking damage or engaging a target. Stacks with other
               repairs.
             role: Research
-            iconKey: d846cedf6810ffb4ea05703dbeeee74c:21300000
+            iconKey: 38de4e8d48bc5ef40a05bce0a73b598e:21300000
             isHero: 0
             isUnique: 0
             <Name>k__BackingField: Field Repairs
@@ -1153,7 +1153,7 @@ MonoBehaviour:
             <Price>k__BackingField: 15000
             <BuildTime>k__BackingField: 100
             <UnitCapacity>k__BackingField: 0
-            <Icon>k__BackingField: {fileID: 21300000, guid: d846cedf6810ffb4ea05703dbeeee74c,
+            <Icon>k__BackingField: {fileID: 21300000, guid: 38de4e8d48bc5ef40a05bce0a73b598e,
               type: 3}
           effects: []
     - key: 9
@@ -1165,7 +1165,7 @@ MonoBehaviour:
             description: Raises the hull and shields of all your structures. Replaces
               the previous tier.
             role: Research
-            iconKey: b73f9718576eb694bb3badc9b47afc43:21300000
+            iconKey: 3ff66a9c1b175d843b4d7f0d774d8742:21300000
             isHero: 0
             isUnique: 0
             <Name>k__BackingField: Fortified Structures I
@@ -1174,7 +1174,7 @@ MonoBehaviour:
             <Price>k__BackingField: 500
             <BuildTime>k__BackingField: 30
             <UnitCapacity>k__BackingField: 0
-            <Icon>k__BackingField: {fileID: 21300000, guid: b73f9718576eb694bb3badc9b47afc43,
+            <Icon>k__BackingField: {fileID: 21300000, guid: 3ff66a9c1b175d843b4d7f0d774d8742,
               type: 3}
           effects:
           - shipClasses: 06000000
@@ -1189,7 +1189,7 @@ MonoBehaviour:
             description: Raises the hull and shields of all your structures. Replaces
               the previous tier.
             role: Research
-            iconKey: b73f9718576eb694bb3badc9b47afc43:21300000
+            iconKey: 3ff66a9c1b175d843b4d7f0d774d8742:21300000
             isHero: 0
             isUnique: 0
             <Name>k__BackingField: Fortified Structures II
@@ -1198,7 +1198,7 @@ MonoBehaviour:
             <Price>k__BackingField: 1000
             <BuildTime>k__BackingField: 45
             <UnitCapacity>k__BackingField: 0
-            <Icon>k__BackingField: {fileID: 21300000, guid: b73f9718576eb694bb3badc9b47afc43,
+            <Icon>k__BackingField: {fileID: 21300000, guid: 3ff66a9c1b175d843b4d7f0d774d8742,
               type: 3}
           effects:
           - shipClasses: 06000000
@@ -1213,7 +1213,7 @@ MonoBehaviour:
             description: Raises the hull and shields of all your structures. Replaces
               the previous tier.
             role: Research
-            iconKey: b73f9718576eb694bb3badc9b47afc43:21300000
+            iconKey: 3ff66a9c1b175d843b4d7f0d774d8742:21300000
             isHero: 0
             isUnique: 0
             <Name>k__BackingField: Fortified Structures III
@@ -1222,7 +1222,7 @@ MonoBehaviour:
             <Price>k__BackingField: 2000
             <BuildTime>k__BackingField: 60
             <UnitCapacity>k__BackingField: 0
-            <Icon>k__BackingField: {fileID: 21300000, guid: b73f9718576eb694bb3badc9b47afc43,
+            <Icon>k__BackingField: {fileID: 21300000, guid: 3ff66a9c1b175d843b4d7f0d774d8742,
               type: 3}
           effects:
           - shipClasses: 06000000
@@ -1237,7 +1237,7 @@ MonoBehaviour:
             description: Raises the hull and shields of all your structures. Replaces
               the previous tier.
             role: Research
-            iconKey: b73f9718576eb694bb3badc9b47afc43:21300000
+            iconKey: 3ff66a9c1b175d843b4d7f0d774d8742:21300000
             isHero: 0
             isUnique: 0
             <Name>k__BackingField: Fortified Structures IV
@@ -1246,7 +1246,7 @@ MonoBehaviour:
             <Price>k__BackingField: 3500
             <BuildTime>k__BackingField: 80
             <UnitCapacity>k__BackingField: 0
-            <Icon>k__BackingField: {fileID: 21300000, guid: b73f9718576eb694bb3badc9b47afc43,
+            <Icon>k__BackingField: {fileID: 21300000, guid: 3ff66a9c1b175d843b4d7f0d774d8742,
               type: 3}
           effects:
           - shipClasses: 06000000
@@ -1261,7 +1261,7 @@ MonoBehaviour:
             description: Raises the hull and shields of all your structures. Replaces
               the previous tier.
             role: Research
-            iconKey: b73f9718576eb694bb3badc9b47afc43:21300000
+            iconKey: 3ff66a9c1b175d843b4d7f0d774d8742:21300000
             isHero: 0
             isUnique: 0
             <Name>k__BackingField: Fortified Structures V
@@ -1270,7 +1270,7 @@ MonoBehaviour:
             <Price>k__BackingField: 6000
             <BuildTime>k__BackingField: 120
             <UnitCapacity>k__BackingField: 0
-            <Icon>k__BackingField: {fileID: 21300000, guid: b73f9718576eb694bb3badc9b47afc43,
+            <Icon>k__BackingField: {fileID: 21300000, guid: 3ff66a9c1b175d843b4d7f0d774d8742,
               type: 3}
           effects:
           - shipClasses: 06000000

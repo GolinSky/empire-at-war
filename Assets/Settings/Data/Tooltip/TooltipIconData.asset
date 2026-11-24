@@ -303,3 +303,7 @@ MonoBehaviour:
     key: 344ab43239374da438ba8d36fe4c2dd7:21300000
   - sprite: {fileID: 21300000, guid: 7483d8b1ea7011e4a9c5384489f3f150, type: 3}
     key: 7483d8b1ea7011e4a9c5384489f3f150:21300000
+  - sprite: {fileID: 21300000, guid: 3ff66a9c1b175d843b4d7f0d774d8742, type: 3}
+    key: 3ff66a9c1b175d843b4d7f0d774d8742:21300000
+  - sprite: {fileID: 21300000, guid: 38de4e8d48bc5ef40a05bce0a73b598e, type: 3}
+    key: 38de4e8d48bc5ef40a05bce0a73b598e:21300000
