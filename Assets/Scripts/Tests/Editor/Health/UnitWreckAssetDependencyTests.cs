@@ -16,6 +16,7 @@ namespace EmpireAtWar.Tests.Editor
         [TestCase(FactionType.Empire)]
         [TestCase(FactionType.Republic)]
         [TestCase(FactionType.Separatist)]
+        [TestCase(FactionType.Rebellion)]
         public void StationDestruction_SelectsItsFactionWreckForEachLevel(FactionType faction)
         {
             var station = AssetDatabase.LoadAssetAtPath<SpaceStationData>(

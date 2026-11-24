@@ -62,6 +62,14 @@ MonoBehaviour:
         - {fileID: 11400000, guid: 0745ee71384c6ee4f86e7d38c4ba9045, type: 2}
         - {fileID: 11400000, guid: 4ff8997031754ee4d86bae6beaa2d1c8, type: 2}
         - {fileID: 11400000, guid: a363bae8f25566841a66676da42ea93d, type: 2}
+    - key: 2
+      value:
+        levels:
+        - {fileID: 11400000, guid: eb8347e80a797b947ba81212cf5835d2, type: 2}
+        - {fileID: 11400000, guid: 43338050705cacc409fceb295054aef0, type: 2}
+        - {fileID: 11400000, guid: c12a79ef4c9d5df4c959fef5e7145f46, type: 2}
+        - {fileID: 11400000, guid: 49ea9dae2cf0d9c49b58443fdc01228e, type: 2}
+        - {fileID: 11400000, guid: 9e3b332bc655fc2438a9fff6bcd01971, type: 2}
   hangarBays:
     keyValue:
     - key: 2

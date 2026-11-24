@@ -35,6 +35,11 @@ MonoBehaviour:
     m_ReadOnly: 0
     m_SerializedLabels: []
     FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 0ce219db7155c1d4f9027c07221ec034
+    m_Address: RebellionSpaceStationLevel2WreckView
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
   - m_GUID: 0df0b5b98a9519c4c9ef112b2c4d2221
     m_Address: MC50ReinforcementView
     m_ReadOnly: 0
@@ -120,6 +125,11 @@ MonoBehaviour:
     m_ReadOnly: 0
     m_SerializedLabels: []
     FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 547ae291166401f48a2e7f4a77629f74
+    m_Address: RebellionSpaceStationWreckView
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
   - m_GUID: 549969f5bcce41644a1cabc6434f1d8b
     m_Address: NebulaShipView
     m_ReadOnly: 0
@@ -172,6 +182,11 @@ MonoBehaviour:
     FlaggedDuringContentUpdateRestriction: 0
   - m_GUID: 71148c82aa37cf94b94b631bd2b8a2df
     m_Address: CorellianCorvetteReinforcementView
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 7120e4deaf150c24789a74a35dff4e2d
+    m_Address: RebellionSpaceStationLevel3WreckView
     m_ReadOnly: 0
     m_SerializedLabels: []
     FlaggedDuringContentUpdateRestriction: 0
@@ -270,6 +285,11 @@ MonoBehaviour:
     m_ReadOnly: 0
     m_SerializedLabels: []
     FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 9b93e6be8eb1cde40a24af75cd3b7ee6
+    m_Address: RebellionSpaceStationLevel1WreckView
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
   - m_GUID: 9cabbe1dbbeea7d4f862b6bb2e32984a
     m_Address: CorellianBattlecruiserWreckView
     m_ReadOnly: 0
@@ -322,6 +342,11 @@ MonoBehaviour:
     FlaggedDuringContentUpdateRestriction: 0
   - m_GUID: b7356f5f98a621d4a9ed0c4665792b56
     m_Address: CorellianBattlecruiserReinforcementView
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: bc1bf110feb36bc48a3ff6d9bfeee4b4
+    m_Address: RebellionSpaceStationLevel4WreckView
     m_ReadOnly: 0
     m_SerializedLabels: []
     FlaggedDuringContentUpdateRestriction: 0
