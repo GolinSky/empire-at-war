@@ -171,7 +171,7 @@ namespace EmpireAtWar.Entities.TutorialUi
         private void ApplySlide()
         {
             float eased = 1f - (1f - _slide) * (1f - _slide);
-            card.anchoredPosition = _cardRestPosition + Vector2.left * (SLIDE_DISTANCE * (1f - eased));
+            card.anchoredPosition = _cardRestPosition + Vector2.up * (SLIDE_DISTANCE * (1f - eased));
             cardGroup.alpha = eased;
         }
 
