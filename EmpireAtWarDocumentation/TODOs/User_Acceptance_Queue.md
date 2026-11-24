@@ -617,3 +617,7 @@ created: "2026-10-29\r"
 ## ISD I vs Venator Balance
 
 - [ ] [[Done/Bugs/ISD_I_Venator_Balance]] — 1v1 ISD I vs Venator I: ISD I wins or is close; all 14 heavy duals fire at hold; Venator beam no longer dominates hull loss; Imperator shows Boost Weapon Power. Run `Combat`, `Ships`, `Abilities`, `Balance` when authorized; compile passed, tests not run.
+
+## Bolt Noise Reduction
+
+- [ ] [[Done/Optimization/Bolt_Noise_Reduction]] — In battle: about half the bolts, faster (+35%) bolts look right, fights last as long as before, ISD vs Venator outcome unchanged. Run `Combat` when authorized; compile passed, tests not run.

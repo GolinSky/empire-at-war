@@ -383,11 +383,11 @@ MonoBehaviour:
         displayName: Tector
         description: 17,250 hull; 11,000 shields; speed 20. Eight targetable heavy
           octuple turbolasers, two heavy long-range dual turbolasers, two shield
-          generators, three engines and tractor beam. Seven heavy 2-burst turbolasers,
-          four heavy turbolasers and four heavy laser cannons are not separately
-          targetable. Boost Weapon Power halves weapon reload and time between shots
-          and halves speed and shield regeneration for 7 s. Recovers in 50 s. Tractor
-          Beam slows enemy ships of a lower class. No hangars or fighter complement.
+          generators, three engines and tractor beam. Seven heavy turbolasers, four
+          heavy turbolasers and four heavy laser cannons are not separately targetable.
+          Boost Weapon Power halves weapon reload and time between shots and halves
+          speed and shield regeneration for 7 s. Recovers in 50 s. Tractor Beam slows
+          enemy ships of a lower class. No hangars or fighter complement.
         role: Ship of the Line / Capital Ship
         iconKey: f0a9b1821246f484dbc3d7fcaa7828d1:21300000
         isHero: 0

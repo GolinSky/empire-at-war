@@ -69,11 +69,11 @@ MonoBehaviour:
         displayName: Victory II
         description: 10,400 hull; 7,150 shields; speed 35. Four medium dual turbo-ion
           cannons and two medium turbo-ion cannons. Targetable shield generator,
-          two engines and tractor beam. Six medium 2-burst turbolasers, six heavy
-          laser cannons are not separately targetable. Boost Weapon Power halves
-          weapon reload and time between shots and halves speed and shield regeneration
-          for 7 s. Recovers in 50 s. Tractor Beam slows enemy ships of a lower class.
-          No hangar or squadron deployment.
+          two engines and tractor beam. Six medium turbolasers, six heavy laser cannons
+          are not separately targetable. Boost Weapon Power halves weapon reload
+          and time between shots and halves speed and shield regeneration for 7 s.
+          Recovers in 50 s. Tractor Beam slows enemy ships of a lower class. No hangar
+          or squadron deployment.
         role: Ion Support / Cruiser
         iconKey: 73509b3f4bebe5542ba69d62230fff68:21300000
         isHero: 0
@@ -90,11 +90,11 @@ MonoBehaviour:
       value:
         matchups: {fileID: 11400000, guid: 5660b95ce5f607a4884370642690984d, type: 2}
         displayName: Arquitens
-        description: 5,200 hull; 5,200 shields; speed 40. Four light long-range 2-burst
-          turbolasers and four 2-burst laser cannons. Engines and shield generator
-          are targetable hardpoints. No hangar or fighter complement. Boost Weapon
-          Power halves weapon reload and time between shots and halves speed and
-          shield regeneration for 7 s. Recovers in 50 s.
+        description: 5,200 hull; 5,200 shields; speed 40. Four light long-range turbolasers
+          and four laser cannons. Engines and shield generator are targetable hardpoints.
+          No hangar or fighter complement. Boost Weapon Power halves weapon reload
+          and time between shots and halves speed and shield regeneration for 7 s.
+          Recovers in 50 s.
         role: Artillery / Light Cruiser
         iconKey: e54026c071416a845b2d23e814c1e8d5:21300000
         isHero: 0
@@ -181,13 +181,13 @@ MonoBehaviour:
         matchups: {fileID: 11400000, guid: e2411bc7a0dc73f439949739e8ae9a73, type: 2}
         displayName: Executor
         description: '150,000 hull; 150,000 shields; speed 16. Targetable: ten heavy
-          2-burst long-range turbolasers, 23 heavy 2-burst dual turbolasers, eight
-          heavy single-shot long-range dual turbo-ions, ten heavy single-shot artillery-rocket
-          launchers, four shield generators, two engines and two hangars. Integrated:
-          69 medium 2-burst dual long-range turbolasers, 40 heavy lasers and 14 repeating
-          point-defense mounts. Laser Beam and Tractor Beam. Deploys 2 fighter squadrons,
-          2 interceptor squadrons, 2 bomber squadrons at once. Carries 24 total squadron
-          launches, including the initial deployment.'
+          long-range turbolasers, 23 heavy dual turbolasers, eight heavy single-shot
+          long-range dual turbo-ions, ten heavy single-shot artillery-rocket launchers,
+          four shield generators, two engines and two hangars. Integrated: 69 medium
+          dual long-range turbolasers, 40 heavy lasers and 14 repeating point-defense
+          mounts. Laser Beam and Tractor Beam. Deploys 2 fighter squadrons, 2 interceptor
+          squadrons, 2 bomber squadrons at once. Carries 24 total squadron launches,
+          including the initial deployment.'
         role: Dreadnought / Fleet Flagship
         iconKey: ebec4f97ee2c2454883747a62531d2c9:21300000
         isHero: 0
@@ -204,8 +204,8 @@ MonoBehaviour:
       value:
         matchups: {fileID: 11400000, guid: da45b1d1432550f47a485d67cb1fb21f, type: 2}
         displayName: Raider
-        description: 600 hull; 600 shields; speed 50. Four 2-burst laser cannons,
-          two dual repeating point-defense mounts and two heavy single-shot ion blasters.
+        description: 600 hull; 600 shields; speed 50. Four laser cannons, two dual
+          repeating point-defense mounts and two heavy single-shot ion blasters.
           Targetable engine and shield-generator hardpoints; no hangar or fighter
           complement. Pursuit increases speed by 12.5% and halves weapon reload and
           time between shots for 15 s. Shield regeneration stops during the effect.
@@ -251,11 +251,11 @@ MonoBehaviour:
         displayName: Tector
         description: 17,250 hull; 11,000 shields; speed 20. Eight targetable heavy
           octuple turbolasers, two heavy long-range dual turbolasers, two shield
-          generators, three engines and tractor beam. Seven heavy 2-burst turbolasers,
-          four heavy turbolasers and four heavy laser cannons are not separately
-          targetable. Boost Weapon Power halves weapon reload and time between shots
-          and halves speed and shield regeneration for 7 s. Recovers in 50 s. Tractor
-          Beam slows enemy ships of a lower class. No hangars or fighter complement.
+          generators, three engines and tractor beam. Seven heavy turbolasers, four
+          heavy turbolasers and four heavy laser cannons are not separately targetable.
+          Boost Weapon Power halves weapon reload and time between shots and halves
+          speed and shield regeneration for 7 s. Recovers in 50 s. Tractor Beam slows
+          enemy ships of a lower class. No hangars or fighter complement.
         role: Ship of the Line / Capital Ship
         iconKey: f0a9b1821246f484dbc3d7fcaa7828d1:21300000
         isHero: 0

@@ -293,6 +293,7 @@
 
 ### Optimization
 
+- [x] **Bolt noise reduction: 1-shot salvos (PD 2), bolts +35% speed, DPS and reload unchanged** → [[Done/Optimization/Bolt_Noise_Reduction|Bolt Noise Reduction]] — 2026-11-24: shots/s −47%; all 111 weapon DPS identical; in-game check pending.
 - [x] **Weapon cadence spread (reverted)** → [[Done/Optimization/Weapon_Cadence_Spread_Plan|Weapon Cadence Spread Plan]] — 2026-11-24: cadence spread, speed ×2 and single-shot DPS passes tried, then fully reverted by user; not a completed feature. Survivability-per-slot finding kept in the plan.
 - [x] **Projectile visual reduction: missiles/torpedoes 1 shot, reload ×2, speed ×2, short trails; milder bolt pass** → [[Done/Optimization/Projectile_Visual_Reduction_Plan|Projectile Visual Reduction Plan]] — 2026-11-19: plan drafted from source values; decided: missile and torpedo salvo = 1, fighter warheads speed + trail only, torpedo size unchanged; missile defense stays with a 50–75% stop target (Phase 1b); TIE Avenger seeker countermeasure to be removed (Phase 1c, only squadron with missile defense); ship defense = one roll per mount per missile (Phase 1b); all questions decided.
   - 2026-11-19: Phases 1, 1b, 1c implemented and compiled (family data, trails, one-roll-per-mount defense, 8 mount values, seeker removed). DPS identical for all units; simulator TTK −8…−20% from speed ×2 alone (salvo change alone ±1.5%) → user decision. Tests not run. Next: user in-game check, accept/adjust speed, Phase 2 needs per-family projectile counters, then a battle capture.

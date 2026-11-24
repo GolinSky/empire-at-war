@@ -290,7 +290,7 @@ tags:
 
 - Cut projectile count in `WeaponsData.asset` family rules, never per weapon: hold `damage × shotsPerSalvo / reload` constant → sustained DPS unchanged. Verify with `BalanceDpsEstimator` over all units (before/after diff).
 - Per-weapon overrides are multipliers on the family (`damageMultiplier`, `reloadMultiplier`) → they follow automatically; only `overrideVisual` speed is absolute.
-- Current salvos: Missile/Torpedo/IonTorpedo/Ion 1 shot; Laser/Turbolaser/MassDriver 2; PointDefense 4 (interval 0.16 s); fighter lasers 2 per 1.35 s.
+- Current salvos (2026-11-24): every family 1 shot except PointDefense 2 (interval 0.16 s); reloads unchanged; bolt speeds ×1.35 (lasers/turbolasers 233.4, PD/mass driver 158, fighter lasers 245.7), Ion 214. → [[Done/Optimization/Bolt_Noise_Reduction]].
 - Trail particle cap ≥ `rateOverDistance × startLifetime × speed`. Concussion: 1.5 per unit, 0.78 s lifetime, cap 144 (MC30c cluster bombs at 117 units/s → ≈137 live). Proton torpedo: 3 per unit, 0.325 s lifetime, cap 64.
 - Faster projectiles shorten time-to-kill in `BattleSimulator` (it fights at max range): speed ×2 → −8…−20%; salvo change alone ±1.5%.
 - Unit descriptions in `*Faction.asset` hand-write "N-burst" counts → update them with any `shotsPerSalvo` change.
