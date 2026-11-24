@@ -44,7 +44,7 @@ created: 2026-10-28
 - **Phased abilities bypass the stop check.** IonPulse, IonShot, CompositeBeam, ProtonBeam, FighterCoordination, FighterReinforcements and TractorBeam check `IsIonDisabled` in their own `IsComplete` → add `CombatModifiers.AbilitiesSuppressed` (ion-disabled OR hazard) and switch those call sites.
 - **Shield refill leaks.** `HealthModel.Upgrade`, `Restore` and `RefreshStatModifiers` write `Shields` directly → guard with `IsShieldSuppressed`. Do not reuse `IsLostShieldGenerator`.
 - **No placement reason API.** `IReinforcementPlacement.IsPositionValid` returns `bool` (4 placements, cheats, AI) → keep the bool; the UI asks `IHazardService.TryGetHazardAt(pos)` for tooltip text.
-- **Naming.** "Ion" already means super-weapon/IonPulse stun (`IsIonDisabled`, `IonStunView`) → use `IsShieldSuppressed`, `HazardType.IonStorm`.
+- **Naming.** "Ion" already means super-weapon/IonPulse stun (`IsIonDisabled`, `UnitIonStunSync` → `ShipIonStun` hull pass) → use `IsShieldSuppressed`, `HazardType.IonStorm`.
 - **Visual confusion.** Decorative `MatchNebula` / `SkirmishVolumetricNebulaClouds` already exists → hazards need clear edges and a minimap marker.
 - **Map-wide events + reinforcements.** A global event that blocks reinforcements blocks the whole map → default `BlocksReinforcements = false` for events.
 

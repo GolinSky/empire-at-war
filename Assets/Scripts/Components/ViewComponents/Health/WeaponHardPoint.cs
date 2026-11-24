@@ -37,16 +37,16 @@ namespace EmpireAtWar.ViewComponents.Health
         // Local yaw the mount points at, inside the firing arc. Turning has no visual; it only delays the salvo.
         private float _mountYaw;
         private float _turnEndTime = float.NegativeInfinity;
-
-        public event System.Action<WeaponProfile, Transform, float> ShotEmitted;
-        public event System.Action<AttackData> AttackEmitted;
-        internal event System.Action DestructionChanged;
         // Sequence generation of the last emitted shot; a new generation marks a salvo's first shot.
         private int _lastShotGeneration = -1;
 
-        [field:SerializeField] public WeaponType WeaponType { get; private set; }
+        public event System.Action<WeaponProfile, Transform, float> ShotEmitted;
         /// <summary>Raised with a main-battery salvo's first emitted shot: profile, muzzle, aim point.</summary>
         public event System.Action<WeaponProfile, Transform, Vector3> MainBatterySalvoStarted;
+        public event System.Action<AttackData> AttackEmitted;
+        internal event System.Action DestructionChanged;
+
+        [field:SerializeField] public WeaponType WeaponType { get; private set; }
         protected IWeaponPresenter WeaponPresenter { get; private set; }
         public bool Destroyed { get; private set; }
         public bool IsBusy => _sequence.IsBusy || !_reloadTimer.IsComplete || Time.time < _turnEndTime;
@@ -231,17 +231,17 @@ namespace EmpireAtWar.ViewComponents.Health
             GetVisuals().Play(attackData, hardPointModel, aimOffset, isHit, missile, lateSeconds);
 
             _sequence.RecordShotEmission(sequenceGeneration);
-            if (AttackEmitted != null) AttackEmitted.Invoke(attackData);
-            if (ShotEmitted != null) ShotEmitted.Invoke(_profile, transform, DelayBetweenShots);
-            if (isHit)
-                WeaponPresenter.ApplyDamage(attackData, hardPointModel, _profile, duration, shot.DamageDuration, missile);
-        }
             if (_lastShotGeneration != sequenceGeneration)
             {
                 _lastShotGeneration = sequenceGeneration;
                 if (mainBattery && MainBatterySalvoStarted != null)
                     MainBatterySalvoStarted.Invoke(_profile, transform, aimPoint);
             }
+            if (AttackEmitted != null) AttackEmitted.Invoke(attackData);
+            if (ShotEmitted != null) ShotEmitted.Invoke(_profile, transform, DelayBetweenShots);
+            if (isHit)
+                WeaponPresenter.ApplyDamage(attackData, hardPointModel, _profile, duration, shot.DamageDuration, missile);
+        }
 
         internal void PrepareEffects() => GetVisuals();
 
