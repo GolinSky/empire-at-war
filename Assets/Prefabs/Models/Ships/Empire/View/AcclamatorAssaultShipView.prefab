@@ -3335,14 +3335,6 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::EmpireAtWar.Components.TeamColor.TeamColorView
   meshRenderers:
-  - {fileID: 1824319579085431281}
-  - {fileID: 1832063435376232326}
-  - {fileID: 1526555517307951296}
-  - {fileID: 980415063756905061}
-  - {fileID: 4738264389833225131}
-  - {fileID: 5081513905764798492}
-  - {fileID: 3753255919432802407}
-  - {fileID: 4381492092248824857}
   - {fileID: 7406050696113804610}
   - {fileID: 2316780271900663532}
   - {fileID: 2441381684646238266}
@@ -3424,7 +3416,15 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 0049ac5520fa3674d89a73744a811d68, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::EmpireAtWar.Components.Ship.EngineGlow.ShipEngineGlowComponent
-  glowRenderers: []
+  glowRenderers:
+  - {fileID: 1824319579085431281}
+  - {fileID: 1832063435376232326}
+  - {fileID: 1526555517307951296}
+  - {fileID: 980415063756905061}
+  - {fileID: 4738264389833225131}
+  - {fileID: 5081513905764798492}
+  - {fileID: 3753255919432802407}
+  - {fileID: 4381492092248824857}
 --- !u!1 &8232124959367486454
 GameObject:
   m_ObjectHideFlags: 0

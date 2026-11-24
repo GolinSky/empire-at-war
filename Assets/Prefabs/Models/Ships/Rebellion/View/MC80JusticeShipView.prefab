@@ -2551,7 +2551,6 @@ MonoBehaviour:
   meshRenderers:
   - {fileID: 5592662285311904063}
   - {fileID: 560129382379624681}
-  - {fileID: 489433638350621423}
   - {fileID: 5121164075523837412}
   - {fileID: 3210665230666894672}
   - {fileID: 6305979156562587769}
@@ -2630,7 +2629,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 0049ac5520fa3674d89a73744a811d68, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::EmpireAtWar.Components.Ship.EngineGlow.ShipEngineGlowComponent
-  glowRenderers: []
+  glowRenderers:
+  - {fileID: 489433638350621423}
 --- !u!1 &4755184436042140266
 GameObject:
   m_ObjectHideFlags: 0
