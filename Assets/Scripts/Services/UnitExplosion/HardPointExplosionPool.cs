@@ -56,13 +56,18 @@ namespace EmpireAtWar.Services.UnitExplosion
         }
 
         public void Play(Transform anchor, IFogVisibilityFacade fogVisibility, float scale) =>
-            Play(anchor, fogVisibility, scale, Vector3.zero);
+            Play(anchor, fogVisibility, scale, Vector3.zero, null);
 
-        /// <summary>Plays at <paramref name="localOffset"/> in the anchor's space, following it as it moves and turns.</summary>
-        public void Play(Transform anchor, IFogVisibilityFacade fogVisibility, float scale, Vector3 localOffset)
+        /// <summary>
+        /// Plays at <paramref name="localOffset"/> in the anchor's space, following it as it moves and turns.
+        /// A <paramref name="startColor"/> tints it; null keeps the prefab's colors.
+        /// </summary>
+        public void Play(Transform anchor, IFogVisibilityFacade fogVisibility, float scale, Vector3 localOffset,
+            Color? startColor)
         {
             ExplosionVfx explosion = TakeIdle();
             explosion.transform.localScale = Vector3.one * scale;
+            if (startColor.HasValue) explosion.SetStartColor(startColor.Value);
             ActiveExplosion active = new ActiveExplosion(explosion, anchor, fogVisibility, localOffset);
             GeometryUtility.CalculateFrustumPlanes(_camera, _planes);
             active.Follow(_planes);

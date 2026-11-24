@@ -6,9 +6,10 @@ namespace EmpireAtWar.Services.UnitExplosion
     public interface IMuzzleBlastPool
     {
         /// <summary>
-        /// Plays one short blast of about <paramref name="diameter"/> world units at <paramref name="worldOffset"/>
-        /// from a firing muzzle and follows it. A null fog visibility means the unit is never hidden by fog.
+        /// Plays one short blast of about <paramref name="diameter"/> world units, tinted <paramref name="color"/>, at
+        /// <paramref name="worldOffset"/> from a firing muzzle and follows it. A null fog visibility means the unit is
+        /// never hidden by fog.
         /// </summary>
-        void Play(Transform muzzle, Vector3 worldOffset, IFogVisibilityFacade fogVisibility, float diameter);
+        void Play(Transform muzzle, Vector3 worldOffset, IFogVisibilityFacade fogVisibility, float diameter, Color color);
     }
 }

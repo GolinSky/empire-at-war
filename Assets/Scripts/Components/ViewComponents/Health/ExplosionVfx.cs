@@ -31,6 +31,13 @@ namespace EmpireAtWar.ViewComponents.Health
 
         public void Play() => particles.Play();
 
+        /// <summary>Tints particles the root system emits from now on.</summary>
+        public void SetStartColor(Color color)
+        {
+            var main = particles.main;
+            main.startColor = color;
+        }
+
         public void StopEmitting() => particles.Stop(true, ParticleSystemStopBehavior.StopEmitting);
         public void Clear() => particles.Stop(true, ParticleSystemStopBehavior.StopEmittingAndClear);
     }

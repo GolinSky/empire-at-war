@@ -63,6 +63,20 @@ namespace EmpireAtWar.Tests.Editor
         }
 
         [Test]
+        public void BlastColor_FollowsShotColor()
+        {
+            _blasts.Initialize();
+
+            _events.RaiseSalvoStarted(Profile(Vector3.one, Color.green), _muzzle);
+            _events.RaiseSalvoStarted(Profile(Vector3.one, Color.red), _muzzle);
+
+            Color green = _pool.Played[0].Color;
+            Color red = _pool.Played[1].Color;
+            Assert.That(green.g, Is.GreaterThan(green.r).And.GreaterThan(green.b), "A green battery fires a green blast.");
+            Assert.That(red.r, Is.GreaterThan(red.g).And.GreaterThan(red.b), "A red battery fires a red blast.");
+        }
+
+        [Test]
         public void BlastSize_FollowsShotSize()
         {
             _blasts.Initialize();
@@ -96,8 +110,10 @@ namespace EmpireAtWar.Tests.Editor
             Assert.That(_pool.Played, Is.Empty);
         }
 
-        private static WeaponProfile Profile(Vector3 size) => new WeaponProfile(WeaponType.Laser, "Test",
-            WeaponFamily.Laser, DamageType.Laser, 1f, 1, 1f, 1f, 100f, false, false, null, 100f, Color.white, size,
+        private static WeaponProfile Profile(Vector3 size) => Profile(size, Color.white);
+
+        private static WeaponProfile Profile(Vector3 size, Color color) => new WeaponProfile(WeaponType.Laser, "Test",
+            WeaponFamily.Laser, DamageType.Laser, 1f, 1, 1f, 1f, 100f, false, false, null, 100f, color, size,
             false, false, default, default, 0f);
 
         private sealed class FireEvents : IWeaponFireEvents
@@ -115,11 +131,11 @@ namespace EmpireAtWar.Tests.Editor
 
         private sealed class Pool : IMuzzleBlastPool
         {
-            public List<(Transform Muzzle, Vector3 Offset, IFogVisibilityFacade Fog, float Diameter)> Played { get; } =
-                new List<(Transform, Vector3, IFogVisibilityFacade, float)>();
+            public List<(Transform Muzzle, Vector3 Offset, IFogVisibilityFacade Fog, float Diameter, Color Color)> Played
+            { get; } = new List<(Transform, Vector3, IFogVisibilityFacade, float, Color)>();
 
-            public void Play(Transform muzzle, Vector3 worldOffset, IFogVisibilityFacade fogVisibility, float diameter) =>
-                Played.Add((muzzle, worldOffset, fogVisibility, diameter));
+            public void Play(Transform muzzle, Vector3 worldOffset, IFogVisibilityFacade fogVisibility, float diameter,
+                Color color) => Played.Add((muzzle, worldOffset, fogVisibility, diameter, color));
         }
 
         private sealed class Fog : IFogVisibilityFacade

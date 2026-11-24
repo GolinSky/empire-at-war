@@ -26,8 +26,9 @@ namespace EmpireAtWar.Services.UnitExplosion
 
         public void LateDispose() => _pool.LateDispose();
 
-        public void Play(Transform muzzle, Vector3 worldOffset, IFogVisibilityFacade fogVisibility, float diameter) =>
-            _pool.Play(muzzle, fogVisibility, diameter / _prefabSize, muzzle.InverseTransformVector(worldOffset));
+        public void Play(Transform muzzle, Vector3 worldOffset, IFogVisibilityFacade fogVisibility, float diameter,
+            Color color) =>
+            _pool.Play(muzzle, fogVisibility, diameter / _prefabSize, muzzle.InverseTransformVector(worldOffset), color);
 
         public void Clear() => _pool.Clear();
     }
