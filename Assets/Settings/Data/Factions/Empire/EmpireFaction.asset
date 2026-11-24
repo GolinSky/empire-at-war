@@ -316,11 +316,11 @@ MonoBehaviour:
       value:
         matchups: {fileID: 11400000, guid: ac8c0500ff4d2bd43a6e524f62694c7a, type: 2}
         displayName: Titan
-        description: Heavy Imperial battlecruiser with twelve quad heavy turbolasers,
-          six medium dual turbolasers, four heavy ion cannons and two point defense
-          lasers. No squadrons. Uses Boost Weapon Power and Tractor Beam. It requires
-          escorts against bomber swarms.
-        role: Heavy frontline combat
+        description: 'Long-range stealth battlecruiser: 120,000 hull, 31,000 shields;
+          twelve heavy quad turbolasers, four heavy siege ion cannons, eight medium
+          dual turbolasers and eight point defense lasers. No squadrons. Uses Cloak
+          and Tractor Beam. It requires escorts against bomber swarms.'
+        role: Battlecruiser / Long-range ambusher
         iconKey: d92e0b25eb3e0d94ab8f1713e2ec1b84:21300000
         isHero: 0
         isUnique: 0

@@ -31,6 +31,117 @@ Transform:
   m_Children: []
   m_Father: {fileID: 1950701229037696998}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!1 &143395953980871024
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 8766516733787168874}
+  - component: {fileID: 5800378463167006613}
+  - component: {fileID: 4438103541592034752}
+  m_Layer: 0
+  m_Name: PointDefense_9
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &8766516733787168874
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 143395953980871024}
+  serializedVersion: 2
+  m_LocalRotation: {x: 0, y: 0.7071068, z: 0, w: -0.7071068}
+  m_LocalPosition: {x: -31.97968, y: 7.353506, z: -131.3156}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children:
+  - {fileID: 3935799223479914132}
+  m_Father: {fileID: 7105114939867839791}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &5800378463167006613
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 143395953980871024}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 6535a63451984d3d8510459aec130f3f, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::EmpireAtWar.ViewComponents.Health.WeaponHardPoint
+  spawnDestroyedExplosion: 1
+  destroyedVfxAnchor: {fileID: 3935799223479914132}
+  destroyedVfxScale: 5.4736595
+  unlockLevel: 1
+  healthOverride: 0
+  healthWeight: 1
+  <HardPointType>k__BackingField: 0
+  <Id>k__BackingField: 35
+  yAxisRange:
+    <Min>k__BackingField: -180
+    <Max>k__BackingField: 180
+  mainBattery: 0
+  <WeaponType>k__BackingField: 14
+--- !u!135 &4438103541592034752
+SphereCollider:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 143395953980871024}
+  m_Material: {fileID: 0}
+  m_IncludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_ExcludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_LayerOverridePriority: 0
+  m_IsTrigger: 0
+  m_ProvidesContacts: 0
+  m_Enabled: 1
+  serializedVersion: 3
+  m_Radius: 1.5
+  m_Center: {x: 0, y: 0, z: 0}
+--- !u!1 &222944987289493651
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 2827620821497693982}
+  m_Layer: 0
+  m_Name: DestroyedVfxAnchor
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &2827620821497693982
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 222944987289493651}
+  serializedVersion: 2
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 0, y: 2.5889826, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 6438010792599151628}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &414053229635587853
 GameObject:
   m_ObjectHideFlags: 0
@@ -167,7 +278,7 @@ GameObject:
   - component: {fileID: 2668910342006985202}
   - component: {fileID: 5666436878437149467}
   m_Layer: 0
-  m_Name: HeavyIon_2
+  m_Name: SiegeIon_2
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -213,7 +324,7 @@ MonoBehaviour:
     <Min>k__BackingField: -180
     <Max>k__BackingField: 180
   mainBattery: 0
-  <WeaponType>k__BackingField: 11
+  <WeaponType>k__BackingField: 174
 --- !u!135 &5666436878437149467
 SphereCollider:
   m_ObjectHideFlags: 0
@@ -324,7 +435,7 @@ MonoBehaviour:
     <Min>k__BackingField: -180
     <Max>k__BackingField: 180
   mainBattery: 1
-  <WeaponType>k__BackingField: 89
+  <WeaponType>k__BackingField: 173
 --- !u!135 &6279587716569703702
 SphereCollider:
   m_ObjectHideFlags: 0
@@ -435,7 +546,7 @@ MonoBehaviour:
     <Min>k__BackingField: -180
     <Max>k__BackingField: 180
   mainBattery: 1
-  <WeaponType>k__BackingField: 89
+  <WeaponType>k__BackingField: 173
 --- !u!135 &6610379288912188026
 SphereCollider:
   m_ObjectHideFlags: 0
@@ -457,6 +568,68 @@ SphereCollider:
   serializedVersion: 3
   m_Radius: 1.5
   m_Center: {x: 0, y: 0, z: 0}
+--- !u!1 &1446202517176577294
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 8176677892260576964}
+  m_Layer: 0
+  m_Name: DestroyedVfxAnchor
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &8176677892260576964
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1446202517176577294}
+  serializedVersion: 2
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 0, y: 1.9278727, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 7042857294647342787}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!1 &1462282932523583071
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 1559109239457498109}
+  m_Layer: 0
+  m_Name: DestroyedVfxAnchor
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &1559109239457498109
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1462282932523583071}
+  serializedVersion: 2
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 0, y: 2.5889826, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 1607437972724616162}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &1557115662979571349
 GameObject:
   m_ObjectHideFlags: 0
@@ -515,7 +688,7 @@ MonoBehaviour:
     <Min>k__BackingField: -180
     <Max>k__BackingField: 180
   mainBattery: 1
-  <WeaponType>k__BackingField: 89
+  <WeaponType>k__BackingField: 173
 --- !u!135 &5786901966274065705
 SphereCollider:
   m_ObjectHideFlags: 0
@@ -595,7 +768,7 @@ MonoBehaviour:
     <Min>k__BackingField: -180
     <Max>k__BackingField: 180
   mainBattery: 1
-  <WeaponType>k__BackingField: 89
+  <WeaponType>k__BackingField: 173
 --- !u!135 &4881293252563046412
 SphereCollider:
   m_ObjectHideFlags: 0
@@ -692,6 +865,68 @@ SphereCollider:
   serializedVersion: 3
   m_Radius: 3
   m_Center: {x: 0, y: 0, z: 0}
+--- !u!1 &1766275724017350403
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 3935799223479914132}
+  m_Layer: 0
+  m_Name: DestroyedVfxAnchor
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &3935799223479914132
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1766275724017350403}
+  serializedVersion: 2
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 0, y: 2.5889826, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 8766516733787168874}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!1 &1804774372921396932
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 7343039895412685593}
+  m_Layer: 0
+  m_Name: DestroyedVfxAnchor
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &7343039895412685593
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1804774372921396932}
+  serializedVersion: 2
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 0, y: 2.5889826, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 5451458725234814990}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &1830846082002724735
 GameObject:
   m_ObjectHideFlags: 0
@@ -847,6 +1082,166 @@ Transform:
   m_Children: []
   m_Father: {fileID: 858025105911420345}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!1 &2593921663515035222
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 5451458725234814990}
+  - component: {fileID: 91200366506317704}
+  - component: {fileID: 8678181003211873255}
+  m_Layer: 0
+  m_Name: PointDefense_4
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &5451458725234814990
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2593921663515035222}
+  serializedVersion: 2
+  m_LocalRotation: {x: 0, y: 0.7071068, z: 0, w: -0.7071068}
+  m_LocalPosition: {x: -15, y: -14.9, z: 140}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children:
+  - {fileID: 7343039895412685593}
+  m_Father: {fileID: 7105114939867839791}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &91200366506317704
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2593921663515035222}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 6535a63451984d3d8510459aec130f3f, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::EmpireAtWar.ViewComponents.Health.WeaponHardPoint
+  spawnDestroyedExplosion: 1
+  destroyedVfxAnchor: {fileID: 7343039895412685593}
+  destroyedVfxScale: 5.4736595
+  unlockLevel: 1
+  healthOverride: 0
+  healthWeight: 1
+  <HardPointType>k__BackingField: 0
+  <Id>k__BackingField: 40
+  yAxisRange:
+    <Min>k__BackingField: -180
+    <Max>k__BackingField: 180
+  mainBattery: 0
+  <WeaponType>k__BackingField: 14
+--- !u!135 &8678181003211873255
+SphereCollider:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2593921663515035222}
+  m_Material: {fileID: 0}
+  m_IncludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_ExcludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_LayerOverridePriority: 0
+  m_IsTrigger: 0
+  m_ProvidesContacts: 0
+  m_Enabled: 1
+  serializedVersion: 3
+  m_Radius: 1.5
+  m_Center: {x: 0, y: 0, z: 0}
+--- !u!1 &2630353737172839585
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 7528638832484884542}
+  - component: {fileID: 1728305649429340526}
+  - component: {fileID: 8758335172355456176}
+  m_Layer: 0
+  m_Name: PointDefense_2
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &7528638832484884542
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2630353737172839585}
+  serializedVersion: 2
+  m_LocalRotation: {x: 0, y: 0.7071068, z: 0, w: -0.7071068}
+  m_LocalPosition: {x: -25, y: -12.6, z: 60}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children:
+  - {fileID: 6274933312889358132}
+  m_Father: {fileID: 7105114939867839791}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &1728305649429340526
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2630353737172839585}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 6535a63451984d3d8510459aec130f3f, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::EmpireAtWar.ViewComponents.Health.WeaponHardPoint
+  spawnDestroyedExplosion: 1
+  destroyedVfxAnchor: {fileID: 6274933312889358132}
+  destroyedVfxScale: 5.4736595
+  unlockLevel: 1
+  healthOverride: 0
+  healthWeight: 1
+  <HardPointType>k__BackingField: 0
+  <Id>k__BackingField: 38
+  yAxisRange:
+    <Min>k__BackingField: -180
+    <Max>k__BackingField: 180
+  mainBattery: 0
+  <WeaponType>k__BackingField: 14
+--- !u!135 &8758335172355456176
+SphereCollider:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2630353737172839585}
+  m_Material: {fileID: 0}
+  m_IncludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_ExcludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_LayerOverridePriority: 0
+  m_IsTrigger: 0
+  m_ProvidesContacts: 0
+  m_Enabled: 1
+  serializedVersion: 3
+  m_Radius: 1.5
+  m_Center: {x: 0, y: 0, z: 0}
 --- !u!1 &2947306767186986580
 GameObject:
   m_ObjectHideFlags: 0
@@ -2427,7 +2822,7 @@ GameObject:
   - component: {fileID: 908098943488470553}
   - component: {fileID: 3639885046636488669}
   m_Layer: 0
-  m_Name: HeavyIon_4
+  m_Name: SiegeIon_4
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -2473,7 +2868,7 @@ MonoBehaviour:
     <Min>k__BackingField: -180
     <Max>k__BackingField: 180
   mainBattery: 0
-  <WeaponType>k__BackingField: 11
+  <WeaponType>k__BackingField: 174
 --- !u!135 &3639885046636488669
 SphereCollider:
   m_ObjectHideFlags: 0
@@ -2495,6 +2890,37 @@ SphereCollider:
   serializedVersion: 3
   m_Radius: 1.5
   m_Center: {x: 0, y: 0, z: 0}
+--- !u!1 &3737196374385329719
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 8601274587736337692}
+  m_Layer: 0
+  m_Name: DestroyedVfxAnchor
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &8601274587736337692
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 3737196374385329719}
+  serializedVersion: 2
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 0, y: 1.9278727, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 8827521473250293305}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &3977606302370343240
 GameObject:
   m_ObjectHideFlags: 0
@@ -2553,7 +2979,7 @@ MonoBehaviour:
     <Min>k__BackingField: -180
     <Max>k__BackingField: 180
   mainBattery: 1
-  <WeaponType>k__BackingField: 89
+  <WeaponType>k__BackingField: 173
 --- !u!135 &8109623267775179441
 SphereCollider:
   m_ObjectHideFlags: 0
@@ -2633,7 +3059,7 @@ MonoBehaviour:
     <Min>k__BackingField: -180
     <Max>k__BackingField: 180
   mainBattery: 1
-  <WeaponType>k__BackingField: 89
+  <WeaponType>k__BackingField: 173
 --- !u!135 &6227888467592531308
 SphereCollider:
   m_ObjectHideFlags: 0
@@ -2713,7 +3139,7 @@ MonoBehaviour:
     <Min>k__BackingField: -180
     <Max>k__BackingField: 180
   mainBattery: 1
-  <WeaponType>k__BackingField: 89
+  <WeaponType>k__BackingField: 173
 --- !u!135 &6446600972056436759
 SphereCollider:
   m_ObjectHideFlags: 0
@@ -3327,6 +3753,14 @@ MonoBehaviour:
   - {fileID: 908098943488470553}
   - {fileID: 2930571409192054262}
   - {fileID: 7712804718658757524}
+  - {fileID: 5813448251513795741}
+  - {fileID: 1401697232203688809}
+  - {fileID: 5800378463167006613}
+  - {fileID: 1509671495045116934}
+  - {fileID: 3549509015743391328}
+  - {fileID: 1728305649429340526}
+  - {fileID: 4348182227177809703}
+  - {fileID: 91200366506317704}
   - {fileID: 7128518457885527016}
   - {fileID: 6465789677005267567}
   - {fileID: 1907533808232294044}
@@ -3875,6 +4309,14 @@ MonoBehaviour:
   - {fileID: 908098943488470553}
   - {fileID: 2930571409192054262}
   - {fileID: 7712804718658757524}
+  - {fileID: 5813448251513795741}
+  - {fileID: 1401697232203688809}
+  - {fileID: 5800378463167006613}
+  - {fileID: 1509671495045116934}
+  - {fileID: 3549509015743391328}
+  - {fileID: 1728305649429340526}
+  - {fileID: 4348182227177809703}
+  - {fileID: 91200366506317704}
   - {fileID: 7128518457885527016}
   - {fileID: 6465789677005267567}
   - {fileID: 1907533808232294044}
@@ -4028,8 +4470,8 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 4743981444944299938}
   serializedVersion: 2
-  m_LocalRotation: {x: 0, y: 0.7071068, z: 0, w: 0.7071068}
-  m_LocalPosition: {x: 36.658394, y: 9.665581, z: -185.40816}
+  m_LocalRotation: {x: 0, y: 0.7071068, z: 0, w: -0.7071068}
+  m_LocalPosition: {x: -36.658394, y: 9.665581, z: -185.40816}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children:
@@ -4068,6 +4510,86 @@ SphereCollider:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 4743981444944299938}
+  m_Material: {fileID: 0}
+  m_IncludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_ExcludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_LayerOverridePriority: 0
+  m_IsTrigger: 0
+  m_ProvidesContacts: 0
+  m_Enabled: 1
+  serializedVersion: 3
+  m_Radius: 1.5
+  m_Center: {x: 0, y: 0, z: 0}
+--- !u!1 &4744964895138047800
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 6438010792599151628}
+  - component: {fileID: 4348182227177809703}
+  - component: {fileID: 4007754964553749907}
+  m_Layer: 0
+  m_Name: PointDefense_3
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &6438010792599151628
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 4744964895138047800}
+  serializedVersion: 2
+  m_LocalRotation: {x: 0, y: 0.7071068, z: 0, w: 0.7071068}
+  m_LocalPosition: {x: 15, y: -14.9, z: 140}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children:
+  - {fileID: 2827620821497693982}
+  m_Father: {fileID: 7105114939867839791}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &4348182227177809703
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 4744964895138047800}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 6535a63451984d3d8510459aec130f3f, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::EmpireAtWar.ViewComponents.Health.WeaponHardPoint
+  spawnDestroyedExplosion: 1
+  destroyedVfxAnchor: {fileID: 2827620821497693982}
+  destroyedVfxScale: 5.4736595
+  unlockLevel: 1
+  healthOverride: 0
+  healthWeight: 1
+  <HardPointType>k__BackingField: 0
+  <Id>k__BackingField: 39
+  yAxisRange:
+    <Min>k__BackingField: -180
+    <Max>k__BackingField: 180
+  mainBattery: 0
+  <WeaponType>k__BackingField: 14
+--- !u!135 &4007754964553749907
+SphereCollider:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 4744964895138047800}
   m_Material: {fileID: 0}
   m_IncludeLayers:
     serializedVersion: 2
@@ -4205,7 +4727,7 @@ GameObject:
   - component: {fileID: 5898212964800833423}
   - component: {fileID: 3497678891977003297}
   m_Layer: 0
-  m_Name: HeavyIon_3
+  m_Name: SiegeIon_3
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -4251,7 +4773,7 @@ MonoBehaviour:
     <Min>k__BackingField: -180
     <Max>k__BackingField: 180
   mainBattery: 0
-  <WeaponType>k__BackingField: 11
+  <WeaponType>k__BackingField: 174
 --- !u!135 &3497678891977003297
 SphereCollider:
   m_ObjectHideFlags: 0
@@ -4447,7 +4969,7 @@ MonoBehaviour:
     <Min>k__BackingField: -180
     <Max>k__BackingField: 180
   mainBattery: 1
-  <WeaponType>k__BackingField: 89
+  <WeaponType>k__BackingField: 173
 --- !u!135 &2380667899462251281
 SphereCollider:
   m_ObjectHideFlags: 0
@@ -4558,7 +5080,7 @@ MonoBehaviour:
     <Min>k__BackingField: -180
     <Max>k__BackingField: 180
   mainBattery: 1
-  <WeaponType>k__BackingField: 89
+  <WeaponType>k__BackingField: 173
 --- !u!135 &5430477159807776883
 SphereCollider:
   m_ObjectHideFlags: 0
@@ -4846,12 +5368,20 @@ Transform:
   - {fileID: 2569154384989874636}
   - {fileID: 3655873214637765128}
   - {fileID: 858025105911420345}
+  - {fileID: 8827521473250293305}
+  - {fileID: 7042857294647342787}
   - {fileID: 8107147281320726908}
   - {fileID: 3847901827330242529}
   - {fileID: 6858387562686605419}
   - {fileID: 2707372835077651061}
   - {fileID: 478701610303833938}
   - {fileID: 1306826041788924818}
+  - {fileID: 8766516733787168874}
+  - {fileID: 1607437972724616162}
+  - {fileID: 7408597278815044596}
+  - {fileID: 7528638832484884542}
+  - {fileID: 6438010792599151628}
+  - {fileID: 5451458725234814990}
   - {fileID: 5235810845641983925}
   - {fileID: 4090632567210395556}
   - {fileID: 1566551699303969239}
@@ -4921,7 +5451,7 @@ MonoBehaviour:
     <Min>k__BackingField: -180
     <Max>k__BackingField: 180
   mainBattery: 1
-  <WeaponType>k__BackingField: 89
+  <WeaponType>k__BackingField: 173
 --- !u!135 &2446009843435867840
 SphereCollider:
   m_ObjectHideFlags: 0
@@ -4929,6 +5459,86 @@ SphereCollider:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 6502438347382194569}
+  m_Material: {fileID: 0}
+  m_IncludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_ExcludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_LayerOverridePriority: 0
+  m_IsTrigger: 0
+  m_ProvidesContacts: 0
+  m_Enabled: 1
+  serializedVersion: 3
+  m_Radius: 1.5
+  m_Center: {x: 0, y: 0, z: 0}
+--- !u!1 &6601004070382891840
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 7042857294647342787}
+  - component: {fileID: 1401697232203688809}
+  - component: {fileID: 4835719628352013551}
+  m_Layer: 0
+  m_Name: MediumDualTurbolaser_8
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &7042857294647342787
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 6601004070382891840}
+  serializedVersion: 2
+  m_LocalRotation: {x: 0, y: 0.7071068, z: 0, w: -0.7071068}
+  m_LocalPosition: {x: -45.17927, y: 3.0760956, z: -177.07715}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children:
+  - {fileID: 8176677892260576964}
+  m_Father: {fileID: 7105114939867839791}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &1401697232203688809
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 6601004070382891840}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 6535a63451984d3d8510459aec130f3f, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::EmpireAtWar.ViewComponents.Health.WeaponHardPoint
+  spawnDestroyedExplosion: 1
+  destroyedVfxAnchor: {fileID: 8176677892260576964}
+  destroyedVfxScale: 5.4736595
+  unlockLevel: 1
+  healthOverride: 0
+  healthWeight: 1
+  <HardPointType>k__BackingField: 0
+  <Id>k__BackingField: 34
+  yAxisRange:
+    <Min>k__BackingField: -180
+    <Max>k__BackingField: 180
+  mainBattery: 0
+  <WeaponType>k__BackingField: 5
+--- !u!135 &4835719628352013551
+SphereCollider:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 6601004070382891840}
   m_Material: {fileID: 0}
   m_IncludeLayers:
     serializedVersion: 2
@@ -5036,6 +5646,86 @@ Transform:
   m_Children: []
   m_Father: {fileID: 2597436620412874419}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!1 &6912597812628480218
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 8827521473250293305}
+  - component: {fileID: 5813448251513795741}
+  - component: {fileID: 5237135322595142470}
+  m_Layer: 0
+  m_Name: MediumDualTurbolaser_7
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &8827521473250293305
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 6912597812628480218}
+  serializedVersion: 2
+  m_LocalRotation: {x: 0, y: 0.7071068, z: 0, w: -0.7071068}
+  m_LocalPosition: {x: -45.17927, y: 3.906311, z: -193.47017}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children:
+  - {fileID: 8601274587736337692}
+  m_Father: {fileID: 7105114939867839791}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &5813448251513795741
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 6912597812628480218}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 6535a63451984d3d8510459aec130f3f, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::EmpireAtWar.ViewComponents.Health.WeaponHardPoint
+  spawnDestroyedExplosion: 1
+  destroyedVfxAnchor: {fileID: 8601274587736337692}
+  destroyedVfxScale: 5.4736595
+  unlockLevel: 1
+  healthOverride: 0
+  healthWeight: 1
+  <HardPointType>k__BackingField: 0
+  <Id>k__BackingField: 33
+  yAxisRange:
+    <Min>k__BackingField: -180
+    <Max>k__BackingField: 180
+  mainBattery: 0
+  <WeaponType>k__BackingField: 5
+--- !u!135 &5237135322595142470
+SphereCollider:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 6912597812628480218}
+  m_Material: {fileID: 0}
+  m_IncludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_ExcludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_LayerOverridePriority: 0
+  m_IsTrigger: 0
+  m_ProvidesContacts: 0
+  m_Enabled: 1
+  serializedVersion: 3
+  m_Radius: 1.5
+  m_Center: {x: 0, y: 0, z: 0}
 --- !u!1 &7022164642257205486
 GameObject:
   m_ObjectHideFlags: 0
@@ -5208,7 +5898,7 @@ GameObject:
   - component: {fileID: 3387758745593267504}
   - component: {fileID: 2725965378829437030}
   m_Layer: 0
-  m_Name: HeavyIon_1
+  m_Name: SiegeIon_1
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -5254,7 +5944,7 @@ MonoBehaviour:
     <Min>k__BackingField: -180
     <Max>k__BackingField: 180
   mainBattery: 0
-  <WeaponType>k__BackingField: 11
+  <WeaponType>k__BackingField: 174
 --- !u!135 &2725965378829437030
 SphereCollider:
   m_ObjectHideFlags: 0
@@ -5276,6 +5966,37 @@ SphereCollider:
   serializedVersion: 3
   m_Radius: 1.5
   m_Center: {x: 0, y: 0, z: 0}
+--- !u!1 &7466494027965822775
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 7968552386737060474}
+  m_Layer: 0
+  m_Name: DestroyedVfxAnchor
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &7968552386737060474
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 7466494027965822775}
+  serializedVersion: 2
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 0, y: 2.5889826, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 7408597278815044596}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &7573111232280507840
 GameObject:
   m_ObjectHideFlags: 0
@@ -5302,8 +6023,8 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 7573111232280507840}
   serializedVersion: 2
-  m_LocalRotation: {x: 0, y: 0.7071068, z: 0, w: 0.7071068}
-  m_LocalPosition: {x: 36.658394, y: 9.460815, z: -181.67404}
+  m_LocalRotation: {x: 0, y: 0.7071068, z: 0, w: -0.7071068}
+  m_LocalPosition: {x: -36.658394, y: 9.460815, z: -181.67404}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children:
@@ -5599,6 +6320,37 @@ SphereCollider:
   serializedVersion: 3
   m_Radius: 3
   m_Center: {x: 0, y: 0, z: 0}
+--- !u!1 &8242284863464597338
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 6274933312889358132}
+  m_Layer: 0
+  m_Name: DestroyedVfxAnchor
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &6274933312889358132
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 8242284863464597338}
+  serializedVersion: 2
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 0, y: 2.5889826, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 7528638832484884542}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &8315615198485179375
 GameObject:
   m_ObjectHideFlags: 0
@@ -5673,6 +6425,86 @@ SphereCollider:
   m_Enabled: 1
   serializedVersion: 3
   m_Radius: 3
+  m_Center: {x: 0, y: 0, z: 0}
+--- !u!1 &8320322417695261864
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 7408597278815044596}
+  - component: {fileID: 3549509015743391328}
+  - component: {fileID: 2928201269264991369}
+  m_Layer: 0
+  m_Name: PointDefense_1
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &7408597278815044596
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 8320322417695261864}
+  serializedVersion: 2
+  m_LocalRotation: {x: 0, y: 0.7071068, z: 0, w: 0.7071068}
+  m_LocalPosition: {x: 25, y: -12.6, z: 60}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children:
+  - {fileID: 7968552386737060474}
+  m_Father: {fileID: 7105114939867839791}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &3549509015743391328
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 8320322417695261864}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 6535a63451984d3d8510459aec130f3f, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::EmpireAtWar.ViewComponents.Health.WeaponHardPoint
+  spawnDestroyedExplosion: 1
+  destroyedVfxAnchor: {fileID: 7968552386737060474}
+  destroyedVfxScale: 5.4736595
+  unlockLevel: 1
+  healthOverride: 0
+  healthWeight: 1
+  <HardPointType>k__BackingField: 0
+  <Id>k__BackingField: 37
+  yAxisRange:
+    <Min>k__BackingField: -180
+    <Max>k__BackingField: 180
+  mainBattery: 0
+  <WeaponType>k__BackingField: 14
+--- !u!135 &2928201269264991369
+SphereCollider:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 8320322417695261864}
+  m_Material: {fileID: 0}
+  m_IncludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_ExcludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_LayerOverridePriority: 0
+  m_IsTrigger: 0
+  m_ProvidesContacts: 0
+  m_Enabled: 1
+  serializedVersion: 3
+  m_Radius: 1.5
   m_Center: {x: 0, y: 0, z: 0}
 --- !u!1 &8421161687085511951
 GameObject:
@@ -5869,7 +6701,7 @@ MonoBehaviour:
     <Min>k__BackingField: -180
     <Max>k__BackingField: 180
   mainBattery: 1
-  <WeaponType>k__BackingField: 89
+  <WeaponType>k__BackingField: 173
 --- !u!135 &8763415731774777983
 SphereCollider:
   m_ObjectHideFlags: 0
@@ -5980,7 +6812,7 @@ MonoBehaviour:
     <Min>k__BackingField: -180
     <Max>k__BackingField: 180
   mainBattery: 1
-  <WeaponType>k__BackingField: 89
+  <WeaponType>k__BackingField: 173
 --- !u!135 &4257876753371912604
 SphereCollider:
   m_ObjectHideFlags: 0
@@ -6146,6 +6978,14 @@ MonoBehaviour:
   - {fileID: 908098943488470553}
   - {fileID: 2930571409192054262}
   - {fileID: 7712804718658757524}
+  - {fileID: 5813448251513795741}
+  - {fileID: 1401697232203688809}
+  - {fileID: 5800378463167006613}
+  - {fileID: 1509671495045116934}
+  - {fileID: 3549509015743391328}
+  - {fileID: 1728305649429340526}
+  - {fileID: 4348182227177809703}
+  - {fileID: 91200366506317704}
   rangeMultiplier: 1.31
 --- !u!1 &9034326209280120660
 GameObject:
@@ -6178,6 +7018,86 @@ Transform:
   m_Children: []
   m_Father: {fileID: 5233733081308100741}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!1 &9103757815443681433
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 1607437972724616162}
+  - component: {fileID: 1509671495045116934}
+  - component: {fileID: 377819327078217075}
+  m_Layer: 0
+  m_Name: PointDefense_10
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &1607437972724616162
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 9103757815443681433}
+  serializedVersion: 2
+  m_LocalRotation: {x: 0, y: 0.7071068, z: 0, w: -0.7071068}
+  m_LocalPosition: {x: -31.97968, y: 7.064232, z: -124.68339}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children:
+  - {fileID: 1559109239457498109}
+  m_Father: {fileID: 7105114939867839791}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &1509671495045116934
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 9103757815443681433}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 6535a63451984d3d8510459aec130f3f, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::EmpireAtWar.ViewComponents.Health.WeaponHardPoint
+  spawnDestroyedExplosion: 1
+  destroyedVfxAnchor: {fileID: 1559109239457498109}
+  destroyedVfxScale: 5.4736595
+  unlockLevel: 1
+  healthOverride: 0
+  healthWeight: 1
+  <HardPointType>k__BackingField: 0
+  <Id>k__BackingField: 36
+  yAxisRange:
+    <Min>k__BackingField: -180
+    <Max>k__BackingField: 180
+  mainBattery: 0
+  <WeaponType>k__BackingField: 14
+--- !u!135 &377819327078217075
+SphereCollider:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 9103757815443681433}
+  m_Material: {fileID: 0}
+  m_IncludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_ExcludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_LayerOverridePriority: 0
+  m_IsTrigger: 0
+  m_ProvidesContacts: 0
+  m_Enabled: 1
+  serializedVersion: 3
+  m_Radius: 1.5
+  m_Center: {x: 0, y: 0, z: 0}
 --- !u!1 &9130461819773229114
 GameObject:
   m_ObjectHideFlags: 0

@@ -116,5 +116,7 @@ namespace EmpireAtWar.Components.AttackComponent
         RedSquadronEscortLaser = 170,
         AllegianceHeavyOctupleTurbolaser = 171,
         AllegianceHeavyQuadTurbolaser = 172,
+        TitanHeavyQuadTurbolaser = 173,
+        TitanSiegeIonCannon = 174,
     }
 }

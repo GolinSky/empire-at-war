@@ -1673,6 +1673,45 @@ MonoBehaviour:
     size: {x: 1, y: 1, z: 1}
     overrideColor: 0
     color: {r: 1, g: 1, b: 1, a: 1}
+  - weaponType: 173
+    displayName: Heavy Quad Turbolaser
+    family: 1
+    caliber: 2
+    mount: 4
+    scope: 2
+    faction: 0
+    unit: Titan
+    damageMultiplier: 2.2
+    reloadMultiplier: 1
+    rangeMultiplier: 1
+    reason: 'Titan main battery: x2.2 damage puts the ship at about 2x ISD II DPS;
+      long reach comes from the Titan WeaponComponent range multiplier.'
+    overrideVisual: 0
+    shotPrefab: {fileID: 0}
+    beamPrefab: {fileID: 0}
+    projectileSpeed: 0
+    size: {x: 1, y: 1, z: 1}
+    overrideColor: 0
+    color: {r: 1, g: 1, b: 1, a: 1}
+  - weaponType: 174
+    displayName: Heavy Siege Ion Cannon
+    family: 2
+    caliber: 2
+    mount: 2
+    scope: 2
+    faction: 0
+    unit: Titan
+    damageMultiplier: 3
+    reloadMultiplier: 1
+    rangeMultiplier: 1
+    reason: 'Titan shield breaker: heavy dual ion cannon at x3 damage.'
+    overrideVisual: 0
+    shotPrefab: {fileID: 0}
+    beamPrefab: {fileID: 0}
+    projectileSpeed: 0
+    size: {x: 1, y: 1, z: 1}
+    overrideColor: 0
+    color: {r: 1, g: 1, b: 1, a: 1}
   - weaponType: 85
     displayName: Heavy Octuple Turbolaser
     family: 1
