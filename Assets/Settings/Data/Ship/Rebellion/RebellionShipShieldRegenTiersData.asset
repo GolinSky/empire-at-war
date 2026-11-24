@@ -16,6 +16,6 @@ MonoBehaviour:
   frigate: 80
   cruiser: 200
   heavyCruiser: 350
-  capital: 650
-  battleCruiser: 900
+  capital: 750
+  battleCruiser: 1000
   dreadnought: 1400

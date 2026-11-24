@@ -283,7 +283,7 @@ GameObject:
   - component: {fileID: 5661001652392190425}
   - component: {fileID: 9192462151913116090}
   m_Layer: 0
-  m_Name: Ion_ION02
+  m_Name: Laser_02
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -329,7 +329,7 @@ MonoBehaviour:
     <Min>k__BackingField: 11
     <Max>k__BackingField: 129
   mainBattery: 0
-  <WeaponType>k__BackingField: 37
+  <WeaponType>k__BackingField: 94
 --- !u!1 &1033802371601639218
 GameObject:
   m_ObjectHideFlags: 0
@@ -718,7 +718,7 @@ MonoBehaviour:
     <Min>k__BackingField: -17
     <Max>k__BackingField: 164
   mainBattery: 0
-  <WeaponType>k__BackingField: 5
+  <WeaponType>k__BackingField: 3
 --- !u!1 &1537682381363202869
 GameObject:
   m_ObjectHideFlags: 0
@@ -5797,7 +5797,7 @@ MonoBehaviour:
     <Min>k__BackingField: -17
     <Max>k__BackingField: 165
   mainBattery: 0
-  <WeaponType>k__BackingField: 5
+  <WeaponType>k__BackingField: 3
 --- !u!1 &2311602453073836607
 GameObject:
   m_ObjectHideFlags: 0
@@ -5809,7 +5809,7 @@ GameObject:
   - component: {fileID: 3229225242835670873}
   - component: {fileID: 5284803905215597809}
   m_Layer: 0
-  m_Name: Turbo_2R
+  m_Name: PD_2R
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -5855,7 +5855,7 @@ MonoBehaviour:
     <Min>k__BackingField: -152
     <Max>k__BackingField: 180
   mainBattery: 0
-  <WeaponType>k__BackingField: 5
+  <WeaponType>k__BackingField: 14
 --- !u!1 &2491366708654042526
 GameObject:
   m_ObjectHideFlags: 0
@@ -5867,7 +5867,7 @@ GameObject:
   - component: {fileID: 8136425059945456643}
   - component: {fileID: 391050833042781575}
   m_Layer: 0
-  m_Name: Ion_ION01
+  m_Name: Laser_01
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -5913,7 +5913,7 @@ MonoBehaviour:
     <Min>k__BackingField: -126
     <Max>k__BackingField: -9
   mainBattery: 0
-  <WeaponType>k__BackingField: 37
+  <WeaponType>k__BackingField: 94
 --- !u!1 &2497608053009027599
 GameObject:
   m_ObjectHideFlags: 0
@@ -6079,7 +6079,7 @@ GameObject:
   - component: {fileID: 6324494783726832124}
   - component: {fileID: 6331184158769505758}
   m_Layer: 0
-  m_Name: Ion_ION03
+  m_Name: Laser_03
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -6125,7 +6125,7 @@ MonoBehaviour:
     <Min>k__BackingField: -180
     <Max>k__BackingField: 98
   mainBattery: 0
-  <WeaponType>k__BackingField: 37
+  <WeaponType>k__BackingField: 94
 --- !u!1 &3020506778039904209
 GameObject:
   m_ObjectHideFlags: 0
@@ -6304,7 +6304,7 @@ MonoBehaviour:
     <Min>k__BackingField: -180
     <Max>k__BackingField: 15
   mainBattery: 0
-  <WeaponType>k__BackingField: 5
+  <WeaponType>k__BackingField: 3
 --- !u!1 &3446746082397726818
 GameObject:
   m_ObjectHideFlags: 0
@@ -11700,6 +11700,7 @@ MonoBehaviour:
   - {fileID: 6251798071801518961}
   - {fileID: 2324891059646654095}
   - {fileID: 917520465799407110}
+  - {fileID: 8206492790138865507}
 --- !u!114 &1283754632722916796
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -11855,6 +11856,7 @@ MonoBehaviour:
   - {fileID: 2324891059646654095}
   - {fileID: 917520465799407110}
   - {fileID: 5446223409293825776}
+  - {fileID: 8206492790138865507}
 --- !u!114 &5446223409293825776
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -11883,6 +11885,64 @@ MonoBehaviour:
   - {fileID: 5556819704008731412}
   - {fileID: 2591733180476931910}
   - {fileID: 2785594902198306667}
+--- !u!1 &3901776707324228291
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 2260904276382864771}
+  - component: {fileID: 8206492790138865507}
+  m_Layer: 0
+  m_Name: Turbo_Center
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &2260904276382864771
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 3901776707324228291}
+  serializedVersion: 2
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 0.043446362, y: -9.985733, z: 43.109055}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children:
+  - {fileID: 6067413295574875844}
+  m_Father: {fileID: 6288173655347290105}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &8206492790138865507
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 3901776707324228291}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 6535a63451984d3d8510459aec130f3f, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::EmpireAtWar.ViewComponents.Health.WeaponHardPoint
+  spawnDestroyedExplosion: 1
+  destroyedVfxAnchor: {fileID: 6067413295574875844}
+  destroyedVfxScale: 2.1907246
+  unlockLevel: 1
+  healthOverride: 0
+  healthWeight: 1
+  <HardPointType>k__BackingField: 0
+  <Id>k__BackingField: 31
+  yAxisRange:
+    <Min>k__BackingField: -180
+    <Max>k__BackingField: 180
+  mainBattery: 0
+  <WeaponType>k__BackingField: 3
 --- !u!1 &4089459393179653611
 GameObject:
   m_ObjectHideFlags: 0
@@ -11894,7 +11954,7 @@ GameObject:
   - component: {fileID: 370489582829935807}
   - component: {fileID: 3755911608711385616}
   m_Layer: 0
-  m_Name: Ion_ION04
+  m_Name: Laser_04
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -11940,7 +12000,7 @@ MonoBehaviour:
     <Min>k__BackingField: 9
     <Max>k__BackingField: 120
   mainBattery: 0
-  <WeaponType>k__BackingField: 37
+  <WeaponType>k__BackingField: 94
 --- !u!1 &4091498612842966267
 GameObject:
   m_ObjectHideFlags: 0
@@ -12104,7 +12164,7 @@ GameObject:
   - component: {fileID: 7724462614723551374}
   - component: {fileID: 2833243552135382715}
   m_Layer: 0
-  m_Name: Ion_Front
+  m_Name: Turbo_Front
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -12150,7 +12210,7 @@ MonoBehaviour:
     <Min>k__BackingField: -180
     <Max>k__BackingField: 180
   mainBattery: 0
-  <WeaponType>k__BackingField: 37
+  <WeaponType>k__BackingField: 3
 --- !u!1 &4159886144691534733
 GameObject:
   m_ObjectHideFlags: 0
@@ -17165,7 +17225,7 @@ MonoBehaviour:
     <Min>k__BackingField: -15
     <Max>k__BackingField: 180
   mainBattery: 0
-  <WeaponType>k__BackingField: 5
+  <WeaponType>k__BackingField: 3
 --- !u!1 &4444837898897884068
 GameObject:
   m_ObjectHideFlags: 0
@@ -17720,6 +17780,7 @@ MonoBehaviour:
   - {fileID: 9192462151913116090}
   - {fileID: 6331184158769505758}
   - {fileID: 3755911608711385616}
+  - {fileID: 8206492790138865507}
   rangeMultiplier: 1
 --- !u!1 &5611033153332312288
 GameObject:
@@ -17944,7 +18005,7 @@ GameObject:
   - component: {fileID: 5726793405560027566}
   - component: {fileID: 3581243775908830731}
   m_Layer: 0
-  m_Name: Turbo_R1
+  m_Name: Laser_R1
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -17990,7 +18051,7 @@ MonoBehaviour:
     <Min>k__BackingField: -105
     <Max>k__BackingField: 160
   mainBattery: 0
-  <WeaponType>k__BackingField: 5
+  <WeaponType>k__BackingField: 94
 --- !u!1 &6130685676382343544
 GameObject:
   m_ObjectHideFlags: 0
@@ -18060,7 +18121,7 @@ GameObject:
   - component: {fileID: 6812467550109383646}
   - component: {fileID: 4511113203202508629}
   m_Layer: 0
-  m_Name: Turbo_L
+  m_Name: PD_L
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -18106,7 +18167,7 @@ MonoBehaviour:
     <Min>k__BackingField: -163
     <Max>k__BackingField: 18
   mainBattery: 0
-  <WeaponType>k__BackingField: 5
+  <WeaponType>k__BackingField: 14
 --- !u!1 &6365550823060055005
 GameObject:
   m_ObjectHideFlags: 0
@@ -18341,6 +18402,7 @@ Transform:
   - {fileID: 6875103904701931221}
   - {fileID: 4823383911679743261}
   - {fileID: 4166160711162770660}
+  - {fileID: 2260904276382864771}
   m_Father: {fileID: 773376535087680568}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &6665152925595641405
@@ -18753,7 +18815,7 @@ MonoBehaviour:
     <Min>k__BackingField: -163
     <Max>k__BackingField: 18
   mainBattery: 0
-  <WeaponType>k__BackingField: 5
+  <WeaponType>k__BackingField: 3
 --- !u!1 &7084892980757991083
 GameObject:
   m_ObjectHideFlags: 0
@@ -19886,6 +19948,37 @@ MonoBehaviour:
   - {x: 0.09838507, y: -0.9951172, z: -0.007884186, w: 26.904118}
   - {x: -0.052104443, y: -0.9970703, z: 0.05599928, w: 24.771164}
   - {x: 0.0003399761, y: -0.99902344, z: -0.044182077, w: 29.87376}
+--- !u!1 &7329146492356542623
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 6067413295574875844}
+  m_Layer: 0
+  m_Name: DestroyedVfxAnchor
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &6067413295574875844
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 7329146492356542623}
+  serializedVersion: 2
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 0, y: 1.1875277, z: 0.0000038146973}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 2260904276382864771}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &7491430427509339649
 GameObject:
   m_ObjectHideFlags: 0
@@ -25094,7 +25187,7 @@ GameObject:
   - component: {fileID: 6054678996098673018}
   - component: {fileID: 1910393788924954531}
   m_Layer: 0
-  m_Name: Turbo_R
+  m_Name: PD_R
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -25140,7 +25233,7 @@ MonoBehaviour:
     <Min>k__BackingField: -17
     <Max>k__BackingField: 165
   mainBattery: 0
-  <WeaponType>k__BackingField: 5
+  <WeaponType>k__BackingField: 14
 --- !u!1 &8156253147017126492
 GameObject:
   m_ObjectHideFlags: 0
@@ -25205,7 +25298,7 @@ GameObject:
   - component: {fileID: 1977111846418079358}
   - component: {fileID: 2031589004344124715}
   m_Layer: 0
-  m_Name: Turbo_MTBL02
+  m_Name: Ion_MTBL02
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -25251,7 +25344,7 @@ MonoBehaviour:
     <Min>k__BackingField: -180
     <Max>k__BackingField: 140
   mainBattery: 0
-  <WeaponType>k__BackingField: 5
+  <WeaponType>k__BackingField: 37
 --- !u!1 &8183290415808384074
 GameObject:
   m_ObjectHideFlags: 0
@@ -25294,7 +25387,7 @@ GameObject:
   - component: {fileID: 8605909287501083366}
   - component: {fileID: 7558335652028470869}
   m_Layer: 0
-  m_Name: Turbo_L1
+  m_Name: Laser_L1
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -25340,7 +25433,7 @@ MonoBehaviour:
     <Min>k__BackingField: -165
     <Max>k__BackingField: 18
   mainBattery: 0
-  <WeaponType>k__BackingField: 5
+  <WeaponType>k__BackingField: 94
 --- !u!1 &8441293402443670803
 GameObject:
   m_ObjectHideFlags: 0
@@ -25398,7 +25491,7 @@ MonoBehaviour:
     <Min>k__BackingField: -180
     <Max>k__BackingField: 180
   mainBattery: 0
-  <WeaponType>k__BackingField: 5
+  <WeaponType>k__BackingField: 3
 --- !u!1 &8658190219659295626
 GameObject:
   m_ObjectHideFlags: 0
@@ -25673,7 +25766,7 @@ GameObject:
   - component: {fileID: 5412152193813369000}
   - component: {fileID: 7969126712841004078}
   m_Layer: 0
-  m_Name: Turbo_2L
+  m_Name: PD_2L
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -25719,7 +25812,7 @@ MonoBehaviour:
     <Min>k__BackingField: -180
     <Max>k__BackingField: 153
   mainBattery: 0
-  <WeaponType>k__BackingField: 5
+  <WeaponType>k__BackingField: 14
 --- !u!1 &9035730129470934585
 GameObject:
   m_ObjectHideFlags: 0
@@ -25731,7 +25824,7 @@ GameObject:
   - component: {fileID: 4893813278739925752}
   - component: {fileID: 5419428963796106164}
   m_Layer: 0
-  m_Name: Turbo_MTBL01
+  m_Name: Ion_MTBL01
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -25777,7 +25870,7 @@ MonoBehaviour:
     <Min>k__BackingField: -139
     <Max>k__BackingField: 180
   mainBattery: 0
-  <WeaponType>k__BackingField: 5
+  <WeaponType>k__BackingField: 37
 --- !u!1 &9073770332597530360
 GameObject:
   m_ObjectHideFlags: 0
