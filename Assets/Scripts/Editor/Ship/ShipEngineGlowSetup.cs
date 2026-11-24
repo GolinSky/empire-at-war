@@ -82,7 +82,9 @@ namespace EmpireAtWar.Editor.Ship
             "Assets/Art/Materials/Models/SeparatistShips/Captor/Captor_Thrusters.mat",
             "Assets/Art/Materials/Models/SeparatistShips/Lupus/Lupus_engines_Slot0.mat",
             "Assets/Art/Materials/Models/SeparatistShips/Recalcitrant/Recalcitrant_Engine_Glow_Slot0.mat",
-            "Assets/Art/Materials/Models/SeparatistShips/Recalcitrant/Recalcitrant_Engines_Slot0.mat"
+            "Assets/Art/Materials/Models/SeparatistShips/Recalcitrant/Recalcitrant_Engines_Slot0.mat",
+            "Assets/Art/Materials/Models/SeparatistShips/BulwarkII/BulwarkII_Engine Lights_Slot0.mat",
+            "Assets/Art/Materials/Models/RepublicShips/CR70/CR70_Charger_Engine_Slot0.mat"
         };
 
         private const string MENU_PATH = "Tools/Empire At War/Units/Ships/Set Up Engine Glow";

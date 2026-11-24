@@ -60,7 +60,7 @@ MonoBehaviour:
     - key: 302
       value:
         matchups: {fileID: 11400000, guid: 061d31c86b87ab34ca40a0d06290c8a5, type: 2}
-        displayName: MC80
+        displayName: MC80 Liberty
         description: Heavy Rebel capital ship with 15,000 hull, 16,500 shields and
           238/s shield regeneration. Twelve dual heavy turbolaser, four heavy quad
           turbolaser, two dual medium turbolaser and two heavy ion cannon batteries,
@@ -72,7 +72,7 @@ MonoBehaviour:
         iconKey: b95f55f2e2f204f42a94f0c44c5baa85:21300000
         isHero: 0
         isUnique: 0
-        <Name>k__BackingField: Mon Calamari Star Cruiser / MC80
+        <Name>k__BackingField: MC80 Liberty
         <MaxCount>k__BackingField: 10
         <AvailableLevel>k__BackingField: 4
         <Price>k__BackingField: 6500

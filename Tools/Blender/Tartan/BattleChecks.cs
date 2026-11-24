@@ -14,7 +14,7 @@ public static class TartanBattleChecks
         {
             var tartan = factory.Build(registry.Units.Single(u => u.Name == "Tartan-class Patrol Cruiser"));
             var results = new List<object>();
-            foreach (var name in new[] {"Venator", "Victory II Star Destroyer", "Mon Calamari Star Cruiser / MC80"})
+            foreach (var name in new[] {"Venator", "Victory II Star Destroyer", "MC80 Liberty"})
             {
                 var enemyRow = registry.Units.Single(u => name == "Victory II Star Destroyer" ? u.Name.StartsWith(name) : u.Name.Trim() == name);
                 var enemy = factory.Build(enemyRow);

@@ -1566,7 +1566,6 @@ MonoBehaviour:
   - {fileID: 3667343674334615923}
   - {fileID: 5265013990503159784}
   - {fileID: 5191083607569590656}
-  - {fileID: 1354901139027974403}
   - {fileID: 8009519405956295483}
   - {fileID: 3310813793961100025}
   - {fileID: 7362447216432621966}
@@ -1638,7 +1637,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 0049ac5520fa3674d89a73744a811d68, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::EmpireAtWar.Components.Ship.EngineGlow.ShipEngineGlowComponent
-  glowRenderers: []
+  glowRenderers:
+  - {fileID: 1354901139027974403}
 --- !u!1 &3530833516775843334
 GameObject:
   m_ObjectHideFlags: 0
