@@ -1,5 +1,4 @@
 using EmpireAtWar.Controllers.Game;
-using EmpireAtWar.Entities.Game;
 using EmpireAtWar.Lifecycle;
 using EmpireAtWar.Services.BattleNotifications;
 using EmpireAtWar.Ui.Base;
@@ -12,15 +11,13 @@ namespace EmpireAtWar.Entities.BattleNotifications
     {
         private readonly BattleNotificationFeed _feed;
         private readonly SkirmishStateModel _state;
-        private readonly BattleDefinition _battle;
         private BattleNotificationUi _ui;
 
         public BattleNotificationUiController(IUiService uiService, BattleNotificationFeed feed,
-            SkirmishStateModel state, BattleDefinition battle) : base(uiService)
+            SkirmishStateModel state) : base(uiService)
         {
             _feed = feed;
             _state = state;
-            _battle = battle;
         }
 
         public void Initialize()
@@ -28,7 +25,6 @@ namespace EmpireAtWar.Entities.BattleNotifications
             _ui = CreateUi<BattleNotificationUi>();
             _ui.AssignPresenter(this);
             _ui.SetFeed(_feed);
-            _ui.SetSurvivalLayout(_battle.Mode == GameMode.Survival);
             _ui.Initialize();
             _ui.Show();
             _state.AddObserver(this);

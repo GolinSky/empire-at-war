@@ -6,17 +6,12 @@ using UnityEngine;
 
 namespace EmpireAtWar.Entities.BattleNotifications
 {
-    /// <summary>Top-center stack of dismissible notification cards. Only the cards take clicks.</summary>
+    /// <summary>Top-left stack of dismissible notification cards. Only the cards take clicks.</summary>
     public sealed class BattleNotificationUi : BaseUi
     {
         [SerializeField] private RectTransform stack;
         [SerializeField] private BattleNotificationCardView cardTemplate;
         [SerializeField] private TooltipIconData icons;
-
-        [Header("Placement")]
-        [SerializeField] private float topOffset = 54f;
-        [Tooltip("Survival keeps its wave and status rows at the top, so the cards start below them.")]
-        [SerializeField] private float survivalTopOffset = 164f;
 
         [Header("Priority Accents")]
         [SerializeField] private Color outcomeColor = new Color32(0xF8, 0xFA, 0xFC, 0xFF);
@@ -33,9 +28,6 @@ namespace EmpireAtWar.Entities.BattleNotifications
         public void AssignPresenter(IBattleNotificationPresenter presenter) => _presenter = presenter;
 
         public void SetFeed(IBattleNotificationFeedObserver feed) => _feed = feed;
-
-        public void SetSurvivalLayout(bool isSurvival) =>
-            stack.anchoredPosition = new Vector2(0f, -(isSurvival ? survivalTopOffset : topOffset));
 
         public void Initialize()
         {
