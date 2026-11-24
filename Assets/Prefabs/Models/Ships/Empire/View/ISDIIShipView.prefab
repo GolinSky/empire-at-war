@@ -6172,6 +6172,7 @@ GameObject:
   - component: {fileID: 1283754632722916796}
   - component: {fileID: 7532020912885601778}
   - component: {fileID: 3536569297988240252}
+  - component: {fileID: 5418812053248308419}
   m_Layer: 0
   m_Name: ISDIIShipView
   m_TagString: Untagged
@@ -6656,20 +6657,6 @@ MonoBehaviour:
   - {fileID: 5344944197401730616}
   - {fileID: 6630032820779176958}
   - {fileID: 7019340526980634894}
-  - {fileID: 1788216748672981610}
-  - {fileID: 1698165638705013422}
-  - {fileID: 1348114854770429104}
-  - {fileID: 4661880104751607009}
-  - {fileID: 1165465021692294372}
-  - {fileID: 1279201644065911856}
-  - {fileID: 6408563837757704882}
-  - {fileID: 6923705467570049569}
-  - {fileID: 3297565992138178558}
-  - {fileID: 7026451253701882112}
-  - {fileID: 5716282045522922461}
-  - {fileID: 2232544353344819424}
-  - {fileID: 6080725380895453497}
-  - {fileID: 2270081455950249702}
 --- !u!114 &3536569297988240252
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -6735,6 +6722,34 @@ MonoBehaviour:
   - {fileID: 2546536889231834688}
   - {fileID: 7295298434279055824}
   - {fileID: 5243987037918907666}
+  - {fileID: 5418812053248308419}
+--- !u!114 &5418812053248308419
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 3806449680888156439}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 0049ac5520fa3674d89a73744a811d68, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::EmpireAtWar.Components.Ship.EngineGlow.ShipEngineGlowComponent
+  glowRenderers:
+  - {fileID: 1788216748672981610}
+  - {fileID: 1698165638705013422}
+  - {fileID: 1348114854770429104}
+  - {fileID: 4661880104751607009}
+  - {fileID: 1165465021692294372}
+  - {fileID: 1279201644065911856}
+  - {fileID: 6408563837757704882}
+  - {fileID: 6923705467570049569}
+  - {fileID: 3297565992138178558}
+  - {fileID: 7026451253701882112}
+  - {fileID: 5716282045522922461}
+  - {fileID: 2232544353344819424}
+  - {fileID: 6080725380895453497}
+  - {fileID: 2270081455950249702}
 --- !u!1 &4159886144691534733
 GameObject:
   m_ObjectHideFlags: 0

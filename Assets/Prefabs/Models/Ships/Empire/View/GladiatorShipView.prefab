@@ -317,6 +317,7 @@ GameObject:
   - component: {fileID: 1283754632722916796}
   - component: {fileID: 7532020912885601778}
   - component: {fileID: 2409528535425447509}
+  - component: {fileID: 8567407558044838695}
   m_Layer: 0
   m_Name: GladiatorShipView
   m_TagString: Untagged
@@ -553,11 +554,6 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   shieldView: {fileID: 6726589032486533280}
-  ionStunPrefab: {fileID: 6241401996787714037, guid: f49dbb9fe33e5814f8900d78fb93f2e9,
-    type: 3}
-  ionFieldBounds:
-    m_Center: {x: 0, y: -0.33593273, z: 0}
-    m_Extent: {x: 30.39749, y: 13.95196, z: 45.970898}
   <ShipUnits>k__BackingField:
   - {fileID: 5805539600596289671}
   - {fileID: 7319587430659081685}
@@ -661,6 +657,20 @@ MonoBehaviour:
   - {fileID: 6852928509335582908}
   - {fileID: 810153685434030957}
   - {fileID: 7532020912885601778}
+  - {fileID: 8567407558044838695}
+--- !u!114 &8567407558044838695
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 3806449680888156439}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 0049ac5520fa3674d89a73744a811d68, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::EmpireAtWar.Components.Ship.EngineGlow.ShipEngineGlowComponent
+  glowRenderers: []
 --- !u!1 &4217925874426086972
 GameObject:
   m_ObjectHideFlags: 0

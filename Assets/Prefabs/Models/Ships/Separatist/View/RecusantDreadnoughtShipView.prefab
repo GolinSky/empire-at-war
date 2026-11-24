@@ -4417,6 +4417,7 @@ GameObject:
   - component: {fileID: 7002157431313375878}
   - component: {fileID: 5159486179904323144}
   - component: {fileID: 6652163275684727113}
+  - component: {fileID: 1477446092262745347}
   m_Layer: 0
   m_Name: RecusantDreadnoughtShipView
   m_TagString: Untagged
@@ -4656,11 +4657,6 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   shieldView: {fileID: 947026875535378999}
-  ionStunPrefab: {fileID: 6241401996787714037, guid: f49dbb9fe33e5814f8900d78fb93f2e9,
-    type: 3}
-  ionFieldBounds:
-    m_Center: {x: 0, y: -0.01035881, z: 0}
-    m_Extent: {x: 26.233946, y: 25.047804, z: 140.12582}
   <ShipUnits>k__BackingField:
   - {fileID: 6161228120499614423}
   - {fileID: 8184388198752121202}
@@ -4817,6 +4813,7 @@ MonoBehaviour:
   - {fileID: 5874838782929296022}
   - {fileID: 6163962973342000434}
   - {fileID: 7002157431313375878}
+  - {fileID: 1477446092262745347}
 --- !u!64 &6652163275684727113
 MeshCollider:
   m_ObjectHideFlags: 0
@@ -4839,6 +4836,19 @@ MeshCollider:
   m_Convex: 1
   m_CookingOptions: 30
   m_Mesh: {fileID: 4300000, guid: 67e2ac2371780a44c9b69f625be35fb9, type: 2}
+--- !u!114 &1477446092262745347
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 7434223437386498013}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 0049ac5520fa3674d89a73744a811d68, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::EmpireAtWar.Components.Ship.EngineGlow.ShipEngineGlowComponent
+  glowRenderers: []
 --- !u!1 &7568123092807440804
 GameObject:
   m_ObjectHideFlags: 0

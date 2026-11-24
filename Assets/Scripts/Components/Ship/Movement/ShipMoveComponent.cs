@@ -99,6 +99,7 @@ namespace EmpireAtWar.Components.Ship.Movement
         private bool _isAnchored;
         private bool _isAnchorBraking;
         private int _spacingRevision;
+        private bool _wasMoving;
 
         public int SpacingRevision => _spacingRevision;
         public bool CanSettle => _combatHoldTarget != null && !_combatHoldTarget.HealthModel.IsDestroyed &&
@@ -125,6 +126,8 @@ namespace EmpireAtWar.Components.Ship.Movement
         public event Action<Vector3> LookingAt;
 
         public event Action HyperSpaceCompleted;
+
+        public event Action<bool> MovingChanged;
 
         public event Action<Vector3[]> RouteChanged;
 
@@ -229,6 +232,10 @@ namespace EmpireAtWar.Components.Ship.Movement
                 Stop();
             }
             if (_hasQueuedPlan && !_isInPlanQueue && !_motion.IsBraking && IsRepathDue()) EnqueuePlan();
+            bool isMoving = IsMoving;
+            if (isMoving == _wasMoving) return;
+            _wasMoving = isMoving;
+            MovingChanged?.Invoke(isMoving);
         }
 
         public override void Release()

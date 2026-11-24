@@ -14,6 +14,9 @@ namespace EmpireAtWar.Components.Ship.Movement
 
         event Action HyperSpaceCompleted;
 
+        /// <summary>Raised when <see cref="IShipMovement.IsMoving"/> flips; the argument is the new value.</summary>
+        event Action<bool> MovingChanged;
+
         float NavigationSpeed { get; }
 
         void ApplyMoveCoefficient(float coefficient);

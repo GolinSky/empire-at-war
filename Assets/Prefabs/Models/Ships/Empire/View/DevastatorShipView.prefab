@@ -2457,7 +2457,7 @@ PrefabInstance:
     - target: {fileID: 3536569297988240252, guid: f24f9301127af634ab504e1c96f3d728,
         type: 3}
       propertyPath: <Injectables>k__BackingField.Array.size
-      value: 35
+      value: 36
       objectReference: {fileID: 0}
     - target: {fileID: 3536569297988240252, guid: f24f9301127af634ab504e1c96f3d728,
         type: 3}
@@ -2469,6 +2469,16 @@ PrefabInstance:
       propertyPath: '<Injectables>k__BackingField.Array.data[34]'
       value: 
       objectReference: {fileID: 6779539366337217742}
+    - target: {fileID: 3536569297988240252, guid: f24f9301127af634ab504e1c96f3d728,
+        type: 3}
+      propertyPath: '<Injectables>k__BackingField.Array.data[35]'
+      value: 
+      objectReference: {fileID: 7329745628907374711}
+    - target: {fileID: 3536569297988240252, guid: f24f9301127af634ab504e1c96f3d728,
+        type: 3}
+      propertyPath: '<Injectables>k__BackingField.Array.data[36]'
+      value: 
+      objectReference: {fileID: 7329745628907374711}
     - target: {fileID: 3603161699759361406, guid: f24f9301127af634ab504e1c96f3d728,
         type: 3}
       propertyPath: 'm_Materials.Array.data[0]'
@@ -2554,6 +2564,116 @@ PrefabInstance:
       propertyPath: <WeaponType>k__BackingField
       value: 3
       objectReference: {fileID: 0}
+    - target: {fileID: 5418812053248308419, guid: f24f9301127af634ab504e1c96f3d728,
+        type: 3}
+      propertyPath: glowRenderers.Array.size
+      value: 21
+      objectReference: {fileID: 0}
+    - target: {fileID: 5418812053248308419, guid: f24f9301127af634ab504e1c96f3d728,
+        type: 3}
+      propertyPath: 'glowRenderers.Array.data[0]'
+      value: 
+      objectReference: {fileID: 9141969053457548530}
+    - target: {fileID: 5418812053248308419, guid: f24f9301127af634ab504e1c96f3d728,
+        type: 3}
+      propertyPath: 'glowRenderers.Array.data[1]'
+      value: 
+      objectReference: {fileID: 6721454343115985715}
+    - target: {fileID: 5418812053248308419, guid: f24f9301127af634ab504e1c96f3d728,
+        type: 3}
+      propertyPath: 'glowRenderers.Array.data[2]'
+      value: 
+      objectReference: {fileID: 895142021858459057}
+    - target: {fileID: 5418812053248308419, guid: f24f9301127af634ab504e1c96f3d728,
+        type: 3}
+      propertyPath: 'glowRenderers.Array.data[3]'
+      value: 
+      objectReference: {fileID: 8593689762262255754}
+    - target: {fileID: 5418812053248308419, guid: f24f9301127af634ab504e1c96f3d728,
+        type: 3}
+      propertyPath: 'glowRenderers.Array.data[4]'
+      value: 
+      objectReference: {fileID: 1017767851441756566}
+    - target: {fileID: 5418812053248308419, guid: f24f9301127af634ab504e1c96f3d728,
+        type: 3}
+      propertyPath: 'glowRenderers.Array.data[5]'
+      value: 
+      objectReference: {fileID: 6029741350145966946}
+    - target: {fileID: 5418812053248308419, guid: f24f9301127af634ab504e1c96f3d728,
+        type: 3}
+      propertyPath: 'glowRenderers.Array.data[6]'
+      value: 
+      objectReference: {fileID: 7506087008307878750}
+    - target: {fileID: 5418812053248308419, guid: f24f9301127af634ab504e1c96f3d728,
+        type: 3}
+      propertyPath: 'glowRenderers.Array.data[7]'
+      value: 
+      objectReference: {fileID: 7118149803966241730}
+    - target: {fileID: 5418812053248308419, guid: f24f9301127af634ab504e1c96f3d728,
+        type: 3}
+      propertyPath: 'glowRenderers.Array.data[8]'
+      value: 
+      objectReference: {fileID: 5790482671731920796}
+    - target: {fileID: 5418812053248308419, guid: f24f9301127af634ab504e1c96f3d728,
+        type: 3}
+      propertyPath: 'glowRenderers.Array.data[9]'
+      value: 
+      objectReference: {fileID: 4731267289710985145}
+    - target: {fileID: 5418812053248308419, guid: f24f9301127af634ab504e1c96f3d728,
+        type: 3}
+      propertyPath: 'glowRenderers.Array.data[10]'
+      value: 
+      objectReference: {fileID: 3438886907742093410}
+    - target: {fileID: 5418812053248308419, guid: f24f9301127af634ab504e1c96f3d728,
+        type: 3}
+      propertyPath: 'glowRenderers.Array.data[11]'
+      value: 
+      objectReference: {fileID: 1520587774351669488}
+    - target: {fileID: 5418812053248308419, guid: f24f9301127af634ab504e1c96f3d728,
+        type: 3}
+      propertyPath: 'glowRenderers.Array.data[12]'
+      value: 
+      objectReference: {fileID: 7163965338871840459}
+    - target: {fileID: 5418812053248308419, guid: f24f9301127af634ab504e1c96f3d728,
+        type: 3}
+      propertyPath: 'glowRenderers.Array.data[13]'
+      value: 
+      objectReference: {fileID: 6752273890470181910}
+    - target: {fileID: 5418812053248308419, guid: f24f9301127af634ab504e1c96f3d728,
+        type: 3}
+      propertyPath: 'glowRenderers.Array.data[14]'
+      value: 
+      objectReference: {fileID: 1419602476377152714}
+    - target: {fileID: 5418812053248308419, guid: f24f9301127af634ab504e1c96f3d728,
+        type: 3}
+      propertyPath: 'glowRenderers.Array.data[15]'
+      value: 
+      objectReference: {fileID: 2819133193449680830}
+    - target: {fileID: 5418812053248308419, guid: f24f9301127af634ab504e1c96f3d728,
+        type: 3}
+      propertyPath: 'glowRenderers.Array.data[16]'
+      value: 
+      objectReference: {fileID: 7085356361258987333}
+    - target: {fileID: 5418812053248308419, guid: f24f9301127af634ab504e1c96f3d728,
+        type: 3}
+      propertyPath: 'glowRenderers.Array.data[17]'
+      value: 
+      objectReference: {fileID: 8951615431065822328}
+    - target: {fileID: 5418812053248308419, guid: f24f9301127af634ab504e1c96f3d728,
+        type: 3}
+      propertyPath: 'glowRenderers.Array.data[18]'
+      value: 
+      objectReference: {fileID: 4799597954162267694}
+    - target: {fileID: 5418812053248308419, guid: f24f9301127af634ab504e1c96f3d728,
+        type: 3}
+      propertyPath: 'glowRenderers.Array.data[19]'
+      value: 
+      objectReference: {fileID: 7696043358699495039}
+    - target: {fileID: 5418812053248308419, guid: f24f9301127af634ab504e1c96f3d728,
+        type: 3}
+      propertyPath: 'glowRenderers.Array.data[20]'
+      value: 
+      objectReference: {fileID: 5502571464255221311}
     - target: {fileID: 5716282045522922461, guid: f24f9301127af634ab504e1c96f3d728,
         type: 3}
       propertyPath: m_Enabled
@@ -2627,7 +2747,7 @@ PrefabInstance:
     - target: {fileID: 7532020912885601778, guid: f24f9301127af634ab504e1c96f3d728,
         type: 3}
       propertyPath: meshRenderers.Array.size
-      value: 95
+      value: 60
       objectReference: {fileID: 0}
     - target: {fileID: 7532020912885601778, guid: f24f9301127af634ab504e1c96f3d728,
         type: 3}
@@ -2908,6 +3028,18 @@ Transform:
     type: 3}
   m_PrefabInstance: {fileID: 3353774393318145204}
   m_PrefabAsset: {fileID: 0}
+--- !u!114 &7329745628907374711 stripped
+MonoBehaviour:
+  m_CorrespondingSourceObject: {fileID: 5418812053248308419, guid: f24f9301127af634ab504e1c96f3d728,
+    type: 3}
+  m_PrefabInstance: {fileID: 3353774393318145204}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 0049ac5520fa3674d89a73744a811d68, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::EmpireAtWar.Components.Ship.EngineGlow.ShipEngineGlowComponent
 --- !u!4 &8777256829999031117 stripped
 Transform:
   m_CorrespondingSourceObject: {fileID: 6288173655347290105, guid: f24f9301127af634ab504e1c96f3d728,

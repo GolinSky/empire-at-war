@@ -2209,6 +2209,7 @@ GameObject:
   - component: {fileID: 6698126527802799869}
   - component: {fileID: 7469138526702055200}
   - component: {fileID: 678189760869516238}
+  - component: {fileID: 7855772092176128069}
   m_Layer: 0
   m_Name: DauntlessShipView
   m_TagString: Untagged
@@ -2447,11 +2448,6 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   shieldView: {fileID: 2476224946132785396}
-  ionStunPrefab: {fileID: 6241401996787714037, guid: f49dbb9fe33e5814f8900d78fb93f2e9,
-    type: 3}
-  ionFieldBounds:
-    m_Center: {x: 0.0000019073486, y: 0, z: 0}
-    m_Extent: {x: 17.165285, y: 22.346195, z: 84}
   <ShipUnits>k__BackingField:
   - {fileID: 446987416358451886}
   - {fileID: 2923407284395805579}
@@ -2584,6 +2580,20 @@ MonoBehaviour:
   - {fileID: 3965675498685767618}
   - {fileID: 1278622463851987999}
   - {fileID: 1842901825313078083}
+  - {fileID: 7855772092176128069}
+--- !u!114 &7855772092176128069
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 4574325545387188949}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 0049ac5520fa3674d89a73744a811d68, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::EmpireAtWar.Components.Ship.EngineGlow.ShipEngineGlowComponent
+  glowRenderers: []
 --- !u!1 &5074501574347623413
 GameObject:
   m_ObjectHideFlags: 0

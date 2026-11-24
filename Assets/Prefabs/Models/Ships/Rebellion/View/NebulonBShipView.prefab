@@ -5653,6 +5653,7 @@ GameObject:
   - component: {fileID: 4150898646505647277}
   - component: {fileID: 170039148551410930}
   - component: {fileID: 2315280615556690420}
+  - component: {fileID: 2642334710878965903}
   m_Layer: 0
   m_Name: NebulonBShipView
   m_TagString: Untagged
@@ -5884,11 +5885,6 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   shieldView: {fileID: 8189295144805183041}
-  ionStunPrefab: {fileID: 6241401996787714037, guid: f49dbb9fe33e5814f8900d78fb93f2e9,
-    type: 3}
-  ionFieldBounds:
-    m_Center: {x: 0, y: 0, z: 0}
-    m_Extent: {x: 6.7242827, y: 20.372118, z: 33.074554}
   <ShipUnits>k__BackingField:
   - {fileID: 1778651511067272869}
   - {fileID: 3722062682261702049}
@@ -5988,6 +5984,20 @@ MonoBehaviour:
   - {fileID: 2672468126768737784}
   - {fileID: 7609368057072797381}
   - {fileID: 4811506574223805571}
+  - {fileID: 2642334710878965903}
+--- !u!114 &2642334710878965903
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 6736715092492826216}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 0049ac5520fa3674d89a73744a811d68, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::EmpireAtWar.Components.Ship.EngineGlow.ShipEngineGlowComponent
+  glowRenderers: []
 --- !u!1 &7290964567724939097
 GameObject:
   m_ObjectHideFlags: 0

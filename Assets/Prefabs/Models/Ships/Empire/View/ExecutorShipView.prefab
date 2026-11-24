@@ -11251,6 +11251,7 @@ GameObject:
   - component: {fileID: 7532020912885601778}
   - component: {fileID: 3448713331516355117}
   - component: {fileID: 8256971481430820828}
+  - component: {fileID: 5085549456442766810}
   m_Layer: 0
   m_Name: ExecutorShipView
   m_TagString: Untagged
@@ -11783,11 +11784,6 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   shieldView: {fileID: 6726589032486533280}
-  ionStunPrefab: {fileID: 6241401996787714037, guid: f49dbb9fe33e5814f8900d78fb93f2e9,
-    type: 3}
-  ionFieldBounds:
-    m_Center: {x: 0, y: -0.4054243, z: 0.00006408604}
-    m_Extent: {x: 339.26605, y: 74.470375, z: 997.4864}
   <ShipUnits>k__BackingField:
   - {fileID: 4341251608313525682}
   - {fileID: 9202286555519435226}
@@ -12874,6 +12870,7 @@ MonoBehaviour:
   - {fileID: 438439427493379398}
   - {fileID: 668254796245371010}
   - {fileID: 427164610020070237}
+  - {fileID: 5085549456442766810}
 --- !u!64 &8256971481430820828
 MeshCollider:
   m_ObjectHideFlags: 0
@@ -12896,6 +12893,19 @@ MeshCollider:
   m_Convex: 1
   m_CookingOptions: 30
   m_Mesh: {fileID: 4300000, guid: d3a83603c66e65944bc8f3338dcd9db5, type: 2}
+--- !u!114 &5085549456442766810
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 3806449680888156439}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 0049ac5520fa3674d89a73744a811d68, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::EmpireAtWar.Components.Ship.EngineGlow.ShipEngineGlowComponent
+  glowRenderers: []
 --- !u!1 &3812754458305457951
 GameObject:
   m_ObjectHideFlags: 0

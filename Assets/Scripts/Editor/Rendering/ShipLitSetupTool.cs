@@ -3,6 +3,7 @@ using System.IO;
 using System.Linq;
 using System.Text;
 using EmpireAtWar.Components.TeamColor;
+using EmpireAtWar.Editor.Ship;
 using EmpireAtWar.Entities.DefendPlatform;
 using UnityEditor;
 using UnityEngine;
@@ -96,7 +97,9 @@ namespace EmpireAtWar.Editor.Rendering
             }
 
             // Authoring-time collection only: the result is stored as explicit serialized references.
-            MeshRenderer[] renderers = root.GetComponentsInChildren<MeshRenderer>(true);
+            // Engine glows are left out: their renderer user value carries the glow fade (ShipEngineGlowComponent).
+            MeshRenderer[] renderers = root.GetComponentsInChildren<MeshRenderer>(true)
+                .Where(renderer => !ShipEngineGlowSetup.UsesEngineGlow(renderer)).ToArray();
             SerializedObject serializedView = new SerializedObject(view);
             SerializedProperty rendererList = serializedView.FindProperty(MESH_RENDERERS_PROPERTY);
             rendererList.arraySize = renderers.Length;

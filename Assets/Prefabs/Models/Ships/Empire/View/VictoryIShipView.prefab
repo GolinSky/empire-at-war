@@ -5588,6 +5588,7 @@ GameObject:
   - component: {fileID: 1283754632722916796}
   - component: {fileID: 7532020912885601778}
   - component: {fileID: 2076928398873478419}
+  - component: {fileID: 8038692732386953345}
   m_Layer: 0
   m_Name: VictoryIShipView
   m_TagString: Untagged
@@ -5855,11 +5856,6 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   shieldView: {fileID: 6726589032486533280}
-  ionStunPrefab: {fileID: 6241401996787714037, guid: f49dbb9fe33e5814f8900d78fb93f2e9,
-    type: 3}
-  ionFieldBounds:
-    m_Center: {x: 0.0000033010501, y: -0.44190168, z: 0}
-    m_Extent: {x: 29.21947, y: 17.238224, z: 47.594276}
   <ShipUnits>k__BackingField:
   - {fileID: 6613185690910362237}
   - {fileID: 4938301934952616351}
@@ -5960,12 +5956,6 @@ MonoBehaviour:
   - {fileID: 3254344018484335180}
   - {fileID: 5572684754500514295}
   - {fileID: 2548468898510892608}
-  - {fileID: 1217072432176065516}
-  - {fileID: 5533200710355027231}
-  - {fileID: 1357789193690443656}
-  - {fileID: 6402072328908191682}
-  - {fileID: 2728978536155350103}
-  - {fileID: 7060035961401660894}
   - {fileID: 4758203848734876713}
   - {fileID: 4018363053308009333}
   - {fileID: 8618590202478047993}
@@ -5993,8 +5983,6 @@ MonoBehaviour:
   - {fileID: 2414418370435284337}
   - {fileID: 1420114215693549495}
   - {fileID: 6587899352824002533}
-  - {fileID: 319262586487027085}
-  - {fileID: 5066121565951850694}
   - {fileID: 4283921318252388851}
   - {fileID: 1106766636662523754}
   - {fileID: 4954378615993262217}
@@ -6055,6 +6043,28 @@ MonoBehaviour:
   - {fileID: 5113441696065798102}
   - {fileID: 2835594948183819569}
   - {fileID: 21958835946636982}
+  - {fileID: 8038692732386953345}
+--- !u!114 &8038692732386953345
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 3806449680888156439}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 0049ac5520fa3674d89a73744a811d68, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::EmpireAtWar.Components.Ship.EngineGlow.ShipEngineGlowComponent
+  glowRenderers:
+  - {fileID: 1217072432176065516}
+  - {fileID: 5533200710355027231}
+  - {fileID: 1357789193690443656}
+  - {fileID: 6402072328908191682}
+  - {fileID: 2728978536155350103}
+  - {fileID: 7060035961401660894}
+  - {fileID: 319262586487027085}
+  - {fileID: 5066121565951850694}
 --- !u!1 &3918956245397166069
 GameObject:
   m_ObjectHideFlags: 0

@@ -7976,6 +7976,7 @@ GameObject:
   - component: {fileID: 7532020912885601778}
   - component: {fileID: 3536569297988240252}
   - component: {fileID: 5556487186185943574}
+  - component: {fileID: 322896999694871363}
   m_Layer: 0
   m_Name: ResurgentShipView
   m_TagString: Untagged
@@ -9102,28 +9103,6 @@ MonoBehaviour:
   - {fileID: 496839322344917178}
   - {fileID: 8161186705165132183}
   - {fileID: 2561499397476259715}
-  - {fileID: 1119046363231306400}
-  - {fileID: 6311050835986268092}
-  - {fileID: 5058957072427308583}
-  - {fileID: 679451638952704347}
-  - {fileID: 3740852491413750069}
-  - {fileID: 7259745512991551829}
-  - {fileID: 534386132863874528}
-  - {fileID: 4923566400890781488}
-  - {fileID: 8083306372705077184}
-  - {fileID: 2221473362863695084}
-  - {fileID: 9221146160895303377}
-  - {fileID: 2246449040343027508}
-  - {fileID: 1125616532042513425}
-  - {fileID: 991670184537969033}
-  - {fileID: 1943457716422996675}
-  - {fileID: 4368545411650335621}
-  - {fileID: 4046466165126175700}
-  - {fileID: 6128847950172730793}
-  - {fileID: 1437940860713640713}
-  - {fileID: 1070342022970122143}
-  - {fileID: 5487948435657156827}
-  - {fileID: 6626601309313738889}
 --- !u!114 &3536569297988240252
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -9229,6 +9208,7 @@ MonoBehaviour:
   - {fileID: 8389538418172165386}
   - {fileID: 6055565938497022194}
   - {fileID: 7532020912885601778}
+  - {fileID: 322896999694871363}
 --- !u!64 &5556487186185943574
 MeshCollider:
   m_ObjectHideFlags: 0
@@ -9251,6 +9231,41 @@ MeshCollider:
   m_Convex: 1
   m_CookingOptions: 30
   m_Mesh: {fileID: 4300000, guid: 65953f7edc4474e41aef34841405edd7, type: 2}
+--- !u!114 &322896999694871363
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 3806449680888156439}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 0049ac5520fa3674d89a73744a811d68, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::EmpireAtWar.Components.Ship.EngineGlow.ShipEngineGlowComponent
+  glowRenderers:
+  - {fileID: 1119046363231306400}
+  - {fileID: 6311050835986268092}
+  - {fileID: 5058957072427308583}
+  - {fileID: 679451638952704347}
+  - {fileID: 3740852491413750069}
+  - {fileID: 7259745512991551829}
+  - {fileID: 534386132863874528}
+  - {fileID: 4923566400890781488}
+  - {fileID: 8083306372705077184}
+  - {fileID: 2221473362863695084}
+  - {fileID: 9221146160895303377}
+  - {fileID: 2246449040343027508}
+  - {fileID: 1125616532042513425}
+  - {fileID: 991670184537969033}
+  - {fileID: 1943457716422996675}
+  - {fileID: 4368545411650335621}
+  - {fileID: 4046466165126175700}
+  - {fileID: 6128847950172730793}
+  - {fileID: 1437940860713640713}
+  - {fileID: 1070342022970122143}
+  - {fileID: 5487948435657156827}
+  - {fileID: 6626601309313738889}
 --- !u!1 &3819347004414161802
 GameObject:
   m_ObjectHideFlags: 0

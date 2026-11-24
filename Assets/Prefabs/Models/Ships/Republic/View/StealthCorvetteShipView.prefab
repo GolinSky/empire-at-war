@@ -566,6 +566,7 @@ GameObject:
   - component: {fileID: 170039148551410930}
   - component: {fileID: 676046630702335276}
   - component: {fileID: 5203513215443546060}
+  - component: {fileID: 4506489060667389390}
   m_Layer: 0
   m_Name: StealthCorvetteShipView
   m_TagString: Untagged
@@ -795,11 +796,6 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   shieldView: {fileID: 8189295144805183041}
-  ionStunPrefab: {fileID: 6241401996787714037, guid: f49dbb9fe33e5814f8900d78fb93f2e9,
-    type: 3}
-  ionFieldBounds:
-    m_Center: {x: 0.000000001231239, y: 0.0000000021328987, z: 0}
-    m_Extent: {x: 0.5120709, y: 0.60305536, z: 5.4964385}
   <ShipUnits>k__BackingField:
   - {fileID: 5697200022859796242}
   - {fileID: 9150785772394284087}
@@ -898,6 +894,20 @@ MonoBehaviour:
   - {fileID: 3399428037646888758}
   - {fileID: 2313077892651078096}
   - {fileID: 2847165683328733659}
+  - {fileID: 4506489060667389390}
+--- !u!114 &4506489060667389390
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 6736715092492826216}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 0049ac5520fa3674d89a73744a811d68, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::EmpireAtWar.Components.Ship.EngineGlow.ShipEngineGlowComponent
+  glowRenderers: []
 --- !u!1 &7290964567724939097
 GameObject:
   m_ObjectHideFlags: 0

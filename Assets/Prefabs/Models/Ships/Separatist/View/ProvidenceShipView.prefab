@@ -376,6 +376,7 @@ GameObject:
   - component: {fileID: 4720638076889477624}
   - component: {fileID: 8241506666829177959}
   - component: {fileID: 1186958805391487910}
+  - component: {fileID: 1227691783957319833}
   m_Layer: 0
   m_Name: ProvidenceShipView
   m_TagString: Untagged
@@ -613,11 +614,6 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   shieldView: {fileID: 8271189283194253625}
-  ionStunPrefab: {fileID: 6241401996787714037, guid: f49dbb9fe33e5814f8900d78fb93f2e9,
-    type: 3}
-  ionFieldBounds:
-    m_Center: {x: -0.0000016744832, y: 7.691743, z: 4.927207}
-    m_Extent: {x: 10.746709, y: 19.828012, z: 57.690422}
   <ShipUnits>k__BackingField:
   - {fileID: 1703437220725225568}
   - {fileID: 7412672128366562265}
@@ -728,6 +724,20 @@ MonoBehaviour:
   - {fileID: 1870040297592339186}
   - {fileID: 2605835978444826734}
   - {fileID: 2865142380196423436}
+  - {fileID: 1227691783957319833}
+--- !u!114 &1227691783957319833
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2383908866047400070}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 0049ac5520fa3674d89a73744a811d68, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::EmpireAtWar.Components.Ship.EngineGlow.ShipEngineGlowComponent
+  glowRenderers: []
 --- !u!1 &2526844295626738856
 GameObject:
   m_ObjectHideFlags: 0

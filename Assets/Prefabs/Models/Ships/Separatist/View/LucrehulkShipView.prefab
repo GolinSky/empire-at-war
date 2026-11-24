@@ -279,6 +279,7 @@ GameObject:
   - component: {fileID: 2864000064739453644}
   - component: {fileID: 1132184978028998606}
   - component: {fileID: 8223287484288279416}
+  - component: {fileID: 7359945384900872420}
   m_Layer: 0
   m_Name: LucrehulkShipView
   m_TagString: Untagged
@@ -516,11 +517,6 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   shieldView: {fileID: 2804781722278176664}
-  ionStunPrefab: {fileID: 6241401996787714037, guid: f49dbb9fe33e5814f8900d78fb93f2e9,
-    type: 3}
-  ionFieldBounds:
-    m_Center: {x: 0, y: 9.405887, z: -18.921103}
-    m_Extent: {x: 147.19112, y: 46.32863, z: 166.42271}
   <ShipUnits>k__BackingField:
   - {fileID: 24832661885055388}
   - {fileID: 8013638198577463757}
@@ -637,6 +633,7 @@ MonoBehaviour:
   - {fileID: 9085686361187355198}
   - {fileID: 350060869458704868}
   - {fileID: 1841021078175852817}
+  - {fileID: 7359945384900872420}
 --- !u!64 &8223287484288279416
 MeshCollider:
   m_ObjectHideFlags: 0
@@ -659,6 +656,19 @@ MeshCollider:
   m_Convex: 1
   m_CookingOptions: 30
   m_Mesh: {fileID: 4300000, guid: 2bafbf0db0f0c2047bbb1ae6fb9b09ff, type: 2}
+--- !u!114 &7359945384900872420
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1424789333044179663}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 0049ac5520fa3674d89a73744a811d68, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::EmpireAtWar.Components.Ship.EngineGlow.ShipEngineGlowComponent
+  glowRenderers: []
 --- !u!1 &1542133818148398054
 GameObject:
   m_ObjectHideFlags: 0

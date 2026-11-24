@@ -2240,6 +2240,7 @@ GameObject:
   - component: {fileID: 6698126527802799869}
   - component: {fileID: 7469138526702055200}
   - component: {fileID: 512475285687182114}
+  - component: {fileID: 4008863479725417327}
   m_Layer: 0
   m_Name: MC80JusticeShipView
   m_TagString: Untagged
@@ -2616,6 +2617,20 @@ MonoBehaviour:
   - {fileID: 507643311184042394}
   - {fileID: 6769895382494422863}
   - {fileID: 4165293347631482641}
+  - {fileID: 4008863479725417327}
+--- !u!114 &4008863479725417327
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 4574325545387188949}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 0049ac5520fa3674d89a73744a811d68, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::EmpireAtWar.Components.Ship.EngineGlow.ShipEngineGlowComponent
+  glowRenderers: []
 --- !u!1 &4755184436042140266
 GameObject:
   m_ObjectHideFlags: 0

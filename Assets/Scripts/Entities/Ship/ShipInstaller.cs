@@ -73,6 +73,7 @@ namespace EmpireAtWar.Ship
                 builder.Register<ShipBattleMarker>(Lifetime.Singleton).AsImplementedInterfaces();
             builder.Register<ShipMoveModel>(Lifetime.Singleton).AsSelf().AsImplementedInterfaces();
             EntityFeatureBindings.RegisterComponent(builder, Bindings.ShipMove);
+            EntityFeatureBindings.RegisterEngineGlow(builder, Bindings);
             if (Data.HangarBays.Count > 0)
             {
                 builder.Register<HangarModel>(Lifetime.Singleton);

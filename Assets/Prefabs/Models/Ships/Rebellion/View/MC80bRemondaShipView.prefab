@@ -843,6 +843,7 @@ GameObject:
   - component: {fileID: 6432391071094141378}
   - component: {fileID: 5461914193957743378}
   - component: {fileID: 2788169770786430807}
+  - component: {fileID: 3643125006022314241}
   m_Layer: 0
   m_Name: MC80bRemondaShipView
   m_TagString: Untagged
@@ -1225,6 +1226,20 @@ MonoBehaviour:
   - {fileID: 2928262286957829186}
   - {fileID: 6025085238881483239}
   - {fileID: 1889000430671336743}
+  - {fileID: 3643125006022314241}
+--- !u!114 &3643125006022314241
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2998968638466627027}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 0049ac5520fa3674d89a73744a811d68, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::EmpireAtWar.Components.Ship.EngineGlow.ShipEngineGlowComponent
+  glowRenderers: []
 --- !u!1 &3171839672049320903
 GameObject:
   m_ObjectHideFlags: 0

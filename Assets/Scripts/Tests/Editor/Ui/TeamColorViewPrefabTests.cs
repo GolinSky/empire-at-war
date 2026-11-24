@@ -2,6 +2,7 @@ using EmpireAtWar.Components.TeamColor;
 using System.Linq;
 using EmpireAtWar.Entities.BaseEntity;
 using EmpireAtWar.Entities.DefendPlatform;
+using EmpireAtWar.Editor.Ship;
 using NUnit.Framework;
 using UnityEditor;
 using UnityEngine;
@@ -56,13 +57,18 @@ namespace EmpireAtWar.Tests.Editor
                 for (int i = 0; i < renderers.Length; i++)
                     renderers[i] = rendererProperty.GetArrayElementAtIndex(i).objectReferenceValue;
                 Assert.That(renderers, Is.All.Not.Null, path);
-                Assert.That(renderers, Is.EquivalentTo(prefab.GetComponentsInChildren<MeshRenderer>(true)),
-                    $"{path}: highlight must cover every renderer, including inactive station levels.");
+                // Engine glows are driven by ShipEngineGlowComponent, the only writer of their renderer user value.
+                Assert.That(renderers, Is.EquivalentTo(TeamColoredRenderers(prefab)),
+                    $"{path}: highlight must cover every renderer except engine glows, including inactive station levels.");
                 checkedEntities++;
             }
 
             Assert.That(checkedEntities, Is.GreaterThan(0), "No highlight entity prefabs were inspected.");
         }
+
+        private static MeshRenderer[] TeamColoredRenderers(GameObject prefab) =>
+            prefab.GetComponentsInChildren<MeshRenderer>(true)
+                .Where(renderer => !ShipEngineGlowSetup.UsesEngineGlow(renderer)).ToArray();
 
         [Test]
         public void TeamColorViews_ListEveryMeshRendererWithoutMissingEntries()
@@ -86,8 +92,8 @@ namespace EmpireAtWar.Tests.Editor
                 }
 
                 Assert.That(renderers.arraySize,
-                    Is.EqualTo(prefab.GetComponentsInChildren<MeshRenderer>(true).Length),
-                    $"{path}: the team color view does not list every mesh renderer.");
+                    Is.EqualTo(TeamColoredRenderers(prefab).Length),
+                    $"{path}: the team color view does not list every mesh renderer except engine glows.");
                 // Autodesk Interactive materials ignore team colors; units must use their Ship Lit copies.
                 foreach (MeshRenderer meshRenderer in prefab.GetComponentsInChildren<MeshRenderer>(true))
                 {

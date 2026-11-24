@@ -6,6 +6,7 @@ using EmpireAtWar.Components.Combat;
 using EmpireAtWar.Extensions;
 using EmpireAtWar.Components.FogOfWar;
 using EmpireAtWar.Components.Radar;
+using EmpireAtWar.Components.Ship.EngineGlow;
 using EmpireAtWar.Components.Ship.Health;
 using EmpireAtWar.Components.Ship.Selection;
 using EmpireAtWar.Components.Weapon;
@@ -19,6 +20,7 @@ using EmpireAtWar.Models.Health;
 using EmpireAtWar.Models.Selection;
 using EmpireAtWar.Services.Repair;
 using EmpireAtWar.Services.Selection;
+using EmpireAtWar.Ship;
 using UnityEngine;
 using VContainer;
 using VContainer.Unity;
@@ -31,6 +33,16 @@ namespace EmpireAtWar.Entities.BaseEntity
         {
             builder.RegisterInstance<IUnitRenderStateComponent>(bindings.Injectables.OfType<UnitRenderStateComponent>().Single());
             builder.Register<UnitHighlightFacade>(Lifetime.Singleton).AsImplementedInterfaces();
+        }
+
+        /// <summary>
+        /// Engine glow fades with movement and ion stun (EngineGlow.shader). Ships only: needs the ship's
+        /// <see cref="EmpireAtWar.Components.Ship.Movement.IShipMoveComponent"/> and <see cref="RegisterCombatModifiers"/>.
+        /// </summary>
+        public static void RegisterEngineGlow(IContainerBuilder builder, EntityBindings bindings)
+        {
+            builder.RegisterInstance<IShipEngineGlowComponent>(bindings.Injectables.OfType<ShipEngineGlowComponent>().Single());
+            builder.Register<ShipEngineGlowSync>(Lifetime.Singleton).AsImplementedInterfaces();
         }
 
         /// <summary>
