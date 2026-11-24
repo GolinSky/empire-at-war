@@ -26,6 +26,7 @@ namespace EmpireAtWar.Components.TeamColor
         [SerializeField] private MeshRenderer[] meshRenderers;
 
         private uint _userValue;
+        private bool _ionStunned;
 
         /// <summary>Team, hull damage and pattern seed, without the live highlight: what a wreck inherits.</summary>
         public uint WreckUserValue => _userValue & ~HIGHLIGHT_MASK;
@@ -47,6 +48,18 @@ namespace EmpireAtWar.Components.TeamColor
         {
             uint level = (uint)GetHullDamageLevel(hullPercentage);
             ApplyUserValue((_userValue & ~HULL_DAMAGE_LEVEL_MASK) | (level << HULL_DAMAGE_LEVEL_SHIFT));
+        }
+
+        /// <summary>Puts the hull on the ion stun layer, so UnitIonStunRenderPass draws electricity over it.</summary>
+        public void SetIonStunned(bool stunned)
+        {
+            if (_ionStunned == stunned)
+            {
+                return;
+            }
+
+            _ionStunned = stunned;
+            WriteUserValue();
         }
 
         /// <summary>Hull scorch level 0-31 shown for this hull; each higher level switches on more marks.</summary>
@@ -79,12 +92,14 @@ namespace EmpireAtWar.Components.TeamColor
             {
                 meshRenderer.SetShaderUserValue(userValue);
                 uint layers = meshRenderer.renderingLayerMask;
-                uint outlineLayer = UnitOutlineRendererFeature.OUTLINE_RENDERING_LAYER;
-                uint outlineLayers = (userValue & HIGHLIGHT_MASK) != 0
-                    ? layers | outlineLayer
-                    : layers & ~outlineLayer;
-                if (layers != outlineLayers)
-                    meshRenderer.renderingLayerMask = outlineLayers;
+                uint stateLayers = layers & ~(UnitOutlineRendererFeature.OUTLINE_RENDERING_LAYER |
+                                              UnitIonStunRendererFeature.ION_STUN_RENDERING_LAYER);
+                if ((userValue & HIGHLIGHT_MASK) != 0)
+                    stateLayers |= UnitOutlineRendererFeature.OUTLINE_RENDERING_LAYER;
+                if (_ionStunned)
+                    stateLayers |= UnitIonStunRendererFeature.ION_STUN_RENDERING_LAYER;
+                if (layers != stateLayers)
+                    meshRenderer.renderingLayerMask = stateLayers;
             }
         }
 

@@ -7,5 +7,7 @@ namespace EmpireAtWar.Components.TeamColor
         void SetHighlight(UnitHighlight flags);
 
         void SetHullDamage(float hullPercentage);
+
+        void SetIonStunned(bool stunned);
     }
 }

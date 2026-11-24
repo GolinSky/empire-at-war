@@ -1,11 +1,10 @@
-using System.Collections.Generic;
-using EmpireAtWar.Components.Ship.Health;
 using UnityEngine;
 using Utilities.ScriptUtils.Time;
 
 namespace EmpireAtWar.ViewComponents.Health
 {
-    public sealed class IonStunView : MonoBehaviour, IIonStunView, IIonStunRenderers
+    /// <summary>Spherical arc field of the ion pulse wave. Stunned hulls use the ShipIonStun shader pass instead.</summary>
+    public sealed class IonStunView : MonoBehaviour
     {
         private const int ARC_POINTS = 20;
 
@@ -25,15 +24,6 @@ namespace EmpireAtWar.ViewComponents.Health
         private float _intensity;
 
         private bool _active;
-
-        public IEnumerable<Renderer> Renderers
-        {
-            get
-            {
-                yield return shimmer;
-                foreach (LineRenderer arc in arcs) yield return arc;
-            }
-        }
 
         public void Configure(Bounds bounds)
         {
@@ -103,12 +93,6 @@ namespace EmpireAtWar.ViewComponents.Health
         {
             shimmer.enabled = visible;
             foreach (LineRenderer arc in arcs) arc.enabled = visible;
-        }
-
-        public void Release()
-        {
-            // The ship hierarchy may already have been destroyed during scene teardown.
-            if (this != null) Destroy(gameObject);
         }
     }
 }

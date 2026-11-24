@@ -195,6 +195,28 @@ namespace EmpireAtWar.Tests.Editor
         }
 
         [Test]
+        public void IonStun_TogglesOnlyItsLayerAndKeepsUserValueAndOutline()
+        {
+            const uint OTHER_LAYERS = 1u | (1u << 5);
+            _renderer.renderingLayerMask = OTHER_LAYERS;
+            _component.SetHighlight(UnitHighlight.Selected);
+
+            _component.SetIonStunned(true);
+            Assert.That(_renderer.renderingLayerMask, Is.EqualTo(OTHER_LAYERS |
+                UnitOutlineRendererFeature.OUTLINE_RENDERING_LAYER | UnitIonStunRendererFeature.ION_STUN_RENDERING_LAYER));
+            Assert.That(_renderer.GetShaderUserValue(), Is.EqualTo(_base | (2u << 8)));
+
+            _component.SetHighlight(UnitHighlight.None);
+            Assert.That(_renderer.renderingLayerMask,
+                Is.EqualTo(OTHER_LAYERS | UnitIonStunRendererFeature.ION_STUN_RENDERING_LAYER),
+                "Clearing the highlight must keep the stun layer.");
+
+            _component.SetIonStunned(false);
+            Assert.That(_renderer.renderingLayerMask, Is.EqualTo(OTHER_LAYERS));
+            Assert.That(_renderer.GetShaderUserValue(), Is.EqualTo(_base));
+        }
+
+        [Test]
         public void WreckUserValue_CarriesTeamDamageAndSeedButNotHighlight()
         {
             _component.SetHullDamage(0f);

@@ -92,6 +92,8 @@ namespace EmpireAtWar.Tests.Editor
             public void SetHighlight(UnitHighlight flags) => Highlight = flags;
 
             public void SetHullDamage(float hullPercentage) { }
+
+            public void SetIonStunned(bool stunned) { }
         }
     }
 }

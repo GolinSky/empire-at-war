@@ -65,6 +65,8 @@ namespace EmpireAtWar.Tests.Editor
             public void SetHighlight(UnitHighlight flags) { }
 
             public void SetHullDamage(float hullPercentage) => HullPercentage = hullPercentage;
+
+            public void SetIonStunned(bool stunned) { }
         }
 
         private sealed class HealthComponentStub : IHealthComponent

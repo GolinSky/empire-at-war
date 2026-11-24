@@ -182,6 +182,34 @@ Shader "EmpireAtWar/Ship Lit"
         }
 
         // ---------------------------------------------------------------------
+        // Drawn by UnitIonStunRenderPass for ion-disabled units only: electricity crawling over the hull,
+        // added on top of the lit color. Same mesh and transform as ForwardLit, so depth matches exactly.
+        // ---------------------------------------------------------------------
+        Pass
+        {
+            Name "ShipIonStun"
+            Tags { "LightMode" = "ShipIonStun" }
+
+            Cull Back
+            ZWrite Off
+            ZTest LEqual
+            Offset -1, -1
+            Blend One One
+
+            HLSLPROGRAM
+            #pragma target 3.5
+            #pragma vertex ShipIonStunVertex
+            #pragma fragment ShipIonStunFragment
+            #pragma multi_compile_instancing
+            #pragma instancing_options renderinglayer
+            #include_with_pragmas "Packages/com.unity.render-pipelines.universal/ShaderLibrary/DOTS.hlsl"
+            #include_with_pragmas "Packages/com.unity.render-pipelines.universal/ShaderLibrary/Fog.hlsl"
+            #include "ShipLitInput.hlsl"
+            #include "ShipIonStunPass.hlsl"
+            ENDHLSL
+        }
+
+        // ---------------------------------------------------------------------
         // Shadow map pass: ships cast shadows. Standard URP code, reused as-is because
         // it only needs the declarations from ShipLitInput.hlsl.
         // ---------------------------------------------------------------------

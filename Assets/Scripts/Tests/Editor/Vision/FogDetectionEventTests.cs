@@ -32,7 +32,7 @@ namespace EmpireAtWar.Tests.Editor
                 typeof(FogVisibilityComponent).GetMethod("Construct", PRIVATE_INSTANCE).Invoke(fog, new object[]
                 {
                     vision, TestPlayers.CreateLocalPlayer(TestPlayers.CreateDuel()),
-                    Array.Empty<IIonStunViewSource>(), new CombatModifiers(), new SlowTicks(),
+                    new CombatModifiers(), new SlowTicks(),
                     Array.Empty<IVisionFootprintFacade>(), 42L
                 });
                 List<bool> visible = new List<bool>();
@@ -77,7 +77,7 @@ namespace EmpireAtWar.Tests.Editor
                 typeof(FogVisibilityComponent).GetMethod("Construct", PRIVATE_INSTANCE).Invoke(fog, new object[]
                 {
                     vision, TestPlayers.CreateLocalPlayer(TestPlayers.CreateDuel()),
-                    Array.Empty<IIonStunViewSource>(), modifiers, new SlowTicks(),
+                    modifiers, new SlowTicks(),
                     Array.Empty<IVisionFootprintFacade>(), 42L
                 });
                 var visibility = new List<bool>();
@@ -142,7 +142,7 @@ namespace EmpireAtWar.Tests.Editor
                 typeof(FogVisibilityComponent).GetMethod("Construct", PRIVATE_INSTANCE).Invoke(fog, new object[]
                 {
                     vision, TestPlayers.CreateLocalPlayer(TestPlayers.CreateTeamGame()),
-                    Array.Empty<IIonStunViewSource>(), modifiers, new SlowTicks(),
+                    modifiers, new SlowTicks(),
                     hasFootprint ? new IVisionFootprintFacade[] { footprint } : Array.Empty<IVisionFootprintFacade>(), 42L
                 });
                 fog.Initialize();
@@ -239,7 +239,7 @@ namespace EmpireAtWar.Tests.Editor
             typeof(FogVisibilityComponent).GetMethod("Construct", PRIVATE_INSTANCE).Invoke(fog, new object[]
             {
                 vision, TestPlayers.CreateLocalPlayer(TestPlayers.CreateTeamGame()),
-                Array.Empty<IIonStunViewSource>(), new CombatModifiers(), slowTicks,
+                new CombatModifiers(), slowTicks,
                 hasFootprint ? new IVisionFootprintFacade[] { footprint } : Array.Empty<IVisionFootprintFacade>(), entityId
             });
             return fog;

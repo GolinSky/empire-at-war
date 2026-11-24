@@ -759,12 +759,10 @@ namespace EmpireAtWar.Tests.Editor
             CombatModifiers modifiers = new CombatModifiers();
             HealthModel model = new HealthModel(new HealthDataStub(SHIELDS), _matrix, modifiers, new HardPointHealthBudget());
             GameObject owner = new GameObject("IonPulseShieldTest");
-            IonStunViewStub ionStunView = new IonStunViewStub();
             try
             {
                 const BindingFlags PRIVATE_INSTANCE = BindingFlags.Instance | BindingFlags.NonPublic;
                 HealthComponent health = owner.AddComponent<HealthComponent>();
-                typeof(HealthComponent).GetField("_ionStunView", PRIVATE_INSTANCE).SetValue(health, ionStunView);
                 typeof(HealthComponent).GetMethod("Construct", PRIVATE_INSTANCE)
                     .Invoke(health, new object[] { model, modifiers, owner.transform, TestPlayers.Human });
                 health.ShipUnits = new List<HardPoint>();
@@ -775,7 +773,7 @@ namespace EmpireAtWar.Tests.Editor
                 typeof(IonPulseAbility).GetMethod("Disable", PRIVATE_INSTANCE)
                     .Invoke(ability, new object[] { modifiers });
 
-                Assert.That(ionStunView.IsActive, Is.True);
+                Assert.That(modifiers.IsIonDisabled, Is.True);
                 Assert.That(model.Shields, Is.Zero);
                 Assert.That(model.Hull, Is.EqualTo(HULL));
                 Assert.That(model.IsLostShieldGenerator, Is.False);
@@ -825,17 +823,6 @@ namespace EmpireAtWar.Tests.Editor
             {
                 UnityEngine.Object.DestroyImmediate(owner);
             }
-        }
-
-        private sealed class IonStunViewStub : IIonStunView
-        {
-            public bool IsActive { get; private set; }
-
-            public void Configure(Bounds bounds) { }
-
-            public void SetActive(bool active) => IsActive = active;
-
-            public void Release() { }
         }
 
         private sealed class HealthDataStub : IHealthData

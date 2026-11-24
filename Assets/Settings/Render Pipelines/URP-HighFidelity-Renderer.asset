@@ -102,7 +102,8 @@ MonoBehaviour:
   - {fileID: -3106679139289555622}
   - {fileID: 2142727632920811448}
   - {fileID: -1991754222922088569}
-  m_RendererFeatureMap: adc0de57c6d2eee55a9d875fc8dbe2d4b897a8f26d7fbc1d873fd84616de5be4
+  - {fileID: 1395004938439143634}
+  m_RendererFeatureMap: adc0de57c6d2eee55a9d875fc8dbe2d4b897a8f26d7fbc1d873fd84616de5be4d2b094b7990d5c13
   m_UseNativeRenderPass: 0
   xrSystemData: {fileID: 0}
   postProcessData: {fileID: 11400000, guid: 41439944d30ece34e96484bdb6645b55, type: 2}
@@ -131,6 +132,19 @@ MonoBehaviour:
   m_DepthTextureFormat: 0
   m_AccurateGbufferNormals: 0
   m_IntermediateTextureMode: 0
+--- !u!114 &1395004938439143634
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: b652686b479588a4dbb2ec8ee0977208, type: 3}
+  m_Name: UnitIonStunRendererFeature
+  m_EditorClassIdentifier: Assembly-CSharp::EmpireAtWar.Components.TeamColor.UnitIonStunRendererFeature
+  m_Active: 1
 --- !u!114 &2142727632920811448
 MonoBehaviour:
   m_ObjectHideFlags: 0

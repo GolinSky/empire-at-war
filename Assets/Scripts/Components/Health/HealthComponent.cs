@@ -27,28 +27,23 @@ namespace EmpireAtWar.Components.Ship.Health
 
     [LifecycleOrder(Initialize = LifecycleOrders.HEALTH_INITIALIZE)]
     public class HealthComponent : MonoComponent<HealthModel>, IInitializable, ILateDisposable,
-        IHealthComponent, IHealthAudioEvents, IHealthModelObserver, IHealthTooltipObserver, IShieldTarget, ITickable, IHardPointsSource, IIonStunViewSource,
-        IHealthUpgrade, IIonFieldShape, IHullBlastSpots
+        IHealthComponent, IHealthAudioEvents, IHealthModelObserver, IHealthTooltipObserver, IShieldTarget, ITickable, IHardPointsSource,
+        IHealthUpgrade, IHullBlastSpots
     {
         private ITimer _refreshShieldsTimer;
         private readonly ITimer _shieldRecoveryTimer = TimerFactory.ConstructTimer();
         private bool _shieldRecovering;
-        private IIonStunView _ionStunView;
 
         [SerializeField] private Shield shieldView;
-        [SerializeField] private IonStunView ionStunPrefab;
         private ShieldComponent _shield;
         private CombatModifiers _modifiers;
         private Transform _viewTransform;
         private HardPointAdapter[] _hardPointAdapters;
         private IHardPointModel[] _hullTargets = Array.Empty<IHardPointModel>();
 
-        [SerializeField] private Bounds ionFieldBounds;
         private PlayerId _owner;
 
         private bool _isReleased;
-
-        public event Action<IIonStunRenderers> IonStunViewSpawned;
 
         public event Action<Vector3> ShieldImpacted;
 
@@ -123,7 +118,6 @@ namespace EmpireAtWar.Components.Ship.Health
             InitializeHardPoints();
             _refreshShieldsTimer = TimerFactory.ConstructTimer(Model.ShieldRegenerateDelay);
 
-            _modifiers.Changed += HandleIonStateChanged;
             _modifiers.Changed += Model.RefreshStatModifiers;
             _modifiers.Changed += HandleShieldSuppressionChanged;
             HandleShieldSuppressionChanged();
@@ -165,20 +159,6 @@ namespace EmpireAtWar.Components.Ship.Health
             foreach (HardPoint hardPoint in ShipUnits) hardPoint.Extinguish(immediately);
         }
 
-        private void HandleIonStateChanged()
-        {
-            if (_ionStunView == null)
-            {
-                if (!_modifiers.IsIonDisabled) return;
-                IonStunView view = Instantiate(ionStunPrefab, _viewTransform);
-                view.Configure(ionFieldBounds);
-                _ionStunView = view;
-                IonStunViewSpawned?.Invoke(view);
-            }
-
-            _ionStunView.SetActive(_modifiers.IsIonDisabled);
-        }
-
         public override void Release()
         {
             if (_isReleased)
@@ -187,12 +167,10 @@ namespace EmpireAtWar.Components.Ship.Health
             }
 
             _isReleased = true;
-            _modifiers.Changed -= HandleIonStateChanged;
             _modifiers.Changed -= Model.RefreshStatModifiers;
             _modifiers.Changed -= HandleShieldSuppressionChanged;
             Model.OnFullyRepaired -= HandleFullyRepaired;
             Model.OnRestored -= HandleRestored;
-            if (_ionStunView != null) _ionStunView.Release();
 
             if (_shield != null)
             {
@@ -330,14 +308,6 @@ namespace EmpireAtWar.Components.Ship.Health
         {
             Model.Upgrade(level, hullScale, shieldsScale, shieldRegenerateScale, hardPointScale);
             SyncInstalledHardPoints();
-        }
-
-        public void SetIonFieldBounds(Bounds bounds)
-        {
-            ionFieldBounds = bounds;
-            if (_ionStunView == null) return;
-            _ionStunView.Configure(bounds);
-            _ionStunView.SetActive(_modifiers.IsIonDisabled);
         }
 
         private void SyncInstalledHardPoints()

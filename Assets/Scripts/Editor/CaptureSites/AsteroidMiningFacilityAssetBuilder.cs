@@ -121,7 +121,6 @@ namespace EmpireAtWar.Editor.CaptureSites
             fog.ApplyModifiedPropertiesWithoutUndo();
 
             SerializedObject health = new SerializedObject(root.GetComponent<HealthComponent>());
-            health.FindProperty("ionFieldBounds").boundsValue = bounds;
             health.FindProperty("shieldView").objectReferenceValue = shield;
             health.ApplyModifiedPropertiesWithoutUndo();
 

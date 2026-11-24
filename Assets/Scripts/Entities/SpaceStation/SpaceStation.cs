@@ -27,7 +27,6 @@ namespace EmpireAtWar.Entities.SpaceStation
         private IBattleAreaWriter _areas;
         private IHealthComponent _healthComponent;
         private IHealthUpgrade _healthUpgrade;
-        private IIonFieldShape _ionField;
         private IFactionLevelObserver _factionLevel;
         private IUnitExplosionService _unitExplosionService;
         private IUnitWreckService _unitWreckService;
@@ -63,7 +62,6 @@ namespace EmpireAtWar.Entities.SpaceStation
             IBattleAreaWriter areas,
             IHealthComponent healthComponent,
             IHealthUpgrade healthUpgrade,
-            IIonFieldShape ionField,
             IFactionLevelObserver factionLevel,
             IUnitWreckService unitWreckService,
             IUnitRenderStateComponent renderState,
@@ -79,7 +77,6 @@ namespace EmpireAtWar.Entities.SpaceStation
             _owner = owner;
             _healthComponent = healthComponent;
             _healthUpgrade = healthUpgrade;
-            _ionField = ionField;
             _factionLevel = factionLevel;
             _startPosition = startPosition;
             _componentLifecycle = new EntityComponentLifecycle(monoComponents.Value);
@@ -120,7 +117,6 @@ namespace EmpireAtWar.Entities.SpaceStation
             {
                 levelView.ApplyLevel(level);
                 explosionHullRenderers = levelView.CurrentModel.HullRenderers;
-                _ionField.SetIonFieldBounds(levelView.CurrentModel.HullBounds);
             }
             StationLevelStats stats = Data.GetLevelStats(level);
             _healthUpgrade.Upgrade(level, stats.HullMultiplier, stats.ShieldsMultiplier, stats.ShieldRegenerateMultiplier,

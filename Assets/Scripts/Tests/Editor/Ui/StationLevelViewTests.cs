@@ -198,9 +198,7 @@ namespace EmpireAtWar.Tests.Editor
                 var data = AssetDatabase.LoadAssetAtPath<SpaceStationData>("Assets/Settings/Data/Models/SpaceStation/SpaceStationData.asset");
                 var selectionMarker = (RectTransform)new SerializedObject(view).FindProperty("selectionMarker").objectReferenceValue;
                 var upgrade = new RecordingHealthUpgrade();
-                var ionField = new RecordingIonField();
                 typeof(SpaceStationEntity).GetField("_healthUpgrade", PRIVATE_INSTANCE).SetValue(station, upgrade);
-                typeof(SpaceStationEntity).GetField("_ionField", PRIVATE_INSTANCE).SetValue(station, ionField);
                 typeof(SpaceStationEntity).GetField("<Data>k__BackingField", PRIVATE_INSTANCE).SetValue(station, data);
                 MethodInfo apply = typeof(SpaceStationEntity).GetMethod("ApplyLevel", PRIVATE_INSTANCE);
                 var models = root.GetComponentsInChildren<StationLevelArt>(true);
@@ -219,7 +217,6 @@ namespace EmpireAtWar.Tests.Editor
                     Assert.That(PrefabUtility.GetPrefabAssetPathOfNearestInstanceRoot(current.gameObject), Is.EqualTo(LevelPath(faction, level)));
                     Assert.That(upgrade.Level, Is.EqualTo(level));
                     Assert.That(upgrade.HullScale, Is.EqualTo(data.GetLevelStats(level).HullMultiplier));
-                    Assert.That(ionField.Bounds, Is.EqualTo(current.HullBounds));
                     Assert.That(root.GetComponent<BoxCollider>().center, Is.EqualTo(current.HullBounds.center));
                     Assert.That(root.GetComponent<BoxCollider>().size, Is.EqualTo(current.HullBounds.size));
                     float selectionSize = Mathf.Max(current.HullBounds.size.x, current.HullBounds.size.z);
@@ -376,12 +373,6 @@ namespace EmpireAtWar.Tests.Editor
                 Level = level;
                 HullScale = hullScale;
             }
-        }
-
-        private sealed class RecordingIonField : IIonFieldShape
-        {
-            public Bounds Bounds { get; private set; }
-            public void SetIonFieldBounds(Bounds bounds) => Bounds = bounds;
         }
     }
 }

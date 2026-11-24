@@ -92,9 +92,11 @@ namespace EmpireAtWar.Entities.BaseEntity
             builder.Register<WeaponTargetReplicaFacade>(Lifetime.Singleton).AsImplementedInterfaces();
         }
 
+        /// <summary>Ship Lit units only: also draws ion stun electricity on the hull. Needs <see cref="RegisterHighlight"/>.</summary>
         public static void RegisterCombatModifiers(IContainerBuilder builder)
         {
             builder.Register<CombatModifiers>(Lifetime.Singleton);
+            builder.Register<UnitIonStunSync>(Lifetime.Singleton).AsImplementedInterfaces();
             builder.Register<ResearchCombatModifier>(Lifetime.Singleton).AsImplementedInterfaces();
             builder.Register<CombatModifiersFacade>(Lifetime.Singleton).AsImplementedInterfaces();
         }
