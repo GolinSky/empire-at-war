@@ -81,7 +81,9 @@ Shader "EmpireAtWar/UI/Squadron Frame"
                 float selected = step(0.75, i.color.a) * _SelectionColor.a;
                 float outlineWidth = 2.0;
                 float edgeBlend = saturate(lerp(1.0, 1.75, ship) + platePixels + outlineWidth * selected * (1 - ship));
-                half4 edgeColor = lerp(_EdgeColor, half4(i.color.rgb, 1), ship);
+                half4 outlineColor = half4(_SelectionColor.rgb, 1);
+                half4 shipEdgeColor = lerp(half4(i.color.rgb, 1), outlineColor, selected);
+                half4 edgeColor = lerp(_EdgeColor, shipEdgeColor, ship);
                 half4 fillColor = _PlateColor;
                 fillColor.rgb = lerp(fillColor.rgb, half3(1, 0.35, 0.055), 0.13 * selected);
                 half4 plateColor = lerp(fillColor, edgeColor, edgeBlend);
@@ -94,12 +96,8 @@ Shader "EmpireAtWar/UI/Squadron Frame"
 
                 float plateAlpha = plate * plateColor.a;
                 half4 result = lerp(half4(plateColor.rgb * plateAlpha, plateAlpha), half4(i.color.rgb, 1), tab);
-                half4 outlineColor = half4(_SelectionColor.rgb, 1);
                 float squadronOutline = plate * saturate(outlineWidth + platePixels) * selected * (1 - ship);
                 result = lerp(result, outlineColor, squadronOutline);
-                // Fill only the coverage outside the ship plate, preserving its original team-colored edge.
-                float shipOutline = (1 - plate) * saturate(0.5 + outlineWidth - platePixels) * selected * ship;
-                result += outlineColor * shipOutline;
                 #ifdef UNITY_UI_CLIP_RECT
                 result *= UnityGet2DClipping(i.position.xy, _ClipRect);
                 #endif
