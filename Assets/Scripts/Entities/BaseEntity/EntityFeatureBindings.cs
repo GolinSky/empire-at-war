@@ -85,9 +85,10 @@ namespace EmpireAtWar.Entities.BaseEntity
         }
 
         /// <summary>Lets the unit repair allies through <see cref="RepairService"/>. Needs <see cref="RegisterHealth"/> and <see cref="RegisterCombatModifiers"/>.</summary>
-        public static void RegisterRepair(IContainerBuilder builder, RepairProfile profile)
+        public static void RegisterRepair(IContainerBuilder builder, EntityBindings bindings, RepairProfile profile)
         {
             builder.RegisterInstance(profile);
+            RegisterComponent(builder, bindings.RepairRange);
             builder.Register<RepairSourceFacade>(Lifetime.Singleton).AsImplementedInterfaces();
         }
 

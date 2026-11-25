@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using EmpireAtWar.Components.AttackComponent;
 using EmpireAtWar.Components.Ship.Health;
+using EmpireAtWar.Entities.BaseEntity;
 using EmpireAtWar.Entities.Ship.Data;
 using EmpireAtWar.Services.ShipAbilities;
 using EmpireAtWar.Services.ShipAbilities.Abilities;
@@ -80,6 +81,14 @@ namespace EmpireAtWar.Editor.Balance
                 if ((settings is PowerToMainBatteriesSettings || settings is FullSalvoSettings || settings is AssaultSettings)
                     && !unit.Mounts.OfType<WeaponHardPoint>().Any())
                     errors.Add(unit.Name + ": ability requires an existing weapon component and mounts.");
+                if (settings is CloakSettings && (!ship || !unit.Components.OfType<EntityBindings>().Any(bindings => bindings.Cloak != null)))
+                    errors.Add(unit.Name + ": Cloak requires a bound CloakComponent (EntityBindings.Cloak).");
+                if (settings is GravityWellSettings
+                    && (!ship || !unit.Components.OfType<EntityBindings>().Any(bindings => bindings.GravityWellEmitter != null)))
+                    errors.Add(unit.Name + ": Interdict requires a bound GravityWellEmitter.");
+                if (settings.RequiredSubsystem != HardPointType.Any
+                    && !unit.Mounts.OfType<HardPoint>().Any(mount => mount.HardPointType == settings.RequiredSubsystem))
+                    errors.Add(unit.Name + ": ability requires a " + settings.RequiredSubsystem + " hardpoint.");
             }
         }
 

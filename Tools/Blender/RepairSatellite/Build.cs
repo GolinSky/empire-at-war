@@ -337,7 +337,7 @@ public static class BuildRepairSatellite
         var view = PrefabUtility.LoadPrefabContents(viewPath);
         try
         {
-            var existing = view.GetComponentsInChildren<EmpireAtWar.Components.Repair.RepairRangeView>(true);
+            var existing = view.GetComponentsInChildren<EmpireAtWar.Components.Repair.RepairRangeComponent>(true);
             foreach (var old in existing) UnityEngine.Object.DestroyImmediate(old.gameObject);
             var go = new GameObject("RepairRange");
             go.transform.SetParent(view.transform, false);
@@ -351,15 +351,12 @@ public static class BuildRepairSatellite
             line.startColor = line.endColor = new Color(.35f, 1f, .55f, .8f);
             line.shadowCastingMode = ShadowCastingMode.Off;
             line.receiveShadows = false;
-            var ringView = go.AddComponent<EmpireAtWar.Components.Repair.RepairRangeView>();
+            var ringView = go.AddComponent<EmpireAtWar.Components.Repair.RepairRangeComponent>();
             var serializedRing = new SerializedObject(ringView);
             serializedRing.FindProperty("ring").objectReferenceValue = line;
             serializedRing.ApplyModifiedPropertiesWithoutUndo();
             var bindings = new SerializedObject(view.GetComponent<EmpireAtWar.Entities.BaseEntity.EntityBindings>());
-            var injectables = bindings.FindProperty("<Injectables>k__BackingField");
-            Assign(injectables, Enumerable.Range(0, injectables.arraySize)
-                .Select(i => injectables.GetArrayElementAtIndex(i).objectReferenceValue).Where(o => o != null)
-                .Append(ringView).ToArray());
+            bindings.FindProperty("<RepairRange>k__BackingField").objectReferenceValue = ringView;
             bindings.ApplyModifiedPropertiesWithoutUndo();
             PrefabUtility.SaveAsPrefabAsset(view, viewPath);
         }

@@ -128,11 +128,6 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   shieldView: {fileID: 4226294663843316607}
-  ionStunPrefab: {fileID: 6241401996787714037, guid: f49dbb9fe33e5814f8900d78fb93f2e9,
-    type: 3}
-  ionFieldBounds:
-    m_Center: {x: -0.008780162, y: -1.1193651, z: 0.015520732}
-    m_Extent: {x: 12.937149, y: 7.445398, z: 12.82675}
   <ShipUnits>k__BackingField: []
 --- !u!114 &3350890140303717934
 MonoBehaviour:
@@ -210,9 +205,10 @@ MonoBehaviour:
   <SquadronIcon>k__BackingField: {fileID: 0}
   <SFoils>k__BackingField: {fileID: 0}
   <GravityWellEmitter>k__BackingField: {fileID: 0}
+  <Cloak>k__BackingField: {fileID: 0}
+  <RepairRange>k__BackingField: {fileID: 3295004623804369091}
   <Injectables>k__BackingField:
   - {fileID: 4738334751003922498}
-  - {fileID: 3295004623804369091}
 --- !u!114 &1161499686868271550
 MonoBehaviour:
   m_ObjectHideFlags: 0

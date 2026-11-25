@@ -237,7 +237,9 @@ namespace EmpireAtWar.Tests.Editor
                 "Without hardpoints the hull is the only target.");
             EntityBindings bindings = prefab.GetComponent<EntityBindings>();
             Assert.That(bindings.Injectables.All(component => component != null), Is.True);
-            RepairRangeView ring = bindings.Injectables.OfType<RepairRangeView>().Single();
+            RepairRangeComponent ring = bindings.RepairRange;
+            Assert.That(ring, Is.Not.Null);
+            Assert.That(bindings.Injectables, Has.No.Member(ring), "RegisterRepair binds the ring only for repairers.");
             var renderer = (MeshRenderer)new SerializedObject(ring).FindProperty("ring").objectReferenceValue;
             Assert.That(renderer, Is.Not.Null);
             Assert.That(renderer.enabled, Is.False, "The range shows only while the satellite is selected.");

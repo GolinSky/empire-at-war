@@ -1,4 +1,6 @@
+using EmpireAtWar.Lifecycle;
 using EmpireAtWar.Models.Selection;
+using EmpireAtWar.Mvc;
 using EmpireAtWar.Services.Repair;
 using UnityEngine;
 using VContainer;
@@ -6,24 +8,33 @@ using VContainer;
 namespace EmpireAtWar.Components.Repair
 {
     /// <summary>Flat preview of the repair radius, shown while the repairer is selected (only the local player's own units).</summary>
-    public sealed class RepairRangeView : MonoBehaviour
+    public sealed class RepairRangeComponent : MonoBehaviour, IMonoComponent, IInitializable
     {
         [SerializeField] private MeshRenderer ring;
         private ISelectionModelObserver _selection;
         private float _radius;
+        private bool _isReleased = true;
 
         [Inject]
         private void Construct(ISelectionModelObserver selection, RepairProfile profile)
         {
             _selection = selection;
             _radius = profile.Radius;
+        }
+
+        public void Initialize()
+        {
+            _isReleased = false;
             _selection.OnSelected += HandleSelected;
             HandleSelected(_selection.IsSelected);
         }
 
-        private void OnDestroy()
+        public void Release()
         {
+            if (_isReleased) return;
+            _isReleased = true;
             _selection.OnSelected -= HandleSelected;
+            ring.enabled = false;
         }
 
         private void HandleSelected(bool isSelected)
