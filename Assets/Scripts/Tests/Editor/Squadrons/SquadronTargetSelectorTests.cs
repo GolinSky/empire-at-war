@@ -602,7 +602,7 @@ namespace EmpireAtWar.Tests.Editor
         {
             PlayerRoster roster = TestPlayers.CreateTeamGame();
             return new SquadronTargetSelector(new SquadronTargetIndex(_locator, roster), _vision, roster,
-                side ?? TestPlayers.Human, new SquadronHealthData { ShipClass = shipClass });
+                side ?? TestPlayers.Human, new SquadronHealthData { ShipClass = shipClass }, FreeFocusFireClaim.Instance);
         }
 
         private IEntity AddTarget(float distance, ShipClass shipClass = ShipClass.Fighter, PlayerId? owner = null,

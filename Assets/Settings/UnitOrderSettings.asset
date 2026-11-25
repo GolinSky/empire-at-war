@@ -33,3 +33,41 @@ MonoBehaviour:
   paceMergeFactor: 1
   paceMergePadding: 100
   paceMergeAngleDegrees: 30
+  focusFireCaps:
+  - shipClass: 0
+    shipSlots: 2
+    squadronSlots: 4
+  - shipClass: 1
+    shipSlots: 2
+    squadronSlots: 4
+  - shipClass: 7
+    shipSlots: 2
+    squadronSlots: 4
+  - shipClass: 9
+    shipSlots: 2
+    squadronSlots: 4
+  - shipClass: 2
+    shipSlots: 2
+    squadronSlots: 4
+  - shipClass: 3
+    shipSlots: 3
+    squadronSlots: 4
+  - shipClass: 8
+    shipSlots: 3
+    squadronSlots: 6
+  - shipClass: 10
+    shipSlots: 4
+    squadronSlots: 6
+  - shipClass: 4
+    shipSlots: 5
+    squadronSlots: 8
+  - shipClass: 5
+    shipSlots: 6
+    squadronSlots: 8
+  - shipClass: 11
+    shipSlots: 8
+    squadronSlots: 12
+  - shipClass: 6
+    shipSlots: 0
+    squadronSlots: 0
+  heroExtraSlots: 1

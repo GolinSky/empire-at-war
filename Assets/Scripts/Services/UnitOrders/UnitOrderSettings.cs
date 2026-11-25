@@ -1,3 +1,5 @@
+using System;
+using EmpireAtWar.Components.Ship.Health;
 using EmpireAtWar.Entities.BaseEntity.Orders;
 using EmpireAtWar.Mvc;
 using UnityEngine;
@@ -33,12 +35,41 @@ namespace EmpireAtWar.Services.UnitOrders
         [SerializeField, Min(0f)] private float paceMergePadding = PaceClusterTuning.MERGE_PADDING;
         [SerializeField, Range(0f, 180f)] private float paceMergeAngleDegrees = PaceClusterTuning.MERGE_ANGLE_DEGREES;
 
+        [Header("Focus Fire")]
+        [Tooltip("Attackers per team that may hold a target of this class as main target; ships and squadrons count apart. 0 = unlimited.")]
+        [SerializeField] private FocusFireCap[] focusFireCaps =
+        {
+            new FocusFireCap(ShipClass.Fighter, 2, 4),
+            new FocusFireCap(ShipClass.Bomber, 2, 4),
+            new FocusFireCap(ShipClass.Interceptor, 2, 4),
+            new FocusFireCap(ShipClass.HeroStrikecraft, 2, 4),
+            new FocusFireCap(ShipClass.Corvette, 2, 4),
+            new FocusFireCap(ShipClass.Frigate, 3, 4),
+            new FocusFireCap(ShipClass.Cruiser, 3, 6),
+            new FocusFireCap(ShipClass.HeavyCruiser, 4, 6),
+            new FocusFireCap(ShipClass.Capital, 5, 8),
+            new FocusFireCap(ShipClass.BattleCruiser, 6, 8),
+            new FocusFireCap(ShipClass.Dreadnought, 8, 12),
+            new FocusFireCap(ShipClass.Structure, 0, 0),
+        };
+        [Tooltip("Extra ship and squadron slots on a hero target.")]
+        [SerializeField, Min(0)] private int heroExtraSlots = 1;
+
         public float GuardFollowRadius => guardFollowRadius;
         public float GuardChaseDistance => guardChaseDistance;
         public float SquadronGuardEngageRadius => squadronGuardEngageRadius;
         public float SquadronLeashFactor => squadronLeashFactor;
         public float HuntRetargetInterval => huntRetargetInterval;
         public float StationClearance => stationClearance;
+        public int HeroExtraSlots => heroExtraSlots;
+
+        /// <summary>Slots of <paramref name="shipClass"/> for ship or squadron attackers; 0 = unlimited.</summary>
+        public int GetFocusFireCap(ShipClass shipClass, bool isSquadron)
+        {
+            foreach (FocusFireCap cap in focusFireCaps)
+                if (cap.ShipClass == shipClass) return isSquadron ? cap.SquadronSlots : cap.ShipSlots;
+            throw new InvalidOperationException($"{name} has no focus fire cap for {shipClass}.");
+        }
 
         public PaceClusterTuning PaceTuning => new PaceClusterTuning(
             paceLinkDistance,

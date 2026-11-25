@@ -5,6 +5,7 @@ using EmpireAtWar.Components.Ship.Movement;
 using EmpireAtWar.Components.Weapon;
 using EmpireAtWar.Entities.BaseEntity;
 using EmpireAtWar.Patterns.StateMachine;
+using EmpireAtWar.Services.UnitOrders;
 using UnityEngine;
 
 namespace EmpireAtWar.Entities.Ship.StateMachine
@@ -26,6 +27,7 @@ namespace EmpireAtWar.Entities.Ship.StateMachine
         private readonly IRadarComponent _radarComponent;
         private readonly IAttackDataFactory _attackDataFactory;
         private readonly IShipThreatSense _threats;
+        private readonly IFocusFireClaim _focusFire;
         private readonly List<IEntity> _candidates = new List<IEntity>();
         private readonly List<IEntity> _teamHostiles = new List<IEntity>();
         private IEntity _engagementTarget;
@@ -40,8 +42,10 @@ namespace EmpireAtWar.Entities.Ship.StateMachine
             IWeaponComponent weaponComponent,
             IRadarComponent radarComponent,
             IAttackDataFactory attackDataFactory,
-            IShipThreatSense threats)
+            IShipThreatSense threats,
+            IFocusFireClaim focusFire)
         {
+            _focusFire = focusFire;
             _shipMoveComponent = shipMoveComponent;
             _weaponComponent = weaponComponent;
             _radarComponent = radarComponent;
@@ -121,12 +125,13 @@ namespace EmpireAtWar.Entities.Ship.StateMachine
                 }
             }
 
-            return ShipEngagement.SelectThreat(_candidates, _shipMoveComponent, _weaponComponent, _threats);
+            return ShipEngagement.SelectThreat(_candidates, _shipMoveComponent, _weaponComponent, _threats, _focusFire);
         }
 
         private void SetTarget(IEntity enemy)
         {
             _engagementTarget = enemy;
+            _focusFire.TryClaim(enemy);
             _weaponComponent.AddTarget(_attackDataFactory.ConstructData(enemy), AttackType.MainTarget);
             _hasMainTarget = true;
         }
@@ -134,6 +139,7 @@ namespace EmpireAtWar.Entities.Ship.StateMachine
         private void DropTarget()
         {
             _engagementTarget = null;
+            _focusFire.Release();
             if (!_hasMainTarget) return;
             _hasMainTarget = false;
             _weaponComponent.ResetTarget();

@@ -36,11 +36,11 @@ namespace EmpireAtWar.Tests.Editor
             _unitOrderService = CreateService();
         }
 
-        private UnitOrderService CreateService()
+        private UnitOrderService CreateService(IFocusFireSlots focusFire = null)
         {
             EmptyObstacles obstacles = new EmptyObstacles();
             return new UnitOrderService(_locator, _zones, _settings, obstacles,
-                new PaceClusterMergeService(_settings, obstacles));
+                new PaceClusterMergeService(_settings, obstacles), focusFire ?? UnlimitedFocusFireSlots.Instance);
         }
 
         [TearDown]
@@ -460,6 +460,75 @@ namespace EmpireAtWar.Tests.Editor
             Assert.That(farA.Command.LastPace, Is.SameAs(farB.Command.LastPace));
         }
 
+        [Test]
+        public void Attack_OverTheFocusFireCap_NearestShipsAttackAndTheRestAttackMoveToTheTarget()
+        {
+            CappedSlots slots = new CappedSlots { FreeShips = 2 };
+            _unitOrderService = CreateService(slots);
+            FakeEntity target = Entity(100, TestPlayers.Enemy);
+            FakeEntity near = Entity(1, TestPlayers.Human);
+            FakeEntity far = Entity(2, TestPlayers.Human);
+            FakeEntity middle = Entity(3, TestPlayers.Human);
+            near.Command.WorldPosition = new Vector3(0f, 0f, 100f);
+            far.Command.WorldPosition = new Vector3(0f, 0f, 300f);
+            middle.Command.WorldPosition = new Vector3(0f, 0f, 200f);
+            var published = new List<UnitActionId>();
+            _unitOrderService.OrderIssued += order => published.Add(order.Action);
+            IReadOnlyList<IEntity> relayed = null;
+            _unitOrderService.AttackIssued += (receivers, _, _) => relayed = receivers;
+
+            _unitOrderService.IssueAttack(new IEntity[] { near, far, middle }, target);
+
+            Assert.That(near.Command.LastAction, Is.EqualTo(UnitActionId.Attack));
+            Assert.That(middle.Command.LastAction, Is.EqualTo(UnitActionId.Attack));
+            Assert.That(far.Command.LastAction, Is.EqualTo(UnitActionId.AttackMove));
+            Assert.That(Vector3.Distance(far.Command.LastPoint, target.Health.Transform.position), Is.LessThan(50f),
+                "Overflow attack-moves to the target.");
+            Assert.That(relayed, Is.EquivalentTo(new IEntity[] { near, middle }), "Only real attackers are relayed.");
+            Assert.That(published, Is.EqualTo(new[] { UnitActionId.Attack, UnitActionId.AttackMove }),
+                "Order feedback shows the overflow as attack-move.");
+        }
+
+        [Test]
+        public void Attack_FullTarget_HolderKeepsItsSlotAndStationsStillAttack()
+        {
+            FakeEntity target = Entity(100, TestPlayers.Enemy);
+            FakeEntity holder = Entity(1, TestPlayers.Human);
+            FakeEntity nearer = Entity(2, TestPlayers.Human);
+            FakeEntity station = Entity(60, TestPlayers.Human, new[] { typeof(IHardPointAttackFacade) });
+            holder.Command.WorldPosition = new Vector3(0f, 0f, 500f);
+            nearer.Command.WorldPosition = new Vector3(0f, 0f, 50f);
+            CappedSlots slots = new CappedSlots { FreeShips = 0 };
+            slots.Held.Add(holder.Id);
+            _unitOrderService = CreateService(slots);
+
+            _unitOrderService.IssueHardPointAttack(new IEntity[] { holder, nearer, station }, target, 0);
+
+            Assert.That(holder.Command.LastAction, Is.EqualTo(UnitActionId.Attack));
+            Assert.That(nearer.Command.LastAction, Is.EqualTo(UnitActionId.AttackMove));
+            Assert.That(station.Command.LastAction, Is.EqualTo(UnitActionId.Attack), "Stations are exempt.");
+        }
+
+        [Test]
+        public void Attack_ExplicitOffsetsStayWithTheirShipsWhenOneOverflows()
+        {
+            _unitOrderService = CreateService(new CappedSlots { FreeShips = 2 });
+            FakeEntity target = Entity(100, TestPlayers.Enemy);
+            FakeEntity first = Entity(1, TestPlayers.Human);
+            FakeEntity overflow = Entity(2, TestPlayers.Human);
+            FakeEntity third = Entity(3, TestPlayers.Human);
+            first.Command.WorldPosition = new Vector3(0f, 0f, 100f);
+            overflow.Command.WorldPosition = new Vector3(0f, 0f, 900f);
+            third.Command.WorldPosition = new Vector3(0f, 0f, 200f);
+            Vector3[] offsets = { Vector3.left * 10f, Vector3.forward * 10f, Vector3.right * 10f };
+
+            _unitOrderService.IssueAttack(new IEntity[] { first, overflow, third }, target, offsets);
+
+            Assert.That(first.Command.LastPoint, Is.EqualTo(offsets[0]));
+            Assert.That(third.Command.LastPoint, Is.EqualTo(offsets[2]));
+            Assert.That(overflow.Command.LastAction, Is.EqualTo(UnitActionId.AttackMove));
+        }
+
         private FakeEntity Entity(long id, PlayerId side, Type[] commands = null,
             IEntityFacade role = null)
         {
@@ -604,6 +673,29 @@ namespace EmpireAtWar.Tests.Editor
 
             public IHardPointModel[] GetShipUnits(HardPointType type) =>
                 Array.Empty<IHardPointModel>();
+        }
+
+        // Every FakeEntity counts as a ship (no unit type facade): only the ship pool matters here.
+        private sealed class CappedSlots : IFocusFireSlots
+        {
+            public int FreeShips { get; set; }
+            public HashSet<long> Held { get; } = new HashSet<long>();
+
+            public event Action<IEntity> Changed { add { } remove { } }
+
+            public int GetCap(IEntity target, bool isSquadron) => isSquadron ? FocusFireCaps.UNLIMITED : FreeShips + Held.Count;
+
+            public int CountHolders(PlayerId team, IEntity target, bool isSquadron) => isSquadron ? 0 : Held.Count;
+
+            public int FreeSlots(PlayerId team, IEntity target, bool isSquadron) => isSquadron ? int.MaxValue : FreeShips;
+
+            public bool Holds(IEntity attacker, IEntity target) => Held.Contains(attacker.Id);
+
+            public bool HasSlotFor(IEntity attacker, IEntity target) => Holds(attacker, target) || FreeShips > 0;
+
+            public bool TryClaim(IEntity attacker, IEntity target) => throw new NotSupportedException();
+
+            public void Release(long attackerId) => throw new NotSupportedException();
         }
 
         private sealed class FakeLocator : IEntityLocator

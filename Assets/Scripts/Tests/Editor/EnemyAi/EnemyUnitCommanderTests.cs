@@ -77,8 +77,8 @@ namespace EmpireAtWar.Tests.Editor
                 EnemyStrategicContextBuilder context = CaptureBuilder(roster, new ZoneSource(roster),
                     new SiteSource(), new TestHazards());
                 var commander = new EnemyUnitCommander(new ShipService(), zones, locator,
-                    null, orders, new EnemyStrategicDecisionModel(), context, new EnemyTaskForceExecutor(orders),
-                    owner, patrol, null, battleState, scheduler);
+                    null, orders, new EnemyStrategicDecisionModel(), context, new EnemyTaskForceExecutor(orders, UnlimitedFocusFireSlots.Instance),
+                    owner, patrol, null, battleState, scheduler, UnlimitedFocusFireSlots.Instance);
 
                 scheduler.Initialize();
                 Assert.DoesNotThrow(commander.Initialize);
@@ -175,9 +175,9 @@ namespace EmpireAtWar.Tests.Editor
                     new SiteSource(), new TestHazards());
                 FakeOrderService orders = new FakeOrderService();
                 EnemyUnitCommander commander = new EnemyUnitCommander(null, null, locator, null, orders,
-                    new EnemyStrategicDecisionModel(), builder, new EnemyTaskForceExecutor(orders),
+                    new EnemyStrategicDecisionModel(), builder, new EnemyTaskForceExecutor(orders, UnlimitedFocusFireSlots.Instance),
                     roster.Get(TestPlayers.Enemy), null, null, null,
-                    new EnemyAiScheduler(new ReplayNotifier<BattleState>(BattleState.Running)));
+                    new EnemyAiScheduler(new ReplayNotifier<BattleState>(BattleState.Running)), UnlimitedFocusFireSlots.Instance);
                 BindingFlags flags = BindingFlags.Instance | BindingFlags.NonPublic;
                 var planner = (EnemyShipTaskGroupPlanner)typeof(EnemyUnitCommander)
                     .GetField("_taskGroups", flags).GetValue(commander);
@@ -1553,7 +1553,7 @@ namespace EmpireAtWar.Tests.Editor
             FakeOrderService orders = new FakeOrderService();
             EnemyStrategicContext context = Context(new IShipEntity[] { slow, fast });
 
-            new EnemyTaskForceExecutor(orders).Execute(new EnemyStrategicDecision(
+            new EnemyTaskForceExecutor(orders, UnlimitedFocusFireSlots.Instance).Execute(new EnemyStrategicDecision(
                 state: EnemyStrategicState.CaptureZone, committedShipCount: 1, reason: "test"), context);
 
             Assert.That(orders.Calls[0].Action, Is.EqualTo(UnitActionId.AttackMove));
@@ -1573,7 +1573,7 @@ namespace EmpireAtWar.Tests.Editor
             Vector3 gather = new Vector3(-400f, 0f, 300f);
             EnemyStrategicContext context = Context(new IShipEntity[] { slow, fast }, guardPosition: gather);
 
-            new EnemyTaskForceExecutor(orders).Execute(new EnemyStrategicDecision(
+            new EnemyTaskForceExecutor(orders, UnlimitedFocusFireSlots.Instance).Execute(new EnemyStrategicDecision(
                 state: EnemyStrategicState.CaptureZone, committedShipCount: 1, reason: "test"), context);
 
             var hold = orders.Calls.Single(call => call.Receivers.Any(r => r.Id == slow.EntityId));
@@ -1590,7 +1590,7 @@ namespace EmpireAtWar.Tests.Editor
             EnemyStrategicContext context = Context(new IShipEntity[] { slow, fast });
             context.IsZoneForce = true;
 
-            new EnemyTaskForceExecutor(orders).Execute(new EnemyStrategicDecision(
+            new EnemyTaskForceExecutor(orders, UnlimitedFocusFireSlots.Instance).Execute(new EnemyStrategicDecision(
                 state: EnemyStrategicState.CaptureZone, committedShipCount: 1, reason: "test"), context);
 
             // The allocator sized the zone force; the commit ratio does not trim it again (W31).
@@ -1606,7 +1606,7 @@ namespace EmpireAtWar.Tests.Editor
             for (int i = 0; i < 6; i++)
                 ships.Add(new FakeShip(i < 4 ? Vector3.zero : Vector3.right * FleetCohesion.RADIUS * 3f, i + 1));
             var orders = new FakeOrderService();
-            var executor = new EnemyTaskForceExecutor(orders);
+            var executor = new EnemyTaskForceExecutor(orders, UnlimitedFocusFireSlots.Instance);
             var decision = new EnemyStrategicDecision(state: EnemyStrategicState.CaptureZone,
                 committedShipCount: 6, reason: "test");
 
@@ -1639,7 +1639,7 @@ namespace EmpireAtWar.Tests.Editor
                     [strike] = CombatForce(100f, 20f)
                 };
                 var orders = new FakeOrderService();
-                var executor = new EnemyTaskForceExecutor(orders);
+                var executor = new EnemyTaskForceExecutor(orders, UnlimitedFocusFireSlots.Instance);
                 executor.Execute(new EnemyStrategicDecision(state: EnemyStrategicState.HuntFleet, committedShipCount: 2, reason: "test"),
                     Context(new IShipEntity[] { screen, strike }, target, shipForces: forces));
 
@@ -1669,7 +1669,7 @@ namespace EmpireAtWar.Tests.Editor
                 };
                 Vector3 gather = new Vector3(-500f, 0f, 0f);
                 var orders = new FakeOrderService();
-                var executor = new EnemyTaskForceExecutor(orders);
+                var executor = new EnemyTaskForceExecutor(orders, UnlimitedFocusFireSlots.Instance);
                 executor.Execute(new EnemyStrategicDecision(state: EnemyStrategicState.AssaultBase,
                         committedShipCount: 2, reason: "test"),
                     Context(new IShipEntity[] { capital, corvette }, shipForces: forces, baseTarget: station,
@@ -1701,7 +1701,7 @@ namespace EmpireAtWar.Tests.Editor
                 };
                 Vector3 gather = new Vector3(-500f, 0f, 0f);
                 var orders = new FakeOrderService();
-                new EnemyTaskForceExecutor(orders).Execute(new EnemyStrategicDecision(
+                new EnemyTaskForceExecutor(orders, UnlimitedFocusFireSlots.Instance).Execute(new EnemyStrategicDecision(
                         state: EnemyStrategicState.AssaultBase, committedShipCount: 2, reason: "test"),
                     Context(new IShipEntity[] { capital, corvette }, shipForces: forces, baseTarget: station,
                         assaultCapitals: new IShipEntity[] { capital }, guardPosition: gather, isEndGame: true));
@@ -1727,7 +1727,7 @@ namespace EmpireAtWar.Tests.Editor
                     default, new Vector3(300f, 0f, 0f), -1, 0f, 10f);
                 var orders = new FakeOrderService();
 
-                new EnemyTaskForceExecutor(orders).ExecuteMarker(marker, attacker,
+                new EnemyTaskForceExecutor(orders, UnlimitedFocusFireSlots.Instance).ExecuteMarker(marker, attacker,
                     Context(new IShipEntity[] { ship }), "test");
 
                 OrderCall call = orders.Calls.Single();
@@ -1757,7 +1757,7 @@ namespace EmpireAtWar.Tests.Editor
                     [target] = CombatForce(100f, 10f, shipClass: ShipClass.Fighter)
                 };
                 var orders = new FakeOrderService();
-                var executor = new EnemyTaskForceExecutor(orders);
+                var executor = new EnemyTaskForceExecutor(orders, UnlimitedFocusFireSlots.Instance);
                 var decision = new EnemyStrategicDecision(state: EnemyStrategicState.HuntFleet,
                     committedShipCount: 2, reason: "test");
                 EnemyStrategicContext context = Context(new IShipEntity[] { screen, strike }, target,
@@ -1792,7 +1792,7 @@ namespace EmpireAtWar.Tests.Editor
                     [target] = defended ? CombatForce(150f, 15f) : new ForceComposition()
                 };
                 var orders = new FakeOrderService();
-                var executor = new EnemyTaskForceExecutor(orders);
+                var executor = new EnemyTaskForceExecutor(orders, UnlimitedFocusFireSlots.Instance);
                 var decision = new EnemyStrategicDecision(state: EnemyStrategicState.HuntFleet, committedShipCount: 2, reason: "test");
                 executor.Execute(decision, Context(new IShipEntity[] { first, second }, target,
                     targetForces: defenders));
@@ -1838,7 +1838,7 @@ namespace EmpireAtWar.Tests.Editor
                     [target] = CombatForce(100f, 10f, shipClass: ShipClass.Fighter)
                 };
                 var orders = new FakeOrderService();
-                new EnemyTaskForceExecutor(orders).Execute(new EnemyStrategicDecision(
+                new EnemyTaskForceExecutor(orders, UnlimitedFocusFireSlots.Instance).Execute(new EnemyStrategicDecision(
                     state: EnemyStrategicState.HuntFleet, committedShipCount: 4, reason: "test"),
                     Context(new IShipEntity[] { strike, first, second, third }, target,
                         shipForces: forces, targetForces: defenders));
@@ -1865,7 +1865,7 @@ namespace EmpireAtWar.Tests.Editor
                     { WeaponRange = 1755f };
                 attackerView.transform.position = Vector3.right * 1755f;
                 var orders = new FakeOrderService();
-                var executor = new EnemyTaskForceExecutor(orders);
+                var executor = new EnemyTaskForceExecutor(orders, UnlimitedFocusFireSlots.Instance);
                 var decision = new EnemyStrategicDecision("test", EnemyStrategicState.DefendBase, 1);
                 executor.Execute(decision, Context(new[] { ship }, ownBase: station, defenseTarget: attacker));
                 Assert.That(orders.Calls.Single().Action, Is.EqualTo(UnitActionId.Attack));
@@ -1900,7 +1900,7 @@ namespace EmpireAtWar.Tests.Editor
                 var orders = new FakeOrderService();
                 var context = Context(new IShipEntity[] { first, second }, ownBase: station, stationPressure: pressure);
                 foreach (FakeEntity receiver in context.Receivers.Values) receiver.WeaponRange = 500f;
-                new EnemyTaskForceExecutor(orders).Execute(
+                new EnemyTaskForceExecutor(orders, UnlimitedFocusFireSlots.Instance).Execute(
                     new EnemyStrategicDecision("test", EnemyStrategicState.DefendBase, 2),
                     context);
 
@@ -1930,7 +1930,7 @@ namespace EmpireAtWar.Tests.Editor
                 pressure.Update(station.Id, 99f, 100f, Time.time, station.Id);
                 if (hasBearing) pressure.ObserveThreatPosition(-1000f, 0f, 4000f);
                 var orders = new FakeOrderService();
-                var executor = new EnemyTaskForceExecutor(orders);
+                var executor = new EnemyTaskForceExecutor(orders, UnlimitedFocusFireSlots.Instance);
                 var decision = new EnemyStrategicDecision(state: EnemyStrategicState.DefendBase,
                     committedShipCount: 1, reason: "test");
                 EnemyStrategicContext context = Context(new[] { ship }, ownBase: station, stationPressure: pressure);
@@ -1968,7 +1968,7 @@ namespace EmpireAtWar.Tests.Editor
                     TestPlayers.Human, 4);
                 var defenders = new Dictionary<IEntity, ForceComposition> { [target] = CombatForce(250f, 25f) };
                 var orders = new FakeOrderService();
-                var executor = new EnemyTaskForceExecutor(orders);
+                var executor = new EnemyTaskForceExecutor(orders, UnlimitedFocusFireSlots.Instance);
                 var decision = new EnemyStrategicDecision(state: EnemyStrategicState.HuntFleet,
                     committedShipCount: 3, reason: "test");
                 EnemyStrategicContext context = Context(new IShipEntity[] { anchor, escort, distant }, target,
@@ -2001,7 +2001,7 @@ namespace EmpireAtWar.Tests.Editor
                     TestPlayers.Human, 2);
                 var defenders = new Dictionary<IEntity, ForceComposition> { [target] = CombatForce(1000f, 100f) };
                 var orders = new FakeOrderService();
-                var executor = new EnemyTaskForceExecutor(orders);
+                var executor = new EnemyTaskForceExecutor(orders, UnlimitedFocusFireSlots.Instance);
                 EnemyStrategicContext context = Context(new IShipEntity[] { ship }, fleetTarget: target,
                     defenseTarget: target, localThreatTarget: target, targetForces: defenders);
                 executor.Execute(new EnemyStrategicDecision(state: EnemyStrategicState.HuntFleet,
@@ -2029,7 +2029,7 @@ namespace EmpireAtWar.Tests.Editor
             FakeEntity target = new FakeEntity(id: 4, side: TestPlayers.Human,
                 health: new FakeHealthModel(view.transform) { Hull = 900f, Shields = 0f });
             FakeOrderService orders = new FakeOrderService();
-            EnemyTaskForceExecutor executor = new EnemyTaskForceExecutor(orders);
+            EnemyTaskForceExecutor executor = new EnemyTaskForceExecutor(orders, UnlimitedFocusFireSlots.Instance);
             try
             {
                 executor.Execute(new EnemyStrategicDecision(
@@ -2064,7 +2064,7 @@ namespace EmpireAtWar.Tests.Editor
             FakeEntity attacker = new FakeEntity(id: 4, side: TestPlayers.Human,
                 health: new FakeHealthModel(view.transform));
             FakeOrderService orders = new FakeOrderService();
-            EnemyTaskForceExecutor executor = new EnemyTaskForceExecutor(orders);
+            EnemyTaskForceExecutor executor = new EnemyTaskForceExecutor(orders, UnlimitedFocusFireSlots.Instance);
             try
             {
                 view.transform.position = Vector3.forward * distance;
@@ -2096,7 +2096,7 @@ namespace EmpireAtWar.Tests.Editor
         public void RetreatValue_IssuesRetreatForAssignedGroupWithoutOwnBase()
         {
             FakeOrderService orders = new FakeOrderService();
-            new EnemyTaskForceExecutor(orders).Execute(new EnemyStrategicDecision(
+            new EnemyTaskForceExecutor(orders, UnlimitedFocusFireSlots.Instance).Execute(new EnemyStrategicDecision(
                 state: EnemyStrategicState.RetreatValue, committedShipCount: 1, reason: "test"),
                 Context(new IShipEntity[] { new FakeShip(id: 1, position: Vector3.zero),
                     new FakeShip(id: 2, position: Vector3.right) }));
@@ -2113,7 +2113,7 @@ namespace EmpireAtWar.Tests.Editor
             FakeShip fresh = new FakeShip(id: 2, position: Vector3.right);
             FakeOrderService orders = new FakeOrderService();
 
-            new EnemyTaskForceExecutor(orders).Execute(new EnemyStrategicDecision(
+            new EnemyTaskForceExecutor(orders, UnlimitedFocusFireSlots.Instance).Execute(new EnemyStrategicDecision(
                 state: EnemyStrategicState.RetreatValue, committedShipCount: 2, reason: "test"),
                 Context(new IShipEntity[] { retreating, fresh }));
 
@@ -2127,7 +2127,7 @@ namespace EmpireAtWar.Tests.Editor
         {
             FakeShip ship = new FakeShip(id: 1, position: Vector3.zero);
             FakeOrderService orders = new FakeOrderService();
-            EnemyTaskForceExecutor executor = new EnemyTaskForceExecutor(orders);
+            EnemyTaskForceExecutor executor = new EnemyTaskForceExecutor(orders, UnlimitedFocusFireSlots.Instance);
             EnemyStrategicContext context = Context(new IShipEntity[] { ship });
             EnemyStrategicDecision retreat = new EnemyStrategicDecision(
                 state: EnemyStrategicState.RetreatValue, committedShipCount: 1, reason: "test");
@@ -2147,7 +2147,7 @@ namespace EmpireAtWar.Tests.Editor
             FakeShip ship = new FakeShip(id: 1, position: Vector3.zero);
             FakeShip reinforcement = new FakeShip(id: 2, position: Vector3.right);
             FakeOrderService orders = new FakeOrderService();
-            EnemyTaskForceExecutor executor = new EnemyTaskForceExecutor(orders);
+            EnemyTaskForceExecutor executor = new EnemyTaskForceExecutor(orders, UnlimitedFocusFireSlots.Instance);
             EnemyStrategicDecision decision = new EnemyStrategicDecision(
                 state: EnemyStrategicState.CaptureZone, committedShipCount: 2, reason: "test");
             executor.Execute(decision, Context(new IShipEntity[] { ship }));
@@ -2168,7 +2168,7 @@ namespace EmpireAtWar.Tests.Editor
         {
             FakeShip ship = new FakeShip(id: 1, position: Vector3.zero);
             FakeOrderService orders = new FakeOrderService();
-            EnemyTaskForceExecutor executor = new EnemyTaskForceExecutor(orders);
+            EnemyTaskForceExecutor executor = new EnemyTaskForceExecutor(orders, UnlimitedFocusFireSlots.Instance);
             EnemyStrategicDecision decision = new EnemyStrategicDecision(
                 state: EnemyStrategicState.CaptureZone, committedShipCount: 1, reason: "test");
             executor.Execute(decision, Context(new IShipEntity[] { ship }));
@@ -2186,7 +2186,7 @@ namespace EmpireAtWar.Tests.Editor
             FakeShip stopped = new FakeShip(id: 1, position: Vector3.zero);
             FakeShip engaging = new FakeShip(id: 2, position: Vector3.right);
             FakeOrderService orders = new FakeOrderService();
-            EnemyTaskForceExecutor executor = new EnemyTaskForceExecutor(orders);
+            EnemyTaskForceExecutor executor = new EnemyTaskForceExecutor(orders, UnlimitedFocusFireSlots.Instance);
             EnemyStrategicDecision decision = new EnemyStrategicDecision(
                 state: EnemyStrategicState.CaptureZone, committedShipCount: 2, reason: "test");
             EnemyStrategicContext context = Context(new IShipEntity[] { stopped, engaging });
@@ -2210,7 +2210,7 @@ namespace EmpireAtWar.Tests.Editor
         {
             FakeShip ship = new FakeShip(id: 1, position: Vector3.zero);
             FakeOrderService orders = new FakeOrderService();
-            EnemyTaskForceExecutor executor = new EnemyTaskForceExecutor(orders);
+            EnemyTaskForceExecutor executor = new EnemyTaskForceExecutor(orders, UnlimitedFocusFireSlots.Instance);
             EnemyStrategicDecision decision = new EnemyStrategicDecision(
                 state: EnemyStrategicState.CaptureZone, committedShipCount: 1, reason: "test");
             executor.Execute(decision, Context(new IShipEntity[] { ship }));
@@ -2230,7 +2230,7 @@ namespace EmpireAtWar.Tests.Editor
         {
             FakeShip ship = new FakeShip(id: 1, position: Vector3.zero);
             FakeOrderService orders = new FakeOrderService();
-            EnemyTaskForceExecutor executor = new EnemyTaskForceExecutor(orders);
+            EnemyTaskForceExecutor executor = new EnemyTaskForceExecutor(orders, UnlimitedFocusFireSlots.Instance);
             EnemyStrategicDecision decision = new EnemyStrategicDecision(
                 state: EnemyStrategicState.CaptureZone, committedShipCount: 1, reason: "test");
             executor.Execute(decision, Context(new IShipEntity[] { ship }));
@@ -2251,7 +2251,7 @@ namespace EmpireAtWar.Tests.Editor
         {
             var ship = new FakeShip(Vector3.zero, 1);
             var orders = new FakeOrderService();
-            var executor = new EnemyTaskForceExecutor(orders);
+            var executor = new EnemyTaskForceExecutor(orders, UnlimitedFocusFireSlots.Instance);
             var decision = new EnemyStrategicDecision("test", EnemyStrategicState.CaptureZone, 1);
             var context = Context(new IShipEntity[] { ship });
             executor.Execute(decision, context, now: 0f);
@@ -2276,7 +2276,7 @@ namespace EmpireAtWar.Tests.Editor
             var facility = new FakeEntity(new FakeHealthModel(null), TestPlayers.Human, 2) { IsMine = true };
             var ships = new IShipEntity[] { new FakeShip(Vector3.zero, 1) };
             var orders = new FakeOrderService();
-            var executor = new EnemyTaskForceExecutor(orders);
+            var executor = new EnemyTaskForceExecutor(orders, UnlimitedFocusFireSlots.Instance);
             var decision = new EnemyStrategicDecision("test", EnemyStrategicState.CaptureZone, 1);
             var blocked = new EnemyCaptureObjective("site:0", EnemyCaptureObjectiveType.Facility, TestPlayers.Human,
                 Vector3.right * 50f, 10f, 100f, isMine: true, blockingFacilityId: facility.Id);
@@ -2298,7 +2298,7 @@ namespace EmpireAtWar.Tests.Editor
         {
             FakeShip ship = new FakeShip(id: 1, position: Vector3.zero);
             FakeOrderService orders = new FakeOrderService();
-            EnemyTaskForceExecutor executor = new EnemyTaskForceExecutor(orders);
+            EnemyTaskForceExecutor executor = new EnemyTaskForceExecutor(orders, UnlimitedFocusFireSlots.Instance);
             EnemyStrategicDecision decision = new EnemyStrategicDecision(
                 state: EnemyStrategicState.RetreatValue, committedShipCount: 1, reason: "test");
             executor.Execute(decision, Context(new IShipEntity[] { ship }, retreatAnchor: Vector3.left * 100f));
@@ -2319,7 +2319,7 @@ namespace EmpireAtWar.Tests.Editor
             FakeShip ship = new FakeShip(id: 1, position: Vector3.zero)
                 { CurrentOrder = UnitOrderType.Retreat };
             FakeOrderService orders = new FakeOrderService();
-            EnemyTaskForceExecutor executor = new EnemyTaskForceExecutor(orders);
+            EnemyTaskForceExecutor executor = new EnemyTaskForceExecutor(orders, UnlimitedFocusFireSlots.Instance);
 
             executor.Execute(new EnemyStrategicDecision(
                 state: EnemyStrategicState.RetreatValue, committedShipCount: 1, reason: "test"),
@@ -2401,7 +2401,7 @@ namespace EmpireAtWar.Tests.Editor
                 Assert.That(decision.State, Is.EqualTo(EnemyStrategicState.EngageLocal));
 
                 var orders = new FakeOrderService();
-                new EnemyTaskForceExecutor(orders).Execute(decision, context);
+                new EnemyTaskForceExecutor(orders, UnlimitedFocusFireSlots.Instance).Execute(decision, context);
                 OrderCall attack = orders.Calls.Single();
                 Assert.That(attack.Action, Is.EqualTo(UnitActionId.Attack));
                 Assert.That(attack.Target, Is.SameAs(weak));
@@ -2487,7 +2487,7 @@ namespace EmpireAtWar.Tests.Editor
             Vector3 guard = Vector3.right * (FleetCohesion.RADIUS + 100f);
             EnemyStrategicContext context = Context(new[] { ship }, guardPosition: guard);
             var orders = new FakeOrderService();
-            var executor = new EnemyTaskForceExecutor(orders);
+            var executor = new EnemyTaskForceExecutor(orders, UnlimitedFocusFireSlots.Instance);
             var decision = new EnemyStrategicDecision("Guard a held zone", EnemyStrategicState.GuardSite, 1);
 
             executor.Execute(decision, context);
@@ -2514,7 +2514,7 @@ namespace EmpireAtWar.Tests.Editor
             var idle = new FakeShip(Vector3.right * 100f, 2);
             Vector3 gather = Vector3.forward * (FleetCohesion.RADIUS * 4f);
             var orders = new FakeOrderService();
-            var executor = new EnemyTaskForceExecutor(orders);
+            var executor = new EnemyTaskForceExecutor(orders, UnlimitedFocusFireSlots.Instance);
             var hold = new EnemyStrategicDecision("test", EnemyStrategicState.Hold, 0);
             EnemyStrategicContext context = Context(new IShipEntity[] { away, idle }, guardPosition: gather);
 
@@ -2546,7 +2546,7 @@ namespace EmpireAtWar.Tests.Editor
             Vector3 gather = Vector3.forward * (FleetCohesion.RADIUS * 3f);
             var orders = new FakeOrderService();
 
-            new EnemyTaskForceExecutor(orders).Rally(Context(new IShipEntity[] { anchor, mate, straggler },
+            new EnemyTaskForceExecutor(orders, UnlimitedFocusFireSlots.Instance).Rally(Context(new IShipEntity[] { anchor, mate, straggler },
                 guardPosition: gather));
 
             Assert.That(orders.Calls.Any(call => call.Action == UnitActionId.Stop), Is.False);
@@ -2566,7 +2566,7 @@ namespace EmpireAtWar.Tests.Editor
             Vector3 gather = Vector3.right * (FleetCohesion.RADIUS * 3f);
             Vector3 nearby = gather + Vector3.forward * (EnemyTaskForceExecutor.ORDER_POINT_KEEP_DISTANCE * 0.5f);
             var orders = new FakeOrderService();
-            var executor = new EnemyTaskForceExecutor(orders);
+            var executor = new EnemyTaskForceExecutor(orders, UnlimitedFocusFireSlots.Instance);
             executor.Execute(new EnemyStrategicDecision("test", EnemyStrategicState.Hold, 0),
                 Context(new IShipEntity[] { ship }, guardPosition: gather));
             Assert.That(orders.Calls.Single().Point, Is.EqualTo(gather));
@@ -2598,7 +2598,7 @@ namespace EmpireAtWar.Tests.Editor
             var engagedEntity = (FakeEntity)context.Receivers[engaged];
             engagedEntity.IsEngagingEnRoute = true;
             var orders = new FakeOrderService();
-            var executor = new EnemyTaskForceExecutor(orders);
+            var executor = new EnemyTaskForceExecutor(orders, UnlimitedFocusFireSlots.Instance);
 
             executor.Execute(new EnemyStrategicDecision("test", EnemyStrategicState.GuardSite, 2), context);
 
@@ -2635,7 +2635,7 @@ namespace EmpireAtWar.Tests.Editor
             EnemyStrategicContext context = Context(new IShipEntity[] { kept, arrived }, guardPosition: centre);
             context.IsZoneForce = true;
             var orders = new FakeOrderService();
-            var executor = new EnemyTaskForceExecutor(orders);
+            var executor = new EnemyTaskForceExecutor(orders, UnlimitedFocusFireSlots.Instance);
             var guard = new EnemyStrategicDecision("Garrison", EnemyStrategicState.GuardSite, 2);
 
             executor.Execute(guard, context);
@@ -2662,7 +2662,7 @@ namespace EmpireAtWar.Tests.Editor
             zone.SetWorth(true, 0f, 0f);
             zone.SetHold(0f, false, 0f, 1f);
             var orders = new FakeOrderService();
-            var executor = new EnemyTaskForceExecutor(orders);
+            var executor = new EnemyTaskForceExecutor(orders, UnlimitedFocusFireSlots.Instance);
             var guard = new EnemyStrategicDecision("test", EnemyStrategicState.GuardSite, 1);
 
             Vector3 quiet = EnemyZoneTaskRules.GetGuardPoint(EnemyZonePlan.HoldBackAndCounter, zone, centre, holdBack);
@@ -3194,7 +3194,7 @@ namespace EmpireAtWar.Tests.Editor
                 FakeEntity receiver = new FakeEntity(new FakeHealthModel(view.transform), TestPlayers.Enemy, 1)
                     { RetreatCommand = retreat };
                 UnitOrderService orders = new UnitOrderService(new EntityLocator(), null, settings, obstacles,
-                    new PaceClusterMergeService(settings, obstacles));
+                    new PaceClusterMergeService(settings, obstacles), UnlimitedFocusFireSlots.Instance);
 
                 orders.IssueRetreat(new IEntity[] { receiver }, anchor);
 
@@ -3584,7 +3584,8 @@ namespace EmpireAtWar.Tests.Editor
             weak.WorldPosition = Vector3.right * 5000f;
             var orders = new FakeOrderService();
             var planner = new EnemyShipTaskGroupPlanner(builder, new EnemyStrategicDecisionModel(),
-                new EnemyTaskForceExecutor(orders), orders);
+                new EnemyTaskForceExecutor(orders, UnlimitedFocusFireSlots.Instance), orders,
+                UnlimitedFocusFireSlots.Instance);
             return (planner, builder, orders, weak, strong, second);
         }
 
@@ -3596,7 +3597,8 @@ namespace EmpireAtWar.Tests.Editor
                 new SiteSource(), new TestHazards());
             FakeOrderService orders = new FakeOrderService();
             EnemyShipTaskGroupPlanner planner = new EnemyShipTaskGroupPlanner(builder,
-                new EnemyStrategicDecisionModel(), new EnemyTaskForceExecutor(orders), orders);
+                new EnemyStrategicDecisionModel(), new EnemyTaskForceExecutor(orders, UnlimitedFocusFireSlots.Instance), orders,
+                UnlimitedFocusFireSlots.Instance);
             IShipEntity[] ships =
             {
                 new FakeShip(Vector3.zero, 1) { CurrentOrder = UnitOrderType.Attack },
@@ -3620,7 +3622,8 @@ namespace EmpireAtWar.Tests.Editor
                 new SiteSource(), new TestHazards());
             FakeOrderService orders = new FakeOrderService();
             var planner = new EnemyShipTaskGroupPlanner(builder,
-                new EnemyStrategicDecisionModel(), new EnemyTaskForceExecutor(orders), orders);
+                new EnemyStrategicDecisionModel(), new EnemyTaskForceExecutor(orders, UnlimitedFocusFireSlots.Instance), orders,
+                UnlimitedFocusFireSlots.Instance);
             EnemyShipTaskGroup reserve = planner.Groups.Single();
             IShipEntity[] ships = {
                 new FakeShip(Vector3.zero, 1),
@@ -3650,7 +3653,8 @@ namespace EmpireAtWar.Tests.Editor
                 new SiteSource(), new TestHazards());
             FakeOrderService orders = new FakeOrderService();
             var planner = new EnemyShipTaskGroupPlanner(builder,
-                new EnemyStrategicDecisionModel(), new EnemyTaskForceExecutor(orders), orders);
+                new EnemyStrategicDecisionModel(), new EnemyTaskForceExecutor(orders, UnlimitedFocusFireSlots.Instance), orders,
+                UnlimitedFocusFireSlots.Instance);
             var ships = Enumerable.Range(1, 6).Select(id => (IShipEntity)new FakeShip(
                 Vector3.right * id * 2000f, id) { CurrentOrder = UnitOrderType.Attack }).ToList();
 
@@ -3707,7 +3711,7 @@ namespace EmpireAtWar.Tests.Editor
             var objective = new EnemyCaptureObjective("centre", EnemyCaptureObjectiveType.ReinforcementZone,
                 PlayerId.None, Vector3.right * 500f, 50f, 0f);
             var orders = new FakeOrderService();
-            var executor = new EnemyTaskForceExecutor(orders);
+            var executor = new EnemyTaskForceExecutor(orders, UnlimitedFocusFireSlots.Instance);
             executor.Execute(new EnemyStrategicDecision("test", EnemyStrategicState.CaptureZone, 2),
                 Context(new IShipEntity[] { capital, scout }, captureObjective: objective,
                     isPointClear: (point, radius) => !blocked || radius < 100f));
@@ -3728,7 +3732,7 @@ namespace EmpireAtWar.Tests.Editor
             var objective = new EnemyCaptureObjective("centre", EnemyCaptureObjectiveType.ReinforcementZone,
                 PlayerId.None, Vector3.right * 500f, 50f, 0f);
             var orders = new FakeOrderService();
-            var executor = new EnemyTaskForceExecutor(orders);
+            var executor = new EnemyTaskForceExecutor(orders, UnlimitedFocusFireSlots.Instance);
             var decision = new EnemyStrategicDecision("test", EnemyStrategicState.CaptureZone, 2);
             bool blocked = true;
             var context = Context(new IShipEntity[] { capital, scout }, captureObjective: objective,

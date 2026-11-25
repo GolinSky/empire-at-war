@@ -9,6 +9,7 @@ using EmpireAtWar.Entities.BaseEntity.Orders;
 using EmpireAtWar.Entities.SpaceStation;
 using EmpireAtWar.Models.Health;
 using EmpireAtWar.Patterns.StateMachine;
+using EmpireAtWar.Services.UnitOrders;
 using EmpireAtWar.Utils;
 using UnityEngine;
 #if UNITY_EDITOR || DEVELOPMENT_BUILD
@@ -35,6 +36,7 @@ namespace EmpireAtWar.Entities.Ship.StateMachine
         private readonly IWeaponComponent _weaponComponent;
         private readonly IShipMovement _shipMoveComponent;
         private readonly IArtilleryCapability _artilleryCapability;
+        private readonly IFocusFireClaim _focusFire;
         private IHealthModelObserver _mainTarget;
         private IEntity _mainTargetEntity;
         private IHardPointModel _focusedHardPoint;
@@ -107,8 +109,10 @@ namespace EmpireAtWar.Entities.Ship.StateMachine
             IAttackDataFactory attackDataFactory,
             IWeaponComponent weaponComponent,
             IShipMovement shipMoveComponent,
+            IFocusFireClaim focusFire,
             IArtilleryCapability artilleryCapability = null)
         {
+            _focusFire = focusFire;
             _attackDataFactory = attackDataFactory;
             _weaponComponent = weaponComponent;
             _shipMoveComponent = shipMoveComponent;
@@ -204,6 +208,8 @@ namespace EmpireAtWar.Entities.Ship.StateMachine
             }
 
             _hasHardPointApproach = false;
+            // Ordered attackers come past the cap split; a replacement pick over the cap attacks without a slot.
+            _focusFire.TryClaim(_mainTargetEntity);
             if (_mainTargetEntity.TryGetFacade(out IHealthFacade _))
             {
                 _attackData = _focusedHardPoint == null || _focusedHardPoint.IsDestroyed
@@ -238,6 +244,7 @@ namespace EmpireAtWar.Entities.Ship.StateMachine
         {
             _shipMoveComponent.CancelCombatHold();
             _weaponComponent.ResetTarget();
+            _focusFire.Release();
             _attackData = null;
             ResetPursuit();
             HasReachedRange = false;

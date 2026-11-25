@@ -5,6 +5,7 @@ using EmpireAtWar.Components.Ship.Movement;
 using EmpireAtWar.Components.Weapon;
 using EmpireAtWar.Entities.BaseEntity;
 using EmpireAtWar.Entities.SpaceStation;
+using EmpireAtWar.Services.UnitOrders;
 using EmpireAtWar.Utils;
 using System.Collections.Generic;
 using UnityEngine;
@@ -61,15 +62,17 @@ namespace EmpireAtWar.Entities.Ship.StateMachine
             weapon.PreferredTarget == TargetPreference.Ships && enemy.HealthModel.ShipClass.IsStrikecraft();
 
         /// <summary>
-        /// Main-target choice for ships without an attack order: for a ship built for ships any non-strikecraft enemy
-        /// first (<see cref="DefersStrikecraft"/>); then attacker of a team station, then attacker of this ship, then
+        /// Main-target choice for ships without an attack order: an enemy with a free focus fire slot before a full one
+        /// (a full one only when nothing else is in reach); then for a ship built for ships any non-strikecraft enemy
+        /// (<see cref="DefersStrikecraft"/>); then attacker of a team station, then attacker of this ship, then
         /// what the loadout prefers, then the biggest hull class, then the nearest. Dead or cloaked candidates are
         /// skipped; null when none is left.
         /// </summary>
         public static IEntity SelectThreat(IReadOnlyList<IEntity> candidates, IShipMovement movement,
-            IWeaponComponent weapon, IShipThreatSense threats)
+            IWeaponComponent weapon, IShipThreatSense threats, IFocusFireClaim focusFire)
         {
             IEntity best = null;
+            bool bestOpen = false;
             int bestRank = -1;
             bool bestDeferred = false;
             bool bestPreferred = false;
@@ -79,10 +82,13 @@ namespace EmpireAtWar.Entities.Ship.StateMachine
             {
                 IEntity enemy = candidates[i];
                 if (enemy.IsCloaked() || enemy.HealthModel.IsDestroyed || !enemy.HealthModel.HasUnits) continue;
+                bool open = focusFire.HasSlot(enemy);
+                if (best != null && bestOpen && !open) continue;
+                bool replacesFull = best != null && !bestOpen && open;
                 bool deferred = DefersStrikecraft(enemy, weapon);
-                if (best != null && deferred && !bestDeferred) continue;
-                // A first non-deferred enemy replaces a deferred pick whatever its rank.
-                bool replacesDeferred = best != null && bestDeferred && !deferred;
+                if (!replacesFull && best != null && deferred && !bestDeferred) continue;
+                // An open enemy replaces a full pick, and a first non-deferred enemy a deferred pick, whatever the rank.
+                bool replacesDeferred = replacesFull || best != null && bestDeferred && !deferred;
                 int rank = ThreatRank(enemy, threats);
                 if (!replacesDeferred && rank < bestRank) continue;
                 bool preferred = IsPreferred(enemy, weapon);
@@ -99,6 +105,7 @@ namespace EmpireAtWar.Entities.Ship.StateMachine
                 }
 
                 best = enemy;
+                bestOpen = open;
                 bestRank = rank;
                 bestDeferred = deferred;
                 bestPreferred = preferred;

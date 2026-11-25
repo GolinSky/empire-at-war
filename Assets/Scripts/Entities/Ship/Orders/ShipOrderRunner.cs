@@ -13,6 +13,7 @@ using EmpireAtWar.Services.Camera;
 using EmpireAtWar.Services.ShipAbilities;
 using EmpireAtWar.Services.Enemy;
 using EmpireAtWar.Services.TeamContacts;
+using EmpireAtWar.Services.UnitOrders;
 using EmpireAtWar.Models.Players;
 using UnityEngine;
 using EmpireAtWar.Entities.BaseEntity.Orders;
@@ -32,6 +33,8 @@ namespace EmpireAtWar.Entities.Ship.Orders
         private readonly IRadarComponent _radar;
         private readonly ITeamContacts _teamContacts;
         private readonly PlayerId _owner;
+        private readonly IFocusFireClaim _focusFire;
+        private readonly List<IEntity> _ownCandidates = new List<IEntity>();
         private readonly List<IEntity> _teamCandidates = new List<IEntity>();
 #if UNITY_EDITOR || DEVELOPMENT_BUILD
         private readonly ShipOrderTelemetrySource _telemetrySource;
@@ -107,8 +110,9 @@ namespace EmpireAtWar.Entities.Ship.Orders
 #if UNITY_EDITOR || DEVELOPMENT_BUILD
             , ShipOrderTelemetrySource telemetrySource
 #endif
-            , ITeamContacts teamContacts, PlayerId owner)
+            , ITeamContacts teamContacts, PlayerId owner, IFocusFireClaim focusFire)
         {
+            _focusFire = focusFire;
             _teamContacts = teamContacts;
             _owner = owner;
             _orders = orders;
@@ -510,20 +514,44 @@ namespace EmpireAtWar.Entities.Ship.Orders
             }
         }
 
+        // Own radar before team vision, the dead target's class first. Enemies with a free focus fire slot come before
+        // full ones; a full one is taken only when nothing else is in reach.
         private IEntity FindReplacement()
         {
             ShipClass? deadClass = _attackTargetState.LastTargetClass;
-            IEntity own = ShipEngagement.FindNearestEnemy(_radar, _movement, _weapon, inRangeOnly: true, deadClass);
-            if (own != null && own.HealthModel.ShipClass == deadClass) return own;
-
+            _ownCandidates.Clear();
+            for (int i = 0; i < _radar.Enemies.Count; i++)
+                if (ShipEngagement.CanEngage(_radar.Enemies[i], _movement, _weapon))
+                    _ownCandidates.Add(_radar.Enemies[i]);
             _teamCandidates.Clear();
             _teamContacts.FillVisibleHostiles(_owner, _movement.CurrentPosition, REPLACEMENT_RADIUS,
                 _teamCandidates);
             for (int i = _teamCandidates.Count - 1; i >= 0; i--)
                 if (!ShipEngagement.CanEngage(_teamCandidates[i], _movement, _weapon))
                     _teamCandidates.RemoveAt(i);
+            if (HasOpenCandidate(_ownCandidates) || HasOpenCandidate(_teamCandidates))
+            {
+                RemoveFullCandidates(_ownCandidates);
+                RemoveFullCandidates(_teamCandidates);
+            }
+
+            IEntity own = ShipEngagement.FindNearestEnemy(_ownCandidates, _movement, _weapon, deadClass);
+            if (own != null && own.HealthModel.ShipClass == deadClass) return own;
             IEntity team = ShipEngagement.FindNearestEnemy(_teamCandidates, _movement, _weapon, deadClass);
             return team != null && team.HealthModel.ShipClass == deadClass ? team : own ?? team;
+        }
+
+        private bool HasOpenCandidate(List<IEntity> candidates)
+        {
+            foreach (IEntity candidate in candidates)
+                if (_focusFire.HasSlot(candidate)) return true;
+            return false;
+        }
+
+        private void RemoveFullCandidates(List<IEntity> candidates)
+        {
+            for (int i = candidates.Count - 1; i >= 0; i--)
+                if (!_focusFire.HasSlot(candidates[i])) candidates.RemoveAt(i);
         }
 
         private void CompleteOrder()

@@ -443,8 +443,8 @@ namespace EmpireAtWar.Tests.Editor
                 new VisionService(roster, fogEnabled: false), owner, production, new TestHazards(), zones,
                 navigation, pressure, recovery, snapshot, new TeamAiPictureRegistry(intelRegistry, roster, zones, catalog, snapshot), new EnemyFactionModel(null, null));
             var commander = new EnemyUnitCommander(shipService, zoneSystem, entities, game, orders,
-                new EnemyStrategicDecisionModel(), builder, new EnemyTaskForceExecutor(orders),
-                owner, patrol, patrolShips, battleState, scheduler);
+                new EnemyStrategicDecisionModel(), builder, new EnemyTaskForceExecutor(orders, UnlimitedFocusFireSlots.Instance),
+                owner, patrol, patrolShips, battleState, scheduler, UnlimitedFocusFireSlots.Instance);
 
             var entity1 = new TestEntity(1, owner.Id, new TestHealthModel(), CreateTransform())
                 { IsUnit = true, UnitTypeId = venator };
@@ -528,7 +528,7 @@ namespace EmpireAtWar.Tests.Editor
                 entities, null, roster, null, intelRegistry, null, owner, null, null, null, null, null, null,
                 snapshot, pictures, new EnemyFactionModel(null, null));
             var commander = new EnemyUnitCommander(null, null, entities, null, null, null, builder, null,
-                owner, null, null, null, scheduler);
+                owner, null, null, null, scheduler, UnlimitedFocusFireSlots.Instance);
             handle = scheduler.Register(owner.Id, 4f, 4f, () => { });
             typeof(EnemyUnitCommander).GetField("_workHandle", BindingFlags.Instance | BindingFlags.NonPublic)
                 .SetValue(commander, handle);

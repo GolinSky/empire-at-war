@@ -19,6 +19,7 @@ namespace EmpireAtWar.Entities.Ship.StateMachine
         private readonly IAttackDataFactory _attackDataFactory;
         private readonly IEntityLocator _locator;
         private readonly IPlayerRelations _relations;
+        private readonly IFocusFireClaim _focusFire;
         private IEntity _target;
 
         private readonly UnitOrderSettings _settings;
@@ -35,8 +36,9 @@ namespace EmpireAtWar.Entities.Ship.StateMachine
         public HuntState(IShipMovement movement, IWeaponComponent weapon,
             IAttackDataFactory attackDataFactory, IEntityLocator locator,
             IPlayerRelations relations, IVisionService visionService,
-            UnitOrderSettings settings, PlayerId side)
+            UnitOrderSettings settings, PlayerId side, IFocusFireClaim focusFire)
         {
+            _focusFire = focusFire;
             _relations = relations;
             _visionService = visionService;
             _movement = movement;
@@ -91,25 +93,32 @@ namespace EmpireAtWar.Entities.Ship.StateMachine
             _movement.CancelCombatHold();
             _isHolding = false;
             _target = null;
+            _focusFire.Release();
             _weapon.ResetTarget();
         }
 
         private void FindTarget()
         {
-            // The closest preferred enemy; the closest other one only when no preferred enemy is left.
+            // An enemy with a free focus fire slot first; then the closest preferred enemy, the closest other one only
+            // when no preferred enemy is left.
             IEntity closest = null;
+            bool hasOpen = false;
             bool hasPreferred = false;
             float nearest = float.PositiveInfinity;
             foreach (IEntity entity in _locator.Entities)
             {
                 if (!_relations.IsHostile(_side, entity.Owner) || entity.HealthModel.IsDestroyed ||
                     !entity.HealthModel.HasUnits || entity.IsCloaked()) continue;
-                bool isPreferred = ShipEngagement.IsPreferred(entity, _weapon);
-                if (hasPreferred && !isPreferred) continue;
-                Vector3 position = entity.GetFacade<IEntityTransformFacade>().Transform.position;
                 if (!_visionService.IsVisible(_side, entity)) continue;
+                bool isOpen = _focusFire.HasSlot(entity);
+                if (hasOpen && !isOpen) continue;
+                bool isPreferred = ShipEngagement.IsPreferred(entity, _weapon);
+                bool isBetterTier = isOpen && !hasOpen || isPreferred && !hasPreferred;
+                if (!isBetterTier && hasPreferred && !isPreferred) continue;
+                Vector3 position = entity.GetFacade<IEntityTransformFacade>().Transform.position;
                 float distance = PlanarGeometry.DistanceSquared(position, _movement.CurrentPosition);
-                if (distance >= nearest && (hasPreferred || !isPreferred)) continue;
+                if (!isBetterTier && distance >= nearest) continue;
+                hasOpen = isOpen;
                 hasPreferred = isPreferred;
                 nearest = distance;
                 closest = entity;
@@ -120,6 +129,8 @@ namespace EmpireAtWar.Entities.Ship.StateMachine
             _isHolding = false;
             _target = closest;
             _weapon.ResetTarget();
+            if (_target == null) _focusFire.Release();
+            else _focusFire.TryClaim(_target);
             if (_target != null)
             {
                 _weapon.AddTarget(_attackDataFactory.ConstructData(_target),

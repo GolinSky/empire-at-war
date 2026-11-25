@@ -81,6 +81,7 @@ namespace EmpireAtWar.Entities.Squadrons
         private SquadronPilot _pilot;
         private SquadronReplicaAnchor _replicaAnchor;
         private SquadronTargetSelector _targetSelector;
+        private IFocusFireClaim _focusFire;
         private SquadronOrderScheduler _orderScheduler;
         private UnitOrderSettings _orderSettings;
         private IEntityPoolActivation _poolActivation;
@@ -157,8 +158,10 @@ namespace EmpireAtWar.Entities.Squadrons
             ContainerLocal<IReadOnlyList<IDespawnable>> despawnables,
             ContainerLocal<IReadOnlyList<IAudioDialogShipComponent>> audioDialogs, SquadronData data, LifecycleTickGate tickGate,
             long entityId, FighterPoseBatch poseBatch, SquadronOrderScheduler orderScheduler, PlayerId owner,
-            SquadronIconComponent icon, IMatchSession session, SquadronReplicaAnchor replicaAnchor)
+            SquadronIconComponent icon, IMatchSession session, SquadronReplicaAnchor replicaAnchor,
+            IFocusFireClaim focusFire)
         {
+            _focusFire = focusFire;
             _replicaAnchor = replicaAnchor;
             EntityId = entityId;
             _owner = owner;
@@ -809,6 +812,10 @@ namespace EmpireAtWar.Entities.Squadrons
 
         private void Engage(IEntity target)
         {
+            // Attack-move fights and ability casts claim no focus fire slot; every other main target tries to.
+            if (_orders.Current == UnitOrderType.AttackMove || _orders.Current == UnitOrderType.UseAbility)
+                _focusFire.Release();
+            else _focusFire.TryClaim(target);
             if (ReferenceEquals(_engaged, target)) return;
             _engaged = target;
             _weapon.ResetTarget();
@@ -820,6 +827,7 @@ namespace EmpireAtWar.Entities.Squadrons
         {
             if (_engaged == null) return;
             _engaged = null;
+            _focusFire.Release();
             _weapon.ResetTarget();
         }
 
@@ -859,6 +867,7 @@ namespace EmpireAtWar.Entities.Squadrons
                 destroyed && playDestructionSound ? _unitAudio.Explosion : null, _flight.Centroid);
             _orders.Clear();
             _engaged = null;
+            _focusFire.Release();
             _componentLifecycle.Release();
             if (destroyed)
             {

@@ -29,6 +29,7 @@ namespace EmpireAtWar.Entities.Ship.StateMachine
         private readonly IRadarComponent _radar;
         private readonly IAttackDataFactory _attackDataFactory;
         private readonly IShipThreatSense _threats;
+        private readonly IFocusFireClaim _focusFire;
         private readonly List<IEntity> _candidates = new List<IEntity>();
         private readonly List<IEntity> _teamHostiles = new List<IEntity>();
         private IEntity _friendly;
@@ -55,8 +56,9 @@ namespace EmpireAtWar.Entities.Ship.StateMachine
 
         public GuardState(IShipMovement movement, IWeaponComponent weapon,
             IRadarComponent radar, IAttackDataFactory attackDataFactory,
-            UnitOrderSettings settings, IShipThreatSense threats)
+            UnitOrderSettings settings, IShipThreatSense threats, IFocusFireClaim focusFire)
         {
+            _focusFire = focusFire;
             _movement = movement;
             _weapon = weapon;
             _radar = radar;
@@ -96,6 +98,7 @@ namespace EmpireAtWar.Entities.Ship.StateMachine
                 _movement.CancelCombatHold();
                 _weapon.ResetTarget();
                 _engagementTarget = null;
+                _focusFire.Release();
                 _isHolding = false;
             }
 
@@ -115,6 +118,7 @@ namespace EmpireAtWar.Entities.Ship.StateMachine
                     _movement.CancelCombatHold();
                     _isHolding = false;
                     _engagementTarget = enemy;
+                    _focusFire.TryClaim(enemy);
                     _isTeamTarget = !_radar.Enemies.Contains(enemy);
                     _weapon.AddTarget(_attackDataFactory.ConstructData(enemy), AttackType.MainTarget);
                     if (!ShipEngagement.CanEngage(enemy, _movement, _weapon))
@@ -146,6 +150,7 @@ namespace EmpireAtWar.Entities.Ship.StateMachine
         {
             _movement.CancelCombatHold();
             _engagementTarget = null;
+            _focusFire.Release();
             _isReturning = false;
             _isHolding = false;
             _weapon.ResetTarget();
@@ -185,7 +190,7 @@ namespace EmpireAtWar.Entities.Ship.StateMachine
                 }
             }
 
-            return ShipEngagement.SelectThreat(_candidates, _movement, _weapon, _threats);
+            return ShipEngagement.SelectThreat(_candidates, _movement, _weapon, _threats, _focusFire);
         }
 
         // Finish the current follow leg before considering the friendly's new position.

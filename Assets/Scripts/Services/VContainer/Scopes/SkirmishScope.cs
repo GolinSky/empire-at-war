@@ -168,6 +168,8 @@ namespace EmpireAtWar.Services.VContainer
             builder.Register<TacticalMarkerRegistry>(Lifetime.Singleton).AsImplementedInterfaces().AsSelf();
             builder.Register<TacticalMarkerReplies>(Lifetime.Singleton);
             builder.Register<PaceClusterMergeService>(Lifetime.Singleton).AsImplementedInterfaces().AsSelf();
+            builder.Register<FocusFireCaps>(Lifetime.Singleton).AsImplementedInterfaces();
+            builder.Register<FocusFireSlots>(Lifetime.Singleton).AsImplementedInterfaces();
             builder.Register<UnitOrderService>(Lifetime.Singleton).AsImplementedInterfaces().AsSelf();
             builder.Register<PlayerCommandHandlers>(Lifetime.Singleton);
             OnlineMatchService online = Parent.Container.Resolve<OnlineMatchService>();

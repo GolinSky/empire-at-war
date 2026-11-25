@@ -14,6 +14,7 @@ using EmpireAtWar.Models.Selection;
 using EmpireAtWar.Services.Audio;
 using EmpireAtWar.Services.Selection;
 using EmpireAtWar.Services.ShipAbilities;
+using EmpireAtWar.Services.UnitOrders;
 using EmpireAtWar.Entities.Ship.EntityFacades;
 using UnityEngine;
 using VContainer;
@@ -67,6 +68,7 @@ namespace EmpireAtWar.Entities.Squadrons
             builder.Register<UnitOrderModel>(Lifetime.Singleton);
             builder.Register<SquadronPilot>(Lifetime.Singleton).AsSelf().AsImplementedInterfaces();
             builder.Register<SquadronReplicaAnchor>(Lifetime.Singleton);
+            builder.Register<FocusFireClaim>(Lifetime.Singleton).AsImplementedInterfaces();
             builder.Register<SquadronTargetSelector>(Lifetime.Singleton);
             EntityFeatureBindings.RegisterComponent(builder, Bindings.SquadronHealth);
             EntityFeatureBindings.RegisterComponent(builder, Bindings.SquadronFlight);

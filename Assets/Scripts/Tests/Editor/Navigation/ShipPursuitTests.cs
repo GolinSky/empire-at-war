@@ -61,7 +61,7 @@ namespace EmpireAtWar.Tests.Movement
         [TestCase(true)]
         public void Attack_CommitsLegDespiteTargetMotionAndOwnDetour(bool formation)
         {
-            AttackTargetState state = new AttackTargetState(null, _weapon, _movement);
+            AttackTargetState state = new AttackTargetState(null, _weapon, _movement, FreeFocusFireClaim.Instance);
             state.SetData(_target, formation ? Vector3.forward * 20f : Vector3.zero,
                 UnitOrderModel.NO_HARD_POINT);
             state.Tick(0.1f);
@@ -89,7 +89,7 @@ namespace EmpireAtWar.Tests.Movement
             if (!artillery)
                 Assert.That(ShipEngagement.IsInRange(_movement, _weapon, _target, _target.Transform.position),
                     Is.True, "The normal weapon must start inside its 80 m engagement range.");
-            var state = new AttackTargetState(null, _weapon, _movement,
+            var state = new AttackTargetState(null, _weapon, _movement, FreeFocusFireClaim.Instance,
                 artillery ? new ArtilleryCapability(200f) : null);
             state.SetData(_target, Vector3.right * 20f, UnitOrderModel.NO_HARD_POINT);
             state.Tick(0.1f);
@@ -127,9 +127,9 @@ namespace EmpireAtWar.Tests.Movement
                 UnitOrderModel orders = new UnitOrderModel();
                 ShipStateMachine machine = new ShipStateMachine();
                 Radar radar = new Radar();
-                AttackTargetState attack = new AttackTargetState(null, _weapon, _movement);
+                AttackTargetState attack = new AttackTargetState(null, _weapon, _movement, FreeFocusFireClaim.Instance);
                 ShipOrderRunner runner = new ShipOrderRunner(_movement, _weapon, null, orders, machine,
-                    new IdleState(_movement, _weapon, radar, new AttackDataFactory(), new FakeShipThreats()), null, attack, null, null, null, null, abilities, caster, radar, null, new NoTeamContacts(), TestPlayers.Human);
+                    new IdleState(_movement, _weapon, radar, new AttackDataFactory(), new FakeShipThreats(), FreeFocusFireClaim.Instance), null, attack, null, null, null, null, abilities, caster, radar, null, new NoTeamContacts(), TestPlayers.Human, FreeFocusFireClaim.Instance);
                 runner.Start();
                 runner.Attack(_target, Vector3.forward * 20f);
                 runner.Tick(0.1f);
@@ -160,10 +160,10 @@ namespace EmpireAtWar.Tests.Movement
             try
             {
                 Radar radar = new Radar();
-                AttackTargetState attack = new AttackTargetState(null, _weapon, _movement);
+                AttackTargetState attack = new AttackTargetState(null, _weapon, _movement, FreeFocusFireClaim.Instance);
                 ShipOrderRunner runner = new ShipOrderRunner(_movement, _weapon, null, new UnitOrderModel(),
-                    new ShipStateMachine(), new IdleState(_movement, _weapon, radar, new AttackDataFactory(), new FakeShipThreats()), null, attack, null, null, null,
-                    null, abilities, caster, radar, null, new NoTeamContacts(), TestPlayers.Human);
+                    new ShipStateMachine(), new IdleState(_movement, _weapon, radar, new AttackDataFactory(), new FakeShipThreats(), FreeFocusFireClaim.Instance), null, attack, null, null, null,
+                    null, abilities, caster, radar, null, new NoTeamContacts(), TestPlayers.Human, FreeFocusFireClaim.Instance);
                 PaceCluster pace = new PaceCluster();
                 float slower = _movement.PaceSpeed * 0.8f;
                 pace.Join(slower);
@@ -205,8 +205,8 @@ namespace EmpireAtWar.Tests.Movement
                 Radar radar = new Radar();
                 NavigateState navigate = new NavigateState(_movement);
                 ShipOrderRunner runner = new ShipOrderRunner(_movement, _weapon, null, new UnitOrderModel(),
-                    new ShipStateMachine(), new IdleState(_movement, _weapon, radar, new AttackDataFactory(), new FakeShipThreats()), navigate, null, null, null, null,
-                    null, abilities, caster, radar, null, new NoTeamContacts(), TestPlayers.Human);
+                    new ShipStateMachine(), new IdleState(_movement, _weapon, radar, new AttackDataFactory(), new FakeShipThreats(), FreeFocusFireClaim.Instance), navigate, null, null, null, null,
+                    null, abilities, caster, radar, null, new NoTeamContacts(), TestPlayers.Human, FreeFocusFireClaim.Instance);
                 PaceClusterTuning tuning = PaceClusterTuning.Default;
                 PaceCluster cluster = new PaceCluster(orderId: 1, issuePace: 20f, tuning: tuning);
                 _movement.PaceSpeed = 30f;
@@ -284,9 +284,9 @@ namespace EmpireAtWar.Tests.Movement
                 radar.Enemies.Add(capital);
                 UnitOrderModel orders = new UnitOrderModel();
                 ShipStateMachine machine = new ShipStateMachine();
-                AttackTargetState attack = new AttackTargetState(null, _weapon, _movement);
+                AttackTargetState attack = new AttackTargetState(null, _weapon, _movement, FreeFocusFireClaim.Instance);
                 ShipOrderRunner runner = new ShipOrderRunner(_movement, _weapon, null, orders, machine,
-                    new IdleState(_movement, _weapon, radar, new AttackDataFactory(), new FakeShipThreats()), null, attack, null, null, null, null, abilities, caster, radar, null, new NoTeamContacts(), TestPlayers.Human);
+                    new IdleState(_movement, _weapon, radar, new AttackDataFactory(), new FakeShipThreats(), FreeFocusFireClaim.Instance), null, attack, null, null, null, null, abilities, caster, radar, null, new NoTeamContacts(), TestPlayers.Human, FreeFocusFireClaim.Instance);
                 runner.Start();
                 Vector3 offset = formation ? Vector3.forward * 20f : Vector3.zero;
                 runner.Attack(_target, offset);
@@ -321,7 +321,7 @@ namespace EmpireAtWar.Tests.Movement
         public void Attack_StalledApproachRetriesAlternateBearingsWithoutPreservingCourse(bool formation, bool failsImmediately)
         {
             _movement.FailMoves = failsImmediately;
-            AttackTargetState state = new AttackTargetState(null, _weapon, _movement);
+            AttackTargetState state = new AttackTargetState(null, _weapon, _movement, FreeFocusFireClaim.Instance);
             state.SetData(_target, formation ? Vector3.forward * 20f : Vector3.zero,
                 UnitOrderModel.NO_HARD_POINT);
             state.Tick(0.1f);
@@ -348,7 +348,7 @@ namespace EmpireAtWar.Tests.Movement
         public void Attack_ProgressResetsStalledBearingAttempts(bool formation)
         {
             _movement.FailMoves = true;
-            AttackTargetState state = new AttackTargetState(null, _weapon, _movement);
+            AttackTargetState state = new AttackTargetState(null, _weapon, _movement, FreeFocusFireClaim.Instance);
             state.SetData(_target, formation ? Vector3.forward * 20f : Vector3.zero,
                 UnitOrderModel.NO_HARD_POINT);
             state.Tick(0.1f);
@@ -374,7 +374,7 @@ namespace EmpireAtWar.Tests.Movement
         public void Attack_NewTargetOrExitResetsStalledBearingAttempts(bool exit)
         {
             _movement.FailMoves = true;
-            AttackTargetState state = new AttackTargetState(null, _weapon, _movement);
+            AttackTargetState state = new AttackTargetState(null, _weapon, _movement, FreeFocusFireClaim.Instance);
             state.SetData(_target);
             state.Tick(0.1f);
             state.Tick(0.5f);
@@ -395,7 +395,7 @@ namespace EmpireAtWar.Tests.Movement
         public void Attack_StalledShipInRangeDoesNotRetry(bool formation)
         {
             _movement.FailMoves = true;
-            AttackTargetState state = new AttackTargetState(null, _weapon, _movement);
+            AttackTargetState state = new AttackTargetState(null, _weapon, _movement, FreeFocusFireClaim.Instance);
             state.SetData(_target, formation ? Vector3.forward * 20f : Vector3.zero,
                 UnitOrderModel.NO_HARD_POINT);
             state.Tick(0.1f);
@@ -415,7 +415,7 @@ namespace EmpireAtWar.Tests.Movement
             _target.HasHealthFacade = true;
             _target.NavigationRadius = 550f;
             _weapon.HardPointApproach = Vector3.right * 200f;
-            AttackTargetState state = new AttackTargetState(new AttackDataFactory(), _weapon, _movement,
+            AttackTargetState state = new AttackTargetState(new AttackDataFactory(), _weapon, _movement, FreeFocusFireClaim.Instance,
                 new ArtilleryCapability(100f));
             state.SetData(_target, formation ? Vector3.forward * 20f : Vector3.zero,
                 UnitOrderModel.NO_HARD_POINT);
@@ -508,7 +508,7 @@ namespace EmpireAtWar.Tests.Movement
             _target.HasHealthFacade = true;
             _target.NavigationRadius = 550f;
             _weapon.HardPointApproach = Vector3.right * 200f;
-            var state = new AttackTargetState(new AttackDataFactory(), _weapon, _movement);
+            var state = new AttackTargetState(new AttackDataFactory(), _weapon, _movement, FreeFocusFireClaim.Instance);
             state.SetData(_target);
             state.Enter();
             return state;
@@ -524,10 +524,10 @@ namespace EmpireAtWar.Tests.Movement
             Radar radar = new Radar();
             UnitOrderModel orders = new UnitOrderModel();
             ShipStateMachine machine = new ShipStateMachine();
-            IdleState idle = new IdleState(_movement, _weapon, radar, new AttackDataFactory(), new FakeShipThreats());
+            IdleState idle = new IdleState(_movement, _weapon, radar, new AttackDataFactory(), new FakeShipThreats(), FreeFocusFireClaim.Instance);
             AttackMoveState attackMove = new AttackMoveState(_movement, _weapon, radar, null, new FakeShipThreats());
             ShipOrderRunner runner = new ShipOrderRunner(_movement, _weapon, null, orders, machine,
-                idle, null, new AttackTargetState(null, _weapon, _movement), attackMove, null, null, null, abilities, caster, radar, null, new NoTeamContacts(), TestPlayers.Human);
+                idle, null, new AttackTargetState(null, _weapon, _movement, FreeFocusFireClaim.Instance), attackMove, null, null, null, abilities, caster, radar, null, new NoTeamContacts(), TestPlayers.Human, FreeFocusFireClaim.Instance);
             runner.Start();
             runner.Attack(_target, Vector3.zero);
 
@@ -569,7 +569,7 @@ namespace EmpireAtWar.Tests.Movement
         [Test]
         public void Attack_TargetClosesRange_StopsWithoutAnotherPlan()
         {
-            AttackTargetState state = new AttackTargetState(null, _weapon, _movement);
+            AttackTargetState state = new AttackTargetState(null, _weapon, _movement, FreeFocusFireClaim.Instance);
             state.SetData(_target);
             state.Tick(0.1f);
             _target.Transform.position = new Vector3(95f, 0f, 0f);
@@ -585,7 +585,7 @@ namespace EmpireAtWar.Tests.Movement
         public void Attack_ArtilleryUsesLauncherRingOnlyForApproach(bool formation)
         {
             ArtilleryCapability artillery = new ArtilleryCapability(200f);
-            AttackTargetState state = new AttackTargetState(null, _weapon, _movement, artillery);
+            AttackTargetState state = new AttackTargetState(null, _weapon, _movement, FreeFocusFireClaim.Instance, artillery);
             Vector3 offset = formation ? Vector3.forward * 20f : Vector3.zero;
             state.SetData(_target, offset, UnitOrderModel.NO_HARD_POINT);
 
@@ -616,7 +616,7 @@ namespace EmpireAtWar.Tests.Movement
             _target.Transform.position = Vector3.right * 95f;
             Assert.That(ShipEngagement.IsInRange(_movement, _weapon, _target, _target.Transform.position), Is.False,
                 "95 m is outside the 80 m pursuit stop distance but inside the 100 m reach.");
-            AttackTargetState state = new AttackTargetState(null, _weapon, _movement);
+            AttackTargetState state = new AttackTargetState(null, _weapon, _movement, FreeFocusFireClaim.Instance);
             state.SetData(_target);
 
             state.Tick(0.1f);
@@ -634,7 +634,7 @@ namespace EmpireAtWar.Tests.Movement
         public void Attack_SameTargetNewSlotKeepsHold()
         {
             _target.Transform.position = Vector3.right * 95f;
-            AttackTargetState state = new AttackTargetState(null, _weapon, _movement);
+            AttackTargetState state = new AttackTargetState(null, _weapon, _movement, FreeFocusFireClaim.Instance);
             state.SetData(_target, Vector3.forward * 20f, UnitOrderModel.NO_HARD_POINT);
             state.Tick(0.1f);
 
@@ -649,7 +649,7 @@ namespace EmpireAtWar.Tests.Movement
         public void Attack_ArtilleryRangeRevisionReplacesCommittedLegAndLastLauncherLossRestoresOrdinaryAttack()
         {
             ArtilleryCapability artillery = new ArtilleryCapability(200f);
-            AttackTargetState state = new AttackTargetState(null, _weapon, _movement, artillery);
+            AttackTargetState state = new AttackTargetState(null, _weapon, _movement, FreeFocusFireClaim.Instance, artillery);
             state.SetData(_target);
             state.Tick(0.1f);
 
@@ -670,7 +670,7 @@ namespace EmpireAtWar.Tests.Movement
         public void Attack_ArtilleryBlockedApproachRetriesAtIntervalsAndWaitsForTargetToMove()
         {
             ArtilleryCapability artillery = new ArtilleryCapability(200f);
-            AttackTargetState state = new AttackTargetState(null, _weapon, _movement, artillery);
+            AttackTargetState state = new AttackTargetState(null, _weapon, _movement, FreeFocusFireClaim.Instance, artillery);
             _movement.FailMoves = true;
             state.SetData(_target);
             state.Tick(0.1f);
@@ -697,7 +697,7 @@ namespace EmpireAtWar.Tests.Movement
         public void Attack_ArtilleryHoldsAtAnyFiringReach(float distance, float hullRadius, float launcherRange)
         {
             ArtilleryCapability artillery = new ArtilleryCapability(launcherRange);
-            AttackTargetState state = new AttackTargetState(null, _weapon, _movement, artillery);
+            AttackTargetState state = new AttackTargetState(null, _weapon, _movement, FreeFocusFireClaim.Instance, artillery);
             _target.Transform.position = Vector3.right * distance;
             _target.HullRadius = hullRadius;
             state.SetData(_target);
@@ -714,7 +714,7 @@ namespace EmpireAtWar.Tests.Movement
             float targetHullRadius, float expectedDistance)
         {
             ArtilleryCapability artillery = new ArtilleryCapability(200f);
-            AttackTargetState state = new AttackTargetState(null, _weapon, _movement, artillery);
+            AttackTargetState state = new AttackTargetState(null, _weapon, _movement, FreeFocusFireClaim.Instance, artillery);
             // This target models a mobile ship here, so the navigation radius is its live footprint.
             _target.NavigationRadius = targetHullRadius;
             _target.HasStationHull = false;
@@ -764,7 +764,7 @@ namespace EmpireAtWar.Tests.Movement
             _target.Transform.position = new Vector3(5000f, 0f, 0f);
             _target.NavigationRadius = targetRadius;
             var movement = new Movement { NavigationRadius = shipRadius };
-            var state = new AttackTargetState(null, _weapon, movement);
+            var state = new AttackTargetState(null, _weapon, movement, FreeFocusFireClaim.Instance);
             state.SetData(_target, slot, UnitOrderModel.NO_HARD_POINT);
 
             state.Tick(0.1f);
@@ -776,7 +776,7 @@ namespace EmpireAtWar.Tests.Movement
         [Test]
         public void Attack_FormationSlotUsesLiveContactClearanceAfterTargetReplacement()
         {
-            var state = new AttackTargetState(null, _weapon, _movement);
+            var state = new AttackTargetState(null, _weapon, _movement, FreeFocusFireClaim.Instance);
             Vector3 offset = Vector3.forward * 20f;
             state.SetData(_target, offset, UnitOrderModel.NO_HARD_POINT);
             state.Tick(0.1f);
@@ -844,7 +844,7 @@ namespace EmpireAtWar.Tests.Movement
             UnitOrderSettings settings = ScriptableObject.CreateInstance<UnitOrderSettings>();
             try
             {
-                GuardState state = new GuardState(_movement, _weapon, new Radar(), null, settings, new FakeShipThreats());
+                GuardState state = new GuardState(_movement, _weapon, new Radar(), null, settings, new FakeShipThreats(), FreeFocusFireClaim.Instance);
                 state.SetData(_target, Vector3.zero);
                 state.Enter();
                 _target.Transform.position = new Vector3(900f, 0f, 0f);
@@ -928,12 +928,12 @@ namespace EmpireAtWar.Tests.Movement
             orders.Replace(UnitOrderType.WaypointMove, first, waypoints: new[] { first, second });
             orders.AdvanceWaypoint(out _);
             ShipStateMachine machine = new ShipStateMachine();
-            IdleState idle = new IdleState(_movement, _weapon, new Radar(), new AttackDataFactory(), new FakeShipThreats());
+            IdleState idle = new IdleState(_movement, _weapon, new Radar(), new AttackDataFactory(), new FakeShipThreats(), FreeFocusFireClaim.Instance);
             machine.SetState(idle);
             NavigateState navigate = new NavigateState(_movement);
             ShipOrderRunner runner = new ShipOrderRunner(_movement, _weapon, null, orders, machine,
                 idle, navigate, null, null, null, null, new AbilityApproachState(_movement), null,
-                new AbilityCaster(_target, _movement, ShipAbilityId.BoostEnginePower), new Radar(), null, new NoTeamContacts(), TestPlayers.Human);
+                new AbilityCaster(_target, _movement, ShipAbilityId.BoostEnginePower), new Radar(), null, new NoTeamContacts(), TestPlayers.Human, FreeFocusFireClaim.Instance);
 
             runner.CastAbility(ShipAbilityId.TractorBeam, _target, 100f);
             Assert.That(runner.CurrentOrder, Is.EqualTo(UnitOrderType.UseAbility));
@@ -1122,7 +1122,7 @@ namespace EmpireAtWar.Tests.Movement
         public void Attack_HeldShipKeepsHoldingInsideTheLeaveMargin()
         {
             _target.Transform.position = Vector3.right * 95f;
-            AttackTargetState state = new AttackTargetState(null, _weapon, _movement);
+            AttackTargetState state = new AttackTargetState(null, _weapon, _movement, FreeFocusFireClaim.Instance);
             state.SetData(_target);
             state.Tick(0.1f);
             Assert.That(_movement.HeldTarget, Is.SameAs(_target));
@@ -1156,18 +1156,18 @@ namespace EmpireAtWar.Tests.Movement
                 radar.Enemies.Add(_target);
                 FakeShipThreats threats = new FakeShipThreats();
                 threats.StationAttackers.Add(_target);
-                IdleState state = new IdleState(_movement, _weapon, radar, new AttackDataFactory(), threats);
+                IdleState state = new IdleState(_movement, _weapon, radar, new AttackDataFactory(), threats, FreeFocusFireClaim.Instance);
 
                 state.Tick(0.1f);
 
                 Assert.That(_movement.LookTarget, Is.SameAs(_target));
                 Assert.That(_movement.MoveCount, Is.Zero, "Idle never moves, not even to fight.");
                 Assert.That(ShipEngagement.SelectThreat(new IEntity[] { corvette, _target }, _movement, _weapon,
-                    new FakeShipThreats()), Is.SameAs(_target), "Without threats the bigger hull still wins.");
+                    new FakeShipThreats(), FreeFocusFireClaim.Instance), Is.SameAs(_target), "Without threats the bigger hull still wins.");
                 threats.StationAttackers.Clear();
                 threats.SelfAttackers.Add(corvette);
                 Assert.That(ShipEngagement.SelectThreat(new IEntity[] { corvette, _target }, _movement, _weapon,
-                    threats), Is.SameAs(corvette), "An attacker of this ship outranks a bigger hull.");
+                    threats, FreeFocusFireClaim.Instance), Is.SameAs(corvette), "An attacker of this ship outranks a bigger hull.");
             }
             finally { Object.DestroyImmediate(corvetteObject); }
         }
@@ -1189,10 +1189,10 @@ namespace EmpireAtWar.Tests.Movement
 
                 Assert.That(_weapon.PreferredTarget, Is.EqualTo(TargetPreference.Ships));
                 Assert.That(ShipEngagement.SelectThreat(new IEntity[] { squadron, _target }, _movement, _weapon,
-                    threats), Is.SameAs(_target), "Heavy guns leave squadrons to lasers while a ship is near.");
+                    threats, FreeFocusFireClaim.Instance), Is.SameAs(_target), "Heavy guns leave squadrons to lasers while a ship is near.");
                 Assert.That(ShipEngagement.Outranks(_target, squadron, _weapon, threats), Is.True);
                 Assert.That(ShipEngagement.Outranks(squadron, _target, _weapon, threats), Is.False);
-                Assert.That(ShipEngagement.SelectThreat(new IEntity[] { squadron }, _movement, _weapon, threats),
+                Assert.That(ShipEngagement.SelectThreat(new IEntity[] { squadron }, _movement, _weapon, threats, FreeFocusFireClaim.Instance),
                     Is.SameAs(squadron), "Without a ship the squadron is still fought.");
             }
             finally { Object.DestroyImmediate(squadronObject); }
@@ -1204,7 +1204,7 @@ namespace EmpireAtWar.Tests.Movement
             _target.Transform.position = Vector3.forward * 90f;
             FakeShipThreats threats = new FakeShipThreats { WasDamagedRecently = true };
             threats.TeamVisible.Add(_target);
-            IdleState state = new IdleState(_movement, _weapon, new Radar(), new AttackDataFactory(), threats);
+            IdleState state = new IdleState(_movement, _weapon, new Radar(), new AttackDataFactory(), threats, FreeFocusFireClaim.Instance);
 
             state.Tick(0.1f);
 
@@ -1220,7 +1220,7 @@ namespace EmpireAtWar.Tests.Movement
                 var players = TestPlayers.CreateDuel();
                 HuntState state = new HuntState(_movement, _weapon, null, new EntityLocator(), null,
                     new VisionService(players), settings,
-                    TestPlayers.Human);
+                    TestPlayers.Human, FreeFocusFireClaim.Instance);
                 _movement.MoveToPosition(Vector3.forward * 100f);
                 state.Enter();
                 state.Tick(0.1f);
@@ -1244,7 +1244,7 @@ namespace EmpireAtWar.Tests.Movement
                 if (owner == 3) _target.Owner = TestPlayers.Human;
                 var locator = new EntityLocator();
                 locator.AddEntity(_target);
-                HuntState state = new HuntState(_movement, _weapon, null, locator, players, vision, settings, side);
+                HuntState state = new HuntState(_movement, _weapon, null, locator, players, vision, settings, side, FreeFocusFireClaim.Instance);
                 const BindingFlags PRIVATE_INSTANCE = BindingFlags.Instance | BindingFlags.NonPublic;
                 typeof(HuntState).GetField("_target", PRIVATE_INSTANCE).SetValue(state, _target);
                 typeof(HuntState).GetField("_retargetTimer", PRIVATE_INSTANCE).SetValue(state, 100f);
@@ -1269,10 +1269,10 @@ namespace EmpireAtWar.Tests.Movement
             UnitOrderModel orders = new UnitOrderModel();
             ShipStateMachine machine = new ShipStateMachine();
             _orderSettings = ScriptableObject.CreateInstance<UnitOrderSettings>();
-            GuardState guard = new GuardState(_movement, _weapon, new Radar(), null, _orderSettings, new FakeShipThreats());
-            IdleState idle = new IdleState(_movement, _weapon, new Radar(), new AttackDataFactory(), new FakeShipThreats());
+            GuardState guard = new GuardState(_movement, _weapon, new Radar(), null, _orderSettings, new FakeShipThreats(), FreeFocusFireClaim.Instance);
+            IdleState idle = new IdleState(_movement, _weapon, new Radar(), new AttackDataFactory(), new FakeShipThreats(), FreeFocusFireClaim.Instance);
             ShipOrderRunner runner = new ShipOrderRunner(_movement, _weapon, null, orders, machine,
-                idle, null, null, null, guard, null, new AbilityApproachState(_movement), abilities, caster, new Radar(), null, new NoTeamContacts(), TestPlayers.Human);
+                idle, null, null, null, guard, null, new AbilityApproachState(_movement), abilities, caster, new Radar(), null, new NoTeamContacts(), TestPlayers.Human, FreeFocusFireClaim.Instance);
             runner.Start();
             runner.Guard(_target, Vector3.forward * 20f);
             runner.CastAbility(ShipAbilityId.BoostEnginePower, _target, 100f);
@@ -1297,10 +1297,10 @@ namespace EmpireAtWar.Tests.Movement
             UnitOrderModel orders = new UnitOrderModel();
             ShipStateMachine machine = new ShipStateMachine();
             _orderSettings = ScriptableObject.CreateInstance<UnitOrderSettings>();
-            GuardState guard = new GuardState(_movement, _weapon, new Radar(), null, _orderSettings, new FakeShipThreats());
+            GuardState guard = new GuardState(_movement, _weapon, new Radar(), null, _orderSettings, new FakeShipThreats(), FreeFocusFireClaim.Instance);
             ShipOrderRunner runner = new ShipOrderRunner(_movement, _weapon, null, orders, machine,
-                new IdleState(_movement, _weapon, new Radar(), new AttackDataFactory(), new FakeShipThreats()), null, null, null, guard, null, null, abilities, caster,
-                new Radar(), null, new NoTeamContacts(), TestPlayers.Human);
+                new IdleState(_movement, _weapon, new Radar(), new AttackDataFactory(), new FakeShipThreats(), FreeFocusFireClaim.Instance), null, null, null, guard, null, null, abilities, caster,
+                new Radar(), null, new NoTeamContacts(), TestPlayers.Human, FreeFocusFireClaim.Instance);
             runner.Start();
             runner.Guard(_target, Vector3.forward * 20f);
             Assert.That(abilities.TryActivate(caster, ShipAbilityId.Cloak, null), Is.True);
@@ -1324,8 +1324,8 @@ namespace EmpireAtWar.Tests.Movement
             Radar radar = new Radar();
             AttackMoveState attackMove = new AttackMoveState(_movement, _weapon, radar, null, new FakeShipThreats());
             ShipOrderRunner runner = new ShipOrderRunner(_movement, _weapon, null, new UnitOrderModel(),
-                new ShipStateMachine(), new IdleState(_movement, _weapon, radar, new AttackDataFactory(), new FakeShipThreats()), null, null, attackMove,
-                null, null, null, abilities, caster, radar, null, new NoTeamContacts(), TestPlayers.Human);
+                new ShipStateMachine(), new IdleState(_movement, _weapon, radar, new AttackDataFactory(), new FakeShipThreats(), FreeFocusFireClaim.Instance), null, null, attackMove,
+                null, null, null, abilities, caster, radar, null, new NoTeamContacts(), TestPlayers.Human, FreeFocusFireClaim.Instance);
             runner.Start();
             AttackMoveEngagement first = new AttackMoveEngagement();
             AttackMoveEngagement second = new AttackMoveEngagement();
@@ -1351,10 +1351,10 @@ namespace EmpireAtWar.Tests.Movement
             Radar radar = new Radar();
             UnitOrderModel orders = new UnitOrderModel();
             ShipStateMachine machine = new ShipStateMachine();
-            AttackTargetState attack = new AttackTargetState(null, _weapon, _movement);
+            AttackTargetState attack = new AttackTargetState(null, _weapon, _movement, FreeFocusFireClaim.Instance);
             ShipOrderRunner runner = new ShipOrderRunner(_movement, _weapon, null, orders, machine,
-                new IdleState(_movement, _weapon, radar, new AttackDataFactory(), new FakeShipThreats()), null, attack, null, null, null,
-                new AbilityApproachState(_movement), abilities, caster, radar, null, new NoTeamContacts(), TestPlayers.Human);
+                new IdleState(_movement, _weapon, radar, new AttackDataFactory(), new FakeShipThreats(), FreeFocusFireClaim.Instance), null, attack, null, null, null,
+                new AbilityApproachState(_movement), abilities, caster, radar, null, new NoTeamContacts(), TestPlayers.Human, FreeFocusFireClaim.Instance);
             runner.Start();
             caster.Modifiers.AddMovementAnchor();
 
@@ -1385,12 +1385,12 @@ namespace EmpireAtWar.Tests.Movement
             Radar radar = new Radar();
             UnitOrderModel orders = new UnitOrderModel();
             ShipStateMachine machine = new ShipStateMachine();
-            IdleState idle = new IdleState(_movement, _weapon, radar, new AttackDataFactory(), new FakeShipThreats());
-            AttackTargetState attack = new AttackTargetState(null, _weapon, _movement);
+            IdleState idle = new IdleState(_movement, _weapon, radar, new AttackDataFactory(), new FakeShipThreats(), FreeFocusFireClaim.Instance);
+            AttackTargetState attack = new AttackTargetState(null, _weapon, _movement, FreeFocusFireClaim.Instance);
             AbilityApproachState approach = new AbilityApproachState(_movement);
             ShipOrderRunner runner = new ShipOrderRunner(_movement, _weapon, null, orders, machine,
                 idle, null, attack, null, null, null, approach, abilities, caster, radar, null,
-                new NoTeamContacts(), TestPlayers.Human);
+                new NoTeamContacts(), TestPlayers.Human, FreeFocusFireClaim.Instance);
             runner.Start();
             runner.BeginAbilityFacing();
 
@@ -1418,8 +1418,8 @@ namespace EmpireAtWar.Tests.Movement
             UnitOrderModel orders = new UnitOrderModel();
             ShipStateMachine machine = new ShipStateMachine();
             ShipOrderRunner runner = new ShipOrderRunner(_movement, _weapon, null, orders, machine,
-                new IdleState(_movement, _weapon, radar, new AttackDataFactory(), new FakeShipThreats()), new NavigateState(_movement), null, null, null, null,
-                new AbilityApproachState(_movement), abilities, caster, radar, null, new NoTeamContacts(), TestPlayers.Human);
+                new IdleState(_movement, _weapon, radar, new AttackDataFactory(), new FakeShipThreats(), FreeFocusFireClaim.Instance), new NavigateState(_movement), null, null, null, null,
+                new AbilityApproachState(_movement), abilities, caster, radar, null, new NoTeamContacts(), TestPlayers.Human, FreeFocusFireClaim.Instance);
             runner.Start();
             Assert.That(abilities.TryActivate(caster, ShipAbilityId.Interdict, null), Is.True);
             Assert.That(caster.Modifiers.IsAnchored, Is.True);
@@ -1485,7 +1485,7 @@ namespace EmpireAtWar.Tests.Movement
             }
             else if (branch == "guard")
             {
-                var guard = new GuardState(_movement, _weapon, radar, null, _orderSettings, new FakeShipThreats());
+                var guard = new GuardState(_movement, _weapon, radar, null, _orderSettings, new FakeShipThreats(), FreeFocusFireClaim.Instance);
                 guard.SetData(_target, Vector3.zero);
                 typeof(GuardState).GetField("_engagementTarget", PRIVATE_INSTANCE).SetValue(guard, _target);
                 state = guard;
@@ -1496,7 +1496,7 @@ namespace EmpireAtWar.Tests.Movement
                 var vision = new VisionService(players);
                 vision.Register(TestPlayers.Human, _target.Transform, 100f);
                 var hunt = new HuntState(_movement, _weapon, null, new EntityLocator(), players,
-                    vision, _orderSettings, TestPlayers.Human);
+                    vision, _orderSettings, TestPlayers.Human, FreeFocusFireClaim.Instance);
                 typeof(HuntState).GetField("_target", PRIVATE_INSTANCE).SetValue(hunt, _target);
                 typeof(HuntState).GetField("_retargetTimer", PRIVATE_INSTANCE).SetValue(hunt, 100f);
                 state = hunt;
@@ -1510,7 +1510,7 @@ namespace EmpireAtWar.Tests.Movement
                     _target.NavigationRadius = 150f;
                     _target.HasHealthFacade = true;
                 }
-                var attack = new AttackTargetState(new AttackDataFactory(), _weapon, _movement,
+                var attack = new AttackTargetState(new AttackDataFactory(), _weapon, _movement, FreeFocusFireClaim.Instance,
                     branch == "artillery" ? new ArtilleryCapability(200f) : null);
                 attack.SetData(_target, branch == "formation" ? Vector3.forward * 20f : Vector3.zero,
                     UnitOrderModel.NO_HARD_POINT);
@@ -1539,7 +1539,7 @@ namespace EmpireAtWar.Tests.Movement
         public void Attack_ChangingTargetCancelsOldCorrectionBeforeNextTick()
         {
             _target.Transform.position = Vector3.right * 40f;
-            var state = new AttackTargetState(null, _weapon, _movement);
+            var state = new AttackTargetState(null, _weapon, _movement, FreeFocusFireClaim.Instance);
             state.SetData(_target);
             state.Tick(0.1f);
             _movement.BeginSettling(Vector3.forward * 3f);
@@ -1558,7 +1558,7 @@ namespace EmpireAtWar.Tests.Movement
             _movement.CurrentPosition = _target.Transform.position;
             var radar = new Radar();
             radar.Enemies.Add(_target);
-            var state = new GuardState(_movement, _weapon, radar, null, _orderSettings, new FakeShipThreats());
+            var state = new GuardState(_movement, _weapon, radar, null, _orderSettings, new FakeShipThreats(), FreeFocusFireClaim.Instance);
             state.SetData(_target, Vector3.zero);
             typeof(GuardState).GetField("_engagementTarget", PRIVATE_INSTANCE).SetValue(state, _target);
             state.Tick(0.1f);

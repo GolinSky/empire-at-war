@@ -21,6 +21,7 @@ using EmpireAtWar.Services.Selection;
 using EmpireAtWar.Services.ShipSpawning;
 using EmpireAtWar.Services.Enemy;
 using EmpireAtWar.Services.ShipAbilities;
+using EmpireAtWar.Services.UnitOrders;
 using UnityEngine;
 using VContainer;
 
@@ -102,6 +103,7 @@ namespace EmpireAtWar.Ship
         {
             builder.Register<ShipStateMachine>(Lifetime.Singleton);
             builder.Register<ShipThreatSense>(Lifetime.Singleton).AsImplementedInterfaces();
+            builder.Register<FocusFireClaim>(Lifetime.Singleton).AsImplementedInterfaces();
             builder.Register<AttackTargetState>(Lifetime.Singleton).AsSelf().AsImplementedInterfaces()
                 .WithParameter<IArtilleryCapability>(resolver =>
                     Data.UsesArtilleryStandoff ? resolver.Resolve<IArtilleryCapability>() : null);

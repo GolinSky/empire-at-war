@@ -10,13 +10,13 @@ namespace EmpireAtWar.Entities.EnemyFaction.Models
     public sealed class EnemyAiDifficultyProfile
     {
         private static readonly EnemyAiDifficultyProfile _easy =
-            new EnemyAiDifficultyProfile(decisionInterval: 4f, requiredAttackRatio: 1.6f, huntAdvantage: 1.1f, retreatAdvantage: 0.8f, committedFleetRatio: 0.5f, defenseThreatRatio: 1.5f, superWeaponMinFireDelay: 25f, superWeaponMaxFireDelay: 45f, superWeaponTargetChoices: 4);
+            new EnemyAiDifficultyProfile(decisionInterval: 4f, requiredAttackRatio: 1.6f, huntAdvantage: 1.1f, retreatAdvantage: 0.8f, committedFleetRatio: 0.5f, defenseThreatRatio: 1.5f, superWeaponMinFireDelay: 25f, superWeaponMaxFireDelay: 45f, superWeaponTargetChoices: 4, focusFireScale: 0.5f);
         private static readonly EnemyAiDifficultyProfile _medium =
-            new EnemyAiDifficultyProfile(decisionInterval: 2.5f, requiredAttackRatio: 1.25f, huntAdvantage: 1f, retreatAdvantage: 0.7f, committedFleetRatio: 0.65f, defenseThreatRatio: 1.25f, superWeaponMinFireDelay: 15f, superWeaponMaxFireDelay: 30f, superWeaponTargetChoices: 3);
+            new EnemyAiDifficultyProfile(decisionInterval: 2.5f, requiredAttackRatio: 1.25f, huntAdvantage: 1f, retreatAdvantage: 0.7f, committedFleetRatio: 0.65f, defenseThreatRatio: 1.25f, superWeaponMinFireDelay: 15f, superWeaponMaxFireDelay: 30f, superWeaponTargetChoices: 3, focusFireScale: 0.75f);
         private static readonly EnemyAiDifficultyProfile _hard =
-            new EnemyAiDifficultyProfile(decisionInterval: 1.25f, requiredAttackRatio: 1.15f, huntAdvantage: 1f, retreatAdvantage: 0.7f, committedFleetRatio: 0.8f, defenseThreatRatio: 1f, superWeaponMinFireDelay: 8f, superWeaponMaxFireDelay: 18f, superWeaponTargetChoices: 2);
+            new EnemyAiDifficultyProfile(decisionInterval: 1.25f, requiredAttackRatio: 1.15f, huntAdvantage: 1f, retreatAdvantage: 0.7f, committedFleetRatio: 0.8f, defenseThreatRatio: 1f, superWeaponMinFireDelay: 8f, superWeaponMaxFireDelay: 18f, superWeaponTargetChoices: 2, focusFireScale: 1f);
         private static readonly EnemyAiDifficultyProfile _ultraHard =
-            new EnemyAiDifficultyProfile(decisionInterval: 0.5f, requiredAttackRatio: 1.1f, huntAdvantage: 1f, retreatAdvantage: 0.5f, committedFleetRatio: 0.85f, defenseThreatRatio: 0.75f, superWeaponMinFireDelay: 4f, superWeaponMaxFireDelay: 10f, superWeaponTargetChoices: 1);
+            new EnemyAiDifficultyProfile(decisionInterval: 0.5f, requiredAttackRatio: 1.1f, huntAdvantage: 1f, retreatAdvantage: 0.5f, committedFleetRatio: 0.85f, defenseThreatRatio: 0.75f, superWeaponMinFireDelay: 4f, superWeaponMaxFireDelay: 10f, superWeaponTargetChoices: 1, focusFireScale: 1f);
 
         public float DecisionInterval { get; }
 
@@ -44,6 +44,12 @@ namespace EmpireAtWar.Entities.EnemyFaction.Models
         /// <summary>How many of the best-scoring superweapon targets the AI picks from at random; 1 always takes the best.</summary>
         public int SuperWeaponTargetChoices { get; }
 
+        /// <summary>
+        /// Share of a target's focus fire ship cap the AI fills with attack orders (rounded up, at least 1); the rest of
+        /// its strike ships attack-move to the target. Easier AIs focus less (user 2026-11-25).
+        /// </summary>
+        public float FocusFireScale { get; }
+
         public EnemyAiDifficultyProfile(
             float decisionInterval,
             float requiredAttackRatio,
@@ -53,8 +59,10 @@ namespace EmpireAtWar.Entities.EnemyFaction.Models
             float defenseThreatRatio,
             float superWeaponMinFireDelay,
             float superWeaponMaxFireDelay,
-            int superWeaponTargetChoices)
+            int superWeaponTargetChoices,
+            float focusFireScale)
         {
+            FocusFireScale = focusFireScale;
             DecisionInterval = decisionInterval;
             RequiredAttackRatio = requiredAttackRatio;
             HuntAdvantage = huntAdvantage;

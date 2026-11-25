@@ -25,6 +25,10 @@ namespace EmpireAtWar.Services.UnitOrders
         private readonly UnitOrderSettings _settings;
         private readonly IMapObstacleContactProvider _obstacles;
         private readonly PaceClusterMergeService _mergeService;
+        private readonly IFocusFireSlots _focusFire;
+        private readonly List<(IEntity Receiver, float DistanceSquared)> _slotCandidates =
+            new List<(IEntity, float)>();
+        private readonly HashSet<long> _overflowIds = new HashSet<long>();
         private readonly List<FormationPoint> _compactSlots = new List<FormationPoint>();
         private readonly List<RadarContact> _obstacleBuffer = new List<RadarContact>();
         private readonly List<PaceMemberCandidate> _paceCandidates = new List<PaceMemberCandidate>();
@@ -38,8 +42,9 @@ namespace EmpireAtWar.Services.UnitOrders
 
         public UnitOrderService(IEntityLocator entityLocator,
             IReinforcementZonesSystem zones, UnitOrderSettings settings,
-            IMapObstacleContactProvider obstacles, PaceClusterMergeService mergeService)
+            IMapObstacleContactProvider obstacles, PaceClusterMergeService mergeService, IFocusFireSlots focusFire)
         {
+            _focusFire = focusFire;
             _entityLocator = entityLocator;
             _zones = zones;
             _settings = settings;
@@ -88,21 +93,105 @@ namespace EmpireAtWar.Services.UnitOrders
 
         public void IssueAttack(IReadOnlyList<IEntity> receivers, IEntity target, MovePace pace = MovePace.Formation)
         {
-            if (target == null || !IsAlive(target)) return;
-            IssueAttack(receivers, target, AttackOffsets(receivers, target), UnitOrderModel.NO_HARD_POINT, pace);
+            IssueCappedAttack(receivers, target, UnitOrderModel.NO_HARD_POINT, pace);
         }
 
         public void IssueAttack(IReadOnlyList<IEntity> receivers, IEntity target,
             IReadOnlyList<Vector3> offsets)
         {
-            IssueAttack(receivers, target, offsets, UnitOrderModel.NO_HARD_POINT, MovePace.Formation);
+            if (target == null || !IsAlive(target)) return;
+            List<IEntity> overflow = new List<IEntity>();
+            List<IEntity> attackers = SplitFocusFire(receivers, target, overflow);
+            IssueAttack(attackers, target, AttackerOffsets(receivers, attackers, offsets),
+                UnitOrderModel.NO_HARD_POINT, MovePace.Formation);
+            IssueOverflow(overflow, target, MovePace.Formation);
         }
 
         public void IssueHardPointAttack(IReadOnlyList<IEntity> receivers, IEntity target, int hardPointId,
             MovePace pace = MovePace.Formation)
         {
+            IssueCappedAttack(receivers, target, hardPointId, pace);
+        }
+
+        private void IssueCappedAttack(IReadOnlyList<IEntity> receivers, IEntity target, int hardPointId,
+            MovePace pace)
+        {
             if (target == null || !IsAlive(target)) return;
-            IssueAttack(receivers, target, AttackOffsets(receivers, target), hardPointId, pace);
+            List<IEntity> overflow = new List<IEntity>();
+            List<IEntity> attackers = SplitFocusFire(receivers, target, overflow);
+            IssueAttack(attackers, target, AttackOffsets(attackers, target), hardPointId, pace);
+            IssueOverflow(overflow, target, pace);
+        }
+
+        // Focus fire cap: ships and squadrons fill separate pools of the attacking team's free slots. Receivers that
+        // already hold the target keep their slot, the nearest others take what is left, the rest is overflow.
+        // Receivers that cannot move (stations) and dead receivers always stay attackers.
+        private List<IEntity> SplitFocusFire(IReadOnlyList<IEntity> receivers, IEntity target, List<IEntity> overflow)
+        {
+            List<IEntity> attackers = new List<IEntity>(receivers.Count);
+            if (receivers.Count == 0) return attackers;
+            int freeShips = _focusFire.FreeSlots(receivers[0].Owner, target, isSquadron: false);
+            int freeSquadrons = _focusFire.FreeSlots(receivers[0].Owner, target, isSquadron: true);
+            if (freeShips == int.MaxValue && freeSquadrons == int.MaxValue)
+            {
+                attackers.AddRange(receivers);
+                return attackers;
+            }
+
+            Vector3 point = target.GetFacade<IEntityTransformFacade>().Transform.position;
+            _slotCandidates.Clear();
+            foreach (IEntity receiver in receivers)
+            {
+                if (!IsAlive(receiver) || !receiver.TryGetFacade(out IAttackFacade attack) ||
+                    _focusFire.Holds(receiver, target)) continue;
+                Vector3 offset = attack.WorldPosition - point;
+                offset.y = 0f;
+                _slotCandidates.Add((receiver, offset.sqrMagnitude));
+            }
+
+            _slotCandidates.Sort((first, second) => first.DistanceSquared.CompareTo(second.DistanceSquared));
+            _overflowIds.Clear();
+            foreach ((IEntity receiver, float _) in _slotCandidates)
+            {
+                if (receiver.IsSquadron())
+                {
+                    if (freeSquadrons > 0) freeSquadrons--;
+                    else _overflowIds.Add(receiver.Id);
+                }
+                else if (freeShips > 0) freeShips--;
+                else _overflowIds.Add(receiver.Id);
+            }
+
+            foreach (IEntity receiver in receivers)
+                (_overflowIds.Contains(receiver.Id) ? overflow : attackers).Add(receiver);
+            return attackers;
+        }
+
+        // Explicit offsets are aligned to the receivers that move; overflow drops out of the alignment.
+        private static IReadOnlyList<Vector3> AttackerOffsets(IReadOnlyList<IEntity> receivers,
+            IReadOnlyList<IEntity> attackers, IReadOnlyList<Vector3> offsets)
+        {
+            if (attackers.Count == receivers.Count) return offsets;
+            List<Vector3> kept = new List<Vector3>(attackers.Count);
+            int movingIndex = 0;
+            int attackerIndex = 0;
+            foreach (IEntity receiver in receivers)
+            {
+                bool isAttacker = attackerIndex < attackers.Count && ReferenceEquals(attackers[attackerIndex], receiver);
+                if (isAttacker) attackerIndex++;
+                if (!IsAlive(receiver) || !receiver.TryGetFacade(out IAttackFacade _)) continue;
+                if (isAttacker) kept.Add(offsets[movingIndex]);
+                movingIndex++;
+            }
+
+            return kept;
+        }
+
+        // Overflow fights on around the target: attack-move engages other hostiles there and claims no slot.
+        private void IssueOverflow(IReadOnlyList<IEntity> overflow, IEntity target, MovePace pace)
+        {
+            if (overflow.Count == 0) return;
+            IssueAttackMove(overflow, target.GetFacade<IEntityTransformFacade>().Transform.position, pace);
         }
 
         // Only ships get a slot, and a slot only picks the side: the attack state approaches along its direction
@@ -171,7 +260,7 @@ namespace EmpireAtWar.Services.UnitOrders
             return offsets;
         }
 
-        // Receivers without hardpoint targeting (squadrons) attack the whole ship.
+        // Receivers without hardpoint targeting (squadrons) attack the whole ship. Receivers here are past the cap split.
         private void IssueAttack(IReadOnlyList<IEntity> receivers, IEntity target,
             IReadOnlyList<Vector3> offsets, int hardPointId, MovePace pace)
         {

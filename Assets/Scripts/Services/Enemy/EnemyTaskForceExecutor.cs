@@ -30,6 +30,11 @@ namespace EmpireAtWar.Services.Enemy
 
         private readonly IUnitOrderService _unitOrderService;
         private readonly AiOrderDeduplicator _orderFilter;
+        private readonly IFocusFireSlots _focusFire;
+        /// <summary>Strike ships over the focus fire limit; they attack-move to the target instead (approach 5).</summary>
+        private readonly List<IShipEntity> _overflowShips = new List<IShipEntity>();
+        private readonly List<IShipEntity> _strikeOrder = new List<IShipEntity>();
+        private readonly Dictionary<IShipEntity, GameEntity> _overflowTargets = new Dictionary<IShipEntity, GameEntity>();
         private readonly Dictionary<string, (List<GameEntity> Receivers, List<Vector3> Offsets)> _retargetReceivers =
             new Dictionary<string, (List<GameEntity>, List<Vector3>)>();
         private GameEntity _battleTarget;
@@ -97,8 +102,9 @@ namespace EmpireAtWar.Services.Enemy
 
         // Orders pass a filter: the same order to the same target or point is not sent again (E9 churn), and a ship
         // fighting on its way keeps that fight (W66).
-        public EnemyTaskForceExecutor(IUnitOrderService unitOrderService)
+        public EnemyTaskForceExecutor(IUnitOrderService unitOrderService, IFocusFireSlots focusFire)
         {
+            _focusFire = focusFire;
             _orderFilter = new AiOrderDeduplicator(unitOrderService);
             _unitOrderService = _orderFilter;
         }
@@ -283,6 +289,7 @@ namespace EmpireAtWar.Services.Enemy
                 _rallyAnchors.Remove(ship);
             }
             _strikeTargets.Remove(ship);
+            _overflowTargets.Remove(ship);
             _captureApproaches.Remove(ship);
             _captureEntered.Remove(ship);
             _captureEscortPoints.Remove(ship);
@@ -395,6 +402,9 @@ namespace EmpireAtWar.Services.Enemy
                 target.GetFacade<IEntityTransformFacade>().Transform.position) <= leash;
             if (intercept) _attackForce.Assemble(context, target, count);
             else _attackForce.Clear();
+            // Interceptors past the focus fire limit take a defense point instead.
+            int interceptLimit = intercept ? StrikeLimit(context, target, ships, count) : 0;
+            int interceptors = 0;
             List<Vector3> interceptOffsets = intercept ? BattleOffsets(ships, count, target) : null;
             context.DefensePointReason = hasBearing
                 ? _defenseAdvance > 0f ? "Advance toward known threat: station damaged without defenders in range." :
@@ -407,8 +417,10 @@ namespace EmpireAtWar.Services.Enemy
             for (int i = 0; i < count; i++)
             {
                 IShipEntity ship = ships[i];
-                if (intercept && _attackForce.Ships.Contains(ship) && _attackForce.TargetDps(context, ship) > 0f)
+                if (intercept && interceptors < interceptLimit && _attackForce.Ships.Contains(ship) &&
+                    _attackForce.TargetDps(context, ship) > 0f)
                 {
+                    interceptors++;
                     // X6: an interceptor whose attack ended on the same target is sent again.
                     if (!_defenseTargets.TryGetValue(ship, out GameEntity previous) || previous != target ||
                         ship.CurrentOrder != UnitOrderType.Attack)
@@ -734,7 +746,7 @@ namespace EmpireAtWar.Services.Enemy
                 // S5: an allied station's defence attacks the known attacker instead of parking at the station.
                 case TacticalMarkerType.Attack when attackTarget != null:
                 case TacticalMarkerType.Defend when attackTarget != null:
-                    _unitOrderService.IssueAttack(receivers, attackTarget);
+                    IssueCappedMarkerAttack(context, receivers, attackTarget);
                     break;
                 case TacticalMarkerType.Attack:
                 case TacticalMarkerType.Defend:
@@ -932,6 +944,8 @@ namespace EmpireAtWar.Services.Enemy
         /// </summary>
         private void IssueStrikeAttack(EnemyStrategicContext context, GameEntity target, bool keepTargets = false)
         {
+            SplitStrikeOverflow(context, target);
+            IssueOverflowAttackMove(context, target);
             List<Vector3> offsets = BattleOffsets(_strikeShips, _strikeShips.Count, target, out bool rebuilt);
             ApplyCarrierStandoff(context, target, offsets);
             _retargetReceivers.Clear();
@@ -954,6 +968,110 @@ namespace EmpireAtWar.Services.Enemy
             foreach (KeyValuePair<string, (List<GameEntity> Receivers, List<Vector3> Offsets)> group in _retargetReceivers)
                 using (ShipOrderTelemetry.Detail("retarget=" + group.Key))
                     _unitOrderService.IssueAttack(group.Value.Receivers, target, group.Value.Offsets);
+        }
+
+        /// <summary>
+        /// How many of <paramref name="ships"/> (the first <paramref name="count"/>) may hold <paramref name="target"/> as
+        /// main target: the focus fire ship cap scaled by difficulty (rounded up, at least 1), never more than the
+        /// team's free slots plus the slots these ships already hold. <see cref="int.MaxValue"/> for unlimited targets.
+        /// </summary>
+        private int StrikeLimit(EnemyStrategicContext context, GameEntity target, IReadOnlyList<IShipEntity> ships,
+            int count)
+        {
+            int cap = _focusFire.GetCap(target, isSquadron: false);
+            if (cap == FocusFireCaps.UNLIMITED || count == 0) return int.MaxValue;
+            float scale = EnemyAiDifficultyProfile.Get(context.Snapshot.Difficulty).FocusFireScale;
+            int scaled = Math.Max(1, Mathf.CeilToInt(cap * scale));
+            int held = 0;
+            for (int i = 0; i < count; i++)
+                if (_focusFire.Holds(context.Receivers[ships[i]], target)) held++;
+            return Math.Min(scaled, held + _focusFire.FreeSlots(ships[0].Owner, target, isSquadron: false));
+        }
+
+        /// <summary>
+        /// Focus fire (approach 5): strike ships past <see cref="StrikeLimit"/> leave <see cref="_strikeShips"/> for
+        /// <see cref="_overflowShips"/>. Carriers stay first (an attack-move would fly them onto the target), then ships
+        /// already holding a slot (no churn), then the most damage on the target, or the nearest when the task force is
+        /// not assembled for it.
+        /// </summary>
+        private void SplitStrikeOverflow(EnemyStrategicContext context, GameEntity target)
+        {
+            _overflowShips.Clear();
+            int limit = StrikeLimit(context, target, _strikeShips, _strikeShips.Count);
+            if (_strikeShips.Count > limit)
+            {
+                _strikeOrder.Clear();
+                _strikeOrder.AddRange(_strikeShips);
+                Vector3 targetPosition = target.GetFacade<IEntityTransformFacade>().Transform.position;
+                bool ratesTarget = _attackForce.Targets(target);
+                _strikeOrder.Sort((first, second) =>
+                {
+                    int rank = StrikeRank(context, target, first).CompareTo(StrikeRank(context, target, second));
+                    if (rank != 0) return rank;
+                    if (ratesTarget)
+                        return _attackForce.TargetDps(context, second).CompareTo(_attackForce.TargetDps(context, first));
+                    return PlanarDistance(first.WorldPosition, targetPosition)
+                        .CompareTo(PlanarDistance(second.WorldPosition, targetPosition));
+                });
+                for (int i = limit; i < _strikeOrder.Count; i++) _overflowShips.Add(_strikeOrder[i]);
+                foreach (IShipEntity ship in _overflowShips)
+                {
+                    _strikeShips.Remove(ship);
+                    _strikeTargets.Remove(ship);
+                }
+            }
+
+            foreach (IShipEntity ship in _strikeShips) _overflowTargets.Remove(ship);
+        }
+
+        private int StrikeRank(EnemyStrategicContext context, GameEntity target, IShipEntity ship) =>
+            IsCarrier(context, ship) ? 0 : _focusFire.Holds(context.Receivers[ship], target) ? 1 : 2;
+
+        // Same E9 rule as the screens: an overflow ship already attack-moving on this target is not sent again.
+        private void IssueOverflowAttackMove(EnemyStrategicContext context, GameEntity target)
+        {
+            if (_overflowShips.Count == 0) return;
+            List<GameEntity> receivers = new List<GameEntity>();
+            foreach (IShipEntity ship in _overflowShips)
+            {
+                if (ship.CurrentOrder == UnitOrderType.AttackMove &&
+                    _overflowTargets.TryGetValue(ship, out GameEntity previous) && previous == target) continue;
+                _overflowTargets[ship] = target;
+                receivers.Add(context.Receivers[ship]);
+            }
+
+            if (receivers.Count > 0)
+                _unitOrderService.IssueAttackMove(receivers, target.GetFacade<IEntityTransformFacade>().Transform.position);
+        }
+
+        // A marker attack fills the focus fire limit with slot holders first, then the nearest ships; the rest
+        // attack-move to the target.
+        private void IssueCappedMarkerAttack(EnemyStrategicContext context, List<GameEntity> receivers,
+            GameEntity target)
+        {
+            _strikeOrder.Clear();
+            foreach (IShipEntity ship in context.Ships)
+                if (receivers.Contains(context.Receivers[ship])) _strikeOrder.Add(ship);
+            int limit = StrikeLimit(context, target, _strikeOrder, _strikeOrder.Count);
+            if (_strikeOrder.Count <= limit)
+            {
+                _unitOrderService.IssueAttack(receivers, target);
+                return;
+            }
+
+            Vector3 targetPosition = target.GetFacade<IEntityTransformFacade>().Transform.position;
+            _strikeOrder.Sort((first, second) =>
+            {
+                int rank = StrikeRank(context, target, first).CompareTo(StrikeRank(context, target, second));
+                return rank != 0 ? rank : PlanarDistance(first.WorldPosition, targetPosition)
+                    .CompareTo(PlanarDistance(second.WorldPosition, targetPosition));
+            });
+            List<GameEntity> attackers = new List<GameEntity>(limit);
+            List<GameEntity> overflow = new List<GameEntity>();
+            for (int i = 0; i < _strikeOrder.Count; i++)
+                (i < limit ? attackers : overflow).Add(context.Receivers[_strikeOrder[i]]);
+            if (attackers.Count > 0) _unitOrderService.IssueAttack(attackers, target);
+            _unitOrderService.IssueAttackMove(overflow, targetPosition);
         }
 
         /// <summary>

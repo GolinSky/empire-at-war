@@ -42,6 +42,7 @@ namespace EmpireAtWar.Services.Enemy
 
         private readonly EnemyStrategicContextBuilder _contextBuilder;
         private readonly IUnitOrderService _orders;
+        private readonly IFocusFireSlots _focusFire;
         private readonly List<EnemyShipTaskGroup> _groups = new List<EnemyShipTaskGroup>();
         private readonly List<EnemyShipTaskGroup> _zoneGroups = new List<EnemyShipTaskGroup>();
         private readonly HashSet<IShipEntity> _members = new HashSet<IShipEntity>();
@@ -99,8 +100,9 @@ namespace EmpireAtWar.Services.Enemy
 
         public EnemyShipTaskGroupPlanner(EnemyStrategicContextBuilder contextBuilder,
             EnemyStrategicDecisionModel decisionModel, EnemyTaskForceExecutor executor,
-            IUnitOrderService orders)
+            IUnitOrderService orders, IFocusFireSlots focusFire)
         {
+            _focusFire = focusFire;
             _contextBuilder = contextBuilder;
             _contextBuilder.IsReserve = true;
             _orders = orders;
@@ -571,7 +573,7 @@ namespace EmpireAtWar.Services.Enemy
                 return parked;
             }
             EnemyShipTaskGroup group = new EnemyShipTaskGroup(_contextBuilder.CreateGroupBuilder(),
-                new EnemyStrategicDecisionModel(), new EnemyTaskForceExecutor(_orders), isCaptureDetachment: true);
+                new EnemyStrategicDecisionModel(), new EnemyTaskForceExecutor(_orders, _focusFire), isCaptureDetachment: true);
             group.ContextBuilder.AssignedZoneId = zoneId;
             _zoneGroups.Add(group);
             return group;

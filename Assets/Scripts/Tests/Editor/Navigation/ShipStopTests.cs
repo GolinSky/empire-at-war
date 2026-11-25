@@ -32,13 +32,13 @@ namespace EmpireAtWar.Tests.Editor
             else model.Replace(order);
             FakeMovement movement = new FakeMovement();
             FakeWeapon weapon = new FakeWeapon();
-            IdleState idle = new IdleState(movement, weapon, null, null, new FakeShipThreats());
+            IdleState idle = new IdleState(movement, weapon, null, null, new FakeShipThreats(), FreeFocusFireClaim.Instance);
             ShipStateMachine stateMachine = new ShipStateMachine();
             stateMachine.SetState(new PassiveState());
             ShipOrderRunner runner = new ShipOrderRunner(orders: model, stateMachine: stateMachine, movement: movement, weapon: weapon,
                 cameraService: null, idleState: idle, navigateState: null, attackTargetState: null, attackMoveState: null, guardState: null, huntState: null,
                 abilityApproachState: null, abilities: null, abilityCaster: null, radar: null, telemetrySource: null,
-                teamContacts: new NoTeamContacts(), owner: TestPlayers.Human);
+                teamContacts: new NoTeamContacts(), owner: TestPlayers.Human, focusFire: FreeFocusFireClaim.Instance);
 
             runner.Stop();
 

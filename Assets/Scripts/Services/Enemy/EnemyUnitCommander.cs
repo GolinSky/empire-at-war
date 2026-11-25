@@ -268,7 +268,7 @@ namespace EmpireAtWar.Services.Enemy
             EnemyStrategicContextBuilder contextBuilder,
             EnemyTaskForceExecutor taskForceExecutor,
             PlayerSlot owner, EnemyPatrolService patrol, EnemyPatrolShipController patrolShips,
-            INotifier<BattleState> battleState, EnemyAiScheduler scheduler)
+            INotifier<BattleState> battleState, EnemyAiScheduler scheduler, IFocusFireSlots focusFire)
         {
             _owner = owner;
 #if UNITY_EDITOR || DEVELOPMENT_BUILD
@@ -283,7 +283,8 @@ namespace EmpireAtWar.Services.Enemy
             _gameModel = gameModel;
             _battleState = battleState;
             _contextBuilder = contextBuilder;
-            _taskGroups = new EnemyShipTaskGroupPlanner(contextBuilder, decisionModel, taskForceExecutor, unitOrderService);
+            _taskGroups = new EnemyShipTaskGroupPlanner(contextBuilder, decisionModel, taskForceExecutor, unitOrderService,
+                focusFire);
             _unitOrderService = unitOrderService;
         }
 

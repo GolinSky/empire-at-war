@@ -8,28 +8,33 @@ using EmpireAtWar.Services.Vision;
 using EmpireAtWar.Components.Squadrons.Health;
 using EmpireAtWar.Components.Radar;
 using EmpireAtWar.Services.Squadrons;
+using EmpireAtWar.Services.UnitOrders;
 
 namespace EmpireAtWar.Entities.Squadrons
 {
     /// <summary>
     /// Fighters and interceptors prefer strikecraft. Bombers take any ship before any strikecraft,
-    /// and fall back to strikecraft only when no ship is available.
+    /// and fall back to strikecraft only when no ship is available. A target without a free focus fire slot for the
+    /// squadron ranks after every other one.
     /// </summary>
     public sealed class SquadronTargetSelector
     {
         private const float PREFERRED_TARGET_DISTANCE_WEIGHT = 0.25f;
+        private const int FULL_TARGET_TIER = 2;
 
         private readonly SquadronTargetIndex _targetIndex;
         private readonly List<SquadronTargetIndex.Target> _nearby = new List<SquadronTargetIndex.Target>();
         private readonly IVisionService _visionService;
         private readonly IPlayerRelations _relations;
+        private readonly IFocusFireClaim _focusFire;
 
         private readonly PlayerId _side;
         private readonly ShipClass _shipClass;
 
         public SquadronTargetSelector(SquadronTargetIndex targetIndex, IVisionService visionService,
-            IPlayerRelations relations, PlayerId side, ISquadronHealthData data)
+            IPlayerRelations relations, PlayerId side, ISquadronHealthData data, IFocusFireClaim focusFire)
         {
+            _focusFire = focusFire;
             _relations = relations;
             _targetIndex = targetIndex;
             _visionService = visionService;
@@ -108,7 +113,7 @@ namespace EmpireAtWar.Entities.Squadrons
             {
                 IEntity fought = combat.Target;
                 if (fought != null && IsValidEnemy(fought) && !fought.HealthModel.ShipClass.IsStrikecraft() &&
-                    !fought.IsCloaked() &&
+                    !fought.IsCloaked() && _focusFire.HasSlot(fought) &&
                     _visionService.IsVisible(_side, fought))
                     return fought;
             }
@@ -121,9 +126,13 @@ namespace EmpireAtWar.Entities.Squadrons
 
         private bool IsValidEnemy(IEntity entity) => _relations.IsHostile(_side, entity.Owner) && IsAlive(entity);
 
-        /// <summary>Lower tiers always win: for bombers every ship ranks ahead of every strikecraft.</summary>
+        /// <summary>
+        /// Lower tiers always win: a target with a free focus fire slot ahead of a full one, then for bombers every
+        /// ship ahead of every strikecraft.
+        /// </summary>
         private int Tier(IEntity entity) =>
-            PrefersShips && entity.HealthModel.ShipClass.IsStrikecraft() ? 1 : 0;
+            (_focusFire.HasSlot(entity) ? 0 : FULL_TARGET_TIER) +
+            (PrefersShips && entity.HealthModel.ShipClass.IsStrikecraft() ? 1 : 0);
 
         private float Score(IEntity entity, float sqrDistance)
         {

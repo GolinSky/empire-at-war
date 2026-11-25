@@ -25,6 +25,9 @@ namespace EmpireAtWar.Services.Enemy
 
         public List<IShipEntity> Ships { get; } = new List<IShipEntity>();
 
+        /// <summary>The force is assembled against <paramref name="target"/>, so <see cref="TargetDps"/> rates it.</summary>
+        public bool Targets(IEntity target) => _target != null && _target == target;
+
         public void Clear()
         {
             _target = null;
