@@ -145,6 +145,11 @@ MonoBehaviour:
     m_ReadOnly: 0
     m_SerializedLabels: []
     FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 3e9ee09165003184fa260e799f15c226
+    m_Address: InvisibleHandShipData
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
   - m_GUID: 3edd71041c50da54f9e4ca7ccd66c36e
     m_Address: HomeOneShipData
     m_ReadOnly: 0

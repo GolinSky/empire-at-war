@@ -42,6 +42,7 @@ namespace EmpireAtWar.Models.Factions
         BulwarkII = 116,
         Lupus = 118,
         Diamond = 117,
+        InvisibleHand = 119,
 
         //empire
         Victory = 200,

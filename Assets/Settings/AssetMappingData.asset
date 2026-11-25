@@ -1967,3 +1967,17 @@ MonoBehaviour:
         m_SubObjectType: 
         m_SubObjectGUID: 
         m_EditorAssetChanged: 0
+    - key: InvisibleHandShipData
+      value:
+        m_AssetGUID: 3e9ee09165003184fa260e799f15c226
+        m_SubObjectName: 
+        m_SubObjectType: 
+        m_SubObjectGUID: 
+        m_EditorAssetChanged: 0
+    - key: InvisibleHandShipView
+      value:
+        m_AssetGUID: ba80aca8905082647b32eff284850791
+        m_SubObjectName: 
+        m_SubObjectType: 
+        m_SubObjectGUID: 
+        m_EditorAssetChanged: 0

@@ -59,7 +59,7 @@ MonoBehaviour:
   <ShieldRegenerateDelay>k__BackingField: 1
   <Range>k__BackingField: 750
   <Delay>k__BackingField: 0.25
-  abilities: 0300000005000000
+  abilities: 0300000018000000
   hangarBays:
   - squadronType: 2
     reserve: 6
@@ -76,12 +76,14 @@ MonoBehaviour:
   weaponLoadout:
   - weaponType: 9
     count: 8
+  - weaponType: 12
+    count: 1
   - weaponType: 14
     count: 2
+  - weaponType: 66
+    count: 1
   - weaponType: 90
     count: 2
   - weaponType: 94
     count: 2
-  - weaponType: 121
-    count: 1
   roles: 81

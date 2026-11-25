@@ -118,5 +118,6 @@ namespace EmpireAtWar.Components.AttackComponent
         AllegianceHeavyQuadTurbolaser = 172,
         TitanHeavyQuadTurbolaser = 173,
         TitanSiegeIonCannon = 174,
+        HeavyDualProtonTorpedo = 175,
     }
 }

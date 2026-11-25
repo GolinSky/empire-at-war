@@ -21,7 +21,7 @@ namespace EmpireAtWar.Tests.Editor
         [TestCase("Empire/ISDII", 300f,
             "HP_ISDII_LC_03|HP_ISDII_LC_04")]
         [TestCase("Empire/ImperialVenator", 300f,
-            "IonProjectileR|IonProjectileL")]
+            "Weapon_TL00|Weapon_TL01")]
         [TestCase("Empire/Procursator", 300f,
             "HP_Procursator_TLTL_02|HP_Procursator_TLTL_03|HP_Procursator_TLTL_04|HP_Procursator_TLTL_06|HP_Procursator_TLTL_07")]
         [TestCase("Empire/Tector", 150f,
@@ -106,7 +106,7 @@ namespace EmpireAtWar.Tests.Editor
             }
         }
 
-        [TestCase("Providence", 16)]
+        [TestCase("Providence", 17)]
         [TestCase("Captor", 10)]
         [TestCase("Invincible", 26)]
         [TestCase("PatrolFrigate", 8)]

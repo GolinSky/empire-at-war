@@ -392,6 +392,10 @@ namespace EmpireAtWar.Tests.Editor
             ShipAbilityId.BoostShieldPower, ShipAbilityId.BoostShieldPower, ShipAbilityId.BoostWeaponPower)]
         [TestCase(ShipType.MC80Justice, FactionType.Rebellion, ShipAbilityId.BoostShieldPower,
             ShipAbilityId.BoostWeaponPower, ShipAbilityId.None, ShipAbilityId.None, ShipAbilityId.None)]
+        [TestCase(ShipType.Venator, FactionType.Republic, ShipAbilityId.BoostShieldPower, ShipAbilityId.BoostShieldPower,
+            ShipAbilityId.BoostWeaponPower, ShipAbilityId.PowerToMainBatteries, ShipAbilityId.None)]
+        [TestCase(ShipType.VenatorII, FactionType.Republic, ShipAbilityId.BoostShieldPower, ShipAbilityId.BoostShieldPower,
+            ShipAbilityId.BoostWeaponPower, ShipAbilityId.PowerToMainBatteries, ShipAbilityId.None)]
         public void Validator_MigratesLegacyShipLoadoutsAndPreservesCooldown(ShipType shipType, FactionType faction,
             ShipAbilityId savedPrimary, ShipAbilityId expectedPrimary, ShipAbilityId savedSecondary,
             ShipAbilityId expectedSecondary, ShipAbilityId savedTertiary)

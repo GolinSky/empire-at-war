@@ -374,6 +374,9 @@ namespace EmpireAtWar.Services.Saves
                     => new[] { slots[0], slots[1] },
                 ShipType.MC80Justice when slots.Length == 1 && slots[0] is { Id: ShipAbilityId.BoostShieldPower }
                     => new[] { slots[0].WithId(ShipAbilityId.BoostWeaponPower) },
+                ShipType.Venator or ShipType.VenatorII when slots.Length == 2 && slots[0] is { Id: ShipAbilityId.BoostShieldPower } &&
+                    slots[1] is { Id: ShipAbilityId.BoostWeaponPower }
+                    => new[] { slots[0], slots[1].WithId(ShipAbilityId.PowerToMainBatteries) },
                 _ => slots
             };
         }

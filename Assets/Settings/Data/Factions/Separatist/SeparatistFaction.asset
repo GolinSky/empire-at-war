@@ -344,6 +344,27 @@ MonoBehaviour:
         <UnitCapacity>k__BackingField: 3
         <Icon>k__BackingField: {fileID: 21300000, guid: d30c4e015c7eb8b4786c009c186ed7df,
           type: 3}
+    - key: 119
+      value:
+        matchups: {fileID: 11400000, guid: 5c5715b5eb4b3254db8aaac35b69aeb0, type: 2}
+        displayName: Invisible Hand
+        description: 'General Grievous''s flagship: a Providence with 35,000 hull,
+          21,000 shields and two heavy dual proton torpedo launchers. Boost Shield
+          Power and Boost Weapon Power. One at a time; replaceable after destruction.
+          Deploys 2 fighter squadrons, 1 interceptor squadron, 2 bomber squadrons
+          at once. Carries 15 total squadron launches, including the initial deployment.'
+        role: "Hero \xB7 Flagship carrier"
+        iconKey: 60d91c69afc54ad4fa9b45f6990ff8af:21300000
+        isHero: 1
+        isUnique: 0
+        <Name>k__BackingField: "Invisible Hand \u2014 Grievous"
+        <MaxCount>k__BackingField: 1
+        <AvailableLevel>k__BackingField: 4
+        <Price>k__BackingField: 10500
+        <BuildTime>k__BackingField: 70
+        <UnitCapacity>k__BackingField: 8
+        <Icon>k__BackingField: {fileID: 21300000, guid: 60d91c69afc54ad4fa9b45f6990ff8af,
+          type: 3}
   squadrons:
     keyValue:
     - key: 100

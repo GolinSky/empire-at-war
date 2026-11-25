@@ -279,7 +279,10 @@ MonoBehaviour:
         quantity: 5
       - isSquadron: 0
         unitId: 100
-        quantity: 3
+        quantity: 2
+      - isSquadron: 0
+        unitId: 119
+        quantity: 1
       - isSquadron: 0
         unitId: 101
         quantity: 5
@@ -323,7 +326,10 @@ MonoBehaviour:
         quantity: 5
       - isSquadron: 0
         unitId: 100
-        quantity: 3
+        quantity: 2
+      - isSquadron: 0
+        unitId: 119
+        quantity: 1
       - isSquadron: 0
         unitId: 101
         quantity: 5

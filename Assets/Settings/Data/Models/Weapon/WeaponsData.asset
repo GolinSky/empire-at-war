@@ -674,11 +674,11 @@ MonoBehaviour:
     scope: 0
     faction: 0
     unit: 
-    damageMultiplier: 1.17
+    damageMultiplier: 1.5
     reloadMultiplier: 1
     rangeMultiplier: 1
-    reason: 'Shared Venator main battery: damage increased 30% from its previous
-      0.9 multiplier to 1.17.'
+    reason: 'Shared Venator main battery: raised from 1.17 to 1.5 (2026-11-25) when
+      Venator I/II traded Boost Weapon Power for Power to Main Batteries.'
     overrideVisual: 1
     shotPrefab: {fileID: 7321861820164456527, guid: 319c2b84ba285084286ce78e1b8932ad,
       type: 3}
@@ -1461,6 +1461,25 @@ MonoBehaviour:
     family: 5
     caliber: 2
     mount: 1
+    scope: 0
+    faction: 0
+    unit: 
+    damageMultiplier: 1
+    reloadMultiplier: 1
+    rangeMultiplier: 1
+    reason: 
+    overrideVisual: 0
+    shotPrefab: {fileID: 0}
+    beamPrefab: {fileID: 0}
+    projectileSpeed: 0
+    size: {x: 1, y: 1, z: 1}
+    overrideColor: 0
+    color: {r: 1, g: 1, b: 1, a: 1}
+  - weaponType: 175
+    displayName: Heavy Dual Proton Torpedo Launcher
+    family: 5
+    caliber: 2
+    mount: 2
     scope: 0
     faction: 0
     unit: 
