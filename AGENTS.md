@@ -139,18 +139,54 @@ Plan maintenance is part of the task. When creating, executing, or completing a 
 - Project-specific custom subagent roles are disabled.
 
 
-## Architecture: Model-View-Presenter
+## Architecture: Pick the Shape by What the Code Is
 
-MVP is optional. Use it where it fits, such as UI with real state and user interaction. Do not force it on entity components, hardpoints, services, or small features where a single class is clearer.
+| Code | Shape | Reference |
+|---|---|---|
+| Part of one unit: movement, radar, health, weapons, cloak, unit visuals | Entity component | `ShipMoveComponent`, `CloakComponent` |
+| Screen, panel or HUD the player reads or clicks | UI MVP | `EndGameUi` + `EndGameUiController` |
+| Battle-wide logic shared by many entities | Service: plain class behind an interface | `IShipNavigationService` |
+| One entity's API for other entities and abilities | Entity facade | `IGravityWellEmitterFacade` |
 
-- **Model:** Pure C# classes with no `UnityEngine` references. Own data, state, and business rules.
-- **View:** `MonoBehaviour` implementations responsible only for rendering state and capturing input. Views contain no business logic.
-- **Presenter:** Coordinates Model and View, handles user actions, and owns their lifecycle coordination. By default the View subscribes to Model events through a read-only observer interface; the Presenter (or a service) subscribes only when the reaction exceeds the View's scope.
+- MVP is for UI only. Never split an entity component, hardpoint, service or effect into Model/View/Presenter, and never give one a `View`, `Presenter` or `Controller` name.
+- Existing non-UI `*View` / `*Presenter` classes (`SFoilsView`, `StationCombatPresenter`) are legacy names: do not copy them; rename only when asked.
+- When two shapes fit, pick the one with fewer types.
+
+## UI: Model-View-Presenter
+
+- **View:** `XUi : BaseUi` (`MonoBehaviour`). Renders state and forwards input to its presenter interface. No rules or flow.
+- **Presenter:** `XUiController : UiController` (plain C#). Creates the view with `CreateUi<XUi>()`, handles user actions, owns show/hide and lifecycle. The view calls it through `IXPresenter` (`EndGameUi` → `IEndGamePresenter`).
+- **Model:** pure C# with no `UnityEngine` types, only when the screen owns state or rules. Siblings read it through `IXModelObserver`.
+- The view subscribes to the model observer; the presenter subscribes only when the reaction goes beyond the view.
+- A static screen with no state is `XUi` + `XUiController` only.
+
+## Entity Components
+
+Reference: `ShipMoveComponent` + `ShipMoveModel` + `IShipMoveData`. Small: `RadarComponent`. No model: `CloakComponent`.
+
+Flow: **Data → Model → Component → Entity (mediator)**.
+
+1. **Data:** a read-only `IXData` interface with only the values this component needs. The entity's data asset implements it: `ShipData` for ships, `EntityComponentData` for stations, mining facilities and platforms. The installer exposes it: `builder.RegisterInstance(Data).As<IShipData, IShipMoveData, IRadarData>()`.
+2. **Model:** `XModel : Model`, pure C#, no `UnityEngine` types. Constructor-injected (`IXData`, `CombatModifiers`, `PlayerId`). Owns the component's state and rules and exposes `IXModelObserver` for read-only access.
+   - No model when the state already lives elsewhere: read it, do not mirror it. `CloakComponent` reads `CombatModifiers.IsCloaked`.
+3. **Component:** one `MonoBehaviour`: `MonoComponent<XModel>`, or `MonoBehaviour, IMonoComponent` without a model. It owns `[SerializeField]` scene references and the Unity work (transforms, renderers, particles).
+   - `[Inject] private void Construct(...)` only assigns dependencies and calls `SetModel(model)`.
+   - `Initialize()` subscribes and registers. `Tick()` only for per-frame work.
+   - `Release()` unsubscribes, unregisters and restores visuals, because views are reused. Guard it with `_isReleased` so a second call does nothing.
+   - The entity sees `IXComponent : IComponent`: commands plus events.
+4. **Registration:** give the component its own `EntityBindings` field (an array if there are several). The entity installer (`ShipInstaller`, `SpaceStationInstaller`, `MiningFacilityInstaller`) registers the model, then the component with `EntityFeatureBindings.RegisterComponent` or a shared `EntityFeatureBindings.RegisterX` helper.
+   - Register optional features conditionally: `Data.Abilities.Contains(ShipAbilityId.Cloak)`, `LocalPlayer.IsFriendly(Owner)`.
+   - `EntityBindings.Injectables` injects every entry for every viewer. Use it for always-present pieces (hardpoints, render state), never for an optional feature.
+5. **Entity (mediator):** `Ship`, `SpaceStation` and `MiningFacility` connect their components, following **Entity Communication** below.
+   - Inject the `IXComponent` interfaces in `Construct`.
+   - Subscribe in `Initialize`: `_shipMoveComponent.HyperSpaceCompleted += _audioShipComponent.PlayHyperSpace;`.
+   - Unsubscribe in `Release`, then release every component through `EntityComponentLifecycle`.
+6. **From outside:** abilities and other entities reach the unit through facades or shared models, never through the component. `CloakAbility` sets `CombatModifiers`; `CloakComponent` reacts to `CombatModifiers.Changed`.
 
 ##  SOLID and GRASP Standards
 
-- **Single Responsibility:** Views handle UI and effects; Presenters handle flow; Models handle data and rules.
-- **Dependency Inversion:** Presenters depend on interfaces such as `IWeaponView`, not concrete View implementations.
+- **Single Responsibility:** one reason to change per class. UI follows **UI: Model-View-Presenter**; units follow **Entity Components**.
+- **Dependency Inversion:** depend on interfaces such as `IShipMoveComponent` or `IEndGamePresenter`, not on concrete classes.
 - **High Cohesion:** Keep code belonging to one system, such as Inventory, together in its own namespace and appropriate project folders.
 - **Explicit Dependencies:** Use constructor injection for pure C# classes. Use explicit `[SerializeField]` fields assigned through the Inspector for Unity references. Avoid using `GetComponent`, `GetComponentsInChildren`, `GetComponentInParent`, or related Unity lookup APIs because they create implicit, hidden dependencies.
 - Avoid god objects and oversized manager classes. Prefer focused services and ScriptableObjects for global configuration or shared data.
@@ -161,7 +197,7 @@ MVP is optional. Use it where it fits, such as UI with real state and user inter
 Use patterns only when their complexity is justified:
 
 - **Strategy:** Interchangeable behavior, such as distinct AI movement policies.
-- **Observer:** Model-to-Presenter communication through C# events or `System.Action`; use asynchronous primitives such as UniTask only when the workflow is genuinely asynchronous. Do not use `UnityEvent` in Models.
+- **Observer:** models and components report through C# events or `System.Action`; use UniTask only when the workflow is genuinely asynchronous. Do not use `UnityEvent` in models.
 - **Factory:** Entity, prefab, or VFX creation when instantiation details should be encapsulated.
 
 ## Entity Communication

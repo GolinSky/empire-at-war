@@ -87,6 +87,9 @@ namespace EmpireAtWar.Ship
             builder.Register<ShipAbilityFacade>(Lifetime.Singleton).AsImplementedInterfaces();
             if (Data.Abilities.Contains(ShipAbilityId.Interdict))
                 EntityFeatureBindings.RegisterComponent(builder, Bindings.GravityWellEmitter);
+            // Hostile viewers need no cloak visuals: fog hides a cloaked ship from them completely.
+            if (Data.Abilities.Contains(ShipAbilityId.Cloak) && LocalPlayer.IsFriendly(Owner))
+                EntityFeatureBindings.RegisterComponent(builder, Bindings.Cloak);
             builder.Register<ShipAutoPowerFacade>(Lifetime.Singleton).AsImplementedInterfaces().AsSelf();
             if (Data.Abilities.Contains(ShipAbilityId.CompositeBeam) || Data.Abilities.Contains(ShipAbilityId.XystonSuperlaser))
                 builder.Register<CompositeBeamFacade>(Lifetime.Singleton).AsImplementedInterfaces();

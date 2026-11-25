@@ -851,7 +851,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 9a4dae5d24437b040b0432a7db5527a1, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::EmpireAtWar.ViewComponents.CloakView
-  hullRenderer: {fileID: 4588241525439216885}
+  hullRenderers:
+  - {fileID: 4588241525439216885}
   shieldRenderer: {fileID: 6896194605718455207}
   cloakMaterial: {fileID: 2100000, guid: b6a8cebde2734bf47b874459c3ee60d7, type: 2}
 --- !u!114 &5203513215443546060
@@ -885,9 +886,9 @@ MonoBehaviour:
   <SquadronIcon>k__BackingField: {fileID: 0}
   <SFoils>k__BackingField: {fileID: 0}
   <GravityWellEmitter>k__BackingField: {fileID: 0}
+  <Cloak>k__BackingField: {fileID: 676046630702335276}
   <Injectables>k__BackingField:
   - {fileID: 170039148551410930}
-  - {fileID: 676046630702335276}
   - {fileID: 5697200022859796242}
   - {fileID: 9150785772394284087}
   - {fileID: 486078332435444740}

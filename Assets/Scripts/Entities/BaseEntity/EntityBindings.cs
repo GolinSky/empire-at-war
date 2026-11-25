@@ -2,6 +2,7 @@ using EmpireAtWar.Components.FogOfWar;
 using EmpireAtWar.Components.Hangar;
 using EmpireAtWar.Components.Radar;
 using EmpireAtWar.Components.Ship.Audio;
+using EmpireAtWar.Components.Ship.Cloak;
 using EmpireAtWar.Components.Ship.Health;
 using EmpireAtWar.Components.Ship.Movement;
 using EmpireAtWar.Components.Ship.Selection;
@@ -31,6 +32,7 @@ namespace EmpireAtWar.Entities.BaseEntity
         [field: SerializeField] public SquadronIconComponent SquadronIcon { get; private set; }
         [field: SerializeField] public SFoilsView SFoils { get; private set; }
         [field: SerializeField] public GravityWellEmitter GravityWellEmitter { get; private set; }
+        [field: SerializeField] public CloakComponent Cloak { get; private set; }
         [field: SerializeField] public MonoBehaviour[] Injectables { get; private set; }
     }
 }

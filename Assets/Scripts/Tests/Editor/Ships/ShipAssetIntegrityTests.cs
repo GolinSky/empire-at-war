@@ -1,8 +1,11 @@
 using System.Linq;
+using EmpireAtWar.Components.Ship.Cloak;
 using EmpireAtWar.Components.Ship.Health;
+using EmpireAtWar.Entities.BaseEntity;
 using EmpireAtWar.Entities.Ship.Data;
 using EmpireAtWar.Editor.Balance;
 using EmpireAtWar.Models.Health;
+using EmpireAtWar.Services.ShipAbilities;
 using EmpireAtWar.ViewComponents.Health;
 using NUnit.Framework;
 using UnityEditor;
@@ -34,6 +37,29 @@ namespace EmpireAtWar.Tests.Editor
                 for (int i = 0; i < models.Length; i++)
                     if (models[i].UnlockLevel <= 1)
                         Assert.That(health[i], Is.GreaterThan(0f), unit.Caption + " / " + mounts[i].name);
+            }
+        }
+
+        [Test]
+        public void CloakShips_BindCloakComponentWithEveryReferenceAssigned()
+        {
+            BalanceUnit[] cloakShips = BalanceInventory.BuildCombat().Units
+                .Where(unit => unit.Data is ShipData data && data.Abilities.Contains(ShipAbilityId.Cloak)).ToArray();
+            Assert.That(cloakShips, Is.Not.Empty);
+            foreach (BalanceUnit unit in cloakShips)
+            {
+                EntityBindings bindings = unit.Prefab.GetComponent<EntityBindings>();
+                CloakComponent cloak = bindings.Cloak;
+                Assert.That(cloak, Is.Not.Null, unit.Caption + ": ShipInstaller registers the cloak from EntityBindings.Cloak.");
+                Assert.That(bindings.Injectables, Has.No.Member(cloak),
+                    unit.Caption + ": an injectable would also be injected for hostile viewers.");
+                var serialized = new SerializedObject(cloak);
+                SerializedProperty hulls = serialized.FindProperty("hullRenderers");
+                Assert.That(hulls.arraySize, Is.GreaterThan(0), unit.Caption);
+                for (int i = 0; i < hulls.arraySize; i++)
+                    Assert.That(hulls.GetArrayElementAtIndex(i).objectReferenceValue, Is.Not.Null, unit.Caption);
+                Assert.That(serialized.FindProperty("shieldRenderer").objectReferenceValue, Is.Not.Null, unit.Caption);
+                Assert.That(serialized.FindProperty("cloakMaterial").objectReferenceValue, Is.Not.Null, unit.Caption);
             }
         }
 
