@@ -104,7 +104,7 @@ acceptance: pending-user
 - Orbital Ring: main relay is offset from the centre → free-pad mirror partner must clear the central obstacle.
 - Islands / Twin Pass: few lanes → free-pad candidates concentrate; best-of-N distance score spreads them.
 - Same seed → different geometry than before; previews and saved seeds change.
-- AI may spend more on satellites or over-commit squadrons to pads → balance check in-game. AI-side work: [[TODOs/Bugs/Enemy_AI_Opening_And_Task_Groups]] W22 (and W16c: one repair satellite per pad group, never on a free pad).
+- AI may spend more on satellites or over-commit squadrons to pads → balance check in-game. AI-side work: [[Done/Bugs/Enemy_AI_Opening_And_Task_Groups]] W22 (and W16c: one repair satellite per pad group, never on a free pad).
 
 ## Open Questions (resolved 2026-11-21)
 

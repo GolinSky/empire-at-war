@@ -1,6 +1,7 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Text.RegularExpressions;
 using EmpireAtWar.Entities.CaptureSites;
 using EmpireAtWar.Entities.DefendPlatform;
 using EmpireAtWar.Entities.Game;
@@ -41,13 +42,18 @@ namespace EmpireAtWar.Entities.EndGameUi
             {
                 case BattleLossKind.Ship:
                     var ship = loss.UnitType.ShipType;
-                    return Describe(_factions.GetShipFactionData(ship), _icons.GetShipIcon(ship), loss.Count);
+                    // A save can hold losses of a ship since retired from every roster; its icon stays.
+                    return _factions.TryGetShipFactionData(ship, out FactionData shipData)
+                        ? Describe(shipData, _icons.GetShipIcon(ship), loss.Count)
+                        : (RetiredUnitName(ship.ToString()), _icons.GetShipIcon(ship), loss.Count);
                 case BattleLossKind.Squadron:
                     var squadron = loss.UnitType.SquadronType;
                     // The legacy Delta-7 has an icon but no faction roster entry.
                     if (squadron == SquadronType.Delta7)
                         return ("Delta-7", _icons.GetSquadronIcon(squadron), loss.Count);
-                    return Describe(_factions.GetSquadronFactionData(squadron), _icons.GetSquadronIcon(squadron), loss.Count);
+                    return _factions.TryGetSquadronFactionData(squadron, out FactionData squadronData)
+                        ? Describe(squadronData, _icons.GetSquadronIcon(squadron), loss.Count)
+                        : (RetiredUnitName(squadron.ToString()), _icons.GetSquadronIcon(squadron), loss.Count);
                 case BattleLossKind.SpaceStation:
                     return ($"{loss.StationFaction.GetDisplayName()} Space Station (Level {loss.StationLevel})",
                         _stations.GetSecondStationFactionData(loss.StationFaction).Icon, loss.Count);
@@ -69,6 +75,10 @@ namespace EmpireAtWar.Entities.EndGameUi
                     throw new ArgumentOutOfRangeException(nameof(loss));
             }
         }
+
+        /// <summary>"CorellianBattlecruiser" → "Corellian Battlecruiser".</summary>
+        private static string RetiredUnitName(string typeName) =>
+            Regex.Replace(typeName, "(?<=[a-z0-9])(?=[A-Z])", " ");
 
         private static (string Name, Sprite Icon, int Count) Describe(SiteFacilityCost cost, int count) =>
             (cost.Name, cost.Icon, count);

@@ -610,6 +610,32 @@ namespace EmpireAtWar.Tests.Editor
             Assert.DoesNotThrow(() => validator.Validate(save, definition));
         }
 
+        [Test]
+        public void Validator_RejectsPendingSurvivalUnitThatNoRosterFields()
+        {
+            using var assets = new CachedAssetService(new AddressableHandleLoader());
+            MapGenerationSettings settings = AssetDatabase.LoadAssetAtPath<MapGenerationSettings>(
+                "Assets/Settings/Data/Models/Map/MapGenerationSettings.asset");
+            BattleDefinition definition = SurvivalPreset.Create(new SurvivalSettings(FactionType.Empire, null,
+                FactionType.Rebellion, MapSize.Small, EnemyAiDifficulty.Medium, true)).Build();
+            BattleSaveHeader header = BattleSaveHeader.Create(GameMode.Survival, BattleSaveSlot.Quicksave,
+                DateTime.UtcNow, 10f, GameSpeed.Normal);
+            BattleSave save = BattleSave.Create(header, BattleSetupSave.From(definition),
+                CameraPoseSave.Create(Vector3.zero, Quaternion.identity, 500f),
+                Array.Empty<UnitSave>(), Array.Empty<StructureSave>());
+            // The legacy Delta-7 is a defined type that no roster fields, so the squadron factory cannot spawn it.
+            Assert.That(assets.Load<FactionCatalog>(nameof(FactionCatalog))
+                .TryGetSquadronFactionData(SquadronType.Delta7, out _), Is.False);
+            save.Survival = SurvivalSave.Create(1, SurvivalPhase.Preparation, 0f, 0,
+                new[] { UnitTypeSave.From(UnitTypeId.Squadron(SquadronType.Delta7)) }, 0, 0f);
+            save.CaptureSites = Enumerable.Range(0, 24).Select(_ => CaptureSiteSave.Create(
+                PlayerId.None, CaptureSiteState.Neutral, PlayerId.None, 0f, SiteFacilityType.Mining, 0f, 0L)).ToArray();
+
+            var validator = new BattleSaveValidator(assets, settings);
+            Assert.That(Assert.Throws<InvalidDataException>(() => validator.Validate(save, definition)).Message,
+                Does.Contain("pending wave unit"));
+        }
+
         private static CaptureSiteSave[] CreateDefaultCaptureSites(MapGenerationSettings mapSettings, BattleDefinition definition)
         {
             MapSizeSettings size = mapSettings.GetSize(definition.Map.Size)

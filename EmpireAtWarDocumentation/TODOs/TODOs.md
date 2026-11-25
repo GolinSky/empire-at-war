@@ -341,6 +341,9 @@
   - Closed 2026-10-29 by backlog triage; user gates → [[TODOs/User_Acceptance_Queue]].
 
 ### Bugs
+- [x] **Spacing nudge turns holding ships 180° away from their target (multi-select Attack / Attack-Move)** → [[Done/Bugs/Spacing_Nudge_Turns_Ship_Away|Spacing Nudge Turns Ship Away]]
+  - 2026-11-25: done (`acceptance: pending-user`). Nudge slides sideways around the hold target; goals > 100° off the heading are refused; settle hops longer than 2× their distance fail instead of looping. Compile clean; `Navigation` tests added, not run. Gates → [[TODOs/User_Acceptance_Queue#Spacing Nudge]].
+  - 2026-11-25: cause found from source and Nov 24 telemetry; plan created.
 - [x] **Targeting mode input lock (armed Attack / Guard / Waypoint / orbital weapon blocks left-click; action cursors; target markers)** → [[Done/Bugs/Targeting_Mode_Input_Lock]]
   - 2026-11-25: done (`acceptance: pending-user`). World left-click cancels every armed mode; wrong right-click on Attack / Guard cancels; action icon cursor per mode; target markers for ability, orbital and attack-move. Waypoint left-click discards points (default). Compile clean; `BattleInput` / `Ui` / `Abilities` tests updated, not run. Gates → [[TODOs/User_Acceptance_Queue#Targeting Mode Input Lock]].
   - 2026-11-25: plan created from source inspection (not reproduced in-game).
@@ -488,6 +491,7 @@
 
 ### Features
 
+- [x] **Focus fire cap: limited attackers per target by ship class (player + AI), AI spread by difficulty** → [[Done/Features/Focus_Fire_Cap_Plan|Focus Fire Cap Plan]] — Completed 2026-11-25 (`acceptance: pending-user`): slot registry by `ShipClass` (ships/squadrons apart, allies shared, hero +1, structures unlimited); attack overflow → attack-move; unordered picks prefer free slots; AI fills cap × difficulty scale; target counter UI with host → client count replication. Compile clean; tests added/updated, not run → [[TODOs/User_Acceptance_Queue#Focus Fire Cap]].
 - [x] **Import Resurgent-class Star Destroyer (Empire `ShipType` 221, battlecruiser brawler + anti-capital + carrier, level 5)** → [[Done/Features/Resurgent_Import|Resurgent Import]] — Completed 2026-11-23: Remake Reforged 5.2 model, 2,915.81 m (306.16 units), 64 weapons + 8 systems (2,757 DPS / 2,259 vs capital), 68k/32k provisional, price 35,000, 3-bay hangar; no team colour (source albedo has no hue). Saved-asset audit passed, compile clean; tests written/reviewed, not run → [[TODOs/User_Acceptance_Queue]].
 - [x] **Import Xyston-class Star Destroyer (Empire `ShipType` 220, superlaser glass cannon, level 5)** → [[Done/Features/Xyston_Import|Xyston Import]] — Completed 2026-11-23: new `XystonSuperlaser` ability (46.8k Beam / 6 s / 60 s, frigate+), 28k/11k hull/shields, 21 source-mapped guns (912 DPS), no hangar. Saved-asset audit passed, compile clean; tests written/reviewed, not run → [[TODOs/User_Acceptance_Queue]].
 - [x] **Import Viscount Prototype (3 km battlecruiser, `ShipType` 331) and Viscount Dreadnought (17 km Executor counterpart, 332)** → [[Done/Features/Viscount_Import|Viscount Import]] — Completed 2026-11-22: every source weapon bone mounted with existing weapon types (54 / 102 weapons), DPS-balanced vs Executor / battlecruisers, Rebellion roster + all registries. Saved-asset audit passed, compile clean; tests reviewed, not run → [[TODOs/User_Acceptance_Queue]].

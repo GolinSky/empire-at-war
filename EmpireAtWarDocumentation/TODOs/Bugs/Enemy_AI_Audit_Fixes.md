@@ -2,14 +2,14 @@
 category: Bugs
 status: in-progress
 created: 2026-11-23
-follows: "[[TODOs/Bugs/Enemy_AI_Opening_And_Task_Groups]]"
+follows: "[[Done/Bugs/Enemy_AI_Opening_And_Task_Groups]]"
 ---
 # Enemy AI Audit Fixes
 
 ## Goal
 - Fix the faults of the read-only audit `Enemy AI Audit.md` (repo root, 2026-11-23) that still exist after Round 10.
 - No tuning. Every step removes a rule collision, a dead path or a wrong input.
-- Opening–mid game behaviour stays (user rule, [[TODOs/Bugs/Enemy_AI_Opening_And_Task_Groups]]).
+- Opening–mid game behaviour stays (user rule, [[Done/Bugs/Enemy_AI_Opening_And_Task_Groups]]).
 
 ## Status (2026-11-23)
 - **Phases 1–3 implemented** (A1–A5, A7, R1; P1–P7, I4; X1–X6, X8, X9). Compile clean (`unity recompile`, 0 errors). Tests written and reviewed, **not run** (local override).

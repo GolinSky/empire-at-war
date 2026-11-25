@@ -20,11 +20,18 @@ namespace EmpireAtWar.Models.Factions
             throw new KeyNotFoundException($"No faction definition for {factionType}.");
         }
 
-        public FactionData GetShipFactionData(ShipType shipType)
+        public FactionData GetShipFactionData(ShipType shipType) =>
+            TryGetShipFactionData(shipType, out FactionData data)
+                ? data
+                : throw new KeyNotFoundException($"No faction data for ship {shipType}.");
+
+        /// <summary>False for a ship no roster builds, such as one retired from the game but still in old saves.</summary>
+        public bool TryGetShipFactionData(ShipType shipType, out FactionData data)
         {
             foreach (FactionDefinition faction in factions)
-                if (faction.Ships.TryGetValue(shipType, out FactionData data)) return data;
-            throw new KeyNotFoundException($"No faction data for ship {shipType}.");
+                if (faction.Ships.TryGetValue(shipType, out data)) return true;
+            data = null;
+            return false;
         }
 
         /// <summary>
@@ -48,11 +55,18 @@ namespace EmpireAtWar.Models.Factions
             throw new KeyNotFoundException($"No faction fields squadron {squadronType}.");
         }
 
-        public FactionData GetSquadronFactionData(SquadronType squadronType)
+        public FactionData GetSquadronFactionData(SquadronType squadronType) =>
+            TryGetSquadronFactionData(squadronType, out FactionData data)
+                ? data
+                : throw new KeyNotFoundException($"No faction data for squadron {squadronType}.");
+
+        /// <summary>False for a squadron no roster fields; same rule as <see cref="TryGetShipFactionData"/>.</summary>
+        public bool TryGetSquadronFactionData(SquadronType squadronType, out FactionData data)
         {
             foreach (FactionDefinition faction in factions)
-                if (faction.Squadrons.TryGetValue(squadronType, out FactionData data)) return data;
-            throw new KeyNotFoundException($"No faction data for squadron {squadronType}.");
+                if (faction.Squadrons.TryGetValue(squadronType, out data)) return true;
+            data = null;
+            return false;
         }
     }
 }

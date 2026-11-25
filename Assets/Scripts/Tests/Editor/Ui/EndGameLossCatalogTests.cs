@@ -4,8 +4,12 @@ using EmpireAtWar.Entities.DefendPlatform;
 using EmpireAtWar.Entities.EndGameUi;
 using EmpireAtWar.Entities.Game;
 using EmpireAtWar.Entities.MiningFacility;
+using EmpireAtWar.Entities.Squadrons;
+using EmpireAtWar.Models.Factions;
+using EmpireAtWar.Models.ShipUi;
 using NUnit.Framework;
 using UnityEditor;
+using UnityEngine;
 
 namespace EmpireAtWar.Tests.Editor
 {
@@ -37,6 +41,28 @@ namespace EmpireAtWar.Tests.Editor
             foreach (DefendPlatformType type in Enum.GetValues(typeof(DefendPlatformType)))
                 Assert.DoesNotThrow(() => _catalog.Describe(
                     new[] { new BattleUnitLoss(BattleLossKind.DefendPlatform, (int)type, 1) }), type.ToString());
+        }
+
+        [Test]
+        public void Describe_NamesShipsAndSquadronsThatNoRosterFields()
+        {
+            // Old saves keep losses of units since retired from every roster.
+            var factions = AssetDatabase.LoadAssetAtPath<FactionCatalog>(CATALOG_FOLDER + "FactionCatalog.asset");
+            var catalog = new EndGameLossCatalog(factions, new NoIcons(), null, null, null, null);
+            foreach (ShipType type in Enum.GetValues(typeof(ShipType)))
+                if (!factions.TryGetShipFactionData(type, out _))
+                    Assert.That(catalog.Describe(new[] { new BattleUnitLoss(BattleLossKind.Ship, (int)type, 1) })[0].Name,
+                        Is.Not.Empty, type.ToString());
+            foreach (SquadronType type in Enum.GetValues(typeof(SquadronType)))
+                if (!factions.TryGetSquadronFactionData(type, out _))
+                    Assert.That(catalog.Describe(new[] { new BattleUnitLoss(BattleLossKind.Squadron, (int)type, 1) })[0].Name,
+                        Is.Not.Empty, type.ToString());
+        }
+
+        private sealed class NoIcons : IShipIconProvider
+        {
+            public Sprite GetShipIcon(ShipType shipType) => null;
+            public Sprite GetSquadronIcon(SquadronType squadronType) => null;
         }
     }
 }

@@ -79,7 +79,8 @@ verification: Reviewed affected source and regression fixtures. Unity 6000.4.7f1
 - Station defence target: ship attacking the station → nearest threatening ship → wing; kept while it threatens.
 - Production, round 7 (2026-11-20): ships are bought only from the station level and one below (`SHIP_TIER_SPAN` 1; floor drops until a type exists; critical station exempt). Below 10 reserved ships only the cheapest platform is chosen.
   - Why: buy-now + steady income never reaches a higher-tier price; same-type builds run one at a time, so cheap orders clog the queue and the unit limit.
-- Owner and history → [[TODOs/Bugs/Enemy_AI_Opening_And_Task_Groups]].
+- Owner and history → [[Done/Bugs/Enemy_AI_Opening_And_Task_Groups]].
+- Known issue (2026-11-25): `AssaultBase` needs `DestroyOpponentBase`; in `DestroyEnemyFleet` (the only mode played) it fires only at 0 known hostile ships → no AI attacks a station. Owner → [[TODOs/Bugs/Enemy_AI_Station_Push_And_Ally_Assault]].
 
 ### Ship allocator (2026-11-19, N1–N6)
 

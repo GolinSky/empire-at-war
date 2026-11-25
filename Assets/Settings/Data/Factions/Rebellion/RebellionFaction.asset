@@ -122,7 +122,7 @@ MonoBehaviour:
         <Name>k__BackingField: MC75 Profundity
         <MaxCount>k__BackingField: 3
         <AvailableLevel>k__BackingField: 3
-        <Price>k__BackingField: 5500
+        <Price>k__BackingField: 5000
         <BuildTime>k__BackingField: 40
         <UnitCapacity>k__BackingField: 5
         <Icon>k__BackingField: {fileID: 21300000, guid: 80ed7da538f88cc41a288cdfeecf753a,
@@ -227,7 +227,7 @@ MonoBehaviour:
         isUnique: 0
         <Name>k__BackingField: Assault Frigate Mk II
         <MaxCount>k__BackingField: 10
-        <AvailableLevel>k__BackingField: 3
+        <AvailableLevel>k__BackingField: 2
         <Price>k__BackingField: 3000
         <BuildTime>k__BackingField: 30
         <UnitCapacity>k__BackingField: 4
@@ -270,8 +270,8 @@ MonoBehaviour:
         isUnique: 0
         <Name>k__BackingField: Liberator Cruiser
         <MaxCount>k__BackingField: 3
-        <AvailableLevel>k__BackingField: 3
-        <Price>k__BackingField: 4000
+        <AvailableLevel>k__BackingField: 2
+        <Price>k__BackingField: 3200
         <BuildTime>k__BackingField: 30
         <UnitCapacity>k__BackingField: 5
         <Icon>k__BackingField: {fileID: 21300000, guid: 1583a68acc7d9f9488c947c5470db384,
@@ -317,7 +317,7 @@ MonoBehaviour:
         isUnique: 0
         <Name>k__BackingField: Bothan Assault Cruiser
         <MaxCount>k__BackingField: 3
-        <AvailableLevel>k__BackingField: 4
+        <AvailableLevel>k__BackingField: 3
         <Price>k__BackingField: 4500
         <BuildTime>k__BackingField: 35
         <UnitCapacity>k__BackingField: 5
@@ -381,7 +381,7 @@ MonoBehaviour:
         isUnique: 0
         <Name>k__BackingField: MC80 Freedom
         <MaxCount>k__BackingField: 3
-        <AvailableLevel>k__BackingField: 4
+        <AvailableLevel>k__BackingField: 3
         <Price>k__BackingField: 4500
         <BuildTime>k__BackingField: 45
         <UnitCapacity>k__BackingField: 8
@@ -425,7 +425,7 @@ MonoBehaviour:
         isUnique: 0
         <Name>k__BackingField: MC80b Remonda
         <MaxCount>k__BackingField: 3
-        <AvailableLevel>k__BackingField: 4
+        <AvailableLevel>k__BackingField: 5
         <Price>k__BackingField: 7000
         <BuildTime>k__BackingField: 45
         <UnitCapacity>k__BackingField: 10

@@ -54,13 +54,13 @@ namespace EmpireAtWar.Services.Saves
 
         public void Validate(BattleSave save, BattleDefinition definition)
         {
+            FactionCatalog factions = _assets.Load<FactionCatalog>(nameof(FactionCatalog));
             ValidateMapCounts(save, definition);
-            ValidateSurvival(save, definition);
+            ValidateSurvival(save, definition, factions);
             ValidateControlGroups(save.ControlGroups);
             ValidateLosses(save.PlayerLosses);
             ValidateLosses(save.EnemyLosses);
 
-            FactionCatalog factions = _assets.Load<FactionCatalog>(nameof(FactionCatalog));
             MiningFacilityCatalog mines = _assets.Load<MiningFacilityCatalog>(nameof(MiningFacilityCatalog));
             DefendPlatformCatalog platforms = _assets.Load<DefendPlatformCatalog>(nameof(DefendPlatformCatalog));
             SuperWeaponCatalog superWeapons = _assets.Load<SuperWeaponCatalog>(nameof(SuperWeaponCatalog));
@@ -101,7 +101,7 @@ namespace EmpireAtWar.Services.Saves
             foreach (StructureSave structure in save.Structures)
                 ValidateStructure(structure, players, rosters, siteFacilities, squadrons, adoptedSquadrons);
             foreach (UnitSave unit in save.Units)
-                ValidateUnit(unit, players, rosters, shipsData, squadrons, adoptedSquadrons, migratedHangars,
+                ValidateUnit(unit, players, rosters, factions, shipsData, squadrons, adoptedSquadrons, migratedHangars,
                     migratedHealth, migratedAbilities);
             ValidatePlayers(save.Players, players, rosters, levels, squadrons);
             ValidateCombatAndVictory(save, players, entityIds);
@@ -185,7 +185,7 @@ namespace EmpireAtWar.Services.Saves
                 throw new InvalidDataException($"Saved {save.CaptureSites.Length} capture sites; the map has {expectedSites}.");
         }
 
-        private static void ValidateSurvival(BattleSave save, BattleDefinition definition)
+        private static void ValidateSurvival(BattleSave save, BattleDefinition definition, FactionCatalog factions)
         {
             if (definition.Mode != GameMode.Survival)
             {
@@ -199,9 +199,7 @@ namespace EmpireAtWar.Services.Saves
             foreach (UnitTypeSave pending in survival.Pending)
             {
                 UnitTypeId type = pending.UnitType;
-                if (type.IsShip
-                    ? !Enum.IsDefined(typeof(ShipType), type.ShipType)
-                    : !Enum.IsDefined(typeof(SquadronType), type.SquadronType))
+                if (!IsFielded(factions, type))
                     throw new InvalidDataException($"Saved pending wave unit {type} is not valid.");
             }
         }
@@ -277,7 +275,7 @@ namespace EmpireAtWar.Services.Saves
         }
 
         private void ValidateUnit(UnitSave unit, IReadOnlyDictionary<PlayerId, BattlePlayer> players,
-            IReadOnlyDictionary<PlayerId, FactionRoster> rosters, ShipsData shipsData,
+            IReadOnlyDictionary<PlayerId, FactionRoster> rosters, FactionCatalog factions, ShipsData shipsData,
             IReadOnlyDictionary<long, UnitSave> squadrons, HashSet<long> adoptedSquadrons,
             List<(UnitSave Unit, HangarSave Hangar)> migratedHangars,
             List<(UnitSave Unit, UnitHealthSave Health)> migratedHealth,
@@ -288,7 +286,7 @@ namespace EmpireAtWar.Services.Saves
             if (unit.UnitType.IsShip)
             {
                 ShipType shipType = unit.UnitType.ShipType;
-                if (!Enum.IsDefined(typeof(ShipType), shipType) ||
+                if (!IsFielded(factions, unit.UnitType) ||
                     (rosters.TryGetValue(unit.Owner, out FactionRoster roster) && !UnitRequestSave.CanRestoreShip(roster, shipType)))
                     throw new InvalidDataException($"Ship {shipType} cannot be restored for {unit.Owner}.");
                 ShipData data = _assets.Load<ShipData>(shipsData.GetShipDataPath(shipType));
@@ -328,7 +326,7 @@ namespace EmpireAtWar.Services.Saves
                 return;
             }
             SquadronType squadronType = unit.UnitType.SquadronType;
-            if (!Enum.IsDefined(typeof(SquadronType), squadronType))
+            if (!IsFielded(factions, unit.UnitType))
                 throw new InvalidDataException($"Squadron {unit.Id} has unknown squadron type {squadronType}.");
             SquadronData squadronData = _assets.Load<SquadronData>(squadronType + "SquadronData");
             ValidateAbilities(unit.Abilities, squadronData.Abilities, unit.Id);
@@ -337,6 +335,14 @@ namespace EmpireAtWar.Services.Saves
             if (unit.Health == null || unit.Health.MemberHull.Length != fighters || unit.Health.MemberShields.Length != fighters)
                 throw new InvalidDataException($"Saved {unit.Health?.MemberHull.Length ?? 0} fighters; {squadronType} has {fighters}.");
         }
+
+        /// <summary>
+        /// The factories spawn only units some faction roster fields; a unit retired from every roster cannot be
+        /// restored, even for a player without an economy roster.
+        /// </summary>
+        private static bool IsFielded(FactionCatalog factions, UnitTypeId type) => type.IsShip
+            ? factions.TryGetShipFactionData(type.ShipType, out _)
+            : factions.TryGetSquadronFactionData(type.SquadronType, out _);
 
         private static AbilitySlotSave[] MigrateShipAbilities(ShipType shipType, AbilitySlotSave[] slots)
         {
