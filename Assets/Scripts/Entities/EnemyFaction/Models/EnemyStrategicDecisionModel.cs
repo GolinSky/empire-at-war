@@ -88,6 +88,15 @@ namespace EmpireAtWar.Entities.EnemyFaction.Models
         public bool HasReachedRetreatPoint { get; }
 
         /// <summary>
+        /// End game by situation, never the clock: station at the top level and the unit cap full or an assault surplus
+        /// banked. The centre no longer holds the fleet back and the whole fleet assaults.
+        /// </summary>
+        public bool IsEndGame { get; }
+
+        /// <summary>Allied human ships fight at the focused hostile station: the fleet joins their assault.</summary>
+        public bool JoinsAllyAssault { get; }
+
+        /// <summary>
         /// Plan-vs-actual loss exchange against the focused hostile team (W67), already multiplied into
         /// <see cref="LocalAdvantage"/>, <see cref="FleetAdvantage"/> and their raw values; 1 without fights.
         /// </summary>
@@ -116,8 +125,11 @@ namespace EmpireAtWar.Entities.EnemyFaction.Models
             bool isStationCritical = false, bool hasGuardSite = false, bool isCentreGuardGoal = false,
             bool canAssaultBase = false, bool canHuntFleet = false, bool hasSecuredCentre = false,
             bool canDisengage = false, bool raidWhenBehind = false, bool isLateGame = false,
-            bool hasReachedRetreatPoint = true, float tradeCorrection = 1f)
+            bool hasReachedRetreatPoint = true, float tradeCorrection = 1f, bool isEndGame = false,
+            bool joinsAllyAssault = false)
         {
+            IsEndGame = isEndGame;
+            JoinsAllyAssault = joinsAllyAssault;
             IsLateGame = isLateGame;
             HasReachedRetreatPoint = hasReachedRetreatPoint;
             TradeCorrection = tradeCorrection;
@@ -194,16 +206,17 @@ namespace EmpireAtWar.Entities.EnemyFaction.Models
                 (s, p) => ResponseCurve.When(s.HasOwnBase) *
                           (s.HasStationPressure ? 1f :
                               ResponseCurve.AtLeast(s.BaseThreatRatio, p.DefenseThreatRatio))),
+            // Stations die in every mode: a station keeps building ships, so no victory condition switches assault off.
+            // End game and an allied assault skip the centre (user rule 2026-11-25).
             new EnemyStrategicRule(EnemyStrategicState.AssaultBase, 0.76f,
                 "Capital strike group has zone control, fleet strength and reinforcement waves.",
-                (s, p) => ResponseCurve.When(s.HasSecuredCentre && s.HasEnemyBaseTarget &&
-                    s.VictoryCondition != BattleVictoryCondition.DestroyEnemyFleet) *
+                (s, p) => ResponseCurve.When((s.HasSecuredCentre || s.IsEndGame || s.JoinsAllyAssault) &&
+                    s.HasEnemyBaseTarget) *
                     ResponseCurve.AtLeast(s.FleetAdvantage, p.RequiredAttackRatio)),
             // A clearly stronger fleet ends the game instead of trading ships over capture sites.
             new EnemyStrategicRule(EnemyStrategicState.AssaultBase, 0.75f,
                 "The fleet clearly outmatches the enemy, so it presses the advantage against the base.",
-                (s, p) => ResponseCurve.When(s.VictoryCondition == BattleVictoryCondition.DestroyOpponentBase &&
-                                             s.HasEnemyBaseTarget) *
+                (s, p) => ResponseCurve.When(s.HasEnemyBaseTarget) *
                           ResponseCurve.When(!s.IsCentreGuardGoal ||
                               s.FleetAdvantage >= p.RequiredAttackRatio * PRESS_ADVANTAGE_SCALE) *
                           ResponseCurve.AtLeast(s.FleetAdvantage, p.RequiredAttackRatio * PRESS_ADVANTAGE_SCALE)),
@@ -230,9 +243,8 @@ namespace EmpireAtWar.Entities.EnemyFaction.Models
                 (s, p) => ResponseCurve.When(s.HasLocalThreat) *
                           ResponseCurve.AtLeast(s.LocalAdvantage, p.RetreatAdvantage)),
             new EnemyStrategicRule(EnemyStrategicState.AssaultBase, 0.5f,
-                "The objective is base destruction and the fleet outmatches the defenders.",
-                (s, p) => ResponseCurve.When(!s.IsCentreGuardGoal && s.VictoryCondition == BattleVictoryCondition.DestroyOpponentBase &&
-                                             s.HasEnemyBaseTarget) *
+                "The fleet outmatches the defenders of the hostile base.",
+                (s, p) => ResponseCurve.When(!s.IsCentreGuardGoal && s.HasEnemyBaseTarget) *
                           ResponseCurve.AtLeast(s.FleetAdvantage, p.RequiredAttackRatio)),
             new EnemyStrategicRule(EnemyStrategicState.HuntFleet, 0.5f,
                 "The objective is the enemy fleet and our team clearly outmatches it.",
@@ -293,6 +305,8 @@ namespace EmpireAtWar.Entities.EnemyFaction.Models
             float bestScore = 0f;
             float runnerUp = 0f;
             float lastStateScore = 0f;
+            EnemyStrategicRule bestHunt = null;
+            float bestHuntScore = 0f;
             SwitchHeld = false;
             StateHeldSeconds = _hasLastState && !float.IsNaN(now) ? Math.Max(0f, now - _stateStartedAt) : 0f;
             Bypass = snapshot.OwnShipCount == 0 ? "noShips" :
@@ -320,6 +334,11 @@ namespace EmpireAtWar.Entities.EnemyFaction.Models
                     lastStateScore = Math.Max(lastStateScore, score);
                 if (score > 0f && _hasLastState && rule.State == _lastState)
                     score += HYSTERESIS;
+                if (rule.State == EnemyStrategicState.HuntFleet && score > bestHuntScore)
+                {
+                    bestHunt = rule;
+                    bestHuntScore = score;
+                }
                 if (score > bestScore)
                 {
                     runnerUp = bestScore;
@@ -329,8 +348,19 @@ namespace EmpireAtWar.Entities.EnemyFaction.Models
                 else runnerUp = Math.Max(runnerUp, score);
             }
 
+            // S2: against the enemy fleet, a fleet away from its station is hunted first; the station is assaulted when
+            // no hunt target is left (hunt rules are skipped while CanHuntFleet is false).
+            if (best.State == EnemyStrategicState.AssaultBase && bestHunt != null &&
+                snapshot.VictoryCondition == BattleVictoryCondition.DestroyEnemyFleet)
+            {
+                runnerUp = Math.Max(runnerUp, bestScore);
+                best = bestHunt;
+                bestScore = bestHuntScore;
+            }
             EnemyStrategicState state = best.State;
             string reason = best.Reason;
+            if (state == EnemyStrategicState.AssaultBase && snapshot.JoinsAllyAssault)
+                reason = "Joining an allied assault.";
             if (state == EnemyStrategicState.GuardSite && snapshot.HasSecuredCentre)
             {
                 state = EnemyStrategicState.Consolidate;
@@ -425,6 +455,8 @@ namespace EmpireAtWar.Entities.EnemyFaction.Models
             }
 
             if (state is EnemyStrategicState.GuardSite or EnemyStrategicState.Consolidate) return ownShipCount;
+            // S4: the end game sends the whole fleet against the base.
+            if (state == EnemyStrategicState.AssaultBase && snapshot.IsEndGame) return ownShipCount;
             if (state == EnemyStrategicState.RaidStructures && snapshot.HasSecuredCentre) return 2;
             if (state == EnemyStrategicState.AssaultBase && snapshot.HasSecuredCentre)
                 return Math.Min(ownShipCount, Math.Max(EnemyFactionModel.MINIMUM_ASSAULT_CAPITALS, ownShipCount - 1));

@@ -25,7 +25,12 @@ namespace EmpireAtWar.Entities.EnemyFaction.Models
         public int AdditionalStationsBuilt { get; set; }
         public bool HasAssaultSurplus { get; set; }
         public bool HasAssaultReinforcementPlan { get; set; }
+        /// <summary>The chosen ship is affordable but does not fit the free unit capacity. Set by production.</summary>
+        public bool IsAtUnitCap { get; set; }
         public int HeldShips { get; set; }
+
+        /// <summary>The main station has no further level to buy.</summary>
+        public bool IsAtTopLevel => GetCurrentLevelFactionData() == null;
 
         public FactionData SecondStationData => _stationLevels.GetSecondStationFactionData(_roster.FactionType);
 

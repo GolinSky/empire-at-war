@@ -659,6 +659,63 @@ namespace EmpireAtWar.Tests.Editor
             Assert.That(model.Evaluate(held).State, Is.EqualTo(EnemyStrategicState.Consolidate));
         }
 
+        // S1 / S2: stations die in every mode. Against the enemy fleet a hunt target away from a station comes first;
+        // with none (the fleet sits at its station) the station is assaulted.
+        [TestCase(true, EnemyStrategicState.HuntFleet)]
+        [TestCase(false, EnemyStrategicState.AssaultBase)]
+        public void FleetObjective_AssaultsTheStationWhenNoHuntTargetIsLeft(bool canHuntFleet,
+            EnemyStrategicState expected)
+        {
+            EnemyStrategicDecision decision = new EnemyStrategicDecisionModel().Evaluate(
+                CreateSnapshot(BattleVictoryCondition.DestroyEnemyFleet, EnemyAiDifficulty.UltraHard,
+                    ownShipCount: 12, enemyShipCount: 6, ownedCapturableZoneCount: 2,
+                    fleetAdvantage: EnemyAiDifficultyProfile.Get(EnemyAiDifficulty.UltraHard).RequiredAttackRatio *
+                        EnemyStrategicDecisionModel.PRESS_ADVANTAGE_SCALE,
+                    hasCaptureTarget: false, canHuntFleet: canHuntFleet));
+
+            Assert.That(decision.State, Is.EqualTo(expected));
+        }
+
+        // S4: in the end game the whole fleet assaults without the centre and before further expansion.
+        [Test]
+        public void EndGame_WholeFleetAssaultsWithoutTheCentre()
+        {
+            EnemyStrategicDecision decision = new EnemyStrategicDecisionModel().Evaluate(
+                CreateSnapshot(BattleVictoryCondition.DestroyEnemyFleet, EnemyAiDifficulty.UltraHard,
+                    ownShipCount: 20, enemyShipCount: 8, ownedCapturableZoneCount: 2,
+                    fleetAdvantage: EnemyAiDifficultyProfile.Get(EnemyAiDifficulty.UltraHard).RequiredAttackRatio,
+                    canHuntFleet: false, isEndGame: true));
+
+            Assert.That(decision.State, Is.EqualTo(EnemyStrategicState.AssaultBase));
+            Assert.That(decision.CommittedShipCount, Is.EqualTo(20));
+        }
+
+        [Test]
+        public void MidGame_SameFleetKeepsExpanding()
+        {
+            EnemyStrategicDecision decision = new EnemyStrategicDecisionModel().Evaluate(
+                CreateSnapshot(BattleVictoryCondition.DestroyEnemyFleet, EnemyAiDifficulty.UltraHard,
+                    ownShipCount: 20, enemyShipCount: 8, ownedCapturableZoneCount: 2,
+                    fleetAdvantage: EnemyAiDifficultyProfile.Get(EnemyAiDifficulty.UltraHard).RequiredAttackRatio,
+                    canHuntFleet: false));
+
+            Assert.That(decision.State, Is.EqualTo(EnemyStrategicState.CaptureZone));
+        }
+
+        // S6: allied human ships at a hostile station pull the main force into their assault.
+        [Test]
+        public void AllyAssault_JoinsTheAlliedAssault()
+        {
+            EnemyStrategicDecision decision = new EnemyStrategicDecisionModel().Evaluate(
+                CreateSnapshot(BattleVictoryCondition.DestroyEnemyFleet, EnemyAiDifficulty.UltraHard,
+                    ownShipCount: 8, enemyShipCount: 8, ownedCapturableZoneCount: 2,
+                    fleetAdvantage: EnemyAiDifficultyProfile.Get(EnemyAiDifficulty.UltraHard).RequiredAttackRatio,
+                    canHuntFleet: false, joinsAllyAssault: true));
+
+            Assert.That(decision.State, Is.EqualTo(EnemyStrategicState.AssaultBase));
+            Assert.That(decision.Reason, Is.EqualTo("Joining an allied assault."));
+        }
+
         private static EnemyStrategicSnapshot CreateSnapshot(
             BattleVictoryCondition victoryCondition,
             EnemyAiDifficulty difficulty,
@@ -678,7 +735,7 @@ namespace EmpireAtWar.Tests.Editor
             bool hasSafeRetreat = true,
             bool hasEconomyRaidTarget = false,
             bool isStationCritical = false, bool canAssaultBase = true, bool canHuntFleet = true,
-            bool hasSecuredCentre = false)
+            bool hasSecuredCentre = false, bool isEndGame = false, bool joinsAllyAssault = false)
         {
             return new EnemyStrategicSnapshot(
                 victoryCondition: victoryCondition,
@@ -702,7 +759,8 @@ namespace EmpireAtWar.Tests.Editor
                 hasEconomyRaidTarget: hasEconomyRaidTarget,
                 canAssaultBase: canAssaultBase, canHuntFleet: canHuntFleet,
                 hasSecuredCentre: hasSecuredCentre, hasGuardSite: hasSecuredCentre,
-                isCentreGuardGoal: hasSecuredCentre && !canAssaultBase);
+                isCentreGuardGoal: hasSecuredCentre && !canAssaultBase,
+                isEndGame: isEndGame, joinsAllyAssault: joinsAllyAssault);
         }
     }
 }

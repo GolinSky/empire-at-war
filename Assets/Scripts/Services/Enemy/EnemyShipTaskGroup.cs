@@ -3,6 +3,7 @@ using EmpireAtWar.Entities.EnemyFaction.Models;
 using EmpireAtWar.Ship;
 using EmpireAtWar.Services.TacticalMarkers;
 using UnityEngine;
+using GameEntity = EmpireAtWar.Entities.BaseEntity.IEntity;
 
 namespace EmpireAtWar.Services.Enemy
 {
@@ -75,6 +76,7 @@ namespace EmpireAtWar.Services.Enemy
             // A raid is rated against the defenders at its target, so the enemy's total ship count does not block it.
             bool canAssemble = (!outnumbered || next.State == EnemyStrategicState.RaidStructures) &&
                 Executor.CanAssemble(next, Context);
+            Context.AssaultGate += $";canAssemble={canAssemble};outnumbered={outnumbered}";
             next = DecisionModel.Evaluate(Context.Snapshot, IsCaptureDetachment, allowOffense: canAssemble, now: now);
             if (IsMainForce && next.State == EnemyStrategicState.CaptureZone)
                 next = new EnemyStrategicDecision(next.Reason, next.State, Ships.Count);
@@ -83,9 +85,10 @@ namespace EmpireAtWar.Services.Enemy
             if (request != null && request.Type != TacticalMarkerType.Retreat &&
                 !ContextBuilder.IsMarkerApproachSafe(request.Point)) request = null;
             string requestReason = null;
+            GameEntity requestTarget = null;
             if (request == null && IsMainForce)
             {
-                request = ContextBuilder.SelectAllyDefenseRequest();
+                request = ContextBuilder.SelectAllyDefenseRequest(out requestTarget);
                 if (request != null) requestReason = "Answering an allied station under pressure.";
             }
             if (request == null && IsMainForce)
@@ -128,8 +131,8 @@ namespace EmpireAtWar.Services.Enemy
             if (!Context.Snapshot.RecoveryMode) RecoveryStartedAt = -1f;
             if (request != null)
                 Executor.ExecuteMarker(request,
-                    ContextBuilder.AlliedMarkers != null &&
-                    ContextBuilder.AlliedMarkers.TryGetAttackTarget(request, out var attackTarget) ? attackTarget : null,
+                    requestTarget ?? (ContextBuilder.AlliedMarkers != null &&
+                    ContextBuilder.AlliedMarkers.TryGetAttackTarget(request, out var attackTarget) ? attackTarget : null),
                     Context, requestReason);
             else if (IsMainForce && Decision.State == EnemyStrategicState.Hold && !Context.Snapshot.IsRegrouped)
                 Executor.Rally(Context);

@@ -1683,6 +1683,60 @@ namespace EmpireAtWar.Tests.Editor
             finally { UnityEngine.Object.DestroyImmediate(view); }
         }
 
+        // S4: in the end game the whole fleet strikes; no ship is left holding at the gather point.
+        [Test]
+        public void AssaultBase_EndGameSendsEveryShip()
+        {
+            var capital = new FakeShip(Vector3.zero, 1);
+            var corvette = new FakeShip(Vector3.right, 2);
+            GameObject view = new GameObject("Base");
+            try
+            {
+                var station = new FakeEntity(new FakeHealthModel(view.transform) { Hull = 100f, Shields = 0f },
+                    TestPlayers.Human, 3);
+                var forces = new Dictionary<IShipEntity, ForceComposition>
+                {
+                    [capital] = CombatForce(100f, 20f),
+                    [corvette] = CombatForce(100f, 20f)
+                };
+                Vector3 gather = new Vector3(-500f, 0f, 0f);
+                var orders = new FakeOrderService();
+                new EnemyTaskForceExecutor(orders).Execute(new EnemyStrategicDecision(
+                        state: EnemyStrategicState.AssaultBase, committedShipCount: 2, reason: "test"),
+                    Context(new IShipEntity[] { capital, corvette }, shipForces: forces, baseTarget: station,
+                        assaultCapitals: new IShipEntity[] { capital }, guardPosition: gather, isEndGame: true));
+
+                Assert.That(orders.Calls.Where(call => call.Point == gather), Is.Empty,
+                    "No ship holds at the gather point.");
+                Assert.That(orders.Calls.SelectMany(call => call.Receivers).Select(entity => entity.Id),
+                    Is.SupersetOf(new long[] { capital.EntityId, corvette.EntityId }), "Every ship gets a strike order.");
+            }
+            finally { UnityEngine.Object.DestroyImmediate(view); }
+        }
+
+        // S5: an allied station's defence attacks the known attacker instead of attack-moving to the station.
+        [Test]
+        public void AllyDefenseAnswer_AttacksTheKnownAttacker()
+        {
+            var ship = new FakeShip(Vector3.zero, 1);
+            GameObject view = new GameObject("Attacker");
+            try
+            {
+                var attacker = new FakeEntity(new FakeHealthModel(view.transform), TestPlayers.Human, 5);
+                var marker = new TacticalMarker(-101L, TacticalMarkerType.Defend, TestPlayers.SecondEnemy,
+                    default, new Vector3(300f, 0f, 0f), -1, 0f, 10f);
+                var orders = new FakeOrderService();
+
+                new EnemyTaskForceExecutor(orders).ExecuteMarker(marker, attacker,
+                    Context(new IShipEntity[] { ship }), "test");
+
+                OrderCall call = orders.Calls.Single();
+                Assert.That(call.Action, Is.EqualTo(UnitActionId.Attack));
+                Assert.That(call.Target, Is.SameAs(attacker));
+            }
+            finally { UnityEngine.Object.DestroyImmediate(view); }
+        }
+
         [Test]
         public void HuntFleet_SelectedAntiFighterCounterActivelyEngagesDefenders()
         {
@@ -4020,7 +4074,8 @@ namespace EmpireAtWar.Tests.Editor
             IEntity localThreatTarget = null,
             EnemyStationPressureTracker stationPressure = null,
             Func<Vector3, float, bool> isPointClear = null, IEntity captureBlockingFacility = null,
-            Vector3? guardPosition = null, IEntity baseTarget = null, IReadOnlyList<IShipEntity> assaultCapitals = null)
+            Vector3? guardPosition = null, IEntity baseTarget = null, IReadOnlyList<IShipEntity> assaultCapitals = null,
+            bool isEndGame = false)
         {
             if (ownBase != null && stationPressure == null)
             {
@@ -4048,7 +4103,7 @@ namespace EmpireAtWar.Tests.Editor
                 ownShipCount: ships.Count, enemyShipCount: 0, ownedCapturableZoneCount: 0,
                 fleetAdvantage: 1f, baseThreatRatio: 0f, hasCaptureTarget: true,
                 hasEnemyBaseTarget: false, hasOwnBase: ownBase != null,
-                hasSafeRetreat: hasSafeRetreat);
+                hasSafeRetreat: hasSafeRetreat, isEndGame: isEndGame);
             EnemyCaptureObjective objective = captureObjective ?? new EnemyCaptureObjective(
                 "relay-1", EnemyCaptureObjectiveType.ReinforcementZone, PlayerId.None,
                 new Vector3(55f, 0f, -55f), 10f, 0f);

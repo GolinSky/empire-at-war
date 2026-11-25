@@ -169,10 +169,15 @@ namespace EmpireAtWar.Services.Enemy
                 }
                 bool behind = _pool.IsBehindOnZones();
                 _allocator.StrongEconomy = _pool.HasStrongEconomy();
-                _allocator.LeanZones = _contextBuilder.LateGameSituation;
+                // S3: a fleet that can press the hostile station keeps only what each zone needs out there.
+                bool press = _contextBuilder.PressSituation;
+                _allocator.LeanZones = _contextBuilder.LateGameSituation || press;
                 _allocator.BlockedZoneIds = _blockedZoneIds;
                 _allocator.WeakTarget = SelectWeakTarget(zones);
                 _allocator.Allocate(zones, _poolForces, _current, _distance, behind, _assignment);
+                // S4: in the end game the whole fleet strikes: every zone force returns to the main force.
+                if (press && _contextBuilder.EndGameSituation)
+                    for (int i = 0; i < _assignment.Count; i++) _assignment[i] = EnemyZoneAllocator.RESERVE;
                 if (stationPressure)
                     for (int i = 0; i < _assignment.Count; i++)
                         if (_assignment[i] != _current[i]) _assignment[i] = EnemyZoneAllocator.RESERVE;

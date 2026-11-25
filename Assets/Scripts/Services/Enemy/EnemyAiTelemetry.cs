@@ -152,7 +152,7 @@ namespace EmpireAtWar.Services.Enemy
                 EnemyCaptureObjective objective = context.CaptureObjective;
                 var target = decision.State == EnemyStrategicState.DefendBase ? context.DefenseTarget :
                     decision.State == EnemyStrategicState.EngageLocal ? context.LocalThreatTarget :
-                    decision.State == EnemyStrategicState.AssaultBase ? context.EnemyBaseTarget :
+                    decision.State == EnemyStrategicState.AssaultBase ? context.AssaultTarget ?? context.EnemyBaseTarget :
                     decision.State == EnemyStrategicState.RaidStructures ? context.RaidTarget :
                     decision.State == EnemyStrategicState.HuntFleet ? context.EnemyFleetTarget : null;
                 Vector3 destination = context.OrderDestination.HasValue

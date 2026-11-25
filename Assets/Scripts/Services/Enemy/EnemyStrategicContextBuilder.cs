@@ -74,6 +74,11 @@ namespace EmpireAtWar.Services.Enemy
         public int TeamHeldZones { get; }
         /// <summary>The group was sent to one zone by the allocator, which already sized it: it commits every ship.</summary>
         public bool IsZoneForce { get; set; }
+        /// <summary>
+        /// What an assault attacks now (S1a, S1b): a hostile ship fighting near the fleet (on the way or at the base),
+        /// else a known hostile ship at the base, else a visible armed platform there, else the station itself.
+        /// </summary>
+        public GameEntity AssaultTarget { get; set; }
         /// <summary><c>canAssault</c> parts of this build (W43 telemetry).</summary>
         public string AssaultGate { get; set; } = "";
         /// <summary>Where the local fight was rated: <c>body</c>, <c>all</c> or <c>death</c> (W43 telemetry).</summary>
@@ -409,6 +414,9 @@ namespace EmpireAtWar.Services.Enemy
         private readonly EnemyStrategicContextBuilder _root;
         private bool _lateGameSituation;
         private bool _teamStationPressure;
+        private bool _endGameSituation;
+        private bool _pressSituation;
+        private int _fleetAssaultCapitals;
         private EnemyReinforcementBudget _ownReinforcement = EnemyReinforcementBudget.IncomeOnly;
         private readonly Dictionary<TeamId, EnemyTradeLedger> _tradeLedgers = new Dictionary<TeamId, EnemyTradeLedger>();
         private readonly EnemyFightRecorder _fight;
@@ -839,18 +847,80 @@ namespace EmpireAtWar.Services.Enemy
         /// pressure of its own) and every answering allied main force together with the station's defenders beats the
         /// attackers (<see cref="TeamAiCooperation.TryGetDefenseAssignment"/>); recovery does not block it. Null otherwise.
         /// </summary>
-        public TacticalMarker SelectAllyDefenseRequest()
+        /// <remarks>
+        /// S5: <paramref name="attacker"/> is the known hostile ship nearest the station (the answer attacks it); null
+        /// attack-moves to the station. An answer with no known attacker and no hostile near the group for
+        /// <see cref="ALLY_DEFENSE_IDLE_SECONDS"/> is released for <see cref="ALLY_DEFENSE_RELEASE_SECONDS"/>, so the
+        /// normal decision (an assault as relief) runs.
+        /// </remarks>
+        public TacticalMarker SelectAllyDefenseRequest(out GameEntity attacker)
         {
-            if (_stationPressure.HasPressure ||
-                !_teamPicture.Cooperation.TryGetDefenseAssignment(_owner.Id, Time.time,
+            attacker = null;
+            float now = Time.time;
+            if (_stationPressure.HasPressure || now < _allyDefenseReleasedUntil ||
+                !_teamPicture.Cooperation.TryGetDefenseAssignment(_owner.Id, now,
                     EnemyAiDifficultyProfile.Get(_owner.Difficulty).RetreatAdvantage, out PlayerId requester,
-                    out Vector3 station)) return null;
+                    out Vector3 station))
+            {
+                _allyDefenseIdleSince = float.NaN;
+                return null;
+            }
             long id = -100L - requester.Index;
             if (_allyDefenseMarker == null || _allyDefenseMarker.Id != id ||
                 (_allyDefenseMarker.Point - station).sqrMagnitude > 1f)
                 _allyDefenseMarker = new TacticalMarker(id, TacticalMarkerType.Defend, requester, _owner.Team, station,
-                    -1, Time.time, Time.time + TeamAiCooperation.STALE_SECONDS);
-            return _allyDefenseMarker;
+                    -1, now, now + TeamAiCooperation.STALE_SECONDS);
+            attacker = FindStationAttacker(station, now, out float attackerDistance);
+            bool idle = attacker == null && _localThreatForce.IsEmpty;
+            if (!idle) _allyDefenseIdleSince = float.NaN;
+            else if (float.IsNaN(_allyDefenseIdleSince)) _allyDefenseIdleSince = now;
+            float idleSeconds = float.IsNaN(_allyDefenseIdleSince) ? 0f : now - _allyDefenseIdleSince;
+            bool release = idleSeconds >= ALLY_DEFENSE_IDLE_SECONDS;
+            RecordAllyDefense(requester, attacker, attackerDistance, idleSeconds, release);
+            if (!release) return _allyDefenseMarker;
+            _allyDefenseReleasedUntil = now + ALLY_DEFENSE_RELEASE_SECONDS;
+            _allyDefenseIdleSince = float.NaN;
+            attacker = null;
+            return null;
+        }
+
+        /// <summary>S5: an ally-defence answer with nothing to fight this long is released.</summary>
+        public const float ALLY_DEFENSE_IDLE_SECONDS = 30f;
+        /// <summary>S5: a released ally-defence answer is not taken again for this long.</summary>
+        public const float ALLY_DEFENSE_RELEASE_SECONDS = TeamAiCooperation.ZONE_STRIKE_SECONDS;
+        private float _allyDefenseIdleSince = float.NaN;
+        private float _allyDefenseReleasedUntil = float.NegativeInfinity;
+        private string _lastAllyDefense;
+
+        /// <summary>The known, visible hostile ship within <see cref="LOCAL_ENGAGEMENT_RADIUS"/> of the station nearest it.</summary>
+        private GameEntity FindStationAttacker(Vector3 station, float now, out float distance)
+        {
+            GameEntity nearest = null;
+            distance = float.PositiveInfinity;
+            foreach (HostileSighting sighting in _intel.Sightings)
+            {
+                if (!sighting.UnitTypeId.IsShip || !_playerRoster.IsHostile(_owner.Id, sighting.Owner) ||
+                    _intel.GetConfidence(sighting, now) <= 0f) continue;
+                float candidate = PlanarDistance(station, ToVector(sighting.Position));
+                if (candidate > LOCAL_ENGAGEMENT_RADIUS || candidate >= distance ||
+                    !_entityLocator.TryGetEntity(sighting.EntityId, out GameEntity entity) ||
+                    entity.HealthModel.IsDestroyed || entity.IsCloaked() || !_vision.IsVisible(_owner.Id, entity)) continue;
+                nearest = entity;
+                distance = candidate;
+            }
+            return nearest;
+        }
+
+        // S7: one allyDefense row per change of requester, target or release; idle seconds drift without a new row.
+        private void RecordAllyDefense(PlayerId requester, GameEntity attacker, float distance, float idleSeconds,
+            bool release)
+        {
+            string key = FormattableString.Invariant(
+                $"requester={requester};attacker={(attacker == null ? 0 : attacker.Id)};released={release}");
+            if (key == _lastAllyDefense) return;
+            _lastAllyDefense = key;
+            EnemyAiTelemetry.RecordEvent(_owner.Id, _owner.Faction, "allyDefense", FormattableString.Invariant(
+                $"responder={_owner.Id};{key};attackersKnown={attacker != null};nearestAttacker={(attacker == null ? -1f : distance):F0};idleSeconds={idleSeconds:F0}"));
         }
 
         /// <summary>
@@ -868,6 +938,34 @@ namespace EmpireAtWar.Services.Enemy
         {
             get => _root._teamStationPressure;
             private set => _root._teamStationPressure = value;
+        }
+
+        /// <summary>
+        /// S4 end game, by situation: the station is at its top level and the unit cap is full or an assault surplus is
+        /// banked. The centre no longer holds the fleet; zone forces return to the main force. Set by <see cref="AssessStation"/>.
+        /// </summary>
+        public bool EndGameSituation
+        {
+            get => _root._endGameSituation;
+            private set => _root._endGameSituation = value;
+        }
+
+        /// <summary>
+        /// S3: the whole fleet rates at least the attack ratio at the focused hostile station and the unit cap is full
+        /// or an assault surplus is banked: zone forces keep only what their zone needs, the rest gathers to strike.
+        /// Set by <see cref="AssessStation"/>.
+        /// </summary>
+        public bool PressSituation
+        {
+            get => _root._pressSituation;
+            private set => _root._pressSituation = value;
+        }
+
+        /// <summary>S3: assault capitals over the whole fleet (every group). Set by <see cref="AssessStation"/>.</summary>
+        public int FleetAssaultCapitals
+        {
+            get => _root._fleetAssaultCapitals;
+            private set => _root._fleetAssaultCapitals = value;
         }
 
         /// <summary>
@@ -1111,17 +1209,32 @@ namespace EmpireAtWar.Services.Enemy
             TeamStationPressure = teamPressure;
             _fleetForce.Clear();
             float fleetValue = 0f;
+            int fleetCapitals = 0;
             _reachExcluded.Clear();
             foreach (IShipEntity ship in ships)
             {
                 if (!_entityLocator.TryGetEntity(ship.EntityId, out GameEntity entity) || entity.HealthModel.IsDestroyed ||
                     !entity.HealthModel.HasUnits) continue;
                 _forceBuilder.AddUnit(_fleetForce, entity);
-                fleetValue += _forceBuilder.GetProfile(entity.GetFacade<IUnitTypeFacade>().UnitTypeId).Price;
+                UnitTypeId unitType = entity.GetFacade<IUnitTypeFacade>().UnitTypeId;
+                fleetValue += _forceBuilder.GetProfile(unitType).Price;
                 _reachExcluded.Add(entity.Id);
+                if (_faction.CurrentLevel >= 4 && unitType.IsShip &&
+                    _faction.IsAssaultCapital(unitType.ShipType, entity.HealthModel.ShipClass)) fleetCapitals++;
             }
-            _hostileEconomyPressure = GetHostileEconomyPressure(FindFocusEnemy(origin));
+            FleetAssaultCapitals = fleetCapitals;
+            PlayerId focusEnemy = FindFocusEnemy(origin);
+            _hostileEconomyPressure = GetHostileEconomyPressure(focusEnemy);
             UpdateReinforcementCredits();
+            // S3 / S4: production has nothing left to spend on but the fleet; whether the fleet goes is its strength.
+            bool spendsOnFleet = _faction.IsAtUnitCap || _faction.HasAssaultSurplus;
+            EndGameSituation = spendsOnFleet && _faction.IsAtTopLevel;
+            GameEntity hostileBase = spendsOnFleet
+                ? FindClosestEntity(EntityRoles.IsPlayerBase, owner => owner == focusEnemy, origin) : null;
+            PressSituation = hostileBase != null && !_fleetForce.IsEmpty &&
+                ClampAdvantage(GetTradeCorrection(focusEnemy, now) * RateReachAt(_fleetForce, fleetValue,
+                    hostileBase.GetFacade<IEntityTransformFacade>().Transform.position, false)) >=
+                EnemyAiDifficultyProfile.Get(_owner.Difficulty).RequiredAttackRatio;
             HostileArmada worst = null;
             float advantage = float.PositiveInfinity;
             foreach (HostileArmada armada in _teamPicture.Armadas)
@@ -1277,8 +1390,18 @@ namespace EmpireAtWar.Services.Enemy
             GameEntity ownBase = FindOwnBase(origin);
             Vector3 home = ownBase != null ? ownBase.GetFacade<IEntityTransformFacade>().Transform.position :
                 GetHomeWithoutStation(origin);
-            PlayerId focusEnemy = FindFocusEnemy(home);
-            GameEntity enemyBaseTarget = FindClosestEntity(EntityRoles.IsPlayerBase, owner => owner == focusEnemy, origin);
+            // S6: a main force joins allied human ships fighting at a hostile station; own station pressure wins.
+            GameEntity allyAssaultStation = preferStrategicObjectives && !_stationPressure.HasPressure
+                ? FindAllyAssaultStation(origin) : null;
+            PlayerId focusEnemy;
+            if (allyAssaultStation == null) focusEnemy = FindFocusEnemy(home);
+            else
+            {
+                focusEnemy = allyAssaultStation.Owner;
+                _teamPicture.Cooperation.FocusEnemy = focusEnemy;
+            }
+            GameEntity enemyBaseTarget = allyAssaultStation ??
+                FindClosestEntity(EntityRoles.IsPlayerBase, owner => owner == focusEnemy, origin);
             _strategicCenter = enemyBaseTarget == null ? home :
                 (home + enemyBaseTarget.GetFacade<IEntityTransformFacade>().Transform.position) * 0.5f;
             float now = Time.time;
@@ -1416,14 +1539,22 @@ namespace EmpireAtWar.Services.Enemy
                 assaultInvestment >= 2f * unseenInvestment;
             // An assault under way is not dropped for a hostile force the fleet still outmatches 2 : 1 (W33).
             bool keepsAssault = AssaultUnderWay && assaultRaw >= ASSAULT_KEEP_ADVANTAGE;
-            bool assaultPlanned = _faction.HasAssaultReinforcementPlan && assaultRaw >= 1f &&
-                (hasZoneMajority || hasDecisiveSurplus);
-            bool canAssault = preferStrategicObjectives && (centre == null || securedCentre) &&
+            // S4: the end game skips the centre and zone-majority terms; S6: so does joining an allied assault, which
+            // also needs no capital strike group and no reinforcement wave (the allied ships are the strike).
+            bool endGame = preferStrategicObjectives && EndGameSituation;
+            bool allyAssault = allyAssaultStation != null;
+            bool skipsCentre = endGame || allyAssault;
+            // S3: the gate counts capitals over the whole fleet; the strike itself still needs them in this group.
+            int gateCapitals = preferStrategicObjectives
+                ? Math.Max(_assaultCapitals.Count, FleetAssaultCapitals) : _assaultCapitals.Count;
+            bool assaultPlanned = assaultRaw >= 1f && (allyAssault || _faction.HasAssaultReinforcementPlan &&
+                (hasZoneMajority || hasDecisiveSurplus || endGame));
+            bool canAssault = preferStrategicObjectives && (centre == null || securedCentre || skipsCentre) &&
                 !_stationPressure.HasPressure && ownBase != null && _productionAccess.HasHostBase &&
-                _assaultCapitals.Count >= EnemyFactionModel.MINIMUM_ASSAULT_CAPITALS &&
+                (allyAssault || gateCapitals >= EnemyFactionModel.MINIMUM_ASSAULT_CAPITALS) &&
                 (assaultPlanned || keepsAssault);
             AssaultGate = FormattableString.Invariant(
-                $"capitals={_assaultCapitals.Count};reinforcementPlan={_faction.HasAssaultReinforcementPlan};zoneMajority={hasZoneMajority};decisiveSurplus={hasDecisiveSurplus};keep={keepsAssault};assaultRaw={assaultRaw:F2};canAssault={canAssault}");
+                $"capitals={_assaultCapitals.Count};fleetCapitals={FleetAssaultCapitals};reinforcementPlan={_faction.HasAssaultReinforcementPlan};zoneMajority={hasZoneMajority};decisiveSurplus={hasDecisiveSurplus};keep={keepsAssault};assaultRaw={assaultRaw:F2};objective={_gameModel.VictoryCondition};securedCentre={securedCentre};stationPressure={_stationPressure.HasPressure};hostBase={_productionAccess.HasHostBase};reserveShips={ownShips.Count};press={PressSituation};endGame={endGame};allyAssault={allyAssault};canAssault={canAssault}");
             bool canHunt = enemyFleetTarget != null && (!securedCentre || canAssault) &&
                 !IsNearHostileBase(enemyFleetTarget.GetFacade<IEntityTransformFacade>().Transform.position) &&
                 RateAtTarget(enemyFleetTarget, tradeCorrection) >=
@@ -1432,6 +1563,7 @@ namespace EmpireAtWar.Services.Enemy
             _advantageSmoother.Sample(localRaw, fleetRaw, now, !_localThreatForce.IsEmpty, hasFleetThreat, retreatLine);
             if (_localThreat != null && _advantageSmoother.Local <= retreatLine)
                 _localThreat = FindLastStandTarget(origin, now) ?? _localThreat;
+            GameEntity assaultTarget = enemyBaseTarget == null ? null : FindAssaultTarget(enemyBaseTarget, origin, now);
             EnemyStrategicSnapshot snapshot = new EnemyStrategicSnapshot(
                 victoryCondition: _gameModel.VictoryCondition,
                 difficulty: _owner.Difficulty,
@@ -1455,7 +1587,7 @@ namespace EmpireAtWar.Services.Enemy
                 recoveryMode: _recovery.IsActive,
                 isStationCritical: _stationPressure.IsStationCritical,
                 hasGuardSite: guardPosition.HasValue,
-                isCentreGuardGoal: preferStrategicObjectives && centre != null && !canAssault,
+                isCentreGuardGoal: preferStrategicObjectives && centre != null && !canAssault && !skipsCentre,
                 canAssaultBase: canAssault,
                 canHuntFleet: canHunt && captureObjective == null,
                 hasSecuredCentre: preferStrategicObjectives && securedCentre,
@@ -1463,7 +1595,9 @@ namespace EmpireAtWar.Services.Enemy
                 raidWhenBehind: preferStrategicObjectives && _behindOnZones && captureObjective == null,
                 isLateGame: LateGameSituation,
                 hasReachedRetreatPoint: reachedRetreatPoint,
-                tradeCorrection: tradeCorrection);
+                tradeCorrection: tradeCorrection,
+                isEndGame: endGame,
+                joinsAllyAssault: allyAssault);
             _receivers.Clear();
             _shipForces.Clear();
             _targetForces.Clear();
@@ -1484,6 +1618,7 @@ namespace EmpireAtWar.Services.Enemy
 #endif
             AddTargetForce(enemyFleetTarget, now);
             AddTargetForce(enemyBaseTarget, now);
+            AddTargetForce(assaultTarget, now);
             AddTargetForce(_raidTarget, now);
             AddTargetForce(_localThreat, now);
             AddTargetForce(defenseTarget, now);
@@ -1532,6 +1667,7 @@ namespace EmpireAtWar.Services.Enemy
                 teamHeldZones: teamHeldZones)
             {
                 IsZoneForce = AssignedZoneId != null,
+                AssaultTarget = assaultTarget,
                 AssaultGate = AssaultGate,
                 LocalOrigin = LocalOriginSource
             };
@@ -2588,6 +2724,81 @@ namespace EmpireAtWar.Services.Enemy
                     PlanarDistance(position, station.Position) <= BASE_EXCLUSION_MARGIN)
                     return true;
             return false;
+        }
+
+        /// <summary>S6: allied human ships at a hostile station that make it an allied assault.</summary>
+        private const int ALLY_ASSAULT_MIN_SHIPS = 3;
+
+        /// <summary>
+        /// S6: the hostile station nearest <paramref name="origin"/> with at least <see cref="ALLY_ASSAULT_MIN_SHIPS"/>
+        /// allied human ships inside <see cref="BASE_EXCLUSION_MARGIN"/> of it; null when no human pushes a station.
+        /// </summary>
+        private GameEntity FindAllyAssaultStation(Vector3 origin)
+        {
+            GameEntity best = null;
+            float bestDistance = float.PositiveInfinity;
+            IReadOnlyList<AiWorldSnapshot.Entry> units = _worldSnapshot.LivingUnits;
+            foreach (AiWorldSnapshot.Entry station in _worldSnapshot.Bases)
+            {
+                if (!_playerRoster.IsHostile(_owner.Id, station.Owner) || station.Entity.HealthModel.IsDestroyed) continue;
+                float distance = PlanarDistance(origin, station.Position);
+                if (distance >= bestDistance) continue;
+                int humanShips = 0;
+                for (int i = 0; i < units.Count && humanShips < ALLY_ASSAULT_MIN_SHIPS; i++)
+                {
+                    AiWorldSnapshot.Entry unit = units[i];
+                    if (unit.Owner == _owner.Id || !unit.UnitTypeId.IsShip ||
+                        !_playerRoster.IsAllied(_owner.Id, unit.Owner) || _playerRoster.Get(unit.Owner).IsAi ||
+                        PlanarDistance(unit.Position, station.Position) > BASE_EXCLUSION_MARGIN) continue;
+                    humanShips++;
+                }
+                if (humanShips < ALLY_ASSAULT_MIN_SHIPS) continue;
+                best = station.Entity;
+                bestDistance = distance;
+            }
+            return best;
+        }
+
+        /// <summary>
+        /// S1a / S1b assault target order: a hostile ship fighting near the fleet (on the way or at the base), else the
+        /// known hostile ship inside <see cref="BASE_EXCLUSION_MARGIN"/> of <paramref name="station"/> nearest the fleet,
+        /// else the visible armed platform there nearest the fleet, else the station.
+        /// </summary>
+        private GameEntity FindAssaultTarget(GameEntity station, Vector3 origin, float now)
+        {
+            if (_localThreat != null && _localThreat.TryGetFacade(out IUnitTypeFacade threatType) &&
+                threatType.UnitTypeId.IsShip) return _localThreat;
+            Vector3 stationPosition = station.GetFacade<IEntityTransformFacade>().Transform.position;
+            GameEntity best = null;
+            float bestDistance = float.PositiveInfinity;
+            foreach (HostileSighting sighting in _intel.Sightings)
+            {
+                Vector3 position = ToVector(sighting.Position);
+                if (!sighting.UnitTypeId.IsShip || !_playerRoster.IsHostile(_owner.Id, sighting.Owner) ||
+                    PlanarDistance(position, stationPosition) > BASE_EXCLUSION_MARGIN ||
+                    _intel.GetConfidence(sighting, now) <= 0f) continue;
+                float distance = PlanarDistance(origin, position);
+                if (distance >= bestDistance ||
+                    !_entityLocator.TryGetEntity(sighting.EntityId, out GameEntity entity) ||
+                    entity.HealthModel.IsDestroyed || entity.IsCloaked()) continue;
+                best = entity;
+                bestDistance = distance;
+            }
+            if (best != null) return best;
+            IReadOnlyList<AiWorldSnapshot.Entry> structures = _worldSnapshot.RaidStructures;
+            for (int i = 0; i < structures.Count; i++)
+            {
+                AiWorldSnapshot.Entry entry = structures[i];
+                if (!_playerRoster.IsHostile(_owner.Id, entry.Owner) || entry.Entity.HealthModel.IsDestroyed ||
+                    PlanarDistance(entry.Position, stationPosition) > BASE_EXCLUSION_MARGIN ||
+                    !entry.Entity.TryGetFacade(out IStructureKindFacade structure) ||
+                    structure.Kind != StructureKind.DefendPlatform || !_vision.IsVisible(_owner.Id, entry.Entity)) continue;
+                float distance = PlanarDistance(origin, entry.Position);
+                if (distance >= bestDistance) continue;
+                best = entry.Entity;
+                bestDistance = distance;
+            }
+            return best ?? station;
         }
 
         private void UpdateRecovery(Vector3 origin, GameEntity ownBase, float now)

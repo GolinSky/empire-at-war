@@ -1,11 +1,22 @@
 ---
 category: Bugs
-status: in-progress
+status: done
 created: 2026-11-19
 follows: "[[TODOs/Bugs/Enemy_AI_Economy_Strategy]]"
 reopened: 2026-11-21
+completed: 2026-11-25
+acceptance: pending-user
 ---
 # Enemy AI Opening and Task Groups
+
+## Closed (2026-11-25, on the user's request)
+- **Outcome:** Rounds 1–10 implemented (W1–W7, W9–W28, W30–W57, W59, W61–W69). Opening and mid game work in the 2v2 host log of 2026-11-24 23:15 (3,490 s): all three AIs expand, reach level 5 and the 120 unit cap, defend their stations and retreat to gathering points.
+- **Does not work (new plan):** no AI assaults a station (`AssaultBase` 0 of 1,174 state rows); the allied AI does not join the human's push → [[TODOs/Bugs/Enemy_AI_Station_Push_And_Ally_Assault]].
+- **Not implemented, carried over to the new plan:** W8 / W29 (role labels, blocked by the user's flag review), W58 (route fallback, needs a development-build capture), W44 test gaps.
+- **W60 gates against the 23:15 log:** bank > 50,000 only at a full unit cap (118–120 / 120) → pass; Capture / Raid below fleet advantage 0.5: 6 sample rows (Player3 608–745 s, no station pressed; Player1 3,476 s at 0.18 while Player3's base threat was 0.67) → 1 likely **fail**, team pressure flag not in the log; non-urgent state switches under 8 s: 57 (Player2 24, Player3 19, Player1 14) → **fail**, recorded in the new plan (P2); garrison, platform timing and `idleUnderFire` gates not measurable in the release log.
+- **User gates still open:** W14, W45, W60 and the earlier round gates → [[TODOs/User_Acceptance_Queue]].
+- **Verification:** log and source read only; no tests run for this closure. Last recorded runs: Round 10 categories green on 2026-11-23 (see Status).
+- **Reusable guidance:** [[Architecture/Enemy_AI_Objectives]] (known issue: assault gate). No new rule extracted: the remaining faults are open work, owned by the new plan.
 
 ## Status (2026-11-22, Round 9 implemented: W31–W40, W43; W44 partly; W29 blocked by W8)
 - **Audit 2026-11-23 (after Round 10): 66 faults still in source → own plan [[TODOs/Bugs/Enemy_AI_Audit_Fixes]].** Touches W47 (garrison released after 120 s by the no-flip stall rule), W55 (remaining no-order paths), W63 (group strength without its wings).

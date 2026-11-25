@@ -299,6 +299,7 @@ namespace EmpireAtWar.Services.Enemy
                     "reason=no affordable combat unit can arrive before station loss");
             }
             _capacityBlocked = shipBlockedByCapacity;
+            _factionModel.IsAtUnitCap = shipBlockedByCapacity;
             bool choiceFits = hasShipOption && FitsRemainingCapacity(shipChoice);
             // A big ship that does not fit yet may still be saved for: it is built for the fleet after the next losses.
             bool savingForShip = !critical && hasShipOption && !canBuildShip;

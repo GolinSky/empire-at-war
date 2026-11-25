@@ -91,6 +91,7 @@ namespace EmpireAtWar.Services.Enemy
         private readonly List<IShipEntity> _lostShips = new List<IShipEntity>();
         private long _markerId = -1;
         private Vector3 _markerPoint;
+        private GameEntity _markerTarget;
         private readonly HashSet<IShipEntity> _markerShips = new HashSet<IShipEntity>();
         private Vector3? _lastOrderPoint;
 
@@ -135,8 +136,9 @@ namespace EmpireAtWar.Services.Enemy
                 case EnemyStrategicState.RaidStructures: target = context.RaidTarget; break;
                 default: return true;
             }
-            IReadOnlyList<IShipEntity> capitals = decision.State == EnemyStrategicState.AssaultBase
-                ? context.AssaultCapitals : null;
+            // S6: joining an allied assault needs no capital strike group; the allied ships are the strike.
+            IReadOnlyList<IShipEntity> capitals = decision.State == EnemyStrategicState.AssaultBase &&
+                !context.Snapshot.JoinsAllyAssault ? context.AssaultCapitals : null;
             if (target == null) return true;
             return _attackForce.Assemble(context, target, decision.CommittedShipCount, capitals) &&
                 (capitals == null || _attackForce.Ships.Count >= EnemyFactionModel.MINIMUM_ASSAULT_CAPITALS);
@@ -208,8 +210,11 @@ namespace EmpireAtWar.Services.Enemy
                     IssueAttackOrHunt(context, decision.CommittedShipCount, context.EnemyFleetTarget);
                     return;
                 case EnemyStrategicState.AssaultBase:
-                    IssueAttackOrHunt(context, decision.CommittedShipCount, context.EnemyBaseTarget, allowHunt: false,
-                        eligibleShips: context.AssaultCapitals);
+                    // S1a / S1b: clear the station's surroundings and fight on the way; S4 / S6: the end game and an
+                    // allied assault send every ship, not only the capitals.
+                    IssueAttackOrHunt(context, decision.CommittedShipCount, context.AssaultTarget ?? context.EnemyBaseTarget,
+                        allowHunt: false, eligibleShips: IsWholeFleetAssault(context) ? null : context.AssaultCapitals,
+                        keepTargets: true);
                     return;
                 case EnemyStrategicState.EngageLocal:
                     ExecuteLocalEngagement(decision, context);
@@ -237,6 +242,9 @@ namespace EmpireAtWar.Services.Enemy
                     throw new ArgumentOutOfRangeException(nameof(decision.State));
             }
         }
+
+        private static bool IsWholeFleetAssault(EnemyStrategicContext context) =>
+            context.Snapshot.IsEndGame || context.Snapshot.JoinsAllyAssault;
 
         /// <summary>
         /// Where a point-based state sends the ships: the capture target, the gather or guard point, or the retreat
@@ -695,11 +703,13 @@ namespace EmpireAtWar.Services.Enemy
         public void ExecuteMarker(TacticalMarker marker,
             GameEntity attackTarget, EnemyStrategicContext context, string reason = null)
         {
-            // A unit target is chased by its own order, so its movement does not need fresh orders.
-            if (_markerId != marker.Id || attackTarget == null && (_markerPoint - marker.Point).sqrMagnitude > 1f)
+            // A unit target is chased by its own order, so its movement does not need fresh orders; a new target does.
+            if (_markerId != marker.Id || !ReferenceEquals(_markerTarget, attackTarget) ||
+                attackTarget == null && (_markerPoint - marker.Point).sqrMagnitude > 1f)
                 _markerShips.Clear();
             _markerId = marker.Id;
             _markerPoint = marker.Point;
+            _markerTarget = attackTarget;
             _body.Clear();
             _stragglers.Clear();
             var receivers = new List<GameEntity>();
@@ -721,7 +731,9 @@ namespace EmpireAtWar.Services.Enemy
                 case TacticalMarkerType.Retreat:
                     _unitOrderService.IssueRetreat(receivers, context.RetreatAnchor.Value);
                     break;
+                // S5: an allied station's defence attacks the known attacker instead of parking at the station.
                 case TacticalMarkerType.Attack when attackTarget != null:
+                case TacticalMarkerType.Defend when attackTarget != null:
                     _unitOrderService.IssueAttack(receivers, attackTarget);
                     break;
                 case TacticalMarkerType.Attack:
