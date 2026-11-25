@@ -85,7 +85,8 @@ MonoBehaviour:
     <Biome>k__BackingField: 0
     <Preview>k__BackingField: {fileID: 2800000, guid: 3858e6a34ca84d841a2e7f76952eb874,
       type: 3}
-    <Decorations>k__BackingField: {fileID: 0}
+    <Decorations>k__BackingField: {fileID: 11400000, guid: a72c974abed8d884da025e06a9d4089b,
+      type: 2}
     <OverrideSeed>k__BackingField: 0
     <PlanetSeed>k__BackingField: 0
     <AdditionalRelayPairs>k__BackingField: 0
@@ -176,7 +177,8 @@ MonoBehaviour:
     <Biome>k__BackingField: 0
     <Preview>k__BackingField: {fileID: 2800000, guid: 70b6d9583e1f3d54282e6ef823cd96aa,
       type: 3}
-    <Decorations>k__BackingField: {fileID: 0}
+    <Decorations>k__BackingField: {fileID: 11400000, guid: a72c974abed8d884da025e06a9d4089b,
+      type: 2}
     <OverrideSeed>k__BackingField: 0
     <PlanetSeed>k__BackingField: 0
     <AdditionalRelayPairs>k__BackingField: 0
@@ -264,7 +266,8 @@ MonoBehaviour:
     <Biome>k__BackingField: 2
     <Preview>k__BackingField: {fileID: 2800000, guid: 42eee523fabe6c4458a97a0e7528f926,
       type: 3}
-    <Decorations>k__BackingField: {fileID: 0}
+    <Decorations>k__BackingField: {fileID: 11400000, guid: a72c974abed8d884da025e06a9d4089b,
+      type: 2}
     <OverrideSeed>k__BackingField: 0
     <PlanetSeed>k__BackingField: 0
     <AdditionalRelayPairs>k__BackingField: 0
@@ -420,7 +423,8 @@ MonoBehaviour:
     <Biome>k__BackingField: 4
     <Preview>k__BackingField: {fileID: 2800000, guid: 185af5b8aa8a06948a746ebc5145ec41,
       type: 3}
-    <Decorations>k__BackingField: {fileID: 0}
+    <Decorations>k__BackingField: {fileID: 11400000, guid: a72c974abed8d884da025e06a9d4089b,
+      type: 2}
     <OverrideSeed>k__BackingField: 0
     <PlanetSeed>k__BackingField: 0
     <AdditionalRelayPairs>k__BackingField: 0
