@@ -126,8 +126,8 @@ MonoBehaviour:
         <Name>k__BackingField: Rothana Star Destroyer
         <MaxCount>k__BackingField: 3
         <AvailableLevel>k__BackingField: 5
-        <Price>k__BackingField: 8000
-        <BuildTime>k__BackingField: 60
+        <Price>k__BackingField: 7000
+        <BuildTime>k__BackingField: 55
         <UnitCapacity>k__BackingField: 10
         <Icon>k__BackingField: {fileID: 21300000, guid: 677a9fb4a7566e14d932893ee85f3357,
           type: 3}
@@ -172,7 +172,7 @@ MonoBehaviour:
         <AvailableLevel>k__BackingField: 5
         <Price>k__BackingField: 40000
         <BuildTime>k__BackingField: 110
-        <UnitCapacity>k__BackingField: 50
+        <UnitCapacity>k__BackingField: 35
         <Icon>k__BackingField: {fileID: 21300000, guid: 771dbf8529c7a394b864ffcb0bd556d7,
           type: 3}
     - key: 10
@@ -192,7 +192,7 @@ MonoBehaviour:
         <Name>k__BackingField: Imperator-class Star Destroyer
         <MaxCount>k__BackingField: 30
         <AvailableLevel>k__BackingField: 5
-        <Price>k__BackingField: 8000
+        <Price>k__BackingField: 7000
         <BuildTime>k__BackingField: 60
         <UnitCapacity>k__BackingField: 10
         <Icon>k__BackingField: {fileID: 21300000, guid: 467453f64c3f87547aa904ce3fda10b9,
@@ -1172,4 +1172,4 @@ MonoBehaviour:
   miningFacilities: 00000000
   defendPlatforms: 000000000200000003000000
   superWeapons: 000000000100000002000000
-  shipMarks: 8
+  shipMarks: 0

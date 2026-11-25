@@ -147,7 +147,7 @@ MonoBehaviour:
         <AvailableLevel>k__BackingField: 5
         <Price>k__BackingField: 18000
         <BuildTime>k__BackingField: 80
-        <UnitCapacity>k__BackingField: 25
+        <UnitCapacity>k__BackingField: 20
         <Icon>k__BackingField: {fileID: 21300000, guid: d1df96d57bfbbb049952971439112bf5,
           type: 3}
     - key: 307
@@ -391,9 +391,9 @@ MonoBehaviour:
       value:
         matchups: {fileID: 0}
         displayName: Mediator
-        description: Mon Calamari battlecruiser with 40,000 hull and 45,000 shields.
-          Eight heavy dual turbolasers, six heavy dual ion cannons, eight medium
-          dual turbolasers, six medium dual laser cannons and six heavy laser cannons.
+        description: Mon Calamari battlecruiser with 60,000 hull and 45,000 shields.
+          Eight heavy dual turbolasers, six heavy quad turbolasers, six heavy dual
+          ion cannons, eight medium dual turbolasers and six medium dual laser cannons.
           Boost Weapon Power halves weapon reload and time between shots and halves
           speed and shield regeneration for 7 s. Recovers in 50 s. Deploys 1 bomber
           squadron at once. Carries 2 total squadron launches, including the initial
@@ -405,7 +405,7 @@ MonoBehaviour:
         <Name>k__BackingField: Mediator Battlecruiser
         <MaxCount>k__BackingField: 3
         <AvailableLevel>k__BackingField: 4
-        <Price>k__BackingField: 15000
+        <Price>k__BackingField: 12000
         <BuildTime>k__BackingField: 65
         <UnitCapacity>k__BackingField: 15
         <Icon>k__BackingField: {fileID: 21300000, guid: 7c9824186eb64db48a578111cfce264b,
@@ -427,7 +427,7 @@ MonoBehaviour:
         <MaxCount>k__BackingField: 3
         <AvailableLevel>k__BackingField: 5
         <Price>k__BackingField: 7000
-        <BuildTime>k__BackingField: 45
+        <BuildTime>k__BackingField: 60
         <UnitCapacity>k__BackingField: 10
         <Icon>k__BackingField: {fileID: 21300000, guid: 4b20a06ec4c30014daec0d6a75029d2a,
           type: 3}

@@ -37,6 +37,11 @@ namespace EmpireAtWar.Editor
         public static readonly ShipAbilityId[] SupportAbilities = { ShipAbilityId.Interdict };
         /// <summary>Abilities that make a ship an ion specialist whatever its guns (Malevolence's ion pulse).</summary>
         public static readonly ShipAbilityId[] IonAbilities = { ShipAbilityId.IonPulse, ShipAbilityId.IonShot };
+        /// <summary>
+        /// Abilities that make a ship anti-capital whatever its guns: Malevolence's ion pulse disables a capital ship and
+        /// strips its shields, and targets dreadnoughts first.
+        /// </summary>
+        public static readonly ShipAbilityId[] AntiCapitalAbilities = { ShipAbilityId.IonPulse };
         /// <summary>Carrier needs at least this many hangar bays; one bay is a few escorts, not a carrier.</summary>
         public const int MIN_CARRIER_BAYS = 2;
 
@@ -92,6 +97,8 @@ namespace EmpireAtWar.Editor
 
         public static bool HasIonAbility(ShipData ship) => ship.Abilities.Any(IonAbilities.Contains);
 
+        public static bool HasAntiCapitalAbility(ShipData ship) => ship.Abilities.Any(AntiCapitalAbilities.Contains);
+
         /// <summary>Ion weapons are its largest weapon group, or it has an ion ability.</summary>
         public static bool IsIonSpecialist(ShipData ship, WeaponsData weapons) =>
             IsLargestShare(ship, weapons, IonFamilies) || HasIonAbility(ship);
@@ -117,7 +124,8 @@ namespace EmpireAtWar.Editor
             if (ship.Speed > speed * (1f + SPEED_BAND)) roles |= ShipRole.Fast;
             else if (ship.Speed < speed * (1f - SPEED_BAND)) roles |= ShipRole.Slow;
             if (GunCount(ship) > guns * (1f + GUN_BAND)) roles |= ShipRole.Dps;
-            if (CapitalDamage(ship, weapons) > capitalDamage * (1f + ANTI_CAPITAL_BAND)) roles |= ShipRole.AntiCapital;
+            if (CapitalDamage(ship, weapons) > capitalDamage * (1f + ANTI_CAPITAL_BAND) || HasAntiCapitalAbility(ship))
+                roles |= ShipRole.AntiCapital;
             if (IsCarrier(ship)) roles |= ShipRole.Carrier;
             if (IsLargestShare(ship, weapons, MissileFamilies)) roles |= ShipRole.MissileSpecialist;
             if (IsIonSpecialist(ship, weapons)) roles |= ShipRole.IonSpecialist;

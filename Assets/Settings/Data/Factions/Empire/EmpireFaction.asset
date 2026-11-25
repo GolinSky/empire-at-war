@@ -329,7 +329,7 @@ MonoBehaviour:
         <AvailableLevel>k__BackingField: 5
         <Price>k__BackingField: 25000
         <BuildTime>k__BackingField: 90
-        <UnitCapacity>k__BackingField: 35
+        <UnitCapacity>k__BackingField: 30
         <Icon>k__BackingField: {fileID: 21300000, guid: d92e0b25eb3e0d94ab8f1713e2ec1b84,
           type: 3}
     - key: 213
@@ -446,15 +446,15 @@ MonoBehaviour:
       value:
         matchups: {fileID: 11400000, guid: 8b470335c1b96ee4f97ee2c8ec1d4e73, type: 2}
         displayName: Xyston
-        description: '28,000 hull; 11,000 shields; speed 20. Built around a spinal
+        description: '28,000 hull; 11,000 shields; speed 18. Built around a spinal
           axial superlaser: 46,800 base beam damage over 6 s against a frigate, capital
           ship, station or structure, enough to destroy an ISD II outright; recovers
           for 60 s and cannot target fighters or corvettes. Six heavy dual turbolaser
-          batteries, six heavy dual laser cannons, five medium dual turbolasers,
-          four heavy dual ion cannons. Shield generator, two engines and tractor
+          batteries, six heavy dual ion cannons, ten point defense lasers and five
+          heavy dual missile launchers. Shield generator, two engines and tractor
           beam can be destroyed. Tractor Beam slows enemy ships of a lower class.
           No hangar.'
-        role: Anti-capital artillery / Glass cannon
+        role: Siege superlaser / Anti-capital, anti-strikecraft
         iconKey: 344ab43239374da438ba8d36fe4c2dd7:21300000
         isHero: 0
         isUnique: 0
@@ -489,7 +489,7 @@ MonoBehaviour:
         <AvailableLevel>k__BackingField: 5
         <Price>k__BackingField: 18000
         <BuildTime>k__BackingField: 110
-        <UnitCapacity>k__BackingField: 20
+        <UnitCapacity>k__BackingField: 25
         <Icon>k__BackingField: {fileID: 21300000, guid: 7483d8b1ea7011e4a9c5384489f3f150,
           type: 3}
   squadrons:
@@ -1282,4 +1282,4 @@ MonoBehaviour:
   miningFacilities: 03000000
   defendPlatforms: 000000000200000003000000
   superWeapons: 000000000100000002000000
-  shipMarks: 32
+  shipMarks: 34

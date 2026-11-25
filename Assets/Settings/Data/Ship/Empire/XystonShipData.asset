@@ -33,7 +33,7 @@ MonoBehaviour:
   - {x: -13.850743, y: 92.73679}
   - {x: -49.963013, y: -23.018621}
   - {x: -68.65464, y: -89.8775}
-  <Speed>k__BackingField: 20
+  <Speed>k__BackingField: 18
   heightTiers: {fileID: 11400000, guid: f4dc0cc9c112ddb4d8209fb4b8d1d9de, type: 2}
   <HeightTier>k__BackingField: 2
   <HullBottom>k__BackingField: -38.655575
@@ -64,10 +64,10 @@ MonoBehaviour:
   weaponLoadout:
   - weaponType: 3
     count: 6
-  - weaponType: 5
-    count: 5
-  - weaponType: 69
-    count: 6
+  - weaponType: 14
+    count: 10
   - weaponType: 91
-    count: 4
-  roles: 4104
+    count: 6
+  - weaponType: 128
+    count: 5
+  roles: 552

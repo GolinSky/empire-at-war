@@ -36,7 +36,10 @@ namespace EmpireAtWar.Entities.Ship.Data
         Artillery = 1 << 10,
         /// <summary>Helps other ships more than it fights (interdiction).</summary>
         Support = 1 << 11,
-        /// <summary>Deals more damage to capital ships than most of its faction's class: heavy guns.</summary>
+        /// <summary>
+        /// Deals more damage to capital ships than most of its faction's class (heavy guns), or has an ability that
+        /// disables them (ion pulse).
+        /// </summary>
         AntiCapital = 1 << 12
     }
 }
