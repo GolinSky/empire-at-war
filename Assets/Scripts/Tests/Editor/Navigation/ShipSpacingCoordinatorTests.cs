@@ -13,6 +13,7 @@ namespace EmpireAtWar.Tests.Movement
         [TestCase("revision")]
         [TestCase("target")]
         [TestCase("stopped")]
+        [TestCase("heading")]
         [TestCase("own-position")]
         [TestCase("blocker-position")]
         [TestCase("blocker-moving")]
@@ -34,6 +35,7 @@ namespace EmpireAtWar.Tests.Movement
                 case "revision": ship.SpacingRevision++; break;
                 case "target": ship.SpacingTargetPosition = Vector3.forward * 10f; break;
                 case "stopped": ship.CanSettle = false; break;
+                case "heading": ship.SpacingForward = Vector3.right; break;
                 case "own-position": ship.NavigationPosition += Vector3.forward * 2f; break;
                 case "blocker-position": blocker.NavigationPosition += Vector3.forward * 2f; break;
                 case "blocker-moving": blocker.IsMoving = true; break;
@@ -228,7 +230,9 @@ namespace EmpireAtWar.Tests.Movement
             public int SpacingRevision { get; set; }
             public bool CanSettle { get; set; } = true;
             public bool IsMoving { get; set; }
-            public Vector3 SpacingTargetPosition { get; set; }
+            // A distant target ahead: the sideways nudge stays within the settle turn limit.
+            public Vector3 SpacingTargetPosition { get; set; } = Vector3.forward * 1000f;
+            public Vector3 SpacingForward { get; set; } = Vector3.forward;
             public bool AcceptCorrection { get; set; } = true;
             public int Attempts { get; private set; }
 

@@ -1151,6 +1151,28 @@ namespace EmpireAtWar.Tests.Movement
             }
         }
 
+        [Test]
+        public void CombatHold_SettleHopLongerThanItsDistanceFailsInsteadOfLooping()
+        {
+            var ship = new GameObject("Looping combat settling");
+            try
+            {
+                ShipMoveComponent component = CreateReadyComponent(ship, out var navigation);
+                SetPrivateField(component, "_isNavigationRegistered", true);
+                navigation.IsDeferred = false;
+                component.HoldPosition(new SpacingTarget(ship.transform));
+                Vector3 destination = Vector3.forward * 25f;
+                navigation.RouteVia = destination + Vector3.right * 100f;
+                int stops = navigation.StopCallCount;
+
+                Assert.That(component.TrySettle(destination, component.SpacingRevision), Is.False);
+                Assert.That(component.IsMoving, Is.False);
+                Assert.That(component.CanSettle, Is.True);
+                Assert.That(navigation.StopCallCount, Is.GreaterThan(stops));
+            }
+            finally { Object.DestroyImmediate(ship); }
+        }
+
         [TestCase(false)]
         [TestCase(true)]
         public void CombatHold_FinishedSettlingDoesNotStopAgainOnCancel(bool stationary)
@@ -1708,6 +1730,8 @@ namespace EmpireAtWar.Tests.Movement
             public bool IsClear { get; set; } = true;
             public bool ExecuteImmediately { get; set; } = true;
             public Queue<IShipPlanRequester> PendingPlans { get; } = new Queue<IShipPlanRequester>();
+            // Routes through this point when set: a hop much longer than its straight distance (a turning loop).
+            public Vector3? RouteVia { get; set; }
 
             public void Register(
                 IShipNavigationAgent agent,
@@ -1780,7 +1804,13 @@ namespace EmpireAtWar.Tests.Movement
                 return new ShipNavigationPlan(
                     destination: requestedDestination,
                     detour: null,
-                    route: new ShipRoute(new[] { ShipRoutePiece.Line(agent.NavigationPosition, requestedDestination) }),
+                    route: RouteVia.HasValue
+                        ? new ShipRoute(new[]
+                        {
+                            ShipRoutePiece.Line(agent.NavigationPosition, RouteVia.Value),
+                            ShipRoutePiece.Line(RouteVia.Value, requestedDestination)
+                        })
+                        : new ShipRoute(new[] { ShipRoutePiece.Line(agent.NavigationPosition, requestedDestination) }),
                     turnDuration: 0f,
                     movementDuration: 0f,
                     isStationary: IsStationary,

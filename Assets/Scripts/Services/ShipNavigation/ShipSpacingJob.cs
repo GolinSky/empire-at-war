@@ -13,6 +13,8 @@ namespace EmpireAtWar.Services.ShipNavigation
         // Overlap below this share of the pair's contact distance is left alone: navigation circles are larger
         // than the hulls, and nudging held ships for a few metres moved them out of their firing positions.
         internal const float MIN_PENETRATION_FRACTION = 0.1f;
+        // A bow-on holder needs ~90° for any sideways slide; larger turns are refused and the pair stays overlapped.
+        internal const float MAX_SETTLE_TURN_DEGREES = 100f;
 
         [ReadOnly] public NativeArray<ShipSpacingInput> Inputs;
         [ReadOnly] public NativeParallelHashMap<int2, int2> Ranges;
@@ -88,15 +90,18 @@ namespace EmpireAtWar.Services.ShipNavigation
                 if (penetration < radius * MIN_PENETRATION_FRACTION) continue;
                 if (result.HasCorrection && (penetration < result.Penetration ||
                     penetration == result.Penetration && other.RegistrationId > result.BlockerId)) continue;
-                float2 direction = distance > 0.0001f
-                    ? separation / distance
-                    : CoincidentDirection(own.RegistrationId, other.RegistrationId);
                 result.HasCorrection = true;
                 result.BlockerId = other.RegistrationId;
                 result.BlockerIndex = otherIndex;
                 result.Penetration = penetration;
-                result.Goal = other.Position + direction * (radius + SEPARATION_MARGIN);
+                result.Goal = SlideGoal(own, other, separation, distance, radius + SEPARATION_MARGIN);
             }
+
+            // Settling flies the hop as a forward route: a goal behind the ship turns its stern to the target.
+            if (result.HasCorrection &&
+                math.dot(math.normalize(result.Goal - own.Position), own.Forward) <
+                    math.cos(math.radians(MAX_SETTLE_TURN_DEGREES)))
+                result.HasCorrection = false;
 
             result.Visited = count;
             result.Saturated = total > count;
@@ -112,6 +117,31 @@ namespace EmpireAtWar.Services.ShipNavigation
             if (input.Moving) footprint ^= 0x9e3779b9u;
             return math.hash(new uint4(footprint,
                 math.asuint(input.Radius), math.asuint(input.Bottom), math.asuint(input.Top)));
+        }
+
+        // Slides sideways around the hold target until the pair clears, keeping range and the target abeam or ahead.
+        private static float2 SlideGoal(ShipSpacingInput own, ShipSpacingInput other, float2 separation,
+            float distance, float clearance)
+        {
+            float2 fromTarget = own.Position - own.TargetPosition;
+            if (math.lengthsq(fromTarget) < 0.0001f)
+            {
+                float2 away = distance > 0.0001f
+                    ? separation / distance
+                    : CoincidentDirection(own.RegistrationId, other.RegistrationId);
+                return other.Position + away * clearance;
+            }
+            float2 radial = math.normalize(fromTarget);
+            float2 tangent = new float2(-radial.y, radial.x);
+            // Away from the blocker's side; a blocker on the ship–target line falls back to heading, then ids.
+            float side = math.dot(tangent, separation);
+            if (math.abs(side) < 0.0001f) side = math.dot(tangent, own.Forward);
+            if (math.abs(side) < 0.0001f)
+                side = math.dot(tangent, CoincidentDirection(own.RegistrationId, other.RegistrationId));
+            if (side < 0f) tangent = -tangent;
+            float along = math.dot(separation, tangent);
+            float step = -along + math.sqrt(along * along + clearance * clearance - math.lengthsq(separation));
+            return own.Position + tangent * step;
         }
 
         private static float2 CoincidentDirection(int ownId, int otherId)

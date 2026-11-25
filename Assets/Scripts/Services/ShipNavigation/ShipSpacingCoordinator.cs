@@ -12,6 +12,8 @@ namespace EmpireAtWar.Services.ShipNavigation
         private const float SNAPSHOT_INTERVAL = 0.2f;
         private const float CORRECTION_COOLDOWN = 1f;
         private const int MAX_CONSUMED_PER_FRAME = 32;
+        // A holder still turning onto its target has not settled its heading; its turn check is stale.
+        private const float HEADING_TOLERANCE_DEGREES = 5f;
         private static readonly ProfilerMarker _snapshotMarker = new ProfilerMarker("Battle.Spacing.Snapshot");
         private static readonly ProfilerMarker _consumeMarker = new ProfilerMarker("Battle.Spacing.Consume");
         private readonly ShipSpacingBatch _batch = new ShipSpacingBatch();
@@ -62,6 +64,8 @@ namespace EmpireAtWar.Services.ShipNavigation
                         RegistrationId = entry.Id,
                         Revision = entry.Spacing == null ? 0 : entry.Spacing.SpacingRevision,
                         Position = new float2(position.x, position.z),
+                        TargetPosition = new float2(entry.TargetPosition.x, entry.TargetPosition.z),
+                        Forward = eligible ? PlanarForward(entry.Spacing) : float2.zero,
                         Radius = agent.NavigationRadius,
                         Bottom = agent.NavigationHullSpan.Bottom,
                         Top = agent.NavigationHullSpan.Top,
@@ -109,7 +113,9 @@ namespace EmpireAtWar.Services.ShipNavigation
                     if (math.distancesq(new float2(position.x, position.z), input.Position) > tolerance * tolerance ||
                         math.distancesq(new float2(blockerPosition.x, blockerPosition.z), blockerInput.Position) > tolerance * tolerance ||
                         blocker.Spacing != null && blocker.Spacing.SpacingRevision != blockerInput.Revision ||
-                        (agent.SpacingTargetPosition - entry.TargetPosition).sqrMagnitude > tolerance * tolerance) continue;
+                        (agent.SpacingTargetPosition - entry.TargetPosition).sqrMagnitude > tolerance * tolerance ||
+                        math.dot(PlanarForward(agent), input.Forward) <
+                        Mathf.Cos(HEADING_TOLERANCE_DEGREES * Mathf.Deg2Rad)) continue;
                     // Recheck the actual pair; old snapshots must not displace a newly clear hull.
                     float radius = agent.NavigationRadius + blocker.Agent.NavigationRadius;
                     float settleDistance = radius * (1f - ShipSpacingJob.MIN_PENETRATION_FRACTION);
@@ -153,6 +159,12 @@ namespace EmpireAtWar.Services.ShipNavigation
         }
 
         public void Dispose() => _batch.Dispose();
+
+        private static float2 PlanarForward(IShipSpacingAgent agent)
+        {
+            Vector3 forward = agent.SpacingForward;
+            return math.normalize(new float2(forward.x, forward.z));
+        }
 
         private bool IsFailureUnchanged(Entry entry, int revision, Vector3 position, Vector3 target)
         {

@@ -185,10 +185,74 @@ namespace EmpireAtWar.Tests.Movement
             batch.Schedule(2, 5f);
         }
 
+        [Test]
+        public void HeldShip_SlidesSidewaysAroundTargetAndClearsBlocker()
+        {
+            var ships = new[] { Ship(1, new float2(0f, 100f)), Ship(2, new float2(3f, 96f)) };
+            ships[1].TargetPosition = new float2(0f, 200f);
+            float2 toTarget = ships[1].TargetPosition - ships[1].Position;
+            ships[1].Forward = math.normalize(toTarget);
+
+            ShipSpacingResult result = Solve(ships, 1);
+
+            float clearance = ships[0].Radius + ships[1].Radius + ShipSpacingJob.SEPARATION_MARGIN;
+            float2 step = result.Goal - ships[1].Position;
+            Assert.That(result.HasCorrection, Is.True);
+            Assert.That(math.distance(result.Goal, ships[0].Position), Is.EqualTo(clearance).Within(0.001f));
+            Assert.That(math.abs(math.dot(math.normalize(step), math.normalize(toTarget))), Is.LessThan(0.001f));
+            Assert.That(math.dot(step, ships[1].Position - ships[0].Position), Is.GreaterThan(0f));
+            Assert.That(math.distance(result.Goal, ships[1].TargetPosition),
+                Is.EqualTo(math.sqrt(math.lengthsq(toTarget) + math.lengthsq(step))).Within(0.001f));
+        }
+
+        [Test]
+        public void BlockerAheadOnTargetLine_NeverTurnsSternToTarget()
+        {
+            var ships = new[] { Ship(1, new float2(0f, 102f)), Ship(2, new float2(0f, 100f)) };
+            ships[1].TargetPosition = new float2(0f, 300f);
+            ships[1].Forward = new float2(0f, 1f);
+
+            ShipSpacingResult result = Solve(ships, 1);
+
+            Assert.That(result.HasCorrection, Is.True);
+            Assert.That(math.dot(result.Goal - ships[1].Position, ships[1].Forward), Is.GreaterThanOrEqualTo(-0.001f));
+            float clearance = ships[0].Radius + ships[1].Radius + ShipSpacingJob.SEPARATION_MARGIN;
+            Assert.That(math.distance(result.Goal, ships[0].Position), Is.EqualTo(clearance).Within(0.001f));
+        }
+
+        [Test]
+        public void GoalBehindHeading_IsRefusedButStillReportsOverlap()
+        {
+            var ships = new[] { Ship(1, new float2(-2f, 0f)), Ship(2, float2.zero) };
+            ships[1].Forward = new float2(-1f, 0f);
+
+            ShipSpacingResult result = Solve(ships, 1);
+
+            Assert.That(result.HasOverlap, Is.True);
+            Assert.That(result.HasCorrection, Is.False);
+        }
+
+        [Test]
+        public void ShipOnTargetPoint_FallsBackToAwayFromBlocker()
+        {
+            var ships = new[] { Ship(1, new float2(-2f, 0f)), Ship(2, float2.zero) };
+            ships[1].TargetPosition = ships[1].Position;
+            ships[1].Forward = new float2(1f, 0f);
+
+            ShipSpacingResult result = Solve(ships, 1);
+
+            float clearance = ships[0].Radius + ships[1].Radius + ShipSpacingJob.SEPARATION_MARGIN;
+            Assert.That(result.HasCorrection, Is.True);
+            Assert.That(math.distance(result.Goal, ships[0].Position + new float2(clearance, 0f)),
+                Is.LessThan(0.001f));
+        }
+
+        // Defaults: a distant target straight ahead, so the sideways slide is a 90° turn and is allowed.
         private static ShipSpacingInput Ship(int id, float2 position) => new ShipSpacingInput
         {
             RegistrationId = id, Position = position, Radius = 5f,
-            Bottom = -5f, Top = 5f, Eligible = true
+            Bottom = -5f, Top = 5f, Eligible = true,
+            TargetPosition = new float2(0f, 1000f), Forward = new float2(0f, 1f)
         };
 
         private static ShipSpacingResult Solve(ShipSpacingInput[] ships, int index)

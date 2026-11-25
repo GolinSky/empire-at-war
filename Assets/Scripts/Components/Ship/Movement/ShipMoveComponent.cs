@@ -106,6 +106,7 @@ namespace EmpireAtWar.Components.Ship.Movement
             !_isReleased && _isNavigationRegistered && !IgnoresMapObstacles &&
             !_modifiers.IsIonDisabled && !_modifiers.IsAnchored && NavigationSpeed > 0f && !IsMoving && !_motion.IsBraking;
         public Vector3 SpacingTargetPosition => _combatHoldTarget == null ? Vector3.zero : _combatHoldTransform.position;
+        public Vector3 SpacingForward => transform.forward;
 
         public string MovementDiagnostics
         {
@@ -558,11 +559,12 @@ namespace EmpireAtWar.Components.Ship.Movement
             }
             bool isArrivalCorrection = _isArrivalCorrectionPlan;
             _isArrivalCorrectionPlan = false;
-            if (isArrivalCorrection && plan.Route.Length > ARRIVAL_CORRECTION_MAX_ROUTE_FACTOR *
+            if ((isArrivalCorrection || _isSettling) && plan.Route.Length > ARRIVAL_CORRECTION_MAX_ROUTE_FACTOR *
                     PlanarGeometry.Distance(transform.position, plan.Destination))
             {
                 // A hop shorter than the turning circle flies a loop around the spot (seen on attack-move
-                // arrivals): keep the arrived position instead.
+                // arrivals and spacing nudges): keep the arrived position instead.
+                _isSettling = false;
                 _failedDestination = destination;
                 _motion.StopPath();
                 _shipNavigationService.Stop(this);
