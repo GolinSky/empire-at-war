@@ -99,7 +99,7 @@ MonoBehaviour:
         role: "Capital \xB7 Heavy gunship / carrier"
         iconKey: 026b6c5cca68d9b49918db3c7c0c0a5f:21300000
         isHero: 0
-        isUnique: 0
+        isUnique: 1
         <Name>k__BackingField: Malevolence
         <MaxCount>k__BackingField: 1
         <AvailableLevel>k__BackingField: 5

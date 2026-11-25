@@ -414,7 +414,7 @@ MonoBehaviour:
       value:
         matchups: {fileID: 0}
         displayName: Remonda
-        description: Mon Calamari battleship with 20,000 hull and 21,000 shields.
+        description: Mon Calamari battleship with 40,000 hull and 21,000 shields.
           Boost Shield Power quadruples shield regeneration, reduces speed by 45%
           and reduces weapon damage by 5% for 15 s. Recovers in 40 s. Deploys 1 fighter
           squadron, 1 bomber squadron at once. Carries 4 total squadron launches,
