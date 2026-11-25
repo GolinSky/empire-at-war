@@ -77,13 +77,13 @@ Shader "EmpireAtWar/UI/Squadron Frame"
                 float plateDistance = length(max(edge, 0)) + min(max(edge.x, edge.y), 0) - radius;
                 float platePixels = plateDistance / max(fwidth(plateDistance), 0.00001);
                 float plate = saturate(0.5 - platePixels);
-                // Vertex alpha carries selection. Keep the team edge visible inside the white outline.
+                // Vertex alpha carries selection.
                 float selected = step(0.75, i.color.a) * _SelectionColor.a;
                 float outlineWidth = 2.0;
-                float edgeBlend = saturate(lerp(1.0, 1.75, ship) + platePixels + outlineWidth * selected);
+                float edgeBlend = saturate(lerp(1.0, 1.75, ship) + platePixels + outlineWidth * selected * (1 - ship));
                 half4 edgeColor = lerp(_EdgeColor, half4(i.color.rgb, 1), ship);
                 half4 fillColor = _PlateColor;
-                fillColor.rgb = lerp(fillColor.rgb, i.color.rgb, 0.10 * selected);
+                fillColor.rgb = lerp(fillColor.rgb, half3(1, 0.35, 0.055), 0.13 * selected);
                 half4 plateColor = lerp(fillColor, edgeColor, edgeBlend);
 
                 // A single slanted tab carries the team color at every zoom level.
@@ -94,8 +94,12 @@ Shader "EmpireAtWar/UI/Squadron Frame"
 
                 float plateAlpha = plate * plateColor.a;
                 half4 result = lerp(half4(plateColor.rgb * plateAlpha, plateAlpha), half4(i.color.rgb, 1), tab);
-                float outline = plate * saturate(outlineWidth + platePixels) * selected;
-                result = lerp(result, half4(_SelectionColor.rgb, 1), outline);
+                half4 outlineColor = half4(_SelectionColor.rgb, 1);
+                float squadronOutline = plate * saturate(outlineWidth + platePixels) * selected * (1 - ship);
+                result = lerp(result, outlineColor, squadronOutline);
+                // Fill only the coverage outside the ship plate, preserving its original team-colored edge.
+                float shipOutline = (1 - plate) * saturate(0.5 + outlineWidth - platePixels) * selected * ship;
+                result += outlineColor * shipOutline;
                 #ifdef UNITY_UI_CLIP_RECT
                 result *= UnityGet2DClipping(i.position.xy, _ClipRect);
                 #endif
