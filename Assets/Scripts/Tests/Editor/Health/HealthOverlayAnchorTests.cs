@@ -52,9 +52,9 @@ namespace EmpireAtWar.Tests.Editor
                 HashSet<Object> engineGlows = new HashSet<Object>();
                 foreach (ShipEngineGlowComponent engineGlow in root.GetComponentsInChildren<ShipEngineGlowComponent>(true))
                 {
-                    SerializedProperty glowRenderers = new SerializedObject(engineGlow).FindProperty("glowRenderers");
-                    for (int i = 0; i < glowRenderers.arraySize; i++)
-                        engineGlows.Add(glowRenderers.GetArrayElementAtIndex(i).objectReferenceValue);
+                    SerializedProperty glows = new SerializedObject(engineGlow).FindProperty("glows");
+                    for (int i = 0; i < glows.arraySize; i++)
+                        engineGlows.Add(glows.GetArrayElementAtIndex(i).FindPropertyRelative("renderer").objectReferenceValue);
                 }
 
                 Bounds hullBounds = default;

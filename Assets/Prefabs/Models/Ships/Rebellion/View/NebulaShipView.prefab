@@ -4770,21 +4770,35 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 0049ac5520fa3674d89a73744a811d68, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::EmpireAtWar.Components.Ship.EngineGlow.ShipEngineGlowComponent
-  glowRenderers:
-  - {fileID: 1268157567534874138}
-  - {fileID: 573841569893545098}
-  - {fileID: 1292366173565098296}
-  - {fileID: 6826076845531507501}
-  - {fileID: 7499412600074063069}
-  - {fileID: 6452813347252650737}
-  - {fileID: 1830348264665689875}
-  - {fileID: 3462988297492291069}
-  - {fileID: 2167450388023047415}
-  - {fileID: 7461307847262326345}
-  - {fileID: 5582855095303804742}
-  - {fileID: 1472172070375623104}
-  - {fileID: 5191933326891244078}
-  - {fileID: 4127513601834481321}
+  glows:
+  - renderer: {fileID: 1268157567534874138}
+    engineHardPointIndex: 24
+  - renderer: {fileID: 573841569893545098}
+    engineHardPointIndex: 24
+  - renderer: {fileID: 1292366173565098296}
+    engineHardPointIndex: 27
+  - renderer: {fileID: 6826076845531507501}
+    engineHardPointIndex: 27
+  - renderer: {fileID: 7499412600074063069}
+    engineHardPointIndex: 24
+  - renderer: {fileID: 6452813347252650737}
+    engineHardPointIndex: 24
+  - renderer: {fileID: 1830348264665689875}
+    engineHardPointIndex: 27
+  - renderer: {fileID: 3462988297492291069}
+    engineHardPointIndex: 27
+  - renderer: {fileID: 2167450388023047415}
+    engineHardPointIndex: 24
+  - renderer: {fileID: 7461307847262326345}
+    engineHardPointIndex: 24
+  - renderer: {fileID: 5582855095303804742}
+    engineHardPointIndex: 27
+  - renderer: {fileID: 1472172070375623104}
+    engineHardPointIndex: 27
+  - renderer: {fileID: 5191933326891244078}
+    engineHardPointIndex: 24
+  - renderer: {fileID: 4127513601834481321}
+    engineHardPointIndex: 24
 --- !u!1 &4646910494109220611
 GameObject:
   m_ObjectHideFlags: 0

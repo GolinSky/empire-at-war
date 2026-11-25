@@ -16279,23 +16279,39 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 0049ac5520fa3674d89a73744a811d68, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::EmpireAtWar.Components.Ship.EngineGlow.ShipEngineGlowComponent
-  glowRenderers:
-  - {fileID: 6064108144415154619}
-  - {fileID: 8228933225917838019}
-  - {fileID: 2010459409502562067}
-  - {fileID: 9101808593701160109}
-  - {fileID: 820972654994306689}
-  - {fileID: 1074949822422843271}
-  - {fileID: 2436297185598513668}
-  - {fileID: 2265144079548432715}
-  - {fileID: 8727576378632711266}
-  - {fileID: 8378104007277053577}
-  - {fileID: 2518564106598237205}
-  - {fileID: 7594381140220573610}
-  - {fileID: 3969853384961010558}
-  - {fileID: 6241900443650896799}
-  - {fileID: 2078766956423537448}
-  - {fileID: 4500936534799423902}
+  glows:
+  - renderer: {fileID: 6064108144415154619}
+    engineHardPointIndex: 7
+  - renderer: {fileID: 8228933225917838019}
+    engineHardPointIndex: 7
+  - renderer: {fileID: 2010459409502562067}
+    engineHardPointIndex: 7
+  - renderer: {fileID: 9101808593701160109}
+    engineHardPointIndex: 7
+  - renderer: {fileID: 820972654994306689}
+    engineHardPointIndex: 7
+  - renderer: {fileID: 1074949822422843271}
+    engineHardPointIndex: 7
+  - renderer: {fileID: 2436297185598513668}
+    engineHardPointIndex: 7
+  - renderer: {fileID: 2265144079548432715}
+    engineHardPointIndex: 7
+  - renderer: {fileID: 8727576378632711266}
+    engineHardPointIndex: 7
+  - renderer: {fileID: 8378104007277053577}
+    engineHardPointIndex: 7
+  - renderer: {fileID: 2518564106598237205}
+    engineHardPointIndex: 7
+  - renderer: {fileID: 7594381140220573610}
+    engineHardPointIndex: 7
+  - renderer: {fileID: 3969853384961010558}
+    engineHardPointIndex: 7
+  - renderer: {fileID: 6241900443650896799}
+    engineHardPointIndex: 7
+  - renderer: {fileID: 2078766956423537448}
+    engineHardPointIndex: 7
+  - renderer: {fileID: 4500936534799423902}
+    engineHardPointIndex: 7
 --- !u!1 &3500628969152865449
 GameObject:
   m_ObjectHideFlags: 0

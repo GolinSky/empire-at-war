@@ -2,9 +2,11 @@ using System.Collections.Generic;
 using System.Linq;
 using EmpireAtWar.Components.FogOfWar;
 using EmpireAtWar.Components.Ship.EngineGlow;
+using EmpireAtWar.Components.Ship.Health;
 using EmpireAtWar.Components.TeamColor;
 using EmpireAtWar.Editor.Ship;
 using EmpireAtWar.Entities.BaseEntity;
+using EmpireAtWar.ViewComponents.Health;
 using NUnit.Framework;
 using UnityEditor;
 using UnityEngine;
@@ -51,7 +53,9 @@ namespace EmpireAtWar.Tests.Editor
             Assert.That(view.GetComponentsInChildren<ShipEngineGlowComponent>(true), Is.EquivalentTo(components),
                 $"{path}: an unbound engine glow exists in the hierarchy.");
 
-            Object[] listed = References(components[0], "glowRenderers");
+            SerializedProperty entries = new SerializedObject(components[0]).FindProperty(ShipEngineGlowSetup.GLOWS_PROPERTY);
+            Object[] listed = Enumerable.Range(0, entries.arraySize).Select(i => entries.GetArrayElementAtIndex(i)
+                .FindPropertyRelative(ShipEngineGlowSetup.GLOW_RENDERER_PROPERTY).objectReferenceValue).ToArray();
             MeshRenderer[] glows = view.GetComponentsInChildren<MeshRenderer>(true)
                 .Where(renderer => renderer.enabled && ShipEngineGlowSetup.UsesEngineGlow(renderer)).ToArray();
             Assert.That(listed, Is.All.Not.Null, path);
@@ -62,6 +66,19 @@ namespace EmpireAtWar.Tests.Editor
             foreach (UnitRenderStateComponent renderState in view.GetComponentsInChildren<UnitRenderStateComponent>(true))
                 Assert.That(References(renderState, "meshRenderers").Intersect(glows), Is.Empty,
                     $"{path}: the render state would overwrite the glow fade.");
+
+            // Each glow belongs to an engine hardpoint when the ship has any; a destroyed engine switches it off.
+            List<HardPoint> shipUnits = view.GetComponentInChildren<HealthComponent>(true).ShipUnits;
+            bool hasEngines = shipUnits.Any(unit => unit.HardPointType == HardPointType.Engines);
+            for (int i = 0; i < entries.arraySize; i++)
+            {
+                int engine = entries.GetArrayElementAtIndex(i).FindPropertyRelative(ShipEngineGlowSetup.GLOW_ENGINE_PROPERTY).intValue;
+                if (!hasEngines)
+                    Assert.That(engine, Is.EqualTo(EngineGlowRenderer.NO_ENGINE), $"{path}: glow {i} names an engine the ship lacks.");
+                else
+                    Assert.That(engine >= 0 && engine < shipUnits.Count && shipUnits[engine].HardPointType == HardPointType.Engines,
+                        Is.True, $"{path}: glow {i} must point at an engine hardpoint (index {engine}).");
+            }
 
             // The component reads idle level and fade time from its first glow's material.
             Material[] materials = glows.SelectMany(glow => glow.sharedMaterials).Distinct().ToArray();

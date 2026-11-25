@@ -36,8 +36,9 @@ namespace EmpireAtWar.Entities.BaseEntity
         }
 
         /// <summary>
-        /// Engine glow fades with movement and ion stun (EngineGlow.shader). Ships only: needs the ship's
-        /// <see cref="EmpireAtWar.Components.Ship.Movement.IShipMoveComponent"/> and <see cref="RegisterCombatModifiers"/>.
+        /// Engine glow fades with movement and ion stun and goes out with its engine hardpoint (EngineGlow.shader).
+        /// Ships only: needs the ship's <see cref="EmpireAtWar.Components.Ship.Movement.IShipMoveComponent"/>,
+        /// <see cref="RegisterCombatModifiers"/> and <see cref="RegisterHealth"/>.
         /// </summary>
         public static void RegisterEngineGlow(IContainerBuilder builder, EntityBindings bindings)
         {

@@ -2068,35 +2068,63 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 0049ac5520fa3674d89a73744a811d68, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::EmpireAtWar.Components.Ship.EngineGlow.ShipEngineGlowComponent
-  glowRenderers:
-  - {fileID: 2992937921692951358}
-  - {fileID: 3985121530620743994}
-  - {fileID: 8552175752175482111}
-  - {fileID: 3932513706567814280}
-  - {fileID: 7958765241088305592}
-  - {fileID: 5255710937750024858}
-  - {fileID: 2611363824965818352}
-  - {fileID: 6319072151361093750}
-  - {fileID: 393583203185362145}
-  - {fileID: 602828636951486631}
-  - {fileID: 393609556963193488}
-  - {fileID: 4785203901194300089}
-  - {fileID: 6696815733377488130}
-  - {fileID: 7654785416587095032}
-  - {fileID: 2938912276152287603}
-  - {fileID: 2673352031848231720}
-  - {fileID: 7511483096531694861}
-  - {fileID: 57994760977476227}
-  - {fileID: 1134211527832009007}
-  - {fileID: 5670747418587489548}
-  - {fileID: 4797366859997087205}
-  - {fileID: 6336334718026021653}
-  - {fileID: 4604219531159402524}
-  - {fileID: 1403581962936266234}
-  - {fileID: 1481594048715947654}
-  - {fileID: 6351521672187311031}
-  - {fileID: 839487889938888947}
-  - {fileID: 6965240222810509993}
+  glows:
+  - renderer: {fileID: 2992937921692951358}
+    engineHardPointIndex: 63
+  - renderer: {fileID: 3985121530620743994}
+    engineHardPointIndex: 63
+  - renderer: {fileID: 8552175752175482111}
+    engineHardPointIndex: 63
+  - renderer: {fileID: 3932513706567814280}
+    engineHardPointIndex: 63
+  - renderer: {fileID: 7958765241088305592}
+    engineHardPointIndex: 63
+  - renderer: {fileID: 5255710937750024858}
+    engineHardPointIndex: 63
+  - renderer: {fileID: 2611363824965818352}
+    engineHardPointIndex: 63
+  - renderer: {fileID: 6319072151361093750}
+    engineHardPointIndex: 63
+  - renderer: {fileID: 393583203185362145}
+    engineHardPointIndex: 63
+  - renderer: {fileID: 602828636951486631}
+    engineHardPointIndex: 63
+  - renderer: {fileID: 393609556963193488}
+    engineHardPointIndex: 63
+  - renderer: {fileID: 4785203901194300089}
+    engineHardPointIndex: 63
+  - renderer: {fileID: 6696815733377488130}
+    engineHardPointIndex: 63
+  - renderer: {fileID: 7654785416587095032}
+    engineHardPointIndex: 63
+  - renderer: {fileID: 2938912276152287603}
+    engineHardPointIndex: 63
+  - renderer: {fileID: 2673352031848231720}
+    engineHardPointIndex: 63
+  - renderer: {fileID: 7511483096531694861}
+    engineHardPointIndex: 65
+  - renderer: {fileID: 57994760977476227}
+    engineHardPointIndex: 65
+  - renderer: {fileID: 1134211527832009007}
+    engineHardPointIndex: 64
+  - renderer: {fileID: 5670747418587489548}
+    engineHardPointIndex: 64
+  - renderer: {fileID: 4797366859997087205}
+    engineHardPointIndex: 63
+  - renderer: {fileID: 6336334718026021653}
+    engineHardPointIndex: 63
+  - renderer: {fileID: 4604219531159402524}
+    engineHardPointIndex: 63
+  - renderer: {fileID: 1403581962936266234}
+    engineHardPointIndex: 63
+  - renderer: {fileID: 1481594048715947654}
+    engineHardPointIndex: 63
+  - renderer: {fileID: 6351521672187311031}
+    engineHardPointIndex: 63
+  - renderer: {fileID: 839487889938888947}
+    engineHardPointIndex: 63
+  - renderer: {fileID: 6965240222810509993}
+    engineHardPointIndex: 63
 --- !u!1 &1358500386073421041
 GameObject:
   m_ObjectHideFlags: 0

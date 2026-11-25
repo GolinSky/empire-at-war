@@ -3,8 +3,9 @@ using UnityEngine;
 namespace EmpireAtWar.Components.Ship.EngineGlow
 {
     /// <summary>
-    /// Drives the ship's EngineGlow.shader renderers. A state change writes one renderer user value per glow;
+    /// Drives the ship's EngineGlow.shader renderers. A change writes one renderer user value per affected glow;
     /// the GPU fades from it every frame, so nothing runs on the CPU between changes.
+    /// Each glow keeps its own value: glows of a destroyed engine hardpoint stay off while the rest follow the ship.
     /// These renderers have no other user value writer (UnitRenderStateComponent does not list them).
     /// </summary>
     public sealed class ShipEngineGlowComponent : MonoBehaviour, IShipEngineGlowComponent
@@ -12,38 +13,57 @@ namespace EmpireAtWar.Components.Ship.EngineGlow
         private static readonly int IDLE_INTENSITY_ID = Shader.PropertyToID("_IdleIntensity");
         private static readonly int FADE_SECONDS_ID = Shader.PropertyToID("_FadeSeconds");
 
-        [SerializeField] private MeshRenderer[] glowRenderers;
+        [SerializeField] private EngineGlowRenderer[] glows;
 
-        private uint _userValue = EngineGlowUserValue.SETTLED_THRUST;
+        private uint[] _userValues;
+        private bool[] _engineDestroyed;
+        private EngineGlowState _state = EngineGlowState.Thrust;
         private float _idleIntensity;
         private float _fadeSeconds;
 
         private void Awake()
         {
-            if (glowRenderers.Length == 0) return;
+            _userValues = new uint[glows.Length];
+            _engineDestroyed = new bool[glows.Length];
+            if (glows.Length == 0) return;
             // Every glow of one ship shares these values (ShipEngineGlowPrefabTests).
-            Material material = glowRenderers[0].sharedMaterial;
+            Material material = glows[0].Renderer.sharedMaterial;
             _idleIntensity = material.GetFloat(IDLE_INTENSITY_ID);
             _fadeSeconds = material.GetFloat(FADE_SECONDS_ID);
         }
 
         // The GPU Resident Drawer registers renderers on activation into reused instance slots, so a value
         // written while inactive can lose to the slot's previous unit (see UnitRenderStateComponent).
-        private void OnEnable() => WriteUserValue();
+        private void OnEnable()
+        {
+            for (int i = 0; i < glows.Length; i++) glows[i].Renderer.SetShaderUserValue(_userValues[i]);
+        }
 
         public void SetState(EngineGlowState state)
         {
-            if (glowRenderers.Length == 0) return;
+            _state = state;
             // _Time.y in the shader is the time since level load.
             float now = Time.timeSinceLevelLoad;
-            float level = EngineGlowUserValue.Evaluate(_userValue, now, _idleIntensity, _fadeSeconds);
-            _userValue = EngineGlowUserValue.Encode(level, state, now);
-            WriteUserValue();
+            for (int i = 0; i < glows.Length; i++)
+                if (!_engineDestroyed[i]) FadeTo(i, state, now);
         }
 
-        private void WriteUserValue()
+        public void SetEngineDestroyed(int engineHardPointIndex, bool destroyed)
         {
-            foreach (MeshRenderer glowRenderer in glowRenderers) glowRenderer.SetShaderUserValue(_userValue);
+            float now = Time.timeSinceLevelLoad;
+            for (int i = 0; i < glows.Length; i++)
+            {
+                if (glows[i].EngineHardPointIndex != engineHardPointIndex || _engineDestroyed[i] == destroyed) continue;
+                _engineDestroyed[i] = destroyed;
+                FadeTo(i, destroyed ? EngineGlowState.Off : _state, now);
+            }
+        }
+
+        private void FadeTo(int index, EngineGlowState state, float now)
+        {
+            float level = EngineGlowUserValue.Evaluate(_userValues[index], now, _idleIntensity, _fadeSeconds);
+            _userValues[index] = EngineGlowUserValue.Encode(level, state, now);
+            glows[index].Renderer.SetShaderUserValue(_userValues[index]);
         }
     }
 }

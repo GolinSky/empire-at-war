@@ -3,8 +3,10 @@ using System.Linq;
 using System.Text;
 using EmpireAtWar.Components.FogOfWar;
 using EmpireAtWar.Components.Ship.EngineGlow;
+using EmpireAtWar.Components.Ship.Health;
 using EmpireAtWar.Components.TeamColor;
 using EmpireAtWar.Entities.BaseEntity;
+using EmpireAtWar.ViewComponents.Health;
 using UnityEditor;
 using UnityEngine;
 
@@ -12,7 +14,8 @@ namespace EmpireAtWar.Editor.Ship
 {
     /// <summary>
     /// Moves the engine glow materials onto EngineGlow.shader and gives every ship view a
-    /// <see cref="ShipEngineGlowComponent"/> listing its enabled glow renderers, also hidden by fog. Glow renderers
+    /// <see cref="ShipEngineGlowComponent"/> listing its enabled glow renderers, each paired with an engine hardpoint
+    /// (<see cref="AssignEngines"/>), also hidden by fog. Glow renderers
     /// leave UnitRenderStateComponent: the renderer user value carries the glow fade, so it has one writer.
     /// Rerunning rebuilds the lists from the current prefabs.
     /// </summary>
@@ -20,7 +23,9 @@ namespace EmpireAtWar.Editor.Ship
     {
         public const string SHADER_PATH = "Assets/Art/Shaders/Units/EngineGlow.shader";
         public const string VIEW_FOLDER = "Assets/Prefabs/Models";
-        public const string GLOW_RENDERERS_PROPERTY = "glowRenderers";
+        public const string GLOWS_PROPERTY = "glows";
+        public const string GLOW_RENDERER_PROPERTY = "renderer";
+        public const string GLOW_ENGINE_PROPERTY = "engineHardPointIndex";
 
         // Additive (SrcAlpha One) engine glow, exhaust and lens materials. Not converted: Executor ambient glow,
         // hangar glows (Liberator, MC80 Justice), MC80 Independence side planes and Dispatcher's opaque thrusters.
@@ -156,8 +161,22 @@ namespace EmpireAtWar.Editor.Ship
 
                 MeshRenderer[] glows = root.GetComponentsInChildren<MeshRenderer>(true)
                     .Where(renderer => renderer.enabled && UsesEngineGlow(renderer)).ToArray();
+                // Each glow goes out with its engine hardpoint; ships without engine hardpoints keep NO_ENGINE.
+                List<HardPoint> shipUnits = root.GetComponentInChildren<HealthComponent>(true).ShipUnits;
+                int[] engines = Enumerable.Range(0, shipUnits.Count)
+                    .Where(index => shipUnits[index].HardPointType == HardPointType.Engines).ToArray();
+                int[] glowEngines = AssignEngines(glows, engines.Select(index => shipUnits[index].transform.position).ToArray())
+                    .Select(engine => engine < 0 ? EngineGlowRenderer.NO_ENGINE : engines[engine]).ToArray();
                 SerializedObject serializedGlow = new SerializedObject(engineGlow);
-                SetArray(serializedGlow.FindProperty(GLOW_RENDERERS_PROPERTY), glows);
+                SerializedProperty glowList = serializedGlow.FindProperty(GLOWS_PROPERTY);
+                glowList.arraySize = glows.Length;
+                for (int i = 0; i < glows.Length; i++)
+                {
+                    SerializedProperty entry = glowList.GetArrayElementAtIndex(i);
+                    entry.FindPropertyRelative(GLOW_RENDERER_PROPERTY).objectReferenceValue = glows[i];
+                    entry.FindPropertyRelative(GLOW_ENGINE_PROPERTY).intValue = glowEngines[i];
+                }
+
                 serializedGlow.ApplyModifiedPropertiesWithoutUndo();
 
                 SerializedObject bindings = new SerializedObject(root.GetComponent<EntityBindings>());
@@ -194,12 +213,48 @@ namespace EmpireAtWar.Editor.Ship
                 }
 
                 PrefabUtility.SaveAsPrefabAsset(root, prefabPath);
-                return $"  {prefabPath}: {glows.Length} glows, {removed} removed from render state";
+                return $"  {prefabPath}: {glows.Length} glows, {engines.Length} engine hardpoints, {removed} removed from render state";
             }
             finally
             {
                 PrefabUtility.UnloadPrefabContents(root);
             }
+        }
+
+        /// <summary>
+        /// Engine (index into <paramref name="engines"/>) per glow, or -1 without engines. Glows at one nozzle stay
+        /// together; every nozzle goes to its nearest engine, then an engine left without a nozzle takes the nearest
+        /// nozzle from an engine that has several, so each engine hardpoint switches off at least one glow.
+        /// </summary>
+        public static int[] AssignEngines(IReadOnlyList<Renderer> glows, IReadOnlyList<Vector3> engines)
+        {
+            int[] result = Enumerable.Repeat(-1, glows.Count).ToArray();
+            if (engines.Count == 0) return result;
+            List<List<int>> nozzles = new List<List<int>>();
+            foreach (int glow in Enumerable.Range(0, glows.Count))
+            {
+                Bounds bounds = glows[glow].bounds;
+                List<int> nozzle = nozzles.FirstOrDefault(group =>
+                    (glows[group[0]].bounds.center - bounds.center).sqrMagnitude < 1e-4f * bounds.size.sqrMagnitude);
+                if (nozzle == null) nozzles.Add(new List<int> { glow });
+                else nozzle.Add(glow);
+            }
+
+            Vector3 Center(int nozzle) => glows[nozzles[nozzle][0]].bounds.center;
+            float Distance(int nozzle, int engine) => (engines[engine] - Center(nozzle)).sqrMagnitude;
+            int[] owner = Enumerable.Range(0, nozzles.Count)
+                .Select(nozzle => Enumerable.Range(0, engines.Count).OrderBy(engine => Distance(nozzle, engine)).First()).ToArray();
+            for (int engine = 0; engine < engines.Count; engine++)
+            {
+                if (owner.Contains(engine)) continue;
+                int[] movable = Enumerable.Range(0, nozzles.Count).Where(nozzle => owner.Count(o => o == owner[nozzle]) > 1).ToArray();
+                if (movable.Length == 0) break;
+                owner[movable.OrderBy(nozzle => Distance(nozzle, engine)).First()] = engine;
+            }
+
+            for (int nozzle = 0; nozzle < nozzles.Count; nozzle++)
+                foreach (int glow in nozzles[nozzle]) result[glow] = owner[nozzle];
+            return result;
         }
 
         private static int VariantDepth(string prefabPath)
