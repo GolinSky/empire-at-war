@@ -231,6 +231,7 @@ namespace EmpireAtWar.Tests.Editor
                 var weapon = new WeaponSpy();
                 var orders = new UnitOrderModel();
                 typeof(Squadron).GetField("_orders", PRIVATE_INSTANCE).SetValue(squadron, orders);
+                typeof(Squadron).GetField("_focusFire", PRIVATE_INSTANCE).SetValue(squadron, FreeFocusFireClaim.Instance);
                 typeof(Squadron).GetField("_flight", PRIVATE_INSTANCE).SetValue(squadron, flight);
                 typeof(Squadron).GetField("_pilot", PRIVATE_INSTANCE).SetValue(squadron, pilot);
                 typeof(Squadron).GetField("_weapon", PRIVATE_INSTANCE).SetValue(squadron, weapon);
@@ -382,6 +383,7 @@ namespace EmpireAtWar.Tests.Editor
             weapon = new WeaponSpy();
             orders = new UnitOrderModel();
             typeof(Squadron).GetField("_orders", LEASH_FIELDS).SetValue(squadron, orders);
+            typeof(Squadron).GetField("_focusFire", LEASH_FIELDS).SetValue(squadron, FreeFocusFireClaim.Instance);
             typeof(Squadron).GetField("_flight", LEASH_FIELDS).SetValue(squadron, flight);
             typeof(Squadron).GetField("_pilot", LEASH_FIELDS).SetValue(squadron, pilot);
             typeof(Squadron).GetField("_weapon", LEASH_FIELDS).SetValue(squadron, weapon);
@@ -426,6 +428,7 @@ namespace EmpireAtWar.Tests.Editor
                 orders.Replace(order, target: target);
                 pilot.Engage(target);
                 typeof(Squadron).GetField("_orders", PRIVATE_INSTANCE).SetValue(squadron, orders);
+                typeof(Squadron).GetField("_focusFire", PRIVATE_INSTANCE).SetValue(squadron, FreeFocusFireClaim.Instance);
                 typeof(Squadron).GetField("_flight", PRIVATE_INSTANCE).SetValue(squadron, flight);
                 typeof(Squadron).GetField("_pilot", PRIVATE_INSTANCE).SetValue(squadron, pilot);
                 typeof(Squadron).GetField("_weapon", PRIVATE_INSTANCE).SetValue(squadron, weapon);

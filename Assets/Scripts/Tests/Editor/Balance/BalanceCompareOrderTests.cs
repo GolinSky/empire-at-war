@@ -104,8 +104,12 @@ namespace EmpireAtWar.Tests.Editor
                 host.rootVisualElement.styleSheets.Add(AssetDatabase.LoadAssetAtPath<StyleSheet>("Assets/Scripts/Editor/Balance/BalanceEditor.uss"));
                 VisualElement panel = new VisualElement(); panel.style.width = 720; panel.style.height = 850; host.rootVisualElement.Add(panel);
                 BalanceCompareView.Build(panel, registry, new BalanceEditorController(state, () => refreshes++), false);
-                host.Show(); yield return null; yield return null;
+                host.Show();
                 var slots = panel.Query<VisualElement>(className: "balance-compare-slot").ToList();
+                // Drag hit-testing reads worldBound; an unfocused Editor can take more than two frames to lay the window out.
+                bool IsLaidOut() => slots.All(slot => !float.IsNaN(slot.worldBound.width) && slot.worldBound.width > 0f);
+                for (int frame = 0; frame < 60 && !IsLaidOut(); frame++) yield return null;
+                Assert.That(IsLaidOut(), Is.True, "The compare cards were never laid out.");
                 VisualElement handle = slots[0].Q("compare-drag-handle");
                 Vector2 start = handle.worldBound.center;
                 Vector2 drop = slots[3].worldBound.center + new Vector2(30, 0);
