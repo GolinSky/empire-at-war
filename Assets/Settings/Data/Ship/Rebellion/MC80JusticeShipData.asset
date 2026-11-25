@@ -77,7 +77,7 @@ MonoBehaviour:
   <ShieldRegenerateDelay>k__BackingField: 1
   <Range>k__BackingField: 750
   <Delay>k__BackingField: 0.25
-  abilities: 03000000
+  abilities: 05000000
   hangarBays:
   - squadronType: 300
     reserve: 6
