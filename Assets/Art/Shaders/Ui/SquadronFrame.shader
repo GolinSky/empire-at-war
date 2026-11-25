@@ -5,7 +5,7 @@ Shader "EmpireAtWar/UI/Squadron Frame"
         [PerRendererData] _MainTex ("Texture", 2D) = "white" {}
         _PlateColor ("Plate Color", Color) = (0.063, 0.102, 0.161, 0.98)
         _EdgeColor ("Plate Edge Color", Color) = (0.184, 0.229, 0.294, 0.98)
-        _SelectionColor ("Selection Color", Color) = (0.949, 0.941, 0.902, 1)
+        _SelectionColor ("Selection Color", Color) = (1, 1, 1, 1)
         _StencilComp ("Stencil Comparison", Float) = 8
         _Stencil ("Stencil ID", Float) = 0
         _StencilOp ("Stencil Operation", Float) = 0
@@ -68,17 +68,21 @@ Shader "EmpireAtWar/UI/Squadron Frame"
                 float2 pixel = fwidth(uv);
                 float aa = max(pixel.x, pixel.y);
 
-                // Square squadron plates leave headroom for the tab. Ship plates fill the shorter rect.
+                // Use the same circular corners on the square and wide plates.
                 float2 center = float2(0.5, lerp(0.46, 0.5, ship));
                 float2 extent = lerp(float2(0.42, 0.42), float2(0.445, 0.405), ship);
-                float2 edge = abs(uv - center) - extent;
-                float plateDistance = max(max(edge.x, edge.y), edge.x + edge.y + 0.075);
-                float platePixels = plateDistance / fwidth(plateDistance);
+                float2 aspect = i.halfSize / min(i.halfSize.x, i.halfSize.y);
+                float radius = 0.14;
+                float2 edge = (abs(uv - center) - extent) * aspect + radius;
+                float plateDistance = length(max(edge, 0)) + min(max(edge.x, edge.y), 0) - radius;
+                float platePixels = plateDistance / max(fwidth(plateDistance), 0.00001);
                 float plate = saturate(0.5 - platePixels);
-                float edgeBlend = saturate(lerp(1.0, 1.75, ship) + platePixels);
+                // Vertex alpha carries selection. Keep the team edge visible inside the white outline.
+                float selected = step(0.75, i.color.a) * _SelectionColor.a;
+                float outlineWidth = 2.0;
+                float edgeBlend = saturate(lerp(1.0, 1.75, ship) + platePixels + outlineWidth * selected);
                 half4 edgeColor = lerp(_EdgeColor, half4(i.color.rgb, 1), ship);
                 half4 plateColor = lerp(_PlateColor, edgeColor, edgeBlend);
-                plate *= plateColor.a;
 
                 // A single slanted tab carries the team color at every zoom level.
                 float tabSlope = (uv.y - 0.855) * 0.58;
@@ -86,14 +90,10 @@ Shader "EmpireAtWar/UI/Squadron Frame"
                     max(0.09 + tabSlope - uv.x, uv.x - 0.375 - tabSlope));
                 float tab = saturate(0.5 - tabDistance / aa) * (1 - ship);
 
-                // Frame vertex alpha carries selection, leaving the ownership tab unchanged.
-                float2 corner = 0.5 - abs(uv - 0.5);
-                float2 arms = max(corner - float2(0.15, 0.15), abs(corner.yx - 0.03) - 0.014);
-                float bracket = min(arms.x, arms.y);
-                float selection = saturate(0.5 - bracket / aa) * step(0.75, i.color.a) * _SelectionColor.a;
-
-                half4 result = lerp(half4(plateColor.rgb * plate, plate), half4(i.color.rgb, 1), tab);
-                result = lerp(result, half4(_SelectionColor.rgb, 1), selection);
+                float plateAlpha = plate * plateColor.a;
+                half4 result = lerp(half4(plateColor.rgb * plateAlpha, plateAlpha), half4(i.color.rgb, 1), tab);
+                float outline = plate * saturate(outlineWidth + platePixels) * selected;
+                result = lerp(result, half4(_SelectionColor.rgb, 1), outline);
                 #ifdef UNITY_UI_CLIP_RECT
                 result *= UnityGet2DClipping(i.position.xy, _ClipRect);
                 #endif

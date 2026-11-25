@@ -38,6 +38,6 @@ Material:
     m_Colors:
     - _EdgeColor: {r: 0.184, g: 0.229, b: 0.294, a: 0.98}
     - _PlateColor: {r: 0.063, g: 0.102, b: 0.161, a: 0.98}
-    - _SelectionColor: {r: 0.94899994, g: 0.941, b: 0.902, a: 1}
+    - _SelectionColor: {r: 1, g: 1, b: 1, a: 1}
   m_BuildTextureStacks: []
   m_AllowLocking: 1
