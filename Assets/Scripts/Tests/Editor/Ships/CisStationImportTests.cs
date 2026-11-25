@@ -79,8 +79,8 @@ namespace EmpireAtWar.Tests.Editor
             var root = PrefabUtility.LoadPrefabContents(PREFABS + "Separatist/SeparatistSpaceStationView.prefab");
             try
             {
-                var view = root.GetComponent<StationLevelView>();
-                typeof(StationLevelView).GetMethod("Awake", PRIVATE_INSTANCE).Invoke(view, null);
+                var view = root.GetComponent<StationLevelComponent>();
+                typeof(StationLevelComponent).GetMethod("Awake", PRIVATE_INSTANCE).Invoke(view, null);
                 view.ApplyLevel(5);
                 foreach (var mount in view.CurrentModel.Mounts)
                 {

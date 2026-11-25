@@ -24,7 +24,7 @@ public static class BuildRebelStationView
             var entity = root.GetComponent<EmpireAtWar.Entities.SpaceStation.SpaceStation>();
             var entitySerialized = new SerializedObject(entity);
             var oldRenderers = entitySerialized.FindProperty("explosionHullRenderers");
-            if (root.GetComponent<StationLevelView>() == null)
+            if (root.GetComponent<StationLevelComponent>() == null)
             {
                 var geometry = Enumerable.Range(0, oldRenderers.arraySize).Select(i => ((Renderer)oldRenderers.GetArrayElementAtIndex(i).objectReferenceValue).gameObject).Distinct().ToArray();
                 foreach (var go in geometry) UnityEngine.Object.DestroyImmediate(go);
@@ -40,7 +40,7 @@ public static class BuildRebelStationView
             {
                 foreach (var oldModel in root.GetComponentsInChildren<StationLevelArt>(true)) UnityEngine.Object.DestroyImmediate(oldModel.gameObject);
             }
-            if (root.GetComponent<StationLevelView>() == null) root.AddComponent<StationLevelView>();
+            if (root.GetComponent<StationLevelComponent>() == null) root.AddComponent<StationLevelComponent>();
             var models = new StationLevelArt[5];
             for (int i = 0; i < models.Length; i++)
             {
@@ -66,7 +66,7 @@ public static class BuildRebelStationView
             var fog = new SerializedObject(root.GetComponents<MonoBehaviour>().Single(c => c.GetType().Name == "FogVisibilityComponent"));
             Assign(fog.FindProperty("renderers"), allRenderers);
             Save(fog);
-            // Level mounts, shields and the remaining StationLevelView wiring: Tools/Blender/SpaceStations/BuildStationLevels.cs.
+            // Level mounts, shields and the remaining StationLevelComponent wiring: Tools/Blender/SpaceStations/BuildStationLevels.cs.
             PrefabUtility.SaveAsPrefabAsset(root, VIEW);
         }
         finally { PrefabUtility.UnloadPrefabContents(root); }

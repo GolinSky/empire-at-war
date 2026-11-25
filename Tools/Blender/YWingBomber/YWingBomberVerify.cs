@@ -23,7 +23,7 @@ public static class YWingBomberVerify
         const string VIEW="Assets/Prefabs/Models/Squadrons/YWingBomberSquadronView.prefab";
         const string DATA="Assets/Settings/Data/Squadron/YWingBomberSquadronData.asset";
         var root=AssetDatabase.LoadAssetAtPath<GameObject>(VIEW);
-        var fighters=root.GetComponentsInChildren<FighterView>(true); var guns=root.GetComponentsInChildren<WeaponHardPoint>(true);
+        var fighters=root.GetComponentsInChildren<FighterHardPoint>(true); var guns=root.GetComponentsInChildren<WeaponHardPoint>(true);
         var data=AssetDatabase.LoadAssetAtPath<SquadronData>(DATA);
         var missing=root.GetComponentsInChildren<Transform>(true).Sum(t=>GameObjectUtility.GetMonoBehavioursWithMissingScriptCount(t.gameObject));
         var broken=new System.Collections.Generic.List<string>();

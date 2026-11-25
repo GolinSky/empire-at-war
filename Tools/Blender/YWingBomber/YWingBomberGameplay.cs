@@ -43,10 +43,10 @@ public static class YWingBomberGameplay
         root.name = "YWingBomberSquadronView";
         try
         {
-            var fighters = root.GetComponentsInChildren<FighterView>(true).OrderBy(f=>f.Id).ToList();
+            var fighters = root.GetComponentsInChildren<FighterHardPoint>(true).OrderBy(f=>f.Id).ToList();
             var sixth = Object.Instantiate(fighters[0].gameObject,root.transform);
             sixth.name = "Fighter5";
-            var sixthView = sixth.GetComponent<FighterView>();
+            var sixthView = sixth.GetComponent<FighterHardPoint>();
             var sixthData = new SerializedObject(sixthView); sixthData.FindProperty("id").intValue=5; sixthData.ApplyModifiedPropertiesWithoutUndo();
             fighters.Add(sixthView);
             var weapons = new List<WeaponHardPoint>();

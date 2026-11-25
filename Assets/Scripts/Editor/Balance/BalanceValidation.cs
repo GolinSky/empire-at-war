@@ -71,8 +71,8 @@ namespace EmpireAtWar.Editor.Balance
                 ShipAbilitySettings settings = catalog.Get((ShipAbilityId)id).Settings;
                 bool ship = unit.Kind == BalanceUnitKind.Ship;
                 if (settings is LockSFoilsSettings
-                    && (unit.Kind != BalanceUnitKind.Squadron || !unit.Components.OfType<SFoilsView>().Any()))
-                    errors.Add(unit.Name + ": Lock S-foils requires an existing squadron SFoilsView.");
+                    && (unit.Kind != BalanceUnitKind.Squadron || !unit.Components.OfType<SFoilsComponent>().Any()))
+                    errors.Add(unit.Name + ": Lock S-foils requires an existing squadron SFoilsComponent.");
                 if (settings is IonPulseSettings && (!ship || !HasIonPulseCannon(unit)))
                     errors.Add(unit.Name + ": Ion Pulse requires existing facing and cannon bindings.");
                 if ((settings is CompositeBeamSettings || settings is SuperlaserSettings)

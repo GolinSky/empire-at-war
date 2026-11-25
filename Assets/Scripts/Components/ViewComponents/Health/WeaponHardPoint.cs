@@ -47,7 +47,7 @@ namespace EmpireAtWar.ViewComponents.Health
         internal event System.Action DestructionChanged;
 
         [field:SerializeField] public WeaponType WeaponType { get; private set; }
-        protected IWeaponPresenter WeaponPresenter { get; private set; }
+        protected IWeaponHitResolver WeaponPresenter { get; private set; }
         public bool Destroyed { get; private set; }
         public bool IsBusy => _sequence.IsBusy || !_reloadTimer.IsComplete || Time.time < _turnEndTime;
         public float MaxAttackDistance => _maxAttackDistance * _modifiers.VisionMultiplier;
@@ -108,7 +108,7 @@ namespace EmpireAtWar.ViewComponents.Health
         }
 
         public void SetData(WeaponProfile profile, float maxAttackDistance, float missSpread,
-            IWeaponPresenter weaponPresenter, CombatAttackCoordinator attackCoordinator, CombatModifiers modifiers,
+            IWeaponHitResolver weaponPresenter, CombatAttackCoordinator attackCoordinator, CombatModifiers modifiers,
             ImpactEffectPresenter impactPresenter, IncomingMissileRegistry missiles, ShotPoolPrewarmer poolPrewarmer,
             bool strikecraftOwner = false)
         {

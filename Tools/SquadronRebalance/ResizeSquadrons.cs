@@ -43,16 +43,16 @@ public static class ResizeSquadrons
         {
             var components = BalancePrefabBindings.Components(root).OfType<Component>().ToList();
             EntityBindings bindings = components.OfType<EntityBindings>().Single();
-            var fighters = BalancePrefabBindings.References(bindings.SquadronHealth, "fighters").Cast<FighterView>().ToList();
+            var fighters = BalancePrefabBindings.References(bindings.SquadronHealth, "fighters").Cast<FighterHardPoint>().ToList();
             int previousCount = fighters.Count;
             var originalFighters = fighters.ToArray();
-            FighterView template = fighters[0];
+            FighterHardPoint template = fighters[0];
             var removed = new HashSet<Object>(fighters.Skip(data.MemberCount)
                 .SelectMany(f => Objects(f.gameObject)));
             var maps = new List<Dictionary<Object, Object>>();
             for (int i = previousCount; i < data.MemberCount; i++)
             {
-                FighterView clone = Object.Instantiate(template, template.transform.parent);
+                FighterHardPoint clone = Object.Instantiate(template, template.transform.parent);
                 clone.name = name + i;
                 Object[] sourceObjects = Objects(template.gameObject).ToArray();
                 Object[] cloneObjects = Objects(clone.gameObject).ToArray();
@@ -68,12 +68,12 @@ public static class ResizeSquadrons
             // Clone-local references are remapped by Instantiate; preserve every non-member binding.
             foreach (Component component in components.Where(c => c is MonoBehaviour && !originalFighters.Any(f => c.transform.IsChildOf(f.transform))))
                 RewriteReferences(component, removed, maps);
-            foreach (FighterView fighter in originalFighters.Skip(data.MemberCount))
+            foreach (FighterHardPoint fighter in originalFighters.Skip(data.MemberCount))
                 Object.DestroyImmediate(fighter.gameObject);
 
             for (int i = 0; i < fighters.Count; i++)
             {
-                FighterView fighter = fighters[i];
+                FighterHardPoint fighter = fighters[i];
                 using (var serialized = new SerializedObject(fighter))
                 {
                     serialized.FindProperty("id").intValue = i;
@@ -160,7 +160,7 @@ public static class ResizeSquadrons
         serialized.ApplyModifiedPropertiesWithoutUndo();
     }
 
-    private static void ValidateBindings(GameObject root, List<FighterView> fighters, EntityBindings bindings, List<WeaponHardPoint> mounts)
+    private static void ValidateBindings(GameObject root, List<FighterHardPoint> fighters, EntityBindings bindings, List<WeaponHardPoint> mounts)
     {
         if (!BalancePrefabBindings.References(bindings.SquadronHealth, "fighters").SequenceEqual(fighters.Cast<Object>())
             || !BalancePrefabBindings.References(bindings.SquadronFlight, "fighters").SequenceEqual(fighters.Cast<Object>()))
@@ -168,7 +168,7 @@ public static class ResizeSquadrons
         var allMounts = fighters.SelectMany(f => BalancePrefabBindings.Components(f.gameObject)).OfType<WeaponHardPoint>().ToArray();
         if (mounts.Count != allMounts.Length || mounts.Distinct().Count() != mounts.Count || allMounts.Except(mounts).Any())
             throw new InvalidOperationException("Weapon registration mismatch: " + root.name);
-        foreach (FighterView fighter in fighters)
+        foreach (FighterHardPoint fighter in fighters)
         {
             using var serialized = new SerializedObject(fighter);
             var guns = new[] { fighter.Gun }.Concat(BalancePrefabBindings.References(fighter, "additionalGuns").Cast<WeaponHardPoint>());

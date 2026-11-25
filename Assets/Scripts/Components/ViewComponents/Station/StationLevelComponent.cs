@@ -3,7 +3,7 @@ using UnityEngine;
 
 namespace EmpireAtWar.ViewComponents.Station
 {
-    public sealed class StationLevelView : MonoBehaviour
+    public sealed class StationLevelComponent : MonoBehaviour
     {
         [Tooltip("Explicit model mapping: element 0 is level 1, through element 4 for level 5.")]
         [SerializeField] private StationLevelArt[] levelModels;

@@ -175,7 +175,7 @@ namespace EmpireAtWar.Tests.Editor
         private static IList GetImpacts(CombatAttackCoordinator coordinator) => (IList)typeof(CombatAttackCoordinator)
             .GetField("_impacts", BindingFlags.Instance | BindingFlags.NonPublic).GetValue(coordinator);
 
-        private sealed class CommittingOwner : IWeaponPresenter
+        private sealed class CommittingOwner : IWeaponHitResolver
         {
             public float GetHitChance(AttackData attackData, WeaponProfile profile) =>
                 throw new InvalidOperationException();

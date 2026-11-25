@@ -23,7 +23,7 @@ def Property(text,name):
 
 view = Read('Assets/Prefabs/Models/Squadrons/YWingBomberSquadronView.prefab')
 data = Read('Assets/Settings/Data/Squadron/YWingBomberSquadronData.asset')
-members = view.count('Assembly-CSharp::EmpireAtWar.ViewComponents.Squadrons.FighterView')
+members = view.count('Assembly-CSharp::EmpireAtWar.ViewComponents.Squadrons.FighterHardPoint')
 weapons = view.count('Assembly-CSharp::EmpireAtWar.ViewComponents.Health.WeaponHardPoint')
 assert members == 6 and weapons == 24
 for field,value in {'MemberHull':30,'MemberShields':30,'CruiseSpeed':30,'CombatSpeed':30,'ShieldRegenerateValue':0.15,'LaserShieldDamageMultiplier':0.7,'HullRepairPerSecond':0}.items():
@@ -35,7 +35,7 @@ member_ids = []
 for block in view.split('--- !u!'):
     if 'Assembly-CSharp::EmpireAtWar.ViewComponents.Health.WeaponHardPoint' in block:
         gun_ids.append(int(re.search(r'<Id>k__BackingField: (\d+)',block).group(1)))
-    if 'Assembly-CSharp::EmpireAtWar.ViewComponents.Squadrons.FighterView' in block:
+    if 'Assembly-CSharp::EmpireAtWar.ViewComponents.Squadrons.FighterHardPoint' in block:
         member_ids.append(int(re.search(r'^  id: (\d+)',block,re.M).group(1)))
 assert sorted(gun_ids) == list(range(24))
 assert sorted(member_ids) == list(range(6))

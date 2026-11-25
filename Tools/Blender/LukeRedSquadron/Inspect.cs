@@ -23,7 +23,7 @@ public static class LukeInspect
         var weapons=AssetDatabase.LoadAssetAtPath<WeaponsData>("Assets/Settings/Data/Models/Weapon/WeaponsData.asset");
         var view=AssetDatabase.LoadAssetAtPath<GameObject>("Assets/Prefabs/Models/Squadrons/LukeRedSquadronSquadronView.prefab");
         var components=BalancePrefabBindings.Components(view).OfType<Component>().ToArray();
-        var fighters=components.OfType<FighterView>().OrderBy(f=>f.Id).ToArray();
+        var fighters=components.OfType<FighterHardPoint>().OrderBy(f=>f.Id).ToArray();
         var bindings=components.OfType<EmpireAtWar.Entities.BaseEntity.EntityBindings>().Single();
         var ability=AssetDatabase.LoadAssetAtPath<EmpireAtWar.Services.ShipAbilities.ShipAbilityCatalog>("Assets/Settings/Data/Models/ShipAbilities/ShipAbilityCatalog.asset").Get(EmpireAtWar.Services.ShipAbilities.ShipAbilityId.LuckyShot);
         var settings=(EmpireAtWar.Services.ShipAbilities.Abilities.LuckyShotSettings)ability.Settings;

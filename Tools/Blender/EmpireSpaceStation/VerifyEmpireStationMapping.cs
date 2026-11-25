@@ -57,7 +57,7 @@ public static class VerifyEmpireStationMapping
         try
         {
             if (root.transform.localScale != Vector3.one) throw new InvalidOperationException("Gameplay root scale changed.");
-            var view = root.GetComponent<StationLevelView>();
+            var view = root.GetComponent<StationLevelComponent>();
             var serialized = new SerializedObject(view);
             var levels = serialized.FindProperty("levelModels");
             var hardPointList = serialized.FindProperty("hardPoints");
@@ -100,7 +100,7 @@ public static class VerifyEmpireStationMapping
                 var source = (string)audit["models"]["EmpireSpaceStationLevel" + level]["file"];
                 if (!source.EndsWith("EB_STATION_0" + level + ".ALO")) throw new InvalidOperationException("Incorrect original ALO.");
                 results.Add(new JObject { ["level"] = level, ["prefab"] = path, ["source"] = source,
-                    ["configuration"] = VIEW + ":StationLevelView.levelModels[" + (level - 1) + "]",
+                    ["configuration"] = VIEW + ":StationLevelComponent.levelModels[" + (level - 1) + "]",
                     ["attachedPieces"] = ((JArray)art[level.ToString()]).Count });
             }
             var renderers = root.GetComponentsInChildren<MeshRenderer>(true);

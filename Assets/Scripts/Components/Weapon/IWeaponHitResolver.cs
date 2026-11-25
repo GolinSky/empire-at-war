@@ -3,7 +3,7 @@ using EmpireAtWar.Models.Health;
 
 namespace EmpireAtWar.Components.Weapon
 {
-    public interface IWeaponPresenter
+    public interface IWeaponHitResolver
     {
         /// <summary>Chance that one shot of this profile hits the target; a miss is visual only.</summary>
         float GetHitChance(AttackData attackData, WeaponProfile profile);

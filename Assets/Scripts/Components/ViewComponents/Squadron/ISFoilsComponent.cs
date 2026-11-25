@@ -1,6 +1,6 @@
 namespace EmpireAtWar.ViewComponents.Squadrons
 {
-    public interface ISFoilsView
+    public interface ISFoilsComponent
     {
         void SetClosed(bool isClosed, bool immediate);
     }

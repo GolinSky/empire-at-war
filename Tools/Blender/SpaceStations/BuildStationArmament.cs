@@ -166,7 +166,7 @@ public static class BuildStationArmament
             var components = view.GetComponentsInChildren<MonoBehaviour>(true);
             SetArray(components.Single(c => c.GetType().Name == "HealthComponent"), "<ShipUnits>k__BackingField", points);
             SetArray(components.Single(c => c.GetType().Name == "WeaponComponent"), "hardPoints", weapons.OrderBy(h => h.Id).ToArray());
-            SetArray(view.GetComponent<StationLevelView>(), "hardPoints", points);
+            SetArray(view.GetComponent<StationLevelComponent>(), "hardPoints", points);
             foreach (var hardPoint in points.Where(h => h.Id >= 17))
             {
                 var anchor = (Transform)new SerializedObject(hardPoint).FindProperty("destroyedVfxAnchor").objectReferenceValue;
@@ -189,7 +189,7 @@ public static class BuildStationArmament
             var components = view.GetComponentsInChildren<MonoBehaviour>(true);
             SetArray(components.Single(c => c.GetType().Name == "UnitRenderStateComponent"), "meshRenderers", renderers);
             SetArray(components.Single(c => c.GetType().Name == "FogVisibilityComponent"), "renderers", renderers);
-            view.GetComponent<StationLevelView>().ApplyLevel(1);
+            view.GetComponent<StationLevelComponent>().ApplyLevel(1);
             PrefabUtility.SaveAsPrefabAsset(view, viewPath);
         }
         finally { PrefabUtility.UnloadPrefabContents(view); }

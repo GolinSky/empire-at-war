@@ -123,7 +123,7 @@ public static class BuildStationLevels
         {
             var nested = view.GetComponentsInChildren<StationLevelArt>(true);
             var models = levels.Select(path => nested.Single(m => PrefabUtility.GetPrefabAssetPathOfNearestInstanceRoot(m.gameObject) == path)).ToArray();
-            var levelView = view.GetComponent<StationLevelView>();
+            var levelView = view.GetComponent<StationLevelComponent>();
             var shield = view.GetComponentInChildren<Shield>(true);
             var serializedView = new SerializedObject(levelView);
             Assign(serializedView.FindProperty("levelModels"), models);

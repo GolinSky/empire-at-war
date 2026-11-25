@@ -27,7 +27,7 @@ namespace EmpireAtWar.Components.Squadrons.Flight
         private CombatModifiers _modifiers;
         private FighterPoseBatch _poseBatch;
 
-        [SerializeField] private List<FighterView> fighters;
+        [SerializeField] private List<FighterHardPoint> fighters;
         private readonly List<NumericsVector3> _spawnPositions = new List<NumericsVector3>();
         // Index = fighter: its slot in the pose batch.
         private int[] _poseSlots;
@@ -81,7 +81,7 @@ namespace EmpireAtWar.Components.Squadrons.Flight
                 _poseSlots = new int[fighters.Count];
             for (int i = 0; i < fighters.Count; i++)
             {
-                FighterView fighter = fighters[i];
+                FighterHardPoint fighter = fighters[i];
                 _poseSlots[i] = _poseBatch.Register(fighter.transform, fighter.Body, fighter.BodyRestRotation);
             }
 

@@ -77,7 +77,7 @@ namespace EmpireAtWar.Editor.BattleSimulator
                     definition.HullRepairPerSecond = squadron.HullRepairPerSecond;
                     definition.Range = squadron.Range;
                     var health = unit.Components.OfType<SquadronHealthComponent>().Single();
-                    foreach (FighterView fighter in BalancePrefabBindings.References(health, "fighters"))
+                    foreach (FighterHardPoint fighter in BalancePrefabBindings.References(health, "fighters"))
                     {
                         int id = definition.HardPoints.Count;
                         definition.HardPoints.Add(new SimHardPointDefinition { Type = fighter.HardPointType, Name = fighter.name });

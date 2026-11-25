@@ -40,8 +40,8 @@ namespace EmpireAtWar.Editor.AloImport
                 throw new InvalidOperationException("Existing station adapter requires an explicit existing-station-assets-v1 update recipe.");
             var objects = new AloAssetObjectMap(recipe);
             JToken station = recipe["station"];
-            var view = objects.Resolve(station["viewComponent"]) as StationLevelView;
-            if (view == null) throw new InvalidOperationException("Station viewComponent must identify StationLevelView.");
+            var view = objects.Resolve(station["viewComponent"]) as StationLevelComponent;
+            if (view == null) throw new InvalidOperationException("Station viewComponent must identify StationLevelComponent.");
             string baselineGuid = (string)recipe["gameplay"]["baselineGuid"];
             var data = AssetDatabase.LoadAssetAtPath<SpaceStationData>(AssetDatabase.GUIDToAssetPath(baselineGuid));
             if (data == null || recipe["gameplay"]["values"].Any()) throw new InvalidOperationException("Station updates preserve an existing shared SpaceStationData baseline.");

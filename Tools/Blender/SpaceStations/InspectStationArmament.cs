@@ -28,7 +28,7 @@ public static class InspectStationArmament
         var components = view.GetComponentsInChildren<MonoBehaviour>(true);
         RequireArray(components.Single(c => c.GetType().Name == "HealthComponent"), "<ShipUnits>k__BackingField", points);
         RequireArray(components.Single(c => c.GetType().Name == "WeaponComponent"), "hardPoints", weapons);
-        RequireArray(view.GetComponent<StationLevelView>(), "hardPoints", points);
+        RequireArray(view.GetComponent<StationLevelComponent>(), "hardPoints", points);
         var injection = new SerializedObject(components.Single(c => c.GetType().Name == "EntityBindings")).FindProperty("<Injectables>k__BackingField");
         Require(points.All(h => Enumerable.Range(0, injection.arraySize).Any(i => injection.GetArrayElementAtIndex(i).objectReferenceValue == h)), "injected hardpoints");
         foreach (var hardPoint in points.Where(h => h.Id >= 17))
@@ -47,7 +47,7 @@ public static class InspectStationArmament
             var model = AssetDatabase.LoadAssetAtPath<GameObject>(path).GetComponent<StationLevelArt>();
             int[] installed = points.Where(h => h.UnlockLevel <= level).Select(h => h.Id).OrderBy(i => i).ToArray();
             Require(model.Mounts.Select(m => m.HardPointId).OrderBy(i => i).SequenceEqual(installed), "mounted/unlocked IDs at level " + level);
-            var linked = (StationLevelArt)new SerializedObject(view.GetComponent<StationLevelView>()).FindProperty("levelModels")
+            var linked = (StationLevelArt)new SerializedObject(view.GetComponent<StationLevelComponent>()).FindProperty("levelModels")
                 .GetArrayElementAtIndex(level - 1).objectReferenceValue;
             Require(linked.Mounts.Select(m => m.HardPointId).OrderBy(i => i).SequenceEqual(installed)
                 && linked.Mounts.All(m => m.Point != null), "nested view mounts at level " + level);

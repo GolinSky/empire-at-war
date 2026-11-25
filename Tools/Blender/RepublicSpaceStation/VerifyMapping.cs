@@ -40,7 +40,7 @@ public static class VerifyRepublicStationMapping
             var renderers = new SerializedObject(station.GetComponent<EmpireAtWar.Entities.SpaceStation.SpaceStation>()).FindProperty("explosionHullRenderers");
             Bounds bounds = ((Renderer)renderers.GetArrayElementAtIndex(0).objectReferenceValue).bounds;
             for (int i = 1; i < renderers.arraySize; i++) bounds.Encapsulate(((Renderer)renderers.GetArrayElementAtIndex(i).objectReferenceValue).bounds);
-            var levelView = station.GetComponent<StationLevelView>();
+            var levelView = station.GetComponent<StationLevelComponent>();
             if (levelView != null)
             {
                 var levels = new SerializedObject(levelView).FindProperty("levelModels");
@@ -68,7 +68,7 @@ public static class VerifyRepublicStationMapping
         try
         {
             if (root.transform.localScale != Vector3.one) throw new InvalidOperationException("Gameplay root scale changed.");
-            var view = root.GetComponent<StationLevelView>();
+            var view = root.GetComponent<StationLevelComponent>();
             var serialized = new SerializedObject(view);
             var levels = serialized.FindProperty("levelModels");
             var hardPointList = serialized.FindProperty("hardPoints");
@@ -130,7 +130,7 @@ public static class VerifyRepublicStationMapping
                         throw new InvalidOperationException("Authored bone rotation lost: " + bone.name);
                 }
                 results.Add(new JObject { ["level"] = level, ["prefab"] = path, ["source"] = source,
-                    ["configuration"] = VIEW + ":StationLevelView.levelModels[" + (level - 1) + "]",
+                    ["configuration"] = VIEW + ":StationLevelComponent.levelModels[" + (level - 1) + "]",
                     ["attachedPieces"] = ((JArray)art[level.ToString()]).Count });
             }
             var renderers = root.GetComponentsInChildren<MeshRenderer>(true);

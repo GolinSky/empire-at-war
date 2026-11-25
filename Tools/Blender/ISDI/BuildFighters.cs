@@ -23,7 +23,7 @@ public static class BuildImperialFighters
             try
             {
                 root.name=name+"SquadronView";
-                var fighters=root.GetComponentsInChildren<FighterView>(true).OrderBy(f=>f.Id).ToList();
+                var fighters=root.GetComponentsInChildren<FighterHardPoint>(true).OrderBy(f=>f.Id).ToList();
                 while(fighters.Count>counts[variant]){UnityEngine.Object.DestroyImmediate(fighters.Last().gameObject);fighters.RemoveAt(fighters.Count-1);}
                 while(fighters.Count<counts[variant])fighters.Add(UnityEngine.Object.Instantiate(fighters[0],fighters[0].transform.parent));
                 var weapons=new List<WeaponHardPoint>();

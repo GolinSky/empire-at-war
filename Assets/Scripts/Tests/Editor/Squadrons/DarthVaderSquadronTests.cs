@@ -28,7 +28,7 @@ namespace EmpireAtWar.Tests.Editor
         {
             GameObject view = AssetDatabase.LoadAssetAtPath<GameObject>(VIEW_FOLDER + UNIT + "SquadronView.prefab");
             Assert.That(view, Is.Not.Null);
-            FighterView[] fighters = view.GetComponentsInChildren<FighterView>(true).OrderBy(f => f.Id).ToArray();
+            FighterHardPoint[] fighters = view.GetComponentsInChildren<FighterHardPoint>(true).OrderBy(f => f.Id).ToArray();
             Assert.That(fighters.Length, Is.GreaterThan(1), "Vader needs at least one escort.");
             Assert.That(fighters.Select(f => f.Id), Is.EqualTo(Enumerable.Range(0, fighters.Length)));
             SerializedProperty flight = new SerializedObject(view.GetComponent<SquadronFlightComponent>()).FindProperty("fighters");
@@ -43,7 +43,7 @@ namespace EmpireAtWar.Tests.Editor
 
             GameObject tieView = AssetDatabase.LoadAssetAtPath<GameObject>(VIEW_FOLDER + "TIEFighterSquadronView.prefab");
             Mesh[] tieMeshes = tieView.GetComponentsInChildren<MeshFilter>(true).Select(f => f.sharedMesh).Distinct().ToArray();
-            foreach (FighterView escort in fighters.Skip(1))
+            foreach (FighterHardPoint escort in fighters.Skip(1))
             {
                 MeshFilter[] meshes = escort.Body.GetComponentsInChildren<MeshFilter>(true);
                 Assert.That(meshes, Is.Not.Empty);
@@ -66,7 +66,7 @@ namespace EmpireAtWar.Tests.Editor
             SquadronData vader = LoadData(UNIT);
             WeaponsData weapons = AssetDatabase.LoadAssetAtPath<WeaponsData>(WEAPONS);
             GameObject view = AssetDatabase.LoadAssetAtPath<GameObject>(VIEW_FOLDER + UNIT + "SquadronView.prefab");
-            Assert.That(vader.MemberCount, Is.EqualTo(view.GetComponentsInChildren<FighterView>(true).Length));
+            Assert.That(vader.MemberCount, Is.EqualTo(view.GetComponentsInChildren<FighterHardPoint>(true).Length));
             Assert.That(vader.WeaponLoadout.Select(w => (w.WeaponType, w.Count)), Is.EquivalentTo(new[]
             {
                 (WeaponType.DarthVaderLaser, 1), (WeaponType.DarthVaderEscortLaser, vader.MemberCount - 1)

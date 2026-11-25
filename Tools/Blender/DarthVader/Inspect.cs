@@ -23,7 +23,7 @@ public static class VaderInspect
         var weapons=AssetDatabase.LoadAssetAtPath<WeaponsData>("Assets/Settings/Data/Models/Weapon/WeaponsData.asset");
         var view=AssetDatabase.LoadAssetAtPath<GameObject>("Assets/Prefabs/Models/Squadrons/DarthVaderTIEAdvancedSquadronView.prefab");
         var components=BalancePrefabBindings.Components(view).OfType<Component>().ToArray();
-        var fighters=components.OfType<FighterView>().OrderBy(f=>f.Id).ToArray();
+        var fighters=components.OfType<FighterHardPoint>().OrderBy(f=>f.Id).ToArray();
         var others=AssetDatabase.FindAssets("t:SquadronData",new[]{"Assets/Settings/Data/Squadron"}).Select(g=>AssetDatabase.LoadAssetAtPath<SquadronData>(AssetDatabase.GUIDToAssetPath(g))).Where(d=>d!=data).ToArray();
         Render(view,"Formation");
         Render(AssetDatabase.LoadAssetAtPath<GameObject>("Assets/Prefabs/Models/Squadrons/DarthVaderTIEAdvanced.prefab"),"Leader");

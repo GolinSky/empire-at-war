@@ -103,7 +103,7 @@ namespace EmpireAtWar.Editor.Rendering
         /// <summary>Levels of a station view; 0 for other units.</summary>
         public static int GetStationLevelCount(GameObject view)
         {
-            var levelView = view.GetComponent<StationLevelView>();
+            var levelView = view.GetComponent<StationLevelComponent>();
             return levelView == null ? 0 : new SerializedObject(levelView).FindProperty("levelModels").arraySize;
         }
 
@@ -114,7 +114,7 @@ namespace EmpireAtWar.Editor.Rendering
         /// <param name="stationLevel">For a station, the level whose model is copied; 0 is the top level.</param>
         public static List<MeshRenderer> GetSourceRenderers(GameObject view, int stationLevel = 0)
         {
-            var levelView = view.GetComponent<StationLevelView>();
+            var levelView = view.GetComponent<StationLevelComponent>();
             Renderer[] sources;
             if (levelView != null)
             {

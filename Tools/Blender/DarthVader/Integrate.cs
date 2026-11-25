@@ -72,7 +72,7 @@ public static class VaderIntegration
             root.name=STEM+"SquadronView";
             var components=BalancePrefabBindings.Components(root).OfType<Component>().ToArray();
             var bindings=components.OfType<EntityBindings>().Single();
-            var fighters=BalancePrefabBindings.References(bindings.SquadronHealth,"fighters").Cast<FighterView>().ToArray();
+            var fighters=BalancePrefabBindings.References(bindings.SquadronHealth,"fighters").Cast<FighterHardPoint>().ToArray();
             var removed=new HashSet<Object>(fighters.Skip(7).SelectMany(f=>Objects(f.gameObject)));
             var leader=fighters[0];
             var oldModel=leader.Body.Cast<Transform>().Single(t=>t.name=="TIEFighter");

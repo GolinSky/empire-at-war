@@ -91,11 +91,11 @@ namespace EmpireAtWar.Editor.Squadrons
             WeaponComponent weaponComponent = weapons.AddComponent<WeaponComponent>();
 
             GameObject model = AssetDatabase.LoadAssetAtPath<GameObject>(spec.ModelPath);
-            List<FighterView> fighters = new List<FighterView>();
+            List<FighterHardPoint> fighters = new List<FighterHardPoint>();
             List<WeaponHardPoint> guns = new List<WeaponHardPoint>();
             for (int i = 0; i < spec.MemberCount; i++)
             {
-                FighterView fighter = CreateFighter(root.transform, i, spec, model);
+                FighterHardPoint fighter = CreateFighter(root.transform, i, spec, model);
                 fighters.Add(fighter);
                 guns.Add(fighter.Gun);
             }
@@ -108,7 +108,7 @@ namespace EmpireAtWar.Editor.Squadrons
             AddWorldIcon(root, unitIcon);
         }
 
-        private static FighterView CreateFighter(Transform parent, int index, SquadronViewSpec spec,
+        private static FighterHardPoint CreateFighter(Transform parent, int index, SquadronViewSpec spec,
             GameObject model)
         {
             GameObject fighter = new GameObject($"Fighter{index}");
@@ -140,7 +140,7 @@ namespace EmpireAtWar.Editor.Squadrons
             gunObjectData.FindProperty("prewarmEffects").intValue = 2;
             gunObjectData.ApplyModifiedPropertiesWithoutUndo();
 
-            FighterView view = fighter.AddComponent<FighterView>();
+            FighterHardPoint view = fighter.AddComponent<FighterHardPoint>();
             view.SetEditorReferences(index, body.transform, gun);
             return view;
         }

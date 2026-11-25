@@ -28,7 +28,7 @@ namespace EmpireAtWar.Components.Squadrons.Health
         private readonly ITimer _shieldRecoveryTimer = TimerFactory.ConstructTimer();
         private bool _shieldRecovering;
 
-        [SerializeField] private List<FighterView> fighters;
+        [SerializeField] private List<FighterHardPoint> fighters;
         private readonly List<IHardPointModel> _liveUnits = new List<IHardPointModel>();
         private CombatModifiers _modifiers;
         private HardPointAdapter[] _adapters = Array.Empty<HardPointAdapter>();

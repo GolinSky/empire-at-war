@@ -24,7 +24,7 @@ using EmpireAtWar.Lifecycle;
 
 namespace EmpireAtWar.Components.Weapon
 {
-    public class WeaponComponent: MonoComponent<WeaponModel>, IWeaponComponent, IInitializable, ITickable, IWeaponPresenter,
+    public class WeaponComponent: MonoComponent<WeaponModel>, IWeaponComponent, IInitializable, ITickable, IWeaponHitResolver,
         IWeaponFireEvents, IWeaponFacing, IRespawnable, IAutoPowerWeaponObserver, IWeaponTargetReplica, IArtilleryCapability
     {
         // The ship stops a bit inside its range so hardpoints on the far side of the hull still reach.

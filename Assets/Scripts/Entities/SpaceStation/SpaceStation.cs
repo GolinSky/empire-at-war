@@ -41,7 +41,7 @@ namespace EmpireAtWar.Entities.SpaceStation
 
         [SerializeField] private Renderer[] explosionHullRenderers;
         [Tooltip("Optional for factions that use a distinct model at each station level.")]
-        [SerializeField] private StationLevelView levelView;
+        [SerializeField] private StationLevelComponent levelView;
         private EntityComponentLifecycle _componentLifecycle;
         private LifetimeScope _scope;
 

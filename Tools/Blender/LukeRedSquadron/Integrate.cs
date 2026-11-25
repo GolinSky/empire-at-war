@@ -64,9 +64,9 @@ public static class LukeIntegration
         {
             root.name = STEM + "SquadronView";
             var bindings = BalancePrefabBindings.Components(root).OfType<EntityBindings>().Single();
-            var fighters = BalancePrefabBindings.References(bindings.SquadronHealth, "fighters").Cast<FighterView>().ToList();
+            var fighters = BalancePrefabBindings.References(bindings.SquadronHealth, "fighters").Cast<FighterHardPoint>().ToList();
             var extra = Object.Instantiate(fighters[4].gameObject, fighters[4].transform.parent);
-            fighters.Add(BalancePrefabBindings.Components(extra).OfType<FighterView>().Single());
+            fighters.Add(BalancePrefabBindings.Components(extra).OfType<FighterHardPoint>().Single());
             Object.DestroyImmediate(bindings.SFoils);
             var bindingData = new SerializedObject(bindings);
             Field(bindingData, "SFoils").objectReferenceValue = null;

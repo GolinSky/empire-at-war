@@ -31,7 +31,7 @@ namespace EmpireAtWar.Entities.BaseEntity
         [field: SerializeField] public SquadronHealthComponent SquadronHealth { get; private set; }
         [field: SerializeField] public SquadronFlightComponent SquadronFlight { get; private set; }
         [field: SerializeField] public SquadronIconComponent SquadronIcon { get; private set; }
-        [field: SerializeField] public SFoilsView SFoils { get; private set; }
+        [field: SerializeField] public SFoilsComponent SFoils { get; private set; }
         [field: SerializeField] public GravityWellEmitter GravityWellEmitter { get; private set; }
         [field: SerializeField] public CloakComponent Cloak { get; private set; }
         [field: SerializeField] public RepairRangeComponent RepairRange { get; private set; }

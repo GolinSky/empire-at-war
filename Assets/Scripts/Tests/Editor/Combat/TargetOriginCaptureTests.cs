@@ -129,7 +129,7 @@ namespace EmpireAtWar.Tests.Editor
             return item;
         }
 
-        private sealed class Owner : IWeaponPresenter
+        private sealed class Owner : IWeaponHitResolver
         {
             public float GetHitChance(AttackData attackData, WeaponProfile profile) => throw new NotSupportedException();
             public void ApplyDamage(AttackData attackData, IHardPointModel hardPointModel, WeaponProfile profile,

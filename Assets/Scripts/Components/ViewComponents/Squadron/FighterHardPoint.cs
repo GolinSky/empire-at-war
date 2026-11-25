@@ -12,7 +12,7 @@ namespace EmpireAtWar.ViewComponents.Squadrons
     /// One strikecraft of a squadron. The root follows the flight path, <see cref="body"/> carries the roll.
     /// It is also the hardpoint enemy weapons aim at.
     /// </summary>
-    public sealed class FighterView : MonoBehaviour, IHardPoint
+    public sealed class FighterHardPoint : MonoBehaviour, IHardPoint
     {
         [SerializeField] private Transform body;
         [SerializeField] private WeaponHardPoint gun;

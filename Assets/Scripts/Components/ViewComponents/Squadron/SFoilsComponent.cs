@@ -2,7 +2,7 @@ using UnityEngine;
 
 namespace EmpireAtWar.ViewComponents.Squadrons
 {
-    public sealed class SFoilsView : MonoBehaviour, ISFoilsView
+    public sealed class SFoilsComponent : MonoBehaviour, ISFoilsComponent
     {
         [SerializeField] private Animation[] animations;
         [SerializeField] private AnimationClip opened;

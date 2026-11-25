@@ -23,7 +23,7 @@ public static class InspectAssets
             GameObject prefab = WeaponLoadoutBaker.LoadSquadronView(data);
             var components = BalancePrefabBindings.Components(prefab).ToArray();
             var bindings = components.OfType<EntityBindings>().Single();
-            var fighters = BalancePrefabBindings.References(bindings.SquadronHealth, "fighters").Cast<FighterView>().ToArray();
+            var fighters = BalancePrefabBindings.References(bindings.SquadronHealth, "fighters").Cast<FighterHardPoint>().ToArray();
             var mounts = bindings.Weapons.SelectMany(w => BalancePrefabBindings.References(w, "hardPoints")).Cast<WeaponHardPoint>().ToArray();
             var derived = WeaponLoadoutBaker.DeriveLoadout(prefab);
             var familyDps = mounts.GroupBy(m => weapons.GetProfile(m.WeaponType).Family).ToDictionary(g => g.Key.ToString(),

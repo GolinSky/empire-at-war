@@ -35,7 +35,7 @@ public static class ConsolidateFighterGuns
         {
             GameObject prefab = AssetDatabase.LoadAssetAtPath<GameObject>(path);
             before.Add(path, Dps(prefab, weapons));
-            foreach (FighterView fighter in prefab.GetComponentsInChildren<FighterView>(true))
+            foreach (FighterHardPoint fighter in prefab.GetComponentsInChildren<FighterHardPoint>(true))
             {
                 foreach (var channel in Channels(fighter, weapons))
                 {
@@ -56,7 +56,7 @@ public static class ConsolidateFighterGuns
             try
             {
                 var removed = new HashSet<WeaponHardPoint>();
-                foreach (FighterView fighter in root.GetComponentsInChildren<FighterView>(true))
+                foreach (FighterHardPoint fighter in root.GetComponentsInChildren<FighterHardPoint>(true))
                 {
                     foreach (var channel in Channels(fighter, weapons))
                     {
@@ -131,12 +131,12 @@ public static class ConsolidateFighterGuns
             damageMultipliers = multipliers.ToDictionary(p => p.Key.ToString(), p => p.Value) };
     }
 
-    private static IEnumerable<IGrouping<int, WeaponHardPoint>> Channels(FighterView fighter, WeaponsData weapons) =>
+    private static IEnumerable<IGrouping<int, WeaponHardPoint>> Channels(FighterHardPoint fighter, WeaponsData weapons) =>
         fighter.GetComponentsInChildren<WeaponHardPoint>(true).GroupBy(gun =>
             weapons.GetProfile(gun.WeaponType).Family is WeaponFamily.FighterLaser or
                 WeaponFamily.InterceptorLaser or WeaponFamily.HeroLaser ? -1 : (int)gun.WeaponType);
 
-    private static WeaponHardPoint Retained(FighterView fighter, IEnumerable<WeaponHardPoint> channel) =>
+    private static WeaponHardPoint Retained(FighterHardPoint fighter, IEnumerable<WeaponHardPoint> channel) =>
         channel.Contains(fighter.Gun) ? fighter.Gun : channel.First();
 
     private static float Dps(GameObject view, WeaponsData weapons) =>

@@ -15,7 +15,7 @@ using SpaceStationEntity = EmpireAtWar.Entities.SpaceStation.SpaceStation;
 namespace EmpireAtWar.Tests.Editor
 {
     [Category("Ui")]
-    public sealed class StationLevelViewTests
+    public sealed class StationLevelComponentTests
     {
         private const string PREFABS = "Assets/Prefabs/Models/Stations/";
         private const BindingFlags PRIVATE_INSTANCE = BindingFlags.Instance | BindingFlags.NonPublic;
@@ -80,7 +80,7 @@ namespace EmpireAtWar.Tests.Editor
         public void RepublicWreck_UsesOnlyFinalLevelHull()
         {
             var station = AssetDatabase.LoadAssetAtPath<GameObject>(ViewPath("Republic"));
-            var levels = new SerializedObject(station.GetComponent<StationLevelView>()).FindProperty("levelModels");
+            var levels = new SerializedObject(station.GetComponent<StationLevelComponent>()).FindProperty("levelModels");
             var finalModel = (StationLevelArt)levels.GetArrayElementAtIndex(LEVELS - 1).objectReferenceValue;
             var sources = ShipWreckBuilder.GetSourceRenderers(station);
             Assert.That(sources, Is.EquivalentTo(finalModel.HullRenderers));
@@ -96,8 +96,8 @@ namespace EmpireAtWar.Tests.Editor
             var root = PrefabUtility.LoadPrefabContents(ViewPath("Republic"));
             try
             {
-                var view = root.GetComponent<StationLevelView>();
-                typeof(StationLevelView).GetMethod("Awake", PRIVATE_INSTANCE).Invoke(view, null);
+                var view = root.GetComponent<StationLevelComponent>();
+                typeof(StationLevelComponent).GetMethod("Awake", PRIVATE_INSTANCE).Invoke(view, null);
                 view.ApplyLevel(LEVELS);
                 foreach (var point in root.GetComponentsInChildren<HardPoint>(true))
                 {
@@ -194,7 +194,7 @@ namespace EmpireAtWar.Tests.Editor
             try
             {
                 var station = root.GetComponent<SpaceStationEntity>();
-                var view = root.GetComponent<StationLevelView>();
+                var view = root.GetComponent<StationLevelComponent>();
                 var data = AssetDatabase.LoadAssetAtPath<SpaceStationData>("Assets/Settings/Data/Models/SpaceStation/SpaceStationData.asset");
                 var selectionMarker = (RectTransform)new SerializedObject(view).FindProperty("selectionMarker").objectReferenceValue;
                 var upgrade = new RecordingHealthUpgrade();
@@ -247,8 +247,8 @@ namespace EmpireAtWar.Tests.Editor
             GameObject root = PrefabUtility.LoadPrefabContents(ViewPath(faction));
             try
             {
-                var view = root.GetComponent<StationLevelView>();
-                typeof(StationLevelView).GetMethod("Awake", PRIVATE_INSTANCE).Invoke(view, null);
+                var view = root.GetComponent<StationLevelComponent>();
+                typeof(StationLevelComponent).GetMethod("Awake", PRIVATE_INSTANCE).Invoke(view, null);
                 view.ApplyLevel(LEVELS);
                 foreach (var mount in view.CurrentModel.Mounts)
                 {
@@ -280,9 +280,9 @@ namespace EmpireAtWar.Tests.Editor
                 Assert.That(path, Is.EqualTo(ViewPath(faction.ToString())));
                 var root = AssetDatabase.LoadAssetAtPath<GameObject>(path);
                 bool leveled = faction == FactionType.Rebellion || faction == FactionType.Empire || faction == FactionType.Republic || faction == FactionType.Separatist;
-                Assert.That(root.GetComponent<StationLevelView>() != null, Is.EqualTo(leveled));
+                Assert.That(root.GetComponent<StationLevelComponent>() != null, Is.EqualTo(leveled));
                 if (!leveled) continue;
-                Assert.That(new SerializedObject(root.GetComponent<StationLevelView>()).FindProperty("levelModels").arraySize, Is.EqualTo(levels.MaxLevel));
+                Assert.That(new SerializedObject(root.GetComponent<StationLevelComponent>()).FindProperty("levelModels").arraySize, Is.EqualTo(levels.MaxLevel));
                 Assert.That(root.GetComponentsInChildren<StationLevelArt>(true).Count(m => m.gameObject.activeSelf), Is.EqualTo(1));
             }
         }
@@ -296,7 +296,7 @@ namespace EmpireAtWar.Tests.Editor
             GameObject root = PrefabUtility.LoadPrefabContents(ViewPath(faction));
             try
             {
-                var view = root.GetComponent<StationLevelView>();
+                var view = root.GetComponent<StationLevelComponent>();
                 var shield = root.GetComponentInChildren<Shield>(true);
                 view.ApplyLevel(1);
                 Vector3 small = view.CurrentModel.HullBounds.center;

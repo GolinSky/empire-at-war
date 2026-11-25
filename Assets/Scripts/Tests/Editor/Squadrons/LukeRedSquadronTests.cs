@@ -34,7 +34,7 @@ namespace EmpireAtWar.Tests.Editor
         {
             GameObject view = AssetDatabase.LoadAssetAtPath<GameObject>(VIEW);
             Assert.That(view, Is.Not.Null);
-            FighterView[] fighters = view.GetComponentsInChildren<FighterView>(true).OrderBy(fighter => fighter.Id).ToArray();
+            FighterHardPoint[] fighters = view.GetComponentsInChildren<FighterHardPoint>(true).OrderBy(fighter => fighter.Id).ToArray();
             Assert.That(fighters, Is.Not.Empty);
             Assert.That(fighters.Select(fighter => fighter.Id), Is.EqualTo(Enumerable.Range(0, fighters.Length)));
             SerializedProperty flight = new SerializedObject(view.GetComponent<SquadronFlightComponent>()).FindProperty("fighters");
@@ -63,7 +63,7 @@ namespace EmpireAtWar.Tests.Editor
         public void SavedGeometry_UsesAotrXWingForEveryMember()
         {
             GameObject view = AssetDatabase.LoadAssetAtPath<GameObject>(VIEW);
-            foreach (FighterView fighter in view.GetComponentsInChildren<FighterView>(true))
+            foreach (FighterHardPoint fighter in view.GetComponentsInChildren<FighterHardPoint>(true))
             {
                 MeshRenderer[] renderers = fighter.Body.GetComponentsInChildren<MeshRenderer>(true)
                     .Where(renderer => renderer.enabled).ToArray();
@@ -87,7 +87,7 @@ namespace EmpireAtWar.Tests.Editor
         {
             SquadronData luke = LoadData();
             GameObject view = AssetDatabase.LoadAssetAtPath<GameObject>(VIEW);
-            Assert.That(luke.MemberCount, Is.EqualTo(view.GetComponentsInChildren<FighterView>(true).Length));
+            Assert.That(luke.MemberCount, Is.EqualTo(view.GetComponentsInChildren<FighterHardPoint>(true).Length));
             Assert.That(luke.LeaderHull, Is.GreaterThan(luke.MemberHull));
             Assert.That(luke.LeaderShields, Is.GreaterThan(luke.MemberShields));
             Assert.That(luke.MemberHull, Is.GreaterThan(0f));

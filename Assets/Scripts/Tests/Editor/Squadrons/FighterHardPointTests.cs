@@ -13,7 +13,7 @@ using VContainer.Unity;
 namespace EmpireAtWar.Tests.Editor
 {
     [Category("Squadrons")]
-    public sealed class FighterViewTests
+    public sealed class FighterHardPointTests
     {
         private readonly List<GameObject> _objects = new List<GameObject>();
         private FighterPoseBatch _batch;
@@ -33,7 +33,7 @@ namespace EmpireAtWar.Tests.Editor
         public void Injection_CapturesAuthoredRestBeforeAnInactiveSquadronPosesItsFighters()
         {
             Quaternion rest = Quaternion.Euler(10f, 90f, 0f);
-            (FighterView view, Transform body) = InactiveFighter(rest);
+            (FighterHardPoint view, Transform body) = InactiveFighter(rest);
             Quaternion registeredRest = default;
             ContainerBuilder builder = new ContainerBuilder();
             builder.RegisterInstance<IFighterExplosionPool>(new SilentExplosions());
@@ -64,7 +64,7 @@ namespace EmpireAtWar.Tests.Editor
         [Test]
         public void Restore_DeadFighterDisablesItsViewWithoutExplosion_AndNextDeathExplodes()
         {
-            (FighterView view, Transform body) = InactiveFighter(Quaternion.identity);
+            (FighterHardPoint view, Transform body) = InactiveFighter(Quaternion.identity);
             WeaponHardPoint gun = body.gameObject.AddComponent<WeaponHardPoint>();
             typeof(HardPoint).GetField("spawnDestroyedExplosion", BindingFlags.Instance | BindingFlags.NonPublic)
                 .SetValue(gun, false);
@@ -95,7 +95,7 @@ namespace EmpireAtWar.Tests.Editor
             }
         }
 
-        private (FighterView View, Transform Body) InactiveFighter(Quaternion rest)
+        private (FighterHardPoint View, Transform Body) InactiveFighter(Quaternion rest)
         {
             GameObject fighter = new GameObject("Fighter");
             fighter.SetActive(false);
@@ -103,7 +103,7 @@ namespace EmpireAtWar.Tests.Editor
             GameObject body = new GameObject("Body");
             body.transform.SetParent(fighter.transform, false);
             body.transform.localRotation = rest;
-            FighterView view = fighter.AddComponent<FighterView>();
+            FighterHardPoint view = fighter.AddComponent<FighterHardPoint>();
             view.SetEditorReferences(1, body.transform, null);
             return (view, body.transform);
         }

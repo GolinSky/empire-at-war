@@ -26,7 +26,7 @@ namespace EmpireAtWar.Components.Weapon
         // Leftover float error below this is dropped so finished targets leave the table.
         private const float INCOMING_EPSILON = 0.5f;
 
-        private readonly Dictionary<IWeaponPresenter, int> _owners = new Dictionary<IWeaponPresenter, int>();
+        private readonly Dictionary<IWeaponHitResolver, int> _owners = new Dictionary<IWeaponHitResolver, int>();
         private readonly List<SequenceRecord> _sequences = new List<SequenceRecord>();
         private readonly List<ImpactRecord> _impacts = new List<ImpactRecord>();
         private readonly Dictionary<long, int> _sequenceIndices = new Dictionary<long, int>();
@@ -93,14 +93,14 @@ namespace EmpireAtWar.Components.Weapon
             _incomingLoss.TryGetValue(target, out float incoming) &&
             incoming >= (target.Shields + target.Hull) * DOOMED_MARGIN;
 
-        public void Register(IWeaponPresenter owner)
+        public void Register(IWeaponHitResolver owner)
         {
             if (owner == null) throw new ArgumentNullException(nameof(owner));
             if (_owners.ContainsKey(owner)) throw new InvalidOperationException("Weapon is already registered.");
             _owners.Add(owner, ++_nextOwnerGeneration);
         }
 
-        public void Unregister(IWeaponPresenter owner)
+        public void Unregister(IWeaponHitResolver owner)
         {
             if (!_owners.Remove(owner)) return;
             _targetSelection.Unregister(owner);
@@ -111,7 +111,7 @@ namespace EmpireAtWar.Components.Weapon
             }
         }
 
-        public bool BeginSequence(IWeaponPresenter owner, WeaponHardPoint hardPoint,
+        public bool BeginSequence(IWeaponHitResolver owner, WeaponHardPoint hardPoint,
             AttackData targetGroup, IHardPointModel target)
         {
             if (!_owners.TryGetValue(owner, out int ownerGeneration))
@@ -163,7 +163,7 @@ namespace EmpireAtWar.Components.Weapon
             _targetSelection.Queue(weapon, hardPoint, ownerGeneration);
         }
 
-        public void RetimeSequences(IWeaponPresenter owner)
+        public void RetimeSequences(IWeaponHitResolver owner)
         {
             float now = Time.time;
             for (int i = 0; i < _sequences.Count; i++)
@@ -189,7 +189,7 @@ namespace EmpireAtWar.Components.Weapon
             hardPoint.StopEmitting(generation);
         }
 
-        public void ScheduleImpact(IWeaponPresenter owner, AttackData targetGroup,
+        public void ScheduleImpact(IWeaponHitResolver owner, AttackData targetGroup,
             IHardPointModel target, float damage, DamageType damageType, float delay, IncomingMissile missile,
             float expectedLoss = 0f)
         {
@@ -296,7 +296,7 @@ namespace EmpireAtWar.Components.Weapon
 #endif
         }
 
-        private bool IsRegistered(IWeaponPresenter owner, int generation) =>
+        private bool IsRegistered(IWeaponHitResolver owner, int generation) =>
             _owners.TryGetValue(owner, out int currentGeneration) && currentGeneration == generation;
 
         internal void ProcessDueEventsSerial(float now, int frame)
@@ -583,7 +583,7 @@ namespace EmpireAtWar.Components.Weapon
 
         private struct SequenceRecord
         {
-            public IWeaponPresenter Owner;
+            public IWeaponHitResolver Owner;
             public IHardPointModel Target;
 
             public WeaponHardPoint HardPoint;
@@ -602,7 +602,7 @@ namespace EmpireAtWar.Components.Weapon
 
         private struct ImpactRecord
         {
-            public IWeaponPresenter Owner;
+            public IWeaponHitResolver Owner;
             public IHardPointModel Target;
 
             public AttackData TargetGroup;

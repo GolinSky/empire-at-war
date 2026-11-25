@@ -40,7 +40,7 @@ namespace EmpireAtWar.Tests.Weapon
                     .GetNestedType("SequenceRecord", BindingFlags.NonPublic);
                 float now = Time.time;
                 int frame = Time.frameCount + 1;
-                foreach (IWeaponPresenter recordOwner in new IWeaponPresenter[] { owner, other, owner })
+                foreach (IWeaponHitResolver recordOwner in new IWeaponHitResolver[] { owner, other, owner })
                 {
                     object record = Activator.CreateInstance(recordType);
                     recordType.GetField("Owner").SetValue(record, recordOwner);
@@ -257,7 +257,7 @@ namespace EmpireAtWar.Tests.Weapon
 
         private enum DueBenchmarkVariant { ExistingSerial, CollectedSerial, Job }
 
-        private sealed class RecordingOwner : IWeaponPresenter
+        private sealed class RecordingOwner : IWeaponHitResolver
         {
             private readonly Action _onCommit;
 

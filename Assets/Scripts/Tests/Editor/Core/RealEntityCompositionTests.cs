@@ -1557,7 +1557,7 @@ namespace EmpireAtWar.Tests.Editor
         {
             const float BANK = 30f;
             SquadronFlightComponent flight = squadron.Bindings.SquadronFlight;
-            List<FighterView> fighters = (List<FighterView>)typeof(SquadronFlightComponent)
+            List<FighterHardPoint> fighters = (List<FighterHardPoint>)typeof(SquadronFlightComponent)
                 .GetField("fighters", System.Reflection.BindingFlags.Instance | System.Reflection.BindingFlags.NonPublic)
                 .GetValue(flight);
             int[] slots = (int[])typeof(SquadronFlightComponent)
@@ -1587,7 +1587,7 @@ namespace EmpireAtWar.Tests.Editor
                 poses.Set(slots[i], fighters[i].Position, Vector3.forward, BANK);
             }
             poses.LateTick();
-            foreach (FighterView fighter in fighters)
+            foreach (FighterHardPoint fighter in fighters)
                 Assert.That(Quaternion.Angle(fighter.Body.localRotation,
                     Quaternion.AngleAxis(BANK, Vector3.forward) * fighter.BodyRestRotation), Is.LessThan(0.01f), fighter.name);
             return slots;

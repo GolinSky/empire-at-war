@@ -48,7 +48,7 @@ namespace EmpireAtWar.Tests.Editor
             {
                 WeaponsData weapons = AssetDatabase.LoadAssetAtPath<WeaponsData>(
                     "Assets/Settings/Data/Models/Weapon/WeaponsData.asset");
-                foreach (FighterView fighter in root.GetComponentsInChildren<FighterView>(true))
+                foreach (FighterHardPoint fighter in root.GetComponentsInChildren<FighterHardPoint>(true))
                 {
                     WeaponHardPoint[] mounts = fighter.GetComponentsInChildren<WeaponHardPoint>(true);
                     WeaponHardPoint[] guns = mounts.Where(mount => weapons.GetProfile(mount.WeaponType).Family is

@@ -15,7 +15,7 @@ namespace EmpireAtWar.Components.Weapon
         private const int JOB_BATCH_SIZE = 64;
         private readonly Dictionary<WeaponHardPoint, int> _slots = new Dictionary<WeaponHardPoint, int>();
         private readonly List<WeaponHardPoint> _hardPoints = new List<WeaponHardPoint>();
-        private readonly List<IWeaponPresenter> _owners = new List<IWeaponPresenter>();
+        private readonly List<IWeaponHitResolver> _owners = new List<IWeaponHitResolver>();
         private TransformAccessArray _transforms;
         private NativeArray<float3> _positions;
         private NativeArray<quaternion> _parentRotations;
@@ -24,7 +24,7 @@ namespace EmpireAtWar.Components.Weapon
         public NativeArray<float3> Positions => _positions;
         public NativeArray<quaternion> ParentRotations => _parentRotations;
 
-        public void Register(IWeaponPresenter owner, WeaponHardPoint hardPoint)
+        public void Register(IWeaponHitResolver owner, WeaponHardPoint hardPoint)
         {
             if (_slots.ContainsKey(hardPoint)) return;
             if (!_transforms.isCreated) _transforms = new TransformAccessArray(INITIAL_CAPACITY);
@@ -36,7 +36,7 @@ namespace EmpireAtWar.Components.Weapon
 
         public int GetSlot(WeaponHardPoint hardPoint) => _slots[hardPoint];
 
-        public void Unregister(IWeaponPresenter owner)
+        public void Unregister(IWeaponHitResolver owner)
         {
             for (int i = _owners.Count - 1; i >= 0; i--)
             {

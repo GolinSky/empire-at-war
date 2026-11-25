@@ -17,7 +17,7 @@ namespace EmpireAtWar.Components.Weapon
         internal const int JOB_SELECTION_THRESHOLD = 8;
         internal const int TARGET_JOB_BATCH_SIZE = 1;
 
-        private readonly Func<IWeaponPresenter, int, bool> _isRegistered;
+        private readonly Func<IWeaponHitResolver, int, bool> _isRegistered;
         private readonly List<TargetSelectionRequest> _targetSelectionRequests = new List<TargetSelectionRequest>();
         private readonly Dictionary<WeaponComponent, int> _capturedOwners = new Dictionary<WeaponComponent, int>();
         private readonly List<WeaponComponent> _capturedWeapons = new List<WeaponComponent>();
@@ -38,7 +38,7 @@ namespace EmpireAtWar.Components.Weapon
         public int PositionCapacity => _capture.PositionCapacity;
         public int ResultCapacity => _targetSelectionResults.IsCreated ? _targetSelectionResults.Length : 0;
 
-        public TargetSelectionBatch(Func<IWeaponPresenter, int, bool> isRegistered)
+        public TargetSelectionBatch(Func<IWeaponHitResolver, int, bool> isRegistered)
         {
             _isRegistered = isRegistered;
         }
@@ -68,7 +68,7 @@ namespace EmpireAtWar.Components.Weapon
             });
         }
 
-        public void Unregister(IWeaponPresenter owner) => _origins.Unregister(owner);
+        public void Unregister(IWeaponHitResolver owner) => _origins.Unregister(owner);
 
         public void Process()
         {
@@ -369,7 +369,7 @@ namespace EmpireAtWar.Components.Weapon
 
         private struct TargetSelectionRequest
         {
-            public IWeaponPresenter Owner;
+            public IWeaponHitResolver Owner;
 
             public WeaponComponent Weapon;
             public WeaponHardPoint HardPoint;
