@@ -262,9 +262,8 @@ MonoBehaviour:
           triple turbolasers, two medium dual turbolasers, four medium ion cannons
           and two point defense lasers. Boost Weapon Power halves weapon reload and
           time between shots and halves speed and shield regeneration for 7 s. Recovers
-          in 50 s. Deploys 2 fighter squadrons, 1 interceptor squadron, 2 bomber
-          squadrons at once. Carries 15 total squadron launches, including the initial
-          deployment.
+          in 50 s. Deploys 1 fighter squadron, 1 interceptor squadron, 1 bomber squadron
+          at once. Carries 15 total squadron launches, including the initial deployment.
         role: Battlecarrier / Fleet support
         iconKey: 1583a68acc7d9f9488c947c5470db384:21300000
         isHero: 0
@@ -331,8 +330,8 @@ MonoBehaviour:
         description: Fleet carrier with four heavy octuple turbolasers, two heavy
           ion cannons and six heavy point-defense mounts. Boost Shield Power quadruples
           shield regeneration, reduces speed by 45% and reduces weapon damage by
-          5% for 15 s. Recovers in 40 s. Deploys 2 fighter squadrons, 2 interceptor
-          squadrons, 2 bomber squadrons at once. Carries 24 total squadron launches,
+          5% for 15 s. Recovers in 40 s. Deploys 1 fighter squadron, 1 interceptor
+          squadron, 1 bomber squadron at once. Carries 24 total squadron launches,
           including the initial deployment.
         role: Fleet carrier / Squadron support
         iconKey: 937b502e2d2d8684ca9920ab2b5d9a0d:21300000
