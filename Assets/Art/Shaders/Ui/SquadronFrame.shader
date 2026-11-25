@@ -83,7 +83,7 @@ Shader "EmpireAtWar/UI/Squadron Frame"
                 float edgeBlend = saturate(lerp(1.0, 1.75, ship) + platePixels + outlineWidth * selected);
                 half4 edgeColor = lerp(_EdgeColor, half4(i.color.rgb, 1), ship);
                 half4 fillColor = _PlateColor;
-                fillColor.rgb = lerp(fillColor.rgb, i.color.rgb, 0.10 * ship * selected);
+                fillColor.rgb = lerp(fillColor.rgb, i.color.rgb, 0.10 * selected);
                 half4 plateColor = lerp(fillColor, edgeColor, edgeBlend);
 
                 // A single slanted tab carries the team color at every zoom level.
