@@ -16,6 +16,7 @@ namespace EmpireAtWar.Services.UnitExplosion
         private const float MAX_ORBITAL_HIT_DIAMETER = 240f;
 
         private const int MAX_IDLE_EXPLOSIONS = 32;
+        private const int MAX_IDLE_SHOCKWAVES = 16;
         // Largest share of the camera distance an explosion moves towards the camera.
         private const float MAX_CAMERA_SHARE = 0.5f;
 
@@ -23,14 +24,16 @@ namespace EmpireAtWar.Services.UnitExplosion
         private readonly UnitExplosionView _orbitalHitPrefab;
         private readonly ViewPool<UnitExplosionView> _destructionPool;
         private readonly ViewPool<UnitExplosionView> _orbitalHitPool;
+        private readonly ViewPool<ShockwaveView> _shockwavePool;
         private readonly List<ActiveExplosion> _active = new List<ActiveExplosion>();
+        private readonly List<ShockwaveView> _activeShockwaves = new List<ShockwaveView>();
         private int _peakDestruction;
         private int _peakOrbitalHit;
 
         private readonly UnityEngine.Camera _camera;
 
         public UnitExplosionService(UnitExplosionView destructionPrefab, UnitExplosionView orbitalHitPrefab,
-            UnityEngine.Camera camera)
+            ShockwaveView shockwavePrefab, UnityEngine.Camera camera)
         {
             _camera = camera;
             _destructionPrefab = destructionPrefab;
@@ -39,6 +42,8 @@ namespace EmpireAtWar.Services.UnitExplosion
                 hide: view => view.Hide(), maxSize: MAX_IDLE_EXPLOSIONS);
             _orbitalHitPool = new ViewPool<UnitExplosionView>(prefab: orbitalHitPrefab, rootName: "OrbitalHitExplosions",
                 hide: view => view.Hide(), maxSize: MAX_IDLE_EXPLOSIONS);
+            _shockwavePool = new ViewPool<ShockwaveView>(prefab: shockwavePrefab, rootName: "UnitShockwaves",
+                hide: view => view.Hide(), maxSize: MAX_IDLE_SHOCKWAVES);
         }
 
         public void Dispose()
@@ -51,6 +56,7 @@ namespace EmpireAtWar.Services.UnitExplosion
             Clear();
             _destructionPool.Dispose();
             _orbitalHitPool.Dispose();
+            _shockwavePool.Dispose();
         }
 
         public void Clear()
@@ -61,6 +67,12 @@ namespace EmpireAtWar.Services.UnitExplosion
             }
 
             _active.Clear();
+            foreach (ShockwaveView shockwave in _activeShockwaves)
+            {
+                _shockwavePool.Release(shockwave);
+            }
+
+            _activeShockwaves.Clear();
         }
 
         public void Spawn(IReadOnlyList<Renderer> hullRenderers, UnitExplosionKind kind, float coverageScale = 1f)
@@ -81,6 +93,13 @@ namespace EmpireAtWar.Services.UnitExplosion
             float radius = diameter * 0.5f;
             view.Play(InFrontOfHull(bounds.center, radius), diameter / prefab.Diameter);
             _active.Add(new ActiveExplosion(view, pool, bounds.center, radius));
+            if (!isOrbitalHit)
+            {
+                ShockwaveView shockwave = _shockwavePool.Get();
+                shockwave.Play(bounds.center, bounds.extents.magnitude);
+                _activeShockwaves.Add(shockwave);
+            }
+
             int alive = 0;
             foreach (ActiveExplosion active in _active)
             {
@@ -104,6 +123,16 @@ namespace EmpireAtWar.Services.UnitExplosion
                 }
 
                 active.View.transform.position = InFrontOfHull(active.Center, active.Radius);
+            }
+
+            float deltaTime = Time.deltaTime;
+            for (int i = _activeShockwaves.Count - 1; i >= 0; i--)
+            {
+                ShockwaveView shockwave = _activeShockwaves[i];
+                shockwave.Advance(deltaTime);
+                if (shockwave.IsAlive) continue;
+                _shockwavePool.Release(shockwave);
+                _activeShockwaves.RemoveAt(i);
             }
         }
 

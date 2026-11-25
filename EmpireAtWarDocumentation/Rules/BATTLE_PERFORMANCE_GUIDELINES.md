@@ -299,6 +299,20 @@ tags:
 - Plan → [[Done/Optimization/Projectile_Visual_Reduction_Plan]].
 - 2026-11-24: cadence spread, laser/ion speed ×2 and single-shot ×4/×2 DPS passes were tried and fully reverted (user: worse in game). Patch kept at `Logs/Patches/weapon_cadence_2026-11-24.patch`. → [[Done/Optimization/Weapon_Cadence_Spread_Plan]].
 
+### Death shockwave refraction · 2026-11-25
+
+- URP `m_RequireOpaqueTexture` is 0 on every preset. URP's own copy runs `AfterSkybox` → misses nebula impostor, lasers and fire; never use it for refraction.
+- `ShockwaveRefractionFeature` (all 3 renderers) enqueues `ShockwaveRefractionPass` only while `ShockwaveView.ActiveCount > 0`: half-res copy after transparents → `_ShockwaveSceneColor`, then draws LightMode `ShockwaveRefraction` renderers. Cost when idle: 0.
+- Pass sets `requiresIntermediateTexture = true`; without it a camera rendering straight to its target skips the pass (`isActiveTargetBackBuffer`).
+- Shader traces the sphere per pixel (mesh inflated ×1.08) → round silhouette from the low-poly built-in sphere. Built-in sphere mesh is fileID `10207`; `Resources.GetBuiltinResource<Mesh>("Sphere.fbx")` returned a radius-1 `pSphere1` (10200) that did not render.
+- `UnitExplosionService` spawns one shockwave per `Destruction` (not `OrbitalHit`): radius hull × 0.3 → hull + min(hull × 1.5, `maxReachPastHull` 250 u), ease-out `1 − (1 − p)²` over 2.4 s (user rejected ease-in); shader envelope holds until 55% then fades.
+- Fire ring: child `FireRing` quad (rot X 90°, scale 1.15) under the sphere → grows with it; `ShockwaveFireRing.shader` (`SRPDefaultUnlit`, queue 2998 under the 2999 fireball, premultiplied, `Cull Off`). Normal transparent → the refraction copy bends it. Shared noise: `Assets/Art/Shaders/Vfx/ShockwaveNoise.hlsl`. Flat quad vanishes edge-on; fine for the pitched RTS camera. Pool max idle 16.
+- Hull radii (`explosionHullRenderers` bounds extents) span 5 (stealth corvette) → 99 (ISD) → 408 (Praetor) → 1,056 (Executor). A pure hull multiplier made dreadnought waves 2,640 u (user: "enormous"); the cap applies above hull 167 u.
+- `UnitShockwave.mat`: `_Strength` 0.15, `_ShellStart` 0, `_Chromatic` 0.1, `_RimIntensity` 0.5. Rim-only bending (shell start 0.25, strength 0.12) read as a flat 2D circle in game (user, 2026-11-25); strength 0.3 / chromatic 0.3 smeared into rainbow streaks.
+- A scaled lens alone reads as a static circle. Animated layers: ripple bands `sin((edge × _RippleCount − _Progress × _RippleSpeed) × 2π)` modulate the lens (3 bands, 5 per life, amount 0.6); surface value noise `_Turbulence` 0.04 × screen radius, scale 4, speed 1.5 (`_Time.y`, so Editor stills don't show it).
+- Free URP packs `Distortion Shockwaves VFX` (Mirza Beig, 1.2.0) and `Distortion VFX - URP` (Vefects, 2026-10-29) are not imported; claiming them needs the user's Asset Store account.
+- Preview-scene render verified; GPU cost of the copy with many simultaneous deaths unmeasured.
+
 ### Squadron budgets and model flashes · 2026-11-18
 
 - `SquadronRegistry` counts registered living entities; pooled `start` telemetry rows are not live population. `Tools/BattleAudit/squadron_summary.py` reports distinct sampled entities per minute, not an instantaneous concurrent peak.

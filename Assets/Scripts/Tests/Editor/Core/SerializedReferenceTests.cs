@@ -68,6 +68,7 @@ namespace EmpireAtWar.Tests.Editor
             new SerializedReference(typeof(SkirmishScope), "muzzleBlast"),
             new SerializedReference(typeof(SkirmishScope), "unitExplosionPrefab"),
             new SerializedReference(typeof(SkirmishScope), "orbitalHitExplosionPrefab"),
+            new SerializedReference(typeof(SkirmishScope), "unitShockwavePrefab"),
             new SerializedReference(typeof(BattleAtmosphereView), "sun"),
             new SerializedReference(typeof(BattleAtmosphereView), "gradeVolume"),
             new SerializedReference(typeof(SkirmishUi), "closeButton"),

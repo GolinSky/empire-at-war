@@ -966,6 +966,8 @@ MonoBehaviour:
     type: 3}
   orbitalHitExplosionPrefab: {fileID: 4027118099577662190, guid: 9f3527459975a724daf387e46a150d4b,
     type: 3}
+  unitShockwavePrefab: {fileID: 2512455855203348119, guid: 7780a6aed344f054a80873941b1de92f,
+    type: 3}
   rangeDebugLineMaterial: {fileID: 2100000, guid: 27a86eafd4192de41a9c9f1f84540b4c,
     type: 2}
   battleMarkerIconMaterial: {fileID: 2100000, guid: 52757c449fe40a046b09a009258d41dd,

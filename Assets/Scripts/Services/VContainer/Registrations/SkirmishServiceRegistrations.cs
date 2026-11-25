@@ -33,7 +33,7 @@ namespace EmpireAtWar.Services.VContainer
     {
         public static void Register(IContainerBuilder builder, IAssetService assets, Transform owner,
             ImpactEffectView impactEffectPrefab, UnitExplosionView unitExplosionPrefab,
-            UnitExplosionView orbitalHitExplosionPrefab,
+            UnitExplosionView orbitalHitExplosionPrefab, ShockwaveView unitShockwavePrefab,
             Material rangeDebugLineMaterial, ShipSfxData shipSfxData, InterfaceSfxData interfaceSfxData,
             ShipAmbienceData shipAmbienceData, ShipSfxSources shipSfxSourcesPrefab,
             CameraService cameraService, Material battleMarkerIconMaterial, Material battleMarkerFrameMaterial)
@@ -102,6 +102,7 @@ namespace EmpireAtWar.Services.VContainer
             builder.Register<UnitExplosionService>(Lifetime.Singleton).AsImplementedInterfaces().AsSelf()
                 .WithParameter("destructionPrefab", unitExplosionPrefab)
                 .WithParameter("orbitalHitPrefab", orbitalHitExplosionPrefab)
+                .WithParameter("shockwavePrefab", unitShockwavePrefab)
                 .WithParameter("camera", cameraService.SceneCamera);
             builder.Register<SelectionQuery>(Lifetime.Singleton).AsImplementedInterfaces().AsSelf();
             builder.Register<SelectionService>(Lifetime.Singleton).AsImplementedInterfaces().AsSelf();
