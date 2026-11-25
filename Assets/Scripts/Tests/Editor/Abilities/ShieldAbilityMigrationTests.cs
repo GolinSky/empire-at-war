@@ -89,7 +89,6 @@ namespace EmpireAtWar.Tests.Editor
         [TestCase("Rebellion/MonCalCruiser", 0)]
         [TestCase("Rebellion/HomeOne", 1)]
         [TestCase("Rebellion/MC80Independence", 0)]
-        [TestCase("Rebellion/CorellianBattlecruiser", 0)]
         [TestCase("Rebellion/AssaultFrigateMkII", 0)]
         [TestCase("Separatist/Wavecrest", 0)]
         public void MigratedShip_UsesSharedShieldInOriginalSlot(string ship, int slot)

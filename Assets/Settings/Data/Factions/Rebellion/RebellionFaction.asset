@@ -150,27 +150,6 @@ MonoBehaviour:
         <UnitCapacity>k__BackingField: 25
         <Icon>k__BackingField: {fileID: 21300000, guid: d1df96d57bfbbb049952971439112bf5,
           type: 3}
-    - key: 306
-      value:
-        matchups: {fileID: 11400000, guid: cfffd4866130fe34faafe00094f56ef4, type: 2}
-        displayName: Corellian BC
-        description: Corellian Battlecruiser armed with four heavy single-shot barrage
-          rocket launchers, eight medium turbolasers and five laser cannons. Boost
-          Shield Power triples shield regeneration for 15 seconds. Deploys 1 fighter
-          squadron, 1 interceptor squadron, 1 bomber squadron at once. Carries 6
-          total squadron launches, including the initial deployment.
-        role: Fleet reinforcement / Squadron support
-        iconKey: fe1f61f0ff4f03a47a7a2a16340c510d:21300000
-        isHero: 0
-        isUnique: 0
-        <Name>k__BackingField: Corellian Battlecruiser
-        <MaxCount>k__BackingField: 3
-        <AvailableLevel>k__BackingField: 3
-        <Price>k__BackingField: 3500
-        <BuildTime>k__BackingField: 30
-        <UnitCapacity>k__BackingField: 5
-        <Icon>k__BackingField: {fileID: 21300000, guid: fe1f61f0ff4f03a47a7a2a16340c510d,
-          type: 3}
     - key: 307
       value:
         matchups: {fileID: 11400000, guid: 30b6133074989dd4bbd5a7f24777def0, type: 2}

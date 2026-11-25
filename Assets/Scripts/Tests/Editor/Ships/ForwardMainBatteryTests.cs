@@ -34,10 +34,6 @@ namespace EmpireAtWar.Tests.Editor
             "HP_LC_05|HP_LC_06|DualLaser_HP_TL_03_FP_01|DualLaser_HP_TL_03_FP_02")]
         [TestCase("Rebellion/CD273", 300f,
             "HP_LC_01|HP_LC_02|HP_ML_02_FP_01")]
-        [TestCase("Rebellion/CorellianBattlecruiser", 150f,
-            "HP_GS_BattleCruiser_Turbo_08")]
-        [TestCase("Rebellion/CorellianBattlecruiser", 300f,
-            "HP_GS_BattleCruiser_Turbo_01|HP_GS_BattleCruiser_Turbo_02|HP_GS_BattleCruiser_Turbo_03|HP_GS_BattleCruiser_Turbo_04|HP_GS_BattleCruiser_Turbo_05|HP_GS_BattleCruiser_Turbo_06|HP_GS_BattleCruiser_Turbo_07|HP_GS_BattleCruiser_Rakete_02")]
         [TestCase("Rebellion/CorellianCorvette", 300f,
             "Laser_6|Laser_7")]
         [TestCase("Rebellion/Dauntless", 300f,

@@ -24,7 +24,6 @@ namespace EmpireAtWar.Tests.Editor
         [TestCase("ArquitensShipData", ShipHeightTier.Highest, 80f)]
         [TestCase("C9979ShipData", ShipHeightTier.Highest, 80f)]
         [TestCase("CaptorShipData", ShipHeightTier.LowMid, -68f)]
-        [TestCase("CorellianBattlecruiserShipData", ShipHeightTier.LowMid, -68f)]
         [TestCase("CorellianCorvetteShipData", ShipHeightTier.Highest, 80f)]
         [TestCase("DispatcherShipData", ShipHeightTier.HighMid, 38f)]
         [TestCase("ExecutorShipData", ShipHeightTier.Deep, -576f)]
