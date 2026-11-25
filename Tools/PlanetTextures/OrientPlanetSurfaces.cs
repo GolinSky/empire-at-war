@@ -13,14 +13,14 @@ public static class OrientPlanetSurfaces
         foreach (JToken planet in manifest["planets"])
         {
             string name = (string)planet["name"];
-            if ((bool)planet["preserve_existing"] || name == "Bespin" || name == "Manaan") continue;
+            if ((bool)planet["preserve_existing"]) continue;
             string path = "Assets/Prefabs/View/Planets/" + name + "Planet.prefab";
             var root = PrefabUtility.LoadPrefabContents(path);
             try
             {
                 using (var view = new SerializedObject(root.GetComponent<PlanetScope>().View))
                 {
-                    Quaternion rotation = Quaternion.Inverse(root.transform.localRotation) * Quaternion.Euler(15, 0, 0);
+                    Quaternion rotation = Quaternion.Inverse(root.transform.localRotation) * Quaternion.Euler(0, 0, -90);
                     foreach (string field in new[] { "planetRenderers", "cloudRenderers" })
                     {
                         var renderers = view.FindProperty(field);
@@ -34,6 +34,6 @@ public static class OrientPlanetSurfaces
             finally { PrefabUtility.UnloadPrefabContents(root); }
         }
         AssetDatabase.SaveAssets();
-        return "Saved equatorial surface/cloud orientation for " + changed + " planets; approved planets and authored existing planets preserved.";
+        return "Saved spin-axis-aligned surface/cloud orientation for " + changed + " planets; authored existing planets preserved.";
     }
 }

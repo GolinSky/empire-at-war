@@ -69,7 +69,8 @@ namespace EmpireAtWar.Entities.Planet
         {
             foreach (var renderer in renderers)
             {
-                var axis = renderer.transform.InverseTransformDirection(Vector3.forward);
+                // Prefabs point each sphere's UV pole along world X, so the pitched battle camera keeps poles on the limb.
+                var axis = renderer.transform.InverseTransformDirection(Vector3.right);
                 renderer.GetPropertyBlock(properties);
                 properties.SetVector(_rotationId, new Vector4(axis.x, axis.y, axis.z, speed));
                 properties.SetFloat(_rotationStartTimeId, Time.time);
