@@ -21,7 +21,7 @@ MonoBehaviour:
         displayName: Nebulon-B
         description: Rebel general-purpose cruiser effective against corvettes and
           light cruisers. Four turbolaser batteries, four laser cannon batteries
-          and targetable engines. Boost Shield Power triples shield regeneration,
+          and targetable engines. Boost Shield Power quadruples shield regeneration,
           reduces speed by 45% and reduces weapon damage by 5% for 15 s. Recovers
           in 40 s.
         role: General-purpose cruiser / Anti-corvette
@@ -65,8 +65,8 @@ MonoBehaviour:
           238/s shield regeneration. Twelve dual heavy turbolaser, four heavy quad
           turbolaser, two dual medium turbolaser and two heavy ion cannon batteries,
           four point-defense guns and targetable engines. No targetable shield generator.
-          Boost Shield Power triples shield regeneration, reduces speed by 45% and
-          reduces weapon damage by 5% for 15 s. Recovers in 40 s. Strong against
+          Boost Shield Power quadruples shield regeneration, reduces speed by 45%
+          and reduces weapon damage by 5% for 15 s. Recovers in 40 s. Strong against
           frigates; vulnerable to bombers.
         role: Capital ship / Anti-frigate
         iconKey: b95f55f2e2f204f42a94f0c44c5baa85:21300000
@@ -89,7 +89,7 @@ MonoBehaviour:
           turbolaser and four ion cannon batteries. Shield generator, engines and
           fighter bay can be destroyed. Concentrate Fire directs friendly ships and
           squadrons within 400 units to attack the selected enemy for 15 s. Recovers
-          in 20 s. Boost Shield Power triples shield regeneration, reduces speed
+          in 20 s. Boost Shield Power quadruples shield regeneration, reduces speed
           by 45% and reduces weapon damage by 5% for 15 s. Recovers in 40 s. Fleet
           Commander supports allied Rebel ships and squadrons throughout the battle.
           Deploys 1 fighter squadron, 1 interceptor squadron and 1 bomber squadron
@@ -218,8 +218,8 @@ MonoBehaviour:
         description: General-purpose combat frigate for fleet escort and medium-range
           combat. Four medium quad turbolasers, two light quad turbolasers, four
           heavy dual laser cannons and two point-defense lasers. Boost Shield Power
-          triples shield regeneration, reduces speed by 45% and reduces weapon damage
-          by 5% for 15 s. Recovers in 40 s. Strong against corvettes and frigates;
+          quadruples shield regeneration, reduces speed by 45% and reduces weapon
+          damage by 5% for 15 s. Recovers in 40 s. Strong against corvettes and frigates;
           limited against heavy capitals.
         role: Fleet escort / Medium-range combat
         iconKey: ae063a7eec8a5af4696394f297681415:21300000
@@ -329,7 +329,7 @@ MonoBehaviour:
         matchups: {fileID: 11400000, guid: 7eb5d1258f2de8349b775004d6a5899b, type: 2}
         displayName: Endurance
         description: Fleet carrier with four heavy octuple turbolasers, two heavy
-          ion cannons and six heavy point-defense mounts. Boost Shield Power triples
+          ion cannons and six heavy point-defense mounts. Boost Shield Power quadruples
           shield regeneration, reduces speed by 45% and reduces weapon damage by
           5% for 15 s. Recovers in 40 s. Deploys 2 fighter squadrons, 2 interceptor
           squadrons, 2 bomber squadrons at once. Carries 24 total squadron launches,
@@ -352,8 +352,8 @@ MonoBehaviour:
         displayName: Justice
         description: Mon Calamari capital carrier with 13,800 hull and 15,400 shields.
           Ten medium dual turbolasers, four medium dual ion cannons and eight medium
-          lasers. Boost Shield Power triples shield regeneration, reduces speed by
-          45% and reduces weapon damage by 5% for 15 s. Recovers in 40 s. Deploys
+          lasers. Boost Shield Power quadruples shield regeneration, reduces speed
+          by 45% and reduces weapon damage by 5% for 15 s. Recovers in 40 s. Deploys
           2 fighter squadrons, 1 interceptor squadron, 2 bomber squadrons at once.
           Carries 15 total squadron launches, including the initial deployment.
         role: Capital carrier / Squadron support
@@ -416,8 +416,8 @@ MonoBehaviour:
         matchups: {fileID: 0}
         displayName: Remonda
         description: Mon Calamari battleship with 20,000 hull and 21,000 shields.
-          Boost Shield Power triples shield regeneration, reduces speed by 45% and
-          reduces weapon damage by 5% for 15 s. Recovers in 40 s. Deploys 1 fighter
+          Boost Shield Power quadruples shield regeneration, reduces speed by 45%
+          and reduces weapon damage by 5% for 15 s. Recovers in 40 s. Deploys 1 fighter
           squadron, 1 bomber squadron at once. Carries 4 total squadron launches,
           including the initial deployment.
         role: Battleship
