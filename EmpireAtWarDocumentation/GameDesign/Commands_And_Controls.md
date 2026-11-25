@@ -53,6 +53,12 @@ verification: source-and-assets
 - Hold Alt and right-click empty positions to place waypoints; releasing Alt submits the route.
 - Alternatively choose Waypoint Move, right-click successive positions, then press the same command button again to submit.
 - Escape cancels a pending command target; selecting a new local selection cancels pending targeting.
+- Armed mode exits (every mode: Attack, Guard, Attack Move, Waypoint Move, ability, orbital weapon), 2026-11-25:
+  - World left-click → cancels; it never selects in the same press. Left-click on HUD → no cancel.
+  - Right-click: valid target → order; ineligible unit of the right side (ability on an ineligible enemy, orbital on an invalid unit) → stays armed + "Invalid target"; anything else → cancel.
+  - Waypoint Move left-click discards placed points (finish with the button or Alt release).
+- Cursor (`OrderCursorService`): armed mode → its action icon beside the pointer, also over empty space; `Invalid` only where a click keeps the mode armed. Over HUD → normal cursor.
+- Target markers (`UnitOrderFeedbackUiController`): Attack reticle, Guard shield, ability icon (`IShipAbilityTargeting.TargetAccepted`), orbital icon (`SuperWeaponTargetingModel.TargetAccepted`), Attack Move ripple + icon at the point. Local UI only.
 - Attack/Guard/Attack Move buttons enter target selection. Stop/Hunt/Retreat execute immediately.
 - Ability targeting cancels order targeting; command targeting cancels ability targeting.
 - Group waypoints retain formation offsets relative to the first point.

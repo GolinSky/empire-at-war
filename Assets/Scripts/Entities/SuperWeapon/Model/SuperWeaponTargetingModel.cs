@@ -10,6 +10,9 @@ namespace EmpireAtWar.Entities.SuperWeapons
 
         public event Action<SuperWeaponType, IEntity> TargetSubmitted;
 
+        /// <summary>A submitted target passed validation; targeting ends.</summary>
+        public event Action<SuperWeaponType, IEntity> TargetAccepted;
+
         public SuperWeaponType? Pending { get; private set; }
 
         public void Start(SuperWeaponType type)
@@ -22,6 +25,14 @@ namespace EmpireAtWar.Entities.SuperWeapons
         {
             if (Pending == null) return;
             TargetSubmitted?.Invoke(Pending.Value, target);
+        }
+
+        public void Accept(IEntity target)
+        {
+            if (Pending == null) return;
+            SuperWeaponType type = Pending.Value;
+            Cancel();
+            TargetAccepted?.Invoke(type, target);
         }
 
         public void Cancel()

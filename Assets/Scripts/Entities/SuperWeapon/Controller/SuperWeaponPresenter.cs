@@ -295,7 +295,7 @@ namespace EmpireAtWar.Entities.SuperWeapons.Controller
                 _notifications.Post(BattleNotificationPriority.Feedback, "Invalid target", "invalid-target");
                 return;
             }
-            _targeting.Cancel();
+            _targeting.Accept(target);
             _commands.Submit(new FireSuperWeaponCommand(_localPlayer.Id, type, target.Id));
         }
 

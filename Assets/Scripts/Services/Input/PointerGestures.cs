@@ -110,12 +110,12 @@ namespace EmpireAtWar.Services.Input
             if (_abilities.IsWaitingForTarget || _targeting.Pending != null || _superWeapons.Pending != null)
             {
                 CancelDrag();
-                if ((_abilities.IsWaitingForTarget || _targeting.Pending == UnitActionId.AttackMove) &&
-                    _battle.Select.WasPressedThisFrame() &&
-                    !_uiHitTest.IsOverUi(_selectPressPosition))
+                // A world left-click leaves any armed mode; it never selects in the same press.
+                if (_battle.Select.WasPressedThisFrame() && !_uiHitTest.IsOverUi(_selectPressPosition))
                 {
-                    if (_abilities.IsWaitingForTarget) _abilities.CancelTargeting();
-                    if (_targeting.Pending == UnitActionId.AttackMove) _targeting.Cancel();
+                    _abilities.CancelTargeting();
+                    _superWeapons.Cancel();
+                    if (_targeting.Pending != null) _targeting.Cancel();
                     return;
                 }
                 if (commandWorld)

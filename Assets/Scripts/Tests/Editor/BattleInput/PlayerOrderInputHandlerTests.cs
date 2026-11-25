@@ -355,13 +355,34 @@ namespace EmpireAtWar.Tests.Editor
         }
 
         [Test]
-        public void PendingAttack_IgnoresInvalidClickWithoutMoving()
+        public void PendingAttack_WrongTargetCancelsWithoutOrder()
         {
             _targeting.Start(UnitActionId.Attack);
             _query.ReturnEnemy = false;
             _input.RightClick(Vector2.zero);
             Assert.That(_orders.LastAction, Is.Null);
-            Assert.That(_targeting.Pending, Is.EqualTo(UnitActionId.Attack));
+            Assert.That(_targeting.Pending, Is.Null);
+        }
+
+        [TestCase(false)]
+        [TestCase(true)]
+        public void PendingGuard_WrongTargetCancelsWithoutOrder(bool unselectableFriend)
+        {
+            _targeting.Start(UnitActionId.Guard);
+            if (unselectableFriend) _query.Target = new FakeEntity(_view.transform, TestPlayers.Human, 3);
+            _input.RightClick(Vector2.zero);
+            Assert.That(_orders.LastAction, Is.Null);
+            Assert.That(_targeting.Pending, Is.Null);
+        }
+
+        [Test]
+        public void PendingGuard_SelectableFriendIssuesGuard()
+        {
+            _targeting.Start(UnitActionId.Guard);
+            _query.Target = new FakeEntity(_view.transform, TestPlayers.Human, 3) { IsSelectable = true };
+            _input.RightClick(Vector2.zero);
+            Assert.That(_orders.LastAction, Is.EqualTo(UnitActionId.Guard));
+            Assert.That(_targeting.Pending, Is.Null);
         }
 
         [Test]
@@ -451,8 +472,9 @@ namespace EmpireAtWar.Tests.Editor
             else
                 _input.RightClick(new Vector2(11f, 21f));
 
+            // The minimap never targets units; a world click on a non-enemy leaves the mode.
             Assert.That(_orders.LastAction, Is.Null);
-            Assert.That(_targeting.Pending, Is.EqualTo(UnitActionId.Attack));
+            Assert.That(_targeting.Pending, Is.EqualTo(minimap ? UnitActionId.Attack : (UnitActionId?)null));
         }
 
         [TestCase(false)]
@@ -790,6 +812,8 @@ namespace EmpireAtWar.Tests.Editor
         private sealed class FakeAbilities : IShipAbilityTargeting
         {
             public event Action TargetingChanged { add { } remove { } }
+            public event Action<ShipAbilityId, IEntity> TargetAccepted { add { } remove { } }
+            public ShipAbilityId PendingAbilityId => ShipAbilityId.None;
 
             public bool IsWaitingForTarget { get; set; }
             public IEntity Submitted { get; private set; }
@@ -841,6 +865,7 @@ namespace EmpireAtWar.Tests.Editor
             public long Id { get; }
             public IHealthModelObserver HealthModel { get; }
             public PlayerId Owner { get; }
+            public bool IsSelectable { get; set; }
 
             public FakeEntity(Transform transform, PlayerId side, long id)
             { Id = id; Owner = side; HealthModel = new FakeHealth(transform); }
@@ -851,6 +876,11 @@ namespace EmpireAtWar.Tests.Editor
             public bool TryGetFacade<TCommand>(out TCommand command)
                 where TCommand : IEntityFacade
             { if (HealthModel is TCommand transformFacade) { command = transformFacade; return true; }
+                if (IsSelectable && typeof(TCommand) == typeof(IEntitySelectionFacade))
+                {
+                    command = (TCommand)(IEntityFacade)new FakeSelectionFacade();
+                    return true;
+                }
                 if (Owner == TestPlayers.Human &&
                     (typeof(TCommand) == typeof(IWaypointMoveFacade) || typeof(TCommand) == typeof(IMoveFacade)))
                 {
@@ -861,6 +891,12 @@ namespace EmpireAtWar.Tests.Editor
                 command = default;
                 return false;
             }
+        }
+
+        private sealed class FakeSelectionFacade : IEntitySelectionFacade
+        {
+            public SelectionType SelectionType { get; set; }
+            public void Select(bool isSelected) { }
         }
 
         private sealed class FakeWaypointCommand : IWaypointMoveFacade, IMoveFacade

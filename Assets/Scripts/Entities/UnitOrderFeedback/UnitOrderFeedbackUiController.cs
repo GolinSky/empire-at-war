@@ -2,10 +2,12 @@ using static EmpireAtWar.Utils.FormationConversion;
 using EmpireAtWar.Models.Players;
 using EmpireAtWar.Entities.BaseEntity;
 using EmpireAtWar.Entities.BaseEntity.EntityFacades;
+using EmpireAtWar.Entities.SuperWeapons;
 using EmpireAtWar.Entities.UnitActions;
 using EmpireAtWar.Entities.UnitActions.Model;
 using EmpireAtWar.Services.Camera;
 using EmpireAtWar.Services.Input;
+using EmpireAtWar.Services.ShipAbilities;
 using EmpireAtWar.Services.UnitOrders;
 using EmpireAtWar.Ui.Base;
 using UnityEngine;
@@ -23,8 +25,13 @@ namespace EmpireAtWar.Entities.UnitOrderFeedback
         private readonly IUnitOrderService _unitOrderService;
         private readonly IOrderCursorService _orderCursor;
         private readonly IPointerInput _pointerInput;
+        private readonly IShipAbilityTargeting _abilities;
+        private readonly SuperWeaponTargetingModel _superWeapons;
+        private readonly ShipAbilityCatalog _abilityCatalog;
         private UnitOrderFeedbackUi _ui;
         private IEntity _feedbackTarget;
+        // Attack-move marks a point, not an entity.
+        private Vector3? _feedbackPoint;
 
         private readonly UnitActionTargetingModel _targeting;
 
@@ -37,8 +44,12 @@ namespace EmpireAtWar.Entities.UnitOrderFeedback
             ICameraService cameraService, IEntityLocator entityLocator,
             IUnitOrderService unitOrderService, ILocalPlayer localPlayer,
             UnitActionTargetingModel targeting, IOrderCursorService orderCursor,
-            IPointerInput pointerInput) : base(uiService, cancelRouter)
+            IPointerInput pointerInput, IShipAbilityTargeting abilities,
+            SuperWeaponTargetingModel superWeapons, ShipAbilityCatalog abilityCatalog) : base(uiService, cancelRouter)
         {
+            _abilities = abilities;
+            _superWeapons = superWeapons;
+            _abilityCatalog = abilityCatalog;
             _localPlayer = localPlayer;
             _cameraService = cameraService;
             _entityLocator = entityLocator;
@@ -54,6 +65,8 @@ namespace EmpireAtWar.Entities.UnitOrderFeedback
             _ui.Initialize();
             _unitOrderService.OrderIssued += HandleOrder;
             _targeting.Changed += HandleTargetingChanged;
+            _abilities.TargetAccepted += HandleAbilityTargetAccepted;
+            _superWeapons.TargetAccepted += HandleSuperWeaponTargetAccepted;
             _entityLocator.EntityRemoved += HandleEntityRemoved;
         }
 
@@ -61,18 +74,25 @@ namespace EmpireAtWar.Entities.UnitOrderFeedback
         {
             _unitOrderService.OrderIssued -= HandleOrder;
             _targeting.Changed -= HandleTargetingChanged;
+            _abilities.TargetAccepted -= HandleAbilityTargetAccepted;
+            _superWeapons.TargetAccepted -= HandleSuperWeaponTargetAccepted;
             _entityLocator.EntityRemoved -= HandleEntityRemoved;
             if (_ui != null) _ui.Dispose();
             _feedbackTarget = null;
+            _feedbackPoint = null;
             _movementPoint = null;
         }
 
         public void LateTick()
         {
-            _ui.SetCursor(_orderCursor.Resolve(), _pointerInput.Position);
+            OrderCursor cursor = _orderCursor.Resolve();
+            _ui.SetCursor(cursor, _pointerInput.Position, GetCursorIcon(cursor));
 
             if (_movementPoint.HasValue)
                 _ui.SetMovementPosition(_cameraService.WorldToScreenPoint(_movementPoint.Value));
+
+            if (_feedbackPoint.HasValue)
+                _ui.SetTargetOrderPosition(_cameraService.WorldToScreenPoint(_feedbackPoint.Value));
 
             if (_feedbackTarget == null) return;
             if (_feedbackTarget.HealthModel.IsDestroyed)
@@ -86,7 +106,33 @@ namespace EmpireAtWar.Entities.UnitOrderFeedback
                 _feedbackTarget.GetFacade<IEntityTransformFacade>().Transform.position));
         }
 
-        private void TargetFeedbackCompleted() => _feedbackTarget = null;
+        private Sprite GetCursorIcon(OrderCursor cursor) => cursor switch
+        {
+            OrderCursor.AbilityTarget => _abilityCatalog.Get(_abilities.PendingAbilityId).Icon,
+            OrderCursor.SuperWeapon => _ui.GetSuperWeaponIcon(_superWeapons.Pending.Value),
+            _ => null
+        };
+
+        private void TargetFeedbackCompleted()
+        {
+            _feedbackTarget = null;
+            _feedbackPoint = null;
+        }
+
+        private void PlayTarget(IEntity target, OrderCursor action, Sprite actionIcon = null)
+        {
+            _feedbackTarget = target;
+            _feedbackPoint = null;
+            _ui.PlayTargetOrder(_cameraService.WorldToScreenPoint(
+                target.GetFacade<IEntityTransformFacade>().Transform.position), action, actionIcon,
+                TargetFeedbackCompleted);
+        }
+
+        private void HandleAbilityTargetAccepted(ShipAbilityId id, IEntity target) =>
+            PlayTarget(target, OrderCursor.AbilityTarget, _abilityCatalog.Get(id).Icon);
+
+        private void HandleSuperWeaponTargetAccepted(SuperWeaponType type, IEntity target) =>
+            PlayTarget(target, OrderCursor.SuperWeapon, _ui.GetSuperWeaponIcon(type));
 
         private void MovementFeedbackCompleted() => _movementPoint = null;
 
@@ -95,12 +141,7 @@ namespace EmpireAtWar.Entities.UnitOrderFeedback
             if (!_localPlayer.IsLocal(order.Issuer)) return;
             bool isGuard = order.Action == UnitActionId.Guard;
             if ((order.Action == UnitActionId.Attack || isGuard) && order.Target != null)
-            {
-                _feedbackTarget = order.Target;
-                _ui.PlayTargetOrder(_cameraService.WorldToScreenPoint(
-                    _feedbackTarget.GetFacade<IEntityTransformFacade>().Transform.position), isGuard,
-                    TargetFeedbackCompleted);
-            }
+                PlayTarget(order.Target, isGuard ? OrderCursor.Guard : OrderCursor.Attack);
             else if (order.Action == UnitActionId.WaypointMove &&
                      order.Waypoints != null)
             {
@@ -110,7 +151,18 @@ namespace EmpireAtWar.Entities.UnitOrderFeedback
             else if (order.Action == UnitActionId.Move ||
                      order.Action == UnitActionId.AttackMove ||
                      order.Action == UnitActionId.Retreat)
+            {
                 PlayMovement(order.Point, order.Action == UnitActionId.Move && order.IsLoose);
+                if (order.Action == UnitActionId.AttackMove) PlayAttackMovePoint(order.Point);
+            }
+        }
+
+        private void PlayAttackMovePoint(Vector3 worldPoint)
+        {
+            _feedbackTarget = null;
+            _feedbackPoint = worldPoint;
+            _ui.PlayTargetOrder(_cameraService.WorldToScreenPoint(worldPoint), OrderCursor.AttackMove, null,
+                TargetFeedbackCompleted);
         }
 
         private void PlayMovement(Vector3 worldPoint, bool isLoose = false)

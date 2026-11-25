@@ -49,19 +49,33 @@ namespace EmpireAtWar.Services.UnitOrders
                 reserve.IsTrySpawning)
                 return reserve.CanDeployPreview ? OrderCursor.None : OrderCursor.Invalid;
 
-            if (!_abilities.IsWaitingForTarget && _superWeapons.Pending == null &&
-                _targeting.Pending == UnitActionId.AttackMove)
-                return _uiHitTest.IsOverUi(_pointer.Position) || _orderInput.CanIssueAttackMove(_pointer.Position)
-                    ? OrderCursor.None : OrderCursor.Invalid;
-
-            if (!_hover.TryGetHovered(out IEntity hovered) || !IsEnemy(hovered)) return OrderCursor.None;
-            // Clicking an ineligible enemy keeps ability targeting armed, so the cursor marks it as invalid.
-            if (_abilities.IsWaitingForTarget)
-                return _abilities.IsValidTarget(hovered) ? OrderCursor.None : OrderCursor.Invalid;
-            if (_superWeapons.Pending != null) return OrderCursor.None;
+            bool hasHovered = _hover.TryGetHovered(out IEntity hovered);
             UnitActionId? pending = _targeting.Pending;
-            if (pending != null && pending != UnitActionId.Attack) return OrderCursor.None;
-            return HasAttacker() ? OrderCursor.Attack : OrderCursor.None;
+            bool isArmed = _superWeapons.Pending != null || _abilities.IsWaitingForTarget || pending != null;
+            if (isArmed && _uiHitTest.IsOverUi(_pointer.Position)) return OrderCursor.None;
+
+            // Mirrors the click: Invalid marks a unit a click would refuse while the mode stays armed.
+            if (_superWeapons.Pending != null) return OrderCursor.SuperWeapon;
+            if (_abilities.IsWaitingForTarget)
+                return hasHovered && IsEnemy(hovered) && !_abilities.IsValidTarget(hovered)
+                    ? OrderCursor.Invalid : OrderCursor.AbilityTarget;
+            switch (pending)
+            {
+                case UnitActionId.AttackMove:
+                    return _orderInput.CanIssueAttackMove(_pointer.Position) ? OrderCursor.AttackMove : OrderCursor.Invalid;
+                case UnitActionId.Attack:
+                    return OrderCursor.Attack;
+                case UnitActionId.Guard:
+                    return hasHovered && _localPlayer.IsFriendly(hovered.Owner) &&
+                           !hovered.TryGetFacade(out IEntitySelectionFacade _)
+                        ? OrderCursor.Invalid : OrderCursor.Guard;
+                case UnitActionId.WaypointMove:
+                    return OrderCursor.Waypoint;
+                case null:
+                    return hasHovered && IsEnemy(hovered) && HasAttacker() ? OrderCursor.Attack : OrderCursor.None;
+                default:
+                    return OrderCursor.None;
+            }
         }
 
         private bool HasAttacker()

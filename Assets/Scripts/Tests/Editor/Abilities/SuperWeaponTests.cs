@@ -547,6 +547,25 @@ namespace EmpireAtWar.Tests.Editor
         }
 
         [Test]
+        public void TargetingModel_AcceptEndsTargetingThenReportsTheWeapon()
+        {
+            SuperWeaponTargetingModel targeting = new SuperWeaponTargetingModel();
+            var accepted = new List<SuperWeaponType>();
+            targeting.TargetAccepted += (type, _) =>
+            {
+                Assert.That(targeting.Pending, Is.Null, "Targeting ends before the marker plays.");
+                accepted.Add(type);
+            };
+
+            targeting.Accept(null);
+            Assert.That(accepted, Is.Empty, "Nothing is armed, so nothing is accepted.");
+
+            targeting.Start(SuperWeaponType.PlasmaCannon);
+            targeting.Accept(null);
+            Assert.That(accepted, Is.EqualTo(new[] { SuperWeaponType.PlasmaCannon }));
+        }
+
+        [Test]
         public void CoreGamePrefab_WiresPurchaseAndRowButtonsForEverySuperWeapon()
         {
             GameObject prefab = AssetDatabase.LoadAssetAtPath<GameObject>(

@@ -1,5 +1,6 @@
 using System;
 using DG.Tweening;
+using EmpireAtWar.Entities.SuperWeapons;
 using EmpireAtWar.Services.UnitOrders;
 using EmpireAtWar.Ui.Base;
 using UnityEngine;
@@ -13,7 +14,7 @@ namespace EmpireAtWar.Entities.UnitOrderFeedback
         private const float TARGET_SETTLE = 0.5f;
         private const float TARGET_FADE_START = 1.05f;
         private const float TARGET_FADE_OUT = 0.5f;
-        private const float GUARD_ICON_SCALE = 0.45f;
+        private const float TARGET_ICON_SCALE = 0.45f;
         private const float WAVE_DURATION = 0.68f;
         private const float ECHO_DELAY = 0.12f;
 
@@ -22,8 +23,14 @@ namespace EmpireAtWar.Entities.UnitOrderFeedback
         [SerializeField] private RectTransform movementAnchor;
         [SerializeField] private RectTransform invalidTargetAnchor;
         [SerializeField] private RectTransform attackCursorAnchor;
+        [SerializeField] private RectTransform actionCursorAnchor;
+        [SerializeField] private Image actionCursorImage;
         [SerializeField] private Image attackImage;
         [SerializeField] private Sprite guardIcon;
+        [SerializeField] private Sprite attackMoveIcon;
+        [SerializeField] private Sprite waypointIcon;
+        // Ordered by SuperWeaponType.
+        [SerializeField] private Sprite[] superWeaponIcons;
         [SerializeField] private Image movementWave;
         [SerializeField] private Image movementEcho;
         [SerializeField] private Color formationColor = new Color(0.21960784f, 0.7411765f, 0.972549f, 1f);
@@ -43,6 +50,7 @@ namespace EmpireAtWar.Entities.UnitOrderFeedback
             movementAnchor.gameObject.SetActive(false);
             invalidTargetAnchor.gameObject.SetActive(false);
             attackCursorAnchor.gameObject.SetActive(false);
+            actionCursorAnchor.gameObject.SetActive(false);
         }
 
         public void Dispose()
@@ -53,14 +61,20 @@ namespace EmpireAtWar.Entities.UnitOrderFeedback
             StopMovement();
         }
 
-        public void PlayTargetOrder(Vector2 screenPosition, bool isGuard, Action completed)
+        public Sprite GetSuperWeaponIcon(SuperWeaponType type) => superWeaponIcons[(int)type];
+
+        /// <summary>Marks a target: <see cref="OrderCursor.Attack"/> shows the reticle, other actions their icon.</summary>
+        /// <param name="actionIcon">Icon for <see cref="OrderCursor.AbilityTarget"/> and <see cref="OrderCursor.SuperWeapon"/>.</param>
+        public void PlayTargetOrder(Vector2 screenPosition, OrderCursor action, Sprite actionIcon, Action completed)
         {
             StopTargetOrder();
             SetPosition(attackAnchor, screenPosition);
-            attackAnchor.localScale = isGuard ? Vector3.one : _attackAnchorScale;
-            attackImage.overrideSprite = isGuard ? guardIcon : null;
-            SetColor(attackImage, isGuard ? formationColor : _attackColor, 0f);
-            float scale = isGuard ? GUARD_ICON_SCALE : 1f;
+            Sprite icon = action == OrderCursor.Attack ? null : GetIcon(action, actionIcon);
+            bool isIcon = icon != null;
+            attackAnchor.localScale = isIcon ? Vector3.one : _attackAnchorScale;
+            attackImage.overrideSprite = icon;
+            SetColor(attackImage, GetMarkerColor(action), 0f);
+            float scale = isIcon ? TARGET_ICON_SCALE : 1f;
             attackAnchor.gameObject.SetActive(true);
             attackImage.rectTransform.localScale = Vector3.one * (1.45f * scale);
             attackImage.rectTransform.localRotation = Quaternion.Euler(0f, 0f, 12f);
@@ -116,11 +130,33 @@ namespace EmpireAtWar.Entities.UnitOrderFeedback
             attackAnchor.gameObject.SetActive(false);
         }
 
-        public void SetCursor(OrderCursor cursor, Vector2 screenPosition)
+        /// <param name="actionIcon">Icon for <see cref="OrderCursor.AbilityTarget"/> and <see cref="OrderCursor.SuperWeapon"/>.</param>
+        public void SetCursor(OrderCursor cursor, Vector2 screenPosition, Sprite actionIcon)
         {
             SetCursorAnchor(attackCursorAnchor, cursor == OrderCursor.Attack, screenPosition);
             SetCursorAnchor(invalidTargetAnchor, cursor == OrderCursor.Invalid, screenPosition);
+            Sprite icon = cursor is OrderCursor.None or OrderCursor.Attack or OrderCursor.Invalid
+                ? null : GetIcon(cursor, actionIcon);
+            if (icon != null && actionCursorImage.sprite != icon) actionCursorImage.sprite = icon;
+            SetCursorAnchor(actionCursorAnchor, icon != null, screenPosition);
         }
+
+        private Sprite GetIcon(OrderCursor action, Sprite actionIcon) => action switch
+        {
+            OrderCursor.Guard => guardIcon,
+            OrderCursor.AttackMove => attackMoveIcon,
+            OrderCursor.Waypoint => waypointIcon,
+            OrderCursor.AbilityTarget or OrderCursor.SuperWeapon => actionIcon,
+            _ => null
+        };
+
+        // Friendly orders use the formation blue, hostile ones the attack colour; ability and orbital icons keep their own.
+        private Color GetMarkerColor(OrderCursor action) => action switch
+        {
+            OrderCursor.Guard or OrderCursor.Waypoint => formationColor,
+            OrderCursor.AbilityTarget or OrderCursor.SuperWeapon => Color.white,
+            _ => _attackColor
+        };
 
         private void OnDestroy() => Dispose();
 

@@ -232,11 +232,10 @@ namespace EmpireAtWar.Services.UnitOrders
             }
             if (pending == UnitActionId.Attack)
             {
+                // A wrong target leaves the mode instead of keeping it armed without feedback.
                 if (IsEnemy(target))
-                {
                     IssueAttack(receivers, target, hasHardPoint, hardPointId, MovePace.Formation);
-                    _targeting.Cancel();
-                }
+                _targeting.Cancel();
                 return;
             }
             if (pending == UnitActionId.Guard)
@@ -244,10 +243,8 @@ namespace EmpireAtWar.Services.UnitOrders
                 // Allied units can be escorted too.
                 if (target != null && _localPlayer.IsFriendly(target.Owner) &&
                     target.TryGetFacade(out IEntitySelectionFacade _))
-                {
                     _playerOrders.IssueGuard(receivers, target);
-                    _targeting.Cancel();
-                }
+                _targeting.Cancel();
                 return;
             }
             // Friendly hulls can cover a site without blocking commands to its center.

@@ -14,6 +14,12 @@ created: "2026-10-29\r"
 
 - [ ] [[Done/Bugs/Invincible_Single_Engine_Slowdown]] — In battle: destroy one engine on Invincible and Secutor → speed 25 → 20 (not 10); check the 3 engine plumes sit on Invincible's nozzles; load an old save with either ship. Run `Ships`, `Health`, `GameFlow` when authorized; compile passed, tests not run.
 
+## Targeting Mode Input Lock
+
+- [ ] [[Done/Bugs/Targeting_Mode_Input_Lock]] — In battle: arm Attack, Guard, Attack Move, Waypoint Move, a targeted ability and an orbital weapon; leave each by world left-click and by a wrong right-click.
+- [ ] [[Done/Bugs/Targeting_Mode_Input_Lock]] — Cursor icon matches the armed action; invalid cursor over an ineligible ability target; markers on ability, orbital and attack-move targets.
+- [ ] [[Done/Bugs/Targeting_Mode_Input_Lock]] — Run `BattleInput`, `Ui`, `Abilities` EditMode categories when explicitly authorized; compile passed, tests not run.
+
 ## Online Skirmish Lobby
 
 - [ ] [[Done/Bugs/Online_Skirmish_Join_Slot_Race]] — Run authored regression coverage in `Networking`, `GameFlow` and `Ui` when explicitly authorized; source review and Unity compilation passed. User declined reproduction as a prerequisite.

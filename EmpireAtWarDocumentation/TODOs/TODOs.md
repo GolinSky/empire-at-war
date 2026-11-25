@@ -341,6 +341,9 @@
   - Closed 2026-10-29 by backlog triage; user gates → [[TODOs/User_Acceptance_Queue]].
 
 ### Bugs
+- [x] **Targeting mode input lock (armed Attack / Guard / Waypoint / orbital weapon blocks left-click; action cursors; target markers)** → [[Done/Bugs/Targeting_Mode_Input_Lock]]
+  - 2026-11-25: done (`acceptance: pending-user`). World left-click cancels every armed mode; wrong right-click on Attack / Guard cancels; action icon cursor per mode; target markers for ability, orbital and attack-move. Waypoint left-click discards points (default). Compile clean; `BattleInput` / `Ui` / `Abilities` tests updated, not run. Gates → [[TODOs/User_Acceptance_Queue#Targeting Mode Input Lock]].
+  - 2026-11-25: plan created from source inspection (not reproduced in-game).
 - [x] **Enemy AI opening and task groups** → [[Done/Bugs/Enemy_AI_Opening_And_Task_Groups]]; follows [[TODOs/Bugs/Enemy_AI_Economy_Strategy]]
   - 2026-11-25: **closed on the user's request** (`acceptance: pending-user`). 2v2 host log 2026-11-24 23:15: opening and mid game work; no AI assaults a station and the allied AI does not join a push → [[TODOs/Bugs/Enemy_AI_Station_Push_And_Ally_Assault]]. W8 / W29, W58, W44 gaps carried there. No tests run for the closure.
   - 2026-11-23: Round 10 implemented (W46–W57, W59, W61–W69), related test categories green. Open: W58 (dev-build capture), W60 playtest gates.

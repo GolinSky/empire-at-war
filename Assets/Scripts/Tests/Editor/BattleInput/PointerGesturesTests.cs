@@ -83,12 +83,17 @@ namespace EmpireAtWar.Tests.Editor
         }
 
         [TestCase("ability")]
+        [TestCase("superweapon")]
+        [TestCase("Attack")]
+        [TestCase("Guard")]
         [TestCase("AttackMove")]
+        [TestCase("WaypointMove")]
         public void PendingTarget_LeftPressCancelsAndConsumesSelectionGesture(string mode)
         {
             Arm(mode);
             MouseFrame(1, Vector2.zero);
             Assert.That(_abilities.IsWaitingForTarget, Is.False);
+            Assert.That(_superWeapons.Pending, Is.Null);
             Assert.That(_targeting.Pending, Is.Null);
 
             MouseFrame(1, new Vector2(100f, 100f));
@@ -106,14 +111,19 @@ namespace EmpireAtWar.Tests.Editor
         }
 
         [TestCase("ability")]
+        [TestCase("superweapon")]
+        [TestCase("Attack")]
+        [TestCase("Guard")]
         [TestCase("AttackMove")]
+        [TestCase("WaypointMove")]
         public void PendingTarget_UiPressDoesNotCancelTargeting(string mode)
         {
             Arm(mode);
             _uiHitTest.OverUi = true;
             MouseFrame(1, Vector2.zero);
             MouseFrame(0, Vector2.zero);
-            Assert.That(_abilities.IsWaitingForTarget || _targeting.Pending != null, Is.True);
+            Assert.That(_abilities.IsWaitingForTarget || _superWeapons.Pending != null || _targeting.Pending != null,
+                Is.True);
             Assert.That(_pressed, Is.Zero);
             Assert.That(_clicked, Is.Zero);
         }
@@ -320,6 +330,8 @@ namespace EmpireAtWar.Tests.Editor
         {
             public event Action TargetingChanged { add { } remove { } }
             public bool IsWaitingForTarget { get; set; }
+            public event Action<ShipAbilityId, IEntity> TargetAccepted { add { } remove { } }
+            public ShipAbilityId PendingAbilityId => ShipAbilityId.None;
             public bool IsValidTarget(IEntity target) => true;
             public void SubmitTarget(IEntity target) { }
             public void CancelTargeting() => IsWaitingForTarget = false;

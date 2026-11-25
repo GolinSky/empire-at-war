@@ -30,6 +30,7 @@ namespace EmpireAtWar.Services.ShipAbilities
         private readonly PlayerCommandHandlers _commandHandlers;
 
         public event Action TargetingChanged;
+        public event Action<ShipAbilityId, IEntity> TargetAccepted;
         public event Action<IReadOnlyList<IEntity>> ManualAction;
         public event Action<IReadOnlyList<IEntity>> TargetRejected;
         public event Action<IReadOnlyList<IEntity>> TargetingCanceled;
@@ -155,8 +156,10 @@ namespace EmpireAtWar.Services.ShipAbilities
                 return;
             }
 
-            _requestExecution(_pendingCasters, PendingAbilityId, target, false, false);
+            ShipAbilityId id = PendingAbilityId;
+            _requestExecution(_pendingCasters, id, target, false, false);
             ClearTargeting();
+            TargetAccepted?.Invoke(id, target);
         }
 
         /// <summary>

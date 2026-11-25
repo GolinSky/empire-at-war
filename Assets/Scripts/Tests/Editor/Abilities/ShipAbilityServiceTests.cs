@@ -837,6 +837,8 @@ namespace EmpireAtWar.Tests.Editor
                 relations, new VisionService(relations, fogEnabled: false));
             int cancellations = 0;
             service.TargetingCanceled += _ => cancellations++;
+            var accepted = new List<(ShipAbilityId id, IEntity target)>();
+            service.TargetAccepted += (id, picked) => accepted.Add((id, picked));
             FakeCommand caster = CreateCaster(targeted: true);
             _targetView = new GameObject("Target");
             FakeHealth targetHealth = new FakeHealth(_targetView.transform);
@@ -850,6 +852,7 @@ namespace EmpireAtWar.Tests.Editor
             service.SubmitTarget(target);
             Assert.That(service.IsWaitingForTarget, Is.True);
             Assert.That(caster.Slots[0].State, Is.EqualTo(ShipAbilityState.Ready));
+            Assert.That(accepted, Is.Empty, "A rejected target must not be marked.");
 
             _targetView.transform.position = Vector3.right * 9f;
             Assert.That(service.IsValidTarget(target), Is.True);
@@ -857,6 +860,7 @@ namespace EmpireAtWar.Tests.Editor
             Assert.That(service.IsWaitingForTarget, Is.False);
             Assert.That(caster.Slots[0].State, Is.EqualTo(ShipAbilityState.Active));
             Assert.That(cancellations, Is.Zero, "An accepted target must not play the targeting-canceled cue.");
+            Assert.That(accepted, Is.EqualTo(new[] { (ShipAbilityId.BoostEnginePower, (IEntity)target) }));
             service.LateDispose();
         }
 

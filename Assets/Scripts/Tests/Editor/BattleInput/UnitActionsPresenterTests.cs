@@ -267,6 +267,8 @@ namespace EmpireAtWar.Tests.Editor
         private sealed class FakeAbilities : IShipAbilityTargeting
         {
             public event Action TargetingChanged;
+            public event Action<ShipAbilityId, IEntity> TargetAccepted { add { } remove { } }
+            public ShipAbilityId PendingAbilityId => ShipAbilityId.None;
 
             public bool IsWaitingForTarget { get; private set; }
             public int CancelCount { get; private set; }
