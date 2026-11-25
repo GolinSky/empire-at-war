@@ -8,6 +8,7 @@ using System.Reflection;
 using EmpireAtWar.Components.AttackComponent;
 using EmpireAtWar.Components.Combat;
 using EmpireAtWar.Components.Construction;
+using EmpireAtWar.Components.Radar;
 using EmpireAtWar.Components.Repair;
 using EmpireAtWar.Components.Ship.Health;
 using EmpireAtWar.Entities.BaseEntity;
@@ -38,6 +39,7 @@ namespace EmpireAtWar.Tests.Editor
                 Vector3 startPosition = new Vector3(12f, 0f, -34f);
 
                 SetField(platform, "_healthComponent", healthComponent);
+                SetField(platform, "_radarModel", new RadarModelStub());
                 SetField(platform, "_startPosition", startPosition);
                 AttachCompletedConstruction(platform);
                 SetField(platform, "_teamIncome", new TeamIncomeSource(0f, platform.Construction,
@@ -95,6 +97,7 @@ namespace EmpireAtWar.Tests.Editor
                 registry.RegisterEconomy(TestPlayers.Ally, ally);
                 registry.RegisterEconomy(TestPlayers.Enemy, enemy);
                 SetField(platform, "_healthComponent", new HealthComponentStub());
+                SetField(platform, "_radarModel", new RadarModelStub());
                 SetField(platform, "_componentLifecycle", new EntityComponentLifecycle(Array.Empty<IMonoComponent>()));
                 AttachCompletedConstruction(platform);
                 SetField(platform, "_teamIncome", new TeamIncomeSource(data.Income, platform.Construction,
@@ -184,6 +187,13 @@ namespace EmpireAtWar.Tests.Editor
                 BindingFlags.Instance | BindingFlags.NonPublic);
             Assert.That(field, Is.Not.Null);
             field.SetValue(platform, value);
+        }
+
+        private sealed class RadarModelStub : IRadarModelObserver
+        {
+            public float Range => 0f;
+            public float Delay => 0f;
+            public ObservableList<IEntity> Enemies { get; } = new ObservableList<IEntity>();
         }
 
         private sealed class HealthDataStub : IHealthData

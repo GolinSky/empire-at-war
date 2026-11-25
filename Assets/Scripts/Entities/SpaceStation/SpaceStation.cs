@@ -1,4 +1,8 @@
 using EmpireAtWar.Entities.BaseEntity.EntityFacades;
+using EmpireAtWar.Components.AttackComponent;
+using EmpireAtWar.Components.Radar;
+using EmpireAtWar.Components.Weapon;
+using UnityEngine.Rendering;
 using System.Collections.Generic;
 using EmpireAtWar.Models.Players;
 using EmpireAtWar.Components.Ship.Health;
@@ -31,6 +35,9 @@ namespace EmpireAtWar.Entities.SpaceStation
         private IUnitExplosionService _unitExplosionService;
         private IUnitWreckService _unitWreckService;
         private IUnitRenderStateComponent _renderState;
+        private IWeaponComponent _weaponComponent;
+        private IRadarModelObserver _radarModel;
+        private IAttackDataFactory _attackDataFactory;
 
         [SerializeField] private Renderer[] explosionHullRenderers;
         [Tooltip("Optional for factions that use a distinct model at each station level.")]
@@ -66,6 +73,9 @@ namespace EmpireAtWar.Entities.SpaceStation
             IUnitWreckService unitWreckService,
             IUnitRenderStateComponent renderState,
             IUnitExplosionService unitExplosionService,
+            IWeaponComponent weaponComponent,
+            IRadarModelObserver radarModel,
+            IAttackDataFactory attackDataFactory,
             ContainerLocal<IReadOnlyList<IMonoComponent>> monoComponents,
             LifetimeScope scope,
             PlayerId owner,
@@ -83,6 +93,9 @@ namespace EmpireAtWar.Entities.SpaceStation
             _unitWreckService = unitWreckService;
             _renderState = renderState;
             _unitExplosionService = unitExplosionService;
+            _weaponComponent = weaponComponent;
+            _radarModel = radarModel;
+            _attackDataFactory = attackDataFactory;
             _scope = scope;
             _factionType = factionType;
             Data = data;
@@ -91,6 +104,7 @@ namespace EmpireAtWar.Entities.SpaceStation
         public void Initialize()
         {
             _healthComponent.HealthModelObserver.OnDestroy += HandleDestroyed;
+            _radarModel.Enemies.ItemAdded += HandleEnemyAdded;
             _factionLevel.OnLevelUpgraded += ApplyLevel;
             ApplyLevel(_factionLevel.CurrentLevel);
             gameObject.name = $"{_owner}_SpaceStation";
@@ -110,6 +124,14 @@ namespace EmpireAtWar.Entities.SpaceStation
             Destroyed?.Invoke();
         }
 
+        // Every detected enemy becomes a base target for the station's weapons.
+        private void HandleEnemyAdded(ObservableList<IEntity> sender, ListChangedEventArgs<IEntity> args)
+        {
+            IEntity enemy = args.item;
+            if (enemy.HealthModel.IsDestroyed || !enemy.HealthModel.HasUnits) return;
+            _weaponComponent.AddTarget(_attackDataFactory.ConstructData(enemy), AttackType.Base);
+        }
+
         // Each level toughens the station, installs that level's hardpoints and restores destroyed ones.
         private void ApplyLevel(int level)
         {
@@ -126,6 +148,7 @@ namespace EmpireAtWar.Entities.SpaceStation
         private void Release(bool playDeathAnimation)
         {
             _healthComponent.HealthModelObserver.OnDestroy -= HandleDestroyed;
+            _radarModel.Enemies.ItemAdded -= HandleEnemyAdded;
             _factionLevel.OnLevelUpgraded -= ApplyLevel;
             if (!_componentLifecycle.Release())
             {

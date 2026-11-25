@@ -1,4 +1,8 @@
 using EmpireAtWar.Entities.BaseEntity.EntityFacades;
+using EmpireAtWar.Components.AttackComponent;
+using EmpireAtWar.Components.Radar;
+using EmpireAtWar.Components.Weapon;
+using UnityEngine.Rendering;
 using System;
 using EmpireAtWar.Components.Construction;
 using EmpireAtWar.Models.Health;
@@ -44,6 +48,9 @@ namespace EmpireAtWar.Entities.DefendPlatform
         private IUnitExplosionService _unitExplosionService;
         private IUnitWreckService _unitWreckService;
         private IUnitRenderStateComponent _renderState;
+        private IWeaponComponent _weaponComponent;
+        private IRadarModelObserver _radarModel;
+        private IAttackDataFactory _attackDataFactory;
         private ILayerService _layerService;
 
         [SerializeField] private Renderer[] explosionHullRenderers;
@@ -79,6 +86,9 @@ namespace EmpireAtWar.Entities.DefendPlatform
             IUnitRenderStateComponent renderState,
             IUnitExplosionService unitExplosionService,
             ILayerService layerService,
+            IWeaponComponent weaponComponent,
+            IRadarModelObserver radarModel,
+            IAttackDataFactory attackDataFactory,
             ContainerLocal<IReadOnlyList<IMonoComponent>> monoComponents,
             LifetimeScope scope,
             Vector3 startPosition,
@@ -95,6 +105,9 @@ namespace EmpireAtWar.Entities.DefendPlatform
             _unitExplosionService = unitExplosionService;
             _scope = scope;
             _layerService = layerService;
+            _weaponComponent = weaponComponent;
+            _radarModel = radarModel;
+            _attackDataFactory = attackDataFactory;
             Data = data;
             _teamIncome = new TeamIncomeSource(data.Income, construction, research, playerRoster, playerRegistry, owner);
         }
@@ -102,6 +115,7 @@ namespace EmpireAtWar.Entities.DefendPlatform
         public void Initialize()
         {
             _healthComponent.HealthModelObserver.OnDestroy += HandleDestroyed;
+            _radarModel.Enemies.ItemAdded += HandleEnemyAdded;
             transform.position = _startPosition;
             construction.ProgressChanged += HandleConstructionProgress;
             construction.Begin(_buildTime);
@@ -116,6 +130,7 @@ namespace EmpireAtWar.Entities.DefendPlatform
         private void Release(bool playDeathEffects)
         {
             _healthComponent.HealthModelObserver.OnDestroy -= HandleDestroyed;
+            _radarModel.Enemies.ItemAdded -= HandleEnemyAdded;
             construction.ProgressChanged -= HandleConstructionProgress;
             if (!_componentLifecycle.Release())
             {
@@ -139,6 +154,14 @@ namespace EmpireAtWar.Entities.DefendPlatform
         }
 
         private void HandleDestroyed() => Release(true);
+
+        // Every detected enemy becomes a base target for the station's weapons.
+        private void HandleEnemyAdded(ObservableList<IEntity> sender, ListChangedEventArgs<IEntity> args)
+        {
+            IEntity enemy = args.item;
+            if (enemy.HealthModel.IsDestroyed || !enemy.HealthModel.HasUnits) return;
+            _weaponComponent.AddTarget(_attackDataFactory.ConstructData(enemy), AttackType.Base);
+        }
 
         private void HandleConstructionProgress(float progress)
         {

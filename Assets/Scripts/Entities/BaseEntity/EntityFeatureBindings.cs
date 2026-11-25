@@ -117,7 +117,6 @@ namespace EmpireAtWar.Entities.BaseEntity
 
         public static void RegisterStationaryCombat(IContainerBuilder builder)
         {
-            builder.Register<StationCombatPresenter>(Lifetime.Singleton).AsSelf().AsImplementedInterfaces();
             builder.Register<StationaryAttackFacade>(Lifetime.Singleton).AsImplementedInterfaces();
         }
 
