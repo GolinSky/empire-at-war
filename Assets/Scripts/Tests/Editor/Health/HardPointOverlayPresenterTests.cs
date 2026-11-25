@@ -28,6 +28,7 @@ namespace EmpireAtWar.Tests.Editor
         private FakePointer _pointer;
         private HardPointOverlayModel _model;
         private HardPointOverlayPresenter _presenter;
+        private FakeView _view;
 
         [SetUp]
         public void SetUp()
@@ -43,7 +44,8 @@ namespace EmpireAtWar.Tests.Editor
             _query = new FakeQuery();
             _pointer = new FakePointer();
             _model = new HardPointOverlayModel();
-            _presenter = new HardPointOverlayPresenter(new FakeView(), _query, _pointer, new FakeCamera(),
+            _view = new FakeView();
+            _presenter = new HardPointOverlayPresenter(_view, _query, _pointer, new FakeCamera(),
                 new FakeOrders(), new InactiveCinematicCamera(),
                 TestPlayers.CreateLocalPlayer(TestPlayers.CreateDuel()), _model, data);
             _presenter.Initialize();
@@ -88,6 +90,31 @@ namespace EmpireAtWar.Tests.Editor
             Assert.That(_model.TryGetHovered(out IEntity hovered, out int hardPointId), Is.True);
             Assert.That(hovered, Is.SameAs(ship));
             Assert.That(hardPointId, Is.Zero);
+        }
+
+        [Test]
+        public void FadingMarkerFollowsItsHardPointAfterHoverExit()
+        {
+            FakeEntity ship = CreateShip(1, Vector3.zero);
+            _query.Target = ship;
+            _presenter.Tick();
+
+            // Hover leaves the ship and the camera moves: the hardpoint projects somewhere else.
+            _query.Target = null;
+            ((FakeHardPoint)ship.HardPoints[0]).Position = new Vector3(500f, 300f, 0f);
+            _view.IsFading = true;
+            _presenter.Tick();
+
+            Assert.That(_model.InspectedShip, Is.Null);
+            Assert.That(_view.FadedSlot, Is.Zero);
+            Assert.That(_view.FadedPosition, Is.EqualTo(new Vector2(500f, 300f)));
+
+            // Once the fade completes the presenter stops tracking the ship.
+            _view.IsFading = false;
+            _presenter.Tick();
+            _view.FadedSlot = -1;
+            _presenter.Tick();
+            Assert.That(_view.FadedSlot, Is.EqualTo(-1));
         }
 
         private FakeEntity CreateShip(long id, Vector3 hardPointPosition)
@@ -145,7 +172,7 @@ namespace EmpireAtWar.Tests.Editor
             public int Id => 0;
             public int Generation => 0;
             public bool IsDestroyed => false;
-            public Vector3 Position { get; }
+            public Vector3 Position { get; set; }
             public Transform Transform => null;
             public Transform Pivot => null;
             public float Health => 1f;
@@ -226,7 +253,18 @@ namespace EmpireAtWar.Tests.Editor
         {
             public float ScaleFactor => 1f;
             public void ShowMarker(int slot, HardPointMarkerData data) { }
+            public bool IsFading { get; set; }
+            public int FadedSlot { get; set; } = -1;
+            public Vector2 FadedPosition { get; private set; }
+
             public void HideMarkersFrom(int slot) { }
+
+            public bool FadeOutMarker(int slot, Vector2 screenPosition)
+            {
+                FadedSlot = slot;
+                FadedPosition = screenPosition;
+                return IsFading;
+            }
         }
 
         private sealed class InactiveCinematicCamera : ICinematicCameraModelObserver

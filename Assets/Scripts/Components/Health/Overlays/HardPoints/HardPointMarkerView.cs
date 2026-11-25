@@ -57,6 +57,14 @@ namespace EmpireAtWar.Components.Ship.Health.HardPointOverlay
             }
         }
 
+        /// <summary>Fades out while following its hardpoint; returns false once fully hidden.</summary>
+        public bool FadeOut(Vector2 localPosition)
+        {
+            _root.anchoredPosition = localPosition;
+            Hide();
+            return gameObject.activeSelf;
+        }
+
         public void Hide()
         {
             _targetAlpha = 0f;

@@ -45,6 +45,8 @@ namespace EmpireAtWar.Components.Ship.Health.HardPointOverlay
         private readonly List<int> _markerIds = new List<int>();
         private readonly List<int> _hoverCandidates = new List<int>();
         private float _markerHitHalfSize;
+        /// <summary>Last inspected ship whose markers are still fading out; they keep tracking its hull.</summary>
+        private IEntity _fadingShip;
 
         public HardPointOverlayPresenter(
             IHardPointOverlayView view,
@@ -88,6 +90,7 @@ namespace EmpireAtWar.Components.Ship.Health.HardPointOverlay
             if (_cinematicCamera.IsActive)
             {
                 _model.Inspect(null, UnitOrderModel.NO_HARD_POINT, false);
+                _fadingShip = null;
                 _view.HideMarkersFrom(0);
                 return;
             }
@@ -135,6 +138,7 @@ namespace EmpireAtWar.Components.Ship.Health.HardPointOverlay
             IEntity inspected = _model.InspectedShip;
             if (inspected != null)
             {
+                _fadingShip = inspected;
                 IReadOnlyList<IHardPointStatus> hardPoints = GetHardPoints(inspected);
                 float scale = PrepareMarkerLayout(inspected);
                 for (int id = 0; id < hardPoints.Count; id++)
@@ -145,9 +149,14 @@ namespace EmpireAtWar.Components.Ship.Health.HardPointOverlay
                     }
                 }
             }
+            else if (_fadingShip != null)
+            {
+                slot = RenderFadingMarkers();
+            }
 
+            IEntity shown = inspected ?? _fadingShip;
             IEntity targeted = _model.TargetedShip;
-            if (targeted != null && (inspected == null || targeted.Id != inspected.Id) && IsVisible(targeted) &&
+            if (targeted != null && (shown == null || targeted.Id != shown.Id) && IsVisible(targeted) &&
                 TryShowMarker(slot, targeted, GetHardPoints(targeted)[_model.TargetedHardPointId],
                     PrepareMarkerLayout(targeted)))
             {
@@ -155,6 +164,47 @@ namespace EmpireAtWar.Components.Ship.Health.HardPointOverlay
             }
 
             _view.HideMarkersFrom(slot);
+        }
+
+        /// <summary>
+        /// Moves the fading markers of the last inspected ship with its hardpoints so they stay on the hull while
+        /// the camera moves. Uses the same slot order as the inspected render, so no marker jumps between slots.
+        /// </summary>
+        private int RenderFadingMarkers()
+        {
+            IEntity ship = _fadingShip;
+            if (!IsVisible(ship))
+            {
+                _fadingShip = null;
+                return 0;
+            }
+
+            float scale = PrepareMarkerLayout(ship);
+            bool keep = false;
+            int slot = 0;
+            foreach (IHardPointStatus hardPoint in GetHardPoints(ship))
+            {
+                if (!hardPoint.IsInstalled || hardPoint.IsDestroyed ||
+                    !TryGetMarkerPosition(hardPoint.Id, out Vector2 position))
+                {
+                    continue;
+                }
+
+                if (_model.IsTargeted(ship, hardPoint.Id))
+                {
+                    TryShowMarker(slot, ship, hardPoint, scale);
+                    keep = true;
+                }
+                else
+                {
+                    keep |= _view.FadeOutMarker(slot, position);
+                }
+
+                slot++;
+            }
+
+            if (!keep) _fadingShip = null;
+            return slot;
         }
 
         public bool TryGetMarkerTop(IEntity ship, out float screenTop)

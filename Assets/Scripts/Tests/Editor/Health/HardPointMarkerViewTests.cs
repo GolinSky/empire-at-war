@@ -155,6 +155,20 @@ namespace EmpireAtWar.Tests.Editor
         }
 
         [Test]
+        public void FadeOut_MovesMarkerWhileFading_AndReportsWhenFullyHidden()
+        {
+            _marker.Show(Vector2.zero, new HardPointMarkerData(null, Vector2.zero, 1f, false, false, false, 1f));
+            _marker.Fade(10f);
+
+            Assert.That(_marker.FadeOut(new Vector2(40f, -15f)), Is.True);
+            Assert.That(((RectTransform)_marker.transform).anchoredPosition, Is.EqualTo(new Vector2(40f, -15f)));
+
+            _marker.Fade(10f);
+            Assert.That(_marker.FadeOut(new Vector2(60f, 5f)), Is.False);
+            Assert.That(_marker.gameObject.activeSelf, Is.False);
+        }
+
+        [Test]
         public void IconGradient_IsBlackAtBottomAndHealthTintAtTop_PreservingAlpha()
         {
             _icon.color = new Color(0.8f, 0.6f, 0.4f, 0.35f);

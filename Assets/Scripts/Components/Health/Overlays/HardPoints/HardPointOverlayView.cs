@@ -36,6 +36,9 @@ namespace EmpireAtWar.Components.Ship.Health.HardPointOverlay
             }
         }
 
+        public bool FadeOutMarker(int slot, Vector2 screenPosition) =>
+            slot < _markers.Count && _markers[slot].FadeOut(ToLocal(screenPosition));
+
         private Vector2 ToLocal(Vector2 screenPosition)
         {
             RectTransformUtility.ScreenPointToLocalPointInRectangle(_canvasRect, screenPosition, null,
