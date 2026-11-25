@@ -696,6 +696,8 @@ namespace EmpireAtWar.Tests.Editor
             public bool TryClaim(IEntity attacker, IEntity target) => throw new NotSupportedException();
 
             public void Release(long attackerId) => throw new NotSupportedException();
+
+            public void CopyHeldTargets(List<IEntity> destination) => throw new NotSupportedException();
         }
 
         private sealed class FakeLocator : IEntityLocator

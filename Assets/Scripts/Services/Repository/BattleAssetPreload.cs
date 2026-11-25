@@ -39,6 +39,7 @@ namespace EmpireAtWar.Repository
         {
             "UiService", "FadeUi", "PerformanceOverlayUi", "CoreGameUi", "FactionUi", "ShipBuildUi", "ShipUi",
             "ShipGroupUi", "ControlGroupUi", "EconomyUi", "MiniMapUi", "ReinforcementUi", "UnitOrderFeedbackUi",
+            "FocusFireCounterUi",
             "TooltipUi", "PauseMenuUi", "SettingsUi", "SaveBrowserUi", "EndGameUi", "HeroUi", "MarkerRadialUi"
         };
         private static readonly MiningFacilityType[] MINING_FACILITIES =

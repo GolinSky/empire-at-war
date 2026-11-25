@@ -78,6 +78,13 @@ namespace EmpireAtWar.Services.UnitOrders
             Changed?.Invoke(target);
         }
 
+        public void CopyHeldTargets(List<IEntity> destination)
+        {
+            destination.Clear();
+            foreach (IEntity target in _claimedTargets.Values)
+                if (!destination.Contains(target)) destination.Add(target);
+        }
+
         private void HandleEntityRemoved(IEntity entity)
         {
             Release(entity.Id);

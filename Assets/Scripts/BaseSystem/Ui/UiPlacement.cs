@@ -8,6 +8,7 @@ using EmpireAtWar.Entities.Economy.Ui;
 using EmpireAtWar.Entities.EndGameUi;
 using EmpireAtWar.Entities.Faction.Ui;
 using EmpireAtWar.Entities.Fade;
+using EmpireAtWar.Entities.FocusFireCounter;
 using EmpireAtWar.Entities.PerformanceOverlay;
 using EmpireAtWar.Entities.Game;
 using EmpireAtWar.Entities.Heroes;
@@ -95,6 +96,7 @@ namespace EmpireAtWar.Ui.Base
                     { typeof(MarkerRadialUi), tooltipSlot },
                     { typeof(BattleNotificationUi), dynamicCanvas.transform },
                     { typeof(UnitOrderFeedbackUi), feedbackCanvas.transform },
+                    { typeof(FocusFireCounterUi), feedbackCanvas.transform },
                     { typeof(CaptureSiteBuildUi), contextualSlot },
                     { typeof(EndGameUi), endGameSlot },
                     { typeof(PauseMenuUi), modalSlot },

@@ -1,4 +1,5 @@
 using System;
+using System.Collections.Generic;
 using EmpireAtWar.Entities.BaseEntity;
 using EmpireAtWar.Models.Players;
 
@@ -31,5 +32,8 @@ namespace EmpireAtWar.Services.UnitOrders
         bool TryClaim(IEntity attacker, IEntity target);
 
         void Release(long attackerId);
+
+        /// <summary>Replaces <paramref name="destination"/> with every target that has at least one holder.</summary>
+        void CopyHeldTargets(List<IEntity> destination);
     }
 }

@@ -1714,6 +1714,84 @@ namespace EmpireAtWar.Tests.Editor
             finally { UnityEngine.Object.DestroyImmediate(view); }
         }
 
+        // Focus fire (approach 5): a marker attack fills the difficulty-scaled cap with the nearest ships.
+        [Test]
+        public void MarkerAttack_NearestShipsFillTheScaledCapAndTheRestAttackMoveToTheTarget()
+        {
+            const int CAP = 2;
+            IShipEntity[] ships =
+            {
+                new FakeShip(new Vector3(100f, 0f, 0f), 1), new FakeShip(new Vector3(400f, 0f, 0f), 2),
+                new FakeShip(new Vector3(200f, 0f, 0f), 3), new FakeShip(new Vector3(300f, 0f, 0f), 4)
+            };
+            GameObject view = new GameObject("Target");
+            try
+            {
+                var target = new FakeEntity(new FakeHealthModel(view.transform), TestPlayers.Human, 9);
+                var marker = new TacticalMarker(-101L, TacticalMarkerType.Attack, TestPlayers.SecondEnemy,
+                    default, Vector3.zero, -1, 0f, 10f);
+                var orders = new FakeOrderService();
+                EnemyStrategicContext context = Context(ships);
+
+                new EnemyTaskForceExecutor(orders, new CappedFocusFireSlots(CAP)).ExecuteMarker(marker, target,
+                    context, "test");
+
+                int limit = Math.Max(1, Mathf.CeilToInt(
+                    CAP * EnemyAiDifficultyProfile.Get(context.Snapshot.Difficulty).FocusFireScale));
+                long[] byDistance = ships.OrderBy(ship => ship.WorldPosition.x).Select(ship => ship.EntityId).ToArray();
+                OrderCall attack = orders.Calls.Single(call => call.Action == UnitActionId.Attack);
+                Assert.That(attack.Receivers.Select(entity => entity.Id), Is.EquivalentTo(byDistance.Take(limit)));
+                OrderCall move = orders.Calls.Single(call => call.Action == UnitActionId.AttackMove);
+                Assert.That(move.Receivers.Select(entity => entity.Id), Is.EquivalentTo(byDistance.Skip(limit)));
+                Assert.That(move.Point, Is.EqualTo(view.transform.position));
+            }
+            finally { UnityEngine.Object.DestroyImmediate(view); }
+        }
+
+        // Focus fire (approach 5): strike ships past the cap attack-move, and are not re-sent while they still do (E9).
+        [Test]
+        public void StrikeOverflow_AttackMovesOnceAndIsNotResent()
+        {
+            var capital = new FakeShip(Vector3.zero, 1);
+            var corvette = new FakeShip(Vector3.right, 2);
+            GameObject view = new GameObject("Base");
+            try
+            {
+                var station = new FakeEntity(new FakeHealthModel(view.transform) { Hull = 100f, Shields = 0f },
+                    TestPlayers.Human, 3);
+                var forces = new Dictionary<IShipEntity, ForceComposition>
+                {
+                    [capital] = CombatForce(100f, 20f),
+                    [corvette] = CombatForce(100f, 20f)
+                };
+                var orders = new FakeOrderService();
+                var executor = new EnemyTaskForceExecutor(orders, new CappedFocusFireSlots(1));
+                var decision = new EnemyStrategicDecision(state: EnemyStrategicState.AssaultBase,
+                    committedShipCount: 2, reason: "test");
+                EnemyStrategicContext context = Context(new IShipEntity[] { capital, corvette }, shipForces: forces,
+                    baseTarget: station, assaultCapitals: new IShipEntity[] { capital }, isEndGame: true);
+
+                executor.Execute(decision, context);
+
+                long[] attackers = orders.Calls.Where(call => call.Action == UnitActionId.Attack)
+                    .SelectMany(call => call.Receivers).Select(entity => entity.Id).ToArray();
+                Assert.That(attackers, Has.Length.EqualTo(1), "A cap of 1 leaves one ship on the attack order.");
+                FakeShip overflow = attackers[0] == capital.EntityId ? corvette : capital;
+                FakeShip striker = overflow == capital ? corvette : capital;
+                Assert.That(orders.Calls.Where(call => call.Action == UnitActionId.AttackMove)
+                    .SelectMany(call => call.Receivers).Select(entity => entity.Id), Has.Member(overflow.EntityId));
+
+                striker.CurrentOrder = UnitOrderType.Attack;
+                overflow.CurrentOrder = UnitOrderType.AttackMove;
+                orders.Calls.Clear();
+                executor.Execute(decision, context);
+
+                Assert.That(orders.Calls.SelectMany(call => call.Receivers).Select(entity => entity.Id),
+                    Has.No.Member(overflow.EntityId), "An attack-moving overflow ship is not ordered again.");
+            }
+            finally { UnityEngine.Object.DestroyImmediate(view); }
+        }
+
         // S5: an allied station's defence attacks the known attacker instead of attack-moving to the station.
         [Test]
         public void AllyDefenseAnswer_AttacksTheKnownAttacker()
@@ -4228,6 +4306,32 @@ namespace EmpireAtWar.Tests.Editor
 
             public (float Friendly, float Hostile) GetTeamStrengths(ICaptureSite site, PlayerId owner) =>
                 (0f, HostilePresent ? 1f : 0f);
+        }
+
+        // Every target offers the same ship cap and nobody holds a slot yet.
+        private sealed class CappedFocusFireSlots : IFocusFireSlots
+        {
+            private readonly int _cap;
+
+            public CappedFocusFireSlots(int cap) => _cap = cap;
+
+            public event Action<IEntity> Changed { add { } remove { } }
+
+            public int GetCap(IEntity target, bool isSquadron) => isSquadron ? FocusFireCaps.UNLIMITED : _cap;
+
+            public int CountHolders(PlayerId team, IEntity target, bool isSquadron) => 0;
+
+            public int FreeSlots(PlayerId team, IEntity target, bool isSquadron) => isSquadron ? int.MaxValue : _cap;
+
+            public bool Holds(IEntity attacker, IEntity target) => false;
+
+            public bool HasSlotFor(IEntity attacker, IEntity target) => true;
+
+            public bool TryClaim(IEntity attacker, IEntity target) => throw new NotSupportedException();
+
+            public void Release(long attackerId) => throw new NotSupportedException();
+
+            public void CopyHeldTargets(List<IEntity> destination) => throw new NotSupportedException();
         }
 
         private sealed class FakeShip : IShipEntity

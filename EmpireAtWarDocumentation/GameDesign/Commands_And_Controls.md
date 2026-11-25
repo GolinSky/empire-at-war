@@ -47,6 +47,12 @@ verification: source-and-assets
 - Action buttons are available only when at least one selected receiver supports that action; battle end disables them.
 - Move is the default right-click order and has no action-panel button.
 - Each ship has one current order; `ShipOrderRunner` coordinates order/state transitions.
+- Focus fire cap (2026-11-25, [[Done/Features/Focus_Fire_Cap_Plan]]): a target accepts a limited number of main attackers per team, by `ShipClass` (`UnitOrderSettings` → Focus Fire). Ships and squadrons count apart; allies share; hero +1; structures unlimited.
+  - Attack over the cap → holders keep slots, nearest others fill the rest, overflow attack-moves to the target (`UnitOrderService.SplitFocusFire`). Order feedback shows the overflow as Attack Move.
+  - Exempt: Attack Move, stations, abilities, superweapons. Guns still fire at a capped target through base targeting.
+  - Idle/Guard/Hunt ships, squadrons and kill replacements prefer a target with a free slot; a lone target is still attacked, without a slot.
+  - AI fills `ceil(cap × EnemyAiDifficultyProfile.FocusFireScale)` slots, carriers first; the rest attack-move.
+  - Counter `SHIPS n/cap  SQD n/cap` under the hovered hostile or the selection's attack target (`FocusFireCounterUiController`); local team only; online clients use host counts (`HostFocusFireSender` → `ReplicatedFocusFireCounts`).
 
 ### Waypoints and targeting
 

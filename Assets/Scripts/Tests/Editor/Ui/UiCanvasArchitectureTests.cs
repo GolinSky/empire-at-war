@@ -195,6 +195,7 @@ namespace EmpireAtWar.Tests.Editor
         [TestCase("PerformanceOverlayUi", "dynamicCanvas")]
         [TestCase("ControlGroupUi", "dynamicCanvas")]
         [TestCase("UnitOrderFeedbackUi", "feedbackCanvas")]
+        [TestCase("FocusFireCounterUi", "feedbackCanvas")]
         [TestCase("CaptureSiteBuildUi", "contextualSlot")]
         [TestCase("EndGameUi", "endGameSlot")]
         [TestCase("PauseMenuUi", "modalSlot")]

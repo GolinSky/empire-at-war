@@ -1,7 +1,9 @@
 ---
 category: Features
-status: in-progress
+status: done
 updated: 2026-11-25
+completed: 2026-11-25
+acceptance: pending-user
 ---
 # Focus Fire Cap
 
@@ -88,9 +90,10 @@ updated: 2026-11-25
 
 ### Phase 5 — Feedback
 1. [x] Order feedback: overflow publishes `AttackMove`, so it shows the attack-move marker.
-2. [ ] Slot counter on the target marker (`3/3` ships, `4/8` squadrons), in scope (user 2026-11-25). Read `UI_UX_GUIDELINES` + `UI_CODE_BUILD_GUIDE` first.
-3. [ ] Counter shows the local player's team slots only; visible while the target is hovered or is the selection's attack target.
-4. [ ] Read API ready: `IFocusFireSlots.CountHolders` / `GetCap` / `Changed`. Missing: online clients need the counts replicated from the host (claims run where unit states run).
+2. [x] `FocusFireCounterUi` (`Entities/FocusFireCounter`, prefab `Assets/Prefabs/Ui/FocusFireCounter/FocusFireCounterUi.prefab`, Addressable `FocusFireCounterUi` in `Ui`, `feedbackCanvas`, battle preload key): `SHIPS n/cap` + `SQD n/cap` 40 px below the target; uncapped pool hidden; full pool `#E86E6C`, open `#6DB8E2`; Rajdhani SemiBold 18; no raycasts.
+3. [x] `FocusFireCounterUiController`: hovered hostile first, else the first attack target of the player's selection; hidden with the HUD, behind the camera, or when both pools are unlimited.
+4. [x] Counts through `IFocusFireCounts`: offline/host `LocalFocusFireCounts` (registry); client `ReplicatedFocusFireCounts` fed by `ClientFocusFireReceiver`.
+- Decision (Open Question 1): new `FocusFireCountMessage { TargetId, Ships, Squadrons }`, host → each client with that client's team counts. `HostFocusFireSender` batches changed targets per tick and sends every held target to a client that finishes loading. Why: `AttackTargetMessage` lists one order's receivers, not team totals.
 
 ## Edge Cases
 - Target at cap, new order from the same player with other ships → overflow only; current holders keep their slots.
@@ -131,11 +134,10 @@ updated: 2026-11-25
 - Phase 5 adds category `Ui` (counter view) and the marker prefab.
 - 2026-11-25 added: `FocusFireSlotsTests`, `FocusFireSettingsTests` (shipped caps ≥ 0, non-decreasing with hull tier, structure unlimited; scale in (0, 1], non-decreasing with difficulty), 3 split cases in `UnitOrderServiceTests`.
 - 2026-11-25 updated for new ctor args (`FreeFocusFireClaim`, `UnlimitedFocusFireSlots` doubles): `ShipPursuitTests`, `ShipStopTests`, `SquadronTargetSelectorTests`, `UnitHighlightSettingsTests`, `EnemyUnitCommanderTests`, `EnemyDecisionSchedulingTests`. Existing expectations unchanged (doubles leave every target open).
-- Missing: an `EnemyAi` executor test for the strike split and overflow churn.
+- Phase 4/5 tests added: `EnemyUnitCommanderTests` (`MarkerAttack_NearestShipsFillTheScaledCapAndTheRestAttackMoveToTheTarget`, `StrikeOverflow_AttackMovesOnceAndIsNotResent`), `FocusFireCounterUiTests` (`Ui`), `ReplicatedFocusFireCountsTests` (`Networking`), `UiCanvasArchitectureTests` placement case.
 - Verification 2026-11-25: Unity compile clean. Tests not run (local override).
 
-## TODO
-- Phase 5.2–5.4: slot counter view + online count replication (Open Question 1).
-- EnemyAi executor test: strike split, difficulty scale, no overflow re-send.
-- Measure time-to-kill on a focused frigate and cruiser; revisit secondary fire if still too fast.
-- Size: `UnitOrderService` (~600 lines) and `EnemyTaskForceExecutor` (~1290) grew; candidate extraction of the split into a focused `FocusFireOrderSplit` class.
+## Outcome
+- Completed 2026-11-25: all five phases implemented and compiled. User gates → [[TODOs/User_Acceptance_Queue#Focus Fire Cap]].
+- Reusable guidance → [[GameDesign/Commands_And_Controls]] (Orders: focus fire cap).
+- Not extracted: `UnitOrderService` (~600 lines) and `EnemyTaskForceExecutor` (~1290) grew; a focused `FocusFireOrderSplit` class remains a refactor suggestion, outside this plan.

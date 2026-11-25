@@ -1,4 +1,5 @@
 using System;
+using System.Collections.Generic;
 using EmpireAtWar.Entities.BaseEntity;
 using EmpireAtWar.Models.Players;
 using EmpireAtWar.Services.UnitOrders;
@@ -31,5 +32,7 @@ namespace EmpireAtWar.Tests.Editor
         public void Release(long attackerId)
         {
         }
+
+        public void CopyHeldTargets(List<IEntity> destination) => destination.Clear();
     }
 }
