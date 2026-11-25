@@ -45,7 +45,7 @@ namespace EmpireAtWar.Tests.Editor
             }
 
             serialized.ApplyModifiedPropertiesWithoutUndo();
-            typeof(ShipEngineGlowComponent).GetMethod("Awake", BindingFlags.Instance | BindingFlags.NonPublic).Invoke(_component, null);
+            typeof(ShipEngineGlowComponent).GetMethod("Construct", BindingFlags.Instance | BindingFlags.NonPublic).Invoke(_component, null);
         }
 
         [TearDown]

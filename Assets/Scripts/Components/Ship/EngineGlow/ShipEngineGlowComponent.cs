@@ -1,4 +1,5 @@
 using UnityEngine;
+using VContainer;
 
 namespace EmpireAtWar.Components.Ship.EngineGlow
 {
@@ -21,7 +22,10 @@ namespace EmpireAtWar.Components.Ship.EngineGlow
         private float _idleIntensity;
         private float _fadeSeconds;
 
-        private void Awake()
+        // Entities are built inactive (BaseFactory), so ShipEngineGlowSync.Initialize runs before Awake would;
+        // injection happens while the scope is built, ahead of every Initialize.
+        [Inject]
+        private void Construct()
         {
             _userValues = new uint[glows.Length];
             _engineDestroyed = new bool[glows.Length];
