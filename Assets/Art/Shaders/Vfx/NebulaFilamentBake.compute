@@ -57,6 +57,35 @@ float Shape(float3 p)
         float base = Ellipsoid(p, float3(0.01,-0.24,0.025), float3(0.31,0.13,0.20));
         return min(min(left, middle), min(right, base));
     }
+    if (_Variant == 3)
+    {
+        // Broken shell ring; y is scaled so the ring reads round on the 85:60 volume.
+        float2 e = float2(p.x - 0.02, (p.y + 0.02) * 1.42);
+        float angle = atan2(e.y, e.x);
+        float thickness = 0.055 + 0.035 * sin(angle * 3 + 1.3) + 0.02 * sin(angle * 7);
+        float ring = length(float2((length(e) - 0.27) / thickness, p.z / 0.17));
+        float breach = Ellipsoid(p, float3(0.20, 0.16, 0), float3(0.09, 0.07, 0.4));
+        return max(ring, 1.6 - breach);
+    }
+    if (_Variant == 4)
+    {
+        // Tilted bipolar lobes pinched at a dense waist.
+        float c = cos(0.45), s = sin(0.45);
+        float3 a = float3(p.x * c - p.y * 1.42 * s, p.x * s + p.y * 1.42 * c, p.z);
+        float upper = Ellipsoid(a, float3(0, 0.17, 0), float3(0.14, 0.19, 0.17));
+        float lower = Ellipsoid(a, float3(0.01, -0.18, 0), float3(0.15, 0.20, 0.17));
+        float waist = Ellipsoid(a, float3(0, 0, 0), float3(0.07, 0.05, 0.09));
+        return min(min(upper, lower), waist);
+    }
+    if (_Variant == 5)
+    {
+        // Long stacked streams with a shared wave.
+        p.y -= sin(p.x * 6.5 + 0.8) * 0.05 + p.x * 0.12;
+        float top = Ellipsoid(p, float3(0.04, 0.15, 0), float3(0.36, 0.035, 0.15));
+        float middle = Ellipsoid(p, float3(-0.03, 0.0, 0.01), float3(0.40, 0.055, 0.17));
+        float bottom = Ellipsoid(p, float3(0.06, -0.15, 0), float3(0.33, 0.04, 0.15));
+        return min(min(top, middle), bottom);
+    }
     p.y += p.x * 0.30;
     float wing = abs(p.x);
     float width = 0.045 + wing * 0.72;

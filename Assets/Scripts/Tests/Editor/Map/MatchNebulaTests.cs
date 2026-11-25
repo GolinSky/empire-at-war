@@ -16,6 +16,7 @@ namespace EmpireAtWar.Tests.Editor
         public void MatchLoads_SelectAllCompositionsWithoutRepeatingOrChangingGameplayRandom()
         {
             var source = AssetDatabase.LoadAssetAtPath<GameObject>(PREFAB);
+            int variantCount = new SerializedObject(source.GetComponent<MatchNebula>()).FindProperty("variants").arraySize;
             var awake = typeof(MatchNebula).GetMethod("Awake",BindingFlags.Instance | BindingFlags.NonPublic);
             var seen = new HashSet<int>();
             int previous = -1;
@@ -27,7 +28,7 @@ namespace EmpireAtWar.Tests.Editor
                 {
                     var nebula = instance.GetComponent<MatchNebula>();
                     awake.Invoke(nebula,null);
-                    Assert.That(nebula.SelectedVariant,Is.InRange(0,2));
+                    Assert.That(nebula.SelectedVariant,Is.InRange(0,variantCount - 1));
                     Assert.That(nebula.SelectedVariant,Is.Not.EqualTo(previous));
                     previous = nebula.SelectedVariant;
                     seen.Add(previous);
@@ -35,12 +36,12 @@ namespace EmpireAtWar.Tests.Editor
                 }
                 finally { Object.DestroyImmediate(instance); }
             }
-            Assert.That(seen.Count,Is.EqualTo(3));
+            Assert.That(seen.Count,Is.EqualTo(variantCount));
             Assert.That(Random.state,Is.EqualTo(randomState));
         }
 
         [Test]
-        public void Prefab_HasOneVolumeAndThreeDistinctBakedFieldsWithValidShaders()
+        public void Prefab_HasOneVolumeAndDistinctBakedFieldsWithValidShaders()
         {
             var source = AssetDatabase.LoadAssetAtPath<GameObject>(PREFAB);
             Assert.That(source.GetComponentsInChildren<MeshRenderer>().Length,Is.EqualTo(1));
@@ -48,7 +49,7 @@ namespace EmpireAtWar.Tests.Editor
             var serialized = new SerializedObject(source.GetComponent<MatchNebula>());
             Assert.That(serialized.FindProperty("volumeRenderer").objectReferenceValue,Is.Not.Null);
             var variants = serialized.FindProperty("variants");
-            Assert.That(variants.arraySize,Is.EqualTo(3));
+            Assert.That(variants.arraySize,Is.GreaterThan(1));
             var textures = new HashSet<Texture>();
             for (int i = 0; i < variants.arraySize; i++)
             {

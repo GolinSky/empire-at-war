@@ -52,7 +52,7 @@ public static class PreviewNebula
             var planet = Clone(AssetDatabase.LoadAssetAtPath<GameObject>("Assets/Prefabs/View/Planets/CoruscantPlanet.prefab"),null,scene);
             planet.transform.localPosition *= 6;
             planet.transform.localScale *= 6;
-            foreach (string variant in new[] { "AzureRift", "VioletPillars", "EmberWings" })
+            foreach (string variant in new[] { "AzureRift", "VioletPillars", "EmberWings", "JadeHalo", "RoseHourglass", "FrostStreams" })
             {
                 renderer.sharedMaterial = AssetDatabase.LoadAssetAtPath<Material>("Assets/Art/Materials/Vfx/Nebula/" + variant + ".mat");
                 foreach (string framing in new[] { "background", "planet", "pan" })

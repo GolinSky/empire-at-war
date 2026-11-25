@@ -15,9 +15,11 @@ public static class BuildNebula
 
     public static void Run()
     {
-        string[] names = { "AzureRift", "VioletPillars", "EmberWings" };
-        var cool = new[] { new Color(0.30f,0.65f,0.88f), new Color(0.45f,0.40f,0.85f), new Color(0.62f,0.48f,0.92f) };
-        var warm = new[] { new Color(0.72f,0.40f,0.12f), new Color(0.80f,0.23f,0.28f), new Color(1f,0.50f,0.15f) };
+        string[] names = { "AzureRift", "VioletPillars", "EmberWings", "JadeHalo", "RoseHourglass", "FrostStreams" };
+        var cool = new[] { new Color(0.30f,0.65f,0.88f), new Color(0.45f,0.40f,0.85f), new Color(0.62f,0.48f,0.92f),
+            new Color(0.22f,0.78f,0.66f), new Color(0.85f,0.38f,0.62f), new Color(0.60f,0.75f,0.95f) };
+        var warm = new[] { new Color(0.72f,0.40f,0.12f), new Color(0.80f,0.23f,0.28f), new Color(1f,0.50f,0.15f),
+            new Color(0.95f,0.68f,0.22f), new Color(0.95f,0.75f,0.35f), new Color(0.75f,0.30f,0.60f) };
         var materials = new Material[names.Length];
         var bake = AssetDatabase.LoadAssetAtPath<ComputeShader>("Assets/Art/Shaders/Vfx/NebulaFilamentBake.compute");
         var shader = AssetDatabase.LoadAssetAtPath<Shader>("Assets/Art/Shaders/Vfx/NebulaFilamentVolume.shader");
@@ -46,7 +48,7 @@ public static class BuildNebula
         BuildVolume(materials);
         BuildStars();
         AssetDatabase.SaveAssets();
-        Debug.Log("Built three match nebula volumes and star field.");
+        Debug.Log("Built six match nebula volumes and star field.");
     }
 
     private static Texture3D Bake(ComputeShader shader, int variant, string name)
