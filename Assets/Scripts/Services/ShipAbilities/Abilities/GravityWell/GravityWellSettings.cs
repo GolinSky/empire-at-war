@@ -38,7 +38,7 @@ namespace EmpireAtWar.Services.ShipAbilities.Abilities
             Vector3 origin = caster.WorldPosition;
             var owner = caster.Entity.Owner;
             if (dependencies.Zones != null)
-                foreach (ReinforcementZonePresenter zone in dependencies.Zones.Zones)
+                foreach (ReinforcementZone zone in dependencies.Zones.Zones)
                     if (!zone.Owner.IsNone && dependencies.Relations.IsHostile(owner, zone.Owner) &&
                         PlanarDistance(origin, zone.Center) <= range + zone.Radius)
                         return true;

@@ -34,7 +34,7 @@ public static class ProfileCaptureGeometry
         int squadronCount = scope.Container.Resolve<IEntityLocator>().Entities.Count(entity =>
             entity.IsSquadron() && !entity.HealthModel.IsDestroyed);
         var builder = new CaptureStrengthBuilder(roster);
-        var areas = sites.Sites.Cast<CaptureSitePresenter>().Select(site => new Area(site)).ToArray();
+        var areas = sites.Sites.Cast<CaptureSite>().Select(site => new Area(site)).ToArray();
         var results = new List<object>();
         double baselineShips = 0, baselineSquadrons = 0, cachedShips = 0, cachedSquadrons = 0, snapshot = 0;
 
@@ -124,13 +124,13 @@ public static class ProfileCaptureGeometry
 
     private sealed class Area
     {
-        public readonly CaptureSitePresenter Site;
+        public readonly CaptureSite Site;
         public readonly Func<Vector3, bool> LiveContains;
         public readonly Func<Vector3, bool> CachedContains;
         public Vector3 Center;
         public float Radius;
 
-        public Area(CaptureSitePresenter site)
+        public Area(CaptureSite site)
         {
             Site = site;
             LiveContains = position => Site.Contains(position);

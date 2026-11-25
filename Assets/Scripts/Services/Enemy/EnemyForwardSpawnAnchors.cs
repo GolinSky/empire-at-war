@@ -217,7 +217,7 @@ namespace EmpireAtWar.Services.Enemy
                 if (_players.IsAllied(_owner.Id, bases[i].Owner)) _picture.OwnFronts.Add(bases[i].Position);
                 else if (_players.IsHostile(_owner.Id, bases[i].Owner)) _picture.HostileFronts.Add(bases[i].Position);
             }
-            foreach (ReinforcementZonePresenter zone in _zones.Zones)
+            foreach (ReinforcementZone zone in _zones.Zones)
             {
                 if (_players.IsAllied(_owner.Id, zone.Owner)) _picture.OwnFronts.Add(zone.Center);
                 else if (_players.IsHostile(_owner.Id, zone.Owner)) _picture.HostileFronts.Add(zone.Center);

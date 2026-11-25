@@ -449,7 +449,7 @@ namespace EmpireAtWar.Tests.Editor
         public void DefensePosition_ContestedZone_GetsNoPlatform()
         {
             _map.SetBounds(-1000f, 1000f);
-            ReinforcementZonePresenter relay = AddZone(TestPlayers.Enemy, new Vector3(400f, 0f, 0f));
+            ReinforcementZone relay = AddZone(TestPlayers.Enemy, new Vector3(400f, 0f, 0f));
             SettleHeldZones();
             Assert.That(_enemyStructurePlacementService.TryGetDefensePosition(false, out _), Is.True);
 
@@ -462,7 +462,7 @@ namespace EmpireAtWar.Tests.Editor
         public void DefensePosition_RetakenZone_WaitsTheHoldTimeAgain()
         {
             _map.SetBounds(-1000f, 1000f);
-            ReinforcementZonePresenter relay = AddZone(TestPlayers.Enemy, new Vector3(400f, 0f, 0f));
+            ReinforcementZone relay = AddZone(TestPlayers.Enemy, new Vector3(400f, 0f, 0f));
             SettleHeldZones();
             relay.Restore(TestPlayers.Human, PlayerId.None, 0f, false);
             Assert.That(_enemyStructurePlacementService.TryGetDefensePosition(false, out _), Is.False);
@@ -498,9 +498,9 @@ namespace EmpireAtWar.Tests.Editor
             new BattleClock(null).Restore(now + EnemyStructurePlacementService.PLATFORM_ZONE_HOLD_SECONDS);
         }
 
-        private ReinforcementZonePresenter AddZone(PlayerId owner, Vector3 center, bool isMain = false)
+        private ReinforcementZone AddZone(PlayerId owner, Vector3 center, bool isMain = false)
         {
-            var zone = new ReinforcementZonePresenter(new HeldZoneView(center),
+            var zone = new ReinforcementZone(new HeldZoneView(center),
                 TestPlayers.CreateLocalPlayer(_zoneRoster),
                 new ReinforcementZoneModel(_zoneRoster, owner, 10f, 1f, true), isMain);
             _zoneSource.Items.Add(zone);
@@ -517,13 +517,13 @@ namespace EmpireAtWar.Tests.Editor
 
         private sealed class ZoneSourceStub : IReinforcementZoneSource
         {
-            public List<ReinforcementZonePresenter> Items { get; } = new List<ReinforcementZonePresenter>();
-            public IReadOnlyList<ReinforcementZonePresenter> Zones => Items;
+            public List<ReinforcementZone> Items { get; } = new List<ReinforcementZone>();
+            public IReadOnlyList<ReinforcementZone> Zones => Items;
             public float SquadronCaptureWeight => 0.5f;
-            public (float Friendly, float Hostile) GetTeamStrengths(ReinforcementZonePresenter zone, PlayerId owner) => default;
+            public (float Friendly, float Hostile) GetTeamStrengths(ReinforcementZone zone, PlayerId owner) => default;
         }
 
-        private sealed class HeldZoneView : IReinforcementZoneView
+        private sealed class HeldZoneView : IReinforcementZoneComponent
         {
             public Vector3 Center { get; }
             public float Radius => HELD_ZONE_RADIUS;

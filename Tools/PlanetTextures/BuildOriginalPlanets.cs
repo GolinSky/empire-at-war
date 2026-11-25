@@ -51,7 +51,7 @@ public static class BuildOriginalPlanets
                 filter.sharedMesh = sphere;
                 if (!existing)
                 {
-                    // Point the UV pole along PlanetView's spin axis (world X) so the pitched battle camera keeps poles on the limb.
+                    // Point the UV pole along PlanetComponent's spin axis (world X) so the pitched battle camera keeps poles on the limb.
                     surface.transform.localRotation = Quaternion.Inverse(root.transform.localRotation) * Quaternion.Euler(0, 0, -90);
                     surface.sharedMaterial = MaterialFor((string)planet["surface"], "Surface", false);
                     var clouds = view.FindProperty("cloudRenderers");

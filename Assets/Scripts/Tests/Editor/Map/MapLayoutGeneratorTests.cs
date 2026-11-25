@@ -217,8 +217,8 @@ namespace EmpireAtWar.Tests.Editor
         [Test, Category("Capture")]
         public void MainRelayPrefab_UsesLargerRangeWithoutChangingOrdinaryRelays()
         {
-            ReinforcementZoneView ordinary = AssetDatabase.LoadAssetAtPath<ReinforcementZoneView>(ZONE_PREFAB_PATH);
-            ReinforcementZoneView main = AssetDatabase.LoadAssetAtPath<ReinforcementZoneView>(MAIN_ZONE_PREFAB_PATH);
+            ReinforcementZoneComponent ordinary = AssetDatabase.LoadAssetAtPath<ReinforcementZoneComponent>(ZONE_PREFAB_PATH);
+            ReinforcementZoneComponent main = AssetDatabase.LoadAssetAtPath<ReinforcementZoneComponent>(MAIN_ZONE_PREFAB_PATH);
             Assert.That(ordinary, Is.Not.Null);
             Assert.That(main, Is.Not.Null);
             Assert.That(ordinary.Radius, Is.EqualTo(270f));
@@ -592,11 +592,11 @@ namespace EmpireAtWar.Tests.Editor
             _settings = AssetDatabase.LoadAssetAtPath<MapGenerationSettings>(SETTINGS_PATH);
             CaptureSiteData siteData = AssetDatabase.LoadAssetAtPath<CaptureSiteData>(
                 "Assets/Settings/Data/Models/CaptureSites/CaptureSiteData.asset");
-            CaptureSiteView miningSite = AssetDatabase.LoadAssetAtPath<CaptureSiteView>(MINING_PREFAB_PATH);
+            CaptureSiteComponent miningSite = AssetDatabase.LoadAssetAtPath<CaptureSiteComponent>(MINING_PREFAB_PATH);
             _radii = new MapFeatureRadii(
-                AssetDatabase.LoadAssetAtPath<ReinforcementZoneView>(ZONE_PREFAB_PATH).Radius,
+                AssetDatabase.LoadAssetAtPath<ReinforcementZoneComponent>(ZONE_PREFAB_PATH).Radius,
                 siteData.GetSettings(CaptureSiteKind.Mining).Radius * Mathf.Max(Mathf.Abs(miningSite.transform.lossyScale.x), Mathf.Abs(miningSite.transform.lossyScale.z)),
-                AssetDatabase.LoadAssetAtPath<ReinforcementZoneView>(MAIN_ZONE_PREFAB_PATH).Radius);
+                AssetDatabase.LoadAssetAtPath<ReinforcementZoneComponent>(MAIN_ZONE_PREFAB_PATH).Radius);
             _generator = new MapLayoutGenerator(_settings, _radii);
         }
 

@@ -18,9 +18,9 @@ public static class InspectPlanetDecorations
  {
   var settings=AssetDatabase.LoadAssetAtPath<MapGenerationSettings>("Assets/Settings/Data/Models/Map/MapGenerationSettings.asset");
   var sites=AssetDatabase.LoadAssetAtPath<CaptureSiteData>("Assets/Settings/Data/Models/CaptureSites/CaptureSiteData.asset");
-  var mine=AssetDatabase.LoadAssetAtPath<CaptureSiteView>("Assets/Prefabs/View/CaptureSites/CaptureSite.prefab");
+  var mine=AssetDatabase.LoadAssetAtPath<CaptureSiteComponent>("Assets/Prefabs/View/CaptureSites/CaptureSite.prefab");
   float radius=sites.GetSettings(CaptureSiteKind.Mining).Radius * Mathf.Max(Mathf.Abs(mine.transform.lossyScale.x),Mathf.Abs(mine.transform.lossyScale.z));
-  var generator=new MapLayoutGenerator(settings,new MapFeatureRadii(AssetDatabase.LoadAssetAtPath<ReinforcementZoneView>("Assets/Prefabs/View/ReinforcementZones/ReinforcementZone.prefab").Radius,radius,AssetDatabase.LoadAssetAtPath<ReinforcementZoneView>("Assets/Prefabs/View/ReinforcementZones/MainReinforcementZone.prefab").Radius));
+  var generator=new MapLayoutGenerator(settings,new MapFeatureRadii(AssetDatabase.LoadAssetAtPath<ReinforcementZoneComponent>("Assets/Prefabs/View/ReinforcementZones/ReinforcementZone.prefab").Radius,radius,AssetDatabase.LoadAssetAtPath<ReinforcementZoneComponent>("Assets/Prefabs/View/ReinforcementZones/MainReinforcementZone.prefab").Radius));
   var players=new[]{new PlayerSlot(new PlayerId(0),new TeamId(0),FactionType.Republic,PlayerController.Human,EnemyAiDifficulty.Medium,0),new PlayerSlot(new PlayerId(1),new TeamId(1),FactionType.Separatist,PlayerController.Ai,EnemyAiDifficulty.Medium,1)};
   var report=new JArray();
   foreach(var planet in new[]{PlanetType.Kuat,PlanetType.Tatooine,PlanetType.Kessel})

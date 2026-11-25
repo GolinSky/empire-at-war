@@ -46,7 +46,7 @@ namespace EmpireAtWar.Tests.Editor
             {
                 Assert.That(root.GetComponentsInChildren<SiteFacilityOptionView>(true), Is.Empty);
                 Assert.That(root.GetComponentsInChildren<Canvas>(true), Has.Length.EqualTo(1));
-                Assert.That(root.GetComponent<CaptureSiteView>(), Is.Not.Null);
+                Assert.That(root.GetComponent<CaptureSiteComponent>(), Is.Not.Null);
             }
             finally { PrefabUtility.UnloadPrefabContents(root); }
         }

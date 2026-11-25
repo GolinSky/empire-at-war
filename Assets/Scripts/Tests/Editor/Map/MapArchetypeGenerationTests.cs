@@ -35,14 +35,14 @@ namespace EmpireAtWar.Tests.Editor
                 "Assets/Settings/Data/Models/Map/MapGenerationSettings.asset");
             CaptureSiteData sites = AssetDatabase.LoadAssetAtPath<CaptureSiteData>(
                 "Assets/Settings/Data/Models/CaptureSites/CaptureSiteData.asset");
-            CaptureSiteView mine = AssetDatabase.LoadAssetAtPath<CaptureSiteView>(
+            CaptureSiteComponent mine = AssetDatabase.LoadAssetAtPath<CaptureSiteComponent>(
                 "Assets/Prefabs/View/CaptureSites/CaptureSite.prefab");
             float radius = sites.GetSettings(CaptureSiteKind.Mining).Radius *
                 Mathf.Max(Mathf.Abs(mine.transform.lossyScale.x), Mathf.Abs(mine.transform.lossyScale.z));
             _generator = new MapLayoutGenerator(_settings, new MapFeatureRadii(
-                AssetDatabase.LoadAssetAtPath<ReinforcementZoneView>(
+                AssetDatabase.LoadAssetAtPath<ReinforcementZoneComponent>(
                     "Assets/Prefabs/View/ReinforcementZones/ReinforcementZone.prefab").Radius, radius,
-                AssetDatabase.LoadAssetAtPath<ReinforcementZoneView>(
+                AssetDatabase.LoadAssetAtPath<ReinforcementZoneComponent>(
                     "Assets/Prefabs/View/ReinforcementZones/MainReinforcementZone.prefab").Radius));
         }
 

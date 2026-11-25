@@ -7,22 +7,7 @@ using UnityEngine.UI;
 
 namespace EmpireAtWar.Views.ReinforcementZones
 {
-    public interface IReinforcementZoneView
-    {
-        Vector3 Center { get; }
-        float Radius { get; }
-        PlayerId StartingOwner { get; }
-        bool IsCapturable { get; }
-        float CaptureDuration { get; }
-
-        void SetVisibility(bool isVisible, bool showCaptureUi);
-
-        void Render(OwnerRelation owner, OwnerRelation capturer, float captureProgress, bool isContested,
-            OwnerRelation contestingFirst = OwnerRelation.Neutral,
-            OwnerRelation contestingSecond = OwnerRelation.Neutral);
-    }
-
-    public sealed class ReinforcementZoneView : MonoBehaviour, IReinforcementZoneView
+    public sealed class ReinforcementZoneComponent : MonoBehaviour, IReinforcementZoneComponent
     {
         [SerializeField] private CaptureRingView captureRing;
         [SerializeField, FormerlySerializedAs("_captureCanvas")] private Canvas captureCanvas;

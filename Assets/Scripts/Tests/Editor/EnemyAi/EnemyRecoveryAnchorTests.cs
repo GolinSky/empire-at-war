@@ -82,7 +82,7 @@ namespace EmpireAtWar.Tests.Editor
         [Test]
         public void RecoveryIgnoresContestedNeutralAndUnownedSectors()
         {
-            ReinforcementZonePresenter zone = AddZone(TestPlayers.Human, Vector3.right * 200f);
+            ReinforcementZone zone = AddZone(TestPlayers.Human, Vector3.right * 200f);
             zone.Restore(TestPlayers.Human, PlayerId.None, 0f, true);
             AddZone(PlayerId.None, Vector3.right * 400f);
             EnemyPatrolMemory memory = _intel.GetPatrol(_owner.Team);
@@ -118,7 +118,7 @@ namespace EmpireAtWar.Tests.Editor
         [Test]
         public void PlacementRechecksZoneOwnershipAfterAnchorSelection()
         {
-            ReinforcementZonePresenter zone = AddZone(TestPlayers.Human, new Vector3(1000f, 0f, 0f));
+            ReinforcementZone zone = AddZone(TestPlayers.Human, new Vector3(1000f, 0f, 0f));
             Update();
             Assert.That(_recovery.TryGetBuildAnchor(out _), Is.True);
             zone.Restore(TestPlayers.Enemy, PlayerId.None, 0f, false);
@@ -207,9 +207,9 @@ namespace EmpireAtWar.Tests.Editor
         private void Update() =>
             _recovery.Update(Vector3.zero, 0.5f, false, false, Time.time, (position, radius) => true);
 
-        private ReinforcementZonePresenter AddZone(PlayerId owner, Vector3 center)
+        private ReinforcementZone AddZone(PlayerId owner, Vector3 center)
         {
-            var zone = new ReinforcementZonePresenter(new ZoneView(center), TestPlayers.CreateLocalPlayer(_roster),
+            var zone = new ReinforcementZone(new ZoneView(center), TestPlayers.CreateLocalPlayer(_roster),
                 new ReinforcementZoneModel(_roster, owner, 10f, 1f, true));
             _zones.Items.Add(zone);
             return zone;
@@ -217,10 +217,10 @@ namespace EmpireAtWar.Tests.Editor
 
         private sealed class ZoneSource : IReinforcementZoneSource
         {
-            public List<ReinforcementZonePresenter> Items { get; } = new List<ReinforcementZonePresenter>();
-            public IReadOnlyList<ReinforcementZonePresenter> Zones => Items;
+            public List<ReinforcementZone> Items { get; } = new List<ReinforcementZone>();
+            public IReadOnlyList<ReinforcementZone> Zones => Items;
             public float SquadronCaptureWeight => 0.5f;
-            public (float Friendly, float Hostile) GetTeamStrengths(ReinforcementZonePresenter zone, PlayerId owner) => default;
+            public (float Friendly, float Hostile) GetTeamStrengths(ReinforcementZone zone, PlayerId owner) => default;
         }
 
         private sealed class Map : IMapModelObserver
@@ -235,7 +235,7 @@ namespace EmpireAtWar.Tests.Editor
             public Vector3 GetStationPosition(PlayerId owner) => new Vector3(-2000f, 0f, 0f);
         }
 
-        private sealed class ZoneView : IReinforcementZoneView
+        private sealed class ZoneView : IReinforcementZoneComponent
         {
             public Vector3 Center { get; }
             public float Radius => 10f;

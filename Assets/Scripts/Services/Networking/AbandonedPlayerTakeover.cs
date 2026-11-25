@@ -145,7 +145,7 @@ namespace EmpireAtWar.Services.Networking
         // Sites keep their state; a rebuilt facility must free its site again when it is destroyed.
         private static void RelinkSiteFacilities(ICaptureSiteSaveState sites, BattleRestoreContext context)
         {
-            foreach (CaptureSitePresenter site in sites.SitePresenters)
+            foreach (CaptureSite site in sites.SitePresenters)
             {
                 if (!site.HasFacility) continue;
                 if (context.MiningFacilities.TryGetValue(site.FacilityId, out var facility))

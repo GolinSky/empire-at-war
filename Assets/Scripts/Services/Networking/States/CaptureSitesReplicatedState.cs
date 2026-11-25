@@ -34,14 +34,14 @@ namespace EmpireAtWar.Services.Networking.States
         public override void Apply(string json)
         {
             CaptureSiteSave[] saves = JsonUtility.FromJson<Snapshot>(json).Sites;
-            IReadOnlyList<CaptureSitePresenter> sites = _sites.SitePresenters;
+            IReadOnlyList<CaptureSite> sites = _sites.SitePresenters;
             bool hasBaseline = _baselineMapVersion == _sites.MapVersion;
             if (saves.Length != sites.Count)
                 throw new InvalidOperationException($"Host sent {saves.Length} capture sites; the map has {sites.Count}.");
             for (int i = 0; i < sites.Count; i++)
             {
                 CaptureSiteSave save = saves[i];
-                CaptureSitePresenter site = sites[i];
+                CaptureSite site = sites[i];
                 PlayerId previousOwner = site.Owner;
                 CaptureSiteState previousState = site.State;
                 SiteFacilityType previousType = site.FacilityType;

@@ -593,7 +593,7 @@ namespace EmpireAtWar.Tests.Editor
             assignments.AddTarget(far);
             assignments.AddTarget(near);
             for (int pass = 0; pass < 3; pass++) updateGroups.Invoke(commander, null);
-            ReinforcementZonePresenter farZone = outer[1].Zone;
+            ReinforcementZone farZone = outer[1].Zone;
 
             assignments.ClearTargets();
             assignments.AddTarget(near);
@@ -2524,7 +2524,7 @@ namespace EmpireAtWar.Tests.Editor
                     { IsBase = true, IsUnit = false, MaximumDurability = 100f };
                 locator.AddEntity(station);
                 var zones = new ZoneSource(roster, Vector3.right * 300f, Vector3.right * 2600f);
-                foreach (ReinforcementZonePresenter zone in zones.Zones)
+                foreach (ReinforcementZone zone in zones.Zones)
                     zone.Restore(owner.Id, PlayerId.None, 0f, false);
                 var pressure = new EnemyStationPressureTracker();
                 // Critical by time-to-loss (W36): a durability share alone no longer counts.
@@ -4075,7 +4075,7 @@ namespace EmpireAtWar.Tests.Editor
                 navigation, new EnemyStationPressureTracker(), CreateRecovery(roster, zones));
             List<IShipEntity> ships = (List<IShipEntity>)typeof(EnemyStrategicContextBuilder)
                 .GetField("_ownShips", BindingFlags.Instance | BindingFlags.NonPublic).GetValue(builder);
-            foreach (ReinforcementZonePresenter zone in zones.Zones)
+            foreach (ReinforcementZone zone in zones.Zones)
                 ships.Add(new FakeShip(zone.Center, ships.Count + 1));
             foreach (ICaptureSite site in sites.Sites)
                 ships.Add(new FakeShip(site.Center, ships.Count + 1));
@@ -4202,10 +4202,10 @@ namespace EmpireAtWar.Tests.Editor
 
         private sealed class ZoneSource : IReinforcementZoneSource
         {
-            public IReadOnlyList<ReinforcementZonePresenter> Zones { get; }
+            public IReadOnlyList<ReinforcementZone> Zones { get; }
             public float SquadronCaptureWeight => 0.5f;
             public float HostileStrength { get; set; }
-            public (float Friendly, float Hostile) GetTeamStrengths(ReinforcementZonePresenter zone, PlayerId owner) =>
+            public (float Friendly, float Hostile) GetTeamStrengths(ReinforcementZone zone, PlayerId owner) =>
                 (0f, HostileStrength);
 
             public ZoneSource(PlayerRoster roster, params Vector3[] centers) : this(roster, -1, centers) { }
@@ -4213,9 +4213,9 @@ namespace EmpireAtWar.Tests.Editor
             /// <summary>Capturable zones that start owned by <paramref name="owners"/>, one per centre.</summary>
             public ZoneSource(PlayerRoster roster, PlayerId[] owners, params Vector3[] centers)
             {
-                List<ReinforcementZonePresenter> zones = new List<ReinforcementZonePresenter>();
+                List<ReinforcementZone> zones = new List<ReinforcementZone>();
                 for (int i = 0; i < centers.Length; i++)
-                    zones.Add(new ReinforcementZonePresenter(new ZoneView(centers[i]),
+                    zones.Add(new ReinforcementZone(new ZoneView(centers[i]),
                         TestPlayers.CreateLocalPlayer(roster),
                         new ReinforcementZoneModel(roster, owners[i], 10f, 1f, true), isMain: false));
                 Zones = zones;
@@ -4223,16 +4223,16 @@ namespace EmpireAtWar.Tests.Editor
 
             public ZoneSource(PlayerRoster roster, int mainIndex, params Vector3[] centers)
             {
-                List<ReinforcementZonePresenter> zones = new List<ReinforcementZonePresenter>();
+                List<ReinforcementZone> zones = new List<ReinforcementZone>();
                 for (int i = 0; i < centers.Length; i++)
-                    zones.Add(new ReinforcementZonePresenter(new ZoneView(centers[i]),
+                    zones.Add(new ReinforcementZone(new ZoneView(centers[i]),
                         TestPlayers.CreateLocalPlayer(roster),
                         new ReinforcementZoneModel(roster, PlayerId.None, 10f, 1f, true), isMain: i == mainIndex));
                 Zones = zones;
             }
         }
 
-        private sealed class ZoneView : IReinforcementZoneView
+        private sealed class ZoneView : IReinforcementZoneComponent
         {
             public Vector3 Center { get; }
             public float Radius => 10f;

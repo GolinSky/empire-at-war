@@ -41,7 +41,7 @@ public static class IntegrateSatelliteSites
         {
             SerializedObject map = new SerializedObject(Components<MapLayoutView>(root).Single());
             map.FindProperty("satelliteSitePrefab").objectReferenceValue =
-                AssetDatabase.LoadAssetAtPath<CaptureSiteView>(SITES + "SatelliteCaptureSite.prefab");
+                AssetDatabase.LoadAssetAtPath<CaptureSiteComponent>(SITES + "SatelliteCaptureSite.prefab");
             map.ApplyModifiedPropertiesWithoutUndo();
         });
         MapGenerationSettings settings = AssetDatabase.LoadAssetAtPath<MapGenerationSettings>(
@@ -66,8 +66,8 @@ public static class IntegrateSatelliteSites
         // Exact renderer names and palettes recovered from the pre-migration prefab YAML in HEAD.
         EditPrefab(path, root =>
         {
-            Component view = site ? (Component)Components<CaptureSiteView>(root).Single()
-                : Components<ReinforcementZoneView>(root).Single();
+            Component view = site ? (Component)Components<CaptureSiteComponent>(root).Single()
+                : Components<ReinforcementZoneComponent>(root).Single();
             SerializedObject serialized = new SerializedObject(view);
             CaptureRingView ring = (CaptureRingView)serialized.FindProperty("captureRing").objectReferenceValue;
             if (ring != null) return;
@@ -95,7 +95,7 @@ public static class IntegrateSatelliteSites
         {
             root.name = "SatelliteCaptureSite";
             root.transform.localScale = Vector3.one;
-            CaptureSiteView view = Components<CaptureSiteView>(root).Single();
+            CaptureSiteComponent view = Components<CaptureSiteComponent>(root).Single();
             SerializedObject site = new SerializedObject(view);
             Object.DestroyImmediate(((Transform)site.FindProperty("asteroidRocks").objectReferenceValue).gameObject);
             GameObject model = (GameObject)PrefabUtility.InstantiatePrefab(

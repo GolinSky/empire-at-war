@@ -32,12 +32,12 @@ namespace EmpireAtWar.Tests.Editor
             _settings = AssetDatabase.LoadAssetAtPath<MapGenerationSettings>(SETTINGS_PATH);
             CaptureSiteData siteData = AssetDatabase.LoadAssetAtPath<CaptureSiteData>(
                 "Assets/Settings/Data/Models/CaptureSites/CaptureSiteData.asset");
-            CaptureSiteView miningSite = AssetDatabase.LoadAssetAtPath<CaptureSiteView>(MINING_PREFAB_PATH);
+            CaptureSiteComponent miningSite = AssetDatabase.LoadAssetAtPath<CaptureSiteComponent>(MINING_PREFAB_PATH);
             _radii = new MapFeatureRadii(
-                AssetDatabase.LoadAssetAtPath<ReinforcementZoneView>(ZONE_PREFAB_PATH).Radius,
+                AssetDatabase.LoadAssetAtPath<ReinforcementZoneComponent>(ZONE_PREFAB_PATH).Radius,
                 siteData.GetSettings(CaptureSiteKind.Mining).Radius *
                 Mathf.Max(Mathf.Abs(miningSite.transform.lossyScale.x), Mathf.Abs(miningSite.transform.lossyScale.z)),
-                AssetDatabase.LoadAssetAtPath<ReinforcementZoneView>(MAIN_ZONE_PREFAB_PATH).Radius);
+                AssetDatabase.LoadAssetAtPath<ReinforcementZoneComponent>(MAIN_ZONE_PREFAB_PATH).Radius);
         }
 
         private static BattleDefinition Coop(MapSize size, FactionType? ally, params FactionType[] coopHumans) =>

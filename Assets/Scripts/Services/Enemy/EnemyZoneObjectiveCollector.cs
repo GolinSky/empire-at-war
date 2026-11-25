@@ -65,12 +65,12 @@ namespace EmpireAtWar.Services.Enemy
         private readonly List<bool> _threatened = new List<bool>();
         private readonly List<int> _openSites = new List<int>();
         private readonly List<int> _unbuiltMines = new List<int>();
-        private readonly List<ReinforcementZonePresenter> _areaZones = new List<ReinforcementZonePresenter>();
+        private readonly List<ReinforcementZone> _areaZones = new List<ReinforcementZone>();
         private readonly List<Vector3> _sitePositions = new List<Vector3>();
         private readonly List<int> _siteAreas = new List<int>();
         private readonly Dictionary<EnemyCaptureObjective, int> _areaOf = new Dictionary<EnemyCaptureObjective, int>();
-        private readonly Dictionary<ReinforcementZonePresenter, int> _zoneArea =
-            new Dictionary<ReinforcementZonePresenter, int>();
+        private readonly Dictionary<ReinforcementZone, int> _zoneArea =
+            new Dictionary<ReinforcementZone, int>();
         private readonly Predicate<HostileSighting> _includeDefender;
         private readonly Predicate<HostileSighting> _includeHostile;
         private readonly ForceComposition _knownHostileForce = new ForceComposition();
@@ -101,7 +101,7 @@ namespace EmpireAtWar.Services.Enemy
         public Vector3 GetCentre(int area) => _centres[area];
 
         /// <summary>The reinforcement zone of the area; null for a lone site.</summary>
-        public ReinforcementZonePresenter GetZone(int area) => _areaZones[area];
+        public ReinforcementZone GetZone(int area) => _areaZones[area];
 
         /// <summary>The zone's radius; a lone site's capture radius.</summary>
         public float GetRadius(int area) => _radii[area];
@@ -140,7 +140,7 @@ namespace EmpireAtWar.Services.Enemy
             for (int i = 0; i < candidates.Count; i++)
             {
                 EnemyCaptureObjective candidate = candidates[i];
-                ReinforcementZonePresenter zone = FindZone(candidate.Position);
+                ReinforcementZone zone = FindZone(candidate.Position);
                 float priority = priorities == null ? 0f : priorities[i];
                 if (zone == null || !_zoneArea.TryGetValue(zone, out int area))
                 {
@@ -170,7 +170,7 @@ namespace EmpireAtWar.Services.Enemy
                 if (_pool.Count == area) _pool.Add(new EnemyZoneObjective());
                 EnemyZoneObjective objective = _pool[area];
                 Vector3 centre = _centres[area];
-                ReinforcementZonePresenter zone = _areaZones[area];
+                ReinforcementZone zone = _areaZones[area];
                 int statics = BuildDefenders(objective.Defenders, area);
                 objective.OwnSupport.Clear();
                 int ownStructures = AddOwnArmedStructures(objective.OwnSupport, centre, 2f * _radii[area],
@@ -225,7 +225,7 @@ namespace EmpireAtWar.Services.Enemy
         private float GetZoneIncome(int area, float mineIncome)
         {
             float income = _unbuiltMines[area] * mineIncome;
-            ReinforcementZonePresenter zone = _areaZones[area];
+            ReinforcementZone zone = _areaZones[area];
             IReadOnlyList<AiWorldSnapshot.Entry> structures = _world.RaidStructures;
             for (int i = 0; i < structures.Count; i++)
             {
@@ -248,7 +248,7 @@ namespace EmpireAtWar.Services.Enemy
             _picture.BuildKnownFromConfident(_knownHostileForce, _includeHostile);
             if (_knownHostileForce.IsEmpty || _vision.IsVisible(_owner, centre)) return;
             int hostileZones = 0;
-            foreach (ReinforcementZonePresenter zone in _zones.Zones)
+            foreach (ReinforcementZone zone in _zones.Zones)
                 if (!zone.Owner.IsNone && _roster.IsHostile(_owner, zone.Owner)) hostileZones++;
             defenders.AddShare(_knownHostileForce, 1f / Mathf.Max(1, hostileZones));
         }
@@ -260,10 +260,10 @@ namespace EmpireAtWar.Services.Enemy
         public Vector3 GetStagingPoint(int area, Vector3 home)
         {
             Vector3 target = _centres[area];
-            ReinforcementZonePresenter targetZone = _areaZones[area];
+            ReinforcementZone targetZone = _areaZones[area];
             Vector3 best = home;
             float bestDistance = PlanarDistance(home, target);
-            foreach (ReinforcementZonePresenter zone in _zones.Zones)
+            foreach (ReinforcementZone zone in _zones.Zones)
             {
                 if (zone == targetZone || zone.IsContested || zone.Owner.IsNone ||
                     !_roster.IsAllied(_owner, zone.Owner) || HasHostileNear(zone.Center, zone.Radius)) continue;
@@ -448,14 +448,14 @@ namespace EmpireAtWar.Services.Enemy
             return false;
         }
 
-        private ReinforcementZonePresenter FindZone(Vector3 position)
+        private ReinforcementZone FindZone(Vector3 position)
         {
-            foreach (ReinforcementZonePresenter zone in _zones.Zones)
+            foreach (ReinforcementZone zone in _zones.Zones)
                 if (EnemyShipTaskGroupPlanner.IsInZone(zone, position)) return zone;
             return null;
         }
 
-        private int IndexOf(ReinforcementZonePresenter zone)
+        private int IndexOf(ReinforcementZone zone)
         {
             for (int i = 0; i < _zones.Zones.Count; i++)
                 if (_zones.Zones[i] == zone) return i;
@@ -477,7 +477,7 @@ namespace EmpireAtWar.Services.Enemy
                 else if (_roster.IsHostile(_owner, station.Owner)) hostile = Mathf.Min(hostile, distance);
             }
             if (float.IsPositiveInfinity(allied))
-                foreach (ReinforcementZonePresenter zone in _zones.Zones)
+                foreach (ReinforcementZone zone in _zones.Zones)
                     if (!zone.IsCapturable && !zone.Owner.IsNone && _roster.IsAllied(_owner, zone.Owner))
                         allied = Mathf.Min(allied, PlanarDistance(position, zone.Center));
             return allied <= hostile;

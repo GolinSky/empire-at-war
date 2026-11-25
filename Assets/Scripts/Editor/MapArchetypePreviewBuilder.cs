@@ -38,14 +38,14 @@ namespace EmpireAtWar.Editor
             MapGenerationSettings settings = AssetDatabase.LoadAssetAtPath<MapGenerationSettings>(SETTINGS_PATH);
             CaptureSiteData siteData = AssetDatabase.LoadAssetAtPath<CaptureSiteData>(
                 "Assets/Settings/Data/Models/CaptureSites/CaptureSiteData.asset");
-            CaptureSiteView site = AssetDatabase.LoadAssetAtPath<CaptureSiteView>(
+            CaptureSiteComponent site = AssetDatabase.LoadAssetAtPath<CaptureSiteComponent>(
                 "Assets/Prefabs/View/CaptureSites/CaptureSite.prefab");
             MapFeatureRadii radii = new MapFeatureRadii(
-                AssetDatabase.LoadAssetAtPath<ReinforcementZoneView>(
+                AssetDatabase.LoadAssetAtPath<ReinforcementZoneComponent>(
                     "Assets/Prefabs/View/ReinforcementZones/ReinforcementZone.prefab").Radius,
                 siteData.GetSettings(CaptureSiteKind.Mining).Radius *
                     Mathf.Max(Mathf.Abs(site.transform.lossyScale.x), Mathf.Abs(site.transform.lossyScale.z)),
-                AssetDatabase.LoadAssetAtPath<ReinforcementZoneView>(
+                AssetDatabase.LoadAssetAtPath<ReinforcementZoneComponent>(
                     "Assets/Prefabs/View/ReinforcementZones/MainReinforcementZone.prefab").Radius);
             PlayerSlot[] players =
             {

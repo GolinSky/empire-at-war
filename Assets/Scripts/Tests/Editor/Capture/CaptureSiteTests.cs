@@ -16,14 +16,14 @@ using UnityEngine;
 namespace EmpireAtWar.Tests.Editor
 {
     [Category("Capture")]
-    public sealed class CaptureSitePresenterTests
+    public sealed class CaptureSiteTests
     {
         private GameObject _tooltipObject;
         private FakeView _view;
         private PlayerRoster _roster;
         private PlayerDisplayNames _playerNames;
         private CaptureSiteData _data;
-        private CaptureSitePresenter _presenter;
+        private CaptureSite _presenter;
 
         [SetUp]
         public void SetUp()
@@ -39,7 +39,7 @@ namespace EmpireAtWar.Tests.Editor
             Assert.That(_data, Is.Not.Null);
             TooltipService tooltips = new TooltipService(new FixedClock(), new TooltipModel(),
                 new TooltipTiming(0.35f, 0.1f));
-            _presenter = new CaptureSitePresenter(_view, TestPlayers.CreateLocalPlayer(_roster),
+            _presenter = new CaptureSite(_view, TestPlayers.CreateLocalPlayer(_roster),
                 tooltips, new CaptureSiteModel(_roster, 10f, 1f), _data, _playerNames);
         }
 
@@ -269,7 +269,7 @@ namespace EmpireAtWar.Tests.Editor
             typeof(CaptureSitesSystem).GetField("_data", BindingFlags.Instance | BindingFlags.NonPublic).SetValue(system,
                 AssetDatabase.LoadAssetAtPath<CaptureSiteData>("Assets/Settings/Data/Models/CaptureSites/CaptureSiteData.asset"));
             typeof(CaptureSitesSystem).GetField("_playerRoster", BindingFlags.Instance | BindingFlags.NonPublic).SetValue(system, _roster);
-            var sites = (List<CaptureSitePresenter>)typeof(CaptureSitesSystem)
+            var sites = (List<CaptureSite>)typeof(CaptureSitesSystem)
                 .GetField("_sites", BindingFlags.Instance | BindingFlags.NonPublic).GetValue(system);
             sites.Add(_presenter);
             return system;
@@ -286,7 +286,7 @@ namespace EmpireAtWar.Tests.Editor
                 var tooltips = new TooltipService(new FixedClock(), new TooltipModel(), new TooltipTiming(0.35f, 0.1f));
                 var data = AssetDatabase.LoadAssetAtPath<CaptureSiteData>(
                     "Assets/Settings/Data/Models/CaptureSites/CaptureSiteData.asset");
-                _presenter = new CaptureSitePresenter(_view, TestPlayers.CreateLocalPlayer(_roster),
+                _presenter = new CaptureSite(_view, TestPlayers.CreateLocalPlayer(_roster),
                     tooltips, new CaptureSiteModel(_roster, 10f, 1f), data, _playerNames, CaptureSiteKind.Satellite);
             }
             CaptureSitesSystem system = CreateSystem();
@@ -353,7 +353,7 @@ namespace EmpireAtWar.Tests.Editor
             public float DeltaTime => 0f;
         }
 
-        private sealed class FakeView : ICaptureSiteView
+        private sealed class FakeView : ICaptureSiteComponent
         {
             public TooltipHoverView TooltipHover { get; }
             public Vector3 Center { get; }

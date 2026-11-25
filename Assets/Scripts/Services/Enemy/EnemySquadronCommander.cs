@@ -731,7 +731,7 @@ namespace EmpireAtWar.Services.Enemy
 
         private void CreateOuterGroups(Vector3 home)
         {
-            foreach (ReinforcementZonePresenter zone in _zones.Zones)
+            foreach (ReinforcementZone zone in _zones.Zones)
                 if (zone.IsCapturable && !zone.IsMain) _outerGroups.Add(new EnemyWingGroup(EnemyWingRole.Outer, zone));
             _outerGroups.Sort((left, right) => PlanarDistanceSquared(left.HomeZone.Center, home)
                 .CompareTo(PlanarDistanceSquared(right.HomeZone.Center, home)));
@@ -770,7 +770,7 @@ namespace EmpireAtWar.Services.Enemy
             SetZone(group, taken ? SelectNextOuterZone(group) : SelectWinnableZone(group) ?? group.Zone, capturers);
         }
 
-        private static void SetZone(EnemyWingGroup group, ReinforcementZonePresenter zone, int capturers)
+        private static void SetZone(EnemyWingGroup group, ReinforcementZone zone, int capturers)
         {
             if (zone != group.Zone) group.ZoneDeaths.Clear();
             group.Zone = zone;
@@ -781,7 +781,7 @@ namespace EmpireAtWar.Services.Enemy
         /// Nothing is left to take in the zone, an own mine or satellite stands in it, and known hostiles or armed
         /// hostile structures are there.
         /// </summary>
-        private bool IsHeldUnderAttack(ReinforcementZonePresenter zone)
+        private bool IsHeldUnderAttack(ReinforcementZone zone)
         {
             if (HasTargetsIn(zone) || !HasOwnStructureIn(zone)) return false;
             _zoneDefenders.Clear();
@@ -789,7 +789,7 @@ namespace EmpireAtWar.Services.Enemy
             return !_zoneDefenders.IsEmpty;
         }
 
-        private bool HasOwnStructureIn(ReinforcementZonePresenter zone)
+        private bool HasOwnStructureIn(ReinforcementZone zone)
         {
             IReadOnlyList<AiWorldSnapshot.Entry> structures = _worldSnapshot.RaidStructures;
             for (int i = 0; i < structures.Count; i++)
@@ -802,14 +802,14 @@ namespace EmpireAtWar.Services.Enemy
         /// The nearest outer zone with targets that no other group works; null when none is left (the group raids).
         /// Two groups never share a zone.
         /// </summary>
-        private ReinforcementZonePresenter SelectNextOuterZone(EnemyWingGroup group)
+        private ReinforcementZone SelectNextOuterZone(EnemyWingGroup group)
         {
             Vector3 from = (group.Zone ?? group.HomeZone).Center;
-            ReinforcementZonePresenter best = null;
+            ReinforcementZone best = null;
             float bestDistance = float.PositiveInfinity;
             foreach (EnemyWingGroup candidate in _outerGroups)
             {
-                ReinforcementZonePresenter zone = candidate.HomeZone;
+                ReinforcementZone zone = candidate.HomeZone;
                 if (zone == group.AbandonedZone || !HasTargetsIn(zone) || IsWorkedByOther(zone, group)) continue;
                 float distance = PlanarDistanceSquared(zone.Center, from);
                 if (distance >= bestDistance) continue;
@@ -823,13 +823,13 @@ namespace EmpireAtWar.Services.Enemy
         /// The outer zone with targets nearest home, not worked by another group, whose defenders the group at least
         /// matches; null when none.
         /// </summary>
-        private ReinforcementZonePresenter SelectWinnableZone(EnemyWingGroup group)
+        private ReinforcementZone SelectWinnableZone(EnemyWingGroup group)
         {
             _groupForce.Clear();
             foreach (ISquadron wing in group.Members) AddWingForce(wing, _groupForce);
             foreach (EnemyWingGroup candidate in _outerGroups)
             {
-                ReinforcementZonePresenter zone = candidate.HomeZone;
+                ReinforcementZone zone = candidate.HomeZone;
                 if (zone == group.AbandonedZone || !HasTargetsIn(zone) || IsWorkedByOther(zone, group)) continue;
                 _zoneDefenders.Clear();
                 FillTargetDefenders(ToVector(ToPoint(zone.Center)), _zoneDefenders);
@@ -839,7 +839,7 @@ namespace EmpireAtWar.Services.Enemy
             return null;
         }
 
-        private bool IsWorkedByOther(ReinforcementZonePresenter zone, EnemyWingGroup group)
+        private bool IsWorkedByOther(ReinforcementZone zone, EnemyWingGroup group)
         {
             foreach (EnemyWingGroup other in _outerGroups)
                 if (other != group && other.Zone == zone) return true;
@@ -871,7 +871,7 @@ namespace EmpireAtWar.Services.Enemy
             return count;
         }
 
-        private bool HasTargetsIn(ReinforcementZonePresenter zone) =>
+        private bool HasTargetsIn(ReinforcementZone zone) =>
             _captureAssignments.HasTargetIn(ToVector(ToPoint(zone.Center)), 2f * zone.Radius);
 
         private bool IsGrouped(ISquadron wing)
@@ -902,13 +902,13 @@ namespace EmpireAtWar.Services.Enemy
             Vector3 home = GetHome();
             AssignGroup(_centreGroup, home);
             foreach (EnemyWingGroup group in _outerGroups) AssignGroup(group, home);
-            ReinforcementZonePresenter centre = EnemyShipTaskGroupPlanner.GetCentre(_zones.Zones);
+            ReinforcementZone centre = EnemyShipTaskGroupPlanner.GetCentre(_zones.Zones);
             if (_captureSquadrons.Count > 0)
             {
-                ReinforcementZonePresenter neighbour = EnemyShipTaskGroupPlanner.GetNeighbour(_zones.Zones, home);
+                ReinforcementZone neighbour = EnemyShipTaskGroupPlanner.GetNeighbour(_zones.Zones, home);
                 PrioritizeZone(centre);
                 PrioritizeZone(neighbour);
-                foreach (ReinforcementZonePresenter zone in _zones.Zones)
+                foreach (ReinforcementZone zone in _zones.Zones)
                     if (zone.IsCapturable && zone != centre && zone != neighbour) PrioritizeZone(zone);
             }
             int captureWings = Mathf.Max(centre != null ? OPENING_CAPTURE_WINGS : 1,
@@ -960,7 +960,7 @@ namespace EmpireAtWar.Services.Enemy
             }
             HoldIdleBombers(home);
             // The centre fallback (D5) is for fighters and interceptors only.
-            ReinforcementZonePresenter zone = group.Zone ?? _centreGroup.Zone;
+            ReinforcementZone zone = group.Zone ?? _centreGroup.Zone;
             if (zone == null)
             {
                 _captureSquadrons.AddRange(_groupWings);
@@ -988,7 +988,7 @@ namespace EmpireAtWar.Services.Enemy
             if (_idleBombers.Count == 0) return;
             Vector3 hold = home;
             float nearest = float.PositiveInfinity;
-            foreach (ReinforcementZonePresenter zone in _zones.Zones)
+            foreach (ReinforcementZone zone in _zones.Zones)
             {
                 if (!zone.IsCapturable || !_playerRoster.IsAllied(zone.Owner, _owner.Id)) continue;
                 float distance = PlanarDistanceSquared(zone.Center, _idleBombers[0].WorldPosition);
@@ -1142,7 +1142,7 @@ namespace EmpireAtWar.Services.Enemy
         private bool IsBeaconSafe(Vector3 point)
         {
             if (!_patrolSafety.IsOutsideHostileBlock(point)) return false;
-            foreach (ReinforcementZonePresenter zone in _zones.Zones)
+            foreach (ReinforcementZone zone in _zones.Zones)
                 if (_playerRoster.IsHostile(_owner.Id, zone.Owner) &&
                     PlanarDistanceSquared(zone.Center, point) < BEACON_RELAY_CLEARANCE * BEACON_RELAY_CLEARANCE)
                     return false;
@@ -1151,7 +1151,7 @@ namespace EmpireAtWar.Services.Enemy
             return true;
         }
 
-        private void PrioritizeZone(ReinforcementZonePresenter zone)
+        private void PrioritizeZone(ReinforcementZone zone)
         {
             if (zone != null) _captureAssignments.PrioritizeArea(ToVector(ToPoint(zone.Center)), 2f * zone.Radius);
         }

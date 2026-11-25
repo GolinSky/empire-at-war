@@ -151,7 +151,7 @@ namespace EmpireAtWar.Tests.Editor
             var sites = _battle.Container.Resolve<CaptureSitesSystem>();
             var prefab = AssetDatabase.LoadAssetAtPath<GameObject>(
                 "Assets/Prefabs/View/CaptureSites/SatelliteCaptureSite.prefab");
-            var view = Object.Instantiate(prefab, _root.transform).GetComponent<CaptureSiteView>();
+            var view = Object.Instantiate(prefab, _root.transform).GetComponent<CaptureSiteComponent>();
             view.Configure(CaptureSiteKind.Satellite, PlayerId.None);
             view.ConfigureSettings(_battle.Container.Resolve<CaptureSiteData>().GetSettings(view.Kind));
             sites.UpdateState(new BattleMap(layout, null, new[] { view }, null, null));
@@ -1255,7 +1255,7 @@ namespace EmpireAtWar.Tests.Editor
             Assert.That(players.Length, Is.EqualTo(2));
             Assert.That(players.OfType<HumanPlayerScope>().Count(), Is.EqualTo(1));
             Assert.That(players.OfType<AiPlayerScope>().Count(), Is.EqualTo(1));
-            PlanetView planet = _battle.Container.Resolve<PlanetFactory>().Create(
+            PlanetComponent planet = _battle.Container.Resolve<PlanetFactory>().Create(
                 _project.GameData.PlanetType, _project.GameData.MapSize, layout.PlanetPosition);
             PlanetScope planetScope = planet.GetComponentInParent<PlanetScope>();
             Assert.That(planetScope.Parent, Is.SameAs(_battle));

@@ -5,9 +5,9 @@ using EmpireAtWar.Views.ReinforcementZones;
 
 namespace EmpireAtWar.Presenters.ReinforcementZones
 {
-    public sealed class ReinforcementZonePresenter
+    public sealed class ReinforcementZone
     {
-        private readonly IReinforcementZoneView _view;
+        private readonly IReinforcementZoneComponent _view;
         private readonly ILocalPlayer _localPlayer;
 
         private readonly ReinforcementZoneModel _model;
@@ -22,8 +22,8 @@ namespace EmpireAtWar.Presenters.ReinforcementZones
         public UnityEngine.Vector3 Center => _view.Center;
         public float Radius => _view.Radius;
 
-        public ReinforcementZonePresenter(
-            IReinforcementZoneView view,
+        public ReinforcementZone(
+            IReinforcementZoneComponent view,
             ILocalPlayer localPlayer,
             ReinforcementZoneModel model, bool isMain = false)
         {

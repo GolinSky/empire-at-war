@@ -28,7 +28,7 @@ namespace EmpireAtWar.Tests.Editor
             GameObject root = Object.Instantiate(prefab);
             try
             {
-                CaptureSiteView view = root.GetComponent<CaptureSiteView>();
+                CaptureSiteComponent view = root.GetComponent<CaptureSiteComponent>();
                 var ring = (CaptureRingView)new SerializedObject(view).FindProperty("captureRing").objectReferenceValue;
                 var renderer = (MeshRenderer)new SerializedObject(ring).FindProperty("ringRenderer").objectReferenceValue;
                 view.Render(owner, state, SiteFacilityType.Mining, "MINE", capturer, 0.2f, 0.4f, contested,
@@ -51,7 +51,7 @@ namespace EmpireAtWar.Tests.Editor
             GameObject root = Object.Instantiate(prefab);
             try
             {
-                CaptureSiteView view = root.GetComponent<CaptureSiteView>();
+                CaptureSiteComponent view = root.GetComponent<CaptureSiteComponent>();
                 var ring = (CaptureRingView)new SerializedObject(view).FindProperty("captureRing").objectReferenceValue;
                 var renderer = (MeshRenderer)new SerializedObject(ring).FindProperty("ringRenderer").objectReferenceValue;
                 view.Render(OwnerRelation.Neutral, CaptureSiteState.Neutral, facilityType, "", OwnerRelation.Own,
@@ -93,7 +93,7 @@ namespace EmpireAtWar.Tests.Editor
             GameObject root = Object.Instantiate(prefab);
             try
             {
-                CaptureSiteView view = root.GetComponent<CaptureSiteView>();
+                CaptureSiteComponent view = root.GetComponent<CaptureSiteComponent>();
                 var serializedView = new SerializedObject(view);
                 var ring = (CaptureRingView)serializedView.FindProperty("captureRing").objectReferenceValue;
                 var canvas = (Canvas)serializedView.FindProperty("statusCanvas").objectReferenceValue;
@@ -124,7 +124,7 @@ namespace EmpireAtWar.Tests.Editor
             GameObject root = Object.Instantiate(prefab);
             try
             {
-                ReinforcementZoneView view = root.GetComponent<ReinforcementZoneView>();
+                ReinforcementZoneComponent view = root.GetComponent<ReinforcementZoneComponent>();
                 var serializedView = new SerializedObject(view);
                 var canvas = (Canvas)serializedView.FindProperty("captureCanvas").objectReferenceValue;
                 var ring = (CaptureRingView)serializedView.FindProperty("captureRing").objectReferenceValue;

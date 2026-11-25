@@ -98,7 +98,7 @@ namespace EmpireAtWar.Services.Enemy
             IReadOnlyList<ICaptureSite> sites = _sites.Sites;
             CapturePadPoints(sites);
             CaptureBases();
-            ReinforcementZonePresenter centre = EnemyShipTaskGroupPlanner.GetCentre(_zones.Zones);
+            ReinforcementZone centre = EnemyShipTaskGroupPlanner.GetCentre(_zones.Zones);
             foreach (int index in _padIndices)
             {
                 ICaptureSite site = sites[index];

@@ -32,13 +32,13 @@ namespace EmpireAtWar.Services.Saves
 
         public void RestoreAfterUnits(BattleRestoreContext context)
         {
-            IReadOnlyList<CaptureSitePresenter> sites = _sites.SitePresenters;
+            IReadOnlyList<CaptureSite> sites = _sites.SitePresenters;
             CaptureSiteSave[] saves = context.Save.CaptureSites;
             if (saves.Length != sites.Count)
                 throw new InvalidOperationException($"Saved {saves.Length} capture sites; the map has {sites.Count}.");
             for (int i = 0; i < sites.Count; i++)
             {
-                CaptureSitePresenter site = sites[i];
+                CaptureSite site = sites[i];
                 CaptureSiteSave save = saves[i];
                 site.Restore(save.Owner, save.State, save.CapturingPlayer, save.CaptureProgress, save.FacilityType,
                     save.ConstructionProgress);

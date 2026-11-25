@@ -42,7 +42,7 @@ namespace EmpireAtWar.Tests.Editor
             _spot = new SiteStub(ZONE + new Vector3(100f, 0f, 0f));
             _otherSpot = new SiteStub(ZONE - new Vector3(100f, 0f, 0f));
             var zones = new ZoneSource();
-            zones.Items.Add(new ReinforcementZonePresenter(new ZoneView(ZONE), TestPlayers.CreateLocalPlayer(_roster),
+            zones.Items.Add(new ReinforcementZone(new ZoneView(ZONE), TestPlayers.CreateLocalPlayer(_roster),
                 new ReinforcementZoneModel(_roster, TestPlayers.Enemy, 10f, 1f, true)));
             _controller = new EnemySiteConstructionController(new SiteDirectory(_spot, _otherSpot), new NoPresence(),
                 null, _roster.Get(TestPlayers.Enemy), null, null, null, null, zones, _intel, _roster);
@@ -110,14 +110,14 @@ namespace EmpireAtWar.Tests.Editor
 
         private sealed class ZoneSource : IReinforcementZoneSource
         {
-            public List<ReinforcementZonePresenter> Items { get; } = new List<ReinforcementZonePresenter>();
-            public IReadOnlyList<ReinforcementZonePresenter> Zones => Items;
+            public List<ReinforcementZone> Items { get; } = new List<ReinforcementZone>();
+            public IReadOnlyList<ReinforcementZone> Zones => Items;
             public float SquadronCaptureWeight => 0.5f;
-            public (float Friendly, float Hostile) GetTeamStrengths(ReinforcementZonePresenter zone, PlayerId owner) =>
+            public (float Friendly, float Hostile) GetTeamStrengths(ReinforcementZone zone, PlayerId owner) =>
                 default;
         }
 
-        private sealed class ZoneView : IReinforcementZoneView
+        private sealed class ZoneView : IReinforcementZoneComponent
         {
             public Vector3 Center { get; }
             public float Radius => 500f;

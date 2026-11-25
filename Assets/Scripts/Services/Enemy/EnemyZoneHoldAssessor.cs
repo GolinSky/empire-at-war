@@ -114,7 +114,7 @@ namespace EmpireAtWar.Services.Enemy
             _present.Clear();
             _nearNext.Clear();
             _cheapestShip = float.PositiveInfinity;
-            IReadOnlyList<ReinforcementZonePresenter> zones = _zones.Zones;
+            IReadOnlyList<ReinforcementZone> zones = _zones.Zones;
             while (_reservationIds.Count < zones.Count) _reservationIds.Add("expansion:" + _reservationIds.Count);
             IReadOnlyList<AiWorldSnapshot.Entry> owned = _world.GetOwnedUnits(_owner);
             for (int i = 0; i < owned.Count; i++)
@@ -126,7 +126,7 @@ namespace EmpireAtWar.Services.Enemy
                 if (price > 0f) _cheapestShip = Mathf.Min(_cheapestShip, price);
                 for (int index = 0; index < zones.Count; index++)
                 {
-                    ReinforcementZonePresenter zone = zones[index];
+                    ReinforcementZone zone = zones[index];
                     if (!zone.IsCapturable || PlanarDistance(entry.Position, zone.Center) >
                         zone.Radius + EnemyZoneObjectiveCollector.ZONE_DEFENDER_MARGIN) continue;
                     string id = _picture.GetZoneId(index);
@@ -141,7 +141,7 @@ namespace EmpireAtWar.Services.Enemy
 
             for (int index = 0; index < zones.Count; index++)
             {
-                ReinforcementZonePresenter zone = zones[index];
+                ReinforcementZone zone = zones[index];
                 if (!zone.IsCapturable) continue;
                 string id = _picture.GetZoneId(index);
                 bool teamOwned = !zone.Owner.IsNone && _roster.IsAllied(_owner, zone.Owner);
@@ -235,7 +235,7 @@ namespace EmpireAtWar.Services.Enemy
         private float GetSpawnDistance(Vector3 centre, bool hostile)
         {
             float nearest = float.PositiveInfinity;
-            foreach (ReinforcementZonePresenter zone in _zones.Zones)
+            foreach (ReinforcementZone zone in _zones.Zones)
                 if (!zone.Owner.IsNone && !zone.IsContested && IsSide(zone.Owner, hostile))
                     nearest = Mathf.Min(nearest, PlanarDistance(zone.Center, centre));
             IReadOnlyList<AiWorldSnapshot.Entry> bases = _world.Bases;

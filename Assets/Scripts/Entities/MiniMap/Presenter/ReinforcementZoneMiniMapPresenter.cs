@@ -13,7 +13,7 @@ namespace EmpireAtWar.Presenters.MiniMap
         IInitializable, ILateTickable, ILateDisposable, IObserver<BattleState>
     {
         private readonly ReinforcementZonesSystem _reinforcementZonesSystem;
-        private readonly MiniMapMarkerCollection<ReinforcementZonePresenter> _markers;
+        private readonly MiniMapMarkerCollection<ReinforcementZone> _markers;
         private readonly INotifier<BattleState> _battleState;
 
         private bool _hasMarkers;
@@ -24,7 +24,7 @@ namespace EmpireAtWar.Presenters.MiniMap
             INotifier<BattleState> battleState)
         {
             _battleState = battleState;
-            _markers = new MiniMapMarkerCollection<ReinforcementZonePresenter>(miniMapData);
+            _markers = new MiniMapMarkerCollection<ReinforcementZone>(miniMapData);
             _reinforcementZonesSystem = reinforcementZonesSystem;
         }
 
@@ -42,7 +42,7 @@ namespace EmpireAtWar.Presenters.MiniMap
             }
 
             _hasMarkers = true;
-            foreach (ReinforcementZonePresenter zone in _reinforcementZonesSystem.Zones)
+            foreach (ReinforcementZone zone in _reinforcementZonesSystem.Zones)
             {
                 MiniMapMarker marker = new MiniMapMarker(MarkType.ReinforcementZone, zone.Owner);
                 // Zones are known terrain: always drawn, with the owner from the last sighting.
@@ -61,14 +61,14 @@ namespace EmpireAtWar.Presenters.MiniMap
 
         public void LateTick()
         {
-            foreach (KeyValuePair<ReinforcementZonePresenter, MiniMapMarker> pair in _markers.Pairs)
+            foreach (KeyValuePair<ReinforcementZone, MiniMapMarker> pair in _markers.Pairs)
             {
                 RefreshMarker(pair.Key, pair.Value);
             }
         }
 
         private static void RefreshMarker(
-            ReinforcementZonePresenter zone,
+            ReinforcementZone zone,
             MiniMapMarker marker)
         {
             if (zone.IsRevealed)

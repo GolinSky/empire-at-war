@@ -23,7 +23,7 @@ namespace EmpireAtWar.Services.Factory
             _settings = settings;
         }
 
-        public PlanetView Create(PlanetType type, MapSize size, Vector3 position, float obstacleRadius = 0f)
+        public PlanetComponent Create(PlanetType type, MapSize size, Vector3 position, float obstacleRadius = 0f)
         {
             PlanetScope prefab = _settings.GetPlanetPrefab(type);
             float scale = _settings.GetSize(size).PlanetScale;

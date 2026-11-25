@@ -20,10 +20,10 @@ namespace EmpireAtWar.Entities.Map
         private const float FRAME_SLICE_SECONDS = 0.008f;
         private const float FIELD_VOLUME_MESH_HEIGHT = 2f;
 
-        [SerializeField] private ReinforcementZoneView zonePrefab;
-        [SerializeField] private ReinforcementZoneView mainZonePrefab;
-        [SerializeField] private CaptureSiteView miningSitePrefab;
-        [SerializeField] private CaptureSiteView satelliteSitePrefab;
+        [SerializeField] private ReinforcementZoneComponent zonePrefab;
+        [SerializeField] private ReinforcementZoneComponent mainZonePrefab;
+        [SerializeField] private CaptureSiteComponent miningSitePrefab;
+        [SerializeField] private CaptureSiteComponent satelliteSitePrefab;
         [SerializeField, Tooltip("Invisible impassable cylinder: unit-diameter, two-unit-tall convex collider.")]
         private MapObstacle fieldVolumePrefab;
         [SerializeField] private GameObject[] largeRockPrefabs;
@@ -41,7 +41,7 @@ namespace EmpireAtWar.Entities.Map
         private MapGenerationSettings _generationSettings;
         private CaptureSiteData _siteData;
         private readonly List<MapObstacle> _obstacles = new List<MapObstacle>();
-        private readonly List<ReinforcementZoneView> _zoneViews = new List<ReinforcementZoneView>();
+        private readonly List<ReinforcementZoneComponent> _zoneViews = new List<ReinforcementZoneComponent>();
 
         [SerializeField] private float borderHeight;
 
@@ -49,8 +49,8 @@ namespace EmpireAtWar.Entities.Map
             new MapFeatureRadii(zonePrefab.Radius,
                 _siteData.GetSettings(CaptureSiteKind.Mining).Radius * Mathf.Max(Mathf.Abs(miningSitePrefab.transform.lossyScale.x), Mathf.Abs(miningSitePrefab.transform.lossyScale.z)), mainZonePrefab.Radius);
 
-        public IReadOnlyList<ReinforcementZoneView> ZoneViews => _zoneViews;
-        public CaptureSiteView[] SiteViews { get; private set; }
+        public IReadOnlyList<ReinforcementZoneComponent> ZoneViews => _zoneViews;
+        public CaptureSiteComponent[] SiteViews { get; private set; }
         public IReadOnlyList<MapObstacle> Obstacles => _obstacles;
 
         [Inject]
@@ -88,18 +88,18 @@ namespace EmpireAtWar.Entities.Map
             foreach (ZoneSpot zone in layout.Zones)
             {
                 if (!zone.IsCapturable) continue;
-                ReinforcementZoneView relay = Instantiate(zone.IsMain ? mainZonePrefab : zonePrefab,
+                ReinforcementZoneComponent relay = Instantiate(zone.IsMain ? mainZonePrefab : zonePrefab,
                     zone.Center, Quaternion.identity, zoneRoot);
                 relay.Configure(zone.Owner, zone.IsCapturable, zone.IsMain);
                 _zoneViews.Add(relay);
                 sliceStart = await YieldWhenSliceSpent(sliceStart, cancellationToken);
             }
 
-            SiteViews = new CaptureSiteView[layout.Sites.Count];
+            SiteViews = new CaptureSiteComponent[layout.Sites.Count];
             for (int i = 0; i < SiteViews.Length; i++)
             {
                 SiteSpot site = layout.Sites[i];
-                CaptureSiteView prefab = site.Kind switch
+                CaptureSiteComponent prefab = site.Kind switch
                 {
                     CaptureSiteKind.Mining => miningSitePrefab,
                     CaptureSiteKind.Satellite => satelliteSitePrefab,

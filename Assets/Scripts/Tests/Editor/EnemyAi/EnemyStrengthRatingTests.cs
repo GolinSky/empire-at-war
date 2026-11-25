@@ -546,9 +546,9 @@ namespace EmpireAtWar.Tests.Editor
 
         private sealed class EmptyZones : IReinforcementZoneSource
         {
-            public IReadOnlyList<ReinforcementZonePresenter> Zones => Array.Empty<ReinforcementZonePresenter>();
+            public IReadOnlyList<ReinforcementZone> Zones => Array.Empty<ReinforcementZone>();
             public float SquadronCaptureWeight => 0.5f;
-            public (float Friendly, float Hostile) GetTeamStrengths(ReinforcementZonePresenter zone, PlayerId owner) =>
+            public (float Friendly, float Hostile) GetTeamStrengths(ReinforcementZone zone, PlayerId owner) =>
                 default;
         }
     }

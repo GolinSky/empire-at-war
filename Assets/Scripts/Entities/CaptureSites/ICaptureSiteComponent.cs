@@ -4,7 +4,7 @@ using UnityEngine;
 
 namespace EmpireAtWar.Entities.CaptureSites
 {
-    public interface ICaptureSiteView
+    public interface ICaptureSiteComponent
     {
         TooltipHoverView TooltipHover { get; }
 

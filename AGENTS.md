@@ -149,7 +149,8 @@ Plan maintenance is part of the task. When creating, executing, or completing a 
 | One entity's API for other entities and abilities | Entity facade | `IGravityWellEmitterFacade` |
 
 - MVP is for UI only. Never split an entity component, hardpoint, service or effect into Model/View/Presenter, and never give one a `View`, `Presenter` or `Controller` name.
-- Existing non-UI `*View` / `*Presenter` classes (`SFoilsView`, `StationCombatPresenter`) are legacy names: do not copy them; rename only when asked.
+- Remaining non-UI `*View` classes (`MapLayoutView`, spawned effects such as `HarmonicBombView`) are legacy names: do not copy them; rename only when asked.
+- A map object follows the same shape: plain C# object + component (`CaptureSite` + `CaptureSiteComponent`, `ReinforcementZone` + `ReinforcementZoneComponent`).
 - When two shapes fit, pick the one with fewer types.
 
 ## UI: Model-View-Presenter

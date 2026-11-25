@@ -69,7 +69,7 @@ namespace EmpireAtWar.Services.ShipSpawning
         {
             // The front line first: relays held by the owner's team, where hostiles cannot arrive.
             _anchors.Clear();
-            foreach (ReinforcementZonePresenter relay in _zoneSource.Zones)
+            foreach (ReinforcementZone relay in _zoneSource.Zones)
             {
                 if (_relations.IsAllied(relay.Owner, owner)) _anchors.Add(relay.Center);
             }
@@ -84,7 +84,7 @@ namespace EmpireAtWar.Services.ShipSpawning
             CollectStationPositions(owner);
             foreach (Vector3 station in _stationPositions)
                 _targetedAnchors.Add((station, _data.HomeAreaRadius, true));
-            foreach (ReinforcementZonePresenter relay in _zoneSource.Zones)
+            foreach (ReinforcementZone relay in _zoneSource.Zones)
                 if (_relations.IsAllied(relay.Owner, owner))
                     _targetedAnchors.Add((relay.Center, _data.RelaySpawnBlockRadius, false));
             if (_zones.TryGetDefaultZoneCenter(owner, out Vector3 home))

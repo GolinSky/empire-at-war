@@ -7,8 +7,8 @@ namespace EmpireAtWar.Services.ReinforcementZones
     /// <summary>Read access to the live reinforcement zones.</summary>
     public interface IReinforcementZoneSource
     {
-        IReadOnlyList<ReinforcementZonePresenter> Zones { get; }
+        IReadOnlyList<ReinforcementZone> Zones { get; }
         float SquadronCaptureWeight { get; }
-        (float Friendly, float Hostile) GetTeamStrengths(ReinforcementZonePresenter zone, PlayerId owner);
+        (float Friendly, float Hostile) GetTeamStrengths(ReinforcementZone zone, PlayerId owner);
     }
 }

@@ -216,7 +216,7 @@ namespace EmpireAtWar.Tests.Editor
         private ShipSpawnPoints CreateSpawnPoints(PlayerId relayOwner, IReinforcementSpawnRule rule,
             IEntityLocator entities = null)
         {
-            ReinforcementZoneView relay = CreateRelay(relayOwner, RELAY);
+            ReinforcementZoneComponent relay = CreateRelay(relayOwner, RELAY);
             ReinforcementZonesSystem system = _root.AddComponent<ReinforcementZonesSystem>();
             SetField(system, "_data", _data);
             SetField(system, "_playerRoster", _roster);
@@ -228,7 +228,7 @@ namespace EmpireAtWar.Tests.Editor
                 layout: CreateLayout(new ZoneSpot(HOME, TestPlayers.Human, false),
                     new ZoneSpot(RELAY, relayOwner, true)),
                 zoneViews: new[] { relay },
-                siteViews: System.Array.Empty<CaptureSiteView>(),
+                siteViews: System.Array.Empty<CaptureSiteComponent>(),
                 obstacles: System.Array.Empty<MapObstacle>(),
                 stationObstacles: System.Array.Empty<StationObstacle>()));
             return new ShipSpawnPoints(system, system, rule, _roster, _data, entities ?? new EntityLocator(), null);
@@ -246,12 +246,12 @@ namespace EmpireAtWar.Tests.Editor
                 planetPosition: Vector3.zero);
         }
 
-        private ReinforcementZoneView CreateRelay(PlayerId owner, Vector3 center)
+        private ReinforcementZoneComponent CreateRelay(PlayerId owner, Vector3 center)
         {
             GameObject gameObject = new GameObject($"{owner}Relay");
             gameObject.transform.SetParent(_root.transform);
             gameObject.transform.position = center;
-            ReinforcementZoneView view = gameObject.AddComponent<ReinforcementZoneView>();
+            ReinforcementZoneComponent view = gameObject.AddComponent<ReinforcementZoneComponent>();
             CaptureRingView ring = gameObject.AddComponent<CaptureRingView>();
             SetField(ring, "ringRenderer", gameObject.AddComponent<MeshRenderer>());
             SetField(view, "captureRing", ring);

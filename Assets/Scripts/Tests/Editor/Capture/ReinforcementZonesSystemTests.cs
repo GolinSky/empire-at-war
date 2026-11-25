@@ -40,7 +40,7 @@ namespace EmpireAtWar.Tests.Editor
             BattleAreaService blockers = new BattleAreaService(roster);
             try
             {
-                ReinforcementZoneView zone = CreateZone(root.transform, PlayerId.None, true, Vector3.zero);
+                ReinforcementZoneComponent zone = CreateZone(root.transform, PlayerId.None, true, Vector3.zero);
                 ReinforcementZonesSystem system = CreateSystem(root, data, blockers, vision, zone);
                 CaptureStrengthBuilder strength = new CaptureStrengthBuilder(roster);
                 strength.Add(TestPlayers.Enemy, 1f);
@@ -102,7 +102,7 @@ namespace EmpireAtWar.Tests.Editor
             ReinforcementZoneData data = ScriptableObject.CreateInstance<ReinforcementZoneData>();
             try
             {
-                ReinforcementZoneView zone = CreateZone(root.transform, PlayerId.None, true, Vector3.zero);
+                ReinforcementZoneComponent zone = CreateZone(root.transform, PlayerId.None, true, Vector3.zero);
                 ReinforcementZonesSystem system = CreateSystem(root, data, zone);
                 var replication = new ReinforcementZonesReplicatedState(null, null, system);
                 var changes = new List<RelayOwnershipChange>();
@@ -153,7 +153,7 @@ namespace EmpireAtWar.Tests.Editor
             BattleAreaService blockers = new BattleAreaService(roster);
             try
             {
-                ReinforcementZoneView zone = CreateZone(root.transform, TestPlayers.Human, true, Vector3.zero);
+                ReinforcementZoneComponent zone = CreateZone(root.transform, TestPlayers.Human, true, Vector3.zero);
                 ReinforcementZonesSystem system = CreateSystem(root, data, blockers, vision, zone);
                 Assert.That(vision.IsVisible(TestPlayers.Human, zone.Center), Is.True);
 
@@ -207,7 +207,7 @@ namespace EmpireAtWar.Tests.Editor
             ReinforcementZoneData data = ScriptableObject.CreateInstance<ReinforcementZoneData>();
             try
             {
-                ReinforcementZoneView zone = CreateZone(root.transform, TestPlayers.Enemy,
+                ReinforcementZoneComponent zone = CreateZone(root.transform, TestPlayers.Enemy,
                     true, Vector3.zero);
                 BattleAreaService areas = new BattleAreaService(TestPlayers.CreateTeamGame());
                 CreateSystem(root, data, areas, zone);
@@ -230,7 +230,7 @@ namespace EmpireAtWar.Tests.Editor
             ReinforcementZoneData data = ScriptableObject.CreateInstance<ReinforcementZoneData>();
             try
             {
-                ReinforcementZoneView captured = CreateZone(
+                ReinforcementZoneComponent captured = CreateZone(
                     root.transform, TestPlayers.Enemy, true, new Vector3(55f, 0f, -55f));
                 ReinforcementZonesSystem system = CreateSystem(root, data,
                     CreateZone(root.transform, TestPlayers.Enemy, false, Vector3.zero),
@@ -261,7 +261,7 @@ namespace EmpireAtWar.Tests.Editor
             BattleAreaService blockers = new BattleAreaService(TestPlayers.CreateTeamGame());
             try
             {
-                ReinforcementZoneView allied = CreateZone(
+                ReinforcementZoneComponent allied = CreateZone(
                     root.transform, TestPlayers.Ally, false, Vector3.zero);
                 CreateSystem(root, data, blockers, allied);
 
@@ -283,7 +283,7 @@ namespace EmpireAtWar.Tests.Editor
             BattleAreaService blockers = new BattleAreaService(TestPlayers.CreateTeamGame());
             try
             {
-                ReinforcementZoneView neutral = CreateZone(
+                ReinforcementZoneComponent neutral = CreateZone(
                     root.transform, PlayerId.None, true, Vector3.zero);
                 CreateSystem(root, data, blockers, neutral);
 
@@ -307,7 +307,7 @@ namespace EmpireAtWar.Tests.Editor
             try
             {
                 SetField(data, "<RelaySpawnBlockRadius>k__BackingField", 1234f);
-                ReinforcementZoneView zone = CreateZone(root.transform, TestPlayers.Ally,
+                ReinforcementZoneComponent zone = CreateZone(root.transform, TestPlayers.Ally,
                     isCapturable, new Vector3(100f, 200f, -300f));
                 CreateSystem(root, data, new BattleAreaService(TestPlayers.CreateTeamGame()), vision, zone);
                 Vector3 edge = zone.Center + Vector3.right * data.RelaySpawnBlockRadius;
@@ -336,7 +336,7 @@ namespace EmpireAtWar.Tests.Editor
             BattleAreaService blockers = new BattleAreaService(roster);
             try
             {
-                ReinforcementZoneView zone = CreateZone(root.transform,
+                ReinforcementZoneComponent zone = CreateZone(root.transform,
                     initiallyOwned ? TestPlayers.Human : PlayerId.None, true, Vector3.zero);
                 ReinforcementZonesSystem system = CreateSystem(root, data, blockers, vision, zone);
                 CaptureSquadrons squadrons = new CaptureSquadrons { Owner = TestPlayers.Enemy };
@@ -432,7 +432,7 @@ namespace EmpireAtWar.Tests.Editor
             VisionService vision = new VisionService(TestPlayers.CreateTeamGame());
             try
             {
-                ReinforcementZoneView zone = CreateZone(root.transform, TestPlayers.Human, true, Vector3.zero);
+                ReinforcementZoneComponent zone = CreateZone(root.transform, TestPlayers.Human, true, Vector3.zero);
                 BattleAreaService blockers = new BattleAreaService(TestPlayers.CreateTeamGame());
                 ReinforcementZonesSystem system = CreateSystem(root, data, blockers, vision, zone);
                 BattleMap emptyMap = CreateMap();
@@ -462,7 +462,7 @@ namespace EmpireAtWar.Tests.Editor
             ReinforcementZoneData data = ScriptableObject.CreateInstance<ReinforcementZoneData>();
             try
             {
-                ReinforcementZoneView zone = CreateZone(root.transform, PlayerId.None, true, Vector3.zero);
+                ReinforcementZoneComponent zone = CreateZone(root.transform, PlayerId.None, true, Vector3.zero);
                 ReinforcementZonesSystem system = CreateSystem(root, data, zone);
                 CaptureSquadrons squadrons = new CaptureSquadrons { Owner = TestPlayers.Enemy };
                 CaptureStrengthSampler sampler = new CaptureStrengthSampler(new ShipService(), squadrons, TestPlayers.CreateTeamGame(), data.SquadronCaptureWeight);
@@ -485,16 +485,16 @@ namespace EmpireAtWar.Tests.Editor
         }
 
         private static ReinforcementZonesSystem CreateSystem(GameObject root,
-            ReinforcementZoneData data, params ReinforcementZoneView[] zones) =>
+            ReinforcementZoneData data, params ReinforcementZoneComponent[] zones) =>
             CreateSystem(root, data, new BattleAreaService(TestPlayers.CreateTeamGame()), zones);
 
         private static ReinforcementZonesSystem CreateSystem(GameObject root,
-            ReinforcementZoneData data, BattleAreaService blockers, params ReinforcementZoneView[] zones)
+            ReinforcementZoneData data, BattleAreaService blockers, params ReinforcementZoneComponent[] zones)
             => CreateSystem(root, data, blockers, new VisionService(TestPlayers.CreateTeamGame()), zones);
 
         private static ReinforcementZonesSystem CreateSystem(GameObject root,
             ReinforcementZoneData data, BattleAreaService blockers, VisionService vision,
-            params ReinforcementZoneView[] zones)
+            params ReinforcementZoneComponent[] zones)
         {
             ReinforcementZonesSystem system = root.AddComponent<ReinforcementZonesSystem>();
             SetField(system, "_data", data);
@@ -512,10 +512,10 @@ namespace EmpireAtWar.Tests.Editor
             return system;
         }
 
-        private static BattleMap CreateMap(params ReinforcementZoneView[] zones) =>
+        private static BattleMap CreateMap(params ReinforcementZoneComponent[] zones) =>
             CreateMap(System.Array.Empty<ZoneSpot>(), zones);
 
-        private static BattleMap CreateMap(ZoneSpot[] spots, params ReinforcementZoneView[] zones) => new BattleMap(
+        private static BattleMap CreateMap(ZoneSpot[] spots, params ReinforcementZoneComponent[] zones) => new BattleMap(
                 layout: new MapLayout(
                     stationPositions: new Dictionary<PlayerId, Vector3>(),
                     zones: spots,
@@ -525,11 +525,11 @@ namespace EmpireAtWar.Tests.Editor
                     sizeRange: new Vector2Range(),
                     planetPosition: Vector3.zero),
                 zoneViews: zones,
-                siteViews: System.Array.Empty<CaptureSiteView>(),
+                siteViews: System.Array.Empty<CaptureSiteComponent>(),
                 obstacles: System.Array.Empty<MapObstacle>(),
                 stationObstacles: System.Array.Empty<StationObstacle>());
 
-        private static ReinforcementZoneView CreateZone(
+        private static ReinforcementZoneComponent CreateZone(
             Transform parent,
             PlayerId owner,
             bool isCapturable,
@@ -538,7 +538,7 @@ namespace EmpireAtWar.Tests.Editor
             GameObject gameObject = new GameObject($"{owner}Zone");
             gameObject.transform.SetParent(parent);
             gameObject.transform.position = center;
-            ReinforcementZoneView view = gameObject.AddComponent<ReinforcementZoneView>();
+            ReinforcementZoneComponent view = gameObject.AddComponent<ReinforcementZoneComponent>();
             CaptureRingView ring = gameObject.AddComponent<CaptureRingView>();
             SetField(ring, "ringRenderer", gameObject.AddComponent<MeshRenderer>());
             SetField(view, "captureRing", ring);

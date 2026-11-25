@@ -54,19 +54,19 @@ namespace EmpireAtWar.Services.CaptureSites
         private IPlayerCommandSink _commands;
         private PlayerCommandHandlers _commandHandlers;
 
-        private readonly List<CaptureSitePresenter> _sites = new List<CaptureSitePresenter>();
+        private readonly List<CaptureSite> _sites = new List<CaptureSite>();
         private readonly List<Transform> _areaSources = new List<Transform>();
         private IBattleAreaWriter _areaWriter;
         private CaptureStrengthSampler _strengthSampler;
         private CaptureSiteData _data;
         private MapGenerationSettings _mapSettings;
-        private CaptureSitePresenter _selectedSite;
+        private CaptureSite _selectedSite;
         private bool _followsHost;
 
         public IReadOnlyList<ICaptureSite> Sites => _sites;
         public int MapVersion { get; private set; }
         /// <summary>In map layout order, so a seeded rebuild matches saved sites by index.</summary>
-        public IReadOnlyList<CaptureSitePresenter> SitePresenters => _sites;
+        public IReadOnlyList<CaptureSite> SitePresenters => _sites;
         public event Action SitesChanged;
         public event Action SelectionChanged = delegate { };
         public event Action<PlayerId, PlayerId, SiteFacilityType> SiteCaptured;
@@ -74,7 +74,7 @@ namespace EmpireAtWar.Services.CaptureSites
         public event Action<PlayerId, SiteFacilityType> ConstructionStarted;
         public event Action<PlayerId, SiteFacilityType> ConstructionCompleted;
         public event Action<CaptureSiteStatusChange> StatusChanged;
-        public CaptureSitePresenter SelectedSite => _selectedSite;
+        public CaptureSite SelectedSite => _selectedSite;
         public Vector2 SelectionScreenPosition => _cameraService.WorldToScreenPoint(_selectedSite.FacilityPosition);
         public bool CanAfford(float price) => GetBuilder(_localPlayer.Id).CanAfford(price);
 
@@ -129,12 +129,12 @@ namespace EmpireAtWar.Services.CaptureSites
         {
             ClearSites();
             MapVersion++;
-            foreach (CaptureSiteView view in battleMap.SiteViews)
+            foreach (CaptureSiteComponent view in battleMap.SiteViews)
             {
                 CaptureSiteModel model = new CaptureSiteModel(
                     captureDuration: view.CaptureDuration, captureSpeedPerNetShip: _data.CaptureSpeedPerNetShip, relations: _playerRoster, startingOwner: view.StartingOwner,
                     facilityType: _data.GetAllowedFacilities(view.Kind)[0]);
-                CaptureSitePresenter site = new CaptureSitePresenter(model: model, view: view, data: _data, localPlayer: _localPlayer,
+                CaptureSite site = new CaptureSite(model: model, view: view, data: _data, localPlayer: _localPlayer,
                     tooltipService: _tooltipService, playerNames: _playerNames, kind: view.Kind, pointId: view.PointId);
                 _sites.Add(site);
                 site.Captured += HandleSiteCaptured;
@@ -176,7 +176,7 @@ namespace EmpireAtWar.Services.CaptureSites
                 _areaWriter.Unregister(BattleAreaLayer.OrderSnap, source);
             }
             _areaSources.Clear();
-            foreach (CaptureSitePresenter site in _sites)
+            foreach (CaptureSite site in _sites)
             {
                 site.Captured -= HandleSiteCaptured;
                 site.Lost -= HandleSiteLost;
@@ -198,7 +198,7 @@ namespace EmpireAtWar.Services.CaptureSites
         /// Online client: a host snapshot moved <paramref name="site"/> from the given previous values; raises the
         /// events the host raised, so announcements play. The host's payer is not replicated: the site owner stands in.
         /// </summary>
-        public void ReplayHostChange(CaptureSitePresenter site, PlayerId previousOwner, CaptureSiteState previousState,
+        public void ReplayHostChange(CaptureSite site, PlayerId previousOwner, CaptureSiteState previousState,
             SiteFacilityType previousType)
         {
             if (previousOwner != PlayerId.None && site.Owner == PlayerId.None)
@@ -233,7 +233,7 @@ namespace EmpireAtWar.Services.CaptureSites
 
             for (int i = 0; i < _sites.Count; i++)
             {
-                CaptureSitePresenter site = _sites[i];
+                CaptureSite site = _sites[i];
                 if (!_followsHost)
                 {
 #if UNITY_EDITOR || DEVELOPMENT_BUILD
@@ -300,7 +300,7 @@ namespace EmpireAtWar.Services.CaptureSites
         {
             ClearSelection();
             Ray ray = _cameraService.SceneCamera.ScreenPointToRay(screenPosition);
-            CaptureSitePresenter site = CaptureSitePointerQuery.Find(_sites, ray);
+            CaptureSite site = CaptureSitePointerQuery.Find(_sites, ray);
             if (site == null || !IsSelectable(site)) return;
 
             _selectedSite = site;
@@ -330,14 +330,14 @@ namespace EmpireAtWar.Services.CaptureSites
 
         public bool TryStartConstruction(int siteIndex, PlayerId owner, SiteFacilityType type)
         {
-            CaptureSitePresenter site = _sites[siteIndex];
+            CaptureSite site = _sites[siteIndex];
             return site.Owner == owner && !HasHostileUnits(site, owner) && TryStartConstruction(site, type, owner);
         }
 
         public bool TryStartAlliedConstruction(int siteIndex, PlayerId payer, SiteFacilityType facilityType) =>
             TryStartConstruction(_sites[siteIndex], facilityType, payer);
 
-        private bool TryStartConstruction(CaptureSitePresenter site, SiteFacilityType facilityType, PlayerId payer)
+        private bool TryStartConstruction(CaptureSite site, SiteFacilityType facilityType, PlayerId payer)
         {
             if (!site.CanStartConstruction || !_playerRoster.IsAllied(site.Owner, payer) ||
                 !_data.CanBuild(site.Kind, facilityType) || !GetBuilder(payer).TrySpend(site.GetCost(facilityType).Price))
@@ -393,7 +393,7 @@ namespace EmpireAtWar.Services.CaptureSites
             squadronOwner => _playerRoster.IsHostile(owner, squadronOwner);
 
         /// <summary>The local player may open the build menu only on a revealed site it can build on.</summary>
-        private static bool IsSelectable(CaptureSitePresenter site) => site.CanPlayerBuild && site.IsRevealed;
+        private static bool IsSelectable(CaptureSite site) => site.CanPlayerBuild && site.IsRevealed;
 
         private ISiteFacilityBuilder GetBuilder(PlayerId owner)
         {

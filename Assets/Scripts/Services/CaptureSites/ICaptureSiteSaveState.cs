@@ -5,6 +5,6 @@ namespace EmpireAtWar.Services.CaptureSites
 {
     public interface ICaptureSiteSaveState
     {
-        IReadOnlyList<CaptureSitePresenter> SitePresenters { get; }
+        IReadOnlyList<CaptureSite> SitePresenters { get; }
     }
 }

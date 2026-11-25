@@ -10,7 +10,7 @@ using UnityEngine.UI;
 
 namespace EmpireAtWar.Entities.CaptureSites
 {
-    public sealed class CaptureSiteView : MonoBehaviour, ICaptureSiteView
+    public sealed class CaptureSiteComponent : MonoBehaviour, ICaptureSiteComponent
     {
         [SerializeField] private CaptureRingView captureRing;
         [SerializeField] private Transform asteroidRocks;

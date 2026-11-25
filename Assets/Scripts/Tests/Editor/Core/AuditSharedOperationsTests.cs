@@ -120,8 +120,8 @@ namespace EmpireAtWar.Tests.Editor
                     },
                     Array.Empty<ZoneSpot>(), Array.Empty<SiteSpot>(), Array.Empty<MapLane>(),
                     Array.Empty<AsteroidField>(), default, Vector3.zero);
-                BattleMap map = new BattleMap(layout, Array.Empty<ReinforcementZoneView>(),
-                    Array.Empty<CaptureSiteView>(), Array.Empty<MapObstacle>(), Array.Empty<StationObstacle>());
+                BattleMap map = new BattleMap(layout, Array.Empty<ReinforcementZoneComponent>(),
+                    Array.Empty<CaptureSiteComponent>(), Array.Empty<MapObstacle>(), Array.Empty<StationObstacle>());
                 presenter = new BaseMiniMapPresenter(vision, TestPlayers.CreateLocalPlayer(roster), roster,
                     new ReplayNotifier<BattleMap>(map),
                     AssetDatabase.LoadAssetAtPath<MapGenerationSettings>(

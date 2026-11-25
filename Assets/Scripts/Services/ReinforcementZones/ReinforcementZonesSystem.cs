@@ -35,9 +35,9 @@ namespace EmpireAtWar.Services.ReinforcementZones
         private IPlayerRoster _playerRoster;
         private ILocalPlayer _localPlayer;
 
-        private readonly List<ReinforcementZonePresenter> _zones = new List<ReinforcementZonePresenter>();
+        private readonly List<ReinforcementZone> _zones = new List<ReinforcementZone>();
         private ReinforcementZoneData _data;
-        private IReadOnlyList<ReinforcementZoneView> _zoneViews = Array.Empty<ReinforcementZoneView>();
+        private IReadOnlyList<ReinforcementZoneComponent> _zoneViews = Array.Empty<ReinforcementZoneComponent>();
         private readonly List<ZoneSpot> _homes = new List<ZoneSpot>();
         private readonly List<Transform> _homeVisionAnchors = new List<Transform>();
         private CaptureStrengthSampler _strengthSampler;
@@ -49,10 +49,10 @@ namespace EmpireAtWar.Services.ReinforcementZones
         public event Action<RelayOwnershipChange> RelayOwnershipChanged;
         public event Action RelaySourcesChanged;
 
-        public IReadOnlyList<ReinforcementZonePresenter> Zones => _zones;
+        public IReadOnlyList<ReinforcementZone> Zones => _zones;
         public float SquadronCaptureWeight => _data.SquadronCaptureWeight;
 
-        public (float Friendly, float Hostile) GetTeamStrengths(ReinforcementZonePresenter zone, PlayerId owner) =>
+        public (float Friendly, float Hostile) GetTeamStrengths(ReinforcementZone zone, PlayerId owner) =>
             _strengthSampler.GetTeamStrengths(_zones.IndexOf(zone), owner);
         public int MapVersion { get; private set; }
 
@@ -120,7 +120,7 @@ namespace EmpireAtWar.Services.ReinforcementZones
 
             _zones.Clear();
             _strengthSampler.Clear();
-            foreach (ReinforcementZoneView view in _zoneViews)
+            foreach (ReinforcementZoneComponent view in _zoneViews)
             {
                 ReinforcementZoneModel model = new ReinforcementZoneModel(
                     startingOwner: view.StartingOwner,
@@ -128,7 +128,7 @@ namespace EmpireAtWar.Services.ReinforcementZones
                     captureDuration: view.CaptureDuration,
                     captureSpeedPerNetShip: _data.CaptureSpeedPerNetShip,
                     relations: _playerRoster);
-                ReinforcementZonePresenter zone = new ReinforcementZonePresenter(model: model, view: view,
+                ReinforcementZone zone = new ReinforcementZone(model: model, view: view,
                     localPlayer: _localPlayer, isMain: view.IsMain);
                 _zones.Add(zone);
                 _strengthSampler.Add(zone.Contains);
@@ -160,7 +160,7 @@ namespace EmpireAtWar.Services.ReinforcementZones
             }
 
             // Visibility waits until every relay is registered: one zone's relay can reveal another.
-            foreach (ReinforcementZonePresenter zone in _zones)
+            foreach (ReinforcementZone zone in _zones)
                 zone.SetVisibility(_visionService.IsVisible(_localPlayer.Id, zone.Center), false);
 
             OwnershipChanged?.Invoke();
@@ -172,7 +172,7 @@ namespace EmpireAtWar.Services.ReinforcementZones
 
             for (int i = 0; i < _zones.Count; i++)
             {
-                ReinforcementZonePresenter zone = _zones[i];
+                ReinforcementZone zone = _zones[i];
                 PlayerId previousOwner = zone.Owner;
                 if (!_followsHost && zone.Tick(deltaTime, _strengthSampler[i]))
                 {
@@ -195,7 +195,7 @@ namespace EmpireAtWar.Services.ReinforcementZones
         public int GetOwnedCapturableZoneCount(PlayerId owner)
         {
             int count = 0;
-            foreach (ReinforcementZonePresenter zone in _zones)
+            foreach (ReinforcementZone zone in _zones)
             {
                 if (zone.IsCapturable && zone.Owner == owner)
                 {
@@ -209,7 +209,7 @@ namespace EmpireAtWar.Services.ReinforcementZones
         public void CopyOwnedCapturableZoneBounds(PlayerId owner, List<Bounds> destination)
         {
             destination.Clear();
-            foreach (ReinforcementZonePresenter zone in _zones)
+            foreach (ReinforcementZone zone in _zones)
             {
                 if (zone.IsCapturable && zone.Owner == owner)
                 {
@@ -257,10 +257,10 @@ namespace EmpireAtWar.Services.ReinforcementZones
 
         public bool TryGetCaptureTarget(PlayerId owner, Vector3 origin, out Vector3 position)
         {
-            ReinforcementZonePresenter closestZone = null;
+            ReinforcementZone closestZone = null;
             float closestDistance = float.MaxValue;
 
-            foreach (ReinforcementZonePresenter zone in _zones)
+            foreach (ReinforcementZone zone in _zones)
             {
                 // Allies never take a zone from each other, so an allied zone is never a capture target.
                 if (!zone.IsCapturable || _playerRoster.IsAllied(zone.Owner, owner))
@@ -287,7 +287,7 @@ namespace EmpireAtWar.Services.ReinforcementZones
         }
 
         // Each zone centre holds a relay: only its owner's team may spawn around it, and an owned relay gives vision.
-        private void RegisterRelay(ReinforcementZoneView view, PlayerId owner)
+        private void RegisterRelay(ReinforcementZoneComponent view, PlayerId owner)
         {
             Transform relay = view.transform;
             _areas.Register(BattleAreaLayer.StructureExclusion, owner, relay, view.Radius);
@@ -300,7 +300,7 @@ namespace EmpireAtWar.Services.ReinforcementZones
 
         private void UnregisterMap()
         {
-            foreach (ReinforcementZoneView view in _zoneViews)
+            foreach (ReinforcementZoneComponent view in _zoneViews)
             {
                 _areas.Unregister(BattleAreaLayer.SpawnBlock, view.transform);
                 _areas.Unregister(BattleAreaLayer.StructureExclusion, view.transform);

@@ -45,8 +45,8 @@ namespace EmpireAtWar.Services.Enemy
         private readonly IReinforcementZoneSource _zones;
         private readonly TeamIntelRegistry _intel;
         private readonly IPlayerRelations _relations;
-        private readonly HashSet<ReinforcementZonePresenter> _heldZones = new HashSet<ReinforcementZonePresenter>();
-        private readonly HashSet<ReinforcementZonePresenter> _lostZones = new HashSet<ReinforcementZonePresenter>();
+        private readonly HashSet<ReinforcementZone> _heldZones = new HashSet<ReinforcementZone>();
+        private readonly HashSet<ReinforcementZone> _lostZones = new HashSet<ReinforcementZone>();
         private readonly HashSet<int> _ownedPads = new HashSet<int>();
         private readonly Dictionary<int, List<float>> _padLosses = new Dictionary<int, List<float>>();
         private readonly Dictionary<int, float> _padWaitUntil = new Dictionary<int, float>();
@@ -84,7 +84,7 @@ namespace EmpireAtWar.Services.Enemy
             _decisionTimer.StartTimer();
             if (!_snapshotBuilder.IsReady) return;
             EnemyDefenseSnapshot snapshot = _snapshotBuilder.Build();
-            ReinforcementZonePresenter centre = EnemyShipTaskGroupPlanner.GetCentre(_zones.Zones);
+            ReinforcementZone centre = EnemyShipTaskGroupPlanner.GetCentre(_zones.Zones);
             TrackZoneLosses();
             TrackPadLosses(BattleClock.CurrentElapsed);
             int mineSite = FindMineSite(centre);
@@ -151,7 +151,7 @@ namespace EmpireAtWar.Services.Enemy
         internal SiteFacilityType ChooseSpotFacility(ICaptureSite spot, out string reason)
         {
             reason = "";
-            ReinforcementZonePresenter zone = FindZone(spot);
+            ReinforcementZone zone = FindZone(spot);
             if (zone == null) return SiteFacilityType.Mining;
             if (HasBattleAsteroid(zone))
             {
@@ -165,7 +165,7 @@ namespace EmpireAtWar.Services.Enemy
             return reason.Length > 0 ? SiteFacilityType.BattleAsteroid : SiteFacilityType.Mining;
         }
 
-        private bool HasBattleAsteroid(ReinforcementZonePresenter zone)
+        private bool HasBattleAsteroid(ReinforcementZone zone)
         {
             foreach (ICaptureSite site in _sites.Sites)
                 if (site.Kind == CaptureSiteKind.Mining && site.Owner == _owner.Id &&
@@ -177,7 +177,7 @@ namespace EmpireAtWar.Services.Enemy
         }
 
         /// <summary>A known hostile ship, or at least <see cref="HELD_ATTACK_WINGS"/> hostile wings, inside the zone.</summary>
-        private bool IsHeldZoneAttacked(ReinforcementZonePresenter zone)
+        private bool IsHeldZoneAttacked(ReinforcementZone zone)
         {
             float now = Time.time;
             int wings = 0;
@@ -230,7 +230,7 @@ namespace EmpireAtWar.Services.Enemy
         // A zone held, then lost, is marked; the mark stays once it is retaken.
         private void TrackZoneLosses()
         {
-            foreach (ReinforcementZonePresenter zone in _zones.Zones)
+            foreach (ReinforcementZone zone in _zones.Zones)
             {
                 if (!zone.IsCapturable) continue;
                 if (IsHeld(zone)) _heldZones.Add(zone);
@@ -238,16 +238,16 @@ namespace EmpireAtWar.Services.Enemy
             }
         }
 
-        private bool IsHeld(ReinforcementZonePresenter zone) => zone.Owner == _owner.Id;
+        private bool IsHeld(ReinforcementZone zone) => zone.Owner == _owner.Id;
 
-        private ReinforcementZonePresenter FindZone(ICaptureSite site)
+        private ReinforcementZone FindZone(ICaptureSite site)
         {
-            foreach (ReinforcementZonePresenter zone in _zones.Zones)
+            foreach (ReinforcementZone zone in _zones.Zones)
                 if (zone.IsCapturable && EnemyShipTaskGroupPlanner.IsInZone(zone, site.Center)) return zone;
             return null;
         }
 
-        private bool HasHostilesIn(ReinforcementZonePresenter zone)
+        private bool HasHostilesIn(ReinforcementZone zone)
         {
             foreach (ICaptureSite site in _sites.Sites)
                 if (EnemyShipTaskGroupPlanner.IsInZone(zone, site.Center) && _presence.HasHostileUnits(site, _owner.Id))
@@ -255,7 +255,7 @@ namespace EmpireAtWar.Services.Enemy
             return false;
         }
 
-        private int FindMineSite(ReinforcementZonePresenter centre)
+        private int FindMineSite(ReinforcementZone centre)
         {
             int centreSatellites = 0;
             if (centre != null)

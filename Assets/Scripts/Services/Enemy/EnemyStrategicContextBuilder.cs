@@ -309,8 +309,8 @@ namespace EmpireAtWar.Services.Enemy
         public bool IsCapitalRallySafe(Vector3 rally)
         {
             float nearest = float.MaxValue;
-            ReinforcementZonePresenter relay = null;
-            foreach (ReinforcementZonePresenter zone in _zones.Zones)
+            ReinforcementZone relay = null;
+            foreach (ReinforcementZone zone in _zones.Zones)
             {
                 if (zone.Owner.IsNone || !_playerRoster.IsAllied(_owner.Id, zone.Owner)) continue;
                 float distance = PlanarDistance(zone.Center, rally);
@@ -628,10 +628,10 @@ namespace EmpireAtWar.Services.Enemy
         /// </summary>
         private void AddKeptZoneCandidates(Vector3 home)
         {
-            IReadOnlyList<ReinforcementZonePresenter> zones = _zones.Zones;
+            IReadOnlyList<ReinforcementZone> zones = _zones.Zones;
             for (int i = 0; i < zones.Count; i++)
             {
-                ReinforcementZonePresenter zone = zones[i];
+                ReinforcementZone zone = zones[i];
                 if (!zone.IsCapturable || zone.Owner.IsNone || !_playerRoster.IsAllied(_owner.Id, zone.Owner) ||
                     !_teamPicture.Cooperation.IsReservedBy(_owner.Id, GetExpansionReservationId(zone)) ||
                     HasZoneCandidate(zone)) continue;
@@ -642,7 +642,7 @@ namespace EmpireAtWar.Services.Enemy
             }
         }
 
-        private bool HasZoneCandidate(ReinforcementZonePresenter zone)
+        private bool HasZoneCandidate(ReinforcementZone zone)
         {
             foreach (EnemyCaptureObjective candidate in _zoneCandidates)
                 if (EnemyShipTaskGroupPlanner.IsInZone(zone, candidate.Position)) return true;
@@ -663,7 +663,7 @@ namespace EmpireAtWar.Services.Enemy
             {
                 if (zones[area].IsDenied || zones[area].IsHeld) continue;
                 _routeDefenderEnd = _zoneObjectives.GetCentre(area);
-                ReinforcementZonePresenter zone = _zoneObjectives.GetZone(area);
+                ReinforcementZone zone = _zoneObjectives.GetZone(area);
                 // Ships near the zone are already its defenders.
                 _routeDefenderSkip = EnemyZoneObjectiveCollector.DEFENDER_REACH + (zone != null ? 2f * zone.Radius : 0f);
                 _teamPicture.BuildKnownFromConfident(_routeDefenders, _includeRouteDefender);
@@ -686,7 +686,7 @@ namespace EmpireAtWar.Services.Enemy
         }
 
         /// <summary>The reinforcement zone of a pool zone; null for a lone site.</summary>
-        public ReinforcementZonePresenter GetPoolZone(int area) => _zoneObjectives.GetZone(area);
+        public ReinforcementZone GetPoolZone(int area) => _zoneObjectives.GetZone(area);
 
         public Vector3 GetPoolZoneCentre(int area) => _zoneObjectives.GetCentre(area);
 
@@ -728,7 +728,7 @@ namespace EmpireAtWar.Services.Enemy
 
         private bool IsInOwnDeploymentZone(Vector3 point)
         {
-            foreach (ReinforcementZonePresenter zone in _zones.Zones)
+            foreach (ReinforcementZone zone in _zones.Zones)
                 if (!zone.IsCapturable && zone.Owner == _owner.Id && EnemyShipTaskGroupPlanner.IsInZone(zone, point))
                     return true;
             return false;
@@ -745,7 +745,7 @@ namespace EmpireAtWar.Services.Enemy
         /// </summary>
         private Vector3 RouteAroundHostileCentre(Vector3 origin, Vector3 target)
         {
-            ReinforcementZonePresenter centre = EnemyShipTaskGroupPlanner.GetCentre(_zones.Zones);
+            ReinforcementZone centre = EnemyShipTaskGroupPlanner.GetCentre(_zones.Zones);
             if (centre == null || centre.Owner.IsNone || !_playerRoster.IsHostile(_owner.Id, centre.Owner) ||
                 EnemyShipTaskGroupPlanner.IsInZone(centre, target)) return target;
             Vector3 middle = ToVector(ToPoint(centre.Center));
@@ -779,7 +779,7 @@ namespace EmpireAtWar.Services.Enemy
 
         public bool HoldsOuterZone()
         {
-            foreach (ReinforcementZonePresenter zone in _zones.Zones)
+            foreach (ReinforcementZone zone in _zones.Zones)
                 if (zone.IsCapturable && !zone.IsMain && !zone.IsContested && !zone.Owner.IsNone &&
                     _playerRoster.IsAllied(_owner.Id, zone.Owner)) return true;
             return false;
@@ -826,20 +826,20 @@ namespace EmpireAtWar.Services.Enemy
 
         private bool IsInZoneReservedByAlly(Vector3 position)
         {
-            foreach (ReinforcementZonePresenter zone in _zones.Zones)
+            foreach (ReinforcementZone zone in _zones.Zones)
                 if (EnemyShipTaskGroupPlanner.IsInZone(zone, position) && IsExpansionZoneReservedByAlly(zone))
                     return true;
             return false;
         }
 
-        public string GetExpansionReservationId(ReinforcementZonePresenter zone)
+        public string GetExpansionReservationId(ReinforcementZone zone)
         {
             for (int i = 0; i < _zones.Zones.Count; i++)
                 if (_zones.Zones[i] == zone) return $"expansion:{i}";
             throw new ArgumentException("The zone is not part of this battle.", nameof(zone));
         }
 
-        public bool IsExpansionZoneReservedByAlly(ReinforcementZonePresenter zone) =>
+        public bool IsExpansionZoneReservedByAlly(ReinforcementZone zone) =>
             _teamPicture.Cooperation.IsReservedByAlly(_owner.Id, GetExpansionReservationId(zone));
 
         /// <summary>
@@ -1486,7 +1486,7 @@ namespace EmpireAtWar.Services.Enemy
             bool reachedRetreatPoint = !retreating || !_retreatPoint.HasValue ||
                 PlanarDistance(origin, _retreatPoint.Value) <= FleetCohesion.RADIUS;
             Vector3? retreatAnchor = withdrawPoint ?? FindRetreatAnchor(origin, ownBase);
-            ReinforcementZonePresenter centre = EnemyShipTaskGroupPlanner.GetCentre(_zones.Zones);
+            ReinforcementZone centre = EnemyShipTaskGroupPlanner.GetCentre(_zones.Zones);
             bool securedCentre = centre != null && !centre.IsContested && _playerRoster.IsAllied(self, centre.Owner);
             // Never guard a zone the team does not hold; a group too weak for every zone gathers at its staging point.
             Vector3? stagingPoint = _assembleArea >= 0 ? GetStagingPoint(_assembleArea, home) : (Vector3?)null;
@@ -2200,7 +2200,7 @@ namespace EmpireAtWar.Services.Enemy
         private Vector3? FindOwnSatelliteInAssignedZone(Vector3 origin)
         {
             int area = FindZoneArea(AssignedZoneId);
-            ReinforcementZonePresenter zone = area >= 0 ? _zoneObjectives.GetZone(area) : null;
+            ReinforcementZone zone = area >= 0 ? _zoneObjectives.GetZone(area) : null;
             if (zone == null) return null;
             Vector3? best = null;
             float bestDistance = float.PositiveInfinity;
@@ -2347,7 +2347,7 @@ namespace EmpireAtWar.Services.Enemy
 
         private bool IsCentreObjective(Vector3 position)
         {
-            ReinforcementZonePresenter centre = EnemyShipTaskGroupPlanner.GetCentre(_zones.Zones);
+            ReinforcementZone centre = EnemyShipTaskGroupPlanner.GetCentre(_zones.Zones);
             return centre != null && EnemyShipTaskGroupPlanner.IsInZone(centre, position);
         }
 
@@ -2610,7 +2610,7 @@ namespace EmpireAtWar.Services.Enemy
             foreach (PlayerSlot player in _playerRoster.Players) _rosterTeams.Add(player.Team);
             int capturableZones = 0;
             int teamHeld = 0;
-            foreach (ReinforcementZonePresenter zone in _zones.Zones)
+            foreach (ReinforcementZone zone in _zones.Zones)
             {
                 if (!zone.IsCapturable) continue;
                 capturableZones++;
@@ -2656,7 +2656,7 @@ namespace EmpireAtWar.Services.Enemy
                     PlanarDistance(origin, station.Position) <= LOCAL_ENGAGEMENT_RADIUS) return null;
             Vector3 best = home;
             float bestDistance = PlanarDistance(origin, home);
-            foreach (ReinforcementZonePresenter zone in _zones.Zones)
+            foreach (ReinforcementZone zone in _zones.Zones)
             {
                 if (zone.IsContested || zone.Owner.IsNone || !_playerRoster.IsAllied(_owner.Id, zone.Owner)) continue;
                 if (EnemyShipTaskGroupPlanner.IsInZone(zone, origin)) return null;
@@ -2821,7 +2821,7 @@ namespace EmpireAtWar.Services.Enemy
         {
             Vector3? closest = null;
             float distance = LOCAL_ENGAGEMENT_RADIUS;
-            foreach (ReinforcementZonePresenter zone in _zones.Zones)
+            foreach (ReinforcementZone zone in _zones.Zones)
             {
                 if (zone.IsContested || !_playerRoster.IsAllied(_owner.Id, zone.Owner)) continue;
                 Vector3 position = ToVector(ToPoint(zone.Center));

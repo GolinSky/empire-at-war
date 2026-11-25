@@ -78,7 +78,7 @@ public static class IntegrateMiningFacilities
             try
             {
                 root.transform.localScale = Vector3.one * 2;
-                var config = new SerializedObject(Component(root, "CaptureSiteView"));
+                var config = new SerializedObject(Component(root, "CaptureSiteComponent"));
                 var rocks = root.transform.Cast<Transform>().Single(t => t.name == "AsteroidRocks");
                 var obstacles = config.FindProperty("rockObstacles");
                 Type obstacleType = name == "BattleAsteroidCaptureSite" ? obstacles.GetArrayElementAtIndex(0).objectReferenceValue.GetType() : null;

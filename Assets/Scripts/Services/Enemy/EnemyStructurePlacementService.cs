@@ -90,8 +90,8 @@ namespace EmpireAtWar.Services.Enemy
         private readonly Queue<Vector3> _recentDestroyedPositions = new Queue<Vector3>();
         private readonly List<Vector3> _lostBases = new List<Vector3>();
         // Battle time each zone became own; polled at every defense search (production evaluates at least every second).
-        private readonly Dictionary<ReinforcementZonePresenter, float> _zoneHeldSince =
-            new Dictionary<ReinforcementZonePresenter, float>();
+        private readonly Dictionary<ReinforcementZone, float> _zoneHeldSince =
+            new Dictionary<ReinforcementZone, float>();
         private bool _bigPlatformSearch;
         private IEntity _trackedBase;
         private Vector3 _trackedBaseCenter;
@@ -226,7 +226,7 @@ namespace EmpireAtWar.Services.Enemy
         private void UpdateZoneHolds()
         {
             float now = BattleClock.CurrentElapsed;
-            foreach (ReinforcementZonePresenter zone in _zoneSource.Zones)
+            foreach (ReinforcementZone zone in _zoneSource.Zones)
             {
                 if (zone.Owner != _owner.Id) _zoneHeldSince.Remove(zone);
                 else _zoneHeldSince.TryAdd(zone, now);
@@ -234,7 +234,7 @@ namespace EmpireAtWar.Services.Enemy
         }
 
         /// <summary>Own for at least <see cref="PLATFORM_ZONE_HOLD_SECONDS"/>, not contested, no hostile capturing it.</summary>
-        private bool IsSettledZone(ReinforcementZonePresenter zone) =>
+        private bool IsSettledZone(ReinforcementZone zone) =>
             _zoneHeldSince.TryGetValue(zone, out float since) &&
             BattleClock.CurrentElapsed - since >= PLATFORM_ZONE_HOLD_SECONDS &&
             !zone.IsContested &&
@@ -261,15 +261,15 @@ namespace EmpireAtWar.Services.Enemy
         /// <summary>Centre first, then captured relays, then home zones, among held zones with exactly <paramref name="platforms"/> platforms.</summary>
         private bool TryGetZonePosition(int platforms, bool allowExtra, out Vector3 position)
         {
-            ReinforcementZonePresenter centre = EnemyShipTaskGroupPlanner.GetCentre(_zoneSource.Zones);
+            ReinforcementZone centre = EnemyShipTaskGroupPlanner.GetCentre(_zoneSource.Zones);
             if (centre != null &&
                 TryGetHeldZonePosition(centre, platforms, GetZoneLimit(centre, centre, allowExtra), out position))
                 return true;
-            foreach (ReinforcementZonePresenter zone in _zoneSource.Zones)
+            foreach (ReinforcementZone zone in _zoneSource.Zones)
                 if (zone != centre && zone.IsCapturable &&
                     TryGetHeldZonePosition(zone, platforms, GetZoneLimit(zone, centre, allowExtra), out position))
                     return true;
-            foreach (ReinforcementZonePresenter zone in _zoneSource.Zones)
+            foreach (ReinforcementZone zone in _zoneSource.Zones)
                 if (!zone.IsCapturable &&
                     TryGetHeldZonePosition(zone, platforms, GetZoneLimit(zone, centre, allowExtra), out position))
                     return true;
@@ -278,12 +278,12 @@ namespace EmpireAtWar.Services.Enemy
         }
 
         /// <summary>2 at the centre, 1 elsewhere; up to <see cref="MAX_ZONE_PLATFORMS"/> while ships wait on the unit limit.</summary>
-        private static int GetZoneLimit(ReinforcementZonePresenter zone, ReinforcementZonePresenter centre,
+        private static int GetZoneLimit(ReinforcementZone zone, ReinforcementZone centre,
             bool allowExtra) =>
             allowExtra ? MAX_ZONE_PLATFORMS : zone == centre ? CENTRE_PLATFORMS : ZONE_PLATFORMS;
 
         // Only a settled zone (held long enough, uncontested) takes a platform (W50).
-        private bool TryGetHeldZonePosition(ReinforcementZonePresenter zone, int platforms, int limit,
+        private bool TryGetHeldZonePosition(ReinforcementZone zone, int platforms, int limit,
             out Vector3 position)
         {
             position = default;
@@ -295,7 +295,7 @@ namespace EmpireAtWar.Services.Enemy
         }
 
         // The placement rings start outside the zone, so the platforms of this zone are found within their reach.
-        private int CountZonePlatforms(ReinforcementZonePresenter zone) =>
+        private int CountZonePlatforms(ReinforcementZone zone) =>
             CountPlatforms(zone.Center,
                 Mathf.Max(2f * zone.Radius, GetFirstRingRadius(zone.Radius) + RING_COUNT * RING_SPACING));
 
@@ -317,8 +317,8 @@ namespace EmpireAtWar.Services.Enemy
         {
 #if UNITY_EDITOR || DEVELOPMENT_BUILD
             if (!Application.isPlaying || Time.time < _nextDefenseBlockedReport) return;
-            ReinforcementZonePresenter centre = EnemyShipTaskGroupPlanner.GetCentre(_zoneSource.Zones);
-            foreach (ReinforcementZonePresenter zone in _zoneSource.Zones)
+            ReinforcementZone centre = EnemyShipTaskGroupPlanner.GetCentre(_zoneSource.Zones);
+            foreach (ReinforcementZone zone in _zoneSource.Zones)
             {
                 if (zone.Owner != _owner.Id) continue;
                 int limit = GetZoneLimit(zone, centre, allowExtra);
@@ -393,9 +393,9 @@ namespace EmpireAtWar.Services.Enemy
                 return true;
             }
 
-            ReinforcementZonePresenter centre = EnemyShipTaskGroupPlanner.GetCentre(_zoneSource.Zones);
-            ReinforcementZonePresenter nearest = null;
-            foreach (ReinforcementZonePresenter zone in _zoneSource.Zones)
+            ReinforcementZone centre = EnemyShipTaskGroupPlanner.GetCentre(_zoneSource.Zones);
+            ReinforcementZone nearest = null;
+            foreach (ReinforcementZone zone in _zoneSource.Zones)
                 if (zone != centre && zone.IsCapturable && zone.Owner == _owner.Id &&
                     (nearest == null || PlanarDistanceSquared(zone.Center, home) <
                         PlanarDistanceSquared(nearest.Center, home)))

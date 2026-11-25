@@ -101,10 +101,10 @@ namespace EmpireAtWar.Services.Enemy
             }
 
             _baseCaptureObjectives.Clear();
-            IReadOnlyList<ReinforcementZonePresenter> zones = _zones.Zones;
+            IReadOnlyList<ReinforcementZone> zones = _zones.Zones;
             for (int i = 0; i < zones.Count; i++)
             {
-                ReinforcementZonePresenter zone = zones[i];
+                ReinforcementZone zone = zones[i];
                 if (!zone.IsCapturable || _roster.IsAllied(RepresentativePlayer, zone.Owner))
                 {
                     continue;
@@ -164,7 +164,7 @@ namespace EmpireAtWar.Services.Enemy
             foreach (AiWorldSnapshot.Entry station in _worldSnapshot.Bases)
                 if (_roster.IsAllied(RepresentativePlayer, station.Owner))
                     _armadaAssets.Add(new ArmadaAsset(station.Position, STATION_ASSET_RADIUS, ArmadaAssetKind.Station));
-            foreach (ReinforcementZonePresenter zone in _zones.Zones)
+            foreach (ReinforcementZone zone in _zones.Zones)
                 if (!zone.Owner.IsNone && _roster.IsAllied(RepresentativePlayer, zone.Owner))
                     _armadaAssets.Add(new ArmadaAsset(zone.Center, zone.Radius, ArmadaAssetKind.HeldZone));
             _armadas.Update(_armadaShips, _addArmadaShip, _armadaAssets, now);

@@ -48,7 +48,7 @@ namespace EmpireAtWar.Services.Enemy
             _owner = owner;
         }
 
-        public bool HasMiningSite(ReinforcementZonePresenter zone)
+        public bool HasMiningSite(ReinforcementZone zone)
         {
             foreach (ICaptureSite site in _sites.Sites)
                 if (site.Kind == CaptureSiteKind.Mining &&

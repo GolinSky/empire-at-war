@@ -45,7 +45,7 @@ namespace EmpireAtWar.Tests.Editor
                     var factory = new PlanetFactory(owner, settings);
                     try
                     {
-                        PlanetView planet = factory.Create(type, size, new Vector3(123f, 0f, -456f), obstacleRadius);
+                        PlanetComponent planet = factory.Create(type, size, new Vector3(123f, 0f, -456f), obstacleRadius);
                         Assert.That(planet.VisualTop, Is.LessThanOrEqualTo(settings.PlanetSurfaceCeiling + TOLERANCE),
                             $"{type}, {size}, obstacle {obstacleRadius}");
                         using SerializedObject view = new SerializedObject(planet);

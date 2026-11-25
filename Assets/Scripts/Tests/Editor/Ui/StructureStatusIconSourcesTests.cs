@@ -202,9 +202,9 @@ namespace EmpireAtWar.Tests.Editor
         {
             public event Action<RelayOwnershipChange> RelayOwnershipChanged;
             public event Action RelaySourcesChanged;
-            public IReadOnlyList<ReinforcementZonePresenter> Zones => Array.Empty<ReinforcementZonePresenter>();
+            public IReadOnlyList<ReinforcementZone> Zones => Array.Empty<ReinforcementZone>();
             public float SquadronCaptureWeight => 0.5f;
-            public (float Friendly, float Hostile) GetTeamStrengths(ReinforcementZonePresenter zone, PlayerId owner) => default;
+            public (float Friendly, float Hostile) GetTeamStrengths(ReinforcementZone zone, PlayerId owner) => default;
             public int SubscriberCount => (RelayOwnershipChanged?.GetInvocationList().Length ?? 0) +
                                           (RelaySourcesChanged?.GetInvocationList().Length ?? 0);
         }

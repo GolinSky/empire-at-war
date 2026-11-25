@@ -1,15 +1,25 @@
-﻿using EmpireAtWar.Views.ViewImpl;
+using EmpireAtWar.Lifecycle;
 using UnityEngine;
+using VContainer;
 
 namespace EmpireAtWar.Entities.Planet
 {
-    public class PlanetView : View<IPlanetModelObserver>
+    /// <summary>Planet and cloud spheres: fits them to the obstacle and spins them on the GPU.</summary>
+    public sealed class PlanetComponent : MonoBehaviour, IInitializable
     {
         [SerializeField] private MeshRenderer[] planetRenderers;
         [SerializeField] private MeshRenderer[] cloudRenderers;
 
         private static readonly int _rotationId = Shader.PropertyToID("_PlanetRotation");
         private static readonly int _rotationStartTimeId = Shader.PropertyToID("_PlanetRotationStartTime");
+
+        private IPlanetData _data;
+
+        [Inject]
+        private void Construct(IPlanetData data)
+        {
+            _data = data;
+        }
 
         public float VisualTop => Mathf.Max(GetVisualTop(planetRenderers), GetVisualTop(cloudRenderers));
 
@@ -54,15 +64,11 @@ namespace EmpireAtWar.Entities.Planet
                 Mathf.Max(Mathf.Abs(scale.x), Mathf.Max(Mathf.Abs(scale.y), Mathf.Abs(scale.z)));
         }
 
-        protected override void OnInitialize()
+        public void Initialize()
         {
             var properties = new MaterialPropertyBlock();
-            SetRotation(planetRenderers, Model.PlanetOrbitSpeed, properties);
-            SetRotation(cloudRenderers, Model.CloudOrbitSpeed, properties);
-        }
-
-        protected override void OnDispose()
-        {
+            SetRotation(planetRenderers, _data.PlanetOrbitSpeed, properties);
+            SetRotation(cloudRenderers, _data.CloudOrbitSpeed, properties);
         }
 
         private static void SetRotation(MeshRenderer[] renderers, float speed, MaterialPropertyBlock properties)

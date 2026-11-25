@@ -6,12 +6,12 @@ namespace EmpireAtWar.Services.ReinforcementZones
 {
     public readonly struct RelayOwnershipChange
     {
-        public ReinforcementZonePresenter Zone { get; }
+        public ReinforcementZone Zone { get; }
         public Vector3 Position { get; }
         public PlayerId PreviousOwner { get; }
         public PlayerId Owner { get; }
 
-        public RelayOwnershipChange(ReinforcementZonePresenter zone, PlayerId previousOwner)
+        public RelayOwnershipChange(ReinforcementZone zone, PlayerId previousOwner)
         {
             Zone = zone;
             Position = zone.Center;

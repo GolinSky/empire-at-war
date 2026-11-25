@@ -101,7 +101,7 @@ namespace EmpireAtWar.Services.Enemy
             if (hasStation && !_pressure.HasPressure &&
                 _reinforcementZones.TryGetDefaultZoneCenter(_production.ProductionHost, out Vector3 home))
                 Consider(home, 0f);
-            foreach (ReinforcementZonePresenter zone in _zones.Zones)
+            foreach (ReinforcementZone zone in _zones.Zones)
             {
                 if (zone.IsCapturable && !zone.IsContested && _roster.IsAllied(_owner.Id, zone.Owner))
                     Consider(ToVector(ToPoint(zone.Center)), zone.Radius);
@@ -193,7 +193,7 @@ namespace EmpireAtWar.Services.Enemy
         public void CopySafeAlliedZoneBounds(List<Bounds> bounds)
         {
             bounds.Clear();
-            foreach (ReinforcementZonePresenter zone in _zones.Zones)
+            foreach (ReinforcementZone zone in _zones.Zones)
             {
                 Vector3 position = ToVector(ToPoint(zone.Center));
                 if (!zone.IsCapturable || zone.IsContested || !_roster.IsAllied(_owner.Id, zone.Owner) ||
@@ -219,7 +219,7 @@ namespace EmpireAtWar.Services.Enemy
                 Add("home", "home", home, 0f, ref rejectedUnsafe);
             for (int i = 0; i < _zones.Zones.Count; i++)
             {
-                ReinforcementZonePresenter zone = _zones.Zones[i];
+                ReinforcementZone zone = _zones.Zones[i];
                 if (!zone.IsCapturable || zone.IsContested || !_roster.IsAllied(_owner.Id, zone.Owner)) continue;
                 string kind = zone.Owner == _owner.Id ? "ownZone" : _roster.Get(zone.Owner).IsAi ? "allyZoneAi" : "allyZoneHuman";
                 Add($"zone:{i}", kind, ToVector(ToPoint(zone.Center)), zone.Radius, ref rejectedUnsafe);
@@ -276,7 +276,7 @@ namespace EmpireAtWar.Services.Enemy
         private float LostHomeRadius()
         {
             float radius = MINIMUM_LOST_HOME_RADIUS;
-            foreach (ReinforcementZonePresenter zone in _zones.Zones)
+            foreach (ReinforcementZone zone in _zones.Zones)
                 if (!zone.IsCapturable && zone.Owner == _owner.Id) radius = Mathf.Max(radius, zone.Radius);
             return radius;
         }
@@ -296,7 +296,7 @@ namespace EmpireAtWar.Services.Enemy
             {
                 int index = int.Parse(_anchor.Id.Substring(5));
                 if (index >= _zones.Zones.Count) return false;
-                ReinforcementZonePresenter zone = _zones.Zones[index];
+                ReinforcementZone zone = _zones.Zones[index];
                 return !zone.IsContested && _roster.IsAllied(_owner.Id, zone.Owner);
             }
             if (_anchor.Id.StartsWith("station:", StringComparison.Ordinal))

@@ -97,7 +97,7 @@ namespace EmpireAtWar.Tests.Editor
             new SerializedReference(typeof(PauseMenuUi), "resumeButton"),
             new SerializedReference(typeof(PauseMenuUi), "exitButton"),
             new SerializedReference(typeof(PauseMenuUi), "menuPanel"),
-            new SerializedReference(typeof(ReinforcementZoneView), "captureCanvasScaler"),
+            new SerializedReference(typeof(ReinforcementZoneComponent), "captureCanvasScaler"),
             new SerializedReference(typeof(SkirmishScope), "rangeDebugLineMaterial"),
             new SerializedReference(typeof(SkirmishScope), "battleMarkerIconMaterial"),
             new SerializedReference(typeof(SkirmishScope), "battleMarkerFrameMaterial"),
@@ -171,7 +171,7 @@ namespace EmpireAtWar.Tests.Editor
                     }
 
                     // Zone owners are assigned by the map builder at runtime, so prefabs carry none.
-                    if (component is ReinforcementZoneView)
+                    if (component is ReinforcementZoneComponent)
                     {
                         zoneViewCount++;
                     }

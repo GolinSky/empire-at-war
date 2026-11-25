@@ -10,11 +10,11 @@ using UnityEngine;
 
 namespace EmpireAtWar.Entities.CaptureSites
 {
-    public sealed class CaptureSitePresenter : ICaptureSite, IDisposable
+    public sealed class CaptureSite : ICaptureSite, IDisposable
     {
         private const float MINING_CAPTURE_RANGE_MULTIPLIER = 1.5f;
 
-        private readonly ICaptureSiteView _view;
+        private readonly ICaptureSiteComponent _view;
         private readonly ILocalPlayer _localPlayer;
         private readonly CaptureSiteModel _model;
         private readonly CaptureSiteData _data;
@@ -59,8 +59,8 @@ namespace EmpireAtWar.Entities.CaptureSites
         /// <summary>Entity id of the constructing or operational facility; 0 while the site has none.</summary>
         public long FacilityId { get; private set; }
 
-        public CaptureSitePresenter(
-            ICaptureSiteView view,
+        public CaptureSite(
+            ICaptureSiteComponent view,
             ILocalPlayer localPlayer,
             ITooltipService tooltipService,
             CaptureSiteModel model,

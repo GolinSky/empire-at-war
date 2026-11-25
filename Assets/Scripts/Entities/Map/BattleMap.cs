@@ -9,15 +9,15 @@ namespace EmpireAtWar.Entities.Map
     public sealed class BattleMap
     {
         public MapLayout Layout { get; }
-        public IReadOnlyList<ReinforcementZoneView> ZoneViews { get; }
-        public IReadOnlyList<CaptureSiteView> SiteViews { get; }
+        public IReadOnlyList<ReinforcementZoneComponent> ZoneViews { get; }
+        public IReadOnlyList<CaptureSiteComponent> SiteViews { get; }
         public IReadOnlyList<MapObstacle> Obstacles { get; }
         public IReadOnlyList<StationObstacle> StationObstacles { get; }
 
         public BattleMap(
             MapLayout layout,
-            IReadOnlyList<ReinforcementZoneView> zoneViews,
-            IReadOnlyList<CaptureSiteView> siteViews,
+            IReadOnlyList<ReinforcementZoneComponent> zoneViews,
+            IReadOnlyList<CaptureSiteComponent> siteViews,
             IReadOnlyList<MapObstacle> obstacles,
             IReadOnlyList<StationObstacle> stationObstacles)
         {

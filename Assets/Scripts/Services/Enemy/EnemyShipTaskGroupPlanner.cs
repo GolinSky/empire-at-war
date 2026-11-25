@@ -224,7 +224,7 @@ namespace EmpireAtWar.Services.Enemy
                 _reserve.Turtle = turtle;
                 for (int zone = 0; zone < zones.Count; zone++)
                 {
-                    ReinforcementZonePresenter presenter = _pool.GetPoolZone(zone);
+                    ReinforcementZone presenter = _pool.GetPoolZone(zone);
                     if (presenter == null) continue;
                     if (!presenter.IsMain && !zones[zone].IsDenied) EligibleExpansionZoneCount++;
                     if (_assignment.Contains(zone))
@@ -634,19 +634,19 @@ namespace EmpireAtWar.Services.Enemy
             _pool.RecordZoneAllocation(allocation);
         }
 
-        internal static ReinforcementZonePresenter GetCentre(IReadOnlyList<ReinforcementZonePresenter> zones)
+        internal static ReinforcementZone GetCentre(IReadOnlyList<ReinforcementZone> zones)
         {
-            foreach (ReinforcementZonePresenter zone in zones)
+            foreach (ReinforcementZone zone in zones)
                 if (zone.IsMain) return zone;
             return null;
         }
 
-        internal static ReinforcementZonePresenter GetNeighbour(IReadOnlyList<ReinforcementZonePresenter> zones,
-            Vector3 home, ReinforcementZonePresenter exclude = null)
+        internal static ReinforcementZone GetNeighbour(IReadOnlyList<ReinforcementZone> zones,
+            Vector3 home, ReinforcementZone exclude = null)
         {
-            ReinforcementZonePresenter closest = null;
+            ReinforcementZone closest = null;
             float distance = float.PositiveInfinity;
-            foreach (ReinforcementZonePresenter zone in zones)
+            foreach (ReinforcementZone zone in zones)
             {
                 if (!zone.IsCapturable || zone.IsMain || zone == exclude) continue;
                 float candidate = DistanceSquared(home, zone.Center);
@@ -657,7 +657,7 @@ namespace EmpireAtWar.Services.Enemy
             return closest;
         }
 
-        internal static bool IsInZone(ReinforcementZonePresenter zone, Vector3 position) =>
+        internal static bool IsInZone(ReinforcementZone zone, Vector3 position) =>
             DistanceSquared(zone.Center, position) <= 4f * zone.Radius * zone.Radius;
 
         internal static Vector3 GetOpeningHome(AiWorldSnapshot world, PlayerId owner, Vector3 fallback)

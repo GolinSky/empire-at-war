@@ -61,14 +61,14 @@ namespace EmpireAtWar.Editor.CaptureSites
         public static void ApplyObstaclesAndMiniMapIcon()
         {
             GameObject root = PrefabUtility.LoadPrefabContents(SITE_PREFAB_PATH);
-            AddRockObstacles(root.GetComponent<CaptureSiteView>(), root.transform.Find("AsteroidRocks"));
+            AddRockObstacles(root.GetComponent<CaptureSiteComponent>(), root.transform.Find("AsteroidRocks"));
             PrefabUtility.SaveAsPrefabAsset(root, SITE_PREFAB_PATH);
             PrefabUtility.UnloadPrefabContents(root);
             AddMiniMapIcon();
             AssetDatabase.SaveAssets();
         }
 
-        private static void AddRockObstacles(CaptureSiteView site, Transform rocks)
+        private static void AddRockObstacles(CaptureSiteComponent site, Transform rocks)
         {
             // Registered MapObstacles steer ship navigation and draw on the minimap.
             SerializedObject serializedSite = new SerializedObject(site);
@@ -184,7 +184,7 @@ namespace EmpireAtWar.Editor.CaptureSites
             MeshRenderer ring = BuildRing(root.transform, data.GetSettings(kind).Radius);
             Canvas canvas = BuildCanvas(root.transform, out Image progress, out TMP_Text status);
 
-            CaptureSiteView view = root.AddComponent<CaptureSiteView>();
+            CaptureSiteComponent view = root.AddComponent<CaptureSiteComponent>();
             SerializedObject serializedView = new SerializedObject(view);
             CaptureRingView captureRing = root.AddComponent<CaptureRingView>();
             SerializedObject serializedRing = new SerializedObject(captureRing);
