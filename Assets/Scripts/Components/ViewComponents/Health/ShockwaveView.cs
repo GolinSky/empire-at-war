@@ -9,6 +9,8 @@ namespace EmpireAtWar.ViewComponents.Health
     public sealed class ShockwaveView : MonoBehaviour
     {
         private static readonly int _progressId = Shader.PropertyToID("_Progress");
+        // The fire ring is this much wider than the sphere.
+        private const float FIRE_RING_SCALE = 1.15f;
 
         [SerializeField] private MeshRenderer sphere;
         [Tooltip("Flat XZ fire ring; a child of this object, so it grows with the sphere.")]
@@ -24,25 +26,31 @@ namespace EmpireAtWar.ViewComponents.Health
         private MaterialPropertyBlock _block;
         private float _hullRadius;
         private float _age;
+        private bool _isOnScreen;
 
-        /// <summary>Enabled shockwaves; the renderer feature copies the frame only while this is above zero.</summary>
-        public static int ActiveCount { get; private set; }
+        /// <summary>Shockwaves inside the battle camera's view; the renderer feature copies the frame only while this is above zero.</summary>
+        public static int OnScreenCount { get; private set; }
 
         public bool IsAlive => _age < duration;
+
+        /// <summary>World bounds of the sphere and the wider fire ring at the current size.</summary>
+        public Bounds Bounds => new Bounds(transform.position, transform.localScale * FIRE_RING_SCALE);
 
         private void Awake()
         {
             _block = new MaterialPropertyBlock();
         }
 
-        private void OnEnable()
-        {
-            ActiveCount++;
-        }
-
         private void OnDisable()
         {
-            ActiveCount--;
+            SetOnScreen(false);
+        }
+
+        public void SetOnScreen(bool onScreen)
+        {
+            if (_isOnScreen == onScreen) return;
+            _isOnScreen = onScreen;
+            OnScreenCount += onScreen ? 1 : -1;
         }
 
         public void Play(Vector3 center, float hullRadius)

@@ -319,6 +319,60 @@ namespace EmpireAtWar.Tests.Editor
             Assert.That(finished.IsPlaying, Is.True);
         }
 
+        [Test]
+        public void Tick_LoopingFireTooSmallOnScreen_PausesEmissionUntilCloser()
+        {
+            GameObject prefab = Track(new GameObject("FireVfx"));
+            ParticleSystem particles = prefab.AddComponent<ParticleSystem>();
+            ParticleSystem.MainModule main = particles.main;
+            main.startSize = 10f;
+            GameObject fire = Track(new GameObject("Fire"));
+            fire.transform.SetParent(prefab.transform);
+            ParticleSystem fireParticles = fire.AddComponent<ParticleSystem>();
+            ExplosionVfx explosion = prefab.AddComponent<ExplosionVfx>();
+            SerializedObject serialized = new SerializedObject(explosion);
+            serialized.FindProperty("particles").objectReferenceValue = particles;
+            SerializedProperty renderers = serialized.FindProperty("renderers");
+            renderers.arraySize = 1;
+            renderers.GetArrayElementAtIndex(0).objectReferenceValue = prefab.GetComponent<ParticleSystemRenderer>();
+            SerializedProperty sustained = serialized.FindProperty("sustainedEmitters");
+            sustained.arraySize = 1;
+            sustained.GetArrayElementAtIndex(0).objectReferenceValue = fireParticles;
+            serialized.ApplyModifiedPropertiesWithoutUndo();
+
+            // Camera at the origin looking along +z, 1080 pixels high, so screen sizes do not depend on the Editor.
+            var camera = Track(new GameObject("Fire Camera")).AddComponent<UnityEngine.Camera>();
+            camera.farClipPlane = 1_000_000f;
+            RenderTexture target = new RenderTexture(1920, 1080, 0);
+            camera.targetTexture = target;
+            try
+            {
+                var pool = new HardPointExplosionPool(explosion, camera, 1);
+                pool.Initialize();
+                Transform root = GameObject.Find("FireVfxPool").transform;
+                Track(root.gameObject);
+                ParticleSystem playingFire = root.GetChild(0).GetChild(0).GetComponent<ParticleSystem>();
+
+                _anchor.position = Vector3.forward * 50f;
+                pool.Play(_anchor, null, 1f);
+                Assert.That(playingFire.emission.enabled, Is.True);
+
+                // A 10-unit fire this far away covers well under a pixel.
+                _anchor.position = Vector3.forward * 500_000f;
+                pool.Tick();
+                Assert.That(playingFire.emission.enabled, Is.False);
+
+                _anchor.position = Vector3.forward * 50f;
+                pool.Tick();
+                Assert.That(playingFire.emission.enabled, Is.True);
+            }
+            finally
+            {
+                camera.targetTexture = null;
+                Object.DestroyImmediate(target);
+            }
+        }
+
         private Transform Root() => GameObject.Find("ExplosionVfxPool").transform;
 
         private static ParticleSystemRenderer Renderer(ExplosionVfx explosion) =>

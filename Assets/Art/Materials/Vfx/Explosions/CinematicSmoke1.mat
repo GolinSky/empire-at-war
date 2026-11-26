@@ -14,6 +14,7 @@ Material:
   m_ValidKeywords:
   - _FLIPBOOKBLENDING_ON
   - _NORMALMAP
+  - _RECEIVE_SHADOWS_OFF
   - _SURFACE_TYPE_TRANSPARENT
   m_InvalidKeywords: []
   m_LightmapFlags: 4
@@ -151,7 +152,7 @@ Material:
     - _QueueControl: 1
     - _QueueOffset: 0
     - _ROTATE_UV_TRAIL: 0
-    - _ReceiveShadows: 1
+    - _ReceiveShadows: 0
     - _SPRITE_ORIENTATION: 0
     - _ShadowStrength: 10
     - _Shadows_strength: 1

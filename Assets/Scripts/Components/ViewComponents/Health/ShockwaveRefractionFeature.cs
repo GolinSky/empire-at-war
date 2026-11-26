@@ -14,8 +14,8 @@ namespace EmpireAtWar.ViewComponents.Health
 
         public override void AddRenderPasses(ScriptableRenderer renderer, ref RenderingData renderingData)
         {
-            // The frame copy is a full-screen blit, so it runs only while a shockwave is alive.
-            if (ShockwaveView.ActiveCount == 0) return;
+            // The frame copy is a full-screen blit, so it runs only while a shockwave is on screen.
+            if (ShockwaveView.OnScreenCount == 0) return;
             CameraType cameraType = renderingData.cameraData.cameraType;
             if (cameraType == CameraType.Preview || cameraType == CameraType.Reflection ||
                 UniversalRenderer.IsOffscreenDepthTexture(ref renderingData.cameraData))

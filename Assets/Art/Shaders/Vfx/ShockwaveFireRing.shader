@@ -57,6 +57,10 @@ Shader "EmpireAtWar/Vfx/Shockwave Fire Ring"
             {
                 float2 planar = (input.uv - 0.5) * 2.0;
                 float radius = length(planar);
+                // Most of the quad lies outside the ring. Wobble moves the ring by at most _Wobble and the profile is
+                // zero past +1 / -1.6 widths, so these pixels are fully transparent: skip the noise.
+                float offset = radius - _RingRadius;
+                if (offset > _RingWidth + _Wobble || -offset > 1.6 * _RingWidth + _Wobble) return 0;
                 // Noise is sampled on the unit circle's direction, so there is no seam where the angle wraps.
                 float2 direction = planar / max(radius, 1e-4);
 

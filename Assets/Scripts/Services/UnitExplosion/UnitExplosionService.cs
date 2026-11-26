@@ -1,7 +1,9 @@
 using System;
 using System.Collections.Generic;
+using EmpireAtWar.Models.Players;
 using EmpireAtWar.Mvc;
 using EmpireAtWar.Services.Pooling;
+using EmpireAtWar.Services.Vision;
 using EmpireAtWar.ViewComponents.Health;
 using UnityEngine;
 using VContainer;
@@ -17,6 +19,8 @@ namespace EmpireAtWar.Services.UnitExplosion
 
         private const int MAX_IDLE_EXPLOSIONS = 32;
         private const int MAX_IDLE_SHOCKWAVES = 16;
+        // Each shockwave draws a screen-covering refraction; past this many at once, new deaths skip theirs.
+        private const int MAX_ACTIVE_SHOCKWAVES = 8;
         // Largest share of the camera distance an explosion moves towards the camera.
         private const float MAX_CAMERA_SHARE = 0.5f;
 
@@ -27,15 +31,20 @@ namespace EmpireAtWar.Services.UnitExplosion
         private readonly ViewPool<ShockwaveView> _shockwavePool;
         private readonly List<ActiveExplosion> _active = new List<ActiveExplosion>();
         private readonly List<ShockwaveView> _activeShockwaves = new List<ShockwaveView>();
+        private readonly Plane[] _planes = new Plane[6];
+        private readonly IVisionService _vision;
+        private readonly ILocalPlayer _localPlayer;
         private int _peakDestruction;
         private int _peakOrbitalHit;
 
         private readonly UnityEngine.Camera _camera;
 
         public UnitExplosionService(UnitExplosionView destructionPrefab, UnitExplosionView orbitalHitPrefab,
-            ShockwaveView shockwavePrefab, UnityEngine.Camera camera)
+            ShockwaveView shockwavePrefab, UnityEngine.Camera camera, IVisionService vision, ILocalPlayer localPlayer)
         {
             _camera = camera;
+            _vision = vision;
+            _localPlayer = localPlayer;
             _destructionPrefab = destructionPrefab;
             _orbitalHitPrefab = orbitalHitPrefab;
             _destructionPool = new ViewPool<UnitExplosionView>(prefab: destructionPrefab, rootName: "UnitExplosions",
@@ -93,10 +102,15 @@ namespace EmpireAtWar.Services.UnitExplosion
             float radius = diameter * 0.5f;
             view.Play(InFrontOfHull(bounds.center, radius), diameter / prefab.Diameter);
             _active.Add(new ActiveExplosion(view, pool, bounds.center, radius));
-            if (!isOrbitalHit)
+            float hullRadius = bounds.extents.magnitude;
+            // A death the local player cannot see gets no shockwave, so fog never reveals it and the frame copy stays off.
+            if (!isOrbitalHit && _activeShockwaves.Count < MAX_ACTIVE_SHOCKWAVES &&
+                _vision.IsAreaVisible(_localPlayer.Id, bounds.center, hullRadius))
             {
                 ShockwaveView shockwave = _shockwavePool.Get();
-                shockwave.Play(bounds.center, bounds.extents.magnitude);
+                shockwave.Play(bounds.center, hullRadius);
+                GeometryUtility.CalculateFrustumPlanes(_camera, _planes);
+                shockwave.SetOnScreen(GeometryUtility.TestPlanesAABB(_planes, shockwave.Bounds));
                 _activeShockwaves.Add(shockwave);
             }
 
@@ -125,12 +139,20 @@ namespace EmpireAtWar.Services.UnitExplosion
                 active.View.transform.position = InFrontOfHull(active.Center, active.Radius);
             }
 
+            if (_activeShockwaves.Count == 0) return;
             float deltaTime = Time.deltaTime;
+            GeometryUtility.CalculateFrustumPlanes(_camera, _planes);
             for (int i = _activeShockwaves.Count - 1; i >= 0; i--)
             {
                 ShockwaveView shockwave = _activeShockwaves[i];
                 shockwave.Advance(deltaTime);
-                if (shockwave.IsAlive) continue;
+                if (shockwave.IsAlive)
+                {
+                    // Off-screen waves keep ageing but no longer make the renderer copy the frame.
+                    shockwave.SetOnScreen(GeometryUtility.TestPlanesAABB(_planes, shockwave.Bounds));
+                    continue;
+                }
+
                 _shockwavePool.Release(shockwave);
                 _activeShockwaves.RemoveAt(i);
             }

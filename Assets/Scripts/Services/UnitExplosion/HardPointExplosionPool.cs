@@ -15,6 +15,9 @@ namespace EmpireAtWar.Services.UnitExplosion
     /// </summary>
     public sealed class HardPointExplosionPool : IHardPointExplosionPool, IInitializable, ITickable, ILateDisposable
     {
+        // A looping fire smaller than this on screen (diameter, pixels) stops emitting until the camera comes closer.
+        private const float MIN_SUSTAINED_SCREEN_PIXELS = 4f;
+
         private readonly ExplosionVfx _prefab;
         private readonly int _prewarmCount;
         private readonly UnityEngine.Camera _camera;
@@ -76,7 +79,7 @@ namespace EmpireAtWar.Services.UnitExplosion
             if (startColor.HasValue) explosion.SetStartColor(startColor.Value);
             ActiveExplosion active = new ActiveExplosion(explosion, anchor, fogVisibility, localOffset);
             GeometryUtility.CalculateFrustumPlanes(_camera, _planes);
-            active.Follow(_planes);
+            active.Follow(_planes, _camera);
             explosion.Play();
             _active.Add(active);
             _peakInUse = Mathf.Max(_peakInUse, _active.Count + _fading.Count);
@@ -143,7 +146,7 @@ namespace EmpireAtWar.Services.UnitExplosion
                     continue;
                 }
 
-                active.Follow(_planes);
+                active.Follow(_planes, _camera);
             }
 
             for (int i = _fading.Count - 1; i >= 0; i--)
@@ -210,7 +213,7 @@ namespace EmpireAtWar.Services.UnitExplosion
             public ActiveExplosion Extinguish() =>
                 new ActiveExplosion(Explosion, _anchor, _fogVisibility, _localOffset, true);
 
-            public void Follow(Plane[] planes)
+            public void Follow(Plane[] planes, UnityEngine.Camera camera)
             {
                 Vector3 position = _localOffset == Vector3.zero ? _anchor.position : _anchor.TransformPoint(_localOffset);
                 Explosion.transform.position = position;
@@ -223,7 +226,14 @@ namespace EmpireAtWar.Services.UnitExplosion
                     renderer.forceRenderingOff = isHidden;
                     if (!isHidden && !visible) visible = GeometryUtility.TestPlanesAABB(planes, renderer.bounds);
                 }
-                if (!IsExtinguished) Explosion.SetSustainedEmission(visible);
+                if (IsExtinguished || !Explosion.HasSustainedEmission) return;
+                if (visible)
+                {
+                    float diameter = Explosion.StartSize * Explosion.transform.localScale.x;
+                    visible = VfxScreenSize.Pixels(camera, position, diameter) >= MIN_SUSTAINED_SCREEN_PIXELS;
+                }
+
+                Explosion.SetSustainedEmission(visible);
             }
         }
     }

@@ -84,7 +84,7 @@ namespace EmpireAtWar.Services.UnitExplosion
                 return false;
             }
 
-            if (ScreenPixels(position, diameter) < _limits.MinScreenPixels)
+            if (VfxScreenSize.Pixels(_camera, position, diameter) < _limits.MinScreenPixels)
             {
                 _skippedSmall++;
                 return false;
@@ -105,16 +105,6 @@ namespace EmpireAtWar.Services.UnitExplosion
                 if (_planes[i].GetDistanceToPoint(position) < -radius) return false;
             }
             return true;
-        }
-
-        private float ScreenPixels(Vector3 position, float diameter)
-        {
-            Transform view = _camera.transform;
-            float viewHeight = _camera.orthographic
-                ? 2f * _camera.orthographicSize
-                : 2f * Mathf.Max(Vector3.Dot(position - view.position, view.forward), _camera.nearClipPlane) *
-                  Mathf.Tan(_camera.fieldOfView * 0.5f * Mathf.Deg2Rad);
-            return diameter / viewHeight * _camera.pixelHeight;
         }
     }
 }
