@@ -46,7 +46,9 @@ namespace EmpireAtWar.Services.Enemy
             "siteBuild", "placement", "placementDeferred", "recoveryMode", "surplusShip", "spawnBeacon", "patrolWing",
             "wingZoneLeft", "raidSkip", "captureBlocked", "zoneOwner", "zoneAlloc", "production-wait", "armadaResponse",
             // W57: counter-pick reasons, one order count per group per minute, and D3 drop requests.
-            "counter-selection", "groupOrders", "reinforcementDrop"
+            "counter-selection", "groupOrders", "reinforcementDrop",
+            // Aggregated by the controller: one row per AI per minute at most, with the refund count.
+            "capitalRefunded"
         };
 
         /// <summary>Compact kinds written at most once per AI every <see cref="COMPACT_INTERVAL"/> seconds.</summary>

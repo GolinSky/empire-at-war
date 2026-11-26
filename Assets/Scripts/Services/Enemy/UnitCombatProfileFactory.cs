@@ -23,7 +23,8 @@ namespace EmpireAtWar.Services.Enemy
             float shieldRegen = 0f,
             float speed = 0f,
             float price = 0f,
-            FactionType? faction = null)
+            FactionType? faction = null,
+            UnitRole roles = UnitRole.None)
         {
             float[] hullDps = new float[ForceComposition.ClassSlots];
             float[] shieldDps = new float[ForceComposition.ClassSlots];
@@ -66,7 +67,7 @@ namespace EmpireAtWar.Services.Enemy
             }
 
             return new UnitCombatProfile(shipClass, hull, shields, hullDps, shieldDps, piercingDps, hangar, shieldRegen,
-                speed, price);
+                speed, price, roles);
         }
     }
 }

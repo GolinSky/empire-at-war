@@ -51,6 +51,13 @@ namespace EmpireAtWar.Entities.EnemyFaction.Models
             _blockedSeconds[request] = blocked + retryDelay;
         }
 
+        /// <summary>
+        /// A completed reserve unit waits for live fleet capacity. Unlike a blocked arrival it gathers no blocked
+        /// seconds, so it is never forced to land or refunded for the wait.
+        /// </summary>
+        public void HoldForCapacity(UnitRequest request, float retryDelay) =>
+            _builds.Add(new EnemyPendingBuild(request, 0f) { DeploymentRetryIn = retryDelay });
+
         public void RetrySquadronDeployment(SquadronUnitRequest request, float retryDelay) =>
             _builds.Add(new EnemyPendingBuild(request, 0f) { DeploymentRetryIn = retryDelay });
 

@@ -595,8 +595,9 @@ namespace EmpireAtWar.Tests.Editor
                     secondStation: new SecondStationLevelModel());
 
                 UnitLimitKey capacityHolder = GetUnitId<ShipUnitRequest>("capacity-holder");
-                int heldCapacity = MAX_UNIT_CAPACITY - unitLimitModel.CurrentUnitCapacity -
-                    existingShipData.UnitCapacity;
+                // Fills the purchase capacity (fleet cap plus held reserve) up to room for one more Munificent.
+                int heldCapacity = EnemyUnitLimitModel.GetPurchaseCapacityLimit(MAX_UNIT_CAPACITY) -
+                    unitLimitModel.CurrentUnitCapacity - existingShipData.UnitCapacity;
                 if (capacityBlocked)
                 {
                     Assert.That(factionModel.ShipFactionData[ShipType.Recusant].UnitCapacity,
@@ -759,9 +760,11 @@ namespace EmpireAtWar.Tests.Editor
                 // A fleet of 10 that beats what it knows may save; the big ship (fewer copies) is the choice.
                 for (int i = 0; i < 10; i++)
                     limits.Adopt(GetUnitId<ShipUnitRequest>(ShipType.Munificent.ToString()), small.UnitCapacity);
-                // Room for the small ship only.
-                SetBackingField(reinforcementData, nameof(ReinforcementData.MaxUnitCapacity),
-                    limits.CurrentUnitCapacity + small.UnitCapacity);
+                // Room for the small ship only, in the fleet and in the held reserve beyond it.
+                int maxUnitCapacity = limits.CurrentUnitCapacity + small.UnitCapacity;
+                SetBackingField(reinforcementData, nameof(ReinforcementData.MaxUnitCapacity), maxUnitCapacity);
+                limits.Adopt(GetUnitId<ShipUnitRequest>("reserve-holder"),
+                    EnemyUnitLimitModel.GetPurchaseCapacityLimit(maxUnitCapacity) - maxUnitCapacity);
                 float money = moneyForBoth ? big.Price + small.Price : big.Price + small.Price - 1f;
                 var purchases = new RecordingPurchaseProcessor();
 
@@ -783,6 +786,112 @@ namespace EmpireAtWar.Tests.Editor
                 UnityEngine.Object.DestroyImmediate(reinforcementData);
                 UnityEngine.Object.DestroyImmediate(definition);
             }
+        }
+
+        // 2026-11-26 player battle: a level-5 AI with no own station and no fleet bought only squadrons. The tier floor left
+        // only assault capitals, and W56 forbids those without an escort body. A rebuild-role warship breaks the deadlock;
+        // one without a rebuild role stays below the floor.
+        [TestCase(UnitRole.AntiCapital, true)]
+        [TestCase(UnitRole.Artillery, true)]
+        [TestCase(UnitRole.Brawler, false)]
+        public void WipedStationlessFleet_RebuildsFromRoleShipsBelowTheTierFloor(UnitRole cruiserRoles, bool buysCruiser)
+        {
+            ReinforcementData reinforcementData = ScriptableObject.CreateInstance<ReinforcementData>();
+            FactionDefinition definition =
+                CopyDefinition(FactionType.Separatist, ShipType.Munificent, ShipType.Recusant);
+            FactionData cruiser = definition.Ships[ShipType.Munificent];
+            FactionData capital = definition.Ships[ShipType.Recusant];
+            SetBackingField(cruiser, nameof(FactionData.AvailableLevel), 2);
+            SetBackingField(capital, nameof(FactionData.AvailableLevel), 5);
+            SetBackingField(cruiser, nameof(FactionData.Price), 3000);
+            SetBackingField(capital, nameof(FactionData.Price), 8000);
+            SetBackingField(reinforcementData, nameof(ReinforcementData.MaxUnitCapacity), 1000);
+            try
+            {
+                EnemyFactionModel factionModel = CreateFactionModel(definition);
+                factionModel.CurrentLevel = 5;
+                var limits = new EnemyUnitLimitModel();
+                ReserveEconomicFloor(factionModel, limits, factionModel.MiningFactions.First().Value.MaxCount);
+                ReserveDefensePlatform(factionModel, limits);
+                ReserveCaptureWings(factionModel, limits);
+                var purchases = new RecordingPurchaseProcessor();
+
+                RunOneEvaluation(definition, factionModel, limits, reinforcementData, 50000f, purchases,
+                    new StructurePlacementServiceStub(), new OperationalProductionAccess { HasHostBaseOverride = false },
+                    RoleCatalog(definition, cruiserRoles), new StateProviderStub { ActiveShipCount = 0 });
+
+                ShipUnitRequest[] ships = purchases.Purchases.OfType<ShipUnitRequest>().ToArray();
+                Assert.That(ships.Any(ship => ship.Key == ShipType.Recusant), Is.False,
+                    "A stationless capital never lands without an escort body.");
+                Assert.That(ships.Any(ship => ship.Key == ShipType.Munificent), Is.EqualTo(buysCruiser));
+            }
+            finally
+            {
+                UnityEngine.Object.DestroyImmediate(reinforcementData);
+                UnityEngine.Object.DestroyImmediate(definition);
+            }
+        }
+
+        // A stationless capital refunded for want of an escort pauses capital purchases, so the AI does not buy and
+        // refund in a loop; past the pause, an escorted capital is bought again.
+        [TestCase(true, false)]
+        [TestCase(false, true)]
+        public void RefundedStationlessCapital_PausesCapitalPurchases(bool refundedJustNow, bool buysCapital)
+        {
+            ReinforcementData reinforcementData = ScriptableObject.CreateInstance<ReinforcementData>();
+            FactionDefinition definition = CopyDefinition(FactionType.Separatist, ShipType.Recusant);
+            FactionData capital = definition.Ships[ShipType.Recusant];
+            SetBackingField(capital, nameof(FactionData.AvailableLevel), 5);
+            SetBackingField(capital, nameof(FactionData.Price), 8000);
+            SetBackingField(reinforcementData, nameof(ReinforcementData.MaxUnitCapacity), 1000);
+            try
+            {
+                EnemyFactionModel factionModel = CreateFactionModel(definition);
+                factionModel.CurrentLevel = 5;
+                factionModel.LastCapitalRefundAt = refundedJustNow
+                    ? BattleClock.CurrentElapsed
+                    : BattleClock.CurrentElapsed - EnemyProductionStrategy.CAPITAL_REFUND_PAUSE_SECONDS - 1f;
+                var limits = new EnemyUnitLimitModel();
+                ReserveEconomicFloor(factionModel, limits, factionModel.MiningFactions.First().Value.MaxCount);
+                ReserveDefensePlatform(factionModel, limits);
+                ReserveCaptureWings(factionModel, limits);
+                var purchases = new RecordingPurchaseProcessor();
+
+                RunOneEvaluation(definition, factionModel, limits, reinforcementData, 50000f, purchases,
+                    new StructurePlacementServiceStub(), new OperationalProductionAccess { HasHostBaseOverride = false },
+                    RoleCatalog(definition, UnitRole.None),
+                    new StateProviderStub { ActiveShipCount = EnemyForwardSpawnAnchors.CAPITAL_ESCORT_SHIPS });
+
+                Assert.That(purchases.Purchases.OfType<ShipUnitRequest>().Any(ship => ship.Key == ShipType.Recusant),
+                    Is.EqualTo(buysCapital));
+            }
+            finally
+            {
+                UnityEngine.Object.DestroyImmediate(reinforcementData);
+                UnityEngine.Object.DestroyImmediate(definition);
+            }
+        }
+
+        /// <summary>Munificent: a cruiser with the given roles; every other ship an assault capital. Equal value per credit.</summary>
+        private static UnitCombatProfileCatalog RoleCatalog(FactionDefinition definition, UnitRole cruiserRoles)
+        {
+            UnitCombatProfileCatalog catalog = new UnitCombatProfileCatalog(null, null, null, null);
+            var profiles = (Dictionary<UnitTypeId, UnitCombatProfile>)typeof(UnitCombatProfileCatalog)
+                .GetField("_profiles", PRIVATE_INSTANCE).GetValue(catalog);
+            foreach (KeyValuePair<ShipType, FactionData> ship in definition.Ships)
+            {
+                float[] rates = new float[ForceComposition.ClassSlots];
+                foreach (ShipClass target in new[] { ShipClass.Corvette, ShipClass.Frigate, ShipClass.Cruiser,
+                             ShipClass.HeavyCruiser, ShipClass.Capital, ShipClass.BattleCruiser, ShipClass.Dreadnought })
+                    rates[(int)target] = ship.Value.Price;
+                bool isCruiser = ship.Key == ShipType.Munificent;
+                profiles.Add(UnitTypeId.Ship(ship.Key), new UnitCombatProfile(
+                    isCruiser ? ShipClass.Cruiser : ShipClass.Capital, ship.Value.Price, 0f, rates,
+                    new float[ForceComposition.ClassSlots], new float[ForceComposition.ClassSlots],
+                    Array.Empty<UnitCombatProfile>(), roles: isCruiser ? cruiserRoles : UnitRole.None));
+            }
+
+            return AddSquadronProfiles(catalog, definition);
         }
 
         // W50: one platform queued or under construction at a time.
@@ -859,7 +968,8 @@ namespace EmpireAtWar.Tests.Editor
         private static void RunOneEvaluation(FactionDefinition definition, EnemyFactionModel factionModel,
             EnemyUnitLimitModel limits, ReinforcementData reinforcementData, float money,
             RecordingPurchaseProcessor purchases, IEnemyStructurePlacementService placement,
-            OperationalProductionAccess access, UnitCombatProfileCatalog catalog)
+            OperationalProductionAccess access, UnitCombatProfileCatalog catalog,
+            StateProviderStub stateProvider = null)
         {
             var entities = new EntityLocator();
             var scheduler = new EnemyAiScheduler(new ReplayNotifier<BattleState>(BattleState.Running));
@@ -870,7 +980,7 @@ namespace EmpireAtWar.Tests.Editor
                 purchaseProcessor: purchases,
                 requestFactory: new UnitRequestFactory(),
                 economyModel: new EconomyModelStub(money),
-                stateProvider: new StateProviderStub(),
+                stateProvider: stateProvider ?? new StateProviderStub(),
                 decisionModel: new EnemyProductionDecisionModel(),
                 unitLimitModel: limits,
                 reinforcementData: reinforcementData,
@@ -1480,7 +1590,7 @@ namespace EmpireAtWar.Tests.Editor
 
         private sealed class StateProviderStub : IEnemyAiStateProvider
         {
-            public int ActiveShipCount => 1;
+            public int ActiveShipCount { get; set; } = 1;
             public EnemyStrategicState CurrentState =>
                 EnemyStrategicState.RebuildFleet;
 

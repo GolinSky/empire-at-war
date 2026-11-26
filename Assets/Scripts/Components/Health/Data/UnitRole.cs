@@ -6,7 +6,8 @@ namespace EmpireAtWar.Components.Ship.Health
     /// What a ship or squadron is for, so the AI can pick by need and class instead of by price alone. Several flags combine.
     /// Durability, speed and gun flags compare a ship with the ships of its own faction and class (every faction's when
     /// that class has fewer than three ships); what a whole faction shares (Empire slow, Rebellion fast) is the
-    /// faction's mark on its faction definition. Not read by the AI until the assignment is reviewed.
+    /// faction's mark on its faction definition. The AI reads ship roles only to pick its rebuild pool
+    /// (<c>EnemyRebuildRolePolicy</c>, user 2026-11-26).
     /// </summary>
     [Flags]
     public enum UnitRole

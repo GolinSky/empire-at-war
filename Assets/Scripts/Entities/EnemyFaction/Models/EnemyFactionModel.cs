@@ -28,6 +28,8 @@ namespace EmpireAtWar.Entities.EnemyFaction.Models
         /// <summary>The chosen ship is affordable but does not fit the free unit capacity. Set by production.</summary>
         public bool IsAtUnitCap { get; set; }
         public int HeldShips { get; set; }
+        /// <summary>Battle time of the last assault capital refunded for want of an escort body (W56); set by the controller.</summary>
+        public float LastCapitalRefundAt { get; set; } = float.NegativeInfinity;
 
         /// <summary>The main station has no further level to buy.</summary>
         public bool IsAtTopLevel => GetCurrentLevelFactionData() == null;

@@ -5,6 +5,11 @@ created: "2026-10-29\r"
 ---
 # User Acceptance Queue
 
+## Enemy AI Rebuild And Reserve
+
+- [ ] [[Review/Bugs/Enemy_AI_Rebuild_And_Reserve]] — Skirmish: after an AI loses its stations and fleet, it rebuilds with cruisers/heavy cruisers instead of idling on credits (`counter-selection ... rebuild=True` in `_ai.csv`).
+- [ ] [[Review/Bugs/Enemy_AI_Rebuild_And_Reserve]] — Late game: AI banks stop piling up; reserve ships land as the fleet takes losses; the Empire AI eventually fields its Executor.
+
 ## Job System Audit
 
 - [ ] [[Review/Optimization/Job_System_Audit_Plan]] — Profiler capture in a crowded battle: `Battle.Attack.TargetBatch.Capture.Copy` overlaps worker `TargetSlotPositionJob` / `TargetOriginReadJob`; `TargetBatch.Capture` total does not grow.

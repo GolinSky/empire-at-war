@@ -8,10 +8,20 @@ namespace EmpireAtWar.Entities.EnemyFaction.Models
 {
     public sealed class EnemyUnitLimitModel : Model
     {
+        /// <summary>
+        /// Like a human, the AI may buy past the fleet cap into a held reserve, up to this many fleets beyond it
+        /// (user 2026-11-26); reserve units deploy only into live capacity.
+        /// </summary>
+        public const int RESERVE_FLEETS = 1;
+
         private readonly Dictionary<UnitLimitKey, int> _reservedCounts =
             new Dictionary<UnitLimitKey, int>();
+        private readonly HashSet<UnitRequest> _deployed = new HashSet<UnitRequest>();
 
+        /// <summary>Population of every paid combat unit: in production, held in reserve or on the map.</summary>
         public int CurrentUnitCapacity { get; private set; }
+        /// <summary>Population of combat units on the map; only this is held to the fleet cap.</summary>
+        public int DeployedUnitCapacity { get; private set; }
         public int ShipOrdersCount { get; private set; }
         public int ReleaseVersion { get; private set; }
 
@@ -40,8 +50,12 @@ namespace EmpireAtWar.Entities.EnemyFaction.Models
         public void Adopt(UnitRequest request) =>
             Adopt(UnitLimitKey.From(request), GetCapacity(request.FactionData, IsCombatUnit(request)));
 
-        public void Release(UnitRequest request) =>
-            Release(UnitLimitKey.From(request), GetCapacity(request.FactionData, IsCombatUnit(request)));
+        public void Release(UnitRequest request)
+        {
+            int capacity = GetCapacity(request.FactionData, IsCombatUnit(request));
+            if (_deployed.Remove(request)) DeployedUnitCapacity = System.Math.Max(0, DeployedUnitCapacity - capacity);
+            Release(UnitLimitKey.From(request), capacity);
+        }
 
         /// <summary>
         /// The human purchase limit (<c>PlayerFactionModel.IsUnitLimitReached</c>): a ship or squadron type has none
@@ -52,6 +66,16 @@ namespace EmpireAtWar.Entities.EnemyFaction.Models
         /// <param name="isCombatUnit">Ship or squadron.</param>
         public static int GetPurchaseLimit(FactionData data, bool isCombatUnit) =>
             !isCombatUnit ? data.MaxCount : data.IsUnique ? 1 : int.MaxValue;
+
+        /// <summary>Total population the AI may pay for: the fleet cap plus <see cref="RESERVE_FLEETS"/> fleets.</summary>
+        public static int GetPurchaseCapacityLimit(int maxUnitCapacity) => maxUnitCapacity * (1 + RESERVE_FLEETS);
+
+        /// <summary>The unit landed on the map: its population now counts against the live fleet cap.</summary>
+        public void MarkDeployed(UnitRequest request)
+        {
+            if (!_deployed.Add(request)) return;
+            DeployedUnitCapacity += GetCapacity(request.FactionData, IsCombatUnit(request));
+        }
 
         /// <summary>Only ships and squadrons use population, as for a human (<c>ReinforcementModel.UsesCapacity</c>).</summary>
         public static int GetCapacity(FactionData data, bool isCombatUnit) => isCombatUnit ? data.UnitCapacity : 0;
@@ -141,7 +165,9 @@ namespace EmpireAtWar.Entities.EnemyFaction.Models
         public void Reset()
         {
             _reservedCounts.Clear();
+            _deployed.Clear();
             CurrentUnitCapacity = 0;
+            DeployedUnitCapacity = 0;
             ShipOrdersCount = 0;
             ReleaseVersion = 0;
         }

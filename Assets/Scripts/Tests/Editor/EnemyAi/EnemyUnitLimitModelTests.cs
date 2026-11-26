@@ -188,6 +188,40 @@ namespace EmpireAtWar.Tests.Editor
             Assert.That(model.CurrentUnitCapacity, Is.EqualTo(ship.UnitCapacity));
         }
 
+        // User 2026-11-26: like a human, the AI buys past the fleet cap into a held reserve of one more fleet.
+        [Test]
+        public void PurchaseCapacityLimit_IsTheFleetCapPlusTheReserve()
+        {
+            const int MAX_UNIT_CAPACITY = 120;
+            Assert.That(EnemyUnitLimitModel.GetPurchaseCapacityLimit(MAX_UNIT_CAPACITY),
+                Is.EqualTo(MAX_UNIT_CAPACITY * (1 + EnemyUnitLimitModel.RESERVE_FLEETS)));
+            Assert.That(EnemyUnitLimitModel.GetPurchaseCapacityLimit(MAX_UNIT_CAPACITY), Is.GreaterThan(MAX_UNIT_CAPACITY));
+        }
+
+        // Only units on the map count against the live cap; a held reserve unit counts only once it deploys.
+        [Test]
+        public void DeployedCapacity_CountsLandedUnitsOnly_AndFallsWhenTheyAreLost()
+        {
+            var model = new EnemyUnitLimitModel();
+            FactionData ship = CreateData(maxCount: 10, unitCapacity: 3);
+            var landed = new ShipUnitRequest(ship, ShipType.Venator);
+            var held = new ShipUnitRequest(ship, ShipType.Venator);
+            Assert.That(model.TryReserve(landed, 100), Is.True);
+            Assert.That(model.TryReserve(held, 100), Is.True);
+
+            model.MarkDeployed(landed);
+            model.MarkDeployed(landed);
+
+            Assert.That(model.CurrentUnitCapacity, Is.EqualTo(2 * ship.UnitCapacity));
+            Assert.That(model.DeployedUnitCapacity, Is.EqualTo(ship.UnitCapacity), "Marking twice counts once.");
+
+            model.Release(held);
+            Assert.That(model.DeployedUnitCapacity, Is.EqualTo(ship.UnitCapacity), "A refunded reserve unit never landed.");
+            model.Release(landed);
+            Assert.That(model.DeployedUnitCapacity, Is.Zero);
+            Assert.That(model.CurrentUnitCapacity, Is.Zero);
+        }
+
         // Heroes and dreadnoughts (isUnique) share the human one-at-a-time limit; a destroyed one can be rebuilt.
         [TestCase("isHero")]
         [TestCase("isUnique")]

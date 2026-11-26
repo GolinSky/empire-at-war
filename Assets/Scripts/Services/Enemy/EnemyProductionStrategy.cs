@@ -48,6 +48,8 @@ namespace EmpireAtWar.Services.Enemy
         /// <summary>Ships more than this many levels below the station level are no longer bought.</summary>
         private const int SHIP_TIER_SPAN = 1;
         private const float MINER_REBUY_INTERVAL = 10f;
+        /// <summary>After a stationless capital is refunded, no other is bought for this long: no buy-refund loop.</summary>
+        public const float CAPITAL_REFUND_PAUSE_SECONDS = 60f;
 
         private readonly IEnemyPurchaseProcessor _purchaseProcessor;
         private readonly IUnitRequestFactory _requestFactory;
@@ -92,6 +94,8 @@ namespace EmpireAtWar.Services.Enemy
         private string _savingUnit = "";
         /// <summary>The last evaluation's ship choice was affordable but blocked by the unit cap (W34 b).</summary>
         private bool _capacityBlocked;
+        /// <summary>Fewer ships than a capital escort and no capital to land: the role rebuild pool applies.</summary>
+        private bool _rebuilding;
         private float _savingSince = -1f;
         private int _lastShipCount = -1;
         private float _lastShipLossAt = float.NegativeInfinity;
@@ -111,6 +115,10 @@ namespace EmpireAtWar.Services.Enemy
 
         public bool OpeningMiningPending => _factionModel.CurrentLevel == 1 &&
                                             CountReservedMiningFacilities() < GetMiningFacilityTarget();
+
+        /// <summary>Population the AI may pay for: the fleet cap plus the held reserve.</summary>
+        private int PurchaseCapacityLimit =>
+            EnemyUnitLimitModel.GetPurchaseCapacityLimit(_reinforcementData.MaxUnitCapacity);
 
         private bool CanUpgradeStation => _productionAccess.ProductionHost == _owner.Id &&
                                           _productionAccess.HasHostBase &&
@@ -209,6 +217,8 @@ namespace EmpireAtWar.Services.Enemy
         private void EvaluateProduction()
         {
             using var sample = _evaluateMarker.Auto();
+            _rebuilding = EnemyRebuildRolePolicy.IsRebuilding(_stateProvider.ActiveShipCount,
+                EnemyForwardSpawnAnchors.CAPITAL_ESCORT_SHIPS, HasLandableAffordableCapital());
             if (TryBuyPatrolWing()) return;
             int shipCount = CountReservedShips();
             int miningFacilityCount = CountReservedMiningFacilities();
@@ -319,7 +329,7 @@ namespace EmpireAtWar.Services.Enemy
                     TrySelectShip(shipCount, out KeyValuePair<ShipType, FactionData> bestFitShip, requireAffordable: true)
                     ? bestFitShip.Key.ToString() : "none";
                 EnemyAiTelemetry.RecordEvent(_owner.Id, _owner.Faction, "production-wait",
-                    FormattableString.Invariant($"unit={combatChoice};capacity={_unitLimitModel.CurrentUnitCapacity}/{_reinforcementData.MaxUnitCapacity};required={shipChoice.UnitCapacity};cost={shipChoice.Price};money={_economyModel.Money:F1};critical={_stationPressure.IsStationCritical};criticalCause={_stationPressure.CriticalCause};etaSeconds={GetArrivalSeconds(combatChoice, shipChoice):F1};timeToLoss={_stationPressure.EstimatedTimeToLossSeconds:F1};saving={_savingUnit};savingFor={savingForSeconds:F1};fits={choiceFits};bestFit={bestFit};reason={waitReason}"));
+                    FormattableString.Invariant($"unit={combatChoice};capacity={_unitLimitModel.CurrentUnitCapacity}/{PurchaseCapacityLimit};live={_unitLimitModel.DeployedUnitCapacity}/{_reinforcementData.MaxUnitCapacity};required={shipChoice.UnitCapacity};cost={shipChoice.Price};money={_economyModel.Money:F1};critical={_stationPressure.IsStationCritical};criticalCause={_stationPressure.CriticalCause};etaSeconds={GetArrivalSeconds(combatChoice, shipChoice):F1};timeToLoss={_stationPressure.EstimatedTimeToLossSeconds:F1};saving={_savingUnit};savingFor={savingForSeconds:F1};fits={choiceFits};bestFit={bestFit};reason={waitReason}"));
             }
             FactionData levelData = CanUpgradeStation ? _factionModel.GetCurrentLevelFactionData() : null;
             if (levelData != null &&
@@ -608,7 +618,7 @@ namespace EmpireAtWar.Services.Enemy
         }
 
         private bool FitsRemainingCapacity(FactionData data) =>
-            data.UnitCapacity <= _reinforcementData.MaxUnitCapacity - _unitLimitModel.CurrentUnitCapacity;
+            data.UnitCapacity <= PurchaseCapacityLimit - _unitLimitModel.CurrentUnitCapacity;
 
         private void NoteShipLosses(int shipCount)
         {
@@ -659,7 +669,7 @@ namespace EmpireAtWar.Services.Enemy
             foreach (KeyValuePair<ShipType, FactionData> option in _factionModel.ShipFactionData)
                 if (_unitLimitModel.GetReservedCount<ShipUnitRequest>(option.Key.ToString()) > 0)
                     largestOwn = Math.Max(largestOwn, option.Value.UnitCapacity);
-            int free = _reinforcementData.MaxUnitCapacity - _unitLimitModel.CurrentUnitCapacity;
+            int free = PurchaseCapacityLimit - _unitLimitModel.CurrentUnitCapacity;
             if (FitsAfterOneLoss(shipChoice.UnitCapacity, free, largestOwn)) return shipChoice.Price;
             int dearest = 0;
             foreach (KeyValuePair<ShipType, FactionData> option in _factionModel.ShipFactionData)
@@ -784,7 +794,7 @@ namespace EmpireAtWar.Services.Enemy
 
             if (!_counterModel.TrySelect(_ownForce, _hostileForce, _candidates, out int index,
                     _economyModel.Money,
-                    _reinforcementData.MaxUnitCapacity - _unitLimitModel.CurrentUnitCapacity,
+                    PurchaseCapacityLimit - _unitLimitModel.CurrentUnitCapacity,
                     _stationPressure.IsStationCritical, _stationPressure.EstimatedTimeToLossSeconds))
             {
                 return false;
@@ -794,8 +804,9 @@ namespace EmpireAtWar.Services.Enemy
             selectedData = _candidateData[index];
             EnemyAiTelemetry.RecordEvent(_owner.Id, _owner.Faction, "counter-selection",
                 $"unit={selectedId};candidates={_candidates.Count};score={_counterModel.SelectedScore:F6};" +
-                $"strikecraftCovered={_counterModel.StrikecraftCovered};" +
-                $"capacity={_unitLimitModel.CurrentUnitCapacity}/{_reinforcementData.MaxUnitCapacity};" +
+                $"strikecraftCovered={_counterModel.StrikecraftCovered};rebuild={_rebuilding};" +
+                $"capacity={_unitLimitModel.CurrentUnitCapacity}/{PurchaseCapacityLimit};" +
+                $"live={_unitLimitModel.DeployedUnitCapacity}/{_reinforcementData.MaxUnitCapacity};" +
                 $"required={selectedData.UnitCapacity};cost={selectedData.Price};money={_economyModel.Money}");
             return true;
         }
@@ -830,7 +841,8 @@ namespace EmpireAtWar.Services.Enemy
 
             if (requireAffordable && !IsAffordable(data)) return;
             if (_stationPressure.IsStationCritical && (!IsAffordable(data) ||
-                _unitLimitModel.CurrentUnitCapacity + data.UnitCapacity > _reinforcementData.MaxUnitCapacity)) return;
+                // A defender for a falling station must land now: it needs live fleet room, not reserve room.
+                _unitLimitModel.DeployedUnitCapacity + data.UnitCapacity > _reinforcementData.MaxUnitCapacity)) return;
 
             _candidates.Add(new ProductionCandidate(_profileCatalog.Get(unitTypeId), data.Price,
                 Math.Max(reservedCount, liveCount), hasSquadronRoom, data.UnitCapacity,
@@ -1105,8 +1117,25 @@ namespace EmpireAtWar.Services.Enemy
                 return _factionModel.CurrentLevel == 1 && BattleClock.CurrentElapsed >= OPENING_NO_CORVETTE_SECONDS &&
                     CountReservedLevel1Corvettes() < MAX_LEVEL1_CORVETTES;
             if (_stationPressure.IsStationCritical) return true;
+            if (_rebuilding && IsRebuildShip(id)) return true;
             int floor = GetShipTierFloor();
             return data.AvailableLevel >= floor || GetValuePerCredit(id, data) > GetBestSpanValuePerCredit(floor);
+        }
+
+        private bool IsRebuildShip(UnitTypeId id) =>
+            EnemyRebuildRolePolicy.IsRebuildShip(_profileCatalog.Get(id).ShipClass, _profileCatalog.Get(id).Roles);
+
+        /// <summary>An unlocked assault capital that lands now (W56), is paid for and fits the purchase capacity.</summary>
+        private bool HasLandableAffordableCapital()
+        {
+            foreach (KeyValuePair<ShipType, FactionData> option in _factionModel.ShipFactionData)
+            {
+                UnitTypeId id = UnitTypeId.Ship(option.Key);
+                if (IsAvailable(option.Value) && IsAffordable(option.Value) && FitsRemainingCapacity(option.Value) &&
+                    _factionModel.IsAssaultCapital(option.Key, _profileCatalog.Get(id).ShipClass) && CanLandShip(id))
+                    return true;
+            }
+            return false;
         }
 
         private float GetValuePerCredit(UnitTypeId id, FactionData data) =>
@@ -1542,7 +1571,7 @@ namespace EmpireAtWar.Services.Enemy
                 (typeof(TRequest) != typeof(ShipUnitRequest) || !_purchaseProcessor.HasWaitingBuild(requestId)) &&
                 _unitLimitModel.GetReservedCount<TRequest>(requestId) <
                     EnemyUnitLimitModel.GetPurchaseLimit(data, isCombatUnit) &&
-                EnemyUnitLimitModel.GetCapacity(data, isCombatUnit) <= _reinforcementData.MaxUnitCapacity -
+                EnemyUnitLimitModel.GetCapacity(data, isCombatUnit) <= PurchaseCapacityLimit -
                     (ignoreUsedCapacity ? 0 : _unitLimitModel.CurrentUnitCapacity);
         }
 
@@ -1552,11 +1581,13 @@ namespace EmpireAtWar.Services.Enemy
 
         /// <summary>
         /// W56: with no living own station an assault capital lands only beside the group body, whose forward anchor needs
-        /// <see cref="EnemyForwardSpawnAnchors.CAPITAL_ESCORT_SHIPS"/> own ships; with fewer it is not bought.
+        /// <see cref="EnemyForwardSpawnAnchors.CAPITAL_ESCORT_SHIPS"/> own ships; with fewer it is not bought, nor for
+        /// <see cref="CAPITAL_REFUND_PAUSE_SECONDS"/> after one was refunded.
         /// </summary>
         private bool CanLandShip(UnitTypeId shipId) =>
             _productionAccess.ProductionHost == _owner.Id && _productionAccess.HasHostBase ||
-            _stateProvider.ActiveShipCount >= EnemyForwardSpawnAnchors.CAPITAL_ESCORT_SHIPS ||
+            _stateProvider.ActiveShipCount >= EnemyForwardSpawnAnchors.CAPITAL_ESCORT_SHIPS &&
+            BattleClock.CurrentElapsed >= _factionModel.LastCapitalRefundAt + CAPITAL_REFUND_PAUSE_SECONDS ||
             !_factionModel.IsAssaultCapital(shipId.ShipType, _profileCatalog.Get(shipId).ShipClass);
 
         private bool IsAvailable(FactionData data)

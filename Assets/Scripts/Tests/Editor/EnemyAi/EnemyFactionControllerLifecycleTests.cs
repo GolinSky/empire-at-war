@@ -630,6 +630,73 @@ namespace EmpireAtWar.Tests.Editor
             }
         }
 
+        // User 2026-11-26: the AI buys past the fleet cap into a reserve; reserve ships land only into live capacity, and
+        // freed capacity goes first to the oldest waiting ship (an Executor), so smaller ships cannot take every slot.
+        [Test]
+        public void ReserveShips_LandIntoLiveCapacity_OldestWaitingShipFirst()
+        {
+            var data = ScriptableObject.CreateInstance<ReinforcementData>();
+            var shipObject = new GameObject("Reserve test ship");
+            try
+            {
+                const int MAX_UNIT_CAPACITY = 10;
+                SetBackingField(data, nameof(ReinforcementData.MaxUnitCapacity), MAX_UNIT_CAPACITY);
+                FactionData bigData = CreateShipData(unitCapacity: 6);
+                FactionData smallData = CreateShipData(unitCapacity: 2);
+                var limits = new EnemyUnitLimitModel();
+                var spawnPoints = new BlockedShipSpawnPoints { IsBlocked = false };
+                var factory = new TrackingShipFactory(shipObject.AddComponent<ShipEntity>());
+                var controller = new EnemyFactionController(aiState: new IdleAiState(), model: new EnemyFactionModel(null, null),
+                    shipFactory: factory, miningFacilityFactory: null, defendPlatformFactory: null, research: null,
+                    economyProvider: new TrackingEconomyProvider(), wallet: new TrackingWallet(), shipSpawnPoints: spawnPoints,
+                    unitLimitModel: limits, reinforcementData: data,
+                    enemyStructurePlacementService: new UnavailableStructurePlacement(),
+                    productionAccess: new OperationalProductionAccess(), squadronLauncher: null,
+                    squadronCommander: null, owner: TestPlayers.CreateDuel().Get(TestPlayers.Enemy),
+                    playerRegistry: new PlayerRegistry(), stationFactory: null, profiles: null,
+                    secondStation: new SecondStationLevelModel(), forwardAnchors: NoForwardSpawnAnchors.Instance, economyModel: null);
+                var lost = new ShipUnitRequest(bigData, ShipType.Recusant);
+                controller.Purchase(lost);
+                controller.Purchase(new ShipUnitRequest(smallData, ShipType.Munificent));
+                controller.Advance(1f);
+                Assert.That(limits.DeployedUnitCapacity, Is.EqualTo(bigData.UnitCapacity + smallData.UnitCapacity));
+
+                var waiting = new ShipUnitRequest(bigData, ShipType.Venator);
+                var later = new ShipUnitRequest(smallData, ShipType.Arquitens);
+                controller.Purchase(waiting);
+                controller.Purchase(later);
+                controller.Advance(1f);
+
+                Assert.That(limits.CurrentUnitCapacity, Is.GreaterThan(MAX_UNIT_CAPACITY), "Bought past the fleet cap.");
+                Assert.That(limits.DeployedUnitCapacity, Is.LessThanOrEqualTo(MAX_UNIT_CAPACITY));
+                Assert.That(factory.Created, Is.EqualTo(new[] { ShipType.Recusant, ShipType.Munificent }),
+                    "The small ship fits alone but waits: the freed slots are kept for the older big ship.");
+                Assert.That(controller.PendingBuilds.Select(build => build.Request), Is.EquivalentTo(new[] { waiting, later }));
+
+                limits.Release(lost);
+                controller.Advance(1f);
+
+                Assert.That(factory.Created, Is.EqualTo(new[]
+                    { ShipType.Recusant, ShipType.Munificent, ShipType.Venator, ShipType.Arquitens }));
+                Assert.That(controller.PendingBuilds, Is.Empty);
+                Assert.That(limits.DeployedUnitCapacity, Is.LessThanOrEqualTo(MAX_UNIT_CAPACITY));
+            }
+            finally
+            {
+                UnityEngine.Object.DestroyImmediate(shipObject);
+                UnityEngine.Object.DestroyImmediate(data);
+            }
+        }
+
+        private static FactionData CreateShipData(int unitCapacity)
+        {
+            var faction = new FactionData();
+            SetBackingField(faction, nameof(FactionData.MaxCount), 10);
+            SetBackingField(faction, nameof(FactionData.BuildTime), 1);
+            SetBackingField(faction, nameof(FactionData.UnitCapacity), unitCapacity);
+            return faction;
+        }
+
         [Test]
         public void BlockedShip_RetainsPurchaseAndRetriesWithoutDelayingOtherBuilds()
         {

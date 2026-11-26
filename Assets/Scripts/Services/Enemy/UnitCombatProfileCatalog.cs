@@ -77,7 +77,7 @@ namespace EmpireAtWar.Services.Enemy
             return UnitCombatProfileFactory.Create(data.ShipClass, data.Hull, data.Shields,
                 data.WeaponLoadout, _weaponsData, _damageMatrix, hangar,
                 shieldRegen: data.ShieldRegenerateValue / data.ShieldRegenerateDelay, speed: data.Speed,
-                price: GetShipPrice(shipType), faction: GetShipFaction(shipType));
+                price: GetShipPrice(shipType), faction: GetShipFaction(shipType), roles: data.Roles);
         }
 
         /// <summary>

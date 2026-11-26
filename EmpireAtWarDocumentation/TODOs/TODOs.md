@@ -237,6 +237,8 @@ Code complete; only user acceptance left. Gates → [[TODOs/User_Acceptance_Queu
 
 ### Bugs
 
+- [ ] **Enemy AI rebuild after wipe, reserve past the fleet cap, Executor deploy, refund telemetry** → [[Review/Bugs/Enemy_AI_Rebuild_And_Reserve]]
+  - 2026-11-26: from the 20:55 player-build battle (Rebel P1 zero-ship stall, Empire AI 606k bank). Role rebuild pool, reserve = 1 fleet past the cap with FIFO landing, aggregated `capitalRefunded` + 60 s pause. `EnemyAi` 769/769 and `RealEntityCompositionTests` 37/37 passed; in-game check left. Hit-and-run tactics split off.
 - [ ] **Carrier role on ships with 0 squadrons (12 ships keep `UnitRole.Carrier`; `IsCarrier` ignores `HangarMaxActive`)** → [[Review/Bugs/Carrier_Role_On_Zero_Squadron_Ships]] — 2026-11-26: fixed (both `IsCarrier` checks + 12 ships + 3 texts); related tests passed; tooltip check left.
 - [ ] **Hardpoint-based weapon reach (Praetor/big ships hold with guns out of range; radar + planar leftovers)** → [[Review/Bugs/Hardpoint_Based_Weapon_Reach]] — 2026-11-20: multipliers baked on 16 big-ship prefabs, radar raised on 15 ships; planar leftovers and in-game check remain.
   - 2026-11-26: moved to Review by user decision; only user acceptance left (see plan "Review 2026-11-26").

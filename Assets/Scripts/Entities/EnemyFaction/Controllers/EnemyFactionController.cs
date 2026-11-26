@@ -23,6 +23,7 @@ using EmpireAtWar.Services.ShipSpawning;
 using EmpireAtWar.Services.Squadrons;
 using EmpireAtWar.Ship;
 using EmpireAtWar.Mvc;
+using EmpireAtWar.Services.Saves;
 #if UNITY_EDITOR || DEVELOPMENT_BUILD
 using EmpireAtWar.Services.Timing;
 #endif
@@ -51,6 +52,8 @@ namespace EmpireAtWar.Entities.EnemyFaction.Controllers
         private const float ASSAULT_WAVE_INTERVAL = 30f;
         private const float STATION_PLACEMENT_RETRY_SECONDS = 10f;
         private const float STRUCTURE_PLACEMENT_RETRY_SECONDS = 5f;
+        /// <summary>A refunded stationless capital is reported at most once per this many seconds (aggregated).</summary>
+        private const float CAPITAL_REFUND_REPORT_SECONDS = 60f;
 
         private readonly IEconomyProvider _economyProvider;
         private readonly IWallet _wallet;
@@ -100,6 +103,11 @@ namespace EmpireAtWar.Entities.EnemyFaction.Controllers
         private Vector3? _dropPoint;
 
         private bool _isInitialized;
+        private int _capitalRefundsSinceReport;
+        /// <summary>The oldest completed unit waiting for live fleet capacity; freed slots are kept for it.</summary>
+        private UnitRequest _capacityWaiter;
+        private readonly HashSet<ShipUnitRequest> _capacityHeld = new HashSet<ShipUnitRequest>();
+        private float _nextCapitalRefundReport = float.NegativeInfinity;
 
         private PlayerId Owner => _owner.Id;
         public float Income => StationIncome.Get(Model.CurrentLevel, _research.StationIncomeMultiplier, _secondStation.IsBuilt);
@@ -378,10 +386,11 @@ namespace EmpireAtWar.Entities.EnemyFaction.Controllers
             }
         }
 
-        /// <summary>True when an unlocked assault capital fits the free unit capacity.</summary>
+        /// <summary>True when an unlocked assault capital fits the free purchase capacity (fleet cap plus reserve).</summary>
         private bool AssaultCapitalFits()
         {
-            int free = _reinforcementData.MaxUnitCapacity - _unitLimitModel.CurrentUnitCapacity;
+            int free = EnemyUnitLimitModel.GetPurchaseCapacityLimit(_reinforcementData.MaxUnitCapacity) -
+                       _unitLimitModel.CurrentUnitCapacity;
             foreach (KeyValuePair<ShipType, FactionData> ship in Model.ShipFactionData)
                 if (ship.Value.AvailableLevel <= Model.CurrentLevel && ship.Value.UnitCapacity <= free &&
                     Model.IsAssaultCapital(ship.Key, _profiles.Get(UnitTypeId.Ship(ship.Key)).ShipClass))
@@ -464,6 +473,12 @@ namespace EmpireAtWar.Entities.EnemyFaction.Controllers
                         squadronCount++;
                         continue;
                     }
+                    // A reserve ship with no live capacity waits; it searches no landing point meanwhile.
+                    if (!CanDeployByCapacity(ship, true))
+                    {
+                        _capacityHeld.Add(ship);
+                        continue;
+                    }
 
                     float heldSeconds = _builds.GetDeploymentBlockedSeconds(ship);
                     anyPastHoldLimit |= heldSeconds >= MAX_DEPLOYMENT_HOLD_SECONDS;
@@ -486,7 +501,9 @@ namespace EmpireAtWar.Entities.EnemyFaction.Controllers
                     anyPastHoldLimit && (_defenseLandings.Count > 0 || squadronCount > 0);
                 foreach (UnitRequest request in wave)
                 {
-                    if (request is ShipUnitRequest ship && (!canDeploy || !_defenseLandings.ContainsKey(ship)))
+                    if (request is ShipUnitRequest held && _capacityHeld.Contains(held))
+                        _builds.HoldForCapacity(held, DEPLOYMENT_RETRY_INTERVAL);
+                    else if (request is ShipUnitRequest ship && (!canDeploy || !_defenseLandings.ContainsKey(ship)))
                         _builds.RetryShipDeployment(ship, DEPLOYMENT_RETRY_INTERVAL);
                     else if (request is SquadronUnitRequest squadron && !canDeploy)
                         _builds.RetrySquadronDeployment(squadron, DEPLOYMENT_RETRY_INTERVAL);
@@ -499,6 +516,7 @@ namespace EmpireAtWar.Entities.EnemyFaction.Controllers
                 foreach (ShipUnitRequest ship in _defenseLandings.Keys)
                     _shipSpawnPoints.ReleaseDefenseLanding(ship);
                 _defenseLandings.Clear();
+                _capacityHeld.Clear();
             }
         }
 
@@ -681,6 +699,11 @@ namespace EmpireAtWar.Entities.EnemyFaction.Controllers
                         hasRally = false;
                         defendHome = false;
                     }
+                    if (!CanDeployByCapacity(shipUnitRequest, defendHome))
+                    {
+                        _builds.HoldForCapacity(shipUnitRequest, DEPLOYMENT_RETRY_INTERVAL);
+                        return;
+                    }
                     bool plannedWave = false;
                     if (_dropPoint is Vector3 drop)
                     {
@@ -737,9 +760,7 @@ namespace EmpireAtWar.Entities.EnemyFaction.Controllers
                         position = default;
                         if (heldSeconds >= DEPLOYMENT_EMERGENCY_SECONDS || !_productionAccess.CanProduce)
                         {
-                            EnemyAiTelemetry.RecordEvent(_owner.Id, _owner.Faction, "capitalRefunded",
-                                FormattableString.Invariant(
-                                    $"unit={shipUnitRequest.Id};reason=noStationNoBody;heldSeconds={heldSeconds:F1}"));
+                            RecordCapitalRefund(shipUnitRequest, heldSeconds);
                             _builds.ClearDeploymentBlock(shipUnitRequest);
                             _unitLimitModel.CancelShipOrder();
                             ReleaseUnit(shipUnitRequest);
@@ -793,6 +814,11 @@ namespace EmpireAtWar.Entities.EnemyFaction.Controllers
                     _landedShips.Add(position);
                     break;
                 case SquadronUnitRequest squadronUnitRequest:
+                    if (!CanDeployByCapacity(squadronUnitRequest, false))
+                    {
+                        _builds.HoldForCapacity(squadronUnitRequest, DEPLOYMENT_RETRY_INTERVAL);
+                        return;
+                    }
                     if (!_squadronLauncher.TryLaunchFromStation(Owner, squadronUnitRequest.Key, out ISquadron squadron))
                     {
                         // Every team base fell during the build, so nothing can launch the squadron.
@@ -835,8 +861,51 @@ namespace EmpireAtWar.Entities.EnemyFaction.Controllers
             EnemyAiTelemetry.RecordEvent(_owner.Id, _owner.Faction, "buildCompleted", $"unit={unitRequest.Id}");
         }
 
-        private void Track(ShipEntity ship, ShipUnitRequest unitRequest) =>
+        /// <summary>
+        /// A reserve unit lands only into live fleet capacity. Freed capacity goes first-come to the oldest unit that
+        /// waits for it (an Executor after the next losses): others land meanwhile only when both fit. A station defense
+        /// skips that order, never the cap.
+        /// </summary>
+        private bool CanDeployByCapacity(UnitRequest request, bool defendHome)
+        {
+            int max = _reinforcementData.MaxUnitCapacity;
+            int live = _unitLimitModel.DeployedUnitCapacity;
+            int capacity = request.FactionData.UnitCapacity;
+            if (live + capacity > max)
+            {
+                _capacityWaiter ??= request;
+                return false;
+            }
+            if (_capacityWaiter == request)
+            {
+                _capacityWaiter = null;
+                return true;
+            }
+            return _capacityWaiter == null || defendHome ||
+                   live + capacity + _capacityWaiter.FactionData.UnitCapacity <= max;
+        }
+
+        /// <summary>
+        /// Starts the stationless-capital purchase pause and reports refunds at most once per
+        /// <see cref="CAPITAL_REFUND_REPORT_SECONDS"/>; the row counts every refund since the previous row.
+        /// </summary>
+        private void RecordCapitalRefund(ShipUnitRequest shipUnitRequest, float heldSeconds)
+        {
+            Model.LastCapitalRefundAt = BattleClock.CurrentElapsed;
+            _capitalRefundsSinceReport++;
+            if (Time.time < _nextCapitalRefundReport) return;
+            EnemyAiTelemetry.RecordEvent(_owner.Id, _owner.Faction, "capitalRefunded",
+                FormattableString.Invariant(
+                    $"unit={shipUnitRequest.Id};reason=noStationNoBody;heldSeconds={heldSeconds:F1};refunds={_capitalRefundsSinceReport}"));
+            _capitalRefundsSinceReport = 0;
+            _nextCapitalRefundReport = Time.time + CAPITAL_REFUND_REPORT_SECONDS;
+        }
+
+        private void Track(ShipEntity ship, ShipUnitRequest unitRequest)
+        {
+            _unitLimitModel.MarkDeployed(unitRequest);
             ship.OnRelease += _ => ReleaseUnit(unitRequest);
+        }
 
         private void Track(ISquadron squadron, SquadronUnitRequest unitRequest)
         {
@@ -849,6 +918,7 @@ namespace EmpireAtWar.Entities.EnemyFaction.Controllers
                 ReleaseUnit(unitRequest);
             };
             squadron.Released += handler;
+            _unitLimitModel.MarkDeployed(unitRequest);
             _builtSquadrons.Add(squadronId);
             _squadronCommander.Command(squadron, unitRequest.Key);
         }
@@ -891,7 +961,8 @@ namespace EmpireAtWar.Entities.EnemyFaction.Controllers
         {
             FactionData factionData = unitRequest.FactionData;
             // The human purchase limits (D6): unique units (heroes, dreadnoughts) once, structures to MaxCount, other ships and squadrons by population only.
-            if (!_unitLimitModel.TryReserve(unitRequest, _reinforcementData.MaxUnitCapacity))
+            if (!_unitLimitModel.TryReserve(unitRequest,
+                    EnemyUnitLimitModel.GetPurchaseCapacityLimit(_reinforcementData.MaxUnitCapacity)))
             {
                 EnemyAiTelemetry.RecordEvent(_owner.Id, _owner.Faction, "purchaseRejected",
                     $"unit={unitRequest.Id};reason=capacity or unit limit;population={_unitLimitModel.CurrentUnitCapacity};required={factionData.UnitCapacity}");
@@ -929,7 +1000,12 @@ namespace EmpireAtWar.Entities.EnemyFaction.Controllers
             _secondStation.IsBuilt && request.Level == _secondStation.CurrentLevel &&
             _secondStation.CurrentLevel < Model.CurrentLevel;
 
-        private void ReleaseUnit(UnitRequest unitRequest) => _unitLimitModel.Release(unitRequest);
+        private void ReleaseUnit(UnitRequest unitRequest)
+        {
+            // A refunded or cancelled waiter no longer holds freed capacity.
+            if (_capacityWaiter == unitRequest) _capacityWaiter = null;
+            _unitLimitModel.Release(unitRequest);
+        }
 
         private void ExecuteBuild(UnitRequest unitRequest)
         {

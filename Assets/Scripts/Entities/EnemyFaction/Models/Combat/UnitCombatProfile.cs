@@ -35,6 +35,9 @@ namespace EmpireAtWar.Entities.EnemyFaction.Models.Combat
         /// <summary>Purchase price in credits; 0 for a unit no faction sells (map heroes, hangar-only wings, structures).</summary>
         public float Price { get; }
 
+        /// <summary>Designer roles from the ship's data asset; <see cref="UnitRole.None"/> for squadrons and structures.</summary>
+        public UnitRole Roles { get; }
+
         /// <param name="hullDps">Hull damage per second of shield-blocked weapons, indexed by <see cref="ShipClass"/>.</param>
         /// <param name="shieldDps">Shield damage per second of the same weapons, indexed by <see cref="ShipClass"/>.</param>
         /// <param name="piercingDps">Hull damage per second of shield-piercing weapons, indexed by <see cref="ShipClass"/>.</param>
@@ -51,9 +54,11 @@ namespace EmpireAtWar.Entities.EnemyFaction.Models.Combat
             IReadOnlyList<UnitCombatProfile> hangar,
             float shieldRegen = 0f,
             float speed = 0f,
-            float price = 0f)
+            float price = 0f,
+            UnitRole roles = UnitRole.None)
         {
             ShipClass = shipClass;
+            Roles = roles;
             Speed = speed;
             Price = price;
             Hull = hull;
