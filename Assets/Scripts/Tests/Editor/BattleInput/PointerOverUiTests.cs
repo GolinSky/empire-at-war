@@ -1,3 +1,4 @@
+using EmpireAtWar.Components.Ui;
 using EmpireAtWar.Entities.Reinforcement;
 using EmpireAtWar.Services.Camera;
 using EmpireAtWar.Services.Input;
@@ -191,6 +192,7 @@ namespace EmpireAtWar.Tests.Editor
             var scroll = (ScrollRect)view.FindProperty("unitScroll").objectReferenceValue;
             var panelGroup = (CanvasGroup)view.FindProperty("panelCanvasGroup").objectReferenceValue;
 
+            Assert.That(scroll, Is.TypeOf<SmoothVerticalScrollRect>());
             Graphic viewport = scroll.viewport.GetComponent<Graphic>();
             Assert.That(viewport, Is.Not.Null, "The scroll viewport needs a graphic to receive the wheel between cards.");
             Assert.That(viewport.raycastTarget, Is.True);

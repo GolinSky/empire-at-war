@@ -2,9 +2,9 @@ using UnityEngine;
 using UnityEngine.EventSystems;
 using UnityEngine.UI;
 
-namespace EmpireAtWar.Entities.Popups
+namespace EmpireAtWar.Components.Ui
 {
-    public sealed class PlanetSelectionScrollRect : ScrollRect
+    public sealed class SmoothVerticalScrollRect : ScrollRect
     {
         private const float WHEEL_EASING_RATE = 22f;
         private const float WHEEL_SETTLE_DISTANCE = 0.1f;
