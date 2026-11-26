@@ -51,6 +51,7 @@ namespace EmpireAtWar.Services.Enemy
         private readonly Dictionary<int, List<float>> _padLosses = new Dictionary<int, List<float>>();
         private readonly Dictionary<int, float> _padWaitUntil = new Dictionary<int, float>();
         private readonly Predicate<int> _isPadWaitingNow;
+        private string _lastIdlePads;
 
         public EnemySiteConstructionController(ICaptureSiteDirectory sites, ICaptureSitePresence presence,
             ICaptureSiteConstruction construction,
@@ -103,7 +104,8 @@ namespace EmpireAtWar.Services.Enemy
         internal void BuildNext(EnemyDefenseSnapshot snapshot, int mineSite, bool mandatorySatellite,
             SiteFacilityType spotFacility = SiteFacilityType.Mining, string reason = "")
         {
-            if (_defense.TrySelectMandatory(snapshot, out var required) && StartSatellite(snapshot, required))
+            bool hasRequired = _defense.TrySelectMandatory(snapshot, out var required);
+            if (hasRequired && StartSatellite(snapshot, required))
                 return;
             if (mineSite >= 0)
             {
@@ -118,13 +120,32 @@ namespace EmpireAtWar.Services.Enemy
                                         _defense.TrySelectScored(snapshot, out optional) ||
                                         _defense.TrySelectFill(snapshot, out optional)))
                 StartSatellite(snapshot, optional);
+            else if (!hasRequired) RecordIdlePads(snapshot, mandatorySatellite);
+        }
+
+        /// <summary>
+        /// Owned empty pads but no satellite chosen: one row per change says how many pads have hostiles on them (no
+        /// construction possible there), so a held zone left empty can be explained from a release log (L3).
+        /// </summary>
+        private void RecordIdlePads(EnemyDefenseSnapshot snapshot, bool mandatorySatellite)
+        {
+            int hostilePads = 0;
+            foreach (EnemyDefensePad pad in snapshot.Pads)
+                if (pad.HasHostiles) hostilePads++;
+            string key = $"{snapshot.Pads.Count}/{hostilePads}/{mandatorySatellite}";
+            if (snapshot.Pads.Count == 0 || key == _lastIdlePads) return;
+            _lastIdlePads = key;
+            EnemyAiTelemetry.RecordEvent(_owner.Id, _owner.Faction, "siteBuild", FormattableString.Invariant(
+                $"kind=satellite;started=False;reason=noChoice;emptyPads={snapshot.Pads.Count};hostilePads={hostilePads};mandatory={mandatorySatellite};spare={snapshot.Money - snapshot.ProductionReserve:F0}"));
         }
 
         private bool StartSatellite(EnemyDefenseSnapshot snapshot, EnemyDefenseChoice choice)
         {
             // One satellite under construction at a time: pads never outbid ships, and more pads (≈ 2.5 × after the
-            // pad expansion) would otherwise drain the money as soon as each is captured.
-            if (HasSatelliteUnderConstruction())
+            // pad expansion) would otherwise drain the money as soon as each is captured. A second one starts only
+            // from spare money (beyond the production reserve): a rich AI filled a retaken 5-pad centre one pad at a
+            // time and lost the pads again still empty (L3, 21:20 log).
+            if (HasSatelliteUnderConstruction() && choice.Cost > snapshot.Money - snapshot.ProductionReserve)
             {
                 EnemyAiTelemetry.RecordEvent(_owner.Id, _owner.Faction, "siteBuild",
                     $"kind=satellite;started=False;site={choice.SiteIndex};reason=oneWaiting");
@@ -257,23 +278,38 @@ namespace EmpireAtWar.Services.Enemy
 
         private int FindMineSite(ReinforcementZone centre)
         {
-            int centreSatellites = 0;
-            if (centre != null)
-                foreach (ICaptureSite site in _sites.Sites)
-                    if (site.Kind == CaptureSiteKind.Satellite && site.Owner == _owner.Id && site.IsOperational &&
-                        EnemyShipTaskGroupPlanner.IsInZone(centre, site.Center))
-                        centreSatellites++;
-
+            bool centreReady = centre == null || IsCentreReadyForMines(centre);
             for (int i = 0; i < _sites.Sites.Count; i++)
             {
                 ICaptureSite site = _sites.Sites[i];
                 if (site.Kind != CaptureSiteKind.Mining || site.Owner != _owner.Id ||
                     site.State != CaptureSiteState.Owned || _presence.HasHostileUnits(site, _owner.Id)) continue;
-                if (centre == null || centreSatellites >= EnemyDefenseStrategy.ZONE_SATELLITES ||
-                    !EnemyShipTaskGroupPlanner.IsInZone(centre, site.Center))
+                if (centreReady || !EnemyShipTaskGroupPlanner.IsInZone(centre, site.Center))
                     return i;
             }
             return -1;
+        }
+
+        /// <summary>
+        /// Centre mines wait for the centre's satellites: <see cref="EnemyDefenseStrategy.ZONE_SATELLITES"/> standing
+        /// team satellites there, or no own empty centre pad left that could take one now (none owned, all built, or
+        /// hostiles on them). Waiting on a pad that cannot be built left an ally's three centre mines unbuilt for
+        /// ≈ 900 s (L2, 21:20 log).
+        /// </summary>
+        private bool IsCentreReadyForMines(ReinforcementZone centre)
+        {
+            int teamSatellites = 0;
+            bool buildablePad = false;
+            foreach (ICaptureSite site in _sites.Sites)
+            {
+                if (site.Kind != CaptureSiteKind.Satellite || !EnemyShipTaskGroupPlanner.IsInZone(centre, site.Center))
+                    continue;
+                if (site.IsOperational && _relations.IsAllied(_owner.Id, site.Owner)) teamSatellites++;
+                else if (site.Owner == _owner.Id && site.State == CaptureSiteState.Owned &&
+                         !_presence.HasHostileUnits(site, _owner.Id))
+                    buildablePad = true;
+            }
+            return teamSatellites >= EnemyDefenseStrategy.ZONE_SATELLITES || !buildablePad;
         }
 
     }

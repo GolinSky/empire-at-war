@@ -65,7 +65,7 @@ namespace EmpireAtWar.Services.Enemy
         /// </summary>
         private const float HOLD_ENTRY_SCALE = 2f;
         // Matches the ship capture rule: sites this close to an allied station are taken last.
-        private const float ALLIED_BASE_SITE_RADIUS = 1000f;
+        public const float ALLIED_BASE_SITE_RADIUS = 1000f;
 
         private readonly IReadOnlyList<IEnemyCaptureObjectiveSource> _captureSources;
         private readonly IReinforcementZoneSource _zones;

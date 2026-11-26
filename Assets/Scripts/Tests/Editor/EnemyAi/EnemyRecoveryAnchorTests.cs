@@ -200,6 +200,38 @@ namespace EmpireAtWar.Tests.Editor
             Assert.That(snapshot.IsSafe(1000f, 0f, 0f), Is.True);
         }
 
+        [Test]
+        public void RouteSafety_IsRatedOnlyDuringUpdate_PlacementBetweenUpdatesReusesIt()
+        {
+            // The route check reads the fleet's ships; one may die before the next update (L5, 21:20 log).
+            AddZone(TestPlayers.Human, new Vector3(900f, 0f, 0f));
+            bool updating = true;
+            _recovery.Update(Vector3.zero, 0.5f, false, false, Time.time, (position, radius) =>
+            {
+                Assert.That(updating, Is.True, "The route check ran outside Update.");
+                return true;
+            });
+            updating = false;
+
+            Assert.That(_recovery.TryGetBuildAnchor(out Vector3 anchor), Is.True);
+            Assert.That(anchor.x, Is.EqualTo(900f));
+            var bounds = new List<Bounds>();
+            _recovery.CopySafeAlliedZoneBounds(bounds);
+            Assert.That(bounds, Has.Count.EqualTo(1));
+        }
+
+        [Test]
+        public void UnsafeRouteAtUpdate_KeepsTheAnchorAndZoneOutOfPlacement()
+        {
+            AddZone(TestPlayers.Human, new Vector3(900f, 0f, 0f));
+            _recovery.Update(Vector3.zero, 0.5f, false, false, Time.time, (position, radius) => false);
+
+            Assert.That(_recovery.TryGetBuildAnchor(out _), Is.False);
+            var bounds = new List<Bounds>();
+            _recovery.CopySafeAlliedZoneBounds(bounds);
+            Assert.That(bounds, Is.Empty);
+        }
+
         private void ReportHostile(FormationPoint position) =>
             _intel.Get(_owner.Team).Report(new HostileSighting(123, UnitTypeId.Ship(ShipType.Venator),
                 TestPlayers.Enemy, position, 100f, 0f, 1f, Time.time));

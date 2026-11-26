@@ -46,7 +46,10 @@ namespace EmpireAtWar.Services.Enemy
         private Vector3 _origin;
         private float _advantage = 1f;
         private bool _stationLost;
-        private Func<Vector3, float, bool> _routeSafe;
+        // Route safety reads the fleet's ships, which may die before the next update: it is rated only inside Update
+        // and the results are kept for placement calls between updates.
+        private bool _anchorRouteSafe;
+        private readonly HashSet<ReinforcementZone> _routeSafeZones = new HashSet<ReinforcementZone>();
 
         public bool IsActive => _latch.IsActive;
         public string DeferredReason => _anchor == null ? "noAnchor" : "noSafeCandidate";
@@ -74,8 +77,9 @@ namespace EmpireAtWar.Services.Enemy
             float now, Func<Vector3, float, bool> routeSafe, bool hasFleetThreat = true)
         {
             _origin = origin;
-            _routeSafe = routeSafe;
             _stationLost = !hasOwnStation;
+            _anchorRouteSafe = false;
+            _routeSafeZones.Clear();
             _smoother.Sample(fleetAdvantage, fleetAdvantage, now, hasFleetThreat, hasFleetThreat);
             _advantage = _smoother.Fleet;
             if (_latch.Update(now, _advantage, EnemyAiDifficultyProfile.Get(_owner.Difficulty).RetreatAdvantage,
@@ -83,14 +87,19 @@ namespace EmpireAtWar.Services.Enemy
                     hasOwnStation || _production.ProductionHost != _owner.Id))
                 RecordMode();
             if (!IsActive) { _anchor = null; return; }
-            SelectAnchor(now, hasOwnStation);
+            SelectAnchor(now, hasOwnStation, routeSafe);
+            _anchorRouteSafe = _anchor != null && routeSafe(_anchor.Position, 0f);
+            foreach (ReinforcementZone zone in _zones.Zones)
+                if (zone.IsCapturable && _roster.IsAllied(_owner.Id, zone.Owner) &&
+                    routeSafe(ToVector(ToPoint(zone.Center)), zone.Radius))
+                    _routeSafeZones.Add(zone);
         }
 
         public bool TryGetBuildAnchor(out Vector3 position)
         {
             position = _anchor == null ? default : _anchor.Position;
             return IsActive && _anchor != null && IsCurrentAnchorValid() && IsPlacementSafe(position, 0f) &&
-                   SafeCurrentRoute(position, 0f) && !_areas.IsBlocked(_owner.Id, position);
+                   _anchorRouteSafe && !_areas.IsBlocked(_owner.Id, position);
         }
 
         public Vector3? FindRetreatAnchor(Vector3 origin, bool hasStation,
@@ -197,7 +206,7 @@ namespace EmpireAtWar.Services.Enemy
             {
                 Vector3 position = ToVector(ToPoint(zone.Center));
                 if (!zone.IsCapturable || zone.IsContested || !_roster.IsAllied(_owner.Id, zone.Owner) ||
-                    !IsPlacementSafe(position, zone.Radius) || !SafeCurrentRoute(position, zone.Radius)) continue;
+                    !IsPlacementSafe(position, zone.Radius) || !_routeSafeZones.Contains(zone)) continue;
                 bounds.Add(new Bounds(position, Vector3.one * zone.Radius * 2f));
             }
             bounds.Sort((left, right) => Score(_origin, right.center, Weight()).CompareTo(Score(_origin, left.center, Weight())));
@@ -210,19 +219,19 @@ namespace EmpireAtWar.Services.Enemy
             RecordMode();
         }
 
-        private void SelectAnchor(float now, bool hasStation)
+        private void SelectAnchor(float now, bool hasStation, Func<Vector3, float, bool> routeSafe)
         {
             _candidates.Clear();
             int rejectedUnsafe = 0;
             if (hasStation && !_pressure.HasPressure &&
                 _reinforcementZones.TryGetDefaultZoneCenter(_production.ProductionHost, out Vector3 home))
-                Add("home", "home", home, 0f, ref rejectedUnsafe);
+                Add("home", "home", home, 0f, routeSafe, ref rejectedUnsafe);
             for (int i = 0; i < _zones.Zones.Count; i++)
             {
                 ReinforcementZone zone = _zones.Zones[i];
                 if (!zone.IsCapturable || zone.IsContested || !_roster.IsAllied(_owner.Id, zone.Owner)) continue;
                 string kind = zone.Owner == _owner.Id ? "ownZone" : _roster.Get(zone.Owner).IsAi ? "allyZoneAi" : "allyZoneHuman";
-                Add($"zone:{i}", kind, ToVector(ToPoint(zone.Center)), zone.Radius, ref rejectedUnsafe);
+                Add($"zone:{i}", kind, ToVector(ToPoint(zone.Center)), zone.Radius, routeSafe, ref rejectedUnsafe);
             }
             IReadOnlyList<AiWorldSnapshot.Entry> bases = _worldSnapshot.Bases;
             for (int i = 0; i < bases.Count; i++)
@@ -230,7 +239,7 @@ namespace EmpireAtWar.Services.Enemy
                 AiWorldSnapshot.Entry entry = bases[i];
                 if (_roster.IsAllied(_owner.Id, entry.Owner) && !entry.Entity.HealthModel.IsDestroyed &&
                     !entry.Entity.TryGetFacade(out ISecondStationFacade _))
-                    Add($"station:{entry.Id}", "allyStation", entry.Position, 0f, ref rejectedUnsafe);
+                    Add($"station:{entry.Id}", "allyStation", entry.Position, 0f, routeSafe, ref rejectedUnsafe);
             }
             // Placement still checks safety on each candidate built around a pressured station.
             if (_pressure.HasPressure && _pressure.StationId != 0 &&
@@ -261,9 +270,10 @@ namespace EmpireAtWar.Services.Enemy
                     FormattableString.Invariant($"kind={_anchor.Kind};id={_anchor.Id};pos=({_anchor.Position.x:F1} {_anchor.Position.z:F1});w={Weight():F2};threatDistance={GetNearestHostileDistance(_anchor.Position):F1};oldStationDistance={Distance(_anchor.Position, _map.GetStationPosition(_owner.Id)):F1};candidates={_candidates.Count};rejectedUnsafe={rejectedUnsafe}"));
         }
 
-        private void Add(string id, string kind, Vector3 position, float radius, ref int rejected)
+        private void Add(string id, string kind, Vector3 position, float radius,
+            Func<Vector3, float, bool> routeSafe, ref int rejected)
         {
-            if (Distance(_origin, position) > LOCAL_ANCHOR_RANGE || !_routeSafe(position, radius) ||
+            if (Distance(_origin, position) > LOCAL_ANCHOR_RANGE || !routeSafe(position, radius) ||
                 !IsPlacementSafe(position, radius) || _areas.IsBlocked(_owner.Id, position))
             {
                 rejected++;
@@ -280,8 +290,6 @@ namespace EmpireAtWar.Services.Enemy
                 if (!zone.IsCapturable && zone.Owner == _owner.Id) radius = Mathf.Max(radius, zone.Radius);
             return radius;
         }
-        private bool SafeCurrentRoute(Vector3 position, float radius) =>
-            _routeSafe(position, radius);
         private float Score(Vector3 origin, Vector3 position, float weight)
         {
             float mapSize = Vector2.Distance(_map.SizeRange.Min, _map.SizeRange.Max);

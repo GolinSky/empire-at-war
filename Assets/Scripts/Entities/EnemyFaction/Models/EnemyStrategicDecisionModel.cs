@@ -349,9 +349,12 @@ namespace EmpireAtWar.Entities.EnemyFaction.Models
             }
 
             // S2: against the enemy fleet, a fleet away from its station is hunted first; the station is assaulted when
-            // no hunt target is left (hunt rules are skipped while CanHuntFleet is false).
+            // no hunt target is left (hunt rules are skipped while CanHuntFleet is false). Not in the end game and not
+            // while joining an allied assault: there the next station is the target (L1, 20:43 log — the ally hunted
+            // while the second station still stood).
             if (best.State == EnemyStrategicState.AssaultBase && bestHunt != null &&
-                snapshot.VictoryCondition == BattleVictoryCondition.DestroyEnemyFleet)
+                snapshot.VictoryCondition == BattleVictoryCondition.DestroyEnemyFleet &&
+                !snapshot.IsEndGame && !snapshot.JoinsAllyAssault)
             {
                 runnerUp = Math.Max(runnerUp, bestScore);
                 best = bestHunt;

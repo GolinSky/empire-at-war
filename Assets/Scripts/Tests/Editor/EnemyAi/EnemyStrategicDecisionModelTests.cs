@@ -716,6 +716,23 @@ namespace EmpireAtWar.Tests.Editor
             Assert.That(decision.Reason, Is.EqualTo("Joining an allied assault."));
         }
 
+        // L1 (20:43 log): after the first station fell the ally hunted the fleet while the second station stood. In the
+        // end game and in an allied assault a hunt target no longer pulls the fleet off the station.
+        [TestCase(true, false)]
+        [TestCase(false, true)]
+        public void EndGameOrAllyAssault_KeepsAssaultingWhileAHuntTargetExists(bool isEndGame, bool joinsAllyAssault)
+        {
+            EnemyStrategicDecision decision = new EnemyStrategicDecisionModel().Evaluate(
+                CreateSnapshot(BattleVictoryCondition.DestroyEnemyFleet, EnemyAiDifficulty.UltraHard,
+                    ownShipCount: 12, enemyShipCount: 6, ownedCapturableZoneCount: 2,
+                    fleetAdvantage: EnemyAiDifficultyProfile.Get(EnemyAiDifficulty.UltraHard).RequiredAttackRatio *
+                        EnemyStrategicDecisionModel.PRESS_ADVANTAGE_SCALE,
+                    hasCaptureTarget: false, canHuntFleet: true, isEndGame: isEndGame,
+                    joinsAllyAssault: joinsAllyAssault));
+
+            Assert.That(decision.State, Is.EqualTo(EnemyStrategicState.AssaultBase));
+        }
+
         private static EnemyStrategicSnapshot CreateSnapshot(
             BattleVictoryCondition victoryCondition,
             EnemyAiDifficulty difficulty,

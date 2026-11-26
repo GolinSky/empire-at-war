@@ -354,6 +354,7 @@ namespace EmpireAtWar.Tests.Editor
             Assert.That(homeFirst.SiteIndex, Is.EqualTo(6));
         }
 
+        // Without spare money (all of it reserved for production) a second satellite waits for the first.
         [Test]
         public void Construction_StartsNoSatelliteWhileAnotherIsUnderConstruction()
         {
@@ -361,13 +362,29 @@ namespace EmpireAtWar.Tests.Editor
             var building = new PadSite { Owner = TestPlayers.Enemy, State = CaptureSiteState.Constructing };
             var controller = new EnemySiteConstructionController(new PadDirectory(building), null, construction,
                 TestPlayers.CreateDuel().Get(TestPlayers.Enemy), null, new EnemyDefenseStrategy(), null, null, null, null, null);
-            var snapshot = Snapshot(new ForceComposition(), 5000f, 0f, new EnemyDefensePad(5, 0f, 0.5f,
+            var snapshot = Snapshot(new ForceComposition(), 5000f, 5000f, new EnemyDefensePad(5, 0f, 0.5f,
                 float.PositiveInfinity, false, false, Array.Empty<SiteFacilityType>(), isZonePad: true, pointPads: 4));
 
             Assert.That(controller.HasSatelliteUnderConstruction(), Is.True);
             controller.BuildNext(snapshot, mineSite: -1, mandatorySatellite: true);
 
             Assert.That(construction.Started, Is.Empty);
+        }
+
+        // L3 (21:20 log): a rich AI filled a retaken centre one pad at a time; spare money starts the next one now.
+        [Test]
+        public void Construction_SpareMoneyStartsASecondSatelliteWhileOneIsUnderConstruction()
+        {
+            var construction = new ConstructionStub(true);
+            var building = new PadSite { Owner = TestPlayers.Enemy, State = CaptureSiteState.Constructing };
+            var controller = new EnemySiteConstructionController(new PadDirectory(building), null, construction,
+                TestPlayers.CreateDuel().Get(TestPlayers.Enemy), null, new EnemyDefenseStrategy(), null, null, null, null, null);
+            var snapshot = Snapshot(new ForceComposition(), 50000f, 0f, new EnemyDefensePad(5, 0f, 0.5f,
+                float.PositiveInfinity, false, false, Array.Empty<SiteFacilityType>(), isZonePad: true, pointPads: 4));
+
+            controller.BuildNext(snapshot, mineSite: -1, mandatorySatellite: true);
+
+            Assert.That(construction.Started, Is.EqualTo(new[] { 5 }));
         }
 
         private EnemyDefenseSnapshot Pads(params EnemyDefensePad[] pads) =>

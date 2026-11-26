@@ -593,7 +593,8 @@ namespace EmpireAtWar.Services.Enemy
             foreach (EnemyCaptureObjective candidate in _captureCandidates)
             {
                 if (IsNearHostileBase(candidate.Position) && !candidate.IsThreatened ||
-                    IsCaptureReserved(candidate.Id) || IsInZoneReservedByAlly(candidate.Position)) continue;
+                    IsCaptureReserved(candidate.Id) || IsInZoneReservedByAlly(candidate.Position) ||
+                    IsBesideAlliedAiBase(candidate)) continue;
                 _zoneCandidates.Add(candidate);
                 _zonePriorities.Add(PlanarDistance(home, candidate.Position) - GetCaptureScore(home, candidate));
             }
@@ -823,6 +824,21 @@ namespace EmpireAtWar.Services.Enemy
 
         public void RecordZoneAllocation(string details) =>
             EnemyAiTelemetry.RecordEvent(_owner.Id, _owner.Faction, "zoneAlloc", details);
+
+        /// <summary>
+        /// L4: a site beside an allied AI's station is that AI's to take. In the 21:20 log one AI's only opening ship
+        /// crossed the map to its ally's home mine while its own home mine waited until 131 s.
+        /// </summary>
+        private bool IsBesideAlliedAiBase(EnemyCaptureObjective candidate)
+        {
+            if (candidate.Kind != EnemyCaptureObjectiveType.Facility) return false;
+            foreach (AiWorldSnapshot.Entry station in _worldSnapshot.Bases)
+                if (station.Owner != _owner.Id && _playerRoster.IsAllied(_owner.Id, station.Owner) &&
+                    _playerRoster.Get(station.Owner).IsAi &&
+                    PlanarDistance(station.Position, candidate.Position) <= EnemySquadronCommander.ALLIED_BASE_SITE_RADIUS)
+                    return true;
+            return false;
+        }
 
         private bool IsInZoneReservedByAlly(Vector3 position)
         {
@@ -2045,6 +2061,11 @@ namespace EmpireAtWar.Services.Enemy
                 if (IsNearHostileBase(candidate.Position) && !candidate.IsThreatened)
                 {
                     CountCaptureFilter("nearHostileBase");
+                    continue;
+                }
+                if (IsBesideAlliedAiBase(candidate))
+                {
+                    CountCaptureFilter("allyHome");
                     continue;
                 }
                 bool isCurrent = IsCurrentCapture(candidate);
