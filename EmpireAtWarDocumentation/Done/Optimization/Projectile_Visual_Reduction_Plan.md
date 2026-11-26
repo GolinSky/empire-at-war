@@ -222,4 +222,4 @@ Trail (`Trail` particle system, world emission by distance):
 - `Assets/Scripts/Components/ViewComponents/Weapon/MissileShot.cs`, `ShotEffect.cs`
 - `Assets/Scripts/Components/ViewComponents/Health/WeaponHardPoint.cs`, `MissileInterceptorHardPoint.cs`, `FighterTorpedoHardPoint.cs`
 - `Assets/Scripts/Components/AttackComponent/WeaponProfile.cs`, `WeaponFamilyRule.cs`, `WeaponProfileFactory.cs`
-- Related: [[Rules/BATTLE_PERFORMANCE_GUIDELINES#Weapon cadence and pooled overlap · 2026-11-14]], [[TODOs/Bugs/Weapon_Fire_Rate_Low_FPS]], [[Done/Optimization/Projectile_VFX_PC_Optimization_Plan]]
+- Related: [[Rules/BATTLE_PERFORMANCE_GUIDELINES#Weapon cadence and pooled overlap · 2026-11-14]], [[Review/Bugs/Weapon_Fire_Rate_Low_FPS]], [[Done/Optimization/Projectile_VFX_PC_Optimization_Plan]]

@@ -1,13 +1,16 @@
 ---
 category: Bugs
-status: in-progress
+status: done
 agent_marker: AGY
 created: 2026-11-18
+disposition: closed-by-user
+superseded_by: "[[Review/Bugs/Attack_Order_Hold_In_Range]]"
+completed: 2026-11-26
 ---
 # [AGY] Capital Movement and Class Rework Fixes (Audit & Reconciled Plan)
 
 ## Goal
-- Reconcile contradictions in [[TODOs/Bugs/Capital_Movement_And_Class_Rework_Fixes]] against live git commits (`aec386848`, `d813ee1ea`, `ce000bbd9`) and the 2026-11-17 telemetry (`16:01`, `16:23`, `16:47`, `17:23`).
+- Reconcile contradictions in [[Done/Bugs/Capital_Movement_And_Class_Rework_Fixes]] against live git commits (`aec386848`, `d813ee1ea`, `ce000bbd9`) and the 2026-11-17 telemetry (`16:01`, `16:23`, `16:47`, `17:23`).
 - Document the proven root cause of `Player0` ISD II (`entityId=256`) driving northeast to `(1678.2, 2140.1)` before turning 180° in place.
 - Complete the post-`ce000bbd9` turn-rate verification and the 76-ship root `BoxCollider` corner-to-centre vs `NavigationRadius` footprint audit.
 
@@ -65,8 +68,13 @@ created: 2026-11-18
 | `C9979` | `30.99` | `29.17` | `31.18` | `+0.19` | `(58.3, 22.0)` |
 
 ## Remaining TODO
-- [ ] Reconcile checkboxes/Progress/Phase-0 status in [[TODOs/Bugs/Capital_Movement_And_Class_Rework_Fixes]] (if keeping original note) and decide whether `NavigationRadius` for the `18` ships above should be bumped to `>= cornerDiag` (or keep tight turning footprint with multi-circle/box clearance)
+- [ ] Reconcile checkboxes/Progress/Phase-0 status in [[Done/Bugs/Capital_Movement_And_Class_Rework_Fixes]] (if keeping original note) and decide whether `NavigationRadius` for the `18` ships above should be bumped to `>= cornerDiag` (or keep tight turning footprint with multi-circle/box clearance)
 - [ ] Complete dedicated Executor (`hull=150000`) & Titan move-start verification under clean orders without `isdIbug.json` `7,444 m` offset
-- [ ] Route `ISD II 256` wrong-way / map-edge leg fixes through [[TODOs/Bugs/Attack_Order_Hold_In_Range_And_Formation_Offsets_AGY]]
+- [ ] Route `ISD II 256` wrong-way / map-edge leg fixes through [[Done/Bugs/Attack_Order_Hold_In_Range_And_Formation_Offsets_AGY]]
 - [ ] Review `BrakeForReplan` `1°` threshold / deceleration vs course blending in `ShipMoveComponent.cs`
 - [ ] Address `72` `[ShipNavigation] Tangent route build failed` warnings (`64` code 1, `8` code 3) observed across Host Battles 1–4
+
+## Disposition 2026-11-26
+- Closed by user decision in the 2026-11-26 backlog review. Attack-order findings live in [[Review/Bugs/Attack_Order_Hold_In_Range]].
+- Not done, not merged (no owner): 18-ship `NavigationRadius` corner-diagonal audit (re-measure after hull-box refit `865678207`; ISD II still 91.46), `BrakeForReplan` 1° threshold (`ShipMoveComponent.cs:575-578`), `MaxRotationAcceleration` ramp not doubled with `RotationSpeed`, `EstimatePathDuration` ignoring turn ramp.
+- Likely done: tangent-route warnings → `ba13efe88`, `d4fdbbc63`, `11a4ee951` (not log-verified).

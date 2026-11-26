@@ -11,15 +11,7 @@
 
 - [ ] **Ship hull damage visuals (scorches, burnt plating, breaches in `Ship Lit`)** → [[TODOs/Features/Ship_Hull_Damage_Shader_Plan|Ship Hull Damage Shader Plan]] — 2026-11-20: Phase 1 implemented and tuned with the user (procedural soot scorches, off-centre sunken burnt patches with glowing rim, 31 steps, per-ship auto mark scale). Perf review + optimizations R1–R6 done (plane pre-test, shape skip, far-ship LOD, cheap activation hash, quality tier, dead texture removed). Tests not run. Next (user): in-game check, GPU capture, Phase 2 decision.
 - [ ] **Ship UI: icon double-tap camera focus (off-screen only) + tap group entry → select that single unit** → [[TODOs/Features/Ship_Ui_Icon_Focus_And_Entry_Select|Ship UI Icon Focus & Entry Select]] — 2026-11-19: plan drafted; 3 open questions (hero guard, on-screen behavior, collapsed groups).
-- [ ] **Squadron icon clustering rebuild (screen-space matrix grid, smooth, ship-aware, cheap)** → [[TODOs/Features/Squadron_Icon_Clustering_Rebuild|Squadron Icon Clustering Rebuild]] — 2026-11-18: phases 1–6 implemented and compiled (tests not run); remaining: user capture, station hull obstacles, optional mesh batching.
-- [ ] **Squadron bay rotation: ship-wide active squadron cap (Bulwark = 1)** → [[TODOs/Features/Squadron_Bay_Rotation_Plan|Squadron Bay Rotation Plan]]
-  - 2026-11-18: Gemini per-bay data edit reverted (`8925de639`); code/data back to pre-Gemini state. Plan: Phase 1 per-ship `HangarMaxActive` code, Phase 2 values (12 ships → 0, 28 → 1), Phase 3 cap-aware AI/preload readers, Phase 4 rotation for all except Venator/VenatorII/Lucrehulk/Secutor/MC80Independence/HomeOne/ImperialVenator/ISDI/ISDII. Bulwark Mk1 = 0 (confirmed).
 - [ ] **Forbidden UI SFX** → [[Done/Features/Ui_Sfx_System#Deferred follow-up|Deferred forbidden cue]].
-- [ ] **Dynamic in-game tutorial (in-match hints: camera, select, move, minimap, build, counters tooltip, build queue, abilities + auto-power, level up, research, map systems)** → [[TODOs/Features/Ingame_Tutorial_Plan|In-Game Tutorial Plan]]
-  - UI spotlight migration 2026-11-11: shared UI frames replaced by a 65% dim overlay with target cutout; added per-element `IUiHighlight` API and own-graphic 1.2 s pulse (compile/bindings verified, visual check pending); optional pointer blocking defaults off. Loading-time minimap `HideTarget` exception fixed 2026-11-11 with marker lifecycle tracking; compiled, startup replay pending. User-authorized tests: Ui 274/274 and Core 150/150 passed; visual acceptance pending.
-  - Status: in progress. Phase 0 decided 2026-11-09: in-match hints only (guided battle deferred), plain text, text-only coach card (layout A) + pulsing ring, 3 s gap, basics pause during combat. Phases 1–7 + settings done 2026-11-09 (compiles clean; tests not run; not run in-game): hint card UI, HUD anchors, 10 basics + 18 event hints, Show/Reset hints in Settings, Turn off on card. Remaining: audio cue (needs clip), optional analytics, tests, user in-game check.
-  - Input glyphs added 2026-11-09: white mouse/keycaps, red active mouse control, live settings bindings and station-selection prerequisite prompts. Imported/saved and visually previewed; tests not run.
-  - Onboarding redesign 2026-11-09: lessons of small steps, auto-inserted prerequisite steps (select unit / station), world targets (mine near station, satellite pad), mine-first order, pause/speed, shortcuts, split research, level up after station. 50 steps, 14 onboarding + 8 event lessons. Compiles clean; tests not run; in-game check pending; audio cue remains open.
 
 - [ ] **Guided tutorial battle (`GameMode.Tutorial`, Play menu button, 16 chapters, weak controlled Easy enemy, central 4-mine zone → enemy mine → destroy station)** → [[TODOs/Features/Guided_Tutorial_Battle_Plan|Guided Tutorial Battle Plan]]
   - UI spotlight migration 2026-11-11 uses the shared hint view; per-element `IUiHighlight` API and own-graphic pulse added (compile/bindings verified, visual check pending); world markers preserved. Ui 274/274 and Core 150/150 passed; in-game acceptance pending.
@@ -37,7 +29,6 @@
 - [ ] **Import Empire fleet: Procursator, Allegiance, Titan and Tartan** → [[TODOs/Features/Empire_Fleet_Import|Empire Fleet Import]]
   - Next gate: see the linked plan; detailed recorded progress is retained in the historical backlog snapshot.
 
-
 - [ ] **Finish V-19 Torrent integration acceptance** → [[TODOs/Features/V19Torrent_Import|V-19 Torrent Import]]
   - **Remaining**: Hunt ability decision/implementation, clean-skirmish acceptance and provisional balance review; deployed wing pose is static.
 
@@ -54,14 +45,9 @@
   - Ion Pulse now uses a 10 s stun and fills the ring with the existing stun lightning. Unity asset bindings verified.
   - **Remaining**: exact Vulture/bomber squadron assets and launches; in-game combat, placement, ability and destruction acceptance; provisional balance review.
 
-- [ ] **Defense satellites: capturable pads around mining points, 5 satellite types, AI use** → [[TODOs/Features/Defense_Satellites_Plan|Defense Satellites Plan]]
-  - Status: implemented 2026-10-28; satellite prefabs have uncommitted changes.
-  - Next: commit prefab WIP; user in-game acceptance (combat, visuals, capture/build flow, AI).
-
 - [ ] **Space hazards: Nebula / Ion Storm map areas (+ future map-wide events)** → [[TODOs/Features/Space_Hazards_Plan|Space Hazards Plan]]; [[TODOs/Features/Space_Hazards_Plan - Visuals|Visual art direction]]
   - Status: implemented; single hazards owner since 2026-10-29 (Rework + Shape Rework merged; current geometry = Shape Rework).
   - Next: IonStorm branches → data/material; SDF bake timing. User review/tests → queue; decor perf → FPS Recovery.
-
 
 ### Bugs
 
@@ -71,16 +57,9 @@
 - [ ] **Enemy AI station push and ally assault** → [[TODOs/Bugs/Enemy_AI_Station_Push_And_Ally_Assault]]; follows [[Done/Bugs/Enemy_AI_Opening_And_Task_Groups]]
   - 2026-11-25: plan created from the 2v2 host log 2026-11-24 23:15 (`AssaultBase` 0 of 1,174 state rows; AIs at 118–120 / 120 unit cap with 0.4–1.2 M banked). Main cause: assault rules are off in `DestroyEnemyFleet`, the only mode played. 9 steps (S1–S9), 3 user decisions (D1–D3).
   - 2026-11-25: S1–S7 implemented, S9 tests written (6 new, not run); compile clean. D1 and D2 defaults taken. Open: S8 (needs the new `AssaultGate` row from a battle), user battle gate (next 2v2 host log), carried-over W8 / W29, W58, W44.
-- [ ] **Hardpoint-based weapon reach (Praetor/big ships hold with guns out of range; radar + planar leftovers)** → [[TODOs/Bugs/Hardpoint_Based_Weapon_Reach]] — 2026-11-20: multipliers baked on 16 big-ship prefabs, radar raised on 15 ships; planar leftovers and in-game check remain.
 - [ ] **Enemy AI economy strategy** → [[TODOs/Bugs/Enemy_AI_Economy_Strategy]]; follows [[Done/Bugs/Enemy_AI_Active_Play_And_Ship_Combat]]
   - Status: in progress (2026-11-19). X1–X5 (`8e2ebefe6`, `28d1a41fd`) and review fixes R1–R9 (`89810dcb2`) committed; map M2/M4/M5 in `ac7ff075c`. EditMode: EnemyAi 503/503, Capture, Map pass. 17:31 battle lost → objective-selection rebuild P1–P7 implemented 2026-11-19 (zone verdicts Go/Assemble/Deny, pull-back to gathering point). 19:05 battle: same issues (allocator missing) → N1–N6 implemented 2026-11-19 evening: ship allocator (one reserve + one force per zone), commit at an even fight, unscouted-zone estimate, route rule, pull-back fix, sabotage when behind, squadron power rule, satellites counted as defenders; `EnemyAi` EditMode 518/527 → 3 stale fixtures fixed → `EnemyUnitCommanderTests` 146/146. Open: tests for R3/R5/R6, UltraHard 1v1 Small battle, then 2v2 Medium + 1v1 Large → [[TODOs/Bugs/Enemy_AI_Economy_Strategy#Status 2026-11-19 (current)]].
 
-- [ ] **Capital attack movement + class rework fixes** → [[TODOs/Bugs/Capital_Movement_And_Class_Rework_Fixes]]
-  - Status: in progress (2026-11-17). Done: map seed/layout log (`BattleMapTelemetry` → `_map.csv`). ISD I spawn fixed and user-confirmed 2026-11-17 (a station-centred origin tied between the main region and a corner pocket; the larger region now wins). Next: Phase 1/2 movement issues and the uncommitted class-rework edits. Then the Titan/Allegiance freeze, Executor holding out of reach, Tector stern-first retreat at stations, and class-rework review defects.
-- [ ] **[AGY] Weapon Fire Rate Degradation and Ability Sync Crash at Low FPS** → [[TODOs/Bugs/Weapon_Fire_Rate_And_Network_Sync_Low_FPS_AGY|Plan]]
-- [ ] **[AGY] Capital Movement and Class Rework Fixes (Audit & Reconciled Plan)** → [[TODOs/Bugs/Capital_Movement_And_Class_Rework_Fixes_AGY|Plan]]
-- [ ] **[AGY] Ship Attack Order Hold-in-Range Band and Formation Offset Fix** → [[TODOs/Bugs/Attack_Order_Hold_In_Range_And_Formation_Offsets_AGY|Plan]]
-- [ ] **[AGY] Enemy AI Mid-Fight Base Defense at Level 3 and Difficulty Consistency** → [[TODOs/Bugs/Enemy_AI_Base_Defense_And_MidGame_Consistency_AGY|Plan]]
 - [ ] **Multiplayer connection analysis (client ships drag while rotating, client weapons fire slower; network status overlay from cheats)** → [[TODOs/Bugs/Multiplayer_Connection_Analysis]]
   - 2026-11-22: plan created and re-validated from source + `Player.log` of 2026-11-21. Logs hold no network or pool numbers. Movement = leftover low-bandwidth design; weapon cause open (pool gate, late targets). Awaiting user go for Phase 1; nothing implemented.
   - 2026-11-22: Phase 1 done (compiles, tests not run): Cheats ▸ Debug network status overlay, per-battle `BattleTelemetry/*_net.csv` on every online machine, release pool counters, `NetworkDebugStatsMessage`. Next: user plays the Phase 2 3v3 match and sends the CSVs.
@@ -88,11 +67,6 @@
   - 2026-11-22: Phase 2 host half recorded (2v2, 1 client, 3037 s, build `0.1.77`). Link clean (RTT ≤ 28 ms, Steam quality 1.0), host tick 20.0 Hz, host shot pools fine. Host sends 4.1 keyframes per entity per second → dead reckoning mispredicts constantly (movement issue A confirmed host-side). Steam cap 262 144 B/s; approach B fits at 20 Hz. Open: client CSV from the same match; user to say whether the rotation drag was on the host or client screen.
   - 2026-11-23: two client matches recorded (build `0.1.77`, RTT 75 ms, 0 lost chunks). Client squadron fighters are 1.5–2 km from the host position, 98% of squadrons (D1 confirmed). Keyframe storm = squadron roots (14 of 20 ticks), ships ≈ 1.3/s. Client fires 90–93% of host shots (73–78% in the first 10 min); pool gate and reliable backlog ruled out. Render buffer erodes 120 → 77 ms, underruns after 20 min. Phase 1 code changes nothing sent or applied; "worse" = user was client, not host. Rotation drag = host screen → ship movement. Next: user approves fix order D1 → squadron roots every tick → render buffer.
   - 2026-11-23: Phase 3 items 1–3 implemented (compile clean, tests not run, not played): client fighters ride the host squadron root (`SquadronReplicaAnchor`, no local target picks on clients), squadron roots sent every tick and interpolated, Mirror catch-up thresholds −0.25/+0.5 tick; client telemetry: corrections exclude squadrons, `squadron_keyframes_s`, `chunk_loss_pct` dropped. Next: user plays an online match as client on the new build and sends `_net.csv` + `Player.log`.
-- [ ] **Weapon fire rate drops at low FPS (shots gated on visual projectile pool, 1 bolt/frame growth)** → [[TODOs/Bugs/Weapon_Fire_Rate_Low_FPS]]
-  - 2026-11-18: cause from source after online battles 2026-11-17 (logs `Logs/OnlineBattles/20261117T1650Z/`). Nothing implemented; Phase 1 measurement next.
-- [ ] **Attack order: hold while in range, no run-away / map-edge legs** → [[TODOs/Bugs/Attack_Order_Hold_In_Range]]
-  - 2026-11-18: attack arc, hold band, same-target refresh and telemetry implemented. The 18:25 battle logged 453 inward or level approach legs and one permitted outward hull-contact retreat. Active: launcher-only artillery fallback, retreat facing verification, and affected Navigation/BattleInput/Combat regression coverage.
-- [ ] **Squadron icon anchor lag (0.8 s filter outside Travel mode)** → [[TODOs/Bugs/Squadron_Icon_Anchor_Lag|Squadron Icon Anchor Lag]] — 2026-11-18: plan created; not started.
 - [ ] **Squadron FPS (icon stacking/grid out of scope: user rebuild)** → [[TODOs/Bugs/Squadron_Count_Stacking_And_FPS]]
   - 2026-11-18: 1v1 Editor peak 127 live squadrons (≈1,000 craft). Fixed (compiled, prefabs saved, tests not run): torpedo-mount per-frame target selection; removed 334 engine trails, 186 fighter colliders, squadron world selection rings (icon-only selection), 212 dead flash meshes, 234 fighter shadow casters. Next: fighters out of root hierarchy, mesh merge/LOD, remove model-embedded muzzle-flash meshes from all models (12 model files + reinforcement/ship prefabs), split fighter/ship projectile pools, radar per-frame tick.
 - [ ] **Enemy AI weak base defense + inconsistent UltraHard** → [[TODOs/Bugs/Enemy_AI_Base_Defense_And_Consistency]]
@@ -100,15 +74,6 @@
   - 2026-11-18 playtest: AI order churn ≈14k orders/32 min; patrol corvette re-ordered every 0.5 s and flip-flopped with the fleet (the "random direction" ships) → fixed in `EnemyPatrolShipController`. Spikes: AI capture probe +19.7 ms, patrol select +7.9 ms (see Live CPU Sweep). Logs: `Logs/Playtests/20261118T1013Z/`.
 - [ ] **Ship hardpoints, firing angles and balance** → [[TODOs/Bugs/Ship_Hardpoint_And_Balance_Plan]]
   - Status: in progress (2026-11-15). Recusant weapon profile swaps saved and verified with existing arcs. Recusant battle output, Peleset/Recalcitrant wrapped yaw, Dispatcher/Resolute/Arquitens arcs, Mandator economics and shared-prefab telemetry remain under review.
-
-
-- [ ] **Rebalance carrier deployment and squadron stats** → [[TODOs/Bugs/Carrier_and_Squadron_Rebalance|Carrier and Squadron Rebalance]]
-  - 2026-11-14 exact target sheet: 17 regular types with craft/DPS/hull/shield/recovery/weapon budgets; all 34 carriers assigned 1–2 squads per supported role plus total stock. CIS fixed at 13/11/10 F/I/B; per-craft quality verified Rebel > Republic > Empire > CIS. [[TODOs/Bugs/Carrier_and_Squadron_Rebalance - Unit Amount Research|Calculations]]. Implemented:17 regular stats,14 resized prefabs,34 carrier targets, descriptions and AI live/pending launch counting. Unity compilation, saved bindings and live DPS verified; tests not run. Station/purchase economics and gameplay acceptance remain.
-  - Reopened 2026-11-12 after failed fresh-match balance acceptance. Original 29 loadouts match; telemetry confirms Republic/Rebel squadron kill advantage. Implemented 1 s CIS launches, no loss-triggered cooldown reset, 5 s recent window and faction station counts 5/4/3/2. Applied approved direct-purchase prices. 2026-11-14 live/reserve counting and34-carrier coverage implemented. Remaining: strength playtest and station/purchase economics; [[TODOs/Bugs/Carrier_and_Squadron_Rebalance - Research|audit evidence]].
-
-- [ ] **Fix defense satellite review findings** → [[TODOs/Bugs/Defense_Satellites_Review_Fixes|Defense Satellites Review Fixes]]; parent: [[TODOs/Features/Defense_Satellites_Plan|Defense Satellites Plan]]
-  - Status: fixes #1–#10 implemented 2026-10-28; #3 kept by user.
-  - Next: user in-game check (#4 build order, #5 raids, #10 cues, #11 rings, #12 home mines).
 
 - [ ] **Fix enemy AI losing battles and CIS vs Republic balance** → [[TODOs/Bugs/Enemy_AI_And_Faction_Balance|Enemy AI and Faction Balance]]; logs: [[Tooling/Battle_Telemetry|Battle Telemetry]]
   - Evening19:09 CIS battle audit: old-home spawning after primary station loss, retreat→Hold fleet loss and capture oscillation; squadron damage gap3.66×. Fix anchoring/recovery before broad balance tuning; source/log verified, no gameplay edits/tests. Evidence in the dated review's Evening Battle section.
@@ -119,19 +84,13 @@
   - Target-specific task forces implemented 2026-11-01: counter-based strike selection, assembly readiness, retained membership and guard screen. Runtime acceptance pending; tests authored, not run.
   - Battle follow-up implemented 2026-11-01: caliber/population valuation, home defense deployment, persistent main-force assembly and active bounded screens. Latest 17:27 battle: capital buying and main-force attacks improved; siege response, emergency production and capture clearance remain open; parent retains broader balance scope. Evidence/priorities → [[TODOs/Bugs/Enemy_AI_And_Faction_Balance - Battle Review]].
 
-- [ ] **Replace silent null returns with fail-fast/Try APIs** (Wave 1) → [[TODOs/Bugs/Fail_Fast_Null_Returns|Fail-Fast Null Returns]]
-  - Next gate: see the linked plan; detailed recorded progress is retained in the historical backlog snapshot.
-
 ### Optimization
-
-
 
 - [ ] **Cinematic explosion VFX: pool sizes from `[VfxPools]` log, overdraw capture** → [[TODOs/Optimization/Cinematic_Explosion_Vfx_Optimization|Cinematic Explosion VFX Optimization]]
   - 2026-11-23: textures capped 2048 + compressed (≈ 680 → 49 MB Editor), lights removed, Lit → Unlit, per-pool prewarm + peak logging.
 
 - [ ] **Online battle low FPS (3 humans vs 4 AI, 10–20 FPS) + release-build telemetry** → [[TODOs/Optimization/Online_Battle_Low_FPS]]
   - 2026-11-18: logs archived and split per battle; release `Player.log` has no timing data. Decided: keep `Maximum Allowed Timestep` 0.333 (no slow motion above 3 FPS); move radar scans from fixed steps to one batched pass per frame. Next: Phase 0 release telemetry, Phase 1 Development capture.
-- [ ] **[AGY] Online Battle 10-20 FPS Host and Client Performance Optimization** → [[TODOs/Optimization/Online_Battle_Low_FPS_Host_And_Client_AGY|Plan]]
 
 - [ ] **Live battle CPU sweep: AI decision spikes, stalls/GC, pool pre-grow, attack state, squadrons, steady costs** → [[TODOs/Optimization/Live_Battle_CPU_Sweep_Plan|Live Battle CPU Sweep Plan]]
   - 2026-11-16: plan written from post-fix captures (frame avg 14.0 ms, p95 26.3, max 420; main-thread bound). Nothing implemented. Next: Phase 0 baseline + user test run, then Phase 1 AI decision markers.
@@ -204,16 +163,14 @@
 
 ### Refactoring
 
+- [ ] **Derive the Carrier role from the AI hangar profile (one rule for AI, tooltip, matchups, tutorial)** → [[TODOs/Refactoring/Derived_Carrier_Role|Derived Carrier Role]] — 2026-11-26: plan only; open question: should 1-bay ships count as carriers?
+
 - [ ] **Refresh the RTS HUD and menus with the navy and gold palette** → [[TODOs/Refactoring/RTS_UI_Refresh_Plan|RTS UI Refresh Plan]] · [[TODOs/Refactoring/RTS_UI_Refresh_Plan - Research|Research and audit evidence]]
   - Dropdown correction (2026-11-13): 38 dropdowns share brighter slate fill, clearer borders/chevrons and popup states. Skirmish section numbers removed; Players/Battle Settings heights match at 712. Saved read-back and previews verified; tests not run. Broader phases remain active.
   - First phase implemented (2026-11-12): verified Penpot → shared common/primary/destructive menu prefabs → all-UI palette, Rajdhani/Inter Tight and modest sizing. Follow-up: 47 menu actions across 11 screens inherit shared styles; 156 prefabs pass missing-reference checks; Unity saves/import checks clean. Tests not run.
   - Hover feedback strengthened across project controls; 275 saved controls checked, HUD/menu hover previews inspected. Live battle check blocked by separate map DI cycle; tests not run.
   - HUD correction: faction cards and controls use flat #202E40; card gradient disabled, gold borders retained. Six action labels share size 11.5 and fit; white enabled icons and three removed strips retained. Saved read-back and HUD preview verified; live visual acceptance pending.
   - Later phases: overflow/readability, feedback/input, aspect-ratio captures and large-fleet verification. Plan remains active.
-
-- [ ] **Derive hardpoint HP from hull HP (budget ratio, type weights, per-class minimum)** → [[TODOs/Refactoring/Hardpoint_Health_From_Hull_Plan|Hardpoint Health From Hull]]; [[TODOs/Refactoring/Hardpoint_Health_From_Hull_Plan - Research|Current Σ HP / hull table]]
-  - Status: implemented 2026-10-29 (`R = 1.15`, 62 data / 61 prefabs migrated); tests not run.
-  - Next: user skirmish/tuning acceptance; refresh ALO recipe HP baselines before next import.
 
 - [ ] **Project organization follow-up** → [[TODOs/Refactoring/Project_Organization_Followup|Project Organization Follow-up]]
   - Next gate: see the linked plan; detailed recorded progress is retained in the historical backlog snapshot.
@@ -256,6 +213,60 @@
 
 ### Documentation
 
+## Awaiting Review
+
+Code complete; only user acceptance left. Gates → [[TODOs/User_Acceptance_Queue]]. Policy → root `AGENTS.md` Plan Lifecycle step 4.
+
+### Features
+
+- [ ] **Squadron icon clustering rebuild (screen-space matrix grid, smooth, ship-aware, cheap)** → [[Review/Features/Squadron_Icon_Clustering_Rebuild|Squadron Icon Clustering Rebuild]] — 2026-11-18: phases 1–6 implemented and compiled (tests not run); remaining: user capture, station hull obstacles, optional mesh batching.
+  - 2026-11-26: moved to Review by user decision; only user acceptance left (see plan "Review 2026-11-26").
+- [ ] **Squadron bay rotation: ship-wide active squadron cap (Bulwark = 1)** → [[Review/Features/Squadron_Bay_Rotation_Plan|Squadron Bay Rotation Plan]]
+  - 2026-11-18: Gemini per-bay data edit reverted (`8925de639`); code/data back to pre-Gemini state. Plan: Phase 1 per-ship `HangarMaxActive` code, Phase 2 values (12 ships → 0, 28 → 1), Phase 3 cap-aware AI/preload readers, Phase 4 rotation for all except Venator/VenatorII/Lucrehulk/Secutor/MC80Independence/HomeOne/ImperialVenator/ISDI/ISDII. Bulwark Mk1 = 0 (confirmed).
+  - 2026-11-26: moved to Review by user decision; only user acceptance left (see plan "Review 2026-11-26").
+- [ ] **Dynamic in-game tutorial (in-match hints: camera, select, move, minimap, build, counters tooltip, build queue, abilities + auto-power, level up, research, map systems)** → [[Review/Features/Ingame_Tutorial_Plan|In-Game Tutorial Plan]]
+  - UI spotlight migration 2026-11-11: shared UI frames replaced by a 65% dim overlay with target cutout; added per-element `IUiHighlight` API and own-graphic 1.2 s pulse (compile/bindings verified, visual check pending); optional pointer blocking defaults off. Loading-time minimap `HideTarget` exception fixed 2026-11-11 with marker lifecycle tracking; compiled, startup replay pending. User-authorized tests: Ui 274/274 and Core 150/150 passed; visual acceptance pending.
+  - Status: in progress. Phase 0 decided 2026-11-09: in-match hints only (guided battle deferred), plain text, text-only coach card (layout A) + pulsing ring, 3 s gap, basics pause during combat. Phases 1–7 + settings done 2026-11-09 (compiles clean; tests not run; not run in-game): hint card UI, HUD anchors, 10 basics + 18 event hints, Show/Reset hints in Settings, Turn off on card. Remaining: audio cue (needs clip), optional analytics, tests, user in-game check.
+  - Input glyphs added 2026-11-09: white mouse/keycaps, red active mouse control, live settings bindings and station-selection prerequisite prompts. Imported/saved and visually previewed; tests not run.
+  - Onboarding redesign 2026-11-09: lessons of small steps, auto-inserted prerequisite steps (select unit / station), world targets (mine near station, satellite pad), mine-first order, pause/speed, shortcuts, split research, level up after station. 50 steps, 14 onboarding + 8 event lessons. Compiles clean; tests not run; in-game check pending; audio cue remains open.
+  - 2026-11-26: moved to Review by user decision; only user acceptance left (see plan "Review 2026-11-26").
+- [ ] **Defense satellites: capturable pads around mining points, 5 satellite types, AI use** → [[Review/Features/Defense_Satellites_Plan|Defense Satellites Plan]]
+  - Status: implemented 2026-10-28; satellite prefabs have uncommitted changes.
+  - Next: commit prefab WIP; user in-game acceptance (combat, visuals, capture/build flow, AI).
+  - 2026-11-26: moved to Review by user decision; only user acceptance left (see plan "Review 2026-11-26").
+
+### Bugs
+
+- [ ] **Carrier role on ships with 0 squadrons (12 ships keep `UnitRole.Carrier`; `IsCarrier` ignores `HangarMaxActive`)** → [[Review/Bugs/Carrier_Role_On_Zero_Squadron_Ships]] — 2026-11-26: fixed (both `IsCarrier` checks + 12 ships + 3 texts); related tests passed; tooltip check left.
+- [ ] **Hardpoint-based weapon reach (Praetor/big ships hold with guns out of range; radar + planar leftovers)** → [[Review/Bugs/Hardpoint_Based_Weapon_Reach]] — 2026-11-20: multipliers baked on 16 big-ship prefabs, radar raised on 15 ships; planar leftovers and in-game check remain.
+  - 2026-11-26: moved to Review by user decision; only user acceptance left (see plan "Review 2026-11-26").
+- [ ] **Weapon fire rate drops at low FPS (shots gated on visual projectile pool, 1 bolt/frame growth)** → [[Review/Bugs/Weapon_Fire_Rate_Low_FPS]]
+  - 2026-11-18: cause from source after online battles 2026-11-17 (logs `Logs/OnlineBattles/20261117T1650Z/`). Nothing implemented; Phase 1 measurement next.
+  - 2026-11-26: moved to Review by user decision; only user acceptance left (see plan "Review 2026-11-26").
+- [ ] **Attack order: hold while in range, no run-away / map-edge legs** → [[Review/Bugs/Attack_Order_Hold_In_Range]]
+  - 2026-11-18: attack arc, hold band, same-target refresh and telemetry implemented. The 18:25 battle logged 453 inward or level approach legs and one permitted outward hull-contact retreat. Active: launcher-only artillery fallback, retreat facing verification, and affected Navigation/BattleInput/Combat regression coverage.
+  - 2026-11-26: moved to Review by user decision; only user acceptance left (see plan "Review 2026-11-26").
+- [ ] **Squadron icon anchor lag (0.8 s filter outside Travel mode)** → [[Review/Bugs/Squadron_Icon_Anchor_Lag|Squadron Icon Anchor Lag]] — 2026-11-18: plan created; not started.
+  - 2026-11-26: moved to Review by user decision; only user acceptance left (see plan "Review 2026-11-26").
+- [ ] **Rebalance carrier deployment and squadron stats** → [[Review/Bugs/Carrier_and_Squadron_Rebalance|Carrier and Squadron Rebalance]]
+  - 2026-11-14 exact target sheet: 17 regular types with craft/DPS/hull/shield/recovery/weapon budgets; all 34 carriers assigned 1–2 squads per supported role plus total stock. CIS fixed at 13/11/10 F/I/B; per-craft quality verified Rebel > Republic > Empire > CIS. [[Review/Bugs/Carrier_and_Squadron_Rebalance - Unit Amount Research|Calculations]]. Implemented:17 regular stats,14 resized prefabs,34 carrier targets, descriptions and AI live/pending launch counting. Unity compilation, saved bindings and live DPS verified; tests not run. Station/purchase economics and gameplay acceptance remain.
+  - Reopened 2026-11-12 after failed fresh-match balance acceptance. Original 29 loadouts match; telemetry confirms Republic/Rebel squadron kill advantage. Implemented 1 s CIS launches, no loss-triggered cooldown reset, 5 s recent window and faction station counts 5/4/3/2. Applied approved direct-purchase prices. 2026-11-14 live/reserve counting and34-carrier coverage implemented. Remaining: strength playtest and station/purchase economics; [[Review/Bugs/Carrier_and_Squadron_Rebalance - Research|audit evidence]].
+  - 2026-11-26: moved to Review by user decision; only user acceptance left (see plan "Review 2026-11-26").
+- [ ] **Fix defense satellite review findings** → [[Review/Bugs/Defense_Satellites_Review_Fixes|Defense Satellites Review Fixes]]; parent: [[Review/Features/Defense_Satellites_Plan|Defense Satellites Plan]]
+  - Status: fixes #1–#10 implemented 2026-10-28; #3 kept by user.
+  - Next: user in-game check (#4 build order, #5 raids, #10 cues, #11 rings, #12 home mines).
+  - 2026-11-26: moved to Review by user decision; only user acceptance left (see plan "Review 2026-11-26").
+- [ ] **Replace silent null returns with fail-fast/Try APIs** (Wave 1) → [[Review/Bugs/Fail_Fast_Null_Returns|Fail-Fast Null Returns]]
+  - Next gate: see the linked plan; detailed recorded progress is retained in the historical backlog snapshot.
+  - 2026-11-26: moved to Review by user decision; only user acceptance left (see plan "Review 2026-11-26").
+
+### Refactoring
+
+- [ ] **Derive hardpoint HP from hull HP (budget ratio, type weights, per-class minimum)** → [[Review/Refactoring/Hardpoint_Health_From_Hull_Plan|Hardpoint Health From Hull]]; [[Review/Refactoring/Hardpoint_Health_From_Hull_Plan - Research|Current Σ HP / hull table]]
+  - Status: implemented 2026-10-29 (`R = 1.15`, 62 data / 61 prefabs migrated); tests not run.
+  - Next: user skirmish/tuning acceptance; refresh ALO recipe HP baselines before next import.
+  - 2026-11-26: moved to Review by user decision; only user acceptance left (see plan "Review 2026-11-26").
+
 ## Architecture Backlog
 
 - [ ] Audit gameplay services for direct `IUiService` or `BaseUi` references.
@@ -269,7 +280,21 @@
 
 ## Superseded Plans
 
-- **UltraHard AI follow-up (22:12 battle) + end-game crash + player ships idle after kill** → [[TODOs/Bugs/Enemy_AI_UltraHard_Followup_And_Ship_Idle]]; follows [[Done/Bugs/Enemy_AI_UltraHard_Collapse_And_Attack_Order_Loss]] (acceptance failed)
+- **Capital attack movement + class rework fixes** → [[Done/Bugs/Capital_Movement_And_Class_Rework_Fixes]]
+  - Status: in progress (2026-11-17). Done: map seed/layout log (`BattleMapTelemetry` → `_map.csv`). ISD I spawn fixed and user-confirmed 2026-11-17 (a station-centred origin tied between the main region and a corner pocket; the larger region now wins). Next: Phase 1/2 movement issues and the uncommitted class-rework edits. Then the Titan/Allegiance freeze, Executor holding out of reach, Tector stern-first retreat at stations, and class-rework review defects.
+  - 2026-11-26: closed by user decision (duplicate / superseded); disposition in the plan.
+- **[AGY] Weapon Fire Rate Degradation and Ability Sync Crash at Low FPS** → [[Done/Bugs/Weapon_Fire_Rate_And_Network_Sync_Low_FPS_AGY|Plan]]
+  - 2026-11-26: closed by user decision (duplicate / superseded); disposition in the plan.
+- **[AGY] Capital Movement and Class Rework Fixes (Audit & Reconciled Plan)** → [[Done/Bugs/Capital_Movement_And_Class_Rework_Fixes_AGY|Plan]]
+  - 2026-11-26: closed by user decision (duplicate / superseded); disposition in the plan.
+- **[AGY] Ship Attack Order Hold-in-Range Band and Formation Offset Fix** → [[Done/Bugs/Attack_Order_Hold_In_Range_And_Formation_Offsets_AGY|Plan]]
+  - 2026-11-26: closed by user decision (duplicate / superseded); disposition in the plan.
+- **[AGY] Enemy AI Mid-Fight Base Defense at Level 3 and Difficulty Consistency** → [[Done/Bugs/Enemy_AI_Base_Defense_And_MidGame_Consistency_AGY|Plan]]
+  - 2026-11-26: closed by user decision (duplicate / superseded); disposition in the plan.
+- **[AGY] Online Battle 10-20 FPS Host and Client Performance Optimization** → [[Done/Optimization/Online_Battle_Low_FPS_Host_And_Client_AGY|Plan]]
+  - 2026-11-26: closed by user decision (duplicate / superseded); disposition in the plan.
+
+- **UltraHard AI follow-up (22:12 battle) + end-game crash + player ships idle after kill** → [[Done/Bugs/Enemy_AI_UltraHard_Followup_And_Ship_Idle]]; follows [[Done/Bugs/Enemy_AI_UltraHard_Collapse_And_Attack_Order_Loss]] (acceptance failed)
   - Status: blocked (2026-11-19). Superseded by [[Done/Bugs/Enemy_AI_Active_Play_And_Ship_Combat]] after the 00:49 battle (AI Medium, idle, no top-left capture, second station, stern-first firing).
 
 ## Done
@@ -291,14 +316,12 @@
 - [x] **Restore FPS during ship reinforcement placement (spawn grid overlay)** → [[Done/Optimization/Spawn_Grid_Overlay_Performance_Plan|Spawn Grid Overlay Performance Plan]]
   - Completed 2026-11-14: all four phases implemented — deduplicated clearance, allocation-free contact filtering, cached asynchronous reachability and bucketed point checks. Source/diff checks passed; full compile blocked by 3 unrelated ShipSelectionReuseTests CS1501 errors. Tests and runtime FPS unmeasured; acceptance → [[TODOs/User_Acceptance_Queue]].
 
-
 - [x] **Switch ship pathfinding from raster grid to Burst triangle graph (BurstTriangulator + triangle A* + funnel)** → [[Done/Optimization/Graph_Pathfinding_Plan|Graph Pathfinding Plan]]; [[Done/Optimization/Graph_Pathfinding_Plan - Research|Verified data and package research]]
   - 2026-11-06: switched the runtime planner to the triangle graph and moved the raster baseline into Editor parity fixtures. Unity compiled both assemblies and Burst emitted native code for eight jobs. Navigation acceptance pending → [[TODOs/User_Acceptance_Queue]].
 
 - [x] **Mac GPU fixes: 77% + FSR 1 Mac default, FXAA off, hazard tight mesh, shader prewarm, Mac re-sign** → [[Done/Optimization/Mac_GPU_Frame_Budget_Plan|Mac GPU Frame Budget Plan]]
   - 2026-10-30 fix plan from existing Mac Metal trace (2940×1846, MSAA 2× + FXAA, 452 ms hitch). No code changed yet.
   - Implemented 2026-10-30; Unity compile/import and diff checks passed. No tests, measurements or Mac build. User acceptance → [[TODOs/User_Acceptance_Queue]].
-
 
 - [x] **Fix decorative asteroid rendering and follow up both performance audits** → [[Done/Optimization/Battle_Rendering_Performance_Audit|Battle Rendering Performance Audit]]; [[Done/Optimization/Battle_Rendering_Performance_Audit - Research|Both audits, measurements and VFX findings]]
   - **Audited 2026-10-28**: asteroid on/off/restored = 39.228 → 100.912 → 39.353 FPS; Performant = 19.318 → 48.634 → 19.350 FPS. Camera fixed within each comparison; no cross-preset regression claim.
@@ -400,7 +423,6 @@
   - 2026-11-16: revalidated; added Guard/Hunt/minimum-range stops, clamp-inside-hull case, group replacement-target convergence, O(N) registry clearance cost.
   - Completed 2026-11-16: distinct angular attack slots, replacement intent, shared bounded Burst settling and spatial reservation checks. Existing four-plan/2 ms budget preserved; Unity compilation 0 errors, source/diff review complete. Tests not run; gameplay and matched CPU acceptance queued.
 
-
 - [x] **Online Skirmish friend join / second-slot closure breaks lobby** → [[Done/Bugs/Online_Skirmish_Join_Slot_Race|Completed fix]]
   - 2026-11-16: authoritative seating before broadcast; closed rows auto-open through 8 humans; stale dropdown actions blocked. Unity compilation and source/diff checks clean; regression tests added, not run. User declined reproduction prerequisite; test execution gate queued.
 
@@ -421,7 +443,6 @@
 - [x] **Boost Weapon Power firing rate** → [[Done/Bugs/Boost_Weapon_Power_Fire_Rate_Fix|Boost Weapon Power Fire Rate Fix]]
   - Completed 2026-11-14: faster burst spacing/reloads, bounded overlap and prewarm admission, pending-wait retiming and effective-interval audio. Unity compile/import verified; tests not run. User accepted on 2026-11-16.
 
-
 - [x] **Fix AI battle-log follow-ups (capture safety bounce, patrol shutdown, stuck recovery latch, locale log numbers)** → [[Done/Bugs/Enemy_AI_Battle_Log_Followup_Fixes]]
   - Completed 2026-11-14 from battle `Loading_20261114_125624` (checks 3–5 failed). Unity compile clean; tests not run; battle replay → [[TODOs/User_Acceptance_Queue]].
 
@@ -431,14 +452,11 @@
 - [x] **Executor depth, planet clearance and big-ship targeting** → [[Done/Bugs/Executor_Depth_And_Big_Ship_Targeting_Fix]]
   - Completed 2026-11-14: Executor −576, planet ceiling −701, station-over-deep-ship clicks, rotated attack-stall retries. Unity compilation and asset persistence verified; tests authored/not run. Visual, battle and test gates → [[TODOs/User_Acceptance_Queue]].
 
-
 - [x] **Fix reinforcement spawn near/above station and ship spawn grid** → [[Done/Bugs/Reinforcement_Spawn_Near_Station_Fix]]
   - Completed 2026-11-14: live station hull spans, ship-aware physics/reachability grid, cell-centred preview/drop positions and safe batch spacing. Unity compilation/import and source checks passed; tests not run. In-game and large-map profiling gates → [[TODOs/User_Acceptance_Queue]].
 
 - [x] **Preserve planet decorations during battle loading and spawning** → [[Done/Bugs/Planet_Decorations_Loading_Fix]]
   - Completed 2026-11-13: loader forwards decorations through its site-filtering layout copy; spawn preserves imported rotation under world yaw. Kuat visibility confirmed by user; rotation/Tatooine acceptance pending. Regressions authored; tests not run.
-
-
 
 - [x] **Ship routes not curved; ships slow/stop at graph corners** → [[Done/Bugs/Ship_Route_Curvature_Plan]]; research → [[Done/Bugs/Ship_Route_Curvature_Plan - Research]]
   - Completed 2026-11-13, `acceptance: pending-user`. Tangent lines/arcs, local disk repair, persistent buckets, speed profile and tangent follower replaced the Bezier rejection chain. Unity compilation and source/diff checks passed. Tests, archetype sweeps, runtime CPU and online traffic checks → [[TODOs/User_Acceptance_Queue]].
@@ -448,7 +466,6 @@
 
 - [x] **Independent AI ship groups and squadron capture distribution** → [[Done/Bugs/Enemy_AI_Independent_Task_Groups]]
   - Completed 2026-10-31: group-local retreat/capture and distributed squadron objectives; Unity compilation passed. User gates → [[TODOs/User_Acceptance_Queue]].
-
 
 - [x] **Fix enemy AI recovery review findings** → [[Done/Bugs/Enemy_AI_Recovery_Review_Fixes]]
   - 2026-10-31: strategic retreat anchors ignore transient reservations; capture stall budget tracks executed capture time and pauses across other strategies. Four regressions authored; Unity compilation and diff checks passed. Tests/gameplay acceptance → [[TODOs/User_Acceptance_Queue]].
@@ -567,9 +584,6 @@
 - [x] **Tactical markers (B ping + radial: Look/Attack/Capture/Defend/Rally/Retreat; team-only online sync; allied AI accepts/declines and sends its own)** → [[Done/Features/Tactical_Markers_Plan|Tactical Markers Plan]]
   - Completed/reviewed 2026-11-12: startup DI cycle, site identity, input cancellation, AI objectives and lifecycle fixed; BattleInput 296/296, Ui 276/276, Networking 30/30, EnemyAi 360/360, Core 151/151 passed. In-game/two-client/visual acceptance queued.
 
-
-
-
 - [x] **Play menu reroute (Single Player / Multiplayer / AI vs AI / Tutorial; Host Game with mode picked in lobby; Server Browser; START GAME everywhere)** → [[Done/Features/Play_Menu_Reroute_Plan|Play Menu Reroute Plan]]
   - Completed 2026-11-11: Single Player screen (Skirmish, Survival, Load Game), Multiplayer (Host Game, Join Game → Server Browser of public Steam lobbies + IP join), host-only Skirmish/Survival switch in the lobby (Survival refused over 3 members), START GAME labels.
   - Unity compile, prefab references, Addressables and preview renders verified; tests not run. In-game routes and 2-PC lobby/browser checks → [[TODOs/User_Acceptance_Queue]].
@@ -607,12 +621,9 @@
   - Completed 2026-10-29: placement, separate main prefab, edge fill and blockers/lane detours; Unity compilation/import and source checks passed. Tests not run; user-only gates → [[TODOs/User_Acceptance_Queue]].
   - Review fixes completed: 1250–1275-wide connected fields, local-width obstacle checks, preferred hazard placement, behind-site jitter clearance and even-ring validation. Unity compilation passed; tests not run.
 
-
 - [x] **Main relay zone map rework: central contested relay (4 mines + 6 satellites), 1 home mine + 1 satellite, additional relay zones S2/M4/L6** → [[Done/Features/Main_Relay_Zone_Map_Rework|Main Relay Zone Map Rework]]
   - Status: implemented 2026-10-29; generation, capture-site merge, settings, prefab migration, save validation and test expectations complete.
   - Verification: Unity compilation/import and source review; tests not run. User gameplay/tests and post-acceptance GameDesign update → [[TODOs/User_Acceptance_Queue]].
-
-
 
 - [x] **Review ship abilities implementation** → [[Done/Features/Ship_Abilities_Plan|Ship Abilities Plan]]
   - **Remaining**: implementation review and acceptance evidence; commit `dc869bbb` recorded review as needed.

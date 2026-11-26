@@ -25,7 +25,7 @@ created: 2026-11-10
 - **Fleet chapter = level the station to max**; at each level build every newly unlocked ship type, each with a short explanation of its role and advantages.
 - Enemy must be weak and short: controlled, not a full AI economy.
 - Ship-action lessons interleaved between main chapters.
-- Reuse the in-match hint engine ([[TODOs/Features/Ingame_Tutorial_Plan|In-Game Tutorial Plan]]): lessons, steps, targets, anchors, card.
+- Reuse the in-match hint engine ([[Review/Features/Ingame_Tutorial_Plan|In-Game Tutorial Plan]]): lessons, steps, targets, anchors, card.
 
 ## Enemy
 - Enemy = `PlayerRole.AiOpponent`, `EnemyAiDifficulty.Easy`, economy off (never builds or levels up).
@@ -235,7 +235,7 @@ Map: own station top-right; free mining structure at the top-left edge; central 
 
 - [x] Guided lessons now use the shared 65% dim spotlight instead of pulsing UI frames; coach card and world/minimap markers retained.
 - Pointer blocking is per-hint opt-in and off for existing lessons, preserving world clicks and reinforcement dragging. Keyboard shortcuts remain available.
-- Implementation/guidance → [[TODOs/Features/Ingame_Tutorial_Plan#UI spotlight migration · 2026-11-11]].
+- Implementation/guidance → [[Review/Features/Ingame_Tutorial_Plan#UI spotlight migration · 2026-11-11]].
 - Unity compilation and saved prefab references verified; tests not run; in-game visual acceptance pending. Unimplemented guided-tutorial scope remains active.
 
 - Layering: hint view follows tooltips in `tooltipSlot` and stays below fade; modal input lock hides tutorial UI. Source-verified; no tests run.

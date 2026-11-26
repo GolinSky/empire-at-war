@@ -1,6 +1,6 @@
 ---
 category: Bugs
-status: in-progress
+status: review
 design_state: implemented-targets-economics-open
 created: 2026-11-11
 system:
@@ -20,14 +20,14 @@ updated: 2026-11-14
 
 ## Decision
 
-- **Squadron stats below are superseded (2026-11-19)** by [[Done/Bugs/Squadron_Faction_Balance]]: hull, shields, laser and torpedo values now follow price. Craft counts stay valid; carrier active/stock rows are superseded by [[TODOs/Features/Squadron_Bay_Rotation_Plan]].
+- **Squadron stats below are superseded (2026-11-19)** by [[Done/Bugs/Squadron_Faction_Balance]]: hull, shields, laser and torpedo values now follow price. Craft counts stay valid; carrier active/stock rows are superseded by [[Review/Features/Squadron_Bay_Rotation_Plan]].
 - This note was the authoritative implemented squadron/carrier target sheet; supersedes earlier count-only and provisional targets. F / I / B always means fighter / interceptor / bomber.
 - Craft per squadron: Rebel 5/4/3; Republic 8/6/4; Empire 10/8/6; CIS **13/11/10**. CIS ranges are resolved to these fixed values.
 - Role caps aggregate concrete variants. Use explicit bay assignments below; no new runtime shared-role-cap system required.
 - Dedicated carriers receive larger wings than general gunships. Four existing partial-role supports retain absent roles at zero; no new role or launch hardpoint is added to them.
 - Three hero strikecraft retain one member and current stats. Unfielded Delta-7, disabled ISD III and unfinished Malevolence hangar integration remain excluded.
 - Existing save migration remains outside development scope: require fresh matches across the member-count change; preserve clear incompatible-save rejection and matching host/client content.
-- Earlier audit, implementation and acceptance history → [[TODOs/Bugs/Carrier_and_Squadron_Rebalance - Research]]. Count-only baseline/full carrier comparisons → [[TODOs/Bugs/Carrier_and_Squadron_Rebalance - Unit Amount Research]].
+- Earlier audit, implementation and acceptance history → [[Review/Bugs/Carrier_and_Squadron_Rebalance - Research]]. Count-only baseline/full carrier comparisons → [[Review/Bugs/Carrier_and_Squadron_Rebalance - Unit Amount Research]].
 
 ## Important Values
 
@@ -218,3 +218,7 @@ updated: 2026-11-14
 - Evidence/tools: Tools/SquadronRebalance/LiveInspection.json, InspectAssets.cs, ApplyStats.py, ResizeSquadrons.cs and README.md.
 - Formation review: Vulture13 at spacing3 reaches18 lateral/14.4 trailing units; Belbullab11 reaches15/12. Navigation/loiter values preserved as requested; overlap/visual acceptance remains a user gate.
 - Parent remains active because station/direct-purchase economic decisions are still unimplemented; the requested squadron/carrier implementation phase is complete. Do not archive the broader balance plan prematurely.
+
+## Review 2026-11-26
+- Moved to Review by user decision. Not done (dropped by user): reconcile station and direct-purchase economics.
+- Open user gates: existing lines in [[TODOs/User_Acceptance_Queue]].

@@ -1,8 +1,11 @@
 ---
 category: Bugs
-status: todo
+status: done
 agent_marker: AGY
 created: 2026-11-18
+disposition: superseded
+superseded_by: "[[Review/Bugs/Weapon_Fire_Rate_Low_FPS]]"
+completed: 2026-11-26
 ---
 # [AGY] Weapon Fire Rate Degradation and Ability Sync Crash at Low FPS
 
@@ -66,7 +69,12 @@ created: 2026-11-18
 
 ## TODO
 - [ ] Add `EntityId` to `IShipAbilityFacade`, replace `slot.Owner.Entity.Id` in `ShipAbilityEventMessage.Capture`, and guard teardown events
-- [ ] Fix `ShotEffectCache.TryReserve` head-of-line stall and starvation interaction (done under [[TODOs/Bugs/Weapon_Fire_Rate_Low_FPS]])
-- [ ] Scale `ShotPoolPrewarmer` roster prewarm & runtime growth and fix `ExpectedShotsInFlight` (done under [[TODOs/Bugs/Weapon_Fire_Rate_Low_FPS]])
-- [ ] Decouple `CombatAttackCoordinator` intra-salvo cadence and `WeaponComponent.Engage` sub-frame turns from frame rate (cadence done under [[TODOs/Bugs/Weapon_Fire_Rate_Low_FPS]]; `Engage` turn handoff and ability-sync crash still open)
+- [ ] Fix `ShotEffectCache.TryReserve` head-of-line stall and starvation interaction (done under [[Review/Bugs/Weapon_Fire_Rate_Low_FPS]])
+- [ ] Scale `ShotPoolPrewarmer` roster prewarm & runtime growth and fix `ExpectedShotsInFlight` (done under [[Review/Bugs/Weapon_Fire_Rate_Low_FPS]])
+- [ ] Decouple `CombatAttackCoordinator` intra-salvo cadence and `WeaponComponent.Engage` sub-frame turns from frame rate (cadence done under [[Review/Bugs/Weapon_Fire_Rate_Low_FPS]]; `Engage` turn handoff and ability-sync crash still open)
 - [ ] Review affected EditMode tests in `Combat` and `Networking`
+
+## Disposition 2026-11-26
+- Superseded by [[Review/Bugs/Weapon_Fire_Rate_Low_FPS]].
+- Root cause 1–2 (shots gated on pooled visuals, FIFO blocking) → fixed in `bd5c4d106` (2026-11-23): only the reload timer gates a salvo; admission queue removed.
+- Ability sync crash (`Not entity found with id:`) → caster-id fix restored in `8787a78e1`.

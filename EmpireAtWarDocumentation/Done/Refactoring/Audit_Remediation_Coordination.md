@@ -10,7 +10,7 @@ disposition: closed-by-user
 ---
 # Audit Remediation — Coordination
 
-> Closed 2026-10-29 by user decision. Wave tracker only; owns no code. Wave 1: 5/6 plans closed; open plans keep their own entries: [[TODOs/Bugs/Fail_Fast_Null_Returns]] (Wave 1), [[TODOs/Refactoring/Type_File_Split_And_Placement]] and [[TODOs/Refactoring/Injection_And_Guard_Conventions]] (Wave 2; ordering rule copied into each).
+> Closed 2026-10-29 by user decision. Wave tracker only; owns no code. Wave 1: 5/6 plans closed; open plans keep their own entries: [[Review/Bugs/Fail_Fast_Null_Returns]] (Wave 1), [[TODOs/Refactoring/Type_File_Split_And_Placement]] and [[TODOs/Refactoring/Injection_And_Guard_Conventions]] (Wave 2; ordering rule copied into each).
 
 ## Goal
 - Fix the open findings of the 2026-09-30 re-audit through parallel, file-disjoint agent plans.
@@ -21,7 +21,7 @@ disposition: closed-by-user
 | Wave | Plan | Findings | Unity Editor | Category |
 |---|---|---|---|---|
 | 1 | [[Done/Bugs/Scene_Teardown_And_Material_Leaks]] | RT1, RT2, RT3, CO4 (`UnitSpawnView`) | yes (spawn prefabs) | Bugs |
-| 1 | [[TODOs/Bugs/Fail_Fast_Null_Returns]] | CO1, CO4 (`AddressableAssetService`) | no | Bugs |
+| 1 | [[Review/Bugs/Fail_Fast_Null_Returns]] | CO1, CO4 (`AddressableAssetService`) | no | Bugs |
 | 1 | [[Done/Refactoring/Capture_Reinforcement_Tally_Dedup]] | CO2 | no | Refactoring |
 | 1 | [[Done/Refactoring/Unit_Request_Identity_Keys]] | CO3 | yes (1 script move) | Refactoring |
 | 1 | [[Done/Refactoring/Explicit_Component_Binding]] | CO4 (rest) | yes (prefabs) | Refactoring |

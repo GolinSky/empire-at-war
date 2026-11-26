@@ -1,6 +1,7 @@
 ---
 category: Features
-status: in-progress
+status: review
+acceptance: pending-user
 updated: 2026-11-18
 ---
 # Squadron Bay Rotation
@@ -45,7 +46,7 @@ updated: 2026-11-18
 - [x] Ships with `HangarMaxActive = 0` have nothing to rotate; unaffected.
 
 ## Edge Cases
-- Replacement launches ≈ immediately after loss (launch interval elapses while the squadron lives; no loss-triggered reset per [[TODOs/Bugs/Carrier_and_Squadron_Rebalance]]).
+- Replacement launches ≈ immediately after loss (launch interval elapses while the squadron lives; no loss-triggered reset per [[Review/Bugs/Carrier_and_Squadron_Rebalance]]).
 - Hangar hardpoint destroyed with a squadron out → `_active` counted until it dies; then nothing launches.
 - AI `AiWorldSnapshot.cs:207` uses `LaunchedCount + PendingLaunchCount` → already cap-aware once Phase 1 lands.
 - Cap is authority-side `HangarModel` state; no new replication.
@@ -57,3 +58,8 @@ updated: 2026-11-18
 
 ## TODO
 - User in-game check: capped ship keeps 1 squadron out and rotates types; 0-cap ships launch none.
+
+## Review 2026-11-26
+- Bay rotation feature complete. Balance fixtures: nothing to change (only `HangarModelTests`, `QuasarFireHangarTests` read `HangarMaxActive`; `BalanceInventoryTests` check structure).
+- Carrier role/text on the 12 zero-cap ships split out → [[Review/Bugs/Carrier_Role_On_Zero_Squadron_Ships]].
+- Open user gate: in-game bay rotation check.

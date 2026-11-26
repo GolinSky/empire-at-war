@@ -7,7 +7,7 @@ created: 2026-11-12
 
 ## Goal
 
-- Explain fresh-match Republic/Rebellion air presence reported 2026-11-12; parent → [[TODOs/Bugs/Carrier_and_Squadron_Rebalance]].
+- Explain fresh-match Republic/Rebellion air presence reported 2026-11-12; parent → [[Review/Bugs/Carrier_and_Squadron_Rebalance]].
 
 ## Evidence
 
@@ -87,10 +87,10 @@ created: 2026-11-12
 
 ## Historical plan snapshot — before exact target sheet, 2026-11-14
 
-- Preserved prior targets, implementation history and unresolved acceptance. Superseded for new balance targets by [[TODOs/Bugs/Carrier_and_Squadron_Rebalance]]; historical test results below are not verification of the new proposal.
+- Preserved prior targets, implementation history and unresolved acceptance. Superseded for new balance targets by [[Review/Bugs/Carrier_and_Squadron_Rebalance]]; historical test results below are not verification of the new proposal.
 
 
-- Current proposed direction (2026-11-14) → unit-amount rework below; calculations and full live carrier inventory → [[TODOs/Bugs/Carrier_and_Squadron_Rebalance - Unit Amount Research]]. Earlier target tables and verification are dated history, not the current asset snapshot.
+- Current proposed direction (2026-11-14) → unit-amount rework below; calculations and full live carrier inventory → [[Review/Bugs/Carrier_and_Squadron_Rebalance - Unit Amount Research]]. Earlier target tables and verification are dated history, not the current asset snapshot.
 
 ## Goal
 
@@ -208,7 +208,7 @@ created: 2026-11-12
 
 - Reopened after user reported fresh-match CIS < Republic and Empire < Rebellion visible squadron counts. Initial implementation completed 2026-11-11; combat balance acceptance failed.
 - Read-only audit matches all original 29 carrier cap/stock/timer sets and all 17 squadron count/role/durability/recovery/speed sets. Mounted DPS was not independently re-baked in this review. No tests or new gameplay runs executed.
-- Existing post-rebalance telemetry confirms all CIS and Empire regular roles fire; regular squadron kill exchanges favor Republic 57:14 and Rebellion 71:32. Detailed evidence → [[TODOs/Bugs/Carrier_and_Squadron_Rebalance - Research]]. These are whole squadron kills, not individual craft or spawn counts.
+- Existing post-rebalance telemetry confirms all CIS and Empire regular roles fire; regular squadron kill exchanges favor Republic 57:14 and Rebellion 71:32. Detailed evidence → [[Review/Bugs/Carrier_and_Squadron_Rebalance - Research]]. These are whole squadron kills, not individual craft or spawn counts.
 - Causes: large durability/DPS/recovery advantage; shields take 0.5× fighter/interceptor laser raw damage; every squadron loss resets the carrier-wide launch wait; 60 s recent-launch gate limits replacements; station counts and purchase limits do not enforce faction quantity hierarchy.
 - Current deployable roster includes four additional Rebel carriers and Imperial Interdictor outside the 29-hull table: current one-of-each active totals CIS 66, Empire 40, Republic 38, Rebellion 38. These totals do not predict equal-cost fleets or live survivors.
 - Reusable verified rule recorded in [[GameDesign/Combat]]: maximum hangar capacity is not current air strength; assess launch throughput and survival together.

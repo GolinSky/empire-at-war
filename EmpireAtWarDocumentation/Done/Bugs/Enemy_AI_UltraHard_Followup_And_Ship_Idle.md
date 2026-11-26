@@ -1,6 +1,9 @@
 ---
 category: Bugs
-status: blocked
+status: done
+disposition: superseded
+superseded_by: "[[Done/Bugs/Enemy_AI_Active_Play_And_Ship_Combat]]"
+completed: 2026-11-26
 created: 2026-11-18
 parent: "[[TODOs/Bugs/Enemy_AI_And_Faction_Balance]]"
 follows: "[[Done/Bugs/Enemy_AI_UltraHard_Collapse_And_Attack_Order_Loss]]"
@@ -250,3 +253,7 @@ Source-inspected. No tests run by the agent.
 - "Pursuit should restore the previous order": pursuit only starts with no order, so returning to the position is the full restore.
 - Mining before ships delays the first ship until 5 miners (5,000 credits): this is the rule; the human's first ship came at 45.8 s.
 
+
+## Disposition 2026-11-26
+- Superseded, not completed. User stopped this plan on 2026-11-19; work continued in [[Done/Bugs/Enemy_AI_Active_Play_And_Ship_Combat]].
+- Closed in the backlog review of 2026-11-26. No reusable guidance beyond the successor plan.

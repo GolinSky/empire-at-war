@@ -1,6 +1,7 @@
 ---
 category: Features
-status: in-progress
+status: review
+acceptance: pending-user
 created: 2026-11-18
 ---
 # Squadron Icon Clustering Rebuild
@@ -163,7 +164,7 @@ created: 2026-11-18
 
 
 ## Verification 2026-11-18 (implementation review + wobble fix)
-### Wobble root cause (fixed, uncommitted)
+### Wobble root cause (fixed, committed in `61cc6a19b`)
 - `BattleMarkerLayer` canvas was `ScreenSpaceCamera` at `nearClipPlane + 0.05` = 0.35 u. Main camera FOV 29.9° → 1 px ≈ 0.00017 u at 1080p.
 - Canvas vertices go through world space; float ulp at camera coords 2048–4096 u = 0.00024 u → 1–2 px rounding per vertex. Frame and icon vertices round independently → icon wobbles inside the frame; whole marker wobbles while the camera moves.
 - Earlier anchor-smoothing fix (`SquadronMarkerAnchor` 0.8 s settled) could not remove this: error is in rendering, not position.
@@ -185,3 +186,11 @@ created: 2026-11-18
 - Deviations: leader lines removed by user (`2303997e0`). Anchor uses 0.8 s smooth time when not travelling (adds lag in combat); revisit now that the render wobble is fixed.
 - Old `SquadronIconPrefabTests` grid/ship-sharing tests removed in `8a4b9d8db`: contracts changed (ships no longer share grids); replaced by the new fixtures.
 - Open: in-game acceptance (wobble gone, colors, ship clickability); optional spike follow-up.
+
+## Review 2026-11-26
+- Source check: P1–P4, P5.1, P5.4, P6 done (`8a4b9d8db`, `61cc6a19b`, `25aca7db0`). Steps were not ticked.
+- Changed: hash cell = `JoinPx + 3·Pitch`; merge folded into the join check (no `MERGE_PX`); no `MAX_ROWS`/viewport clamp (off-screen markers hide); per-marker follow spring replaces the cell spring.
+- Dropped: leader line (removed by user, `2303997e0`).
+- Deferred to the capture: P5.2 custom `MaskableGraphic` and P5.3 `SetActive` churn (`Canvas.BuildBatch` 0.025 ms in Editor).
+- Open user gates → [[TODOs/User_Acceptance_Queue]]: in-game feel and ship clickability; Development Player before/after capture; `Squadrons`/`BattleInput`/`Ships` tests.
+- Guidance: `Rules/BATTLE_PERFORMANCE_GUIDELINES` "Battle markers".

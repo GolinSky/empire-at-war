@@ -457,8 +457,8 @@ created: "2026-10-29\r"
 
 ## Squadron member-count rework
 
-- [ ] [[TODOs/Bugs/Carrier_and_Squadron_Rebalance]] — Fresh-match role duels and equal-cost fleets (levels2/3/5): carrier deployment/replacements, torpedo burst damage and faction strength. Stats/carrier implementation verified; station/purchase economics remain separately active.
-- [ ] [[TODOs/Bugs/Carrier_and_Squadron_Rebalance]] — Check13/11-craft CIS formations, launch overlap, member death/pooled respawn visuals, fresh save/load and matching-client multiplayer. Old member-array saves require a fresh match; no migration added.
+- [ ] [[Review/Bugs/Carrier_and_Squadron_Rebalance]] — Fresh-match role duels and equal-cost fleets (levels2/3/5): carrier deployment/replacements, torpedo burst damage and faction strength. Stats/carrier implementation verified; station/purchase economics remain separately active.
+- [ ] [[Review/Bugs/Carrier_and_Squadron_Rebalance]] — Check13/11-craft CIS formations, launch overlap, member death/pooled respawn visuals, fresh save/load and matching-client multiplayer. Old member-array saves require a fresh match; no migration added.
 
 
 ## Spawn grid overlay performance
@@ -544,7 +544,7 @@ created: "2026-10-29\r"
 - [ ] [[TODOs/Tooling/Battle_Hitch_And_GC_Attribution_Instruments]] — ≥5 min armed playtest produces a >200 ms native snapshot/report; verify ≥80% allocation coverage and top10 callers for mid/late saves.
 - [ ] [[TODOs/Tooling/Battle_Hitch_And_GC_Attribution_Instruments]] — Capture 5/30 min memory pair, inspect type/direct-owner growth and retained references; decide leak/cache/pool from evidence.
 - [ ] [[TODOs/Tooling/Battle_Hitch_And_GC_Attribution_Instruments]] — Matched Editor/Development Player 3 min replays for mid/late saves; verify cleanup, complete output folder/report and record a new baseline in Live Battle CPU Sweep.
-- [ ] [[TODOs/Features/Squadron_Icon_Clustering_Rebuild]] — In-game: icons never stack, matrix grids, smooth peel/merge, no drag while panning/fighting, grids stay off ships (ships clickable), leader lines, zoom. Then Development Player capture (150 squadrons + 80 ships): `Battle.Markers.*`, `Canvas.BuildBatch`, GC. Run `Squadrons`, `BattleInput`, `Ships` tests on request.
+- [ ] [[Review/Features/Squadron_Icon_Clustering_Rebuild]] — In-game: icons never stack, matrix grids, smooth peel/merge, no drag while panning/fighting, grids stay off ships (ships clickable), zoom (leader lines removed in `2303997e0`). Then Development Player capture (150 squadrons + 80 ships): `Battle.Markers.*`, `Canvas.BuildBatch`, GC. Run `Squadrons`, `BattleInput`, `Ships` tests on request.
 
 ## Selection
 
@@ -652,3 +652,17 @@ created: "2026-10-29\r"
 - [ ] [[Done/Features/Hull_Hit_Blast_Vfx_Plan]] — In battle: damaged ships/stations show blasts near the hit hardpoint on hull hits (not on shield-only hits, not on super weapon / Lucky Shot hits), never under the hull, never spammy; none on off-screen or fog-hidden units.
 - [ ] [[Done/Features/Hull_Hit_Blast_Vfx_Plan]] — After a heavy battle: read `[VfxPools] HullBlasts played= skipped…` and `[VfxPools] HullScorchBlastVfx … grown=` (must be 0); tune `SkirmishScope.hullBlastLimits`.
 - [ ] [[Done/Features/Hull_Hit_Blast_Vfx_Plan]] — Run `Health`, `Ships` when authorized; compile passed, tests not run.
+
+## Backlog Review 2026-11-26
+
+- [ ] [[Review/Bugs/Weapon_Fire_Rate_Low_FPS]] — Low-FPS repro: same save, `frameRateLimit` 15 vs uncapped; shots/min ≥ 90% for 5 capital and 3 squadron types. Then online host check (3 humans + AI). Run `Combat`.
+- [ ] [[Review/Bugs/Squadron_Icon_Anchor_Lag]] — Icon stays on its squadron during travel, dogfight and target switch, host and client; no jitter around circling fighters. Run `Squadrons`.
+- [ ] [[Review/Bugs/Fail_Fast_Null_Returns]] — Recompile with 0 errors; skirmish start-to-end without missing-asset/scene exceptions. Run `SceneDataTests`, `ShipAbilityServiceTests`.
+- [ ] [[Review/Bugs/Defense_Satellites_Review_Fixes]] — In-game: AI build order, raids, cues, rings, home mines (#4, #5, #10, #11, #12).
+- [ ] [[Review/Features/Defense_Satellites_Plan]] — In-game acceptance of capturable pads, 5 satellite types and AI use.
+- [ ] [[Review/Bugs/Hardpoint_Based_Weapon_Reach]] — In-game: Praetor, Executor, Mandator close in until their guns reach. Run related tests.
+- [ ] [[Review/Refactoring/Hardpoint_Health_From_Hull_Plan]] — Skirmish playtest and final hardpoint HP tuning.
+- [ ] [[Review/Features/Ingame_Tutorial_Plan]] — In-match hint flow; "Show tutorial hints" toggle and "Reset hints" button.
+- [ ] [[Review/Features/Squadron_Bay_Rotation_Plan]] — In-game: ship-wide active squadron cap (Bulwark = 1), bays rotate; 0-cap ships launch nothing.
+- [ ] [[Review/Bugs/Attack_Order_Hold_In_Range]] — Mixed-group attack on a station/capital; fleeing-target pursuit; no run-away or map-edge legs.
+- [ ] [[Review/Bugs/Carrier_Role_On_Zero_Squadron_Ships]] — Build-menu tooltip of Executor, Imperator, Mandator, Rothana, Bulwark I/Mk II (and the other 0-squadron ships) shows no "Carrier" tag; Rothana/Bulwark role text has no "carrier".

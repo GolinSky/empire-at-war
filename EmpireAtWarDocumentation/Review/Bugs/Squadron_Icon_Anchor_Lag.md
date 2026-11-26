@@ -1,6 +1,7 @@
 ---
 category: Bugs
-status: todo
+status: review
+acceptance: pending-user
 created: 2026-11-18
 ---
 # Squadron Icon Anchor Lag
@@ -8,7 +9,7 @@ created: 2026-11-18
 ## Goal
 - Squadron icon follows its squadron without visible lag in every pilot mode (travel, loiter, engage), on host and replicas.
 - No jitter from fighters circling a target.
-- Parent: [[TODOs/Features/Squadron_Icon_Clustering_Rebuild]].
+- Parent: [[Review/Features/Squadron_Icon_Clustering_Rebuild]].
 
 ## Current state (source, 2026-11-18)
 - `SquadronMarkerAnchor.Advance`: `Vector3.SmoothDamp` of the fighter centroid.
@@ -50,3 +51,8 @@ created: 2026-11-18
 - `Assets/Scripts/Components/Squadron/Icon/SquadronIconComponent.cs`
 - `Assets/Scripts/Entities/Squadron/Squadron.cs`
 - `Assets/Scripts/Tests/Editor/Squadrons/SquadronMarkerAnchorTests.cs` (new)
+
+## Review 2026-11-26
+- Steps 1 and 3 done in `61cc6a19b`: single `SMOOTH_TIME` 0.15 s in `SquadronMarkerAnchor.cs`, `travelling` flag removed; `SquadronMarkerAnchorTests` added (not run).
+- Step 2 (One Euro filter) only if the user sees jitter.
+- Open user gate: icon stays on squadron during travel, dogfight and target switch, host and client.

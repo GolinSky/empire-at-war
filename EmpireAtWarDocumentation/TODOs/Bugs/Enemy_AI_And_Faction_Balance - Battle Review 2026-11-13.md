@@ -69,7 +69,7 @@ tags:
 
 - Ship findings and implementation work moved to [[TODOs/Bugs/Ship_Hardpoint_And_Balance_Plan]]: Recusant DPS/angles, Peleset/Recalcitrant yaw mismatch, narrow-arc candidates, Mandator economics, attribution and description drift.
 - Source battle remains the November 13 recording; relocating findings does not resolve them.
-- Belbullab survival/exposure and free hangar valuation remain with [[TODOs/Bugs/Carrier_and_Squadron_Rebalance]].
+- Belbullab survival/exposure and free hangar valuation remain with [[Review/Bugs/Carrier_and_Squadron_Rebalance]].
 
 ## Decision
 
@@ -83,7 +83,7 @@ tags:
 - [ ] Trace and stabilize rapid raid ↔ threatened-site switching, preserving emergency overrides.
 - [ ] Classify short capture ↔ retreat reversals as justified threat response or avoidable switching.
 - [ ] Identify redundant order replacements and measure any movement/firing interruption.
-- Squadron survival/exposure follow-up → [[TODOs/Bugs/Carrier_and_Squadron_Rebalance]].
+- Squadron survival/exposure follow-up → [[Review/Bugs/Carrier_and_Squadron_Rebalance]].
 - Ship implementation ownership → [[TODOs/Bugs/Ship_Hardpoint_And_Balance_Plan]]; no duplicate ship checklist here.
 - [ ] Verify behavior across additional battles before faction-wide tuning.
 
@@ -148,7 +148,7 @@ tags:
 - Source-confirmed escort weaknesses; no per-squadron command/health timeline to prove their contribution in this battle.
 - `UnitCombatProfileCatalog.cs:56,85` correctly consumes current member stats, aggregate weapons, warhead modifiers and MaxActive hangars. No live hangar double-count found.
 - Relevant pre-battle changes: Vulture hull70→28; DroidBomber hull/shields50/10→32/5, speed31→29; ARC170 hull/shields105/35→80/30, speed41→69. These warrant matchup/response-time review, not a blanket buff from one sample.
-- Squadron stat follow-up remains with [[TODOs/Bugs/Carrier_and_Squadron_Rebalance]]; AI escort logic remains with the parent AI plan.
+- Squadron stat follow-up remains with [[Review/Bugs/Carrier_and_Squadron_Rebalance]]; AI escort logic remains with the parent AI plan.
 - Do not treat damage-report kill counters as squadron-entity losses or activeSeconds as summed squadron uptime.
 
 ### Working behavior and next actions

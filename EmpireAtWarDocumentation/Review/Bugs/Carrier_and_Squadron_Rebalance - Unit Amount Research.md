@@ -13,12 +13,12 @@ updated: 2026-11-14
 ---
 # Squadron Unit Amount Rework Research
 
-- Current exact DPS/HP/recovery/weapon and carrier targets → [[TODOs/Bugs/Carrier_and_Squadron_Rebalance]]. Count-only scenarios and earlier provisional candidates below are preserved as alternatives/history, not implementation targets.
+- Current exact DPS/HP/recovery/weapon and carrier targets → [[Review/Bugs/Carrier_and_Squadron_Rebalance]]. Count-only scenarios and earlier provisional candidates below are preserved as alternatives/history, not implementation targets.
 
 ## Goal
 
 - Quantify the requested member counts and 1–2 squadron deployments using live serialized values on 2026-11-14.
-- Owner → [[TODOs/Bugs/Carrier_and_Squadron_Rebalance]]. Analysis only; no gameplay assets changed.
+- Owner → [[Review/Bugs/Carrier_and_Squadron_Rebalance]]. Analysis only; no gameplay assets changed.
 
 ## Rules
 

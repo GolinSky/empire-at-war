@@ -10,7 +10,7 @@ acceptance: pending-user
 ## Goal
 - A ship holding on an Attack / Attack-Move target never turns its back to that target because of hull spacing.
 - Overlapping holders still separate when a sideways slide is possible.
-- Related: [[TODOs/Bugs/Attack_Order_Hold_In_Range]], [[TODOs/Bugs/Capital_Movement_And_Class_Rework_Fixes]] (overlap settling `bf9a0b564`).
+- Related: [[Review/Bugs/Attack_Order_Hold_In_Range]], [[Done/Bugs/Capital_Movement_And_Class_Rework_Fixes]] (overlap settling `bf9a0b564`).
 
 ## Cause (source, 2026-11-25)
 - Ships hold the moment guns reach (`AttackTargetState.HoldAndLookAtTarget`, `AttackMoveState` `CanHoldOn`) → a multi-selected group stops bunched.

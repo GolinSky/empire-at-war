@@ -1,6 +1,7 @@
 ---
 category: Bugs
-status: in-progress
+status: review
+acceptance: pending-user
 created: 2026-11-18
 ---
 # Attack Order: Hold When in Range, No Run-Away
@@ -8,7 +9,7 @@ created: 2026-11-18
 ## Goal
 - A ship ordered to attack does not move while its weapons reach the target (a **range band**, not a point).
 - No leg away from the target / toward the map edge on an Attack order.
-- Parent investigation: [[TODOs/Bugs/Capital_Movement_And_Class_Rework_Fixes]] (H3, 16:01 battle ISD II 256).
+- Parent investigation: [[Done/Bugs/Capital_Movement_And_Class_Rework_Fixes]] (H3, 16:01 battle ISD II 256).
 
 ## Evidence
 - 16:01 battle: ISD II 256, one Attack on target 164: drove (1087, 1405) → (1678, 2140) away from station (1723, −1660), distance 3130 → 3800; then turned 180° and headed to (1434, −1397).
@@ -119,3 +120,10 @@ created: 2026-11-18
 - `Entities/Ship/Orders/ShipOrderRunner.cs`
 - `Components/Weapon/ArtilleryCapability.cs`, `WeaponComponent.cs` (`HasEnoughRange`, `TryGetHardPointApproach`)
 - `Components/Ship/Movement/ShipMoveComponent` (`BrakeForReplan`)
+
+## Review 2026-11-26
+- Moved to Review by user decision.
+- Not implemented (dropped by user): launcher-only artillery fallback. `ArtilleryCapability.GetArtilleryRange` clamps only when `mainReach > 0f` (`ArtilleryCapability.cs:69`) → with no live main battery the ship holds at launcher range.
+- Superseded: hull-contact retreat check — retreat removed in `a945072cc`.
+- Done: formation assertions reconciled; 144 `ShipPursuitTests`, `UnitOrderServiceTests`, `WeaponRangeTests`, `WeaponLoadoutBakeTests` cases passed in `Assets/TestResults_20261126_192030.xml`.
+- Open user gate: mixed-group attack on a station/capital; fleeing-target pursuit.

@@ -8,7 +8,7 @@ tags:
 ---
 # Multiplayer Connection Analysis
 
-Parent → [[TODOs/Features/Multiplayer_Plan|Multiplayer Plan]]. Related → [[TODOs/Bugs/Weapon_Fire_Rate_Low_FPS]], [[TODOs/Optimization/Online_Battle_Low_FPS]].
+Parent → [[TODOs/Features/Multiplayer_Plan|Multiplayer Plan]]. Related → [[Review/Bugs/Weapon_Fire_Rate_Low_FPS]], [[TODOs/Optimization/Online_Battle_Low_FPS]].
 
 ## Goal
 
@@ -56,7 +56,7 @@ Parent → [[TODOs/Features/Multiplayer_Plan|Multiplayer Plan]]. Related → [[T
    - Still open: Option A (never wait for a visual) undecided; runtime growth budget 0.5 ms/frame; fighter stock = station starting squadron only (carrier squadrons grow at runtime).
    - 3 factions: stock = one of every ship of each faction per slot; shot prefabs are shared across factions → mixed lobbies raise demand on the same pools.
    - Client-only difference: host prewarms squadrons during loading; client builds them on demand (`BattleStartupSequence.cs:85-89`) → their pool demand appears mid-battle.
-   - Never measured ([[TODOs/Bugs/Weapon_Fire_Rate_Low_FPS]] Phase 1 open); counters are dev-only.
+   - Never measured ([[Review/Bugs/Weapon_Fire_Rate_Low_FPS]] Phase 1 open); counters are dev-only.
 2. **Late host targets.** Weapon targets share one ordered reliable stream with health JSON (`EntityHealthMessage.HealthJson`, 4 Hz per changed unit), spawn JSON, state JSON. Backlog or one lost packet delays every target behind it. Not measured.
 3. **Client-local gates on delayed poses.** `HasFiringSolution` (range + yaw arc) and `CanAcquire` (`VisionService.IsVisible`) run on client positions that are ≥ 150 ms old and popping.
    - Correction of the first draft: a pose correction does **not** restart a running salvo. It adds `yaw delta / TurnRate` delay per new salvo (`WeaponHardPoint.TurnTowards`) and cancels a pending salvo only if the target left arc/range when the turn ends (`FireTurnedSalvos`). Expected small; fixing A removes it.
@@ -181,7 +181,7 @@ Findings:
 5. **Approach B cost with measured counts:** 166 × 14 B × 20 Hz = 46.5 KB/s mean, 63.6 KB/s at 227 entities; replaces today's 9.3 KB/s. Total ≈ 79 KB/s mean, ≈ 125 KB/s worst = 48% of the cap. Fits at 20 Hz; 10 Hz not needed for 1–2 clients.
 6. **Reliable JSON = 72% of bytes.** `ReplicatedStateMessage` is flat ≈ 18 KB/s (3.5 KB × 4–5/s) regardless of fight size → a full snapshot resent 4×/s. No backlog on this link, so not today's symptom; first thing to shrink (delta or binary) before more clients.
 7. **Host shot pools are fine.** Ships: 0 waits all match. Fighters: 2 events (`DualProjectile`, 4 shots waiting, max wait 766 ms, at 1752 s and 1947 s). → B1 ruled out on the host; client pools unknown.
-8. Pool stock is oversized: `pool_total` 9 678–9 757, `pool_in_use` max 707 (7%). Memory/load cost only; revisit in [[TODOs/Bugs/Weapon_Fire_Rate_Low_FPS]].
+8. Pool stock is oversized: `pool_total` 9 678–9 757, `pool_in_use` max 707 (7%). Memory/load cost only; revisit in [[Review/Bugs/Weapon_Fire_Rate_Low_FPS]].
 9. **≈ 50 ms hitch every ≈ 15 s** (131 windows at 50–60 ms; p50 8.6 ms). No match with `_ai.csv` row times. Cause unknown (GC candidate). One late network tick each; inside the 150 ms buffer.
 10. `[ShipNavigation] Tangent route build failed … turns in place` × 160 in `Player.log` → those ships stop at corners and rotate on the spot (host-side, all machines see it).
 

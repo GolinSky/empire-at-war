@@ -201,7 +201,7 @@ recorded: 2026-10-20
   - **Status**: steps 1–5 in `38f3e681`; compile clean. **Remaining**: manual skirmish exit check and placement material-count check.
 
 - [ ] **Replace silent null returns with fail-fast/Try APIs** (Wave 1)
-  - **Plan**: [[TODOs/Bugs/Fail_Fast_Null_Returns|Fail-Fast Null Returns]]
+  - **Plan**: [[Review/Bugs/Fail_Fast_Null_Returns|Fail-Fast Null Returns]]
   - **Status**: code + tests in `32c5f1a1`. **Remaining**: clean compile (blocked by other Wave 1 WIP) and manual skirmish check.
 
 ### Optimization

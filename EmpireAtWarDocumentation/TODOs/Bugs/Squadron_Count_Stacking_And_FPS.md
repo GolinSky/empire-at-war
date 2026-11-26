@@ -8,7 +8,7 @@ created: 2026-11-18
 ## Goal
 - Find and fix squadron-driven FPS loss in big (7-player online) battles.
 - **Out of scope:** squadron icon stacking / grid (`SquadronIconGrouping`, `SquadronGroupingJob`, `BattleMarker*`). The user is rebuilding it. Do not touch.
-- Related: [[TODOs/Bugs/Weapon_Fire_Rate_Low_FPS]], [[TODOs/Optimization/Online_Battle_Low_FPS]], [[TODOs/Optimization/Live_Battle_CPU_Sweep_Plan]] (Phase 5).
+- Related: [[Review/Bugs/Weapon_Fire_Rate_Low_FPS]], [[TODOs/Optimization/Online_Battle_Low_FPS]], [[TODOs/Optimization/Live_Battle_CPU_Sweep_Plan]] (Phase 5).
 
 ## Evidence
 - Release `Player.log` has no squadron data. 1v1 Editor telemetry from 2026-11-17 is copied to `Logs/OnlineBattles/20261117T1650Z/editor_telemetry/`. Summary: `squadron_summary.txt` (`scripts/squadron_summary.py`).

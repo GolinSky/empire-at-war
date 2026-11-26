@@ -126,7 +126,7 @@ tags:
 - A 0.5 ms prewarm budget checked between creations cannot interrupt one expensive Awake. Use `Battle.Projectile.Prewarm.<prefab>` / `Instantiate.<prefab>` markers before changing native prefab components.
 - Selection sprites use the existing world-aligned `SelectionBrackets.shader`, `DisableBatching=true`, conservative bounds and attack-only CPU updates. Keep the saved shared material binding; validate yaw/pitch/culling/spin visually.
 - `TargetOriginCapture` registers mount transforms once and completes `TargetOriginReadJob` before snapshot consumption or disposal. Parent rotation = world × inverse(local); unregister/remap slots before destroying or pooling owners.
-- `SquadronIconLayer` centrally caches camera/screen/zoom and skips position changes ≤0.5 px; retain dedicated canvas isolation, vision and click behavior.
+- `BattleMarkerLayer` centrally caches camera/screen/zoom and writes marker positions rounded to whole pixels (no ≤0.5 px skip); retain dedicated canvas isolation, vision and click behavior.
 - Per-iteration captured locals can allocate even when the lambda branch is skipped. Hazard subscriptions allocate in a separate helper only on membership entry; use indexed iteration over interface lists to avoid boxed enumerators.
 - `EnemyStrategicContextBuilder.Build` lends per-player collections until the next Build; current commander consumes them synchronously. Do not retain or asynchronously consume these collections.
 - `BattleTelemetry` performs full CSV serialization only on tracked combat-scene exit/quit. Auxiliary additive unloads do not flush combat telemetry; data since the previous exit is not crash-persistent.
@@ -203,7 +203,7 @@ tags:
 - `SquadronIconGrouping` schedules one Burst job over persistent numeric buffers, keeps published slots until a batch is ready, and completes ownership before reuse or disposal. Renderer/UI state and vision queries stay on the main thread.
 - Compare matching Development Player workloads with `Battle.Markers.Vision`, `Snapshot`, `Grouping.Reconcile`, `Consume`, `Layout`, `HitQuery` and canvas rebuilds. Report candidate counts separately from worker time, main-thread p95 and managed allocations.
 - Layout and allocation budgets are unmeasured. Acceptance → [[TODOs/User_Acceptance_Queue#Small Ship Icons and Squadron Icon Grid]].
-- Rebuild 2026-11-18 ([[TODOs/Features/Squadron_Icon_Clustering_Rebuild]]): grouping runs in screen pixels (radii scale with zoom pitch), every squadron is a 1×1+ cluster with compact ranks, ships are obstacles not members.
+- Rebuild 2026-11-18 ([[Review/Features/Squadron_Icon_Clustering_Rebuild]]): grouping runs in screen pixels (radii scale with zoom pitch), every squadron is a 1×1+ cluster with compact ranks, ships are obstacles not members.
 - Motion = exact projected anchor + decaying springs (cell 0.1 s, placement 0.12 s); camera motion never goes through a spring. No write thresholds or dead zones.
 - Placement queries a uniform screen grid of obstacles (ship hulls via `IBattleHull`, ship markers, placed grids); squadron and ship markers use separate nested canvases. Budgets still unmeasured.
 

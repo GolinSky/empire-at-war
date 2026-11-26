@@ -85,7 +85,7 @@ acceptance: pending-user
   - Site exclusion radius captured once at `UpdateState` → no change needed: site views are instantiated at prefab scale and never rescaled (`MapLayoutView.cs:104`).
   - Removed unused `CaptureSitesSystem.TryGetCaptureTarget/TryGetThreatenedSite/TryGetRaidTarget` and helpers `OwnsPointMines`, `TryGetClosestSite`, `GroundCenter`, plus their 3 tests in `CaptureSitePresenterTests`.
   - `CaptureSiteAnnouncer` → `IFactionAnnouncer` (`Clips`, `Announce`). Cooldowns live once in `AnnouncementCooldowns` (`EVENT` 1.5 s, `CONSTRUCTION` 8 s, `LOSS` 8 s); `FactionAnnouncementService` members back to private.
-  - Updated `ICaptureSitesSystem` references in [[TODOs/Features/Defense_Satellites_Plan]] and [[TODOs/Bugs/Defense_Satellites_Review_Fixes]].
+  - Updated `ICaptureSitesSystem` references in [[Review/Features/Defense_Satellites_Plan]] and [[Review/Bugs/Defense_Satellites_Review_Fixes]].
   - Live Editor recompile after fixes: completed, 0 errors.
 - Tests not run (local override).
 

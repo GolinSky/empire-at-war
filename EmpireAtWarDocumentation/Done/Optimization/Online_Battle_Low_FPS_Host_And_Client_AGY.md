@@ -1,8 +1,11 @@
 ---
 category: Optimization
-status: todo
+status: done
 agent_marker: AGY
 created: 2026-11-18
+disposition: superseded
+superseded_by: "[[TODOs/Optimization/Online_Battle_Low_FPS]]"
+completed: 2026-11-26
 ---
 # [AGY] Online Battle 10-20 FPS Host and Client Performance Optimization
 
@@ -46,7 +49,7 @@ created: 2026-11-18
    - Track dirty versions on `IReplicatedState` so `HostReplicatedStateSender` skips `Capture()` when unchanged.
    - Cache `IEntityTransformFacade` in `HostTickReplicator` upon `HandleAdded`.
 4. **Stop starved-pool `TargetSelectionBatch` re-work**:
-   - Co-resolve `ShotPoolPrewarmer` / `ShotEffectCache` starvation (see [[TODOs/Bugs/Weapon_Fire_Rate_And_Network_Sync_Low_FPS_AGY]]) and avoid re-running target selection every frame while a hardpoint is explicitly throttled or waiting in `_waiting`.
+   - Co-resolve `ShotPoolPrewarmer` / `ShotEffectCache` starvation (see [[Done/Bugs/Weapon_Fire_Rate_And_Network_Sync_Low_FPS_AGY]]) and avoid re-running target selection every frame while a hardpoint is explicitly throttled or waiting in `_waiting`.
 5. **Release-build periodic perf log (`BattleFpsHistory` / lightweight `[BattlePerf]` logger)**:
    - Log a single summary line to `Player.log` every `30 s` during battles (FPS avg/min/1% low, fixed step count/frame, active ships/squadrons, host/client role, projectile in-use/waiting counts).
 
@@ -69,3 +72,7 @@ created: 2026-11-18
 - [ ] Cache transform facades in `HostTickReplicator`
 - [ ] Add low-overhead Release `[BattlePerf]` periodic logging to `Player.log`
 - [ ] Capture matched Development-build Profiler trace in 3v4 battle before/after changes
+
+## Disposition 2026-11-26
+- Closed by user decision as a duplicate of [[TODOs/Optimization/Online_Battle_Low_FPS]], which stays active.
+- Findings were not merged or source-verified in this review; read this note when continuing the active plan.

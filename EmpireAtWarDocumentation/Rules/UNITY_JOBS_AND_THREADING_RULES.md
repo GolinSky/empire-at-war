@@ -80,7 +80,7 @@ Main thread: gather snapshot (+ stable ids / generation)
 - The owner service is registered in its VContainer scope; ordered project cleanup uses `EmpireAtWar.Lifecycle.IOrderedDisposable` / `ILateDisposable`.
 - Collections here is `6.4.0` (Unity 6 versioning), not `2.5`; allocator semantics referenced above are unchanged, but check the package docs for API details.
 - Keep job structs `internal`, one type per file, named after the file; `const` fields in `UPPER_SNAKE_CASE`.
-- Tests that exercise jobs run through the Unity Test Framework only when the user explicitly asks (root `AGENTS.md` → Local Test Execution Override and Unity Test Safety).
+- Tests that exercise jobs run through the Unity Test Framework when they are created, changed or related to the current work; never the full suite unless the user asks (root `AGENTS.md` → Local Test Execution Override and Unity Test Safety).
 
 ## 7. Audit checklist (for reviewing an existing Jobs feature)
 

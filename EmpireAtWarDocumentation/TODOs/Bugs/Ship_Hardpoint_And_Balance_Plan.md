@@ -20,7 +20,7 @@ tags:
 
 - Resolve firing-angle inconsistencies and investigate low ship output before compensating with damage buffs.
 - Review ship cost/durability and telemetry attribution using the November 13 battle and verified serialized settings.
-- Own ship follow-ups separately from [[TODOs/Bugs/Enemy_AI_And_Faction_Balance]]; squadron tuning remains with [[TODOs/Bugs/Carrier_and_Squadron_Rebalance]].
+- Own ship follow-ups separately from [[TODOs/Bugs/Enemy_AI_And_Faction_Balance]]; squadron tuning remains with [[Review/Bugs/Carrier_and_Squadron_Rebalance]].
 
 ## Decision
 

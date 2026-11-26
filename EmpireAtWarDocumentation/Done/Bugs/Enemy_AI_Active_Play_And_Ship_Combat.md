@@ -2,7 +2,7 @@
 category: Bugs
 status: done
 created: 2026-11-19
-replaces: "[[TODOs/Bugs/Enemy_AI_UltraHard_Followup_And_Ship_Idle]]"
+replaces: "[[Done/Bugs/Enemy_AI_UltraHard_Followup_And_Ship_Idle]]"
 after: "[[Done/Features/Spatial_Pace_Clusters_Plan]]"
 completed: 2026-11-19
 acceptance: pending-user
@@ -242,7 +242,7 @@ Files: `BattleTelemetry/Loading_20261119_004939_ai.csv`, `_ai_orders.csv`, `Batt
 - In-range Attack/AttackMove samples (`preferredInRange=1`): human 82 of 555 with `facingDot < 0`, 56 below −0.5; AI 31 of 82, 18 below −0.5.
 - Most cases: `hold=inReach move=approach`, movement `Idle` (ship stopped in reach, not turned to the target); also `hold=moving`, `pursuitStop`.
 - Worst human ships: 139 (12 samples), 153 (10). AI: 141, 143.
-- Related: [[TODOs/Bugs/Attack_Order_Hold_In_Range]] (`001ab9e5b` hold in reach), [[TODOs/Bugs/Capital_Movement_And_Class_Rework_Fixes]] (stern-first retreat).
+- Related: [[Review/Bugs/Attack_Order_Hold_In_Range]] (`001ab9e5b` hold in reach), [[Done/Bugs/Capital_Movement_And_Class_Rework_Fixes]] (stern-first retreat).
 
 ## Verification of `c43df90dc`
 - R1 pad lock removed (`EnemySiteObjectives`): pads capturable without owning point mines. Matches rules.

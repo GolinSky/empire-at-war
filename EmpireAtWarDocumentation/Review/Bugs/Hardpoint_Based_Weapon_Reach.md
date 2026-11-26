@@ -1,11 +1,12 @@
 ---
 category: Bugs
-status: in-progress
+status: review
+acceptance: pending-user
 created: 2026-11-20
 ---
 # Hardpoint-Based Weapon Reach
 
-Related: [[TODOs/Bugs/Attack_Order_Hold_In_Range]], [[TODOs/Bugs/Capital_Movement_And_Class_Rework_Fixes]], [[TODOs/Bugs/Ship_Hardpoint_And_Balance_Plan]]
+Related: [[Review/Bugs/Attack_Order_Hold_In_Range]], [[Done/Bugs/Capital_Movement_And_Class_Rework_Fixes]], [[TODOs/Bugs/Ship_Hardpoint_And_Balance_Plan]]
 
 ## Goal
 
@@ -116,3 +117,6 @@ Planar mount offsets from prefab root; ranges after `rangeMultiplier`.
 - Rebake needed when hardpoints or weapon ranges change; script was a one-off Editor eval.
 - [x] Step 3, Hunt only — 2026-11-20: `HuntState.FindTarget` uses `PlanarGeometry.DistanceSquared`. User scoped the fix to Hunt; the other five 3D sites stay as they are.
 - [ ] Tests updated; in-game check with Praetor, Executor, Mandator
+
+## Review 2026-11-26
+- Open user gates: in-game check with Praetor, Executor, Mandator; related tests. Moved to Review by user decision; not re-verified against source in this review.

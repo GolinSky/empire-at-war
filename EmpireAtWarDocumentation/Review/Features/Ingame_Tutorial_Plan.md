@@ -1,6 +1,7 @@
 ---
 category: Features
-status: in-progress
+status: review
+acceptance: pending-user
 created: 2026-11-08
 ---
 
@@ -100,7 +101,7 @@ Each hint: card → highlight → completion condition → short confirm feedbac
   - Anchors placed: MiniMap, BuildPanel (FactionUi root), BuildQueue (ShipBuildUi root), Money, UnitActions, AttackMove/Stop/Guard buttons (no Move button exists), AbilityBar + AutoPowerButton (ShipUi + ShipGroupUi), TooltipMatchups (whole tooltip Panel), ReinforcementButton, SuperWeapons (MiddlePanel), Heroes, SurvivalHud (Start wave button). Level/research items are spawned dynamically → highlight BuildPanel.
 - [x] **Phase 3 — observer events**: `IMiniMapInputObserver` (`MiniMapUiController`), `IAutoPowerToggleObserver` (`ShipUiController`); others reuse existing events (`IUnitOrderService.OrderIssued`, `ShipAbilityService.ManualAction`, `ITooltipModelObserver`, `ICameraInput`, economy/research polling). `IPolledHintCondition` for poll-only conditions; `IHintWorldTarget` for located triggers. Optional systems (economy, capture sites, Survival) via `IObjectResolver.TryResolve` → missing system = never-firing condition.
 - [x] **Phases 4–7 — content**: `Assets/Settings/Data/Tutorial/Hints/Hint_*.asset`; `HintTrack` = 10 basics (camera pan, zoom, select ship, select fleet, move, minimap camera, minimap order, build, counters, build queue) + 18 events (attack, super weapon, abilities, auto-power, level up, level unlocked, research, hazard, Survival prep, mining site, reinforcements, mining income, satellite pad, heroes, squadrons, waypoints, stop/guard, fog). All basics listen from match start (done early → skipped).
-- [ ] **Phase 8 — settings & polish**: done — `GameplaySettingsData.showHints` toggle row "Show tutorial hints" + "Reset hints" button in `SettingsUi` (tooltips added), `ISettingsService.SetShowHints` for card "Turn off hints", `JsonHintProgressRepository` moved to `ProjectScope` (shared cached instance; Reset applies next match). **Open**: audio cue (no neutral UI clip / one-shot API in `IInterfaceSfxService` — needs a sound choice); analytics funnel (optional, not done).
+- [x] **Phase 8 — settings & polish**: done — `GameplaySettingsData.showHints` toggle row "Show tutorial hints" + "Reset hints" button in `SettingsUi` (tooltips added), `ISettingsService.SetShowHints` for card "Turn off hints", `JsonHintProgressRepository` moved to `ProjectScope` (shared cached instance; Reset applies next match). **Open**: audio cue (no neutral UI clip / one-shot API in `IInterfaceSfxService` — needs a sound choice); analytics funnel (optional, not done).
 - Verification 2026-11-09: compiles clean, console clean, prefab diffs additive, hint ids unique, all input paths resolve. Full EditMode suite (user-requested): run 1 → 8 failures: `BattleHudControls_DoNotAcquireKeyboardFocusOrNavigate` (HintUi buttons had Automatic navigation → fixed to None) + 7 `InputBindingServiceTests` that read localized key names from the active OS keyboard layout (Ukrainian: `Ц` vs `W`; unrelated to hints). Run 2 → **2926/2926 passed**. Not run in-game.
 - Rule: battle HUD `Selectable`s need `Navigation.Mode.None` (enforced by `BattleInputPrefabTests`).
 - Fixed 2026-11-09: binding labels were OS-layout dependent (`GetBindingDisplayString` asks the device). `InputBindingService.GetBindingDisplayString` + hint card now use `BindingPathNames.Readable` (bound path, short names). Side effect: arrows read "Up Arrow" instead of "Up". `BattleInput` 272/272, `Ui` 249/249 pass (run under a Latin layout; Ukrainian layout not re-tested). Committed `8868fcda0`.
@@ -264,3 +265,6 @@ Each hint: card → highlight → completion condition → short confirm feedbac
 - Full standard suites, user-authorized 2026-11-11: EditMode **2961/2961 passed**, PlayMode **36/36 passed**, no failures/skips. Explicit opt-in sweeps excluded. Source commit `80b265098`; no implementation changes required. In-game visual acceptance remains pending.
 
 - Element highlight API 2026-11-11: `IUiHighlight.Highlight()` / `StopHighlight()` implemented by `UiHighlight` on the target Graphic. Tutorial anchors call explicitly bound components; dynamic build/ability/reinforcement cards pass their own bound highlight. Own-mesh cyan→bright pulse over 1.2 s plus per-element material brightness 1.8–3.5×, preserving live colors/alpha and button states. Overlay tint/rim removed; dim cutout retained. Clear on hint closure, target change/loss, modal lock, disable and disposal. 27 saved Graphic bindings verified across 11 prefabs; compilation and Console clean; tests not run for this change; visual acceptance pending.
+
+## Review 2026-11-26
+- Phase 8 was recorded as done; box ticked. Open user gate: in-match hint flow, "Show tutorial hints" / "Reset hints" settings. Moved to Review by user decision; not re-verified against source in this review.

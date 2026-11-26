@@ -1,8 +1,11 @@
 ---
 category: Bugs
-status: todo
+status: done
 agent_marker: AGY
 created: 2026-11-18
+disposition: superseded
+superseded_by: "[[TODOs/Bugs/Enemy_AI_Base_Defense_And_Consistency]]"
+completed: 2026-11-26
 ---
 # [AGY] Enemy AI Mid-Fight Base Defense at Level 3 and Difficulty Consistency
 
@@ -73,3 +76,7 @@ created: 2026-11-18
 - [ ] Enable multi-ally `TeamAiCooperation` defense scaled to attacker strength + combined approach safety check
 - [ ] Prevent trailing reinforcements from stalling engaged `EnemyTaskForceExecutor` main body
 - [ ] Review/update `EnemyAi` EditMode tests
+
+## Disposition 2026-11-26
+- Closed by user decision as a duplicate of [[TODOs/Bugs/Enemy_AI_Base_Defense_And_Consistency]], which stays active.
+- Findings were not merged or source-verified in this review; read this note when continuing the active plan.

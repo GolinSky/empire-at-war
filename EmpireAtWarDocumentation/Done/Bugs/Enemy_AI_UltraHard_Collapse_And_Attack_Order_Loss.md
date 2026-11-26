@@ -5,7 +5,7 @@ created: 2026-11-18
 parent: "[[TODOs/Bugs/Enemy_AI_And_Faction_Balance]]"
 completed: 2026-11-18
 acceptance: failed
-followup: "[[TODOs/Bugs/Enemy_AI_UltraHard_Followup_And_Ship_Idle]]"
+followup: "[[Done/Bugs/Enemy_AI_UltraHard_Followup_And_Ship_Idle]]"
 ---
 # Enemy AI UltraHard Collapse And Attack Order Loss
 
@@ -95,4 +95,4 @@ followup: "[[TODOs/Bugs/Enemy_AI_UltraHard_Followup_And_Ship_Idle]]"
 ## Acceptance (2026-11-18 22:12 UltraHard battle)
 - Fix 1 (auto-power keeps Attack orders) held: no station attack replaced by an ability.
 - Failed: defense-spawn hold never times out (447 `deploymentBlocked`); capture stall → `Move` locks ships out of combat; AI still loses map control.
-- Follow-up → [[TODOs/Bugs/Enemy_AI_UltraHard_Followup_And_Ship_Idle]].
+- Follow-up → [[Done/Bugs/Enemy_AI_UltraHard_Followup_And_Ship_Idle]].

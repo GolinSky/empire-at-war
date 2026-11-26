@@ -1,8 +1,11 @@
 ---
 category: Bugs
-status: todo
+status: done
 agent_marker: AGY
 created: 2026-11-18
+disposition: superseded
+superseded_by: "[[Review/Bugs/Attack_Order_Hold_In_Range]]"
+completed: 2026-11-26
 ---
 # [AGY] Ship Attack Order Hold-in-Range Band and Formation Offset Fix
 
@@ -63,3 +66,7 @@ created: 2026-11-18
 - [ ] Exclude non-formation units (`Squadron`) and cap/arc `UnitOrderService.AttackOffsets`
 - [ ] Fix `AttackTargetState.UpdateMoveState`, `UpdateFormationMove`, `TryUpdateArtilleryMove`, and `ShipOrderRunner.Attack`
 - [ ] Review/update `ShipPursuitTests` and `UnitOrderService` EditMode tests
+
+## Disposition 2026-11-26
+- Superseded by [[Review/Bugs/Attack_Order_Hold_In_Range]]; same root causes, no unique findings.
+- Source check 2026-11-26: hold no longer depends on `!IsMoving` (`AttackTargetState.cs:279`); `AttackOffsets` ship-only with group-side arc (`UnitOrderService.cs:210-242`, `001ab9e5b`, `8787a78e1`); artillery retreat removed (`a945072cc`); hold policy decided 2026-11-18 (`HELD_REACH_FACTOR` 1.1).

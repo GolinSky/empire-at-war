@@ -1,13 +1,14 @@
 ---
 category: Bugs
-status: in-progress
-created: 2026-10-28
+status: review
+acceptance: pending-user
+created: "2026-10-28\r"
 ---
 # Defense Satellites — Review Fixes
 
 ## Goal
 
-- Fix issues found in the read-only review of commit `ed1b5313b` ("Add capturable defense satellites") against [[TODOs/Features/Defense_Satellites_Plan|Defense Satellites Plan]].
+- Fix issues found in the read-only review of commit `ed1b5313b` ("Add capturable defense satellites") against [[Review/Features/Defense_Satellites_Plan|Defense Satellites Plan]].
 - Keep the parent plan active until these fixes are done and accepted in-game.
 
 ## Findings
@@ -97,3 +98,6 @@ created: 2026-10-28
 - [x] EditMode categories `Capture`, `EnemyAi`, `Audio` run (2026-10-28); 9 unrelated Audio failures recorded
 - [x] Commit fixes (2026-10-28)
 - [ ] User in-game check (#4 AI build order, #5 raids, #10 cues, #11 rings, #12 home mines)
+
+## Review 2026-11-26
+- Only the user in-game check remains (#4 AI build order, #5 raids, #10 cues, #11 rings, #12 home mines). Moved to Review by user decision; not re-verified against source in this review.

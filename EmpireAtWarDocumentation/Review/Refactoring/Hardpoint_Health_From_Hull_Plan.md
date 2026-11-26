@@ -1,7 +1,8 @@
 ---
 category: Refactoring
-status: in-progress
-created: 2026-10-29
+status: review
+acceptance: pending-user
+created: "2026-10-29\r"
 ---
 # Hardpoint Health From Hull
 
@@ -13,7 +14,7 @@ created: 2026-10-29
 ## Problem (pre-implementation snapshot, 2026-10-29)
 - `HardPointHealth.health` is a flat per-type value in `ShipData.hardPointHealth`; `HealthModel.InitializeHardPoints` ignores `MaxHull`.
 - `CombatModifiers.HullMultiplier` (research) and `RefreshStatModifiers` scale hull only, not hardpoints.
-- Σ hardpoint HP / hull ranges `0.16×` (Bulwark) → `6.11×` (MC75); 13 ships < `0.5×`, 12 ships > `2.2×`. Full table: [[TODOs/Refactoring/Hardpoint_Health_From_Hull_Plan - Research|Research]].
+- Σ hardpoint HP / hull ranges `0.16×` (Bulwark) → `6.11×` (MC75); 13 ships < `0.5×`, 12 ships > `2.2×`. Full table: [[Review/Refactoring/Hardpoint_Health_From_Hull_Plan - Research|Research]].
 - Ratio < 1 → ship stripped of all hardpoints keeps flying (Venator `0.37×`, Lucrehulk `0.21×`).
 - Ratio ≫ 1 → hardpoints almost never die; sniping systems is pointless (VictoryII `4.38×`).
 
@@ -127,3 +128,6 @@ created: 2026-10-29
   - Fixed 2026-10-29: `ShipHardPointValidator` reports ship mounts with `healthOverride > 0` (ignored by ships → use `healthWeight`).
   - Fixes verified: Unity recompile clean, 0 console errors. Tests not run (local policy).
   - Open: mid-battle hull research increase: floor-bound mounts scale by less than the hull factor; guarantee holds in practice but is not strictly proven for that case.
+
+## Review 2026-11-26
+- Open user gate: step 9 skirmish playtest and final tuning acceptance. Moved to Review by user decision; not re-verified against source in this review.

@@ -1,7 +1,10 @@
 ---
 category: Bugs
-status: in-progress
+status: done
 created: 2026-11-17
+disposition: closed-by-user
+superseded_by: "[[Review/Bugs/Attack_Order_Hold_In_Range]]"
+completed: 2026-11-26
 ---
 # Capital Movement and Class Rework Fixes
 
@@ -143,7 +146,7 @@ created: 2026-11-17
 - Tests not run (local override).
 
 ### Follow-up 2026-11-18
-- Wrong-way / map-edge Attack legs (ISD II 256, 16:01) and "moves although in range" moved to [[TODOs/Bugs/Attack_Order_Hold_In_Range]] (artillery retreat band 0.8×reach → 0.9×reach leg; formation-side bearing; same-target re-issue resets hold).
+- Wrong-way / map-edge Attack legs (ISD II 256, 16:01) and "moves although in range" moved to [[Review/Bugs/Attack_Order_Hold_In_Range]] (artillery retreat band 0.8×reach → 0.9×reach leg; formation-side bearing; same-target re-issue resets hold).
 - Review corrections still to apply to this note: Phase 2/3 checkboxes not ticked though Report says done/decided; "Progress" still claims H1 check added (reverted `d813ee1ea`); Phase 0 says fix uncommitted (committed `aec386848`); footprint audit used half-length, Phase 2 item asks half-diagonal (ISD II 103.2 vs 91.46 open); note not committed.
 - 147 s Mandator 247 example: `Idle` 65–110 s and 154–175 s (fighting); turning only 15–59, 136–146, 185–207 s. Re-issued orders do not restart the turn; moving ships brake (`BrakeForReplan`) for routes > 1° off heading.
 
@@ -252,3 +255,8 @@ created: 2026-11-17
 - `Assets/Settings/Data/Ship/Empire/ISDIIShipData.asset` (+ footprint audit)
 - `Assets/Scripts/Tests/Editor/Combat/WeaponLoadoutBakeTests.cs`
 - `Assets/Settings/Data/Factions/*/…Faction.asset`, `Assets/Settings/Data/Tooltip/Matchups/*.asset`
+
+## Disposition 2026-11-26
+- Closed by user decision; attack movement continues in [[Review/Bugs/Attack_Order_Hold_In_Range]].
+- Source check 2026-11-26: H1 replaced by reach hold (`ShipEngagement.IsInReach`, `a0bc9955d`); H2 diagnosed, `RotationSpeed` doubled (`ce000bbd9`); H3 retreat removed (`a945072cc`); H4 moves use `_mainTarget` only; H5 fixed (`aec386848`); `WeaponLoadoutBakeTests` CombatRating computed from biases (passed 2026-11-26 results); HeavyCruiser in `ShipMarqueeHull` (`ShipInstaller.cs:53`); no `HeavyCapital` left in `Tools/**/*.cs`.
+- Left undone: Lucrehulk role text "Heavy capital" in `SeparatistFaction.asset:70` (should be Battlecruiser); footprint corner-diagonal decision (see [[Done/Bugs/Capital_Movement_And_Class_Rework_Fixes_AGY]]).

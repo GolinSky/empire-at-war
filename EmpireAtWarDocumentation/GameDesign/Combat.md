@@ -98,7 +98,7 @@ verification: Reviewed affected source and regression fixtures. Unity 6000.4.7f1
 - Survivability vs lasers/PD: Fighter toughest; Interceptor hard to hit but fragile; Bomber easiest to kill.
 - Interceptor class (`ShipClass.Interceptor`) → `TIEInterceptor`, `AWing`, `VWing`, `Belbullab22`. Each uses a unit-scoped weapon definition in the `InterceptorLaser` family (`24`).
 - The 29 carriers audited in the original rebalance cover Fighter, Bomber and Interceptor; later roster coverage remains under review. Automatic launch selection rotates across eligible bays. Each launch spends one unit of battle stock, including the initial launch.
-- Exact carrier counts and regular squadron values → [[TODOs/Bugs/Carrier_and_Squadron_Rebalance]].
+- Exact carrier counts and regular squadron values → [[Review/Bugs/Carrier_and_Squadron_Rebalance]].
 - Hero class `ShipClass.HeroStrikecraft = 9`: `BobaFettSlaveI`, `JangoFettSlaveI`, `HanSoloMillenniumFalcon`; their unit weapons (`123`, `125`, `126`) use family `HeroLaser = 25`.
 - Rule: every non-HeroLaser row's hero effectiveness (damage × accuracy) ≤ `0.5×` its fighter value. Only `HeroLaser` hits heroes normally.
 - Hero shields still take full shield multipliers; resistance comes from accuracy (shields) and accuracy × damage (hull).
@@ -156,13 +156,13 @@ verification: Reviewed affected source and regression fixtures. Unity 6000.4.7f1
 - `HangarModel.SquadronLost` frees an active slot without resetting launch cooldown. Per-bay recent launches expire after 5 s; normal launch intervals and active/stock limits still apply.
 - CIS carrier interval → 1 s, initial delay 4 s. Station active/stock → CIS 5/20, Empire 4/12, Republic 3/9, Rebellion 2/4; station initial delay/interval 1/3 s.
 - Shared battle launch ceiling remains 10/s. Existing station saves preserve saved stock/cooldown; fresh matches use the new stock.
-- 2026-11-12 balance rejection and recorded combat evidence → [[TODOs/Bugs/Carrier_and_Squadron_Rebalance - Research]].
+- 2026-11-12 balance rejection and recorded combat evidence → [[Review/Bugs/Carrier_and_Squadron_Rebalance - Research]].
 
 
 ### Squadron member-count rework · 2026-11-14
 
 - Runtime members come from prefab health/flight fighter lists; MemberCount and weaponLoadout are baked metadata. Resize complete craft subtrees, preserve additionalGuns/death bindings and torpedo fighter indices, then rebake.
-- Current regular sizes F/I/B: Rebel5/4/3, Republic8/6/4, Empire10/8/6, CIS13/11/10. Exact stats and34 carrier caps/total-launch stock → [[TODOs/Bugs/Carrier_and_Squadron_Rebalance]]. Heroes remain one craft.
+- Current regular sizes F/I/B: Rebel5/4/3, Republic8/6/4, Empire10/8/6, CIS13/11/10. Exact stats and34 carrier caps/total-launch stock → [[Review/Bugs/Carrier_and_Squadron_Rebalance]]. Heroes remain one craft.
 - Base regular HullRepairPerSecond=0; shield regeneration is per craft. Serialize HP/s×ShieldRegenerateDelay as the tick amount; reduced squadron shields/recovery are intentional.
 - All34 carrier initial/interval targets4/1 s; global10 launches/s and5 s per-bay recent window retained. Stations preserve existing quantities/timing; separate economic balance is still open.
 - PendingLaunchCount=sum(min(remaining stock, max(0, active cap−live count))) across enabled operational bays. AI purchase room counts live carrier wings + pending slots, and theoretical wings only for undeployed carriers. Orphan wings after carrier death remain an association limitation.

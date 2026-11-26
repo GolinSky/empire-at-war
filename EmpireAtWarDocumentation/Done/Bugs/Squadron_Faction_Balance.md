@@ -14,9 +14,9 @@ system:
 # Squadron Faction Balance
 
 ## Goal
-- Squadron strength follows faction identity after gun consolidation (`8f23d1266`) and bay rotation ([[TODOs/Features/Squadron_Bay_Rotation_Plan]]).
+- Squadron strength follows faction identity after gun consolidation (`8f23d1266`) and bay rotation ([[Review/Features/Squadron_Bay_Rotation_Plan]]).
 - **Strength follows purchase price** (user, 2026-11-19): X-Wing `800` ≈ 2.67 TIE Fighter squadrons `300`. Prices stay.
-- Follow-up to [[TODOs/Bugs/Carrier_and_Squadron_Rebalance]]. Craft counts unchanged: Rebel 5/4/3, Republic 8/6/4, Empire 10/8/6, CIS 13/11/10.
+- Follow-up to [[Review/Bugs/Carrier_and_Squadron_Rebalance]]. Craft counts unchanged: Rebel 5/4/3, Republic 8/6/4, Empire 10/8/6, CIS 13/11/10.
 
 ## Outcome (2026-11-19)
 - Applied **model-tuned values** (user chose them over the v2 table): `Tools/SquadronRebalance/DuelSim.py` disagreed with the v2 model (v2 gave X-Wing `2.13`, A-Wing `0.88` TIE squadrons in a row).

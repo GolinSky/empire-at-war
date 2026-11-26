@@ -1,6 +1,7 @@
 ---
 category: Bugs
-status: in-progress
+status: review
+acceptance: pending-user
 created: "2026-11-18\r"
 ---
 # Weapon Fire Rate Drops at Low FPS
@@ -97,3 +98,9 @@ created: "2026-11-18\r"
 
 ## Related
 - [[TODOs/Optimization/Online_Battle_Low_FPS]] (FPS side of the same loop).
+
+## Review 2026-11-26
+- Phase 2 Option A landed in `bd5c4d106` (2026-11-23): only the reload timer gates a salvo; hardpoints land damage on schedule; drawing is best effort; admission queue and salvo reservation removed; bolts draw via shared `BoltLayer` particles.
+- Phase 1 admission-wait logging and the per-group growth budget no longer apply (no admission queue).
+- Open user gates: low-FPS repro (`frameRateLimit` 15 vs uncapped, shots/min ≥ 90%); online host check (3 humans + AI). `Combat` tests not run in this review.
+- Moved to Review by user decision. No reusable guidance beyond `Rules/BATTLE_PERFORMANCE_GUIDELINES`.

@@ -231,7 +231,7 @@ public interface IRepairableFacade : IEntityFacade
 - AI: `Assets/Scripts/Services/Enemy/EnemySiteConstructionController.cs`, `EnemyDefenseStrategy`
 - New: `Assets/Scripts/Services/Repair/RepairService.cs` (+ profile and facades, one type per file)
 - Source model: `F:\CodexArtifacts\EaW-Repair-Satellite\Repair Satellite.blend`
-- Related: [[TODOs/Features/Defense_Satellites_Plan|Defense Satellites Plan]], [[TODOs/Features/ARC170_Import|ARC-170 Import]] (Astromech Repair is self-repair, separate)
+- Related: [[Review/Features/Defense_Satellites_Plan|Defense Satellites Plan]], [[TODOs/Features/ARC170_Import|ARC-170 Import]] (Astromech Repair is self-repair, separate)
 
 ## TODO
 

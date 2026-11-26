@@ -1,6 +1,7 @@
 ---
 category: Bugs
-status: in-progress
+status: review
+acceptance: pending-user
 created: 2026-09-30
 tags:
   - code-audit
@@ -53,3 +54,8 @@ tags:
 
 ## Verification
 - Compile clean. Manual skirmish: attack ships, stations, platforms and squadrons; use abilities; load menu ↔ skirmish.
+
+## Review 2026-11-26
+- Compile blockers gone: `CaptureSitesSystem.cs:337-346` well-formed; `Services/Pooling/ViewPool.cs` exists and is imported by `UnitWreckService`/`UnitExplosionService`.
+- Steps 1–5 in source. Step 2 moved: `AddressableAssetService` → `Services/Repository/CachedAssetService.cs:91-97` (`MissingComponentException`, `3605a7515`).
+- Open user gates: recompile with 0 errors; manual skirmish check; `SceneDataTests`, `ShipAbilityServiceTests` on request.

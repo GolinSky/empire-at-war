@@ -1,6 +1,7 @@
 ---
 category: Features
-status: in-progress
+status: review
+acceptance: pending-user
 created: 2026-10-28
 ---
 # Defense Satellites
@@ -301,5 +302,8 @@ Score(pad, type) = PadValue(pad) × TypeFit(type) × Affordability(type) × Dive
 - [x] AI `EnemyDefenseStrategy` + capture ordering + telemetry
 - [x] Save/load round trip
 - [x] Satellite EditMode gates pass and Editor compiles clean; unrelated balance-data failure recorded below
-- [ ] Review fixes → [[TODOs/Bugs/Defense_Satellites_Review_Fixes|Defense Satellites Review Fixes]] (review 2026-10-28)
+- [ ] Review fixes → [[Review/Bugs/Defense_Satellites_Review_Fixes|Defense Satellites Review Fixes]] (review 2026-10-28)
 - [ ] User in-game acceptance
+
+## Review 2026-11-26
+- Review fixes → [[Review/Bugs/Defense_Satellites_Review_Fixes]] (Review). Only user in-game acceptance remains. Moved to Review by user decision; not re-verified against source in this review.

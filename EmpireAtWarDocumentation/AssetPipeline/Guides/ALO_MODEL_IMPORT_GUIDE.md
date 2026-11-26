@@ -123,7 +123,7 @@ bpy.ops.import_scene.fbx(
 3. Map each weapon/system to actual attachment positions. Preserve reference weapon counts even when ALO bone names differ; document the mapping.
 4. Place hardpoints under the banking body pivot. Calculate muzzle/world positions correctly; imported bone rotation is not automatically Unity yaw.
 5. Assign unique hardpoint IDs, health ordering, weapon profiles/arcs, fog references and hangar dependencies. A twin barrel pair need not represent two separate gameplay weapons.
-6. **Hardpoints must be visible/targetable.** Bind every weapon/system hardpoint to `HealthComponent.ShipUnits`, including source `Is_Targetable=No` / `Is_Destroyable=No` entries. Current health uses `HardPointHealthBudget` + shared `HardPointHealthSettings`: set `healthOverride = 0`, normally `healthWeight = 1`; `ShipData.hardPointHealth` was removed. Verify live settings and class floors; see [[TODOs/Refactoring/Hardpoint_Health_From_Hull_Plan]]. Hull-only targeting needs explicit user approval.
+6. **Hardpoints must be visible/targetable.** Bind every weapon/system hardpoint to `HealthComponent.ShipUnits`, including source `Is_Targetable=No` / `Is_Destroyable=No` entries. Current health uses `HardPointHealthBudget` + shared `HardPointHealthSettings`: set `healthOverride = 0`, normally `healthWeight = 1`; `ShipData.hardPointHealth` was removed. Verify live settings and class floors; see [[Review/Refactoring/Hardpoint_Health_From_Hull_Plan]]. Hull-only targeting needs explicit user approval.
 7. Use available fighter types only with an approved substitution. Fit the launch point outside the hull and record reserves, simultaneous capacity and launch delays.
 
 | Component | Explicit bindings to rebuild |

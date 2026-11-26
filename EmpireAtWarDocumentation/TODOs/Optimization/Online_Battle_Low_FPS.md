@@ -20,7 +20,7 @@ created: 2026-11-18
 - **Gap:** release `Player.log` has no timestamps, FPS, ping or shot data. `BattleTelemetry/` is Editor/Development only (last file 17:52, none for these battles).
 
 ## Findings (source)
-- Fire-rate starvation loop drives CPU: starved mounts re-run target selection every frame → [[TODOs/Bugs/Weapon_Fire_Rate_Low_FPS]].
+- Fire-rate starvation loop drives CPU: starved mounts re-run target selection every frame → [[Review/Bugs/Weapon_Fire_Rate_Low_FPS]].
 - Host network cost: `NetworkTickService.SendChangedHealth` every 0.25 s builds `JsonUtility.ToJson(UnitHealthSave)` per changed entity, broadcast per client → GC pressure in big fights.
 - Spawns send full JSON unit saves (`HostTickReplicator.CreateSpawn`); squadron churn re-sends them.
 - Clients also run turret/projectile visuals from host target events → client FPS tracks host battle size; damage stays on host.

@@ -86,26 +86,27 @@ Plan maintenance is part of the task. When creating, executing, or completing a 
 ### Categories and Locations
 
 - Use one primary category: `Features`, `Bugs`, `Refactoring`, `Optimization`, `Tooling`, or `Documentation`. Choose by the plan's main outcome; preserve its filename.
-- Active plans live in `TODOs/<Category>/`; completed plans live in `Done/<Category>/`. Example: `TODOs/Bugs/Ship_Order_Fix.md` → `Done/Bugs/Ship_Order_Fix.md`.
+- Active plans live in `TODOs/<Category>/`; plans waiting only for user acceptance live in `Review/<Category>/`; completed plans live in `Done/<Category>/`. Example: `TODOs/Bugs/Ship_Order_Fix.md` → `Review/Bugs/Ship_Order_Fix.md` → `Done/Bugs/Ship_Order_Fix.md`.
 - Keep `<Topic> - Research.md` and any plan-specific supporting notes beside their plan. Leave shared reference notes in their existing locations.
-- `TODOs/TODOs.md` remains the backlog index. Group active entries by category under `Active Tasks`; group completed entries by category under `Done`. Active sections contain only unfinished work.
+- `TODOs/TODOs.md` remains the backlog index. Group active entries by category under `Active Tasks`; group review entries by category under `Awaiting Review`; group completed entries by category under `Done`. Active sections contain only unfinished work.
 
 ### Working Flow
 
 1. Read the plan, its research companion, and its backlog entry before implementation. Verify recorded progress against live source; vault snapshots and checked boxes alone do not prove completion.
-2. When creating or touching a plan, categorize it and place it in the matching active or completed folder. Use frontmatter `category` matching the folder and `status`: `todo`, `in-progress`, `blocked`, or `done`; preserve unrelated metadata.
+2. When creating or touching a plan, categorize it and place it in the matching active or completed folder. Use frontmatter `category` matching the folder and `status`: `todo`, `in-progress`, `blocked`, `review`, or `done`; preserve unrelated metadata.
 3. During work, check off completed steps and record remaining work, blockers, and relevant verification evidence. Keep partially completed or unverified plans active; do not mark an entire plan done because one phase is finished.
 4. Mark a plan `done` only when all agreed scope is complete and applicable verification is satisfied. Record `completed` as `YYYY-MM-DD` using the user's local date, plus a concise outcome and verification result. Never claim unrun tests passed.
-   - User-only gates (in-game, listening, visual approval, tests blocked by the local override) do not keep a plan active. When implementation is complete and source-verified, mark it `done` with frontmatter `acceptance: pending-user`, add one line per open gate to `TODOs/User_Acceptance_Queue.md` linking the plan, and close it.
+   - **Review state.** When the code is complete and source-verified, the related tests ran and passed, no known bug remains, and only user acceptance is left (in-game, listening, visual approval), move the plan and companions to `Review/<Category>/` with `status: review` and `acceptance: pending-user`. Move its backlog entry to `Awaiting Review`, and add one line per open gate to `TODOs/User_Acceptance_Queue.md` linking the plan.
+   - A failed related test or a known bug → the plan stays active in `TODOs/`.
    - A plan with unimplemented scope (missing ability, phase, asset or decision) stays active regardless of acceptance state.
-   - When the user confirms a gate, remove its queue line and set `acceptance: passed` once no lines for that plan remain.
+   - When the user confirms a gate, remove its queue line. When no lines for that plan remain, set `status: done`, `acceptance: passed` and `completed`, then move it to `Done/<Category>/` and its entry to `Done`.
 5. Before closure, extract or update reusable rules, known issues and verified solutions in canonical guidance; record destination links or an explicit “no reusable guidance” reason in the plan. A verified result may be extracted from an active plan; leave pending work with its owner. Before the final response, move the completed plan and its companions to `Done/<Category>/` using the vault MCP move tool. Move the entire backlog entry, including nested details, from the active section to `Done`; retain its checked checkbox and update its plan/research links. Do not leave an active duplicate or delete the completed record.
 6. Search for links to moved paths and repair affected backlog, dashboard, and note links; do not assume a move rewrites links automatically. Read back the moved notes and index, confirm the old paths are absent, and verify affected links resolve.
 
 ### Edge Cases
 
 - If work is reopened, move the plan and companions back to `TODOs/<Category>/`, restore an unchecked active backlog entry, update status, and remove the current `completed` field; preserve useful completion history in the note.
-- A failed acceptance gate → reopen the plan, or open a `Bugs` plan when the defect is narrow; remove the queue line and link the follow-up.
+- A failed acceptance gate → move the plan from `Review/` back to `TODOs/`, or open a `Bugs` plan when the defect is narrow; remove the queue line and link the follow-up.
 - Cancelled or superseded work is not completed work. Record that disposition explicitly and remove it from active tasks without claiming success.
 - If completion is uncertain, keep the plan active and record what must be verified. Only reconcile plans related to the current task unless the user requests a broader backlog cleanup.
 - If a vault write or move fails, report the exact unfinished maintenance in the final response. Never claim the plan was archived when only its checkbox or status changed.
@@ -264,7 +265,7 @@ When creating, modifying, or refactoring any UI prefab, component, or view:
 ## Test Maintenance With Every Change
 
 - Every agent must review affected tests before finishing a code, prefab, scene, settings, asset, or tooling change. Use the category map below and `Tools/Jenkins/TEST_INVENTORY.md` to locate suites; search tests for changed symbols, serialized fields, asset paths, default values, and behavior contracts. Category membership alone is not enough.
-- Update affected tests, fixtures, mocks, setup, and expected values in the same change when intended behavior or dependencies change. If existing tests remain correct, state which were reviewed and why no update was needed. The local execution restriction does not excuse skipping test review or test edits.
+- Update affected tests, fixtures, mocks, setup, and expected values in the same change when intended behavior or dependencies change. If existing tests remain correct, state which were reviewed and why no update was needed. Running only related tests does not excuse skipping test review or test edits.
 - Preserve meaningful assertions. Fix production regressions in production code; change test expectations only when the intended contract changed or the test's assumption is demonstrably wrong. Never delete, ignore, mark explicit, weaken assertions, or bypass the CI gate merely to make a build pass.
 - Never pin tuned balance values in tests. Tests that read shipped data (`Assets/Settings`, unit prefabs) must not assert exact health, shields, damage, DPS, speed, price, build time, capacity, unlock level, ability recovery/damage, income, research multipliers, yaw arcs, hardpoint counts, squadron sizes, or loadout counts. Assert wiring and relationships instead: data matches the prefab (loadout == mounts, member count == fighters), totals follow their formula, values are positive or in a valid range, and design intent holds (leader > wingman, a buff is > 1, a hero has `MaxCount` 1). When behavior depends on a tuned value, read it from the asset rather than repeating the number. Logic tests that build their own inputs may use literal numbers. Patterns and examples: vault `Rules/TEST_GUIDELINES`.
 - Keep scheduler and performance-related correctness tests independent of machine speed: test limits, ordering, and eventual completion; do not assume a fixed number of cheap operations will consume a wall-clock budget.
@@ -279,10 +280,10 @@ When creating, modifying, or refactoring any UI prefab, component, or view:
 
 ## Local Test Execution Override (Codex and Claude)
 
-- Test execution is disabled for Codex and Claude in this checkout. Do not run tests through Unity, CLI, MCP, scripts, or delegated agents.
-- Do not perform test-preparation operations, including discarding scene changes, while test execution is disabled.
-- This overrides the test-execution requirements below and in other Markdown guidance. Only an explicit user request to run tests overrides this restriction; generic requests to implement, fix, or verify do not.
-- Use source inspection and non-test checks for verification, and report tests as not run. Do not ask to run tests as a routine completion step.
+- During work, run only the tests you created or changed and the fixtures or categories related to the change (see **Test Selection**). Run them through `Tools/Tests/Run-EditModeTests.ps1` with `-TestName` or `-Category`, following **Unity Test Safety**.
+- Never run the full EditMode suite, an unfiltered runner call, the `EditorPlayMode` pass, or explicit/exhaustive sweeps unless the user asks for that run.
+- A related test that fails → fix it or report it; the plan stays active.
+- Report the fixtures and categories that ran and their results. Never imply that tests you did not run passed.
 
 ## Unity Test Safety
 
@@ -336,7 +337,7 @@ Run the tests for the areas a change touches, not the whole suite. Every EditMod
 1. Before a feature, name the categories it touches from the table; add a fixture's own category when a test file changes.
 2. While iterating, run only those categories.
 3. `MapLayoutGeneratorTests` is explicit and excluded from standard runs. When map generation changes (`Entities/Map/Generation`, `Entities/Map/Hazards`, map settings assets) and tests are authorized, use `MapGeneration` (3 seeds) with `--include-explicit true`. `MapExhaustive` (all seeds, minutes) is optional and requires the separate exhaustive authorization above; never run it automatically before finishing.
-4. Run the full EditMode suite only at the end of a large or cross-cutting task, or when the user asks.
+4. Run the full EditMode suite only when the user asks.
 5. Report which categories ran; never imply the full suite passed when only categories ran.
 
 - `ShipArchetypeRouteSweepTests`: quick instance = `Navigation` (3 seeds, 6 routes per archetype/clearance); exhaustive instance = `NavigationExhaustive` (20 seeds, 24 routes). Both remain explicit. For an authorized quick sweep, use `--filter-type category --filter Navigation --include-explicit true`; this also includes ordinary Navigation tests but excludes the exhaustive instance. Never select this shared fixture name with explicit tests enabled.
