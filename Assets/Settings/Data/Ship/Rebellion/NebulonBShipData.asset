@@ -48,19 +48,28 @@ MonoBehaviour:
   <Hull>k__BackingField: 7800
   <Shields>k__BackingField: 3900
   shieldRegenTiers: {fileID: 11400000, guid: 44b427ab8d3b478397680d1181fc7fea, type: 2}
-  <ShieldRegenTier>k__BackingField: 2
+  <ShieldRegenTier>k__BackingField: 1
   <ShieldRegenMultiplier>k__BackingField: 1
   <ShieldRegenerateDelay>k__BackingField: 1
   <Range>k__BackingField: 600
   <Delay>k__BackingField: 0.25
   abilities: 03000000
-  hangarBays: []
-  <HangarMaxActive>k__BackingField: -1
+  hangarBays:
+  - squadronType: 300
+    reserve: 2
+    maxActive: 1
+  - squadronType: 301
+    reserve: 2
+    maxActive: 1
+  - squadronType: 1
+    reserve: 2
+    maxActive: 1
+  <HangarMaxActive>k__BackingField: 1
   <HangarInitialDelay>k__BackingField: 4
   <HangarLaunchInterval>k__BackingField: 8
   weaponLoadout:
   - weaponType: 5
-    count: 4
+    count: 6
   - weaponType: 7
-    count: 4
-  roles: 18
+    count: 6
+  roles: 82

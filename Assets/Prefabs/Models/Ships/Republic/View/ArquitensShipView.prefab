@@ -1,5 +1,63 @@
 %YAML 1.1
 %TAG !u! tag:unity3d.com,2011:
+--- !u!1 &104079784565894244
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 8959530320513886864}
+  - component: {fileID: 6002432837905973404}
+  m_Layer: 0
+  m_Name: ConcussionMissile_HP_14
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &8959530320513886864
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 104079784565894244}
+  serializedVersion: 2
+  m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
+  m_LocalPosition: {x: -0.17000002, y: -0.09, z: 1.9800001}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children:
+  - {fileID: 1271315304029449792}
+  m_Father: {fileID: 6281127937994382257}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &6002432837905973404
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 104079784565894244}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 6535a63451984d3d8510459aec130f3f, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  spawnDestroyedExplosion: 1
+  destroyedVfxAnchor: {fileID: 1271315304029449792}
+  destroyedVfxScale: 1
+  unlockLevel: 1
+  healthOverride: 0
+  healthWeight: 1
+  <HardPointType>k__BackingField: 0
+  <Id>k__BackingField: 14
+  yAxisRange:
+    <Min>k__BackingField: -129
+    <Max>k__BackingField: 148
+  mainBattery: 0
+  <WeaponType>k__BackingField: 128
 --- !u!1 &195951160534113870
 GameObject:
   m_ObjectHideFlags: 0
@@ -30,6 +88,37 @@ Transform:
   m_ConstrainProportionsScale: 0
   m_Children: []
   m_Father: {fileID: 7455001518668836767}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!1 &313436879275724965
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 9066965828357529781}
+  m_Layer: 0
+  m_Name: DestroyedVfxAnchor
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &9066965828357529781
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 313436879275724965}
+  serializedVersion: 2
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 9.313226e-10, y: 0.3200508, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 3878372445096019108}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &844635347370688786
 GameObject:
@@ -1603,6 +1692,11 @@ MonoBehaviour:
   - {fileID: 3692208482303791201}
   - {fileID: 746876643857132625}
   - {fileID: 656960128395284562}
+  - {fileID: 5267934681295829589}
+  - {fileID: 7351690097584662256}
+  - {fileID: 1519447179238984338}
+  - {fileID: 6002432837905973404}
+  - {fileID: 2114162192815398315}
 --- !u!114 &4447947531347916293
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -1685,6 +1779,8 @@ MonoBehaviour:
   <SquadronIcon>k__BackingField: {fileID: 0}
   <SFoils>k__BackingField: {fileID: 0}
   <GravityWellEmitter>k__BackingField: {fileID: 0}
+  <Cloak>k__BackingField: {fileID: 0}
+  <RepairRange>k__BackingField: {fileID: 0}
   <Injectables>k__BackingField:
   - {fileID: 8756132153981853137}
   - {fileID: 5242897595597171810}
@@ -1699,6 +1795,11 @@ MonoBehaviour:
   - {fileID: 746876643857132625}
   - {fileID: 656960128395284562}
   - {fileID: 6723505478479556836}
+  - {fileID: 5267934681295829589}
+  - {fileID: 7351690097584662256}
+  - {fileID: 1519447179238984338}
+  - {fileID: 6002432837905973404}
+  - {fileID: 2114162192815398315}
 --- !u!114 &6723505478479556836
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -6768,6 +6869,64 @@ ParticleSystemRenderer:
   m_MeshWeighting1: 1
   m_MeshWeighting2: 1
   m_MeshWeighting3: 1
+--- !u!1 &3768277900790756677
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 1853820172533714847}
+  - component: {fileID: 1519447179238984338}
+  m_Layer: 0
+  m_Name: ConcussionMissile_HP_13
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &1853820172533714847
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 3768277900790756677}
+  serializedVersion: 2
+  m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
+  m_LocalPosition: {x: 0.15, y: -0.09, z: 1.9800001}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children:
+  - {fileID: 4034687407780990053}
+  m_Father: {fileID: 6281127937994382257}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &1519447179238984338
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 3768277900790756677}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 6535a63451984d3d8510459aec130f3f, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  spawnDestroyedExplosion: 1
+  destroyedVfxAnchor: {fileID: 4034687407780990053}
+  destroyedVfxScale: 1
+  unlockLevel: 1
+  healthOverride: 0
+  healthWeight: 1
+  <HardPointType>k__BackingField: 0
+  <Id>k__BackingField: 13
+  yAxisRange:
+    <Min>k__BackingField: -129
+    <Max>k__BackingField: 148
+  mainBattery: 0
+  <WeaponType>k__BackingField: 128
 --- !u!1 &4277162243530811755
 GameObject:
   m_ObjectHideFlags: 0
@@ -11701,6 +11860,11 @@ Transform:
   - {fileID: 9082840287105038657}
   - {fileID: 702159657882360904}
   - {fileID: 1570321307353918045}
+  - {fileID: 6833236315210013300}
+  - {fileID: 3011077020506240640}
+  - {fileID: 1853820172533714847}
+  - {fileID: 8959530320513886864}
+  - {fileID: 3878372445096019108}
   m_Father: {fileID: 723940626326228561}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!114 &4447771180580767399
@@ -11725,7 +11889,43 @@ MonoBehaviour:
   - {fileID: 6411720674404516733}
   - {fileID: 3407299230071023220}
   - {fileID: 3692208482303791201}
+  - {fileID: 5267934681295829589}
+  - {fileID: 7351690097584662256}
+  - {fileID: 1519447179238984338}
+  - {fileID: 6002432837905973404}
+  - {fileID: 2114162192815398315}
   rangeMultiplier: 1
+--- !u!1 &4581830427640555195
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 4709939355918963678}
+  m_Layer: 0
+  m_Name: DestroyedVfxAnchor
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &4709939355918963678
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 4581830427640555195}
+  serializedVersion: 2
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 0.000000029802322, y: 0.09163737, z: -0.000000059604645}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 3011077020506240640}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &4928364280652792643
 GameObject:
   m_ObjectHideFlags: 0
@@ -17053,6 +17253,64 @@ MeshRenderer:
   m_SortingOrder: 0
   m_MaskInteraction: 0
   m_AdditionalVertexStreams: {fileID: 0}
+--- !u!1 &6777854234919704175
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 3011077020506240640}
+  - component: {fileID: 7351690097584662256}
+  m_Layer: 0
+  m_Name: MediumQuadTurbolaser_HP_10
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &3011077020506240640
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 6777854234919704175}
+  serializedVersion: 2
+  m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
+  m_LocalPosition: {x: 0.7300001, y: -0.08, z: 1.35}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children:
+  - {fileID: 4709939355918963678}
+  m_Father: {fileID: 6281127937994382257}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &7351690097584662256
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 6777854234919704175}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 6535a63451984d3d8510459aec130f3f, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  spawnDestroyedExplosion: 1
+  destroyedVfxAnchor: {fileID: 4709939355918963678}
+  destroyedVfxScale: 1
+  unlockLevel: 1
+  healthOverride: 0
+  healthWeight: 1
+  <HardPointType>k__BackingField: 0
+  <Id>k__BackingField: 12
+  yAxisRange:
+    <Min>k__BackingField: -8
+    <Max>k__BackingField: 160
+  mainBattery: 1
+  <WeaponType>k__BackingField: 90
 --- !u!1 &6984637297349191678
 GameObject:
   m_ObjectHideFlags: 0
@@ -17143,6 +17401,215 @@ MeshRenderer:
   m_SortingOrder: 0
   m_MaskInteraction: 0
   m_AdditionalVertexStreams: {fileID: 0}
+--- !u!1 &7526772948070251716
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 6833236315210013300}
+  - component: {fileID: 5267934681295829589}
+  m_Layer: 0
+  m_Name: MediumQuadTurbolaser_HP_9
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &6833236315210013300
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 7526772948070251716}
+  serializedVersion: 2
+  m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
+  m_LocalPosition: {x: -0.7300001, y: -0.08, z: 1.35}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children:
+  - {fileID: 6547403018278395591}
+  m_Father: {fileID: 6281127937994382257}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &5267934681295829589
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 7526772948070251716}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 6535a63451984d3d8510459aec130f3f, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  spawnDestroyedExplosion: 1
+  destroyedVfxAnchor: {fileID: 6547403018278395591}
+  destroyedVfxScale: 1
+  unlockLevel: 1
+  healthOverride: 0
+  healthWeight: 1
+  <HardPointType>k__BackingField: 0
+  <Id>k__BackingField: 11
+  yAxisRange:
+    <Min>k__BackingField: -160
+    <Max>k__BackingField: 8
+  mainBattery: 1
+  <WeaponType>k__BackingField: 90
+--- !u!1 &7563511349488238063
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 6547403018278395591}
+  m_Layer: 0
+  m_Name: DestroyedVfxAnchor
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &6547403018278395591
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 7563511349488238063}
+  serializedVersion: 2
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 0.000000029802322, y: 0.09163737, z: -0.000000059604645}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 6833236315210013300}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!1 &7652607295087097078
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 1271315304029449792}
+  m_Layer: 0
+  m_Name: DestroyedVfxAnchor
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &1271315304029449792
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 7652607295087097078}
+  serializedVersion: 2
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 9.313226e-10, y: 0.3200508, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 8959530320513886864}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!1 &8095984048401756512
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 3878372445096019108}
+  - component: {fileID: 2114162192815398315}
+  m_Layer: 0
+  m_Name: ConcussionMissile_HP_15
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &3878372445096019108
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 8095984048401756512}
+  serializedVersion: 2
+  m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
+  m_LocalPosition: {x: -0.01, y: -0.09, z: 1.75}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children:
+  - {fileID: 9066965828357529781}
+  m_Father: {fileID: 6281127937994382257}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &2114162192815398315
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 8095984048401756512}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 6535a63451984d3d8510459aec130f3f, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  spawnDestroyedExplosion: 1
+  destroyedVfxAnchor: {fileID: 9066965828357529781}
+  destroyedVfxScale: 1
+  unlockLevel: 1
+  healthOverride: 0
+  healthWeight: 1
+  <HardPointType>k__BackingField: 0
+  <Id>k__BackingField: 15
+  yAxisRange:
+    <Min>k__BackingField: -129
+    <Max>k__BackingField: 148
+  mainBattery: 0
+  <WeaponType>k__BackingField: 128
+--- !u!1 &8380552746205782771
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 4034687407780990053}
+  m_Layer: 0
+  m_Name: DestroyedVfxAnchor
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &4034687407780990053
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 8380552746205782771}
+  serializedVersion: 2
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 9.313226e-10, y: 0.3200508, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 1853820172533714847}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &8644284175878625449
 GameObject:
   m_ObjectHideFlags: 0

@@ -57,7 +57,7 @@ MonoBehaviour:
     <Min>k__BackingField: -168
     <Max>k__BackingField: 7
   mainBattery: 0
-  <WeaponType>k__BackingField: 8
+  <WeaponType>k__BackingField: 7
 --- !u!1 &650572403202896558
 GameObject:
   m_ObjectHideFlags: 0
@@ -151,7 +151,7 @@ MonoBehaviour:
     <Min>k__BackingField: -23
     <Max>k__BackingField: 172
   mainBattery: 0
-  <WeaponType>k__BackingField: 8
+  <WeaponType>k__BackingField: 7
 --- !u!1 &1442229955108403550
 GameObject:
   m_ObjectHideFlags: 0
@@ -360,7 +360,7 @@ MonoBehaviour:
     <Min>k__BackingField: -6
     <Max>k__BackingField: 169
   mainBattery: 0
-  <WeaponType>k__BackingField: 8
+  <WeaponType>k__BackingField: 7
 --- !u!1 &3423304004194972676
 GameObject:
   m_ObjectHideFlags: 0
@@ -480,7 +480,7 @@ MonoBehaviour:
     <Min>k__BackingField: -10
     <Max>k__BackingField: 176
   mainBattery: 0
-  <WeaponType>k__BackingField: 8
+  <WeaponType>k__BackingField: 7
 --- !u!1 &4589936472972889740
 GameObject:
   m_ObjectHideFlags: 0
@@ -1182,6 +1182,8 @@ MonoBehaviour:
   <SquadronIcon>k__BackingField: {fileID: 0}
   <SFoils>k__BackingField: {fileID: 0}
   <GravityWellEmitter>k__BackingField: {fileID: 0}
+  <Cloak>k__BackingField: {fileID: 0}
+  <RepairRange>k__BackingField: {fileID: 0}
   <Injectables>k__BackingField:
   - {fileID: 4837427132549615342}
   - {fileID: 4317089689566860124}
@@ -1321,7 +1323,7 @@ MonoBehaviour:
     <Min>k__BackingField: -175
     <Max>k__BackingField: 11
   mainBattery: 0
-  <WeaponType>k__BackingField: 8
+  <WeaponType>k__BackingField: 7
 --- !u!1 &7891430000928991089
 GameObject:
   m_ObjectHideFlags: 0
@@ -1441,7 +1443,7 @@ MonoBehaviour:
     <Min>k__BackingField: -10
     <Max>k__BackingField: 176
   mainBattery: 0
-  <WeaponType>k__BackingField: 8
+  <WeaponType>k__BackingField: 7
 --- !u!1 &8137111324991696621
 GameObject:
   m_ObjectHideFlags: 0
@@ -2684,7 +2686,7 @@ MonoBehaviour:
     <Min>k__BackingField: -9
     <Max>k__BackingField: 180
   mainBattery: 0
-  <WeaponType>k__BackingField: 8
+  <WeaponType>k__BackingField: 7
 --- !u!1 &8879161864445435514
 GameObject:
   m_ObjectHideFlags: 0

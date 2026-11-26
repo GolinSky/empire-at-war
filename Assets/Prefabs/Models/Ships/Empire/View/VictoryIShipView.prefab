@@ -57,7 +57,7 @@ MonoBehaviour:
     <Min>k__BackingField: -144
     <Max>k__BackingField: 156
   mainBattery: 0
-  <WeaponType>k__BackingField: 28
+  <WeaponType>k__BackingField: 90
 --- !u!1 &57671615797371025
 GameObject:
   m_ObjectHideFlags: 0
@@ -6021,6 +6021,8 @@ MonoBehaviour:
   <SquadronIcon>k__BackingField: {fileID: 0}
   <SFoils>k__BackingField: {fileID: 0}
   <GravityWellEmitter>k__BackingField: {fileID: 0}
+  <Cloak>k__BackingField: {fileID: 0}
+  <RepairRange>k__BackingField: {fileID: 0}
   <Injectables>k__BackingField:
   - {fileID: 7532020912885601778}
   - {fileID: 6613185690910362237}
@@ -11246,7 +11248,7 @@ MonoBehaviour:
     <Min>k__BackingField: -156
     <Max>k__BackingField: 144
   mainBattery: 0
-  <WeaponType>k__BackingField: 28
+  <WeaponType>k__BackingField: 90
 --- !u!1 &5105227210215712757
 GameObject:
   m_ObjectHideFlags: 0
@@ -18097,7 +18099,7 @@ MonoBehaviour:
     <Min>k__BackingField: -163
     <Max>k__BackingField: 19
   mainBattery: 0
-  <WeaponType>k__BackingField: 28
+  <WeaponType>k__BackingField: 90
 --- !u!1 &9096077707500088223
 GameObject:
   m_ObjectHideFlags: 0
@@ -18155,7 +18157,7 @@ MonoBehaviour:
     <Min>k__BackingField: -16
     <Max>k__BackingField: 163
   mainBattery: 0
-  <WeaponType>k__BackingField: 28
+  <WeaponType>k__BackingField: 90
 --- !u!1 &9161188557893327842
 GameObject:
   m_ObjectHideFlags: 0

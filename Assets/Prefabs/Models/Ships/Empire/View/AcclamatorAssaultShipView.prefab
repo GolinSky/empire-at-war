@@ -1504,7 +1504,7 @@ MonoBehaviour:
     <Min>k__BackingField: -180
     <Max>k__BackingField: 22
   mainBattery: 1
-  <WeaponType>k__BackingField: 28
+  <WeaponType>k__BackingField: 90
 --- !u!1 &1268462574326937773
 GameObject:
   m_ObjectHideFlags: 0
@@ -1714,7 +1714,7 @@ MonoBehaviour:
     <Min>k__BackingField: -21
     <Max>k__BackingField: 180
   mainBattery: 1
-  <WeaponType>k__BackingField: 28
+  <WeaponType>k__BackingField: 90
 --- !u!1 &2832081890689665297
 GameObject:
   m_ObjectHideFlags: 0
@@ -1877,7 +1877,7 @@ MonoBehaviour:
   healthOverride: 0
   healthWeight: 1
   <HardPointType>k__BackingField: 9
-  <Id>k__BackingField: 13
+  <Id>k__BackingField: 9
   range: 80
   reload: 0.1
   interceptChance: 0.2
@@ -2338,7 +2338,7 @@ MonoBehaviour:
   healthOverride: 0
   healthWeight: 1
   <HardPointType>k__BackingField: 9
-  <Id>k__BackingField: 11
+  <Id>k__BackingField: 10
   range: 80
   reload: 0.1
   interceptChance: 0.2
@@ -2720,7 +2720,7 @@ MonoBehaviour:
   healthOverride: 0
   healthWeight: 1
   <HardPointType>k__BackingField: 9
-  <Id>k__BackingField: 12
+  <Id>k__BackingField: 11
   range: 80
   reload: 0.1
   interceptChance: 0.2
@@ -2957,7 +2957,7 @@ MonoBehaviour:
     <Min>k__BackingField: -25
     <Max>k__BackingField: 180
   mainBattery: 1
-  <WeaponType>k__BackingField: 28
+  <WeaponType>k__BackingField: 90
 --- !u!1 &6646301427005549457
 GameObject:
   m_ObjectHideFlags: 0
@@ -3151,7 +3151,7 @@ MonoBehaviour:
   healthOverride: 0
   healthWeight: 1
   <HardPointType>k__BackingField: 9
-  <Id>k__BackingField: 9
+  <Id>k__BackingField: 12
   range: 80
   reload: 0.1
   interceptChance: 0.2
@@ -3318,7 +3318,7 @@ MonoBehaviour:
   healthOverride: 0
   healthWeight: 1
   <HardPointType>k__BackingField: 9
-  <Id>k__BackingField: 10
+  <Id>k__BackingField: 13
   range: 80
   reload: 0.1
   interceptChance: 0.2
@@ -3755,6 +3755,8 @@ MonoBehaviour:
   <SquadronIcon>k__BackingField: {fileID: 0}
   <SFoils>k__BackingField: {fileID: 0}
   <GravityWellEmitter>k__BackingField: {fileID: 0}
+  <Cloak>k__BackingField: {fileID: 0}
+  <RepairRange>k__BackingField: {fileID: 0}
   <Injectables>k__BackingField:
   - {fileID: 334406596647582418}
   - {fileID: 5046764416423127508}
@@ -3881,7 +3883,7 @@ MonoBehaviour:
     <Min>k__BackingField: -180
     <Max>k__BackingField: 26
   mainBattery: 1
-  <WeaponType>k__BackingField: 28
+  <WeaponType>k__BackingField: 90
 --- !u!1 &8703706821001797128
 GameObject:
   m_ObjectHideFlags: 0

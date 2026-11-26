@@ -6,7 +6,8 @@ namespace EmpireAtWar.Components.AttackComponent
         PointDefense = 1,
         Turbolaser = 2,
         Ion = 4,
-        ConcussionMissile = 5,
+        /// <summary>Missiles: artillery that pierces shields and deals full damage to cruisers and capitals.</summary>
+        Missile = 5,
         ProtonTorpedo = 6,
         Beam = 7,
         IonCannon = 8,

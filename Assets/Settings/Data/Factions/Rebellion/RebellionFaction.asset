@@ -218,7 +218,7 @@ MonoBehaviour:
         <Name>k__BackingField: Nebula Star Destroyer
         <MaxCount>k__BackingField: 3
         <AvailableLevel>k__BackingField: 5
-        <Price>k__BackingField: 10000
+        <Price>k__BackingField: 8000
         <BuildTime>k__BackingField: 65
         <UnitCapacity>k__BackingField: 10
         <Icon>k__BackingField: {fileID: 21300000, guid: 0884e62f660956f45a6dc8ef863d13cc,

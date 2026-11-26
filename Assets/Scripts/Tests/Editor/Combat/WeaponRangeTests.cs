@@ -29,7 +29,7 @@ namespace EmpireAtWar.Tests.Editor
                 CombatModifiers modifiers = new CombatModifiers();
                 ArtilleryCapability artillery = new ArtilleryCapability();
                 modifiers.Changed += () => artillery.UpdateVisionMultiplier(modifiers.VisionMultiplier);
-                WeaponHardPoint missile = AddMount(hull, modifiers, WeaponFamily.Missile, DamageType.ConcussionMissile,
+                WeaponHardPoint missile = AddMount(hull, modifiers, WeaponFamily.Missile, DamageType.Missile,
                     700f, Vector3.back * 30f);
                 WeaponHardPoint torpedo = AddMount(hull, modifiers, WeaponFamily.IonTorpedo, DamageType.Ion,
                     450f, Vector3.right * 10f);
@@ -81,7 +81,7 @@ namespace EmpireAtWar.Tests.Editor
             {
                 CombatModifiers modifiers = new CombatModifiers();
                 ArtilleryCapability artillery = new ArtilleryCapability();
-                WeaponHardPoint missile = AddMount(hull, modifiers, WeaponFamily.Missile, DamageType.ConcussionMissile,
+                WeaponHardPoint missile = AddMount(hull, modifiers, WeaponFamily.Missile, DamageType.Missile,
                     700f, Vector3.forward * 10f);
                 WeaponHardPoint sternMain = AddMount(hull, modifiers, WeaponFamily.Turbolaser, DamageType.Turbolaser,
                     500f, Vector3.back * 30f);
@@ -108,7 +108,7 @@ namespace EmpireAtWar.Tests.Editor
             {
                 WeaponComponent weapon = hull.AddComponent<WeaponComponent>();
                 CombatModifiers modifiers = new CombatModifiers();
-                WeaponHardPoint missile = AddMount(hull, modifiers, WeaponFamily.Missile, DamageType.ConcussionMissile,
+                WeaponHardPoint missile = AddMount(hull, modifiers, WeaponFamily.Missile, DamageType.Missile,
                     700f, Vector3.back * 30f);
                 WeaponHardPoint gun = AddMount(hull, modifiers, WeaponFamily.Turbolaser, DamageType.Turbolaser,
                     500f, Vector3.zero);
