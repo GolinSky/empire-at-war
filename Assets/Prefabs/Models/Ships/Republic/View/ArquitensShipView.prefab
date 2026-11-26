@@ -1779,17 +1779,17 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::EmpireAtWar.Components.Ship.EngineGlow.ShipEngineGlowComponent
   glows:
   - renderer: {fileID: 3924447977168687418}
-    engineHardPointIndex: 9
+    engineHardPointIndex: 8
   - renderer: {fileID: 6176509175474905822}
-    engineHardPointIndex: 9
+    engineHardPointIndex: 8
   - renderer: {fileID: 8300257417703827280}
-    engineHardPointIndex: 9
+    engineHardPointIndex: 8
   - renderer: {fileID: 9096556298111609246}
-    engineHardPointIndex: 9
+    engineHardPointIndex: 8
   - renderer: {fileID: 3844806026448773939}
-    engineHardPointIndex: 9
+    engineHardPointIndex: 8
   - renderer: {fileID: 1927909939971991610}
-    engineHardPointIndex: 9
+    engineHardPointIndex: 8
 --- !u!1 &2638139933984470841
 GameObject:
   m_ObjectHideFlags: 0
