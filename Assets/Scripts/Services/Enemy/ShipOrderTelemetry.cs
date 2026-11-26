@@ -106,6 +106,15 @@ namespace EmpireAtWar.Services.Enemy
             _path = Path.Combine(Application.persistentDataPath, "BattleTelemetry",
                 $"{sceneName}_{System.DateTime.Now:yyyyMMdd_HHmmss}_ai_orders.csv");
         }
+
+        /// <summary>
+        /// True when <see cref="Sample"/> would write a row. Callers check it before formatting diagnostic strings,
+        /// which otherwise ran for every ship every tick and were discarded by the 5 s sample interval.
+        /// </summary>
+        public static bool IsSampleDue(ShipOrderTelemetrySource source, UnitOrderModel orders) =>
+            Application.isPlaying &&
+            ((source.IdleUnderFireSeconds > IDLE_UNDER_FIRE_SECONDS && !source.IsIdleUnderFireReported) ||
+             !_nextSample.TryGetValue(orders, out float next) || Time.time >= next);
 #endif
 
         [Conditional("UNITY_EDITOR"), Conditional("DEVELOPMENT_BUILD")]

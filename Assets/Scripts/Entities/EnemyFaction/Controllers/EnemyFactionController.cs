@@ -92,6 +92,9 @@ namespace EmpireAtWar.Entities.EnemyFaction.Controllers
         // Ships placed this tick are anchors for the next ship before the world snapshot sees them.
         private readonly List<Vector3> _landedShips = new List<Vector3>();
         private readonly Comparison<UnitRequest> _smallestShipFirst;
+        // Cached: a method group passed every tick allocates a new delegate each time.
+        private readonly Action<UnitRequest> _executeBuild;
+        private readonly Action<IReadOnlyList<UnitRequest>> _deployDefenseWave;
         private readonly HashSet<string> _busyPipelines = new HashSet<string>();
         // D3: while set, the ship being built lands beside a group ship fighting on its way.
         private Vector3? _dropPoint;
@@ -155,6 +158,8 @@ namespace EmpireAtWar.Entities.EnemyFaction.Controllers
             _secondStation = secondStation;
             _forwardAnchors = forwardAnchors;
             _smallestShipFirst = CompareHullSize;
+            _executeBuild = ExecuteBuild;
+            _deployDefenseWave = DeployDefenseWave;
             _owner = owner;
             _aiState = aiState;
             _stationFactory = stationFactory;
@@ -336,8 +341,10 @@ namespace EmpireAtWar.Entities.EnemyFaction.Controllers
         {
             _busyPipelines.Clear();
             float shortest = float.PositiveInfinity;
-            foreach (EnemyPendingBuild build in _builds.Builds)
+            IReadOnlyList<EnemyPendingBuild> builds = _builds.Builds;
+            for (int i = 0; i < builds.Count; i++)
             {
+                EnemyPendingBuild build = builds[i];
                 if (build.TimeLeft <= 0f) continue;
                 _busyPipelines.Add(build.Request.Id);
                 shortest = Mathf.Min(shortest, build.TimeLeft);
@@ -387,11 +394,8 @@ namespace EmpireAtWar.Entities.EnemyFaction.Controllers
             bool assault = !defendHome && _aiState.CurrentState == EnemyStrategicState.AssaultBase;
             if (Model.CurrentLevel >= 4)
             {
-                bool hasHeldReserve = _builds.Builds.Any(build => build.IsReadyForDeployment &&
-                    build.Request is ShipUnitRequest);
-                bool hasCapitalBuilding = _builds.Builds.Any(build => build.TimeLeft > 0f &&
-                    build.Request is ShipUnitRequest ship && Model.IsAssaultCapital(ship.Key,
-                        _profiles.Get(UnitTypeId.Ship(ship.Key)).ShipClass));
+                bool hasHeldReserve = HasHeldShipReserve();
+                bool hasCapitalBuilding = HasAssaultCapitalBuilding();
                 if (hasHeldReserve && hasCapitalBuilding) _assaultWavePlanUntil = Time.time + ASSAULT_WAVE_INTERVAL;
                 // At the unit cap no assault capital fits, so there is nothing to wait for: the plan counts as met (W33).
                 Model.HasAssaultReinforcementPlan = !AssaultCapitalFits() || hasCapitalBuilding &&
@@ -406,12 +410,31 @@ namespace EmpireAtWar.Entities.EnemyFaction.Controllers
             bool allowLoneUnit = assault || !defendHome &&
                                  _unitLimitModel.CurrentUnitCapacity >= _reinforcementData.MaxUnitCapacity;
             _landedShips.Clear();
-            _builds.Advance(deltaTime, ExecuteBuild, minimumGroup,
+            _builds.Advance(deltaTime, _executeBuild, minimumGroup,
                 allowLoneUnit ? LONE_REINFORCEMENT_WAIT_SECONDS : DEPLOYMENT_EMERGENCY_SECONDS,
                 batchDeploymentRetries: defendHome,
-                deployWave: defendHome && holdReserve ? DeployDefenseWave : null,
+                deployWave: defendHome && holdReserve ? _deployDefenseWave : null,
                 maxBlockedHoldSeconds: MAX_DEPLOYMENT_HOLD_SECONDS, shipDeployOrder: _smallestShipFirst);
             Model.HeldShips = _builds.CountHeldShips();
+        }
+
+        // Loops instead of LINQ: AdvanceBuilds runs every AI tick.
+        private bool HasHeldShipReserve()
+        {
+            IReadOnlyList<EnemyPendingBuild> builds = _builds.Builds;
+            for (int i = 0; i < builds.Count; i++)
+                if (builds[i].IsReadyForDeployment && builds[i].Request is ShipUnitRequest) return true;
+            return false;
+        }
+
+        private bool HasAssaultCapitalBuilding()
+        {
+            IReadOnlyList<EnemyPendingBuild> builds = _builds.Builds;
+            for (int i = 0; i < builds.Count; i++)
+                if (builds[i].TimeLeft > 0f && builds[i].Request is ShipUnitRequest ship &&
+                    Model.IsAssaultCapital(ship.Key, _profiles.Get(UnitTypeId.Ship(ship.Key)).ShipClass))
+                    return true;
+            return false;
         }
 
         // Small hulls land first: they fit more points, and each one widens the fog vision for the next.

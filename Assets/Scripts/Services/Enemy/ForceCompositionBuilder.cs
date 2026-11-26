@@ -207,21 +207,23 @@ namespace EmpireAtWar.Services.Enemy
         /// <summary>Destroyed hardpoints (ship systems, squadron fighters) stop firing.</summary>
         public static float GetOffenseScale(IHealthModelObserver health)
         {
-            if (health.HardPointModels.Count == 0)
+            IReadOnlyList<IReadOnlyHardPointModel> hardPoints = health.HardPointModels;
+            if (hardPoints.Count == 0)
             {
                 return 1f;
             }
 
+            // Indexed: foreach over the interface boxes an enumerator per call (~250 calls/frame).
             int alive = 0;
-            foreach (IReadOnlyHardPointModel hardPoint in health.HardPointModels)
+            for (int i = 0; i < hardPoints.Count; i++)
             {
-                if (!hardPoint.IsDestroyed)
+                if (!hardPoints[i].IsDestroyed)
                 {
                     alive++;
                 }
             }
 
-            return (float)alive / health.HardPointModels.Count;
+            return (float)alive / hardPoints.Count;
         }
     }
 }

@@ -2784,9 +2784,11 @@ namespace EmpireAtWar.Services.Enemy
 
         private bool IsNearHostileBase(Vector3 position)
         {
-            foreach (AiWorldSnapshot.Entry station in _worldSnapshot.Bases)
-                if (_playerRoster.IsHostile(_owner.Id, station.Owner) &&
-                    PlanarDistance(position, station.Position) <= BASE_EXCLUSION_MARGIN)
+            // Indexed: foreach over IReadOnlyList boxes an enumerator, and this runs per candidate point.
+            IReadOnlyList<AiWorldSnapshot.Entry> bases = _worldSnapshot.Bases;
+            for (int i = 0; i < bases.Count; i++)
+                if (_playerRoster.IsHostile(_owner.Id, bases[i].Owner) &&
+                    PlanarDistance(position, bases[i].Position) <= BASE_EXCLUSION_MARGIN)
                     return true;
             return false;
         }

@@ -26,6 +26,9 @@ namespace EmpireAtWar.Models.Factions
         FactionData GetCurrentLevelFactionData();
 
         IReadOnlyList<ProductionQueueSnapshot> GetProductionQueueSnapshots();
+
+        /// <summary>True while a pipeline builds this request. Allocation-free, unlike the snapshot list.</summary>
+        bool IsQueued(string requestId);
     }
 
     public class PlayerFactionModel : Model, IPlayerFactionModelObserver
@@ -378,6 +381,9 @@ namespace EmpireAtWar.Models.Factions
 
             NotifyProductionChanged();
         }
+
+        // Pipelines are keyed by request Id and removed when empty.
+        public bool IsQueued(string requestId) => _productionQueues.ContainsKey(requestId);
 
         public IReadOnlyList<ProductionQueueSnapshot> GetProductionQueueSnapshots()
         {

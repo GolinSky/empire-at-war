@@ -65,6 +65,24 @@ namespace EmpireAtWar.Tests.Editor
         }
 
         [Test]
+        public void IsQueued_TracksThePipelineUntilItsLastItemCompletes()
+        {
+            PlayerFactionModel model = CreateModel();
+            FactionData factionData = CreateFactionData(maxCount: 2, buildTime: 5);
+            LevelUnitRequest first = new LevelUnitRequest(factionData, 1);
+            LevelUnitRequest second = new LevelUnitRequest(factionData, 1);
+            Assert.That(model.IsQueued(first.Id), Is.False);
+
+            model.QueueUnit(first);
+            model.QueueUnit(second);
+            model.Advance(5f);
+            Assert.That(model.IsQueued(first.Id), Is.True);
+
+            model.Advance(5f);
+            Assert.That(model.IsQueued(first.Id), Is.False);
+        }
+
+        [Test]
         public void CanQueueUnit_RejectsEighthDistinctPipelineButAcceptsExistingId()
         {
             PlayerFactionModel model = CreateModel();

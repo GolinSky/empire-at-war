@@ -22,6 +22,8 @@ namespace EmpireAtWar.Entities.CaptureSites
         [SerializeField] private TooltipHoverView tooltipHover;
         private Camera _camera;
         private RectTransform _canvasTransform;
+        private (OwnerRelation, CaptureSiteState, string, OwnerRelation, int, int, bool) _statusKey;
+        private bool _hasStatus;
 
         private CaptureSiteSettings _settings;
         [SerializeField, Range(0.05f, 0.6f), Tooltip("Panel height as a fraction of the screen height.")]
@@ -115,6 +117,12 @@ namespace EmpireAtWar.Entities.CaptureSites
             progressColor.a = 0.95f;
             progressFill.color = progressColor;
 
+            // The label rebuilds only when a shown value changes: formatting it every frame allocated per site.
+            var statusKey = (owner, state, facilityName, capturer, Mathf.RoundToInt(Mathf.Clamp01(captureProgress) * 100f),
+                Mathf.RoundToInt(Mathf.Clamp01(constructionProgress) * 100f), isContested);
+            if (_hasStatus && statusKey.Equals(_statusKey)) return;
+            _statusKey = statusKey;
+            _hasStatus = true;
             statusText.text = GetStatus(owner, state, facilityName, capturer,
                 captureProgress, constructionProgress, isContested);
         }

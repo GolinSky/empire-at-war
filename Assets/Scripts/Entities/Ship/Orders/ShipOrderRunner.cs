@@ -162,12 +162,15 @@ namespace EmpireAtWar.Entities.Ship.Orders
             if (_stateMachine.CurrentState.IsComplete) CompleteOrder();
             UpdatePace(deltaTime);
 #if UNITY_EDITOR || DEVELOPMENT_BUILD
-            attacking = _stateMachine.CurrentState == _attackTargetState;
-            ShipOrderTelemetry.Sample(_telemetrySource, _abilityCaster, _orders, _movement, _weapon, _radar,
-                _stateMachine.CurrentState.GetType().Name,
-                attacking ? _attackTargetState.AttackDiagnostics : "",
-                _stateMachine.CurrentState == _attackMoveState ? _attackMoveState.EngagementTarget : null,
-                attacking ? _attackTargetState.IsHoldingAtRange : null);
+            if (ShipOrderTelemetry.IsSampleDue(_telemetrySource, _orders))
+            {
+                attacking = _stateMachine.CurrentState == _attackTargetState;
+                ShipOrderTelemetry.Sample(_telemetrySource, _abilityCaster, _orders, _movement, _weapon, _radar,
+                    _stateMachine.CurrentState.GetType().Name,
+                    attacking ? _attackTargetState.AttackDiagnostics : "",
+                    _stateMachine.CurrentState == _attackMoveState ? _attackMoveState.EngagementTarget : null,
+                    attacking ? _attackTargetState.IsHoldingAtRange : null);
+            }
 #endif
         }
 

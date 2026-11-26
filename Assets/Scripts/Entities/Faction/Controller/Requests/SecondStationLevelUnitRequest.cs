@@ -7,8 +7,12 @@ namespace EmpireAtWar.Controllers.Factions
     {
         public int Level { get; }
 
-        public SecondStationLevelUnitRequest(FactionData factionData, int level) : base(factionData) => Level = level;
+        public SecondStationLevelUnitRequest(FactionData factionData, int level) : base(factionData)
+        {
+            Level = level;
+            Id = $"SecondStationLevel{level}";
+        }
 
-        public override string Id => $"SecondStationLevel{Level}";
+        public override string Id { get; }
     }
 }

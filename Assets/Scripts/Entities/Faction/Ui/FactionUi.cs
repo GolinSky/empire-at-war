@@ -232,10 +232,9 @@ namespace EmpireAtWar.Entities.Faction.Ui
         public void RefreshAvailability(float credits, bool battleEnded)
         {
             if (!_isRouteActive) return;
-            var queues = _model.GetProductionQueueSnapshots();
             foreach (FactionUnitUi unit in _factionUnitsUi)
             {
-                bool queued = IsQueued(unit, queues);
+                bool queued = _model.IsQueued(unit.RequestId);
                 bool unlocked = _presenter.IsUnitAvailable(unit.FactionData);
                 bool atLimit = _presenter.IsUnitLimitReached(unit.Request);
                 unit.SetActive(IsInProductionMenu(unit, _model.SelectionType) &&
@@ -371,13 +370,6 @@ namespace EmpireAtWar.Entities.Faction.Ui
             cards.Station.Destroy();
             cards.Research.Destroy();
             cards = default;
-        }
-
-        private static bool IsQueued(FactionUnitUi unit, IReadOnlyList<ProductionQueueSnapshot> queues)
-        {
-            foreach (ProductionQueueSnapshot queue in queues)
-                if (queue.UnitRequest.Id == unit.RequestId) return true;
-            return false;
         }
 
         // Unique units (heroes, dreadnoughts), structure population caps, station upgrades and research tiers hide at their limit.
