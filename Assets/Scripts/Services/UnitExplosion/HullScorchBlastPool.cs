@@ -6,27 +6,115 @@ using UnityEngine;
 namespace EmpireAtWar.Services.UnitExplosion
 {
     /// <summary>
-    /// Prewarmed one-shot blasts that cover new hull scorch marks. Same pooling, anchor following and fog hiding as
-    /// hardpoint explosions, with its own prefab and pool.
+    /// Prewarmed one-shot blasts on hull hits. Same pooling, anchor following and fog hiding as hardpoint
+    /// explosions, with its own prefab and pool. Decides whether a blast plays: never for units hidden by fog, off
+    /// camera or too small on screen, and never beyond <see cref="HullBlastLimits"/>; it never grows the pool.
     /// </summary>
     public sealed class HullScorchBlastPool : IHullScorchBlastPool, IInitializable, ITickable, ILateDisposable
     {
-        private readonly HardPointExplosionPool _pool;
+        // Unit intervals stretch once more than this share of MaxActive is in use; at full use they double.
+        private const float LOAD_SHARE = 0.5f;
 
-        public HullScorchBlastPool(ExplosionVfx prefab, UnityEngine.Camera camera, int prewarmCount)
+        private readonly HardPointExplosionPool _pool;
+        private readonly HullBlastLimits _limits;
+        private readonly UnityEngine.Camera _camera;
+        private readonly float _prefabSize;
+        private readonly Plane[] _planes = new Plane[6];
+
+        private int _frame = -1;
+        private int _startsThisFrame;
+        private int _played;
+        private int _skippedFog;
+        private int _skippedOffscreen;
+        private int _skippedSmall;
+        private int _skippedCap;
+
+        public HullScorchBlastPool(ExplosionVfx prefab, UnityEngine.Camera camera, HullBlastLimits limits)
         {
-            _pool = new HardPointExplosionPool(prefab, camera, prewarmCount);
+            _pool = new HardPointExplosionPool(prefab, camera, limits.MaxActive);
+            _limits = limits;
+            _camera = camera;
+            _prefabSize = prefab.StartSize;
         }
+
+        public float UnitInterval =>
+            _limits.UnitInterval * Mathf.Max(1f, _pool.InUseCount / (_limits.MaxActive * LOAD_SHARE));
 
         public void Initialize() => _pool.Initialize();
 
         public void Tick() => _pool.Tick();
 
-        public void LateDispose() => _pool.LateDispose();
+        public void LateDispose()
+        {
+#if UNITY_EDITOR || DEVELOPMENT_BUILD
+            if (Application.isPlaying)
+                Debug.Log($"[VfxPools] HullBlasts played={_played} skippedFog={_skippedFog} " +
+                    $"skippedOffscreen={_skippedOffscreen} skippedSmall={_skippedSmall} skippedCap={_skippedCap}");
+#endif
+            _pool.LateDispose();
+        }
 
-        public void Play(Transform anchor, IFogVisibilityFacade fogVisibility, float scale) =>
-            _pool.Play(anchor, fogVisibility, scale);
+        public bool TryPlay(Transform anchor, Vector3 worldOffset, IFogVisibilityFacade fogVisibility, float scale)
+        {
+            if (fogVisibility != null && fogVisibility.IsHiddenByFog)
+            {
+                _skippedFog++;
+                return false;
+            }
+
+            if (_frame != Time.frameCount)
+            {
+                _frame = Time.frameCount;
+                _startsThisFrame = 0;
+                GeometryUtility.CalculateFrustumPlanes(_camera, _planes);
+            }
+
+            if (_startsThisFrame >= _limits.MaxStartsPerFrame || _pool.IdleCount == 0 ||
+                _pool.InUseCount >= _limits.MaxActive)
+            {
+                _skippedCap++;
+                return false;
+            }
+
+            Vector3 position = anchor.position + worldOffset;
+            float diameter = _prefabSize * scale;
+            if (!IsInView(position, diameter * 0.5f))
+            {
+                _skippedOffscreen++;
+                return false;
+            }
+
+            if (ScreenPixels(position, diameter) < _limits.MinScreenPixels)
+            {
+                _skippedSmall++;
+                return false;
+            }
+
+            _startsThisFrame++;
+            _played++;
+            _pool.Play(anchor, fogVisibility, scale, anchor.InverseTransformVector(worldOffset), null);
+            return true;
+        }
 
         public void Clear() => _pool.Clear();
+
+        private bool IsInView(Vector3 position, float radius)
+        {
+            for (int i = 0; i < _planes.Length; i++)
+            {
+                if (_planes[i].GetDistanceToPoint(position) < -radius) return false;
+            }
+            return true;
+        }
+
+        private float ScreenPixels(Vector3 position, float diameter)
+        {
+            Transform view = _camera.transform;
+            float viewHeight = _camera.orthographic
+                ? 2f * _camera.orthographicSize
+                : 2f * Mathf.Max(Vector3.Dot(position - view.position, view.forward), _camera.nearClipPlane) *
+                  Mathf.Tan(_camera.fieldOfView * 0.5f * Mathf.Deg2Rad);
+            return diameter / viewHeight * _camera.pixelHeight;
+        }
     }
 }

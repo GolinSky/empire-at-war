@@ -1,4 +1,5 @@
 using System;
+using EmpireAtWar.Components.AttackComponent;
 using UnityEngine;
 
 namespace EmpireAtWar.Components.Ship.Health
@@ -6,8 +7,8 @@ namespace EmpireAtWar.Components.Ship.Health
     /// <summary>Hull-surface points where short blasts can play, read from the unit's hardpoint VFX anchors.</summary>
     public interface IHullBlastSpots
     {
-        /// <summary>A loaded save set the hull; raised before the restored hull is reported as a value change.</summary>
-        event Action Restored;
+        /// <summary>A hit took hull and the unit survived: hit spot index and damage type.</summary>
+        event Action<int, DamageType> HullDamaged;
 
         int SpotCount { get; }
 

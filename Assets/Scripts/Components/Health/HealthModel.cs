@@ -41,6 +41,12 @@ namespace EmpireAtWar.Models.Health
 
         public event Action OnRestored;
 
+        /// <summary>
+        /// A hit took hull and the unit survived: the hit hardpoint's index (redirected hits keep the hit index)
+        /// and the damage type. Raised after <see cref="OnValueChanged"/>; never for shield-only hits, repair or restore.
+        /// </summary>
+        public event Action<int, DamageType> HullDamaged;
+
         /// <summary>Repair brought the hull back to its maximum. Destroyed hardpoints stay destroyed.</summary>
         public event Action OnFullyRepaired;
 
@@ -245,11 +251,11 @@ namespace EmpireAtWar.Models.Health
             }
 
             damage *= _modifiers.DamageTakenMultiplier;
+            float hullBefore = Hull;
             if (damageType == DamageType.PrecisionStrike)
             {
                 DamageHull(damage);
-                OnValueChanged?.Invoke();
-                if (IsDestroyed) OnDestroy?.Invoke();
+                RaiseHitEvents(hullBefore, hardPointId, damageType);
                 return;
             }
             if (AbsorbsDamage(damageType))
@@ -287,9 +293,19 @@ namespace EmpireAtWar.Models.Health
                 DamageHardPoint(HardPointModels[hardPointId], hullDamage);
             }
 
-            // Listeners see the final health before death handlers release the unit.
+            RaiseHitEvents(hullBefore, hardPointId, damageType);
+        }
+
+        // Listeners see the final health before death handlers release the unit.
+        private void RaiseHitEvents(float hullBefore, int hardPointId, DamageType damageType)
+        {
             OnValueChanged?.Invoke();
-            if (IsDestroyed) OnDestroy?.Invoke();
+            if (IsDestroyed)
+            {
+                OnDestroy?.Invoke();
+                return;
+            }
+            if (Hull < hullBefore) HullDamaged?.Invoke(hardPointId, damageType);
         }
 
         /// <summary>Destroys the unit at once, ignoring shields and hardpoints (cheats and debugging).</summary>

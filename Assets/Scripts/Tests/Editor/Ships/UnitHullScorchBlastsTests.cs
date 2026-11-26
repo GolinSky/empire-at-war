@@ -2,11 +2,8 @@ using System;
 using System.Collections.Generic;
 using EmpireAtWar.Components.AttackComponent;
 using EmpireAtWar.Components.Ship.Health;
-using EmpireAtWar.Components.TeamColor;
 using EmpireAtWar.Entities.BaseEntity;
 using EmpireAtWar.Entities.BaseEntity.EntityFacades;
-using EmpireAtWar.Models.Health;
-using EmpireAtWar.Models.Players;
 using EmpireAtWar.Services.UnitExplosion;
 using NUnit.Framework;
 using UnityEngine;
@@ -17,11 +14,11 @@ namespace EmpireAtWar.Tests.Editor
     [Category("Ships")]
     public sealed class UnitHullScorchBlastsTests
     {
-        // One scorch level of hull loss (UnitRenderStateComponent quantizes into 31 levels). Test hulls stay
-        // between level boundaries so float rounding cannot change the level.
-        private const float ONE_LEVEL = 1f / 31f;
+        private const int TOP_RIGHT = 0;
+        private const int TOP_LEFT = 1;
+        private const int BELOW = 2;
 
-        private HealthStub _health;
+        private Transform _hull;
         private Spots _spots;
         private Pool _pool;
         private UnitHullScorchBlasts _blasts;
@@ -29,144 +26,129 @@ namespace EmpireAtWar.Tests.Editor
         [SetUp]
         public void SetUp()
         {
-            _health = new HealthStub { HullPercentage = 1f };
+            _hull = new GameObject("Hull").transform;
             _spots = new Spots();
             _pool = new Pool();
-            _blasts = new UnitHullScorchBlasts(new HealthComponentStub(_health), _spots, _pool, null);
+            _blasts = new UnitHullScorchBlasts(_spots, _pool, null, _hull);
+            _blasts.Initialize();
         }
 
         [TearDown]
-        public void TearDown() => _spots.Dispose();
-
-        [Test]
-        public void Initialize_PlaysNoBlastForCurrentDamage()
+        public void TearDown()
         {
-            _health.HullPercentage = 0.5f;
-            _blasts.Initialize();
-
-            Assert.That(_pool.Played, Is.Empty);
+            _spots.Dispose();
+            Object.DestroyImmediate(_hull.gameObject);
         }
 
         [Test]
-        public void LevelRise_PlaysOneBlastPerLevelAtAHullSpot()
+        public void HullHit_PlaysOneBlastAtTheHitSpot()
         {
-            _blasts.Initialize();
-
-            SetHull(1f - ONE_LEVEL * 0.5f);
+            _spots.Hit(TOP_LEFT, DamageType.Turbolaser);
 
             Assert.That(_pool.Played, Has.Count.EqualTo(1));
-            Assert.That(_spots.Anchors, Does.Contain(_pool.Played[0].Anchor));
+            Assert.That(_pool.Played[0].Anchor, Is.SameAs(_spots.Anchors[TOP_LEFT]));
             Assert.That(_pool.Played[0].Scale, Is.EqualTo(_spots.Scale));
         }
 
         [Test]
-        public void LargeRise_PlaysAtMostThreeBlasts()
+        public void HullHit_OffsetStaysAboveTheHullAndTurnsTowardsItsMiddle()
         {
-            _blasts.Initialize();
+            // A fresh unit per hit, so the unit interval never skips one.
+            for (int i = 0; i < 50; i++)
+            {
+                _blasts.LateDispose();
+                _pool.Played.Clear();
+                _blasts = new UnitHullScorchBlasts(_spots, _pool, null, _hull);
+                _blasts.Initialize();
 
-            SetHull(0.5f);
+                _spots.Hit(TOP_RIGHT, DamageType.Turbolaser);
 
-            Assert.That(_pool.Played, Has.Count.EqualTo(3));
+                Vector3 offset = _pool.Played[0].Offset;
+                Assert.That(offset.y, Is.GreaterThanOrEqualTo(0f));
+                Assert.That(offset.x, Is.LessThanOrEqualTo(0f), "spot sits right of the middle");
+            }
         }
 
         [Test]
-        public void SameLevel_PlaysNoBlast()
+        public void PrecisionStrike_PlaysNoBlast()
         {
-            _blasts.Initialize();
-            SetHull(1f - ONE_LEVEL * 0.3f);
-            _pool.Played.Clear();
-
-            SetHull(1f - ONE_LEVEL * 0.7f);
+            _spots.Hit(TOP_LEFT, DamageType.PrecisionStrike);
 
             Assert.That(_pool.Played, Is.Empty);
         }
 
         [Test]
-        public void Repair_PlaysNoBlast()
+        public void HitDuringUnitInterval_PlaysNoBlast()
         {
-            _health.HullPercentage = 0.5f;
-            _blasts.Initialize();
-
-            SetHull(0.8f);
-
-            Assert.That(_pool.Played, Is.Empty);
-        }
-
-        [Test]
-        public void RiseAfterRepair_PlaysAgain()
-        {
-            _health.HullPercentage = 0.5f;
-            _blasts.Initialize();
-            SetHull(0.8f);
-
-            SetHull(0.8f - ONE_LEVEL);
+            _spots.Hit(TOP_LEFT, DamageType.Turbolaser);
+            _spots.Hit(TOP_RIGHT, DamageType.Turbolaser);
 
             Assert.That(_pool.Played, Has.Count.EqualTo(1));
         }
 
         [Test]
-        public void RestoredSave_PlaysNoBlast()
+        public void SkippedBlast_DoesNotStartTheUnitInterval()
         {
-            _blasts.Initialize();
+            _pool.Accepts = false;
+            _spots.Hit(TOP_LEFT, DamageType.Turbolaser);
+            _pool.Accepts = true;
 
-            _health.HullPercentage = 0.25f;
-            _spots.RaiseRestored();
-            _health.RaiseValueChanged();
+            _spots.Hit(TOP_LEFT, DamageType.Turbolaser);
 
-            Assert.That(_pool.Played, Is.Empty);
+            Assert.That(_pool.Played, Has.Count.EqualTo(1));
+        }
+
+        [TestCase(BELOW)]
+        [TestCase(-1)]
+        public void SpotBelowHullOrUnknown_PlaysAtASpotAbove(int index)
+        {
+            _spots.Hit(index, DamageType.Turbolaser);
+
+            Assert.That(_pool.Played, Has.Count.EqualTo(1));
+            Assert.That(_pool.Played[0].Anchor, Is.Not.SameAs(_spots.Anchors[BELOW]));
         }
 
         [Test]
-        public void Death_PlaysNoBlast()
+        public void SpotWithoutVfx_PlaysAtAnotherSpot()
         {
-            _blasts.Initialize();
+            _spots.EnabledIndex = TOP_RIGHT;
 
-            _health.IsDestroyed = true;
-            SetHull(0f);
+            _spots.Hit(TOP_LEFT, DamageType.Turbolaser);
 
-            Assert.That(_pool.Played, Is.Empty);
+            Assert.That(_pool.Played, Has.Count.EqualTo(1));
+            Assert.That(_pool.Played[0].Anchor, Is.SameAs(_spots.Anchors[TOP_RIGHT]));
         }
 
         [Test]
-        public void SpotsWithoutVfx_AreSkipped()
+        public void LateDispose_StopsFollowingHits()
         {
-            _spots.EnabledIndex = 2;
-            _blasts.Initialize();
-
-            SetHull(0.5f);
-
-            Assert.That(_pool.Played, Is.Not.Empty);
-            Assert.That(_pool.Played.TrueForAll(blast => blast.Anchor == _spots.Anchors[2]), Is.True);
-        }
-
-        [Test]
-        public void LateDispose_StopsFollowingHealth()
-        {
-            _blasts.Initialize();
             _blasts.LateDispose();
 
-            SetHull(0.5f);
+            _spots.Hit(TOP_LEFT, DamageType.Turbolaser);
 
             Assert.That(_pool.Played, Is.Empty);
-        }
-
-        private void SetHull(float hullPercentage)
-        {
-            _health.HullPercentage = hullPercentage;
-            _health.RaiseValueChanged();
         }
 
         private sealed class Pool : IHullScorchBlastPool
         {
-            public List<(Transform Anchor, float Scale)> Played { get; } = new List<(Transform, float)>();
+            public List<(Transform Anchor, Vector3 Offset, float Scale)> Played { get; } =
+                new List<(Transform, Vector3, float)>();
 
-            public void Play(Transform anchor, IFogVisibilityFacade fogVisibility, float scale) =>
-                Played.Add((anchor, scale));
+            public bool Accepts { get; set; } = true;
+
+            public float UnitInterval => 1f;
+
+            public bool TryPlay(Transform anchor, Vector3 worldOffset, IFogVisibilityFacade fogVisibility, float scale)
+            {
+                if (!Accepts) return false;
+                Played.Add((anchor, worldOffset, scale));
+                return true;
+            }
         }
 
         private sealed class Spots : IHullBlastSpots, IDisposable
         {
-            public event Action Restored;
+            public event Action<int, DamageType> HullDamaged;
 
             public float Scale => 2f;
 
@@ -175,7 +157,9 @@ namespace EmpireAtWar.Tests.Editor
 
             public Transform[] Anchors { get; } =
             {
-                new GameObject("A").transform, new GameObject("B").transform, new GameObject("C").transform,
+                Anchor("TopRight", new Vector3(10f, 1f, 0f)),
+                Anchor("TopLeft", new Vector3(-10f, 1f, 0f)),
+                Anchor("Below", new Vector3(0f, -2f, 0f)),
             };
 
             public int SpotCount => Anchors.Length;
@@ -187,52 +171,19 @@ namespace EmpireAtWar.Tests.Editor
                 return EnabledIndex < 0 || EnabledIndex == index;
             }
 
-            public void RaiseRestored() => Restored?.Invoke();
+            public void Hit(int index, DamageType damageType) => HullDamaged?.Invoke(index, damageType);
 
             public void Dispose()
             {
                 foreach (Transform anchor in Anchors) Object.DestroyImmediate(anchor.gameObject);
             }
-        }
 
-        private sealed class HealthComponentStub : IHealthComponent
-        {
-            public HealthComponentStub(IHealthModelObserver health)
+            private static Transform Anchor(string name, Vector3 position)
             {
-                HealthModelObserver = health;
+                Transform anchor = new GameObject(name).transform;
+                anchor.position = position;
+                return anchor;
             }
-
-            public string Id => nameof(HealthComponentStub);
-            public bool Destroyed => false;
-            public IHealthModelObserver HealthModelObserver { get; }
-
-            public void ApplyDamage(float damage, DamageType damageType, int shipUnitId) { }
-
-            public bool Equal(IHealthModelObserver modelObserver) => false;
-        }
-
-        private sealed class HealthStub : IHealthModelObserver
-        {
-            public event Action OnDestroy { add { } remove { } }
-
-            public event Action OnValueChanged;
-
-            public ShipClass ShipClass => ShipClass.Structure;
-            public IReadOnlyList<IReadOnlyHardPointModel> HardPointModels => Array.Empty<HardPointModel>();
-            public float Hull => 1f;
-            public float HullPercentage { get; set; }
-            public float Shields => 0f;
-            public float ShieldPercentage => 0f;
-            public bool IsDestroyed { get; set; }
-            public bool IsLostShieldGenerator => false;
-            public bool HasUnits => true;
-            public bool HasLiveHardPoints => true;
-            public bool HasShields => false;
-            public PlayerId Owner => TestPlayers.Human;
-
-            public IHardPointModel[] GetShipUnits(HardPointType hardPointType) => Array.Empty<IHardPointModel>();
-
-            public void RaiseValueChanged() => OnValueChanged?.Invoke();
         }
     }
 }

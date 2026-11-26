@@ -55,6 +55,12 @@ namespace EmpireAtWar.Services.UnitExplosion
             if (!Application.isPlaying && _root != null) Object.DestroyImmediate(_root.gameObject);
         }
 
+        /// <summary>Prewarmed effects free to play now.</summary>
+        public int IdleCount => _idle.Count;
+
+        /// <summary>Effects playing or fading out.</summary>
+        public int InUseCount => _active.Count + _fading.Count;
+
         public void Play(Transform anchor, IFogVisibilityFacade fogVisibility, float scale) =>
             Play(anchor, fogVisibility, scale, Vector3.zero, null);
 

@@ -281,6 +281,38 @@ namespace EmpireAtWar.Tests.Editor
         }
 
         [Test]
+        public void HullDamaged_RaisedWithHitIndexAndTypeOnlyWhenHullDrops()
+        {
+            HealthModel model = CreateModel(SHIELDS, out _, out _, out _);
+            List<(int Index, DamageType Type)> hits = new List<(int, DamageType)>();
+            model.HullDamaged += (index, type) => hits.Add((index, type));
+
+            model.ApplyDamage(100f, DamageType.Turbolaser, 0);
+            Assert.That(hits, Is.Empty, "shield-only hit");
+
+            model.ApplyDamage(40f, DamageType.ProtonTorpedo, 2);
+            Assert.That(hits, Is.EqualTo(new[] { (2, DamageType.ProtonTorpedo) }));
+
+            hits.Clear();
+            model.Repair(1f);
+            model.Restore(0.5f, 1f, new[] { 1f, 1f, 1f });
+            Assert.That(hits, Is.Empty, "repair and restore");
+        }
+
+        [Test]
+        public void HullDamaged_NotRaisedForKillingHit()
+        {
+            HealthModel model = CreateModel(0f, out _, out _, out _);
+            int hits = 0;
+            model.HullDamaged += (_, _) => hits++;
+
+            model.ApplyDamage(HULL * 10f, DamageType.PrecisionStrike, 0);
+
+            Assert.That(model.IsDestroyed, Is.True);
+            Assert.That(hits, Is.Zero);
+        }
+
+        [Test]
         public void ApplyDamage_IonUsesShieldMultiplier()
         {
             HealthModel model = CreateModel(SHIELDS, out _, out _, out _);

@@ -47,7 +47,7 @@ namespace EmpireAtWar.Entities.BaseEntity
         }
 
         /// <summary>
-        /// Scorches the hull as it loses health, with short blasts as new scorches appear. Needs
+        /// Scorches the hull as it loses health, with short blasts on hull hits. Needs
         /// <see cref="RegisterHighlight"/> and <see cref="RegisterHealth"/>.
         /// </summary>
         public static void RegisterHullDamage(IContainerBuilder builder)

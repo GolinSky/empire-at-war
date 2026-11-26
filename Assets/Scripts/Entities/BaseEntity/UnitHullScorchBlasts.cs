@@ -1,79 +1,87 @@
 using System;
+using EmpireAtWar.Components.AttackComponent;
 using EmpireAtWar.Components.Ship.Health;
-using EmpireAtWar.Components.TeamColor;
 using EmpireAtWar.Entities.BaseEntity.EntityFacades;
+using EmpireAtWar.Extensions;
 using EmpireAtWar.Lifecycle;
-using EmpireAtWar.Models.Health;
 using EmpireAtWar.Services.UnitExplosion;
 using UnityEngine;
+using VContainer;
 
 namespace EmpireAtWar.Entities.BaseEntity
 {
     /// <summary>
-    /// Hull scorches (ShipHullDamage.hlsl) switch on all at once per damage level. When the level rises, a few short
-    /// blasts play at random hardpoint surface points so the new marks do not just pop in. Repairs, loaded saves and
-    /// the unit's death play none.
+    /// A short blast on hull hits, near the hit hardpoint with a random offset across the hull. One unit waits
+    /// <see cref="IHullScorchBlastPool.UnitInterval"/> between blasts; the pool skips hidden, off-camera and
+    /// over-budget ones. Precision strikes (super weapons, Lucky Shot) show their own effects and play none.
     /// </summary>
     public sealed class UnitHullScorchBlasts : IInitializable, ILateDisposable
     {
-        private const int MAX_BLASTS_PER_RISE = 3;
+        // Offset radius per world unit of hardpoint VFX scale: about two thirds of a 7.5-wide blast.
+        private const float OFFSET_RADIUS_PER_SCALE = 5f;
+        // Largest lift off the surface, as a share of the offset radius.
+        private const float MAX_LIFT_SHARE = 0.25f;
         private const int SPOT_ATTEMPTS = 8;
 
-        private readonly IHealthModelObserver _health;
         private readonly IHullBlastSpots _spots;
         private readonly IHullScorchBlastPool _pool;
         private readonly IFogVisibilityFacade _fogVisibility;
+        private readonly Transform _hull;
         private readonly System.Random _random = new System.Random();
 
-        private int _level;
+        private float _readyAt;
 
-        public UnitHullScorchBlasts(IHealthComponent healthComponent, IHullBlastSpots spots,
-            IHullScorchBlastPool pool, IFogVisibilityFacade fogVisibility)
+        public UnitHullScorchBlasts(IHullBlastSpots spots, IHullScorchBlastPool pool,
+            IFogVisibilityFacade fogVisibility, [Key(EntityBindType.ViewTransform)] Transform hull)
         {
-            _health = healthComponent.HealthModelObserver;
             _spots = spots;
             _pool = pool;
             _fogVisibility = fogVisibility;
+            _hull = hull;
         }
 
-        private int CurrentLevel => UnitRenderStateComponent.GetHullDamageLevel(_health.HullPercentage);
+        public void Initialize() => _spots.HullDamaged += HandleHullDamaged;
 
-        public void Initialize()
+        public void LateDispose() => _spots.HullDamaged -= HandleHullDamaged;
+
+        private void HandleHullDamaged(int spotIndex, DamageType damageType)
         {
-            _level = CurrentLevel;
-            _health.OnValueChanged += HandleHealthChanged;
-            _spots.Restored += HandleRestored;
+            if (damageType == DamageType.PrecisionStrike || Time.time < _readyAt) return;
+            if (!TryPickSpot(spotIndex, out Transform anchor, out float scale)) return;
+            if (_pool.TryPlay(anchor, RandomOffset(anchor.position, scale), _fogVisibility, scale))
+                _readyAt = Time.time + _pool.UnitInterval;
         }
 
-        public void LateDispose()
-        {
-            _health.OnValueChanged -= HandleHealthChanged;
-            _spots.Restored -= HandleRestored;
-        }
-
-        private void HandleRestored() => _level = CurrentLevel;
-
-        private void HandleHealthChanged()
-        {
-            int level = CurrentLevel;
-            int rise = level - _level;
-            _level = level;
-            if (rise <= 0 || _health.IsDestroyed) return;
-
-            int blasts = Math.Min(rise, MAX_BLASTS_PER_RISE);
-            for (int i = 0; i < blasts; i++) PlayAtRandomSpot();
-        }
-
-        private void PlayAtRandomSpot()
+        // The hit spot, else a random one: hits on spots without VFX or under the hull still show on top.
+        private bool TryPickSpot(int index, out Transform anchor, out float scale)
         {
             int count = _spots.SpotCount;
-            if (count == 0) return;
-            for (int attempt = 0; attempt < SPOT_ATTEMPTS; attempt++)
+            if (index >= 0 && index < count && IsUsable(index, out anchor, out scale)) return true;
+            for (int attempt = 0; count > 0 && attempt < SPOT_ATTEMPTS; attempt++)
             {
-                if (!_spots.TryGetSpot(_random.Next(count), out Transform anchor, out float scale)) continue;
-                _pool.Play(anchor, _fogVisibility, scale);
-                return;
+                if (IsUsable(_random.Next(count), out anchor, out scale)) return true;
             }
+
+            anchor = null;
+            scale = 0f;
+            return false;
+        }
+
+        private bool IsUsable(int index, out Transform anchor, out float scale) =>
+            _spots.TryGetSpot(index, out anchor, out scale) &&
+            Vector3.Dot(anchor.position - _hull.position, _hull.up) >= 0f;
+
+        // Across the hull's deck plane, always towards the hull's middle so edge spots stay over the hull, and lifted
+        // off the surface, never pushed below it.
+        private Vector3 RandomOffset(Vector3 anchor, float scale)
+        {
+            float radius = scale * OFFSET_RADIUS_PER_SCALE;
+            float angle = (float)(_random.NextDouble() * 2.0 * Math.PI);
+            Vector3 direction = _hull.right * Mathf.Cos(angle) + _hull.forward * Mathf.Sin(angle);
+            if (Vector3.Dot(direction, _hull.position - anchor) < 0f) direction = -direction;
+            float distance = radius * Mathf.Sqrt((float)_random.NextDouble());
+            float lift = radius * MAX_LIFT_SHARE * (float)_random.NextDouble();
+            return direction * distance + _hull.up * lift;
         }
     }
 }

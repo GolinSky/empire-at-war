@@ -85,8 +85,6 @@ namespace EmpireAtWar.Services.VContainer
         private static readonly ProfilerMarker CONFIGURE_MARKER = new ProfilerMarker("SkirmishScope.Configure");
         // Prewarmed effects; resize from the "[VfxPools]" peak/grown log line written when a battle closes.
         private const int HARD_POINT_EXPLOSION_PREWARM = 16;
-        // Blasts last ~2 s and a scorch step plays 1-3, so fewer are alive at once than burning hardpoints.
-        private const int HULL_SCORCH_BLAST_PREWARM = 8;
         // One blast per main-battery salvo, ~2 s each.
         private const int MUZZLE_BLAST_PREWARM = 32;
         [SerializeField] private FogOfWarSystem fogOfWarSystem;
@@ -100,6 +98,7 @@ namespace EmpireAtWar.Services.VContainer
         [SerializeField] private ExplosionVfx fighterExplosion;
         [SerializeField] private ExplosionVfx hardPointExplosion;
         [SerializeField] private ExplosionVfx hullScorchBlast;
+        [SerializeField] private HullBlastLimits hullBlastLimits = new HullBlastLimits();
         [SerializeField] private ExplosionVfx muzzleBlast;
         [SerializeField] private ImpactEffectView impactEffectPrefab;
         [SerializeField] private UnitExplosionView unitExplosionPrefab;
@@ -231,9 +230,9 @@ namespace EmpireAtWar.Services.VContainer
             builder.Register<ShipAbilityAutoUse>(Lifetime.Singleton);
             builder.Register<ShipAbilityFactory>(Lifetime.Singleton).AsImplementedInterfaces().AsSelf();
             builder.Register<ShipAbilityService>(Lifetime.Singleton).AsImplementedInterfaces().AsSelf();
+            builder.Register<UnitCombatProfileCatalog>(Lifetime.Singleton);
             builder.Register<UnitSheetCatalog>(Lifetime.Singleton).AsImplementedInterfaces();
             builder.Register<UnitRosterTooltips>(Lifetime.Singleton);
-            builder.Register<UnitCombatProfileCatalog>(Lifetime.Singleton);
             builder.Register<ForceCompositionBuilder>(Lifetime.Singleton);
             builder.Register<AutoPowerCombatSnapshot>(Lifetime.Singleton);
             if (Battle.Mode != GameMode.BattleSimulation)
@@ -306,7 +305,7 @@ namespace EmpireAtWar.Services.VContainer
                 .WithParameter("prewarmCount", HARD_POINT_EXPLOSION_PREWARM);
             builder.Register<HullScorchBlastPool>(Lifetime.Singleton).AsImplementedInterfaces().AsSelf()
                 .WithParameter(hullScorchBlast).WithParameter(cameraService.SceneCamera)
-                .WithParameter("prewarmCount", HULL_SCORCH_BLAST_PREWARM);
+                .WithParameter(hullBlastLimits);
             builder.Register<MuzzleBlastPool>(Lifetime.Singleton).AsImplementedInterfaces().AsSelf()
                 .WithParameter(muzzleBlast).WithParameter(cameraService.SceneCamera)
                 .WithParameter("prewarmCount", MUZZLE_BLAST_PREWARM);

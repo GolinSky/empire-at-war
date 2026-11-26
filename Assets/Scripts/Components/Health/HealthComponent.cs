@@ -67,10 +67,10 @@ namespace EmpireAtWar.Components.Ship.Health
 
         [field: SerializeField] public List<HardPoint> ShipUnits { get; set; }
 
-        event Action IHullBlastSpots.Restored
+        event Action<int, DamageType> IHullBlastSpots.HullDamaged
         {
-            add => Model.OnRestored += value;
-            remove => Model.OnRestored -= value;
+            add => Model.HullDamaged += value;
+            remove => Model.HullDamaged -= value;
         }
 
         int IHullBlastSpots.SpotCount => ShipUnits.Count;
