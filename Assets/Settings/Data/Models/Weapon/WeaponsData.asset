@@ -144,7 +144,7 @@ MonoBehaviour:
     shotsPerSalvo: 1
     shotInterval: 0.4
     reload: 12
-    range: 350
+    range: 420
     strikecraftOnly: 0
     preferredTarget: 2
     interceptable: 1
