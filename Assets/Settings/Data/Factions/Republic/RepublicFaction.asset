@@ -99,7 +99,7 @@ MonoBehaviour:
       value:
         displayName: Rothana
         description: 
-        role: "Capital \xB7 Heavy gunship / carrier"
+        role: "Capital \xB7 Heavy gunship"
         iconKey: 677a9fb4a7566e14d932893ee85f3357:21300000
         isHero: 0
         isUnique: 0

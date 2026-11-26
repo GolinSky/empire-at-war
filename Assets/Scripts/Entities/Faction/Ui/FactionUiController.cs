@@ -161,7 +161,9 @@ namespace EmpireAtWar.Entities.Faction.Ui
         public bool IsUnlockedAtCurrentLevel(FactionData data) => UnlockedLevel == data.AvailableLevel;
 
         public bool IsCarrier(UnitRequest request) => request is ShipUnitRequest ship &&
-            _assets.Load<ShipData>(_shipsData.GetShipDataPath(ship.Key)).HangarBays.Count > 0;
+            LaunchesSquadrons(_assets.Load<ShipData>(_shipsData.GetShipDataPath(ship.Key)));
+
+        private static bool LaunchesSquadrons(ShipData data) => data.HangarBays.Count > 0 && data.HangarMaxActive != 0;
 
         public bool IsScout(UnitRequest request) => request is SquadronUnitRequest ||
             request is ShipUnitRequest && GetUnitClass(request) is

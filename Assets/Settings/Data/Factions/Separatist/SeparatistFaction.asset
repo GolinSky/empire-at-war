@@ -179,7 +179,7 @@ MonoBehaviour:
       value:
         displayName: Bulwark I
         description: 
-        role: Capital / Battle line carrier
+        role: Capital / Battle line
         iconKey: 929de4fd7db737646a0df2a72d3404af:21300000
         isHero: 0
         isUnique: 0
@@ -243,7 +243,7 @@ MonoBehaviour:
       value:
         displayName: Bulwark Mk II
         description: 
-        role: Capital / Battle line carrier
+        role: Capital / Battle line
         iconKey: 34af1e9f1e28dc242a62e5ea6c6ecf71:21300000
         isHero: 0
         isUnique: 0

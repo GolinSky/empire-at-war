@@ -103,7 +103,9 @@ namespace EmpireAtWar.Editor
         public static bool IsIonSpecialist(ShipData ship, WeaponsData weapons) =>
             IsLargestShare(ship, weapons, IonFamilies) || HasIonAbility(ship);
 
-        public static bool IsCarrier(ShipData ship) => ship.HangarBays.Count >= MIN_CARRIER_BAYS;
+        /// <summary>Enough hangar bays and a squadron cap that lets it launch (0 = launches nothing).</summary>
+        public static bool IsCarrier(ShipData ship) =>
+            ship.HangarBays.Count >= MIN_CARRIER_BAYS && ship.HangarMaxActive != 0;
 
         /// <summary>
         /// The flags ship data supports; <paramref name="classMates"/> are the ships of its faction and class, itself

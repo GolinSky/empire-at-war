@@ -50,11 +50,11 @@ namespace EmpireAtWar.Tests.Editor
         }
 
         [Test]
-        public void Carrier_HasEnoughHangarBays()
+        public void Carrier_HasEnoughHangarBaysAndLaunchesSquadrons()
         {
             foreach (ShipRoleEntry entry in _owners)
                 Assert.That(entry.Ship.Roles.HasFlag(UnitRole.Carrier), Is.EqualTo(ShipRoleRules.IsCarrier(entry.Ship)),
-                    $"{entry.Ship.name}: {entry.Ship.HangarBays.Count} bays");
+                    $"{entry.Ship.name}: {entry.Ship.HangarBays.Count} bays, max active {entry.Ship.HangarMaxActive}");
         }
 
         [Test]
