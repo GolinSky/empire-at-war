@@ -27,6 +27,7 @@
 TEXTURE2D(_MetallicGlossMap);   // R = metallic, A = smoothness (same packing as URP Lit)
 TEXTURE2D(_OcclusionMap);       // G = ambient occlusion (same channel URP Lit reads)
 TEXTURE2D(_TeamMaskMap);        // R = where the team color is painted (0 = keep albedo)
+TEXTURE2D(_HullMarkingMap);
 
 // -----------------------------------------------------------------------------
 // Per-material constants
@@ -50,6 +51,11 @@ CBUFFER_START(UnityPerMaterial)
     half _TeamLiveryHueRange;
     half _TeamLiveryMinSaturation;
     half _TeamLiveryStrength;
+#ifndef SHIP_WRECK
+    float _RadialHullMarkings;
+    float _HullMarkingSpacing;
+    float _HullMarkingDiameter;
+#endif
     half _HullDamageMarkScale;      // per-ship mark size (and spacing) multiplier, ShipHullDamage.hlsl
     half _HullDamageOpacityScale;   // per-ship soot opacity multiplier
 #ifdef SHIP_WRECK

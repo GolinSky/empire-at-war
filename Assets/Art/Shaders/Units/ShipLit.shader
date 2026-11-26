@@ -3,9 +3,8 @@
 // One lit shader for every ship, station and platform, with per-owner team colors.
 //
 // Design goals
-//   * One compiled variant for all unit materials: no per-material keywords, every map
-//     is always sampled with neutral defaults. Materials that share a shader variant
-//     are grouped by the SRP Batcher, which is what makes many ships cheap.
+//   * Standard unit materials share a shader variant with neutral texture defaults.
+//     Projected hull markings opt into a separate forward variant.
 //   * Team color without extra materials: the owner's palette index arrives through
 //     MeshRenderer.SetShaderUserValue (see UnitRenderStateComponent.cs), which keeps both the
 //     SRP Batcher and the GPU Resident Drawer working. The same per-renderer value carries
@@ -45,6 +44,12 @@ Shader "EmpireAtWar/Ship Lit"
         _TeamLiveryHueRange("Livery Hue Range", Range(0.01, 0.5)) = 0.07
         _TeamLiveryMinSaturation("Livery Min Saturation", Range(0.0, 1.0)) = 0.4
         _TeamLiveryStrength("Livery Strength", Range(0.0, 1.0)) = 0.0
+
+        [Header(Hull Markings)]
+        [Toggle(_RADIAL_HULL_MARKINGS)] _RadialHullMarkings("Three Radial Markings", Float) = 0
+        [NoScaleOffset] _HullMarkingMap("Marking (Centered Circle, 46% Width)", 2D) = "white" {}
+        _HullMarkingSpacing("Distance From Center", Float) = 1.0
+        _HullMarkingDiameter("Diameter", Float) = 1.0
 
         // Per-ship look of ShipHullDamage.hlsl on top of the shared HullDamageSettings. 1 = shared look.
         [Header(Hull Damage)]
@@ -88,6 +93,7 @@ Shader "EmpireAtWar/Ship Lit"
             #pragma target 3.5
             #pragma vertex ShipLitPassVertex
             #pragma fragment ShipLitPassFragment
+            #pragma shader_feature_local_fragment _RADIAL_HULL_MARKINGS
 
             // Pipeline keywords: URP turns these on and off from the quality settings and
             // the scene (shadows, light count, SSAO, Forward+). multi_compile compiles a

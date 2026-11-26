@@ -11,7 +11,8 @@ Material:
   m_Shader: {fileID: 4800000, guid: f2a9a9f1727de0c4a912563406aea950, type: 3}
   m_Parent: {fileID: 0}
   m_ModifiedSerializedProperties: 0
-  m_ValidKeywords: []
+  m_ValidKeywords:
+  - _RADIAL_HULL_MARKINGS
   m_InvalidKeywords: []
   m_LightmapFlags: 4
   m_EnableInstancingVariants: 1
@@ -25,7 +26,7 @@ Material:
     serializedVersion: 3
     m_TexEnvs:
     - _BaseMap:
-        m_Texture: {fileID: 2800000, guid: 575502ab7da5433db8a2ffad364dd9ae, type: 3}
+        m_Texture: {fileID: 2800000, guid: 99d7a26f4eece104c933dfc31a0a08e1, type: 3}
         m_Scale: {x: 1, y: 1}
         m_Offset: {x: 0, y: 0}
     - _BumpMap:
@@ -50,6 +51,10 @@ Material:
         m_Offset: {x: 0, y: 0}
     - _EmissionMap:
         m_Texture: {fileID: 2800000, guid: a0380963705d8584781fa04eac22d59e, type: 3}
+        m_Scale: {x: 1, y: 1}
+        m_Offset: {x: 0, y: 0}
+    - _HullMarkingMap:
+        m_Texture: {fileID: 2800000, guid: 575502ab7da5433db8a2ffad364dd9ae, type: 3}
         m_Scale: {x: 1, y: 1}
         m_Offset: {x: 0, y: 0}
     - _MainTex:
@@ -111,12 +116,15 @@ Material:
     - _GlossyReflections: 1
     - _HullDamageMarkScale: 1.0340408
     - _HullDamageOpacityScale: 1
+    - _HullMarkingDiameter: 2.2
+    - _HullMarkingSpacing: 6.15
     - _Metallic: 1
     - _Mode: 0
     - _OcclusionStrength: 1
     - _Parallax: 0.005
     - _QueueControl: 0
     - _QueueOffset: 0
+    - _RadialHullMarkings: 1
     - _ReceiveShadows: 1
     - _Smoothness: 1
     - _SmoothnessTextureChannel: 0

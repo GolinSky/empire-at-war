@@ -89,10 +89,33 @@ Varyings ShipLitPassVertex(Attributes input)
     return output;
 }
 
-// Builds "what the surface is" from the material textures.
-// Every map is always sampled: the defaults (white / bump / black) make a missing map
-// neutral, so the shader needs no per-material keywords and every ship material uses
-// the same compiled shader variant - which is what lets the SRP Batcher group them.
+#if defined(_RADIAL_HULL_MARKINGS)
+half3 ApplyRadialHullMarkings(half3 albedo, Varyings input)
+{
+    float2 hullXZ = TransformWorldToObject(input.positionWS).xz;
+
+    // Choose the nearest of three arms, spaced 120 degrees apart around +Y.
+    float2 axis = float2(hullXZ.x < 0.0 ? -0.8660254 : 0.8660254, -0.5);
+    if (hullXZ.y >= dot(hullXZ, axis))
+        axis = float2(0.0, 1.0);
+
+    float2 across = float2(axis.y, -axis.x);
+    float2 marking = float2(dot(hullXZ, across), dot(hullXZ, axis) - _HullMarkingSpacing);
+    marking *= 2.0 / _HullMarkingDiameter;
+
+    // The painted circle fills 46% of the source texture's width.
+    float2 uv = 0.5 + marking * 0.23;
+    half3 paint = SAMPLE_TEXTURE2D(_HullMarkingMap, sampler_BaseMap, uv).rgb;
+    float radius = length(marking);
+    float edgeWidth = max(fwidth(radius), 0.01);
+    half coverage = 1.0 - smoothstep(1.0 - edgeWidth, 1.0, radius);
+    half upward = step(0.55, TransformWorldToObjectNormal(input.normalWS).y);
+    return lerp(albedo, paint * _BaseColor.rgb, coverage * upward);
+}
+#endif
+
+// Builds "what the surface is" from the material textures. The standard maps use
+// neutral defaults, so regular hull materials share the same compiled variant.
 SurfaceData CreateSurfaceData(Varyings input)
 {
     SurfaceData surface = (SurfaceData)0;
@@ -100,6 +123,9 @@ SurfaceData CreateSurfaceData(Varyings input)
     half4 albedoAlpha = SAMPLE_TEXTURE2D(_BaseMap, sampler_BaseMap, input.uv) * _BaseColor;
     half teamMask = SAMPLE_TEXTURE2D(_TeamMaskMap, sampler_BaseMap, input.uv).r;
     surface.albedo = ApplyTeamMask(albedoAlpha.rgb, teamMask, input.teamColor);
+#if defined(_RADIAL_HULL_MARKINGS)
+    surface.albedo = ApplyRadialHullMarkings(surface.albedo, input);
+#endif
     surface.alpha = 1.0h;                        // ships are opaque
 
     half4 metallicGloss = SAMPLE_TEXTURE2D(_MetallicGlossMap, sampler_BaseMap, input.uv);
