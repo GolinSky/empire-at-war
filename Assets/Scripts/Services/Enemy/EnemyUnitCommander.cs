@@ -82,6 +82,18 @@ namespace EmpireAtWar.Services.Enemy
         /// <summary>W68: centre of a zone a scouting wing should look at before the force commits; null when none.</summary>
         Vector3? ZoneScoutTarget => null;
 
+        /// <summary>
+        /// With no station pressure, the hostiles at a fight destroy the ships there within the emergency time of the
+        /// difficulty: production buys what arrives at <paramref name="point"/> before
+        /// <paramref name="timeToLossSeconds"/>, as for a critical station.
+        /// </summary>
+        bool TryGetFleetEmergency(out float timeToLossSeconds, out Vector3 point)
+        {
+            timeToLossSeconds = float.PositiveInfinity;
+            point = default;
+            return false;
+        }
+
         /// <summary>W63 addendum: production reports the bank, free-capacity credits and build delay every tick.</summary>
         void ReportReinforcementBudget(EnemyReinforcementBudget budget) =>
             throw new InvalidOperationException("This AI does not rate reinforcements.");
@@ -146,6 +158,12 @@ namespace EmpireAtWar.Services.Enemy
         private string _actionReason;
         private Vector3 _dropRequest;
         private float _dropRequestUntil = float.NegativeInfinity;
+        private readonly EnemyHitAndRunTuning _hitAndRun;
+        // Shortest time-to-loss among the groups of the last finished cycle, and where its reinforcements gather.
+        private float _fleetTimeToLoss = float.PositiveInfinity;
+        private Vector3 _fleetLossPoint;
+        private float _cycleFleetTimeToLoss = float.PositiveInfinity;
+        private Vector3 _cycleFleetLossPoint;
 
         public event Action<EnemyStrategicDecision> DecisionChanged;
 
@@ -179,6 +197,13 @@ namespace EmpireAtWar.Services.Enemy
             if (Time.time >= _dropRequestUntil) return false;
             _dropRequestUntil = float.NegativeInfinity;
             return true;
+        }
+
+        public bool TryGetFleetEmergency(out float timeToLossSeconds, out Vector3 point)
+        {
+            timeToLossSeconds = _fleetTimeToLoss;
+            point = _fleetLossPoint;
+            return !_cycleHasPressure && _fleetTimeToLoss < _hitAndRun.FleetEmergencySeconds;
         }
 
         public bool TryGetPlannedWave(out Vector3 target) =>
@@ -268,9 +293,11 @@ namespace EmpireAtWar.Services.Enemy
             EnemyStrategicContextBuilder contextBuilder,
             EnemyTaskForceExecutor taskForceExecutor,
             PlayerSlot owner, EnemyPatrolService patrol, EnemyPatrolShipController patrolShips,
-            INotifier<BattleState> battleState, EnemyAiScheduler scheduler, IFocusFireSlots focusFire)
+            INotifier<BattleState> battleState, EnemyAiScheduler scheduler, IFocusFireSlots focusFire,
+            IEnemyHitAndRunSettings hitAndRunSettings)
         {
             _owner = owner;
+            _hitAndRun = hitAndRunSettings.Get(owner.Difficulty);
 #if UNITY_EDITOR || DEVELOPMENT_BUILD
             DecisionDiagnostics = new EnemyDecisionDiagnostics("EnemyAI.Ship.Decision." + owner.Id);
 #endif
@@ -284,7 +311,7 @@ namespace EmpireAtWar.Services.Enemy
             _battleState = battleState;
             _contextBuilder = contextBuilder;
             _taskGroups = new EnemyShipTaskGroupPlanner(contextBuilder, decisionModel, taskForceExecutor, unitOrderService,
-                focusFire);
+                focusFire, _hitAndRun);
             _unitOrderService = unitOrderService;
         }
 
@@ -429,6 +456,7 @@ namespace EmpireAtWar.Services.Enemy
             _cycleBodyCount = 0;
             _cycleRallyingCount = 0;
             _cycleGroupSummary = "";
+            _cycleFleetTimeToLoss = float.PositiveInfinity;
             _cycleInProgress = true;
         }
 
@@ -463,6 +491,7 @@ namespace EmpireAtWar.Services.Enemy
                     foreach (IShipEntity ship in group.Ships) _zoneExitTargets.Remove(ship);
             }
             RequestReinforcementDrop(group);
+            NoteFleetTimeToLoss(group);
             if (group.TryTakeOrderReport(Time.time, out int orders))
                 EnemyAiTelemetry.RecordEvent(_owner.Id, _owner.Faction, "groupOrders", FormattableString.Invariant(
                     $"group={group.Id};orders={orders};ships={group.Ships.Count};state={group.Decision.State};seconds={EnemyShipTaskGroup.ORDER_REPORT_INTERVAL:F0}"));
@@ -491,9 +520,27 @@ namespace EmpireAtWar.Services.Enemy
                 $"group={group.Id};request=({point.x:F0} {point.z:F0})"));
         }
 
+        // The group that dies fastest sets the fleet emergency; its reinforcements head for its safe point or its ships.
+        private void NoteFleetTimeToLoss(EnemyShipTaskGroup group)
+        {
+            float timeToLoss = group.ContextBuilder.LocalTimeToLossSeconds;
+            if (group.Ships.Count == 0 || timeToLoss >= _cycleFleetTimeToLoss) return;
+            _cycleFleetTimeToLoss = timeToLoss;
+            if (group.StrikeCycle.SafePoint is Vector3 safePoint)
+            {
+                _cycleFleetLossPoint = safePoint;
+                return;
+            }
+            Vector3 centre = Vector3.zero;
+            foreach (IShipEntity ship in group.Ships) centre += ship.WorldPosition;
+            _cycleFleetLossPoint = centre / group.Ships.Count;
+        }
+
         private void FinishDecisionCycle()
         {
             _cycleInProgress = false;
+            _fleetTimeToLoss = _cycleFleetTimeToLoss;
+            _fleetLossPoint = _cycleFleetLossPoint;
             if (_cyclePrimary == null)
             {
                 _contextBuilder.TeamCooperation.PublishReservations(_owner.Id, _reservedCaptureObjectives);

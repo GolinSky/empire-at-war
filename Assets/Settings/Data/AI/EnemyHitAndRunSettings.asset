@@ -1,0 +1,50 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 0acfdfe5c36144f419dcb339128be69a, type: 3}
+  m_Name: EnemyHitAndRunSettings
+  m_EditorClassIdentifier: Assembly-CSharp::EmpireAtWar.Services.Enemy.EnemyHitAndRunSettings
+  easy:
+    straightFightAdvantage: 1
+    pullBackShieldFraction: 0.1
+    resumeShieldFraction: 0.7
+    resumeHullFraction: 0.6
+    minPhaseSeconds: 8
+    maxRecoverSeconds: 75
+    reactionDelaySeconds: 4
+    fleetEmergencySeconds: 30
+  medium:
+    straightFightAdvantage: 1.15
+    pullBackShieldFraction: 0.2
+    resumeShieldFraction: 0.8
+    resumeHullFraction: 0.7
+    minPhaseSeconds: 6
+    maxRecoverSeconds: 60
+    reactionDelaySeconds: 2
+    fleetEmergencySeconds: 45
+  hard:
+    straightFightAdvantage: 1.25
+    pullBackShieldFraction: 0.25
+    resumeShieldFraction: 0.85
+    resumeHullFraction: 0.8
+    minPhaseSeconds: 6
+    maxRecoverSeconds: 60
+    reactionDelaySeconds: 1
+    fleetEmergencySeconds: 60
+  ultraHard:
+    straightFightAdvantage: 1.3
+    pullBackShieldFraction: 0.3
+    resumeShieldFraction: 0.9
+    resumeHullFraction: 0.9
+    minPhaseSeconds: 6
+    maxRecoverSeconds: 60
+    reactionDelaySeconds: 0
+    fleetEmergencySeconds: 75

@@ -43,6 +43,7 @@ namespace EmpireAtWar.Services.Enemy
         private readonly EnemyStrategicContextBuilder _contextBuilder;
         private readonly IUnitOrderService _orders;
         private readonly IFocusFireSlots _focusFire;
+        private readonly EnemyHitAndRunTuning _hitAndRun;
         private readonly List<EnemyShipTaskGroup> _groups = new List<EnemyShipTaskGroup>();
         private readonly List<EnemyShipTaskGroup> _zoneGroups = new List<EnemyShipTaskGroup>();
         private readonly HashSet<IShipEntity> _members = new HashSet<IShipEntity>();
@@ -100,13 +101,15 @@ namespace EmpireAtWar.Services.Enemy
 
         public EnemyShipTaskGroupPlanner(EnemyStrategicContextBuilder contextBuilder,
             EnemyStrategicDecisionModel decisionModel, EnemyTaskForceExecutor executor,
-            IUnitOrderService orders, IFocusFireSlots focusFire)
+            IUnitOrderService orders, IFocusFireSlots focusFire, EnemyHitAndRunTuning hitAndRun)
         {
             _focusFire = focusFire;
+            _hitAndRun = hitAndRun;
             _contextBuilder = contextBuilder;
             _contextBuilder.IsReserve = true;
             _orders = orders;
-            _reserve = new EnemyShipTaskGroup(contextBuilder, decisionModel, executor) { IsMainForce = true };
+            _reserve = new EnemyShipTaskGroup(contextBuilder, decisionModel, executor,
+                new EnemyStrikeCycleAssessor(contextBuilder, focusFire, hitAndRun)) { IsMainForce = true };
             _pool = contextBuilder.CreateGroupBuilder();
             _distance = GetDistance;
             _groups.Add(_reserve);
@@ -134,6 +137,9 @@ namespace EmpireAtWar.Services.Enemy
             // New ships join the reserve and gather with it; none flies to a fight alone.
             foreach (IShipEntity ship in ships)
                 if (!_members.Contains(ship)) _reserve.Ships.Add(ship);
+            // A zone force's strike group may pull back to the main fleet body.
+            Vector3? mainBody = _reserve.Ships.Count > 0 ? GetCentre(_reserve.Ships) : (Vector3?)null;
+            foreach (EnemyShipTaskGroup group in _zoneGroups) group.ContextBuilder.MainBodyPoint = mainBody;
             RebuildGroups();
         }
 
@@ -572,8 +578,10 @@ namespace EmpireAtWar.Services.Enemy
                 _zoneGroups.Add(parked);
                 return parked;
             }
-            EnemyShipTaskGroup group = new EnemyShipTaskGroup(_contextBuilder.CreateGroupBuilder(),
-                new EnemyStrategicDecisionModel(), new EnemyTaskForceExecutor(_orders, _focusFire), isCaptureDetachment: true);
+            EnemyStrategicContextBuilder builder = _contextBuilder.CreateGroupBuilder();
+            EnemyShipTaskGroup group = new EnemyShipTaskGroup(builder,
+                new EnemyStrategicDecisionModel(), new EnemyTaskForceExecutor(_orders, _focusFire),
+                new EnemyStrikeCycleAssessor(builder, _focusFire, _hitAndRun), isCaptureDetachment: true);
             group.ContextBuilder.AssignedZoneId = zoneId;
             _zoneGroups.Add(group);
             return group;

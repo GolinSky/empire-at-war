@@ -145,6 +145,11 @@ MonoBehaviour:
     m_ReadOnly: 0
     m_SerializedLabels: []
     FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 9d6bdd33bbad39244ae768d99c5f1e7b
+    m_Address: EnemyHitAndRunSettings
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
   - m_GUID: ae371385bfb7f8d458aa046ea8e5ea01
     m_Address: FactionCatalog
     m_ReadOnly: 0

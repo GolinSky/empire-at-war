@@ -226,6 +226,7 @@ Code complete; only user acceptance left. Gates → [[TODOs/User_Acceptance_Queu
 
 ### Features
 
+- [ ] **Enemy AI hit-and-run vs capitals (strike group attacks a hostile big ship, pulls back together to repairer/station/main fleet, recovers, strikes again; also when defending the station)** → [[Review/Features/Enemy_AI_Hit_And_Run|Enemy AI Hit And Run]] — 2026-11-26: implemented (cycle model, striker selection, safe point, executor orders, disengage block, fleet-emergency buying, settings asset). EditMode: `EnemyAi` 843/843, `CombatMatchupTests` 44/44, `RealEntityCompositionTests` 37/37, `VContainerCompositionTests` 7/7. Not written: real-runner Navigation tests, production-strategy and context-builder tests for the new paths. User in-game check and threshold tuning pending. Related: [[Review/Bugs/Enemy_AI_Rebuild_And_Reserve]].
 - [ ] **Squadron icon clustering rebuild (screen-space matrix grid, smooth, ship-aware, cheap)** → [[Review/Features/Squadron_Icon_Clustering_Rebuild|Squadron Icon Clustering Rebuild]] — 2026-11-18: phases 1–6 implemented and compiled (tests not run); remaining: user capture, station hull obstacles, optional mesh batching.
   - 2026-11-26: moved to Review by user decision; only user acceptance left (see plan "Review 2026-11-26").
 - [ ] **Squadron bay rotation: ship-wide active squadron cap (Bulwark = 1)** → [[Review/Features/Squadron_Bay_Rotation_Plan|Squadron Bay Rotation Plan]]
@@ -269,11 +270,6 @@ Code complete; only user acceptance left. Gates → [[TODOs/User_Acceptance_Queu
   - Next gate: see the linked plan; detailed recorded progress is retained in the historical backlog snapshot.
   - 2026-11-26: moved to Review by user decision; only user acceptance left (see plan "Review 2026-11-26").
 
-### Refactoring
-
-- [ ] **Derive hardpoint HP from hull HP (budget ratio, type weights, per-class minimum)** → [[Review/Refactoring/Hardpoint_Health_From_Hull_Plan|Hardpoint Health From Hull]]; [[Review/Refactoring/Hardpoint_Health_From_Hull_Plan - Research|Current Σ HP / hull table]]
-  - Status: implemented 2026-10-29 (`R = 1.15`, 62 data / 61 prefabs migrated); tests not run.
-  - Next: user skirmish/tuning acceptance; refresh ALO recipe HP baselines before next import.
 ### Optimization
 
 - [ ] **Job System audit: flush target-selection reads, collected due pass, persistent facing buffers, polled-job flushes** → [[Review/Optimization/Job_System_Audit_Plan|Job System Audit Plan]]
@@ -281,6 +277,11 @@ Code complete; only user acceptance left. Gates → [[TODOs/User_Acceptance_Queu
   - 2026-11-26 source review: all 4 findings confirmed. Phase 1 → "cheap, unmeasured" (+ `Capture` tests); Phase 2 gate → `ProcessDueEventsSerialCollected` via existing microbenchmark; Phase 4 → optional.
   - 2026-11-26 implementation: all 4 phases done; due job replaced by a collected pass after microbenchmark; compile clean; `Combat`, `Capture`, `Navigation`, `Audio`, `Core` passed. Gates: Phase 1 worker-overlap capture, in-battle combat check.
 
+### Refactoring
+
+- [ ] **Derive hardpoint HP from hull HP (budget ratio, type weights, per-class minimum)** → [[Review/Refactoring/Hardpoint_Health_From_Hull_Plan|Hardpoint Health From Hull]]; [[Review/Refactoring/Hardpoint_Health_From_Hull_Plan - Research|Current Σ HP / hull table]]
+  - Status: implemented 2026-10-29 (`R = 1.15`, 62 data / 61 prefabs migrated); tests not run.
+  - Next: user skirmish/tuning acceptance; refresh ALO recipe HP baselines before next import.
   - 2026-11-26: moved to Review by user decision; only user acceptance left (see plan "Review 2026-11-26").
 
 ## Architecture Backlog

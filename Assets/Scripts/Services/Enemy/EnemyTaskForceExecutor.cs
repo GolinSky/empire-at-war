@@ -3,6 +3,7 @@ using System;
 using System.Collections.Generic;
 using EmpireAtWar.Components.Movement.Formation;
 using EmpireAtWar.Entities.EnemyFaction.Models;
+using EmpireAtWar.Entities.EnemyFaction.Models.Combat;
 using EmpireAtWar.Services.UnitOrders;
 using EmpireAtWar.Ship;
 using UnityEngine;
@@ -22,6 +23,8 @@ namespace EmpireAtWar.Services.Enemy
     /// Ships already retreating are not re-ordered, so their slots stay stable.
     /// Offensive orders go only to the task force's main body; stragglers (new builds, slow ships) guard its
     /// anchor ship until they have joined it, so the fleet arrives together instead of one ship at a time.
+    /// While a hit-and-run cycle runs, its strike ships take the cycle's orders (attack, pull back, recover) and the
+    /// state orders only the remaining ships.
     /// </summary>
     public sealed class EnemyTaskForceExecutor
     {
@@ -39,7 +42,11 @@ namespace EmpireAtWar.Services.Enemy
         private readonly Dictionary<IShipEntity, GameEntity> _overflowTargets = new Dictionary<IShipEntity, GameEntity>();
         private readonly Dictionary<string, (List<GameEntity> Receivers, List<Vector3> Offsets)> _retargetReceivers =
             new Dictionary<string, (List<GameEntity>, List<Vector3>)>();
-        private GameEntity _battleTarget;
+        private readonly BattleSlots _stateSlots = new BattleSlots();
+        // Hit-and-run strike ships keep their own battle slots, so a state strike on another target does not re-slot them.
+        private readonly BattleSlots _cycleSlots = new BattleSlots();
+        private readonly HashSet<IShipEntity> _cycleShips = new HashSet<IShipEntity>();
+        private readonly Dictionary<IShipEntity, Vector3> _cycleRetreatPoints = new Dictionary<IShipEntity, Vector3>();
         private GameEntity _defenseStation;
         private const float INTERCEPT_DISTANCE = 1500f;
         private const float NO_FIRING_SECONDS = 8f;
@@ -73,8 +80,6 @@ namespace EmpireAtWar.Services.Enemy
         private readonly List<FormationPoint> _positions = new List<FormationPoint>();
         private readonly List<float> _radii = new List<float>();
         private readonly List<FormationPoint> _destinations = new List<FormationPoint>();
-        private readonly Dictionary<IShipEntity, FormationPoint> _battleOffsets =
-            new Dictionary<IShipEntity, FormationPoint>();
 
         private Vector3 _captureTarget;
 
@@ -185,8 +190,7 @@ namespace EmpireAtWar.Services.Enemy
                 _wasReady = false;
                 _readyTarget = null;
                 _heldAnchor = null;
-                _battleTarget = null;
-                _battleOffsets.Clear();
+                _stateSlots.Clear();
             }
             _lastState = decision.State;
             ActionReason = decision.Reason;
@@ -210,6 +214,8 @@ namespace EmpireAtWar.Services.Enemy
             foreach (IShipEntity ship in _lostShips) _holdPoints.Remove(ship);
             // X5: a ship that left the group keeps no order memory: back in the group, its orders are not dropped.
             _orderFilter.RetainOnly(context.Receivers.Values);
+            // The strike ships take their focus fire slots before the state orders the other ships.
+            ApplyStrikeCycle(context);
             if (context.Ships.Count == 0) return;
             switch (decision.State)
             {
@@ -251,6 +257,63 @@ namespace EmpireAtWar.Services.Enemy
                 default:
                     throw new ArgumentOutOfRangeException(nameof(decision.State));
             }
+        }
+
+        /// <summary>
+        /// Orders the hit-and-run strike ships by the phase of the cycle. Strike: attack the target together. Pull
+        /// back: one retreat order per ship to the safe point. Recover: no order; the retreat ended and the ships
+        /// wait. A ship that left the strike group is forgotten, so the state places it afresh.
+        /// </summary>
+        private void ApplyStrikeCycle(EnemyStrategicContext context)
+        {
+            _lostShips.Clear();
+            foreach (IShipEntity ship in _cycleShips)
+                if (!IsStriker(context, ship)) _lostShips.Add(ship);
+            foreach (IShipEntity ship in _lostShips)
+            {
+                _cycleShips.Remove(ship);
+                _cycleRetreatPoints.Remove(ship);
+                ForgetShip(ship);
+            }
+            if (context.StrikePhase == EnemyStrikePhase.Idle)
+            {
+                _cycleSlots.Clear();
+                return;
+            }
+            foreach (IShipEntity ship in context.Strikers)
+                if (_cycleShips.Add(ship)) ForgetShip(ship);
+            switch (context.StrikePhase)
+            {
+                case EnemyStrikePhase.Strike:
+                    _cycleRetreatPoints.Clear();
+                    _strikeShips.Clear();
+                    _strikeShips.AddRange(context.Strikers);
+                    IssueStrikeAttack(context, context.StrikeTarget, _cycleSlots, path: "path=strike;");
+                    break;
+                case EnemyStrikePhase.PullBack:
+                    Vector3 point = context.StrikeFallbackPoint.Value;
+                    List<GameEntity> receivers = null;
+                    foreach (IShipEntity ship in context.Strikers)
+                    {
+                        if (_cycleRetreatPoints.TryGetValue(ship, out Vector3 previous) &&
+                            PlanarDistance(previous, point) <= ORDER_POINT_KEEP_DISTANCE) continue;
+                        _cycleRetreatPoints[ship] = point;
+                        _strikeTargets.Remove(ship);
+                        _overflowTargets.Remove(ship);
+                        (receivers ??= new List<GameEntity>()).Add(context.Receivers[ship]);
+                    }
+                    if (receivers != null)
+                        using (ShipOrderTelemetry.Detail("path=strikePullBack"))
+                            _unitOrderService.IssueRetreat(receivers, point);
+                    break;
+            }
+        }
+
+        private static bool IsStriker(EnemyStrategicContext context, IShipEntity ship)
+        {
+            for (int i = 0; i < context.Strikers.Count; i++)
+                if (context.Strikers[i] == ship) return true;
+            return false;
         }
 
         private static bool IsWholeFleetAssault(EnemyStrategicContext context) =>
@@ -332,7 +395,7 @@ namespace EmpireAtWar.Services.Enemy
             _body.AddRange(context.Ships);
             _strikeShips.Clear();
             _strikeShips.AddRange(context.Ships);
-            IssueStrikeAttack(context, target, keepTargets: true);
+            IssueStrikeAttack(context, target, _stateSlots, keepTargets: true);
         }
 
         // Guarding and holding share one bookkeeping: a ship sent to the point by Hold keeps it under GuardSite (W49).
@@ -409,7 +472,7 @@ namespace EmpireAtWar.Services.Enemy
             // Interceptors past the focus fire limit take a defense point instead.
             if (intercept) SelectInterceptors(context, target, ships, count);
             else _interceptors.Clear();
-            List<Vector3> interceptOffsets = intercept ? BattleOffsets(ships, count, target) : null;
+            List<Vector3> interceptOffsets = intercept ? BattleOffsets(_stateSlots, ships, count, target) : null;
             context.DefensePointReason = hasBearing
                 ? _defenseAdvance > 0f ? "Advance toward known threat: station damaged without defenders in range." :
                     "Threat-facing defense line from visible or last known intel."
@@ -921,7 +984,7 @@ namespace EmpireAtWar.Services.Enemy
             RallyStragglers(context, anchor, releaseBody: !targeted);
             if (ready)
             {
-                bool sameBattleTarget = _battleTarget == target;
+                bool sameBattleTarget = _stateSlots.Target == target;
                 _strikeShips.Clear();
                 _supportShips.Clear();
                 if (targeted) _attackForce.AssignScreens(context, _body, anchor);
@@ -931,7 +994,7 @@ namespace EmpireAtWar.Services.Enemy
                     if (!targeted || !_attackForce.IsScreen(ship) || IsCarrier(context, ship)) _strikeShips.Add(ship);
                     else _supportShips.Add(ship);
                 foreach (IShipEntity ship in _supportShips) _strikeTargets.Remove(ship);
-                if (target != null) IssueStrikeAttack(context, target, keepTargets);
+                if (target != null) IssueStrikeAttack(context, target, _stateSlots, keepTargets);
                 else
                 {
                     _strikeTargets.Clear();
@@ -1002,11 +1065,14 @@ namespace EmpireAtWar.Services.Enemy
         /// <paramref name="keepTargets"/> a ship keeps attacking its own target until that one is destroyed, cloaked or
         /// out of reach (<see cref="EnemyAttackTargetRules.KeepsTarget"/>).
         /// </summary>
-        private void IssueStrikeAttack(EnemyStrategicContext context, GameEntity target, bool keepTargets = false)
+        /// <param name="slots">Battle slots of this strike: the state's, or the hit-and-run cycle's.</param>
+        /// <param name="path">Telemetry prefix of the orders, for example <c>path=strike;</c>.</param>
+        private void IssueStrikeAttack(EnemyStrategicContext context, GameEntity target, BattleSlots slots,
+            bool keepTargets = false, string path = "")
         {
             SplitStrikeOverflow(context, target);
             IssueOverflowAttackMove(context, target);
-            List<Vector3> offsets = BattleOffsets(_strikeShips, _strikeShips.Count, target, out bool rebuilt);
+            List<Vector3> offsets = BattleOffsets(slots, _strikeShips, _strikeShips.Count, target, out bool rebuilt);
             ApplyCarrierStandoff(context, target, offsets);
             _retargetReceivers.Clear();
             for (int i = 0; i < _strikeShips.Count; i++)
@@ -1026,7 +1092,7 @@ namespace EmpireAtWar.Services.Enemy
             }
             // One order per reason, so each ai_orders row says why the ship changed target (W20).
             foreach (KeyValuePair<string, (List<GameEntity> Receivers, List<Vector3> Offsets)> group in _retargetReceivers)
-                using (ShipOrderTelemetry.Detail("retarget=" + group.Key))
+                using (ShipOrderTelemetry.Detail(path + "retarget=" + group.Key))
                     _unitOrderService.IssueAttack(group.Value.Receivers, target, group.Value.Offsets);
         }
 
@@ -1036,16 +1102,20 @@ namespace EmpireAtWar.Services.Enemy
         /// team's free slots plus the slots these ships already hold. <see cref="int.MaxValue"/> for unlimited targets.
         /// </summary>
         private int StrikeLimit(EnemyStrategicContext context, GameEntity target, IReadOnlyList<IShipEntity> ships,
-            int count)
+            int count) => GetStrikeLimit(_focusFire, context, target, ships, count);
+
+        /// <inheritdoc cref="StrikeLimit"/>
+        public static int GetStrikeLimit(IFocusFireSlots focusFire, EnemyStrategicContext context, GameEntity target,
+            IReadOnlyList<IShipEntity> ships, int count)
         {
-            int cap = _focusFire.GetCap(target, isSquadron: false);
+            int cap = focusFire.GetCap(target, isSquadron: false);
             if (cap == FocusFireCaps.UNLIMITED || count == 0) return int.MaxValue;
             float scale = EnemyAiDifficultyProfile.Get(context.Snapshot.Difficulty).FocusFireScale;
             int scaled = Math.Max(1, Mathf.CeilToInt(cap * scale));
             int held = 0;
             for (int i = 0; i < count; i++)
-                if (_focusFire.Holds(context.Receivers[ships[i]], target)) held++;
-            return Math.Min(scaled, held + _focusFire.FreeSlots(ships[0].Owner, target, isSquadron: false));
+                if (focusFire.Holds(context.Receivers[ships[i]], target)) held++;
+            return Math.Min(scaled, held + focusFire.FreeSlots(ships[0].Owner, target, isSquadron: false));
         }
 
         /// <summary>
@@ -1196,14 +1266,15 @@ namespace EmpireAtWar.Services.Enemy
             context.Receivers[ship].TryGetFacade(out IHangarAirWingFacade airWing) &&
             (airWing.CanLaunch || airWing.LaunchedCount > 0);
 
-        private List<Vector3> BattleOffsets(IReadOnlyList<IShipEntity> ships,
-            int count, GameEntity target) => BattleOffsets(ships, count, target, out _);
+        private List<Vector3> BattleOffsets(BattleSlots slots, IReadOnlyList<IShipEntity> ships,
+            int count, GameEntity target) => BattleOffsets(slots, ships, count, target, out _);
 
-        private List<Vector3> BattleOffsets(IReadOnlyList<IShipEntity> ships,
+        private List<Vector3> BattleOffsets(BattleSlots slots, IReadOnlyList<IShipEntity> ships,
             int count, GameEntity target, out bool rebuilt)
         {
-            bool rebuild = _battleTarget != target;
-            if (rebuild) _battleOffsets.Clear();
+            Dictionary<IShipEntity, FormationPoint> battleOffsets = slots.Offsets;
+            bool rebuild = slots.Target != target;
+            if (rebuild) battleOffsets.Clear();
             // A new target re-slots everyone; ships joining the same target only get slots of their own, so
             // ships already engaged keep their orders.
             _positions.Clear();
@@ -1211,7 +1282,7 @@ namespace EmpireAtWar.Services.Enemy
             _newSlotShips.Clear();
             for (int i = 0; i < count; i++)
             {
-                if (_battleOffsets.ContainsKey(ships[i])) continue;
+                if (battleOffsets.ContainsKey(ships[i])) continue;
                 _newSlotShips.Add(ships[i]);
                 _positions.Add(ToPoint(ships[i].WorldPosition));
                 _radii.Add(ships[i].NavigationRadius);
@@ -1223,17 +1294,31 @@ namespace EmpireAtWar.Services.Enemy
                     target.TryGetFacade(out INavigationFootprintFacade footprint)
                         ? footprint.NavigationRadius : 0f);
                 for (int i = 0; i < _newSlotShips.Count; i++)
-                    _battleOffsets.Add(_newSlotShips[i], _destinations[i]);
+                    battleOffsets.Add(_newSlotShips[i], _destinations[i]);
             }
             rebuilt = rebuild;
-            _battleTarget = target;
+            slots.Target = target;
             List<Vector3> offsets = new List<Vector3>(count);
             for (int i = 0; i < count; i++)
             {
-                FormationPoint offset = _battleOffsets[ships[i]];
+                FormationPoint offset = battleOffsets[ships[i]];
                 offsets.Add(ToVector(offset));
             }
             return offsets;
+        }
+
+        /// <summary>Battle-formation slots of the ships striking one target; a new target re-slots everyone.</summary>
+        private sealed class BattleSlots
+        {
+            public GameEntity Target { get; set; }
+            public Dictionary<IShipEntity, FormationPoint> Offsets { get; } =
+                new Dictionary<IShipEntity, FormationPoint>();
+
+            public void Clear()
+            {
+                Target = null;
+                Offsets.Clear();
+            }
         }
 
         // Kept across decisions so anchored guard/attack orders are not re-issued by a one-ship fluctuation.

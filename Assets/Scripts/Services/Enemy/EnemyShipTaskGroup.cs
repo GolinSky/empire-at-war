@@ -1,5 +1,6 @@
 using System.Collections.Generic;
 using EmpireAtWar.Entities.EnemyFaction.Models;
+using EmpireAtWar.Entities.EnemyFaction.Models.Combat;
 using EmpireAtWar.Ship;
 using EmpireAtWar.Services.TacticalMarkers;
 using UnityEngine;
@@ -28,6 +29,8 @@ namespace EmpireAtWar.Services.Enemy
         public EnemyStrategicContextBuilder ContextBuilder { get; }
         public EnemyStrategicDecisionModel DecisionModel { get; }
         public EnemyTaskForceExecutor Executor { get; }
+        /// <summary>Hit-and-run cycle of the group's strike ships against a hostile big ship.</summary>
+        public EnemyStrikeCycleAssessor StrikeCycle { get; }
         public bool IsCaptureDetachment { get; }
         public bool IsMainForce { get; set; }
         public EnemyStrategicContext Context { get; private set; }
@@ -50,8 +53,9 @@ namespace EmpireAtWar.Services.Enemy
 
         public EnemyShipTaskGroup(EnemyStrategicContextBuilder contextBuilder,
             EnemyStrategicDecisionModel decisionModel, EnemyTaskForceExecutor executor,
-            bool isCaptureDetachment = false, bool unbuiltMinesOnly = false)
+            EnemyStrikeCycleAssessor strikeCycle, bool isCaptureDetachment = false, bool unbuiltMinesOnly = false)
         {
+            StrikeCycle = strikeCycle;
             ContextBuilder = contextBuilder;
             DecisionModel = decisionModel;
             Executor = executor;
@@ -63,8 +67,10 @@ namespace EmpireAtWar.Services.Enemy
         {
             ContextBuilder.CommittedBody = Executor.Body;
             ContextBuilder.AssaultUnderWay = _hasDecision && Decision.State == EnemyStrategicState.AssaultBase;
+            ContextBuilder.StrikeCycleShips = StrikeCycle.Strikers;
             Context = ContextBuilder.Build(Ships, reservedObjectives, preferStrategicObjectives: IsMainForce,
                 unbuiltMinesOnly: _unbuiltMinesOnly);
+            UpdateStrikeCycle(now);
             if (Context.Snapshot.HasCaptureTarget)
                 NoViableCaptureSince = -1f;
             else if (NoViableCaptureSince < 0f) NoViableCaptureSince = now;
@@ -119,6 +125,13 @@ namespace EmpireAtWar.Services.Enemy
             HasMarkerRequest = request != null;
             Context.StateHeldSeconds = DecisionModel.StateHeldSeconds;
             string group = _groupId.ToString();
+            // An allied request, a rally, a turtle or any state that is no fight ends the cycle (G10, G13).
+            if (StrikeCycle.IsActive && (request != null || !IsStrikeState(next.State)))
+            {
+                StrikeCycle.Stop("state", now);
+                RecordStrikeCycle();
+            }
+            StrikeCycle.Apply(Context);
             if (!_hasDecision || Decision.State != next.State)
                 ContextBuilder.RecordStabilityEvent("stateSwitch", System.FormattableString.Invariant(
                     $"group={group}; from={(_hasDecision ? Decision.State.ToString() : "none")}; to={next.State}; localRaw={Context.Snapshot.LocalRaw:F3}; localSmoothed={Context.Snapshot.LocalAdvantage:F3}; heldSeconds={DecisionModel.StateHeldSeconds:F1}; bypass={DecisionModel.Bypass}; bestScore={DecisionModel.BestScore:F3}; runnerUp={DecisionModel.RunnerUpScore:F3}"));
@@ -145,6 +158,32 @@ namespace EmpireAtWar.Services.Enemy
             if (executedObjective != null) reservedObjectives.Add(executedObjective.Id);
         }
 
+        /// <summary>
+        /// Rates the hit-and-run cycle before the decision: a running cycle keeps the group from disengaging. The
+        /// group is in a fight when its last state was one, or when hostiles near it outmatch it (the decision then
+        /// fights in place or disengages).
+        /// </summary>
+        private void UpdateStrikeCycle(float now)
+        {
+            EnemyStrategicSnapshot snapshot = Context.Snapshot;
+            bool outmatched = snapshot.OwnShipCount > 0 && snapshot.HasLocalThreat && snapshot.LocalAdvantage <=
+                EnemyAiDifficultyProfile.Get(snapshot.Difficulty).RetreatAdvantage;
+            bool inFight = !LastStand && !HasMarkerRequest &&
+                (_hasDecision && IsStrikeState(Decision.State) || outmatched);
+            StrikeCycle.Update(Context, inFight, now);
+            if (StrikeCycle.PhaseChanged) RecordStrikeCycle();
+            Context.Snapshot = snapshot.WithStrikePhase(StrikeCycle.Phase);
+        }
+
+        private void RecordStrikeCycle() =>
+            ContextBuilder.RecordStabilityEvent("strikeCycle", System.FormattableString.Invariant(
+                $"group={_groupId};phase={StrikeCycle.Phase};strikers={StrikeCycle.Strikers.Count};target={(StrikeCycle.Target == null ? 0 : StrikeCycle.Target.Id)};reason={StrikeCycle.Reason}"));
+
+        /// <summary>States in which a group fights a hostile big ship: station defense, a local fight, a hunt or an assault.</summary>
+        public static bool IsStrikeState(EnemyStrategicState state) =>
+            state is EnemyStrategicState.DefendBase or EnemyStrategicState.EngageLocal or
+                EnemyStrategicState.HuntFleet or EnemyStrategicState.AssaultBase;
+
         /// <summary>W48: under a last stand the fleet only defends the station, guards its gather point or fights locally.</summary>
         public static bool IsLastStandState(EnemyStrategicState state) =>
             state is EnemyStrategicState.DefendBase or EnemyStrategicState.GuardSite or
@@ -152,12 +191,14 @@ namespace EmpireAtWar.Services.Enemy
 
         /// <summary>
         /// D3: a group ship fights on its way; the group keeps going and asks for one reinforcement drop beside it, at
-        /// most once per <see cref="DROP_REQUEST_INTERVAL"/>. False before the first decision.
+        /// most once per <see cref="DROP_REQUEST_INTERVAL"/>. A strike ship lost in a hit-and-run cycle asks for one at
+        /// the safe point of the cycle the same way. False before the first decision.
         /// </summary>
         public bool TryRequestReinforcementDrop(float now, out Vector3 point)
         {
             point = default;
-            if (Context == null || now < _nextDropRequestAt || !Executor.TryFindEngagedEnRoute(Context, out point))
+            if (Context == null || now < _nextDropRequestAt ||
+                !StrikeCycle.TryTakeLostStriker(out point) && !Executor.TryFindEngagedEnRoute(Context, out point))
                 return false;
             _nextDropRequestAt = now + DROP_REQUEST_INTERVAL;
             return true;

@@ -261,6 +261,47 @@ namespace EmpireAtWar.Tests.Editor
                 now: EnemyStrategicDecisionModel.MIN_STATE_SECONDS).State, Is.EqualTo(EnemyStrategicState.EngageLocal));
         }
 
+        // Hit-and-run: the strike ships already pull back and return, so the group keeps its fight.
+        [TestCase(EnemyStrikePhase.Strike)]
+        [TestCase(EnemyStrikePhase.PullBack)]
+        [TestCase(EnemyStrikePhase.Recover)]
+        public void OutmatchedWithARunningStrikeCycle_FightsInPlaceInsteadOfDisengaging(EnemyStrikePhase phase)
+        {
+            EnemyStrategicDecision decision = new EnemyStrategicDecisionModel().Evaluate(
+                DisengageSnapshot(localAdvantage: 0.3f, canDisengage: true).WithStrikePhase(phase), now: 0f);
+
+            Assert.That(decision.State, Is.EqualTo(EnemyStrategicState.EngageLocal));
+        }
+
+        [Test]
+        public void StrikeCycleThatEnded_LetsTheOutmatchedGroupDisengageAgain()
+        {
+            var model = new EnemyStrategicDecisionModel();
+            model.Evaluate(DisengageSnapshot(localAdvantage: 0.3f, canDisengage: true)
+                .WithStrikePhase(EnemyStrikePhase.PullBack), now: 0f);
+
+            EnemyStrategicDecision decision = model.Evaluate(
+                DisengageSnapshot(localAdvantage: 0.3f, canDisengage: true).WithStrikePhase(EnemyStrikePhase.Idle),
+                now: 1f);
+
+            Assert.That(decision.State, Is.EqualTo(EnemyStrategicState.RetreatValue));
+        }
+
+        [TestCase(EnemyStrikePhase.Strike)]
+        [TestCase(EnemyStrikePhase.PullBack)]
+        [TestCase(EnemyStrikePhase.Recover)]
+        public void StrikePhase_DoesNotChangeTheStateOfAGroupThatIsNotOutmatched(EnemyStrikePhase phase)
+        {
+            EnemyStrategicSnapshot snapshot = DisengageSnapshot(localAdvantage: 1.5f, canDisengage: true);
+
+            EnemyStrategicDecision idle = new EnemyStrategicDecisionModel().Evaluate(snapshot, now: 0f);
+            EnemyStrategicDecision cycling = new EnemyStrategicDecisionModel().Evaluate(
+                snapshot.WithStrikePhase(phase), now: 0f);
+
+            Assert.That(cycling.State, Is.EqualTo(idle.State));
+            Assert.That(cycling.CommittedShipCount, Is.EqualTo(idle.CommittedShipCount));
+        }
+
         private static EnemyStrategicSnapshot DisengageSnapshot(float localAdvantage, bool canDisengage) =>
             new EnemyStrategicSnapshot(BattleVictoryCondition.DestroyOpponentBase, EnemyAiDifficulty.UltraHard,
                 ownShipCount: 5, enemyShipCount: 12, ownedCapturableZoneCount: 0, fleetAdvantage: 0.4f,

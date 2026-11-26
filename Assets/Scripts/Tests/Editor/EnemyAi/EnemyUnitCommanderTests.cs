@@ -13,6 +13,7 @@ using EmpireAtWar.Entities.MiningFacility;
 using EmpireAtWar.Entities.UnitActions;
 using EmpireAtWar.Models.Health;
 using EmpireAtWar.Services.Enemy;
+using EmpireAtWar.Services.Player;
 using EmpireAtWar.Services.Hazards;
 using EmpireAtWar.Services.ReinforcementZones;
 using EmpireAtWar.Services.Saves;
@@ -78,7 +79,8 @@ namespace EmpireAtWar.Tests.Editor
                     new SiteSource(), new TestHazards());
                 var commander = new EnemyUnitCommander(new ShipService(), zones, locator,
                     null, orders, new EnemyStrategicDecisionModel(), context, new EnemyTaskForceExecutor(orders, UnlimitedFocusFireSlots.Instance),
-                    owner, patrol, null, battleState, scheduler, UnlimitedFocusFireSlots.Instance);
+                    owner, patrol, null, battleState, scheduler, UnlimitedFocusFireSlots.Instance,
+                    new TestHitAndRunSettings(TestHitAndRunSettings.OFF));
 
                 scheduler.Initialize();
                 Assert.DoesNotThrow(commander.Initialize);
@@ -177,7 +179,8 @@ namespace EmpireAtWar.Tests.Editor
                 EnemyUnitCommander commander = new EnemyUnitCommander(null, null, locator, null, orders,
                     new EnemyStrategicDecisionModel(), builder, new EnemyTaskForceExecutor(orders, UnlimitedFocusFireSlots.Instance),
                     roster.Get(TestPlayers.Enemy), null, null, null,
-                    new EnemyAiScheduler(new ReplayNotifier<BattleState>(BattleState.Running)), UnlimitedFocusFireSlots.Instance);
+                    new EnemyAiScheduler(new ReplayNotifier<BattleState>(BattleState.Running)), UnlimitedFocusFireSlots.Instance,
+                    new TestHitAndRunSettings(TestHitAndRunSettings.OFF));
                 BindingFlags flags = BindingFlags.Instance | BindingFlags.NonPublic;
                 var planner = (EnemyShipTaskGroupPlanner)typeof(EnemyUnitCommander)
                     .GetField("_taskGroups", flags).GetValue(commander);
@@ -2772,7 +2775,8 @@ namespace EmpireAtWar.Tests.Editor
             Assert.That(orders.Calls.SelectMany(call => call.Receivers).Select(receiver => receiver.Id),
                 Is.EqualTo(new[] { free.EntityId }), "The group keeps going; the fighting ship keeps its fight.");
 
-            var group = new EnemyShipTaskGroup(null, new EnemyStrategicDecisionModel(), executor);
+            var group = new EnemyShipTaskGroup(null, new EnemyStrategicDecisionModel(), executor,
+                new EnemyStrikeCycleAssessor(null, UnlimitedFocusFireSlots.Instance, TestHitAndRunSettings.OFF));
             typeof(EnemyShipTaskGroup).GetField("<Context>k__BackingField", BindingFlags.Instance | BindingFlags.NonPublic)
                 .SetValue(group, context);
             Assert.That(group.TryRequestReinforcementDrop(0f, out Vector3 drop), Is.True);
@@ -2789,6 +2793,204 @@ namespace EmpireAtWar.Tests.Editor
             executor.Execute(new EnemyStrategicDecision("test", EnemyStrategicState.GuardSite, 2), context);
             Assert.That(orders.Calls.Single().Receivers.Single().Id, Is.EqualTo(engaged.EntityId),
                 "Once its fight ends the ship rejoins its group's order.");
+        }
+
+        // Hit-and-run: the strike ships attack the cycle's target; the other ships keep the state's orders.
+        [Test]
+        public void StrikeCycle_Strike_StrikersAttackTheTargetAndTheRestKeepTheStateOrders()
+        {
+            using var scene = new StrikeScene();
+            var executor = new EnemyTaskForceExecutor(scene.Orders, UnlimitedFocusFireSlots.Instance);
+
+            executor.Execute(scene.Decision(EnemyStrategicState.EngageLocal),
+                scene.Context(EnemyStrategicState.EngageLocal, EnemyStrikePhase.Strike));
+
+            OrderCall strike = scene.Orders.Calls.Single(call => call.Action == UnitActionId.Attack &&
+                call.Target == scene.Capital);
+            Assert.That(strike.Receivers.Select(entity => entity.Id), Is.EquivalentTo(scene.StrikerIds));
+            OrderCall state = scene.Orders.Calls.Single(call => call.Action == UnitActionId.Attack &&
+                call.Target == scene.Escort);
+            Assert.That(state.Receivers.Select(entity => entity.Id), Is.EqualTo(new[] { scene.Rest.EntityId }));
+        }
+
+        [Test]
+        public void StrikeCycle_PullBack_RetreatsTheStrikersOnceToTheSafePoint()
+        {
+            using var scene = new StrikeScene();
+            var executor = new EnemyTaskForceExecutor(scene.Orders, UnlimitedFocusFireSlots.Instance);
+            executor.Execute(scene.Decision(EnemyStrategicState.EngageLocal),
+                scene.Context(EnemyStrategicState.EngageLocal, EnemyStrikePhase.Strike));
+            scene.Orders.Calls.Clear();
+
+            executor.Execute(scene.Decision(EnemyStrategicState.EngageLocal),
+                scene.Context(EnemyStrategicState.EngageLocal, EnemyStrikePhase.PullBack));
+
+            OrderCall retreat = scene.Orders.Calls.Single(call => call.Action == UnitActionId.Retreat);
+            Assert.That(retreat.Receivers.Select(entity => entity.Id), Is.EquivalentTo(scene.StrikerIds));
+            Assert.That(retreat.Point, Is.EqualTo(scene.SafePoint));
+
+            foreach (FakeShip striker in scene.Strikers) striker.CurrentOrder = UnitOrderType.Retreat;
+            scene.Orders.Calls.Clear();
+            executor.Execute(scene.Decision(EnemyStrategicState.EngageLocal),
+                scene.Context(EnemyStrategicState.EngageLocal, EnemyStrikePhase.PullBack));
+            Assert.That(scene.Orders.Calls.Any(call => call.Action == UnitActionId.Retreat), Is.False,
+                "The retreat order is not sent again every decision.");
+        }
+
+        [Test]
+        public void StrikeCycle_Recover_LeavesTheStrikersWaitingAtTheSafePoint()
+        {
+            using var scene = new StrikeScene();
+            var executor = new EnemyTaskForceExecutor(scene.Orders, UnlimitedFocusFireSlots.Instance);
+            executor.Execute(scene.Decision(EnemyStrategicState.EngageLocal),
+                scene.Context(EnemyStrategicState.EngageLocal, EnemyStrikePhase.PullBack));
+            scene.Orders.Calls.Clear();
+
+            executor.Execute(scene.Decision(EnemyStrategicState.EngageLocal),
+                scene.Context(EnemyStrategicState.EngageLocal, EnemyStrikePhase.Recover));
+
+            Assert.That(scene.OrderedStrikerIds(), Is.Empty);
+        }
+
+        // G3: no state path orders a strike ship while the cycle runs.
+        [TestCase(EnemyStrategicState.EngageLocal)]
+        [TestCase(EnemyStrategicState.HuntFleet)]
+        [TestCase(EnemyStrategicState.DefendBase)]
+        public void StrikeCycle_NoStatePathOrdersAStriker(EnemyStrategicState state)
+        {
+            using var scene = new StrikeScene();
+            var executor = new EnemyTaskForceExecutor(scene.Orders, UnlimitedFocusFireSlots.Instance);
+
+            executor.Execute(scene.Decision(state), scene.Context(state, EnemyStrikePhase.Recover));
+
+            Assert.That(scene.OrderedStrikerIds(), Is.Empty);
+            Assert.That(scene.Orders.Calls.SelectMany(call => call.Receivers).Select(entity => entity.Id),
+                Does.Contain(scene.Rest.EntityId), "The ship outside the strike group keeps the state's orders.");
+        }
+
+        [Test]
+        public void StrikeCycle_AfterAPullBack_TheNextStrikeAttacksAgain()
+        {
+            using var scene = new StrikeScene();
+            var executor = new EnemyTaskForceExecutor(scene.Orders, UnlimitedFocusFireSlots.Instance);
+            executor.Execute(scene.Decision(EnemyStrategicState.EngageLocal),
+                scene.Context(EnemyStrategicState.EngageLocal, EnemyStrikePhase.Strike));
+            executor.Execute(scene.Decision(EnemyStrategicState.EngageLocal),
+                scene.Context(EnemyStrategicState.EngageLocal, EnemyStrikePhase.PullBack));
+            scene.Orders.Calls.Clear();
+
+            executor.Execute(scene.Decision(EnemyStrategicState.EngageLocal),
+                scene.Context(EnemyStrategicState.EngageLocal, EnemyStrikePhase.Strike));
+
+            OrderCall strike = scene.Orders.Calls.Single(call => call.Action == UnitActionId.Attack &&
+                call.Target == scene.Capital);
+            Assert.That(strike.Receivers.Select(entity => entity.Id), Is.EquivalentTo(scene.StrikerIds));
+        }
+
+        [Test]
+        public void StrikeCycle_Ended_FormerStrikersGetTheStateOrdersAgain()
+        {
+            using var scene = new StrikeScene();
+            var executor = new EnemyTaskForceExecutor(scene.Orders, UnlimitedFocusFireSlots.Instance);
+            executor.Execute(scene.Decision(EnemyStrategicState.EngageLocal),
+                scene.Context(EnemyStrategicState.EngageLocal, EnemyStrikePhase.PullBack));
+            scene.Orders.Calls.Clear();
+
+            executor.Execute(scene.Decision(EnemyStrategicState.EngageLocal),
+                scene.Context(EnemyStrategicState.EngageLocal, EnemyStrikePhase.Idle));
+
+            Assert.That(scene.Orders.Calls.Any(call => call.Action == UnitActionId.Retreat), Is.False);
+            Assert.That(scene.Orders.Calls.Where(call => call.Action == UnitActionId.Attack && call.Target == scene.Escort)
+                    .SelectMany(call => call.Receivers).Select(entity => entity.Id),
+                Is.SupersetOf(scene.StrikerIds));
+        }
+
+        [Test]
+        public void StrikeCycle_Assessor_StartsAndHandsTheStrikersToTheCycle()
+        {
+            using var scene = new StrikeScene();
+            var assessor = new EnemyStrikeCycleAssessor(scene.Situation, UnlimitedFocusFireSlots.Instance,
+                StrikeScene.TUNING);
+            EnemyStrategicContext context = scene.Context(EnemyStrategicState.EngageLocal, EnemyStrikePhase.Idle);
+
+            assessor.Update(context, isInFight: true, now: 0f);
+            assessor.Apply(context);
+
+            Assert.That(assessor.Phase, Is.EqualTo(EnemyStrikePhase.Strike));
+            Assert.That(assessor.Target, Is.EqualTo(scene.Capital));
+            Assert.That(assessor.SafePoint, Is.EqualTo(scene.SafePoint));
+            Assert.That(context.Strikers.Count, Is.GreaterThanOrEqualTo(EnemyStrikeGroupRules.MINIMUM_STRIKERS));
+            Assert.That(context.Ships.Intersect(context.Strikers), Is.Empty);
+            Assert.That(context.Ships.Count + context.Strikers.Count, Is.EqualTo(context.Receivers.Count),
+                "Every group ship is either a striker or under the state's orders.");
+        }
+
+        [Test]
+        public void StrikeCycle_Assessor_NotInAFight_StaysIdleAndKeepsEveryShipUnderTheState()
+        {
+            using var scene = new StrikeScene();
+            var assessor = new EnemyStrikeCycleAssessor(scene.Situation, UnlimitedFocusFireSlots.Instance,
+                StrikeScene.TUNING);
+            EnemyStrategicContext context = scene.Context(EnemyStrategicState.EngageLocal, EnemyStrikePhase.Idle);
+
+            assessor.Update(context, isInFight: false, now: 0f);
+            assessor.Apply(context);
+
+            Assert.That(assessor.Phase, Is.EqualTo(EnemyStrikePhase.Idle));
+            Assert.That(context.Strikers, Is.Empty);
+            Assert.That(context.Ships.Count, Is.EqualTo(context.Receivers.Count));
+        }
+
+        // Strike membership and the safe point are frozen from the pull-back until the next strike.
+        [Test]
+        public void StrikeCycle_Assessor_PullBackFreezesTheStrikeGroupAndTheSafePoint()
+        {
+            using var scene = new StrikeScene();
+            var assessor = new EnemyStrikeCycleAssessor(scene.Situation, UnlimitedFocusFireSlots.Instance,
+                StrikeScene.TUNING);
+            assessor.Update(scene.Context(EnemyStrategicState.EngageLocal, EnemyStrikePhase.Idle), true, 0f);
+            IShipEntity[] strikers = assessor.Strikers.ToArray();
+
+            scene.ShieldFraction = 0f;
+            assessor.Update(scene.Context(EnemyStrategicState.EngageLocal, EnemyStrikePhase.Idle), true,
+                StrikeScene.TUNING.MinPhaseSeconds);
+            Assert.That(assessor.Phase, Is.EqualTo(EnemyStrikePhase.PullBack));
+
+            // A new ship that out-damages every striker would join a strike group that is still being picked.
+            scene.Situation.Point = scene.SafePoint + Vector3.right * 5000f;
+            var joined = new FakeShip(Vector3.zero, 99);
+            assessor.Update(scene.Context(EnemyStrategicState.EngageLocal, EnemyStrikePhase.Idle, joined), true,
+                StrikeScene.TUNING.MinPhaseSeconds + 1f);
+
+            Assert.That(assessor.Strikers, Is.EqualTo(strikers));
+            Assert.That(assessor.SafePoint, Is.EqualTo(scene.SafePoint));
+        }
+
+        // G8: a strike ship lost in the cycle asks for one reinforcement at the safe point.
+        [Test]
+        public void StrikeCycle_LostStriker_AsksForAReinforcementDropAtTheSafePoint()
+        {
+            using var scene = new StrikeScene();
+            var assessor = new EnemyStrikeCycleAssessor(scene.Situation, UnlimitedFocusFireSlots.Instance,
+                StrikeScene.TUNING);
+            EnemyStrategicContext first = scene.Context(EnemyStrategicState.EngageLocal, EnemyStrikePhase.Idle);
+            assessor.Update(first, true, 0f);
+            Assert.That(assessor.TryTakeLostStriker(out _), Is.False, "No striker lost yet.");
+            var lost = (FakeShip)assessor.Strikers[0];
+            ((FakeHealthModel)first.Receivers[lost].HealthModel).IsDestroyed = true;
+
+            EnemyStrategicContext second = scene.Context(EnemyStrategicState.EngageLocal, EnemyStrikePhase.Idle,
+                without: lost);
+            assessor.Update(second, true, 1f);
+
+            var group = new EnemyShipTaskGroup(null, new EnemyStrategicDecisionModel(),
+                new EnemyTaskForceExecutor(scene.Orders, UnlimitedFocusFireSlots.Instance), assessor);
+            typeof(EnemyShipTaskGroup).GetField("<Context>k__BackingField", BindingFlags.Instance | BindingFlags.NonPublic)
+                .SetValue(group, second);
+            Assert.That(group.TryRequestReinforcementDrop(0f, out Vector3 drop), Is.True);
+            Assert.That(drop, Is.EqualTo(scene.SafePoint));
+            Assert.That(group.TryRequestReinforcementDrop(EnemyShipTaskGroup.DROP_REQUEST_INTERVAL, out _), Is.False,
+                "One drop per lost striker.");
         }
 
         // W47: a garrison kept on an owned zone with no site left guards the zone centre: attack-move there, never
@@ -3752,7 +3954,7 @@ namespace EmpireAtWar.Tests.Editor
             var orders = new FakeOrderService();
             var planner = new EnemyShipTaskGroupPlanner(builder, new EnemyStrategicDecisionModel(),
                 new EnemyTaskForceExecutor(orders, UnlimitedFocusFireSlots.Instance), orders,
-                UnlimitedFocusFireSlots.Instance);
+                UnlimitedFocusFireSlots.Instance, TestHitAndRunSettings.OFF);
             return (planner, builder, orders, weak, strong, second);
         }
 
@@ -3765,7 +3967,7 @@ namespace EmpireAtWar.Tests.Editor
             FakeOrderService orders = new FakeOrderService();
             EnemyShipTaskGroupPlanner planner = new EnemyShipTaskGroupPlanner(builder,
                 new EnemyStrategicDecisionModel(), new EnemyTaskForceExecutor(orders, UnlimitedFocusFireSlots.Instance), orders,
-                UnlimitedFocusFireSlots.Instance);
+                UnlimitedFocusFireSlots.Instance, TestHitAndRunSettings.OFF);
             IShipEntity[] ships =
             {
                 new FakeShip(Vector3.zero, 1) { CurrentOrder = UnitOrderType.Attack },
@@ -3790,7 +3992,7 @@ namespace EmpireAtWar.Tests.Editor
             FakeOrderService orders = new FakeOrderService();
             var planner = new EnemyShipTaskGroupPlanner(builder,
                 new EnemyStrategicDecisionModel(), new EnemyTaskForceExecutor(orders, UnlimitedFocusFireSlots.Instance), orders,
-                UnlimitedFocusFireSlots.Instance);
+                UnlimitedFocusFireSlots.Instance, TestHitAndRunSettings.OFF);
             EnemyShipTaskGroup reserve = planner.Groups.Single();
             IShipEntity[] ships = {
                 new FakeShip(Vector3.zero, 1),
@@ -3821,7 +4023,7 @@ namespace EmpireAtWar.Tests.Editor
             FakeOrderService orders = new FakeOrderService();
             var planner = new EnemyShipTaskGroupPlanner(builder,
                 new EnemyStrategicDecisionModel(), new EnemyTaskForceExecutor(orders, UnlimitedFocusFireSlots.Instance), orders,
-                UnlimitedFocusFireSlots.Instance);
+                UnlimitedFocusFireSlots.Instance, TestHitAndRunSettings.OFF);
             var ships = Enumerable.Range(1, 6).Select(id => (IShipEntity)new FakeShip(
                 Vector3.right * id * 2000f, id) { CurrentOrder = UnitOrderType.Attack }).ToList();
 
@@ -4185,7 +4387,8 @@ namespace EmpireAtWar.Tests.Editor
             zones ??= new ZoneSource(roster);
             return new EnemyStrategicContextBuilder(ships, reinforcementZones, captureSources, entities, game, roster,
                 new ForceCompositionBuilder(entities, catalog, snapshot), intel, vision, owner, production, hazards, zones,
-                navigation, pressure, recovery, snapshot, new TeamAiPictureRegistry(intel, roster, zones, catalog, snapshot), new EnemyFactionModel(null, null));
+                navigation, pressure, recovery, snapshot, new TeamAiPictureRegistry(intel, roster, zones, catalog, snapshot), new EnemyFactionModel(null, null),
+                new PlayerRegistry());
         }
 
         // Profiles the default FakeEntity ship type so Build() does not load ship assets.
@@ -4287,6 +4490,135 @@ namespace EmpireAtWar.Tests.Editor
                 localThreatTarget: localThreatTarget, stationPressure: stationPressure,
                 isDefensePointClear: isPointClear ?? ((point, radius) => true),
                 captureBlockingFacility: captureBlockingFacility, guardPosition: guardPosition);
+        }
+
+        /// <summary>
+        /// Two strike ships and one other ship fight a hostile capital with an escort beside their own station. The
+        /// capital is the hit-and-run target; the escort is the state's target.
+        /// </summary>
+        private sealed class StrikeScene : IDisposable
+        {
+            /// <summary>Every fight below advantage 100 counts as a bad straight fight; no reaction delay.</summary>
+            public static readonly EnemyHitAndRunTuning TUNING =
+                TestHitAndRunSettings.Create(straightFightAdvantage: 100f, minPhaseSeconds: 5f);
+
+            private readonly GameObject _capitalView = new GameObject("Capital");
+            private readonly GameObject _escortView = new GameObject("Escort");
+            private readonly GameObject _stationView = new GameObject("Station");
+
+            public FakeOrderService Orders { get; } = new FakeOrderService();
+            public FakeShip[] Strikers { get; } = { new FakeShip(Vector3.zero, 1), new FakeShip(Vector3.right * 20f, 2) };
+            public FakeShip Rest { get; } = new FakeShip(Vector3.right * 40f, 3);
+            public FakeEntity Capital { get; }
+            public FakeEntity Escort { get; }
+            public FakeEntity Station { get; }
+            public Vector3 SafePoint { get; } = new Vector3(-900f, 0f, 0f);
+            public FakeStrikeSituation Situation { get; }
+            /// <summary>Shield share every group ship reports in the next context.</summary>
+            public float ShieldFraction { get; set; } = 1f;
+            public long[] StrikerIds => Strikers.Select(ship => ship.EntityId).ToArray();
+
+            public StrikeScene()
+            {
+                _capitalView.transform.position = new Vector3(400f, 0f, 0f);
+                _escortView.transform.position = new Vector3(450f, 0f, 100f);
+                _stationView.transform.position = new Vector3(-600f, 0f, 0f);
+                Capital = new FakeEntity(new FakeHealthModel(_capitalView.transform) { Hull = 1000f, Shields = 0f },
+                    TestPlayers.Human, 10) { WeaponRange = 500f };
+                Escort = new FakeEntity(new FakeHealthModel(_escortView.transform) { Hull = 100f, Shields = 0f },
+                    TestPlayers.Human, 11);
+                Station = new FakeEntity(new FakeHealthModel(_stationView.transform), TestPlayers.Enemy, 12);
+                Situation = new FakeStrikeSituation(Capital, SafePoint);
+            }
+
+            public EnemyStrategicDecision Decision(EnemyStrategicState state) =>
+                new EnemyStrategicDecision("test", state, Strikers.Length + 1);
+
+            /// <summary>The context of <paramref name="state"/>; any phase but Idle hands the strike ships to the cycle.</summary>
+            public EnemyStrategicContext Context(EnemyStrategicState state, EnemyStrikePhase phase,
+                FakeShip joined = null, FakeShip without = null)
+            {
+                var ships = new List<IShipEntity>();
+                foreach (FakeShip striker in Strikers)
+                    if (striker != without) ships.Add(striker);
+                ships.Add(Rest);
+                if (joined != null) ships.Add(joined);
+                var targetForces = new Dictionary<IEntity, ForceComposition>
+                {
+                    [Capital] = CombatForce(1000f, 5f),
+                    [Escort] = new ForceComposition()
+                };
+                bool defends = state == EnemyStrategicState.DefendBase;
+                var shipForces = new Dictionary<IShipEntity, ForceComposition>();
+                foreach (IShipEntity ship in ships)
+                    shipForces.Add(ship, ship == joined ? CombatForce(1000000f, 1000f) : CombatForce(100f, 10f));
+                EnemyStrategicContext context = EnemyUnitCommanderTests.Context(ships, shipForces: shipForces,
+                    fleetTarget: state == EnemyStrategicState.HuntFleet ? Escort : null,
+                    ownBase: defends ? Station : null, defenseTarget: defends ? Escort : null,
+                    localThreatTarget: state == EnemyStrategicState.EngageLocal ? Escort : null,
+                    targetForces: targetForces, guardPosition: new Vector3(-2000f, 0f, 0f));
+                foreach (FakeEntity receiver in context.Receivers.Values)
+                {
+                    receiver.WeaponRange = 500f;
+                    ((FakeHealthModel)receiver.HealthModel).ShieldPercentage = ShieldFraction;
+                }
+                if (phase == EnemyStrikePhase.Idle) return context;
+                var rest = new List<IShipEntity>();
+                foreach (IShipEntity ship in ships)
+                    if (Array.IndexOf(Strikers, ship) < 0) rest.Add(ship);
+                context.SetStrikeCycle(phase, Capital, Strikers, SafePoint, rest);
+                return context;
+            }
+
+            /// <summary>Ids of strike ships that received any order.</summary>
+            public long[] OrderedStrikerIds() => Orders.Calls.SelectMany(call => call.Receivers)
+                .Select(entity => entity.Id).Where(id => StrikerIds.Contains(id)).Distinct().ToArray();
+
+            public void Dispose()
+            {
+                UnityEngine.Object.DestroyImmediate(_capitalView);
+                UnityEngine.Object.DestroyImmediate(_escortView);
+                UnityEngine.Object.DestroyImmediate(_stationView);
+            }
+        }
+
+        /// <summary>A battle in which one hostile capital is the strike target and one safe point is always valid.</summary>
+        private sealed class FakeStrikeSituation : IEnemyStrikeSituation
+        {
+            // Own ships: shields that regenerate and a cruise speed above the capital's.
+            private static readonly UnitCombatProfile OWN = new UnitCombatProfile(ShipClass.Capital, 100f, 100f,
+                new float[ForceComposition.ClassSlots], new float[ForceComposition.ClassSlots],
+                new float[ForceComposition.ClassSlots], Array.Empty<UnitCombatProfile>(), shieldRegen: 1f, speed: 40f);
+            private static readonly UnitCombatProfile HOSTILE = new UnitCombatProfile(ShipClass.Capital, 1000f, 0f,
+                new float[ForceComposition.ClassSlots], new float[ForceComposition.ClassSlots],
+                new float[ForceComposition.ClassSlots], Array.Empty<UnitCombatProfile>(), speed: 0.5f);
+
+            private readonly IEntity _target;
+
+            public Vector3 Point { get; set; }
+
+            public FakeStrikeSituation(IEntity target, Vector3 point)
+            {
+                _target = target;
+                Point = point;
+            }
+
+            public IEntity FindStrikeTarget(IEntity previous) => _target;
+            public UnitCombatProfile GetProfile(IEntity unit) => unit == _target ? HOSTILE : OWN;
+
+            public bool TryFindStrikeFallbackPoint(Vector3 origin, IEntity target, float shipRadius, out Vector3 point,
+                out EnemyStrikeFallbackKind kind)
+            {
+                point = Point;
+                kind = EnemyStrikeFallbackKind.HeldZone;
+                return true;
+            }
+
+            public float GetHostileRepairPerSecond(IEntity target) => 0f;
+            public bool IsUnderUnbeatableDefenses(IEntity target, ForceComposition group) => false;
+            public bool IsRepairCovered(Vector3 point) => false;
+            public bool CanTargetReach(IEntity target, Vector3 point) => false;
+            public bool HasFieldRepairs(PlayerId player) => false;
         }
 
         private sealed class ZoneSource : IReinforcementZoneSource
@@ -4671,9 +5003,9 @@ namespace EmpireAtWar.Tests.Editor
             public float Hull { get; set; } = 1f;
             public ShipClass ShipClass { get; set; } = ShipClass.Capital;
             public bool HasLiveHardPoints => true;
-            public float HullPercentage => 1f;
+            public float HullPercentage { get; set; } = 1f;
             public float Shields { get; set; } = 1f;
-            public float ShieldPercentage => 1f;
+            public float ShieldPercentage { get; set; } = 1f;
             public bool IsDestroyed { get; set; }
             public bool IsLostShieldGenerator => false;
             public bool HasUnits => true;

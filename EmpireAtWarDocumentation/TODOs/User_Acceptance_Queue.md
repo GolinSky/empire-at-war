@@ -5,6 +5,12 @@ created: "2026-10-29\r"
 ---
 # User Acceptance Queue
 
+## Enemy AI Hit And Run
+
+- [ ] [[Review/Features/Enemy_AI_Hit_And_Run]] — Skirmish: an AI group with 2+ anti-capital ships meets a stronger hostile capital → the strike ships attack, pull back together on low shields, recover and return; `strikeCycle` rows in `_ai.csv`. Other group ships keep fighting.
+- [ ] [[Review/Features/Enemy_AI_Hit_And_Run]] — Attack the AI's station with a capital: the strike ships recover behind the station and return; a lost striker brings a held ship to the safe point (`reinforcementDrop`).
+- [ ] [[Review/Features/Enemy_AI_Hit_And_Run]] — Tune `Assets/Settings/Data/AI/EnemyHitAndRunSettings.asset` per difficulty (Easy pulls back later and reacts slower).
+
 ## Enemy AI Rebuild And Reserve
 
 - [ ] [[Review/Bugs/Enemy_AI_Rebuild_And_Reserve]] — Skirmish: after an AI loses its stations and fleet, it rebuilds with cruisers/heavy cruisers instead of idling on credits (`counter-selection ... rebuild=True` in `_ai.csv`).

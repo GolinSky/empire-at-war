@@ -32,6 +32,7 @@ using EmpireAtWar.Services.TacticalMarkers;
 using EmpireAtWar.Components.Hangar;
 using EmpireAtWar.Entities.BaseEntity.Orders;
 using EmpireAtWar.Services.Saves;
+using EmpireAtWar.Services.Player;
 #if UNITY_EDITOR || DEVELOPMENT_BUILD
 using Unity.Profiling;
 #endif
@@ -40,9 +41,19 @@ namespace EmpireAtWar.Services.Enemy
 {
     public sealed class EnemyStrategicContext
     {
-        public EnemyStrategicSnapshot Snapshot { get; }
+        public EnemyStrategicSnapshot Snapshot { get; internal set; }
         public float StateHeldSeconds { get; internal set; }
-        public IReadOnlyList<IShipEntity> Ships { get; }
+        /// <summary>
+        /// The ships the state orders. While a hit-and-run cycle runs these are the group ships without
+        /// <see cref="Strikers"/>; <see cref="Receivers"/> and <see cref="ShipForces"/> keep every ship.
+        /// </summary>
+        public IReadOnlyList<IShipEntity> Ships { get; private set; }
+        public EnemyStrikePhase StrikePhase { get; private set; }
+        /// <summary>Ships the hit-and-run cycle orders instead of the state; empty while the cycle is idle.</summary>
+        public IReadOnlyList<IShipEntity> Strikers { get; private set; } = Array.Empty<IShipEntity>();
+        public GameEntity StrikeTarget { get; private set; }
+        /// <summary>Where the strike ships pull back to and recover.</summary>
+        public Vector3? StrikeFallbackPoint { get; private set; }
         public IReadOnlyList<IShipEntity> AssaultCapitals { get; }
         public Vector3 CaptureTarget { get; }
         public GameEntity EnemyFleetTarget { get; }
@@ -138,9 +149,20 @@ namespace EmpireAtWar.Services.Enemy
             HeldShips = heldShips;
             TeamHeldZones = teamHeldZones;
         }
+
+        /// <summary>Hands <paramref name="strikers"/> to the hit-and-run cycle; the state orders <paramref name="stateShips"/>.</summary>
+        public void SetStrikeCycle(EnemyStrikePhase phase, GameEntity target, IReadOnlyList<IShipEntity> strikers,
+            Vector3? fallbackPoint, IReadOnlyList<IShipEntity> stateShips)
+        {
+            StrikePhase = phase;
+            StrikeTarget = target;
+            Strikers = strikers;
+            StrikeFallbackPoint = fallbackPoint;
+            Ships = stateShips;
+        }
     }
 
-    public sealed class EnemyStrategicContextBuilder
+    public sealed class EnemyStrategicContextBuilder : IEnemyStrikeSituation
     {
         private readonly EnemyStationPressureTracker _stationPressure;
         private readonly EnemyRecoveryAnchor _recovery;
@@ -169,6 +191,19 @@ namespace EmpireAtWar.Services.Enemy
         /// them, so idle or straggling group ships do not pull the rating away from the fight (W32).
         /// </summary>
         public IReadOnlyList<IShipEntity> CommittedBody { get; set; }
+        /// <summary>
+        /// Ships the hit-and-run cycle of the group orders. Their retreat order is a pull-back of the strike group,
+        /// not a retreat of the group: it keeps no retreat point (W49).
+        /// </summary>
+        public IReadOnlyList<IShipEntity> StrikeCycleShips { get; set; }
+        /// <summary>Centre of the main fleet body, set for zone forces: a strike group may pull back to it.</summary>
+        public Vector3? MainBodyPoint { get; set; }
+        /// <summary>
+        /// Seconds the known hostiles in the local fight of the group need to destroy the own units there, from the
+        /// last build; infinite with no hostile near.
+        /// </summary>
+        public float LocalTimeToLossSeconds => _localThreatForce.IsEmpty
+            ? float.PositiveInfinity : CombatMatchup.TimeToDestroy(_localThreatForce, _localOwnForce);
         /// <summary>The group's last decision was <see cref="EnemyStrategicState.AssaultBase"/>.</summary>
         public bool AssaultUnderWay { get; set; }
         /// <summary><c>canAssault</c> parts of the last build, for the decision row (W43).</summary>
@@ -436,6 +471,18 @@ namespace EmpireAtWar.Services.Enemy
         private float _hostileIncomeCredits;
         // W49: the gathering point a retreating group is heading for, kept until it is reached.
         private Vector3? _retreatPoint;
+        private readonly IPlayerRegistry _playerRegistry;
+        // Hit-and-run queries read the last build: where its local fight was rated and which station it defends.
+        private Vector3 _localOrigin;
+        private GameEntity _builtOwnBase;
+        private readonly ForceComposition _strikeScratchForce = new ForceComposition();
+        private readonly List<EnemyStrikeFallbackCandidate> _fallbackCandidates = new List<EnemyStrikeFallbackCandidate>();
+        private readonly List<Vector3> _fallbackPoints = new List<Vector3>();
+        /// <summary>A known hostile ship this close to a safe point reaches it: the common ship weapon range.</summary>
+        private const float FALLBACK_HOSTILE_REACH = 500f;
+        /// <summary>Strike ships gather this share of the repair radius away from a repairer.</summary>
+        private const float REPAIRER_STANDOFF_FRACTION = 0.5f;
+        private static readonly float[] STATION_COVER_ANGLES = { 0f, 20f, -20f, 40f, -40f };
 
         public EnemyStrategicContextBuilder(
             IShipService shipService,
@@ -455,8 +502,9 @@ namespace EmpireAtWar.Services.Enemy
             EnemyStationPressureTracker stationPressure,
             EnemyRecoveryAnchor recovery,
             AiWorldSnapshot worldSnapshot,
-            TeamAiPictureRegistry teamPictures, EnemyFactionModel faction)
+            TeamAiPictureRegistry teamPictures, EnemyFactionModel faction, IPlayerRegistry playerRegistry)
         {
+            _playerRegistry = playerRegistry;
             _vision = vision;
             _hazards = hazards;
             _intel = intelRegistry.Get(owner.Team);
@@ -501,6 +549,7 @@ namespace EmpireAtWar.Services.Enemy
 
         private EnemyStrategicContextBuilder(EnemyStrategicContextBuilder source)
         {
+            _playerRegistry = source._playerRegistry;
             _shipService = source._shipService;
             _reinforcementZonesSystem = source._reinforcementZonesSystem;
             _captureSources = source._captureSources;
@@ -1499,6 +1548,8 @@ namespace EmpireAtWar.Services.Enemy
             {
 #endif
             localOrigin = BuildLocalForces(ownShips, origin, now);
+            _localOrigin = localOrigin;
+            _builtOwnBase = ownBase;
 #if UNITY_EDITOR || DEVELOPMENT_BUILD
             }
 #endif
@@ -3078,12 +3129,177 @@ namespace EmpireAtWar.Services.Enemy
         private bool IsHostileGone(long entityId) =>
             !_entityLocator.TryGetEntity(entityId, out GameEntity entity) || entity.HealthModel.IsDestroyed;
 
-        private static bool IsRetreating(IReadOnlyList<IShipEntity> ships)
+        // A strike ship pulling back in a hit-and-run cycle is not a retreat of the group.
+        private bool IsRetreating(IReadOnlyList<IShipEntity> ships)
         {
             for (int i = 0; i < ships.Count; i++)
-                if (ships[i].CurrentOrder == UnitOrderType.Retreat) return true;
+                if (ships[i].CurrentOrder == UnitOrderType.Retreat && !IsStrikeCycleShip(ships[i])) return true;
             return false;
         }
+
+        private bool IsStrikeCycleShip(IShipEntity ship)
+        {
+            if (StrikeCycleShips == null) return false;
+            for (int i = 0; i < StrikeCycleShips.Count; i++)
+                if (StrikeCycleShips[i] == ship) return true;
+            return false;
+        }
+
+        public GameEntity FindStrikeTarget(GameEntity previous)
+        {
+            float now = Time.time;
+            GameEntity closest = null;
+            float closestDistance = LOCAL_ENGAGEMENT_RADIUS;
+            foreach (HostileSighting sighting in _intel.Sightings)
+            {
+                if (!sighting.UnitTypeId.IsShip || !_playerRoster.IsHostile(_owner.Id, sighting.Owner) ||
+                    _intel.GetConfidence(sighting, now) <= 0f ||
+                    !_entityLocator.TryGetEntity(sighting.EntityId, out GameEntity entity) ||
+                    entity.HealthModel.IsDestroyed || entity.IsCloaked() ||
+                    !EnemyStrikeGroupRules.IsStrikeTargetClass(entity.HealthModel.ShipClass)) continue;
+                // The struck ship stays the target while it lives and is known, also out of sight and out of range.
+                if (ReferenceEquals(entity, previous))
+                {
+                    closest = entity;
+                    break;
+                }
+                float distance = PlanarDistance(_localOrigin, ToVector(sighting.Position));
+                if (distance > closestDistance || !_vision.IsVisible(_owner.Id, entity)) continue;
+                closest = entity;
+                closestDistance = distance;
+            }
+            AddTargetForce(closest, now);
+            return closest;
+        }
+
+        public UnitCombatProfile GetProfile(GameEntity unit) =>
+            _forceBuilder.GetProfile(unit.GetFacade<IUnitTypeFacade>().UnitTypeId);
+
+        public bool TryFindStrikeFallbackPoint(Vector3 origin, GameEntity target, float shipRadius, out Vector3 point,
+            out EnemyStrikeFallbackKind kind)
+        {
+            _fallbackCandidates.Clear();
+            _fallbackPoints.Clear();
+            AddRepairerFallback(origin, target);
+            AddStationFallback(origin, target, shipRadius);
+            if (MainBodyPoint is Vector3 mainBody) AddFallback(EnemyStrikeFallbackKind.MainBody, origin, mainBody, target);
+            // FindWithdrawPoint already rejects a way back that is cut off.
+            if (FindWithdrawPoint(origin, _home) is Vector3 heldZone)
+            {
+                _fallbackCandidates.Add(new EnemyStrikeFallbackCandidate(EnemyStrikeFallbackKind.HeldZone, false,
+                    IsInHostileReach(heldZone, target)));
+                _fallbackPoints.Add(heldZone);
+            }
+            int selected = EnemyStrikeFallbackRules.Select(_fallbackCandidates,
+                _stationPressure.HasPressure && _builtOwnBase != null);
+            point = selected < 0 ? default : _fallbackPoints[selected];
+            kind = selected < 0 ? default : _fallbackCandidates[selected].Kind;
+            return selected >= 0;
+        }
+
+        // The nearest working allied repairer whose surroundings are a valid point.
+        private void AddRepairerFallback(Vector3 origin, GameEntity target)
+        {
+            bool found = false;
+            Vector3 best = default;
+            float bestDistance = float.MaxValue;
+            IReadOnlyList<AiWorldSnapshot.Entry> structures = _worldSnapshot.RaidStructures;
+            for (int i = 0; i < structures.Count; i++)
+            {
+                AiWorldSnapshot.Entry entry = structures[i];
+                if (!_playerRoster.IsAllied(_owner.Id, entry.Owner) || entry.Entity.HealthModel.IsDestroyed ||
+                    !entry.Entity.TryGetFacade(out IRepairSourceFacade source) || !source.CanRepair) continue;
+                float distance = PlanarDistance(origin, entry.Position);
+                if (distance >= bestDistance) continue;
+                Vector3 toOrigin = origin - entry.Position;
+                toOrigin.y = 0f;
+                Vector3 candidate = toOrigin.sqrMagnitude <= Mathf.Epsilon ? entry.Position : entry.Position +
+                    toOrigin.normalized * Mathf.Min(distance, source.Profile.Radius * REPAIRER_STANDOFF_FRACTION);
+                if (IsInHostileReach(candidate, target) || IsCutOff(origin, candidate)) continue;
+                found = true;
+                best = candidate;
+                bestDistance = distance;
+            }
+            if (!found) return;
+            _fallbackCandidates.Add(new EnemyStrikeFallbackCandidate(EnemyStrikeFallbackKind.Repairer, false, false));
+            _fallbackPoints.Add(best);
+        }
+
+        // Behind the own station as seen from the threat, at the first clear point on that side.
+        private void AddStationFallback(Vector3 origin, GameEntity target, float shipRadius)
+        {
+            if (_builtOwnBase == null || _builtOwnBase.HealthModel.IsDestroyed) return;
+            Vector3 station = _builtOwnBase.GetFacade<IEntityTransformFacade>().Transform.position;
+            float stationRadius = _builtOwnBase.GetFacade<INavigationFootprintFacade>().NavigationRadius;
+            Vector3 threat = _stationPressure.HasPressure && _stationPressure.HasThreatPosition
+                ? new Vector3(_stationPressure.ThreatX, _stationPressure.ThreatY, _stationPressure.ThreatZ)
+                : target.GetFacade<IEntityTransformFacade>().Transform.position;
+            Vector3 cover = ToVector(EnemyStrikeFallbackRules.GetStationCoverPoint(ToPoint(station), ToPoint(threat),
+                stationRadius, shipRadius)) - station;
+            cover.y = 0f;
+            foreach (float angle in STATION_COVER_ANGLES)
+            {
+                Vector3 candidate = station + Quaternion.Euler(0f, angle, 0f) * cover;
+                if (!_navigation.IsPositionClear(candidate, shipRadius, includeReservations: false)) continue;
+                AddFallback(EnemyStrikeFallbackKind.Station, origin, candidate, target);
+                return;
+            }
+        }
+
+        private void AddFallback(EnemyStrikeFallbackKind kind, Vector3 origin, Vector3 point, GameEntity target)
+        {
+            _fallbackCandidates.Add(new EnemyStrikeFallbackCandidate(kind, IsCutOff(origin, point),
+                IsInHostileReach(point, target)));
+            _fallbackPoints.Add(point);
+        }
+
+        // The weapons of the target, or any other known hostile ship within the common weapon range.
+        private bool IsInHostileReach(Vector3 point, GameEntity target)
+        {
+            if (CanTargetReach(target, point)) return true;
+            IReadOnlyList<HostileSighting> sightings = _teamPicture.ConfidentSightings;
+            for (int i = 0; i < sightings.Count; i++)
+                if (sightings[i].EntityId != target.Id && sightings[i].UnitTypeId.IsShip &&
+                    _playerRoster.IsHostile(_owner.Id, sightings[i].Owner) &&
+                    PlanarDistance(ToVector(sightings[i].Position), point) <= FALLBACK_HOSTILE_REACH) return true;
+            return false;
+        }
+
+        public bool CanTargetReach(GameEntity target, Vector3 point)
+        {
+            float reach = target.GetFacade<IUnitCombatObserverFacade>().WeaponRange +
+                target.GetFacade<INavigationFootprintFacade>().NavigationRadius;
+            return PlanarDistance(target.GetFacade<IEntityTransformFacade>().Transform.position, point) <= reach;
+        }
+
+        public float GetHostileRepairPerSecond(GameEntity target)
+        {
+            _strikeScratchForce.Clear();
+            EnemyZoneObjectiveCollector.AddHostileRepairSources(_strikeScratchForce, _worldSnapshot, _playerRoster,
+                _vision, _intel, _owner.Id, target.GetFacade<IEntityTransformFacade>().Transform.position);
+            return _strikeScratchForce.RepairFractionPerSecond * GetProfile(target).Hull;
+        }
+
+        public bool IsUnderUnbeatableDefenses(GameEntity target, ForceComposition group)
+        {
+            Vector3 position = target.GetFacade<IEntityTransformFacade>().Transform.position;
+            _strikeScratchForce.Clear();
+            _zoneObjectives.AddStaticDefenders(_strikeScratchForce, position);
+            AddHostileStations(_strikeScratchForce, position, LOCAL_ENGAGEMENT_RADIUS);
+            return !_strikeScratchForce.IsEmpty && CombatMatchup.Advantage(group, _strikeScratchForce) < 1f;
+        }
+
+        public bool IsRepairCovered(Vector3 point)
+        {
+            _strikeScratchForce.Clear();
+            EnemyZoneObjectiveCollector.AddAlliedRepairSources(_strikeScratchForce, _worldSnapshot, _playerRoster,
+                _owner.Id, point);
+            return _strikeScratchForce.RepairSources > 0;
+        }
+
+        public bool HasFieldRepairs(PlayerId player) =>
+            _playerRegistry.TryGetResearch(player, out IFactionResearchModelObserver research) &&
+            research.GetCompletedTiers(ResearchType.FieldRepairs) > 0;
 
         private static float ClampAdvantage(float advantage) =>
             Mathf.Clamp(advantage, CombatMatchup.MIN_ADVANTAGE, CombatMatchup.MAX_ADVANTAGE);

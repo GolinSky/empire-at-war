@@ -1,4 +1,5 @@
 using System;
+using EmpireAtWar.Entities.EnemyFaction.Models.Combat;
 using EmpireAtWar.Entities.Game;
 using EmpireAtWar.Mvc;
 
@@ -102,6 +103,12 @@ namespace EmpireAtWar.Entities.EnemyFaction.Models
         /// </summary>
         public float TradeCorrection { get; }
 
+        /// <summary>
+        /// Phase of the group's hit-and-run cycle. While it runs the strike ships pull back and return on their own,
+        /// so an outmatched local fight does not make the whole group disengage.
+        /// </summary>
+        public EnemyStrikePhase StrikePhase { get; }
+
         public EnemyStrategicSnapshot(
             BattleVictoryCondition victoryCondition,
             EnemyAiDifficulty difficulty,
@@ -114,7 +121,7 @@ namespace EmpireAtWar.Entities.EnemyFaction.Models
             bool hasEnemyBaseTarget,
             bool hasOwnBase,
             bool hasThreatenedSite = false,
-            float localAdvantage = Combat.CombatMatchup.MAX_ADVANTAGE,
+            float localAdvantage = CombatMatchup.MAX_ADVANTAGE,
             bool hasLocalThreat = false,
             bool hasRaidTarget = false,
             bool isRegrouped = true,
@@ -126,8 +133,9 @@ namespace EmpireAtWar.Entities.EnemyFaction.Models
             bool canAssaultBase = false, bool canHuntFleet = false, bool hasSecuredCentre = false,
             bool canDisengage = false, bool raidWhenBehind = false, bool isLateGame = false,
             bool hasReachedRetreatPoint = true, float tradeCorrection = 1f, bool isEndGame = false,
-            bool joinsAllyAssault = false)
+            bool joinsAllyAssault = false, EnemyStrikePhase strikePhase = EnemyStrikePhase.Idle)
         {
+            StrikePhase = strikePhase;
             IsEndGame = isEndGame;
             JoinsAllyAssault = joinsAllyAssault;
             IsLateGame = isLateGame;
@@ -163,6 +171,16 @@ namespace EmpireAtWar.Entities.EnemyFaction.Models
             HasStationPressure = hasStationPressure;
             HasSafeRetreat = hasSafeRetreat;
         }
+
+        private EnemyStrategicSnapshot(EnemyStrategicSnapshot source, EnemyStrikePhase strikePhase)
+        {
+            this = source;
+            StrikePhase = strikePhase;
+        }
+
+        /// <summary>The same snapshot with the hit-and-run phase the group is in this decision.</summary>
+        public EnemyStrategicSnapshot WithStrikePhase(EnemyStrikePhase strikePhase) =>
+            new EnemyStrategicSnapshot(this, strikePhase);
     }
 
     public readonly struct EnemyStrategicDecision
@@ -371,7 +389,8 @@ namespace EmpireAtWar.Entities.EnemyFaction.Models
             }
             bool standAndFight = snapshot.OwnShipCount > 0 && snapshot.HasLocalThreat &&
                 snapshot.LocalAdvantage <= profile.RetreatAdvantage;
-            bool disengage = standAndFight && snapshot.CanDisengage;
+            // A running hit-and-run cycle already pulls its strike ships back: the group keeps its fight.
+            bool disengage = standAndFight && snapshot.CanDisengage && snapshot.StrikePhase == EnemyStrikePhase.Idle;
             if (disengage)
             {
                 // Pull back only as far as the gathering point; the state hold below stops a flip back.

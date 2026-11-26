@@ -48,6 +48,23 @@ namespace EmpireAtWar.Tests.Editor
             Assert.That(orders.Issued, Is.EqualTo(new[] { "Attack:1", "Attack:1" }));
         }
 
+        // Hit-and-run: a pull-back clears the order memory, so the next strike on the same target passes.
+        [Test]
+        public void Attack_OnTheSameTargetPassesAgainAfterARetreat()
+        {
+            var orders = new RecordingOrders();
+            var filter = new AiOrderDeduplicator(orders);
+            var target = new OrderedEntity(UnitOrderType.None);
+            var ship = new OrderedEntity(UnitOrderType.Attack) { AttackTarget = target };
+
+            filter.IssueAttack(new IEntity[] { ship }, target);
+            filter.IssueAttack(new IEntity[] { ship }, target);
+            filter.IssueRetreat(new IEntity[] { ship }, new Vector3(500f, 0f, 0f));
+            filter.IssueAttack(new IEntity[] { ship }, target);
+
+            Assert.That(orders.Issued, Is.EqualTo(new[] { "Attack:1", "Retreat:1", "Attack:1" }));
+        }
+
         // X5: another issuer re-targeted the ship; the same attack is not a repeat.
         [Test]
         public void Attack_IsSentAgainWhenTheShipNowAttacksAnotherTarget()

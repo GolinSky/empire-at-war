@@ -45,6 +45,7 @@ using EmpireAtWar.Services.Camera;
 using EmpireAtWar.Components.Environment;
 using EmpireAtWar.Services.CaptureSites;
 using EmpireAtWar.Services.Enemy;
+using EmpireAtWar.Entities.EnemyFaction.Models.Combat;
 using EmpireAtWar.Services.Fade;
 using EmpireAtWar.Services.FogOfWar;
 using EmpireAtWar.Services.Layer;
@@ -155,6 +156,8 @@ namespace EmpireAtWar.Services.VContainer
             builder.Register<TeamHostileIntelService>(Lifetime.Singleton).AsImplementedInterfaces().AsSelf();
             builder.Register<TeamAiPictureRegistry>(Lifetime.Singleton);
             builder.Register<EnemyAiScheduler>(Lifetime.Singleton).AsImplementedInterfaces().AsSelf();
+            builder.RegisterInstance<IEnemyHitAndRunSettings>(
+                Assets.Load<EnemyHitAndRunSettings>(nameof(EnemyHitAndRunSettings)));
             Factions = Assets.Load<FactionCatalog>(nameof(FactionCatalog));
             builder.RegisterInstance(Factions).AsImplementedInterfaces().AsSelf();
             builder.Register<PlayerScopeBootstrap>(Lifetime.Singleton).AsImplementedInterfaces().AsSelf();

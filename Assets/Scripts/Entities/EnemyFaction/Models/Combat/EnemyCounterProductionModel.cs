@@ -34,6 +34,10 @@ namespace EmpireAtWar.Entities.EnemyFaction.Models.Combat
             _matchups = matchups;
         }
 
+        /// <param name="isEmergency">
+        /// The station is about to fall, or the fleet dies fast with no station pressure: only candidates that arrive
+        /// within <paramref name="timeToLossSeconds"/> count, and the earlier arrival scores higher.
+        /// </param>
         public bool TrySelect(
             ForceComposition own,
             ForceComposition hostile,
@@ -41,13 +45,13 @@ namespace EmpireAtWar.Entities.EnemyFaction.Models.Combat
             out int selectedIndex,
             float availableCredits = 1f,
             int availableCapacity = int.MaxValue,
-            bool isStationCritical = false,
+            bool isEmergency = false,
             float timeToLossSeconds = float.PositiveInfinity)
         {
             selectedIndex = -1;
             SelectedScore = 0.0;
             StrikecraftCovered = StrikecraftClearSeconds(own, hostile) <= STRIKECRAFT_CLEAR_SECONDS;
-            if (hostile.IsEmpty && !isStationCritical)
+            if (hostile.IsEmpty && !isEmergency)
             {
                 return false;
             }
@@ -57,7 +61,7 @@ namespace EmpireAtWar.Entities.EnemyFaction.Models.Combat
             for (int i = 0; i < candidates.Count; i++)
             {
                 ProductionCandidate candidate = candidates[i];
-                if (isStationCritical && (float.IsPositiveInfinity(candidate.ArrivalSeconds) ||
+                if (isEmergency && (float.IsPositiveInfinity(candidate.ArrivalSeconds) ||
                     !(candidate.ArrivalSeconds <= timeToLossSeconds))) continue;
                 if (StrikecraftCovered && candidate.Profile.IsStrikecraftSpecialist()) continue;
                 _candidateForce.CopyFrom(own);
@@ -78,7 +82,7 @@ namespace EmpireAtWar.Entities.EnemyFaction.Models.Combat
                 float preference = hostile.IsEmpty ? 1f : _matchups.GetPreference(candidate.Profile.ShipClass, hostile);
                 double score = gain / resourceCost * preference /
                                Math.Sqrt(1 + candidate.OwnedCount);
-                if (isStationCritical)
+                if (isEmergency)
                 {
                     score = gain * preference / (resourceCost * Math.Max(1f, candidate.ArrivalSeconds));
                 }

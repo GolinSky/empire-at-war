@@ -279,7 +279,7 @@ namespace EmpireAtWar.Tests.Editor
 
             bool selected = new EnemyCounterProductionModel(new NeutralShipClassMatchups()).TrySelect(
                 Force(capital), hasKnownHostile ? Force(capital, capital) : new ForceComposition(),
-                candidates, out int index, isStationCritical: true, timeToLossSeconds: 100f);
+                candidates, out int index, isEmergency: true, timeToLossSeconds: 100f);
 
             Assert.That(selected, Is.True);
             Assert.That(index, Is.EqualTo(1));
@@ -331,7 +331,7 @@ namespace EmpireAtWar.Tests.Editor
 
             bool selected = new EnemyCounterProductionModel(new NeutralShipClassMatchups()).TrySelect(
                 Force(capital), Force(capital, capital), candidates, out int index,
-                isStationCritical: critical, timeToLossSeconds: 100f);
+                isEmergency: critical, timeToLossSeconds: 100f);
 
             Assert.That(selected, Is.True);
             Assert.That(index, Is.EqualTo(expected));
@@ -351,7 +351,7 @@ namespace EmpireAtWar.Tests.Editor
 
             bool selected = new EnemyCounterProductionModel(new NeutralShipClassMatchups()).TrySelect(
                 Force(capital), Force(capital, capital), candidates, out int index,
-                isStationCritical: true, timeToLossSeconds: timeToLoss);
+                isEmergency: true, timeToLossSeconds: timeToLoss);
 
             Assert.That(selected, Is.EqualTo(expectedSelection));
             Assert.That(index, Is.EqualTo(expectedIndex));

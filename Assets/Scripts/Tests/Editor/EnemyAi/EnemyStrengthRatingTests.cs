@@ -17,6 +17,7 @@ using EmpireAtWar.Models.Health;
 using EmpireAtWar.Models.Players;
 using EmpireAtWar.Presenters.ReinforcementZones;
 using EmpireAtWar.Services.Enemy;
+using EmpireAtWar.Services.Player;
 using EmpireAtWar.Services.ReinforcementZones;
 using EmpireAtWar.Services.Vision;
 using EmpireAtWar.Ship;
@@ -396,7 +397,8 @@ namespace EmpireAtWar.Tests.Editor
                 Builder = new EnemyStrategicContextBuilder(null, null, Array.Empty<IEnemyCaptureObjectiveSource>(),
                     Locator, null, roster, new ForceCompositionBuilder(Locator, catalog, World), Intel, Vision,
                     roster.Get(TestPlayers.Enemy), null, null, zones, null, new EnemyStationPressureTracker(), null,
-                    World, new TeamAiPictureRegistry(Intel, roster, zones, catalog, World), new EnemyFactionModel(null, null));
+                    World, new TeamAiPictureRegistry(Intel, roster, zones, catalog, World), new EnemyFactionModel(null, null),
+                    new PlayerRegistry());
             }
 
             public StubEntity AddShip(long id, PlayerId owner, Vector3 position, float hull, bool report = true)

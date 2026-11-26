@@ -1995,3 +1995,10 @@ MonoBehaviour:
         m_SubObjectType: 
         m_SubObjectGUID: 
         m_EditorAssetChanged: 0
+    - key: EnemyHitAndRunSettings
+      value:
+        m_AssetGUID: 9d6bdd33bbad39244ae768d99c5f1e7b
+        m_SubObjectName: 
+        m_SubObjectType: 
+        m_SubObjectGUID: 
+        m_EditorAssetChanged: 0

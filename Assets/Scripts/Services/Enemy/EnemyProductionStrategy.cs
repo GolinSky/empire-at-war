@@ -765,7 +765,13 @@ namespace EmpireAtWar.Services.Enemy
             // team asset and outmatches the fleet is answered alone, so new ships are bought to beat it.
             if (!_stateProvider.TryCopyOutmatchingArmada(_hostileForce))
                 _forceBuilder.BuildKnown(_hostileForce, _intel, Time.time, sighting => true);
-            if (_hostileForce.IsEmpty && !_stationPressure.IsStationCritical)
+            // A fleet that dies fast with no station pressure buys like a critical station: what arrives in time.
+            bool fleetEmergency = _stateProvider.TryGetFleetEmergency(out float fleetTimeToLoss, out _);
+            bool emergency = _stationPressure.IsStationCritical || fleetEmergency;
+            float timeToLoss = fleetEmergency
+                ? Math.Min(_stationPressure.EstimatedTimeToLossSeconds, fleetTimeToLoss)
+                : _stationPressure.EstimatedTimeToLossSeconds;
+            if (_hostileForce.IsEmpty && !emergency)
                 return false;
             _forceBuilder.Build(_ownForce, entity => entity.Owner == self, _liveUnitCounts);
             _candidates.Clear();
@@ -794,7 +800,7 @@ namespace EmpireAtWar.Services.Enemy
             if (!_counterModel.TrySelect(_ownForce, _hostileForce, _candidates, out int index,
                     _economyModel.Money,
                     PurchaseCapacityLimit - _unitLimitModel.CurrentUnitCapacity,
-                    _stationPressure.IsStationCritical, _stationPressure.EstimatedTimeToLossSeconds))
+                    emergency, timeToLoss))
             {
                 return false;
             }
@@ -999,14 +1005,21 @@ namespace EmpireAtWar.Services.Enemy
             return false;
         }
 
-        /// <summary>Queue wait + build time, plus travel to the station threat when one is known.</summary>
+        /// <summary>
+        /// Queue wait + build time, plus travel to the station threat when one is known, else to the fight of a fleet
+        /// emergency (the safe point of its hit-and-run cycle, or its ships).
+        /// </summary>
         private float GetArrivalSeconds(UnitTypeId unitTypeId, FactionData data)
         {
             float travel = 0f;
-            if (_stationPressure.HasThreatPosition &&
+            Vector3 fleetPoint = default;
+            bool toFleet = !_stationPressure.HasThreatPosition &&
+                _stateProvider.TryGetFleetEmergency(out _, out fleetPoint);
+            if ((_stationPressure.HasThreatPosition || toFleet) &&
                 _productionAccess.TryGetProductionBase(out var productionBase))
             {
-                Vector3 threat = new Vector3(_stationPressure.ThreatX, _stationPressure.ThreatY, _stationPressure.ThreatZ);
+                Vector3 threat = toFleet ? fleetPoint :
+                    new Vector3(_stationPressure.ThreatX, _stationPressure.ThreatY, _stationPressure.ThreatZ);
                 Vector3 offset = threat - productionBase.GetFacade<IEntityTransformFacade>().Transform.position;
                 offset.y = 0f;
                 travel = unitTypeId.IsShip

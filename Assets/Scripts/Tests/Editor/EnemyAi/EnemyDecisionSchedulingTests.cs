@@ -27,6 +27,7 @@ using EmpireAtWar.Models.Players;
 using EmpireAtWar.Presenters.ReinforcementZones;
 using EmpireAtWar.Services.CaptureSites;
 using EmpireAtWar.Services.Enemy;
+using EmpireAtWar.Services.Player;
 using EmpireAtWar.Services.ReinforcementZones;
 using EmpireAtWar.Services.ShipNavigation;
 using EmpireAtWar.Services.Ships;
@@ -441,10 +442,12 @@ namespace EmpireAtWar.Tests.Editor
                 Array.Empty<IEnemyCaptureObjectiveSource>(), entities, game, roster,
                 new ForceCompositionBuilder(entities, catalog, snapshot), intelRegistry,
                 new VisionService(roster, fogEnabled: false), owner, production, new TestHazards(), zones,
-                navigation, pressure, recovery, snapshot, new TeamAiPictureRegistry(intelRegistry, roster, zones, catalog, snapshot), new EnemyFactionModel(null, null));
+                navigation, pressure, recovery, snapshot, new TeamAiPictureRegistry(intelRegistry, roster, zones, catalog, snapshot), new EnemyFactionModel(null, null),
+                new PlayerRegistry());
             var commander = new EnemyUnitCommander(shipService, zoneSystem, entities, game, orders,
                 new EnemyStrategicDecisionModel(), builder, new EnemyTaskForceExecutor(orders, UnlimitedFocusFireSlots.Instance),
-                owner, patrol, patrolShips, battleState, scheduler, UnlimitedFocusFireSlots.Instance);
+                owner, patrol, patrolShips, battleState, scheduler, UnlimitedFocusFireSlots.Instance,
+                new TestHitAndRunSettings(TestHitAndRunSettings.OFF));
 
             var entity1 = new TestEntity(1, owner.Id, new TestHealthModel(), CreateTransform())
                 { IsUnit = true, UnitTypeId = venator };
@@ -526,9 +529,10 @@ namespace EmpireAtWar.Tests.Editor
             var pictures = new TeamAiPictureRegistry(intelRegistry, roster, new TestZoneSource(), catalog, snapshot);
             var builder = new EnemyStrategicContextBuilder(null, null, Array.Empty<IEnemyCaptureObjectiveSource>(),
                 entities, null, roster, null, intelRegistry, null, owner, null, null, null, null, null, null,
-                snapshot, pictures, new EnemyFactionModel(null, null));
+                snapshot, pictures, new EnemyFactionModel(null, null), new PlayerRegistry());
             var commander = new EnemyUnitCommander(null, null, entities, null, null, null, builder, null,
-                owner, null, null, null, scheduler, UnlimitedFocusFireSlots.Instance);
+                owner, null, null, null, scheduler, UnlimitedFocusFireSlots.Instance,
+                new TestHitAndRunSettings(TestHitAndRunSettings.OFF));
             handle = scheduler.Register(owner.Id, 4f, 4f, () => { });
             typeof(EnemyUnitCommander).GetField("_workHandle", BindingFlags.Instance | BindingFlags.NonPublic)
                 .SetValue(commander, handle);
