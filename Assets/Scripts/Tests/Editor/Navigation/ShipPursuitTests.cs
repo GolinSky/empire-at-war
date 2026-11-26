@@ -966,22 +966,55 @@ namespace EmpireAtWar.Tests.Movement
         }
 
         [Test]
-        public void AttackMove_EnRouteShipIgnoresContactsUntilItArrives()
+        public void AttackMove_EnRouteShipFliesPastContactsOutsideTheArea()
         {
+            const BindingFlags PRIVATE_INSTANCE = BindingFlags.Instance | BindingFlags.NonPublic;
             Radar radar = new Radar();
             radar.Enemies.Add(_target);
             AttackMoveEngagement engagement = new AttackMoveEngagement();
             AttackMoveState state = new AttackMoveState(_movement, _weapon, radar, null, new FakeShipThreats());
             state.SetData(Vector3.forward * 100f, engagement);
             state.Enter();
+            int moves = _movement.MoveCount;
+            typeof(AttackMoveState).GetField("_nextSearchTime", PRIVATE_INSTANCE)
+                .SetValue(state, float.NegativeInfinity);
 
             state.Tick(0.1f);
-            Assert.That(engagement.Contains(_target), Is.False);
+
+            Assert.That(engagement.Contains(_target), Is.True, "En-route ships report contacts to the group.");
+            Assert.That(state.IsEngaging, Is.False);
+            Assert.That(_movement.IsMoving, Is.True);
+            Assert.That(_movement.MoveCount, Is.EqualTo(moves));
             Assert.That(_movement.Destination, Is.EqualTo(Vector3.forward * 100f));
+            state.Exit();
+        }
+
+        [Test]
+        public void AttackMove_EnRouteShipEngagesAnAreaEnemyFromFiringRangeWithoutReachingThePoint()
+        {
+            const BindingFlags PRIVATE_INSTANCE = BindingFlags.Instance | BindingFlags.NonPublic;
+            Vector3 point = Vector3.forward * 1000f;
+            float reach = _weapon.GetEngagementRange(_target.Health.ShipClass);
+            _target.Transform.position = point + Vector3.back * (reach * 0.5f);
+            Radar radar = new Radar();
+            radar.Enemies.Add(_target);
+            AttackMoveState state = new AttackMoveState(_movement, _weapon, radar, new AttackDataFactory(),
+                new FakeShipThreats());
+            state.SetData(point, new AttackMoveEngagement());
+            state.Enter();
+            typeof(AttackMoveState).GetField("_nextSearchTime", PRIVATE_INSTANCE)
+                .SetValue(state, float.NegativeInfinity);
+
+            state.Tick(0.1f);
+
+            Assert.That(state.IsEngaging, Is.True);
+            Assert.That(state.IsEngagingEnRoute, Is.False);
+            Assert.That(_movement.Destination, Is.Not.EqualTo(point), "The ship heads for firing range, not the point.");
+            Assert.That(Vector3.Distance(_movement.Destination, _target.Transform.position), Is.LessThanOrEqualTo(reach));
 
             _movement.FinishLeg();
             state.Tick(0.1f);
-            Assert.That(engagement.Contains(_target), Is.True);
+            Assert.That(_movement.HeldTarget, Is.SameAs(_target), "The ship stops and fights at firing range.");
             state.Exit();
         }
 

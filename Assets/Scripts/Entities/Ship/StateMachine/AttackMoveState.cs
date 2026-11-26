@@ -13,9 +13,11 @@ using EmpireAtWar.Entities.BaseEntity.EntityFacades;
 namespace EmpireAtWar.Entities.Ship.StateMachine
 {
     /// <summary>
-    /// Flies to the destination without breaking off for fights on the way (weapons still fire at what passes in
-    /// range), then fights the enemies the arrived attack-move group detects within the ship's reach of the
-    /// destination; it never chases beyond that leash.
+    /// The destination marks an area: the enemies within the ship's reach of the point. The ship flies toward it
+    /// without breaking off for fights outside it (weapons still fire at what passes in range). As soon as the
+    /// attack-move group detects an enemy inside the area, the ship stops flying to the point and engages from
+    /// firing range; it never chases beyond that leash. With no enemy there it flies to the point and fights
+    /// what arrives.
     /// The one exception en route: a warship (corvette or bigger) that hit this ship in the last
     /// <see cref="ShipThreatSense.RECENT_DAMAGE_SECONDS"/> and is in weapon reach. The ship stops, fights it without
     /// chasing, then continues to the destination (<see cref="IsEngagingEnRoute"/>).
@@ -56,7 +58,7 @@ namespace EmpireAtWar.Entities.Ship.StateMachine
         private float _nextEnRouteSearchTime;
         // A search found nothing since the last target was dropped; until then the order is not finished.
         private bool _hasSearched;
-        // Set once the ship first reaches the destination; until then it neither reports nor claims enemies.
+        // Set once the ship reaches the destination or the group detects an enemy in its area; until then it claims no enemies.
         private bool _hasArrived;
         // A target was lost: return to the destination unless the next search finds another.
         private bool _isReturnPending;
@@ -112,13 +114,13 @@ namespace EmpireAtWar.Entities.Ship.StateMachine
 
         public void Tick(float deltaTime)
         {
+            _engagement.Report(_member, _radar.Enemies);
             if (!_hasArrived)
             {
-                if (TickEnRoute()) return;
+                if (!IsAreaContactFound() && TickEnRoute()) return;
                 _hasArrived = true;
             }
 
-            _engagement.Report(_member, _radar.Enemies);
             if (_engagementTarget != null &&
                 (!_engagement.Contains(_engagementTarget) || !_isLeashed(_engagementTarget)))
             {
@@ -183,6 +185,11 @@ namespace EmpireAtWar.Entities.Ship.StateMachine
                 }
             }
         }
+
+        // The point marks an area, not a stop: once the group detects an enemy inside it, the ship stops flying to the
+        // point and engages from firing range. Not while it fights a warship that hit it on the way.
+        private bool IsAreaContactFound() =>
+            _enRouteTarget == null && Time.time >= _nextSearchTime && _engagement.HasPreferred(_isLeashed);
 
         /// <summary>
         /// Flight to the point: true while the ship is still on its way (flying or fighting an attacker), false once
