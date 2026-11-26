@@ -19,6 +19,8 @@ namespace EmpireAtWar.Components.Movement.Formation
     public static class FormationModel
     {
         private const int HEXAGONAL_RING_SIDE_COUNT = 6;
+        // A row wider than this many ships continues in a second line behind it.
+        private const int MAX_SHIPS_PER_LINE = 6;
 
         public static FormationPoint CalculateCenter(IReadOnlyList<FormationPoint> positions)
         {
@@ -182,6 +184,111 @@ namespace EmpireAtWar.Components.Movement.Formation
                 ArrayPool<bool>.Shared.Return(assigned);
             }
         }
+
+        /// <summary>
+        /// Attack-move rows relative to the group: the largest hull tier present forms the front row, every smaller
+        /// tier the middle row, back-row ships (artillery, anti-strikecraft) the back row. Rows stand one behind the
+        /// other along the group heading (group centre → <paramref name="targetCenter"/>), centred on it. With only
+        /// one row present the ships take the compact clump. Each ship keeps its side within its line.
+        /// </summary>
+        public static void CalculateRowDestinations(
+            IReadOnlyList<FormationPoint> positions,
+            IReadOnlyList<float> radii,
+            IReadOnlyList<int> hullTiers,
+            IReadOnlyList<bool> isBackRow,
+            FormationPoint targetCenter,
+            IList<FormationPoint> destinations,
+            IList<FormationRow> rows)
+        {
+            if (radii.Count != positions.Count || hullTiers.Count != positions.Count ||
+                isBackRow.Count != positions.Count)
+                throw new ArgumentException("Formation positions, radii, tiers and rows must have the same count.");
+
+            rows.Clear();
+            int frontTier = int.MinValue;
+            for (int i = 0; i < positions.Count; i++)
+                if (!isBackRow[i]) frontTier = Math.Max(frontTier, hullTiers[i]);
+            bool[] present = new bool[3];
+            for (int i = 0; i < positions.Count; i++)
+            {
+                FormationRow row = isBackRow[i] ? FormationRow.Back
+                    : hullTiers[i] == frontTier ? FormationRow.Front : FormationRow.Middle;
+                rows.Add(row);
+                present[(int)row] = true;
+            }
+
+            int rowCount = (present[0] ? 1 : 0) + (present[1] ? 1 : 0) + (present[2] ? 1 : 0);
+            if (rowCount <= 1)
+            {
+                CalculateCompactDestinations(positions, radii, targetCenter, destinations);
+                return;
+            }
+
+            destinations.Clear();
+            for (int i = 0; i < positions.Count; i++) destinations.Add(targetCenter);
+            FormationPoint center = CalculateCenter(positions);
+            double heading = Math.Atan2(targetCenter.Z - center.Z, targetCenter.X - center.X);
+            float forwardX = (float)Math.Cos(heading);
+            float forwardZ = (float)Math.Sin(heading);
+            // Right of the heading.
+            float rightX = forwardZ;
+            float rightZ = -forwardX;
+
+            List<List<int>> lines = new List<List<int>>();
+            List<float> lineRadii = new List<float>();
+            List<int> members = new List<int>();
+            for (int row = 0; row < present.Length; row++)
+            {
+                if (!present[row]) continue;
+                members.Clear();
+                float rowRadius = 0f;
+                for (int i = 0; i < positions.Count; i++)
+                {
+                    if ((int)rows[i] != row) continue;
+                    members.Add(i);
+                    rowRadius = Math.Max(rowRadius, radii[i]);
+                }
+
+                // Ships farthest along the heading take the row's first line.
+                members.Sort((a, b) => Project(positions[b], center, forwardX, forwardZ)
+                    .CompareTo(Project(positions[a], center, forwardX, forwardZ)));
+                for (int start = 0; start < members.Count; start += MAX_SHIPS_PER_LINE)
+                {
+                    List<int> line = members.GetRange(start, Math.Min(MAX_SHIPS_PER_LINE, members.Count - start));
+                    line.Sort((a, b) => Project(positions[a], center, rightX, rightZ)
+                        .CompareTo(Project(positions[b], center, rightX, rightZ)));
+                    lines.Add(line);
+                    lineRadii.Add(rowRadius);
+                }
+            }
+
+            // Hull gap between lines: the larger radius of the two.
+            float[] depths = new float[lines.Count];
+            for (int line = 1; line < lines.Count; line++)
+            {
+                float previous = lineRadii[line - 1];
+                float current = lineRadii[line];
+                depths[line] = depths[line - 1] - (previous + current + Math.Max(previous, current));
+            }
+
+            float shift = (depths[0] + depths[lines.Count - 1]) * 0.5f;
+            for (int line = 0; line < lines.Count; line++)
+            {
+                float depth = depths[line] - shift;
+                float spacing = lineRadii[line] * 2f;
+                List<int> ships = lines[line];
+                for (int slot = 0; slot < ships.Count; slot++)
+                {
+                    float lateral = (slot - (ships.Count - 1) * 0.5f) * spacing;
+                    destinations[ships[slot]] = new FormationPoint(
+                        targetCenter.X + forwardX * depth + rightX * lateral,
+                        targetCenter.Z + forwardZ * depth + rightZ * lateral);
+                }
+            }
+        }
+
+        private static float Project(FormationPoint point, FormationPoint origin, float axisX, float axisZ) =>
+            (point.X - origin.X) * axisX + (point.Z - origin.Z) * axisZ;
 
         public static FormationPoint CalculateGridDestination(
             int index,

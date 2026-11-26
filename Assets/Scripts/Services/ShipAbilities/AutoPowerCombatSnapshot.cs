@@ -75,22 +75,23 @@ namespace EmpireAtWar.Services.ShipAbilities
             }
         }
 
-        /// <summary>Prefer the explicit attack target, then nearby hostiles in range.</summary>
+        /// <summary>
+        /// A live attack-order target is the only candidate: in range and valid for the ability → it, otherwise no
+        /// target (wait, or skip an ability that can never hit it). Without one, the ability's own ranking or the
+        /// nearest hostile in range.
+        /// </summary>
         public IEntity FindTarget(IShipAbilityFacade caster, ShipAbilityDefinition definition)
         {
+            IUnitOrderObserverFacade order = caster.Entity.GetFacade<IUnitOrderObserverFacade>();
+            IEntity ordered = order.CurrentOrder == UnitOrderType.Attack ? order.AttackTarget : null;
+            // Remote clients may not know the ordered entity; authority resolves it from the actual order.
+            if (ordered != null && IsLive(ordered))
+                return _abilities.CanTarget(caster, definition, ordered) &&
+                    ShipAbilityRange.IsInRange(caster, ordered, definition.Range)
+                        ? ordered
+                        : null;
             if (definition.Settings is IShipAbilityTargetPriority priority)
                 return FindPriorityTarget(caster, definition, priority);
-            IUnitOrderObserverFacade order = caster.Entity.GetFacade<IUnitOrderObserverFacade>();
-            if (order.CurrentOrder == UnitOrderType.Attack)
-            {
-                IEntity ordered = order.AttackTarget;
-                if (ordered != null && IsLive(ordered) && _abilities.CanTarget(caster, definition, ordered) &&
-                    ShipAbilityRange.IsInRange(caster, ordered, definition.Range))
-                    return ordered;
-                // Remote clients know the order type; authority resolves the target from the actual order.
-                if (ordered != null && definition.IssuesAttackOrder)
-                    return null;
-            }
             IEntity target = null;
             bool targetStrikecraft = true;
             float nearest = float.PositiveInfinity;
@@ -112,12 +113,10 @@ namespace EmpireAtWar.Services.ShipAbilities
             return target;
         }
 
-        // Highest priority in range, stations included; the attack-order target breaks ties, then the nearest.
+        // Highest priority in range, stations included, then the nearest.
         private IEntity FindPriorityTarget(IShipAbilityFacade caster, ShipAbilityDefinition definition,
             IShipAbilityTargetPriority priority)
         {
-            IUnitOrderObserverFacade order = caster.Entity.GetFacade<IUnitOrderObserverFacade>();
-            IEntity ordered = order.CurrentOrder == UnitOrderType.Attack ? order.AttackTarget : null;
             float searchRange = ShipAbilityRange.MaximumDistance(ShipAbilityRange.FootprintRadius(caster.Entity),
                 _maxTargetFootprint, definition.Range);
             CollectNearby(caster.WorldPosition, searchRange);
@@ -130,8 +129,7 @@ namespace EmpireAtWar.Services.ShipAbilities
                 if (!_abilities.CanTarget(caster, definition, entity) ||
                     !ShipAbilityRange.IsInRange(caster, entity, definition.Range)) continue;
                 int rank = priority.GetTargetPriority(entity);
-                float distance = ReferenceEquals(entity, ordered) ? -1f
-                    : PlanarGeometry.Distance(caster.WorldPosition, position);
+                float distance = PlanarGeometry.Distance(caster.WorldPosition, position);
                 if (rank < best || rank == best && distance >= nearest) continue;
                 target = entity;
                 best = rank;

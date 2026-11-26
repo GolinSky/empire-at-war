@@ -289,15 +289,15 @@ namespace EmpireAtWar.Tests.Weapon
             AttackData group = Group(1);
             group.Units[0].Transform.position = Vector3.forward * 80f;
 
-            Assert.That(_weapon.MainBatteryReaches(group.TargetEntity, 0f, 1f), Is.False);
-            Assert.That(_weapon.MainBatteryReaches(group.TargetEntity, 0f, 1.25f), Is.True);
+            Assert.That(_weapon.MainBatteryReaches(group.TargetEntity, 0f, 1f, false), Is.False);
+            Assert.That(_weapon.MainBatteryReaches(group.TargetEntity, 0f, 1.25f, false), Is.True);
 
             group.Units[0].Transform.position = Vector3.forward * 50f;
-            Assert.That(_weapon.MainBatteryReaches(group.TargetEntity, 0f, 1f), Is.True);
+            Assert.That(_weapon.MainBatteryReaches(group.TargetEntity, 0f, 1f, false), Is.True);
 
             group.Units[0].Transform.position = Vector3.forward * 80f;
             main.UpdateData(0f);
-            Assert.That(_weapon.MainBatteryReaches(group.TargetEntity, 0f, 1f), Is.True,
+            Assert.That(_weapon.MainBatteryReaches(group.TargetEntity, 0f, 1f, false), Is.True,
                 "Without a live main battery the secondaries' reach decides.");
         }
 
@@ -326,12 +326,42 @@ namespace EmpireAtWar.Tests.Weapon
             AttackData group = Group(1);
             group.Units[0].Transform.position = Vector3.forward * 90f;
 
-            Assert.That(_weapon.MainBatteryReaches(group.TargetEntity, CONTACT_DISTANCE, 1f), Is.False,
+            Assert.That(_weapon.MainBatteryReaches(group.TargetEntity, CONTACT_DISTANCE, 1f, false), Is.False,
                 "The forward main reaches but the aft main is still short: keep closing.");
 
             group.Units[0].Transform.position = Vector3.forward * 55f;
-            Assert.That(_weapon.MainBatteryReaches(group.TargetEntity, CONTACT_DISTANCE, 1f), Is.True,
+            Assert.That(_weapon.MainBatteryReaches(group.TargetEntity, CONTACT_DISTANCE, 1f, false), Is.True,
                 "Both mains that can reach do; the stern and far-aft mains do not block the hold.");
+        }
+
+        [Test]
+        public void MainBatteryReaches_WhileHolding_NeedsHalfTheBearingMainWeightInRange()
+        {
+            const float CONTACT_DISTANCE = 30f;
+            List<WeaponHardPoint> mounts = ConfigureMounts(3);
+            foreach (WeaponHardPoint mount in mounts)
+            {
+                mount.transform.SetParent(_weapon.transform);
+                typeof(WeaponHardPoint).GetField("mainBattery", PRIVATE_INSTANCE).SetValue(mount, true);
+                typeof(HardPoint).GetField("spawnDestroyedExplosion", PRIVATE_INSTANCE).SetValue(mount, false);
+            }
+            mounts[0].transform.localPosition = Vector3.forward * 20f;
+            mounts[1].transform.localPosition = Vector3.back * 40f;
+            mounts[2].transform.localPosition = Vector3.back * 40f;
+            AttackData group = Group(1);
+            // The forward main reaches; both aft mains are short but would reach hull to hull.
+            group.Units[0].Transform.position = Vector3.forward * 90f;
+            FieldInfo weights = typeof(WeaponComponent).GetField("_facingWeights", PRIVATE_INSTANCE);
+
+            weights.SetValue(_weapon, new[] { 2, 1, 1 });
+            Assert.That(_weapon.MainBatteryReaches(group.TargetEntity, CONTACT_DISTANCE, 1f, false), Is.False,
+                "A ship not yet holding still needs every bearing main in range.");
+            Assert.That(_weapon.MainBatteryReaches(group.TargetEntity, CONTACT_DISTANCE, 1f, true), Is.True,
+                "Half of the bearing main weight in reach keeps a holding ship holding.");
+
+            weights.SetValue(_weapon, new[] { 1, 1, 1 });
+            Assert.That(_weapon.MainBatteryReaches(group.TargetEntity, CONTACT_DISTANCE, 1f, true), Is.False,
+                "Below half of the bearing main weight, a holding ship closes in again.");
         }
 
         private List<WeaponHardPoint> ConfigureMounts(int count, TargetPreference preference = TargetPreference.Any)
@@ -358,6 +388,9 @@ namespace EmpireAtWar.Tests.Weapon
             }
             typeof(WeaponComponent).GetField("hardPoints", PRIVATE_INSTANCE).SetValue(_weapon, mounts);
             typeof(WeaponComponent).GetField("_retryAt", PRIVATE_INSTANCE).SetValue(_weapon, new float[count]);
+            int[] facingWeights = new int[count];
+            for (int i = 0; i < count; i++) facingWeights[i] = 1;
+            typeof(WeaponComponent).GetField("_facingWeights", PRIVATE_INSTANCE).SetValue(_weapon, facingWeights);
             _coordinator.Register(_weapon);
             return mounts;
         }

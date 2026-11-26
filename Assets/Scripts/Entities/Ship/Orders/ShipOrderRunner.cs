@@ -51,6 +51,7 @@ namespace EmpireAtWar.Entities.Ship.Orders
         private readonly AbilityApproachState _abilityApproachState;
         private ShipAbilityId _pendingAbilityId;
         private IEntity _pendingAbilityTarget;
+        private FormationRow _attackMoveRow;
 
         // Team-vision replacement search around the dead target; ships do not cross the map for one.
         private const float REPLACEMENT_RADIUS = 1500f;
@@ -158,6 +159,16 @@ namespace EmpireAtWar.Entities.Ship.Orders
                 ShipOrderTelemetry.Record(_telemetrySource, _abilityCaster, _orders, _movement, _weapon, _radar,
                     attackEvent.StartsWith("leg:") ? "attackLeg" : "attackHold", attackEvent,
                     nameof(AttackTargetState), _attackTargetState.AttackDiagnostics);
+            string dropEvent = _stateMachine.CurrentState == _attackMoveState ? _attackMoveState.TakeDropEvent() : null;
+            if (dropEvent != null)
+                ShipOrderTelemetry.Record(_telemetrySource, _abilityCaster, _orders, _movement, _weapon, _radar,
+                    "attackMoveDrop", dropEvent, nameof(AttackMoveState), "",
+                    _attackMoveState.EngagementTarget);
+            string settleEvent = _movement is IShipMovementDiagnostics diagnostics ? diagnostics.TakeSettleEvent() : null;
+            if (settleEvent != null)
+                ShipOrderTelemetry.Record(_telemetrySource, _abilityCaster, _orders, _movement, _weapon, _radar,
+                    "settle", settleEvent, _stateMachine.CurrentState.GetType().Name,
+                    attacking ? _attackTargetState.AttackDiagnostics : "");
 #endif
             if (_stateMachine.CurrentState.IsComplete) CompleteOrder();
             UpdatePace(deltaTime);
@@ -365,9 +376,11 @@ namespace EmpireAtWar.Entities.Ship.Orders
             return true;
         }
 
-        public void AttackMoveTo(Vector3 destination, AttackMoveEngagement engagement, PaceCluster pace = null)
+        public void AttackMoveTo(Vector3 destination, AttackMoveEngagement engagement, PaceCluster pace = null,
+            FormationRow row = FormationRow.Front)
         {
             if (RejectWhileAnchored(UnitOrderType.AttackMove)) return;
+            _attackMoveRow = row;
             _abilities.TryCancel(_abilityCaster, ShipAbilityId.Cloak);
             FormationPoint point = ToPoint(destination);
             if (_pendingAbilityTarget == null && _orders.Engagement == engagement &&
@@ -494,7 +507,7 @@ namespace EmpireAtWar.Entities.Ship.Orders
                     _stateMachine.SetState(_attackTargetState);
                     break;
                 case UnitOrderType.AttackMove:
-                    _attackMoveState.SetData(ToVector(_orders.Destination), _orders.Engagement);
+                    _attackMoveState.SetData(ToVector(_orders.Destination), _orders.Engagement, _attackMoveRow);
                     _stateMachine.SetState(_attackMoveState);
                     break;
                 case UnitOrderType.Guard:

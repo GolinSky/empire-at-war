@@ -29,6 +29,89 @@ namespace EmpireAtWar.Tests.Movement
             Assert.That(FormationModel.HasClearance(east[0], 5f, east[1], 5f), Is.True);
         }
 
+        private const int HEAVY_CRUISER = 4;
+        private const int CAPITAL = 5;
+
+        [Test]
+        public void RowDestinations_HeavyCruiserLeadsWithoutCapitalsAndFollowsThem()
+        {
+            var positions = new[] { new FormationPoint(-20f, 0f), new FormationPoint(20f, 0f) };
+            var radii = new[] { 5f, 5f };
+            var backRow = new[] { false, false };
+            var target = new FormationPoint(0f, 500f);
+            var destinations = new List<FormationPoint>();
+            var rows = new List<FormationRow>();
+
+            FormationModel.CalculateRowDestinations(positions, radii, new[] { HEAVY_CRUISER, HEAVY_CRUISER }, backRow,
+                target, destinations, rows);
+            Assert.That(rows, Is.All.EqualTo(FormationRow.Front));
+
+            FormationModel.CalculateRowDestinations(positions, radii, new[] { HEAVY_CRUISER, CAPITAL }, backRow,
+                target, destinations, rows);
+            Assert.That(rows[0], Is.EqualTo(FormationRow.Middle));
+            Assert.That(rows[1], Is.EqualTo(FormationRow.Front));
+            Assert.That(destinations[1].Z, Is.GreaterThan(destinations[0].Z), "The strongest tier present leads.");
+            Assert.That(FormationModel.HasClearance(destinations[0], 5f, destinations[1], 5f), Is.True);
+        }
+
+        [Test]
+        public void RowDestinations_BackRowShipsNeverLeadWhateverTheirTier()
+        {
+            var positions = new[]
+            {
+                new FormationPoint(0f, 40f), new FormationPoint(-30f, 0f), new FormationPoint(30f, 0f)
+            };
+            var radii = new[] { 8f, 5f, 5f };
+            var tiers = new[] { CAPITAL, HEAVY_CRUISER, 2 };
+            var backRow = new[] { true, false, false };
+            var target = new FormationPoint(0f, 800f);
+            var destinations = new List<FormationPoint>();
+            var rows = new List<FormationRow>();
+
+            FormationModel.CalculateRowDestinations(positions, radii, tiers, backRow, target, destinations, rows);
+
+            Assert.That(rows, Is.EqualTo(new[] { FormationRow.Back, FormationRow.Front, FormationRow.Middle }));
+            Assert.That(destinations[1].Z, Is.GreaterThan(destinations[2].Z));
+            Assert.That(destinations[2].Z, Is.GreaterThan(destinations[0].Z));
+            for (int i = 0; i < destinations.Count; i++)
+            for (int j = i + 1; j < destinations.Count; j++)
+                Assert.That(FormationModel.HasClearance(destinations[i], radii[i], destinations[j], radii[j]), Is.True);
+        }
+
+        [Test]
+        public void RowDestinations_ShipsKeepTheirSideWithinARow()
+        {
+            var positions = new[] { new FormationPoint(40f, 0f), new FormationPoint(-40f, 0f), new FormationPoint(0f, -60f) };
+            var radii = new[] { 5f, 5f, 5f };
+            var tiers = new[] { CAPITAL, CAPITAL, 2 };
+            var backRow = new[] { false, false, false };
+            var destinations = new List<FormationPoint>();
+            var rows = new List<FormationRow>();
+
+            FormationModel.CalculateRowDestinations(positions, radii, tiers, backRow, new FormationPoint(0f, 500f),
+                destinations, rows);
+
+            Assert.That(destinations[0].X, Is.GreaterThan(destinations[1].X), "No crossing paths inside the row.");
+        }
+
+        [Test]
+        public void RowDestinations_OneTierMatchesTheCompactClump()
+        {
+            var positions = new[] { new FormationPoint(0f, 0f), new FormationPoint(10f, 0f), new FormationPoint(20f, 5f) };
+            var radii = new[] { 5f, 6f, 5f };
+            var target = new FormationPoint(300f, 300f);
+            var compact = new List<FormationPoint>();
+            var destinations = new List<FormationPoint>();
+            var rows = new List<FormationRow>();
+
+            FormationModel.CalculateCompactDestinations(positions, radii, target, compact);
+            FormationModel.CalculateRowDestinations(positions, radii, new[] { 3, 3, 3 },
+                new[] { false, false, false }, target, destinations, rows);
+
+            Assert.That(destinations, Is.EqualTo(compact));
+            Assert.That(rows, Is.All.EqualTo(FormationRow.Front));
+        }
+
         [Test]
         public void CalculateDestination_PreservesOffsetsAroundTargetCenter()
         {

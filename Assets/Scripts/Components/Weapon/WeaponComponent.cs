@@ -478,7 +478,7 @@ namespace EmpireAtWar.Components.Weapon
             return distance <= Mathf.Max(GetEngagementRange(targetClass), contactDistance * CONTACT_ENGAGE_FACTOR);
         }
 
-        public bool MainBatteryReaches(IEntity target, float contactDistance, float reachFactor)
+        public bool MainBatteryReaches(IEntity target, float contactDistance, float reachFactor, bool isHolding)
         {
             Vector3 pivot = _viewTransform.position;
             Vector3 bearing = PlanarGeometry.Flatten(target.GetFacade<IEntityTransformFacade>().Transform.position - pivot);
@@ -495,12 +495,16 @@ namespace EmpireAtWar.Components.Weapon
             // Main batteries share a forward sector: place each one where it sits with the bow turned at the target.
             // Every main battery whose arc covers the target bow-on must reach it, so the ship closes until the whole
             // forward battery fires. Mains that cannot bear bow-on, or would stay short even hull to hull, gain
-            // nothing from closing in and are skipped.
+            // nothing from closing in and are skipped. A ship already holding keeps holding while the mains that reach
+            // carry at least half of the bearing main weight: one main dropping out at the range edge must not restart
+            // the approach every tick.
             Quaternion bowOnTarget = Quaternion.FromToRotation(PlanarGeometry.Flatten(_viewTransform.forward), bearing);
             ShipClass targetClass = target.HealthModel.ShipClass;
             bool hasMainBattery = false;
             bool anyBearing = false;
             bool anyReach = false;
+            int bearingWeight = 0;
+            int reachingWeight = 0;
             for (int i = 0; i < hardPoints.Count; i++)
             {
                 WeaponHardPoint mount = hardPoints[i];
@@ -530,11 +534,14 @@ namespace EmpireAtWar.Components.Weapon
 
                 if (!bears || !reachesAtContact && !reaches) continue;
                 anyBearing = true;
-                if (!reaches) return false;
+                if (!reaches && !isHolding) return false;
+                bearingWeight += _facingWeights[i];
+                if (reaches) reachingWeight += _facingWeights[i];
             }
 
+            if (anyBearing) return reachingWeight * 2 >= bearingWeight;
             // No main battery bears bow-on: fall back to any main reaching the target.
-            return !hasMainBattery || anyBearing || anyReach;
+            return !hasMainBattery || anyReach;
         }
 
         public bool TryGetHardPointApproach(AttackData target, out Vector3 offset)

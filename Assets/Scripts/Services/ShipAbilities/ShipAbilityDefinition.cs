@@ -45,6 +45,5 @@ namespace EmpireAtWar.Services.ShipAbilities
         /// <summary>Seconds after auto-power or the AI first sees the caster before they may start this ability; manual use is never delayed.</summary>
         public float AutoUseStartDelay => autoUseStartDelay;
         public ShipAbilitySettings Settings => settings;
-        internal bool IssuesAttackOrder => settings is AssaultSettings or ConcentrateFireSettings or LuckyShotSettings;
     }
 }

@@ -1,4 +1,5 @@
 using EmpireAtWar.Components.AttackComponent;
+using EmpireAtWar.Components.Movement.Formation;
 using EmpireAtWar.Components.Radar;
 using EmpireAtWar.Components.Ship.Movement;
 using EmpireAtWar.Components.Weapon;
@@ -16,6 +17,9 @@ namespace EmpireAtWar.Entities.Ship.StateMachine
     public static class ShipEngagement
     {
         private const float STANDOFF_RANGE_FACTOR = 0.65f;
+        // Attack-move rows: rear rows stand off farther so the front row takes the contact; never past full reach.
+        private const float MIDDLE_ROW_STANDOFF_RANGE_FACTOR = 0.75f;
+        private const float BACK_ROW_STANDOFF_RANGE_FACTOR = 0.9f;
         private const float SIEGE_CLEARANCE_MARGIN = 1f;
         /// <summary>
         /// A ship already holding on a target keeps holding while the target is within this multiple of its reach;
@@ -167,12 +171,12 @@ namespace EmpireAtWar.Entities.Ship.StateMachine
         /// Hold-or-close-in test for a ship engaging <paramref name="enemy"/>: <see cref="CanEngage(IEntity, IShipMovement, IWeaponComponent, bool)"/>
         /// and the forward main batteries reach it bow-on. Mains sit well aft of the hull centre, so a centre distance
         /// inside reach can leave them short; the ship then held and swung broadside to use one side only.
-        /// The main battery test has no held margin: when the nearest target hardpoints die, mains just past their
-        /// range would otherwise hold silent; failing it only makes the ship close in.
+        /// A holding ship keeps holding while the mains in reach carry half of the bearing main weight, so one main
+        /// dropping out at the range edge does not flip it between hold and approach.
         /// </summary>
         public static bool CanHoldOn(IEntity enemy, IShipMovement movement, IWeaponComponent weapon, bool isHolding) =>
             CanEngage(enemy, movement, weapon, isHolding) &&
-            weapon.MainBatteryReaches(enemy, ContactDistance(movement, enemy), 1f);
+            weapon.MainBatteryReaches(enemy, ContactDistance(movement, enemy), 1f, isHolding);
 
         /// <summary>Whether the ship's guns would reach the target from <paramref name="origin"/>.</summary>
         public static bool IsInReachFrom(Vector3 origin, IShipMovement movement, IWeaponComponent weapon,
@@ -257,20 +261,29 @@ namespace EmpireAtWar.Entities.Ship.StateMachine
         /// Commits to one firing-range approach until arrival or a new target.
         /// </summary>
         public static void Pursue(IShipMovement movement, IWeaponComponent weapon,
-            IEntity target, bool newTarget = false)
+            IEntity target, bool newTarget = false, float standoffFactor = STANDOFF_RANGE_FACTOR)
         {
             if (!newTarget && movement.IsMoving) return;
-            movement.MoveToPosition(GetStandoffPosition(movement, weapon, target),
+            movement.MoveToPosition(GetStandoffPosition(movement, weapon, target, standoffFactor: standoffFactor),
                 preserveCourse: !newTarget);
         }
 
+        /// <summary>Share of engagement range an attack-move ship in <paramref name="row"/> stands off at.</summary>
+        public static float GetStandoffFactor(FormationRow row) => row switch
+        {
+            FormationRow.Middle => MIDDLE_ROW_STANDOFF_RANGE_FACTOR,
+            FormationRow.Back => BACK_ROW_STANDOFF_RANGE_FACTOR,
+            _ => STANDOFF_RANGE_FACTOR
+        };
+
         public static Vector3 GetStandoffPosition(IShipMovement movement,
-            IWeaponComponent weapon, IEntity target, Vector3 formationOffset = default)
+            IWeaponComponent weapon, IEntity target, Vector3 formationOffset = default,
+            float standoffFactor = STANDOFF_RANGE_FACTOR)
         {
             Vector3 targetPosition = target.GetFacade<IEntityTransformFacade>().Transform.position;
             float distance = UsesCloseSiegeApproach(movement, weapon, target)
                 ? SiegeStandoffDistance(movement, target, targetPosition)
-                : Mathf.Max(weapon.GetEngagementRange(target.HealthModel.ShipClass) * STANDOFF_RANGE_FACTOR,
+                : Mathf.Max(weapon.GetEngagementRange(target.HealthModel.ShipClass) * standoffFactor,
                     ContactDistance(movement, target));
             Vector3 fromTarget = movement.CurrentPosition - targetPosition;
             fromTarget.y = 0f;

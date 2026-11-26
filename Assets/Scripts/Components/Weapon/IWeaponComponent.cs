@@ -33,8 +33,9 @@ namespace EmpireAtWar.Components.Weapon
         /// live target hardpoint. Mains that cannot bear bow-on, or would stay short even at
         /// <paramref name="contactDistance"/> (hull to hull), are ignored; if none bears, any main in reach suffices.
         /// True for a loadout without main batteries that can fire on it. Ranges scale by <paramref name="reachFactor"/>.
+        /// With <paramref name="isHolding"/>, the bearing mains in reach need only half of the bearing main weight.
         /// </summary>
-        bool MainBatteryReaches(IEntity target, float contactDistance, float reachFactor);
+        bool MainBatteryReaches(IEntity target, float contactDistance, float reachFactor, bool isHolding);
 
         /// <summary>Offset to bring a target hardpoint into a live mount's range, or zero if already in reach.</summary>
         bool TryGetHardPointApproach(AttackData target, out Vector3 offset);

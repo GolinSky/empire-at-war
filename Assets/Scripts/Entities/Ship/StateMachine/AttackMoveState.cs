@@ -1,5 +1,6 @@
 using System;
 using EmpireAtWar.Components.AttackComponent;
+using EmpireAtWar.Components.Movement.Formation;
 using EmpireAtWar.Components.Radar;
 using EmpireAtWar.Components.Ship.Movement;
 using EmpireAtWar.Components.Weapon;
@@ -52,6 +53,7 @@ namespace EmpireAtWar.Entities.Ship.StateMachine
         private AttackMoveEngagement _engagement;
 
         private Vector3 _destination;
+        private float _standoffFactor = ShipEngagement.GetStandoffFactor(FormationRow.Front);
 
         private int _member;
         private float _nextSearchTime;
@@ -73,7 +75,28 @@ namespace EmpireAtWar.Entities.Ship.StateMachine
 
 #if UNITY_EDITOR || DEVELOPMENT_BUILD
         internal IEntity EngagementTarget => _engagementTarget ?? _enRouteTarget;
+        private string _pendingDropEvent;
+
+        /// <summary>Telemetry only: why the last engagement target was dropped since the previous call, or null.</summary>
+        internal string TakeDropEvent()
+        {
+            string pending = _pendingDropEvent;
+            _pendingDropEvent = null;
+            return pending;
+        }
 #endif
+
+        [System.Diagnostics.Conditional("UNITY_EDITOR"), System.Diagnostics.Conditional("DEVELOPMENT_BUILD")]
+        private void NoteDrop(IEntity target, string reason)
+        {
+#if UNITY_EDITOR || DEVELOPMENT_BUILD
+            bool destroyed = target.HealthModel.IsDestroyed;
+            _pendingDropEvent = string.Format(System.Globalization.CultureInfo.InvariantCulture,
+                "drop:{0} target={1} destroyed={2} canEngage={3} dist={4:F0}", reason, target.Id, destroyed ? 1 : 0,
+                !destroyed && ShipEngagement.CanEngage(target, _movement, _weapon) ? 1 : 0,
+                destroyed ? -1f : _rangeTo(target));
+#endif
+        }
 
         public AttackMoveState(IShipMovement movement, IWeaponComponent weapon,
             IRadarComponent radar, IAttackDataFactory attackDataFactory, IShipThreatSense threats)
@@ -91,9 +114,10 @@ namespace EmpireAtWar.Entities.Ship.StateMachine
                                  ShipEngagement.ThreatRank(enemy, _threats);
         }
 
-        public void SetData(Vector3 destination, AttackMoveEngagement engagement)
+        public void SetData(Vector3 destination, AttackMoveEngagement engagement, FormationRow row = FormationRow.Front)
         {
             _destination = destination;
+            _standoffFactor = ShipEngagement.GetStandoffFactor(row);
             // Applied on Enter: SetData runs before Exit, which must leave the engagement it joined.
             _nextEngagement = engagement;
         }
@@ -124,6 +148,7 @@ namespace EmpireAtWar.Entities.Ship.StateMachine
             if (_engagementTarget != null &&
                 (!_engagement.Contains(_engagementTarget) || !_isLeashed(_engagementTarget)))
             {
+                NoteDrop(_engagementTarget, !_engagement.Contains(_engagementTarget) ? "notInEngagement" : "leash");
                 // Hold course until the next search: heading back first and then turning for the next target
                 // made the ship zigzag between the point and the fight.
                 _weapon.ResetTarget();
@@ -145,6 +170,7 @@ namespace EmpireAtWar.Entities.Ship.StateMachine
                         _priority);
                     if (selectedTarget != _engagementTarget)
                     {
+                        if (_engagementTarget != null) NoteDrop(_engagementTarget, "notPreferred");
                         _movement.CancelCombatHold();
                         _isHolding = false;
                     }
@@ -155,7 +181,8 @@ namespace EmpireAtWar.Entities.Ship.StateMachine
                         _weapon.AddTarget(_attackDataFactory.ConstructData(_engagementTarget), AttackType.MainTarget);
                         // A new target always breaks off the course to the attack-move point.
                         if (!ShipEngagement.CanEngage(_engagementTarget, _movement, _weapon))
-                            ShipEngagement.Pursue(_movement, _weapon, _engagementTarget, newTarget: true);
+                            ShipEngagement.Pursue(_movement, _weapon, _engagementTarget, newTarget: true,
+                                standoffFactor: _standoffFactor);
                     }
                 }
             }
@@ -181,7 +208,7 @@ namespace EmpireAtWar.Entities.Ship.StateMachine
                 else
                 {
                     _isHolding = false;
-                    ShipEngagement.Pursue(_movement, _weapon, _engagementTarget);
+                    ShipEngagement.Pursue(_movement, _weapon, _engagementTarget, standoffFactor: _standoffFactor);
                 }
             }
         }

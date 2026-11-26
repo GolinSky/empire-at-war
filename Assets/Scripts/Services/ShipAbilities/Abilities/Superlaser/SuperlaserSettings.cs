@@ -58,15 +58,16 @@ namespace EmpireAtWar.Services.ShipAbilities.Abilities
                 ShipClass.Capital or ShipClass.BattleCruiser or ShipClass.Dreadnought or ShipClass.Structure ||
             target.IsPlayerBase();
 
-        // Automatic order: Capital > BattleCruiser > Dreadnought > station or structure, then any other valid ship.
+        // Automatic order, shared with Ion Pulse: station or structure > Dreadnought > BattleCruiser > Capital, then
+        // any other valid ship.
         public int GetTargetPriority(IEntity target)
         {
-            if (target.IsPlayerBase() || target.HealthModel.ShipClass == ShipClass.Structure) return 1;
+            if (target.IsPlayerBase() || target.HealthModel.ShipClass == ShipClass.Structure) return 4;
             return target.HealthModel.ShipClass switch
             {
-                ShipClass.Capital => 4,
-                ShipClass.BattleCruiser => 3,
-                ShipClass.Dreadnought => 2,
+                ShipClass.Dreadnought => 3,
+                ShipClass.BattleCruiser => 2,
+                ShipClass.Capital => 1,
                 _ => 0
             };
         }

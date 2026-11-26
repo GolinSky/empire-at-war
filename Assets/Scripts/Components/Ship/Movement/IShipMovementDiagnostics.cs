@@ -5,5 +5,8 @@ namespace EmpireAtWar.Components.Ship.Movement
     {
         /// <summary>Semicolon separated: phase;queuedPlan;inPlanQueue;braking;settling;failedDestination;destX;destZ;speed.</summary>
         string MovementDiagnostics { get; }
+
+        /// <summary>The last hull-spacing settle decision since the previous call, or null.</summary>
+        string TakeSettleEvent();
     }
 }

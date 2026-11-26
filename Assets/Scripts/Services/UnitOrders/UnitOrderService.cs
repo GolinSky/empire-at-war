@@ -382,13 +382,14 @@ namespace EmpireAtWar.Services.UnitOrders
         {
             List<IEntity> entities = new List<IEntity>();
             List<IAttackMoveFacade> commands = Collect<IAttackMoveFacade>(receivers, entities);
-            List<Vector3> slots = Compact(commands, point,
-                command => command.WorldPosition, command => command.NavigationRadius);
+            List<FormationRow> rows = new List<FormationRow>(commands.Count);
+            List<Vector3> slots = AttackMoveRows(commands, point, rows);
             AttackMoveEngagement engagement = new AttackMoveEngagement();
             PaceCluster[] clusters = pace == MovePace.Formation
                 ? CreateAttackMoveClusters(entities, commands, point)
                 : null;
-            for (int i = 0; i < commands.Count; i++) commands[i].AttackMoveTo(slots[i], engagement, clusters?[i]);
+            for (int i = 0; i < commands.Count; i++)
+                commands[i].AttackMoveTo(slots[i], engagement, clusters?[i], rows[i]);
             Publish(UnitActionId.AttackMove, receivers, commands.Count, point);
         }
 
@@ -581,6 +582,29 @@ namespace EmpireAtWar.Services.UnitOrders
             for (int i = 0; i < destinations.Count; i++)
                 slots.Add(new Vector3(destinations[i].X, position(commands[i]).y,
                     destinations[i].Z));
+            return slots;
+        }
+
+        private static List<Vector3> AttackMoveRows(IReadOnlyList<IAttackMoveFacade> commands, Vector3 point,
+            List<FormationRow> rows)
+        {
+            List<FormationPoint> positions = new List<FormationPoint>(commands.Count);
+            List<float> radii = new List<float>(commands.Count);
+            List<int> tiers = new List<int>(commands.Count);
+            List<bool> backRow = new List<bool>(commands.Count);
+            foreach (IAttackMoveFacade command in commands)
+            {
+                positions.Add(ToPoint(command.WorldPosition));
+                radii.Add(command.NavigationRadius);
+                tiers.Add(command.HullTier);
+                backRow.Add(command.IsBackRow);
+            }
+            List<FormationPoint> destinations = new List<FormationPoint>(commands.Count);
+            FormationModel.CalculateRowDestinations(positions, radii, tiers, backRow, ToPoint(point),
+                destinations, rows);
+            List<Vector3> slots = new List<Vector3>(destinations.Count);
+            for (int i = 0; i < destinations.Count; i++)
+                slots.Add(new Vector3(destinations[i].X, commands[i].WorldPosition.y, destinations[i].Z));
             return slots;
         }
 

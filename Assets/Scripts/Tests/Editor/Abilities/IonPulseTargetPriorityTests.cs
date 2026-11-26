@@ -20,7 +20,10 @@ using UnityEngine;
 
 namespace EmpireAtWar.Tests.Editor
 {
-    /// <summary>Malevolence Ion Pulse auto target: station, then Dreadnought > BattleCruiser > Capital, in range only.</summary>
+    /// <summary>
+    /// Malevolence Ion Pulse auto target: a live attack-order target only (wait when out of range); without one,
+    /// station, then Dreadnought > BattleCruiser > Capital, in range only.
+    /// </summary>
     [Category("Abilities")]
     public sealed class IonPulseTargetPriorityTests
     {
@@ -56,24 +59,72 @@ namespace EmpireAtWar.Tests.Editor
         }
 
         [Test]
-        public void StationInRange_BeatsDreadnoughtAndAttackTarget()
+        public void AttackTargetInRange_BeatsStationAndDreadnought()
+        {
+            AddStation(RANGE * 0.9f);
+            AddShip(ShipClass.Dreadnought, RANGE * 0.2f);
+            IEntity ordered = AddShip(ShipClass.Capital, RANGE * 0.1f);
+            _caster.AttackTarget = ordered;
+
+            Assert.That(FindTarget(), Is.SameAs(ordered));
+        }
+
+        [Test]
+        public void WithoutOrder_StationInRange_BeatsDreadnought()
         {
             IEntity station = AddStation(RANGE * 0.9f);
             AddShip(ShipClass.Dreadnought, RANGE * 0.2f);
-            _caster.AttackTarget = AddShip(ShipClass.Capital, RANGE * 0.1f);
+            AddShip(ShipClass.Capital, RANGE * 0.1f);
 
             Assert.That(FindTarget(), Is.SameAs(station));
         }
 
         [Test]
-        public void WithoutStation_BiggestClassWins()
+        public void WithoutOrderOrStation_BiggestClassWins()
         {
             IEntity dreadnought = AddShip(ShipClass.Dreadnought, RANGE * 0.5f);
             AddShip(ShipClass.BattleCruiser, RANGE * 0.2f);
-            _caster.AttackTarget = AddShip(ShipClass.Capital, RANGE * 0.1f);
+            AddShip(ShipClass.Capital, RANGE * 0.1f);
             AddShip(ShipClass.Frigate, RANGE * 0.05f);
 
             Assert.That(FindTarget(), Is.SameAs(dreadnought));
+        }
+
+        [Test]
+        public void AttackTargetOutOfRange_WaitsDespiteAHigherPriorityTargetInRange()
+        {
+            AddStation(RANGE * 0.5f);
+            AddShip(ShipClass.Dreadnought, RANGE * 0.2f);
+            _caster.AttackTarget = AddShip(ShipClass.Capital, RANGE * 1.5f);
+
+            Assert.That(FindTarget(), Is.Null);
+        }
+
+        [Test]
+        public void AttackTargetTheAbilityCannotHit_SkipsDespiteAValidTargetInRange()
+        {
+            AddShip(ShipClass.Dreadnought, RANGE * 0.2f);
+            _caster.AttackTarget = AddShip(ShipClass.Fighter, RANGE * 0.1f);
+
+            Assert.That(FindTarget(), Is.Null);
+        }
+
+        [Test]
+        public void AbilityWithoutRanking_AttackTargetOutOfRange_WaitsDespiteANearerTarget()
+        {
+            var unranked = new ShipAbilityDefinition();
+            Type type = typeof(ShipAbilityDefinition);
+            BindingFlags flags = BindingFlags.Instance | BindingFlags.NonPublic;
+            type.GetField("requiresEnemyTarget", flags).SetValue(unranked, true);
+            type.GetField("range", flags).SetValue(unranked, RANGE);
+            AddShip(ShipClass.Frigate, RANGE * 0.2f);
+            IEntity ordered = AddShip(ShipClass.Frigate, RANGE * 1.5f);
+            _caster.AttackTarget = ordered;
+
+            Assert.That(FindTarget(unranked), Is.Null);
+
+            ordered.GetFacade<IEntityTransformFacade>().Transform.position = Vector3.right * (RANGE * 0.8f);
+            Assert.That(FindTarget(unranked), Is.SameAs(ordered));
         }
 
         [Test]
@@ -97,13 +148,28 @@ namespace EmpireAtWar.Tests.Editor
             Assert.That(FindTarget(), Is.SameAs(ordered));
         }
 
-        private IEntity FindTarget()
+        [Test]
+        public void Superlaser_AttackOrderOnACorvette_StaysSilentDespiteACapitalInRange()
+        {
+            var superlaser = new ShipAbilityDefinition();
+            Type type = typeof(ShipAbilityDefinition);
+            BindingFlags flags = BindingFlags.Instance | BindingFlags.NonPublic;
+            type.GetField("settings", flags).SetValue(superlaser, new SuperlaserSettings());
+            type.GetField("requiresEnemyTarget", flags).SetValue(superlaser, true);
+            type.GetField("range", flags).SetValue(superlaser, RANGE);
+            AddShip(ShipClass.Capital, RANGE * 0.5f);
+            _caster.AttackTarget = AddShip(ShipClass.Corvette, RANGE * 0.2f);
+
+            Assert.That(FindTarget(superlaser), Is.Null);
+        }
+
+        private IEntity FindTarget(ShipAbilityDefinition definition = null)
         {
             PlayerRoster roster = TestPlayers.CreateDuel();
             var service = new ShipAbilityService(new NoAbilityFactory(), roster, new VisionService(roster, fogEnabled: false));
             var combat = new AutoPowerCombatSnapshot(_entities, roster, service, null, null, _catalog);
             combat.Capture();
-            return combat.FindTarget(_caster, _definition);
+            return combat.FindTarget(_caster, definition ?? _definition);
         }
 
         private IEntity AddShip(ShipClass shipClass, float distance)

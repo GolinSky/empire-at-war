@@ -1,4 +1,5 @@
 using System.Collections.Generic;
+using EmpireAtWar.Components.Movement.Formation;
 using EmpireAtWar.Entities.BaseEntity;
 using EmpireAtWar.Entities.BaseEntity.EntityFacades;
 using EmpireAtWar.Entities.BaseEntity.Orders;
@@ -24,6 +25,8 @@ namespace EmpireAtWar.Entities.Squadrons.EntityFacades
         public Vector3 WorldPosition => _squadron.WorldPosition;
         public float NavigationRadius => _squadron.NavigationRadius;
         public float PaceSpeed => _squadron.PaceSpeed;
+        public int HullTier => 0;
+        public bool IsBackRow => false;
 
         public SquadronOrderFacade(Squadron squadron) => _squadron = squadron;
 
@@ -35,7 +38,8 @@ namespace EmpireAtWar.Entities.Squadrons.EntityFacades
             _squadron.Attack(target, formationOffset, pace);
 
         // Fighters swarm whatever their own radar finds, so squadrons do not join the shared engagement.
-        public void AttackMoveTo(Vector3 worldPosition, AttackMoveEngagement engagement, PaceCluster pace = null) =>
+        public void AttackMoveTo(Vector3 worldPosition, AttackMoveEngagement engagement, PaceCluster pace = null,
+            FormationRow row = FormationRow.Front) =>
             _squadron.AttackMoveTo(worldPosition, pace);
 
         public void Stop() => _squadron.Stop();

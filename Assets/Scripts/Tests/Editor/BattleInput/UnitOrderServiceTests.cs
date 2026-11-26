@@ -1,4 +1,5 @@
 using System;
+using EmpireAtWar.Components.Movement.Formation;
 using EmpireAtWar.Entities.Units;
 using EmpireAtWar.Models.Players;
 using System.Collections.Generic;
@@ -462,6 +463,30 @@ namespace EmpireAtWar.Tests.Editor
         }
 
         [Test]
+        public void AttackMove_GroupGetsRowsByRole_FrontRowNearestThePoint()
+        {
+            FakeEntity capital = Entity(1, TestPlayers.Human);
+            FakeEntity cruiser = Entity(2, TestPlayers.Human);
+            FakeEntity artillery = Entity(3, TestPlayers.Human);
+            capital.Command.HullTier = 5;
+            cruiser.Command.HullTier = 3;
+            artillery.Command.HullTier = 5;
+            artillery.Command.IsBackRow = true;
+            capital.Command.WorldPosition = new Vector3(-50f, 0f, 0f);
+            cruiser.Command.WorldPosition = Vector3.zero;
+            artillery.Command.WorldPosition = new Vector3(50f, 0f, 0f);
+            Vector3 point = new Vector3(0f, 0f, 1000f);
+
+            _unitOrderService.IssueAttackMove(new IEntity[] { capital, cruiser, artillery }, point);
+
+            Assert.That(capital.Command.LastRow, Is.EqualTo(FormationRow.Front));
+            Assert.That(cruiser.Command.LastRow, Is.EqualTo(FormationRow.Middle));
+            Assert.That(artillery.Command.LastRow, Is.EqualTo(FormationRow.Back));
+            Assert.That(capital.Command.LastPoint.z, Is.GreaterThan(cruiser.Command.LastPoint.z));
+            Assert.That(cruiser.Command.LastPoint.z, Is.GreaterThan(artillery.Command.LastPoint.z));
+        }
+
+        [Test]
         public void Attack_OverTheFocusFireCap_NearestShipsAttackAndTheRestAttackMoveToTheTarget()
         {
             CappedSlots slots = new CappedSlots { FreeShips = 2 };
@@ -615,6 +640,9 @@ namespace EmpireAtWar.Tests.Editor
             public Vector3 WorldPosition { get; set; }
             public float NavigationRadius { get; set; } = 5f;
             public float PaceSpeed { get; set; } = 30f;
+            public int HullTier { get; set; }
+            public bool IsBackRow { get; set; }
+            public FormationRow LastRow { get; private set; }
 
             public void MoveTo(Vector2 point) => Record(UnitActionId.Move, point);
 
@@ -629,8 +657,9 @@ namespace EmpireAtWar.Tests.Editor
 
             public void FocusFire(IEntity target) => Record(UnitActionId.Attack);
 
-            public void AttackMoveTo(Vector3 point, AttackMoveEngagement engagement, PaceCluster pace = null)
-            { LastEngagement = engagement; LastPace = pace; Record(UnitActionId.AttackMove, point); }
+            public void AttackMoveTo(Vector3 point, AttackMoveEngagement engagement, PaceCluster pace = null,
+                FormationRow row = FormationRow.Front)
+            { LastEngagement = engagement; LastPace = pace; LastRow = row; Record(UnitActionId.AttackMove, point); }
 
             public void Stop() => Record(UnitActionId.Stop);
 

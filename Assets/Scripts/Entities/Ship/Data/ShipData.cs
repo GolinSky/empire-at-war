@@ -15,6 +15,8 @@ namespace EmpireAtWar.Entities.Ship.Data
 {
     public interface IShipData
     {
+        ShipClass ShipClass { get; }
+        UnitRole Roles { get; }
         float MinMoveCoefficient { get; }
         float DestroyDelay { get; }
         UnitWreckData Wreck { get; }

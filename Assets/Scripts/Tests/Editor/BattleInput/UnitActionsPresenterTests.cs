@@ -370,6 +370,8 @@ namespace EmpireAtWar.Tests.Editor
             public Vector3 WorldPosition => Vector3.zero;
             public float NavigationRadius => 5f;
             public float PaceSpeed => 30f;
+            public int HullTier => 0;
+            public bool IsBackRow => false;
 
             public void MoveTo(Vector2 point) { }
 
@@ -379,7 +381,8 @@ namespace EmpireAtWar.Tests.Editor
 
             public void FocusFire(IEntity target) { }
 
-            public void AttackMoveTo(Vector3 point, AttackMoveEngagement engagement, PaceCluster pace = null) { }
+            public void AttackMoveTo(Vector3 point, AttackMoveEngagement engagement, PaceCluster pace = null,
+                FormationRow row = FormationRow.Front) { }
 
             public void Stop() { }
 

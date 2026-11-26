@@ -83,13 +83,14 @@ namespace EmpireAtWar.Entities.Ship.StateMachine
         // Both reach tests also need the forward main batteries in range bow-on (see ShipEngagement.CanHoldOn).
         private bool IsInReach => ShipEngagement.IsInReach(_shipMoveComponent, _weaponComponent,
             _mainTargetEntity, TargetPosition) && _weaponComponent.MainBatteryReaches(_mainTargetEntity,
-            ShipEngagement.ContactDistance(_shipMoveComponent, _mainTargetEntity), 1f);
+            ShipEngagement.ContactDistance(_shipMoveComponent, _mainTargetEntity), 1f, false);
         // Reach with the leave margin: a ship holding on its target only re-approaches beyond this. The main battery
-        // gets no margin: once the nearest target hardpoints die, mains just past their range would hold silent.
+        // keeps holding while the mains in reach carry half of the bearing main weight; requiring every main made the
+        // ship flap between hold and approach at the range edge.
         private bool IsInHeldReach => ShipEngagement.IsInReach(_shipMoveComponent, _weaponComponent,
             _mainTargetEntity, TargetPosition, ShipEngagement.HELD_REACH_FACTOR) &&
             _weaponComponent.MainBatteryReaches(_mainTargetEntity,
-                ShipEngagement.ContactDistance(_shipMoveComponent, _mainTargetEntity), 1f);
+                ShipEngagement.ContactDistance(_shipMoveComponent, _mainTargetEntity), 1f, true);
         private float PursuitDestinationUpdateDistance => Mathf.Max(
             _shipMoveComponent.NavigationRadius,
             EngagementRange * 0.1f);

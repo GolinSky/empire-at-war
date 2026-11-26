@@ -799,6 +799,19 @@ namespace EmpireAtWar.Tests.Movement
         }
 
         [Test]
+        public void AttackMoveRows_RearRowsStandOffFartherButWithinReach()
+        {
+            float reach = _weapon.GetEngagementRange(_target.Health.ShipClass);
+            float Standoff(FormationRow row) => Vector3.Distance(_target.Transform.position,
+                ShipEngagement.GetStandoffPosition(_movement, _weapon, _target,
+                    standoffFactor: ShipEngagement.GetStandoffFactor(row)));
+
+            Assert.That(Standoff(FormationRow.Middle), Is.GreaterThan(Standoff(FormationRow.Front)));
+            Assert.That(Standoff(FormationRow.Back), Is.GreaterThan(Standoff(FormationRow.Middle)));
+            Assert.That(Standoff(FormationRow.Back), Is.LessThanOrEqualTo(reach));
+        }
+
+        [Test]
         public void SharedPursuit_FormationBearingSurvivesOwnDetour()
         {
             Vector3 offset = Vector3.forward * 20f;
@@ -1172,6 +1185,22 @@ namespace EmpireAtWar.Tests.Movement
             _target.Transform.position = Vector3.right * (reach * ShipEngagement.HELD_REACH_FACTOR + 5f);
             state.Tick(0.1f);
             Assert.That(_movement.MoveCount, Is.EqualTo(1));
+        }
+
+        [Test]
+        public void Attack_HoldingShipDoesNotStartALegWhenOneMainDropsOutOfRange()
+        {
+            _target.Transform.position = Vector3.right * 95f;
+            AttackTargetState state = new AttackTargetState(null, _weapon, _movement, FreeFocusFireClaim.Instance);
+            state.SetData(_target);
+            state.Tick(0.1f);
+            Assert.That(_movement.HeldTarget, Is.SameAs(_target));
+
+            _weapon.AllMainsReach = false;
+            for (int i = 0; i < 5; i++) state.Tick(0.1f);
+
+            Assert.That(_movement.MoveCount, Is.Zero);
+            Assert.That(_movement.HeldTarget, Is.SameAs(_target));
         }
 
         [Test]
@@ -1696,7 +1725,10 @@ namespace EmpireAtWar.Tests.Movement
                 distance <= Mathf.Max(80f, contactDistance * 1.15f);
             public bool IsWithinReach(float distance, float contactDistance, ShipClass targetClass) =>
                 distance <= Mathf.Max(100f, contactDistance * 1.15f);
-            public bool MainBatteryReaches(IEntity target, float contactDistance, float reachFactor) => true;
+            /// <summary>False: one bearing main is out of range, but the mains in reach still carry half the weight.</summary>
+            public bool AllMainsReach { get; set; } = true;
+            public bool MainBatteryReaches(IEntity target, float contactDistance, float reachFactor, bool isHolding) =>
+                AllMainsReach || isHolding;
             public bool CanUseSiegeApproach(IEntity target) => UseSiegeApproach;
             public bool TryGetHardPointApproach(AttackData target, out Vector3 offset)
             {

@@ -12,7 +12,10 @@ using NUnit.Framework;
 
 namespace EmpireAtWar.Tests.Editor
 {
-    /// <summary>Xyston superlaser: frigates and larger plus stations and structures; auto target prefers capital ships.</summary>
+    /// <summary>
+    /// Xyston superlaser: frigates and larger plus stations and structures; auto target ranks like Ion Pulse:
+    /// station or structure, then Dreadnought > BattleCruiser > Capital.
+    /// </summary>
     [Category("Abilities")]
     public sealed class SuperlaserTargetRuleTests
     {
@@ -43,7 +46,7 @@ namespace EmpireAtWar.Tests.Editor
             Assert.That(_settings.CanTarget(null, Ship(ShipClass.Structure)), Is.True);
 
         [Test]
-        public void AutoTarget_PrefersCapitalThenBattleCruiserThenDreadnoughtThenStationOrStructure()
+        public void AutoTarget_PrefersStationOrStructureThenDreadnoughtThenBattleCruiserThenCapital()
         {
             int capital = _settings.GetTargetPriority(Ship(ShipClass.Capital));
             int battleCruiser = _settings.GetTargetPriority(Ship(ShipClass.BattleCruiser));
@@ -52,11 +55,29 @@ namespace EmpireAtWar.Tests.Editor
             int structure = _settings.GetTargetPriority(Ship(ShipClass.Structure));
             int frigate = _settings.GetTargetPriority(Ship(ShipClass.Frigate));
 
-            Assert.That(capital, Is.GreaterThan(battleCruiser));
-            Assert.That(battleCruiser, Is.GreaterThan(dreadnought));
-            Assert.That(dreadnought, Is.GreaterThan(station));
+            Assert.That(station, Is.GreaterThan(dreadnought));
             Assert.That(structure, Is.EqualTo(station));
-            Assert.That(station, Is.GreaterThan(frigate));
+            Assert.That(dreadnought, Is.GreaterThan(battleCruiser));
+            Assert.That(battleCruiser, Is.GreaterThan(capital));
+            Assert.That(capital, Is.GreaterThan(frigate));
+        }
+
+        [Test]
+        public void AutoTarget_RanksShipsAndStationsInTheSameOrderAsIonPulse()
+        {
+            var ionPulse = new IonPulseSettings();
+            IEntity[] ordered =
+            {
+                Station(), Ship(ShipClass.Dreadnought), Ship(ShipClass.BattleCruiser), Ship(ShipClass.Capital),
+                Ship(ShipClass.Frigate)
+            };
+            for (int i = 1; i < ordered.Length; i++)
+            {
+                Assert.That(_settings.GetTargetPriority(ordered[i - 1]),
+                    Is.GreaterThan(_settings.GetTargetPriority(ordered[i])));
+                Assert.That(ionPulse.GetTargetPriority(ordered[i - 1]),
+                    Is.GreaterThan(ionPulse.GetTargetPriority(ordered[i])));
+            }
         }
 
         [Test]

@@ -1153,6 +1153,35 @@ namespace EmpireAtWar.Tests.Movement
         }
 
         [Test]
+        public void CombatHold_SettleGoalMovedByThePlannerIsRefusedAndTheShipStays()
+        {
+            var ship = new GameObject("Moved combat settling");
+            var targetObject = new GameObject("Held target");
+            try
+            {
+                ShipMoveComponent component = CreateReadyComponent(ship, out var navigation);
+                SetPrivateField(component, "_isNavigationRegistered", true);
+                navigation.IsDeferred = false;
+                targetObject.transform.position = Vector3.forward * 30f;
+                component.HoldPosition(new SpacingTarget(targetObject.transform));
+                // The sideways spot is taken: the planner offers a free slot behind the ship instead.
+                navigation.MovedDestination = Vector3.back * 40f;
+                int stops = navigation.StopCallCount;
+
+                Assert.That(component.TrySettle(Vector3.right * 10f, component.SpacingRevision), Is.False);
+                Assert.That(component.IsMoving, Is.False);
+                Assert.That(component.CanSettle, Is.True);
+                Assert.That(navigation.StopCallCount, Is.GreaterThan(stops));
+                Assert.That(ship.transform.position, Is.EqualTo(Vector3.zero));
+            }
+            finally
+            {
+                Object.DestroyImmediate(ship);
+                Object.DestroyImmediate(targetObject);
+            }
+        }
+
+        [Test]
         public void CombatHold_SettleHopLongerThanItsDistanceFailsInsteadOfLooping()
         {
             var ship = new GameObject("Looping combat settling");
@@ -1733,6 +1762,8 @@ namespace EmpireAtWar.Tests.Movement
             public Queue<IShipPlanRequester> PendingPlans { get; } = new Queue<IShipPlanRequester>();
             // Routes through this point when set: a hop much longer than its straight distance (a turning loop).
             public Vector3? RouteVia { get; set; }
+            // The planner's substitute when the requested goal is taken (a free ring slot elsewhere).
+            public Vector3? MovedDestination { get; set; }
 
             public void Register(
                 IShipNavigationAgent agent,
@@ -1802,6 +1833,7 @@ namespace EmpireAtWar.Tests.Movement
                 PlanCallCount++;
                 LastDestination = requestedDestination;
                 LastForward = forward;
+                if (MovedDestination.HasValue) requestedDestination = MovedDestination.Value;
                 return new ShipNavigationPlan(
                     destination: requestedDestination,
                     detour: null,

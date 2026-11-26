@@ -46,6 +46,8 @@ namespace EmpireAtWar.Components.Ship.Movement
         // An arrival correction whose route is this many times longer than the hop is a turning loop; the
         // ship stays where it arrived instead.
         private const float ARRIVAL_CORRECTION_MAX_ROUTE_FACTOR = 2f;
+        // A settle hop whose planner moved the goal by more than this share of the hull radius is refused.
+        private const float SETTLE_GOAL_TOLERANCE_FACTOR = 0.25f;
 
         private IMapModelObserver _mapModel;
         private IStationFacingService _stationFacingService;
@@ -100,6 +102,9 @@ namespace EmpireAtWar.Components.Ship.Movement
         private bool _isAnchorBraking;
         private int _spacingRevision;
         private bool _wasMoving;
+#if UNITY_EDITOR || DEVELOPMENT_BUILD
+        private string _settleEvent;
+#endif
 
         public int SpacingRevision => _spacingRevision;
         public bool CanSettle => _combatHoldTarget != null && !_combatHoldTarget.HealthModel.IsDestroyed &&
@@ -120,6 +125,17 @@ namespace EmpireAtWar.Components.Ship.Movement
                     _isInPlanQueue ? 1 : 0, _motion.IsBraking ? 1 : 0, _isSettling ? 1 : 0,
                     _failedDestination.HasValue ? 1 : 0, destination.x, destination.z, _motion.CurrentSpeed);
             }
+        }
+
+        public string TakeSettleEvent()
+        {
+#if UNITY_EDITOR || DEVELOPMENT_BUILD
+            string pending = _settleEvent;
+            _settleEvent = null;
+            return pending;
+#else
+            return null;
+#endif
         }
 
         public event Action<Vector3> DestinationChanged;
@@ -319,6 +335,22 @@ namespace EmpireAtWar.Components.Ship.Movement
             if (_weaponFacing.IsWithinReach(goalDistance, contact, targetClass)) return true;
             float currentDistance = PlanarGeometry.Distance(transform.position, target);
             return !_weaponFacing.IsWithinReach(currentDistance, contact, targetClass) && goalDistance <= currentDistance;
+        }
+
+        [System.Diagnostics.Conditional("UNITY_EDITOR"), System.Diagnostics.Conditional("DEVELOPMENT_BUILD")]
+        private void NoteSettle(Vector3 requested, Vector3 planned, bool refused)
+        {
+#if UNITY_EDITOR || DEVELOPMENT_BUILD
+            if (!_isSettling || _combatHoldTransform == null) return;
+            Vector3 hop = PlanarGeometry.Flatten(planned - transform.position);
+            Vector3 toTarget = PlanarGeometry.Flatten(_combatHoldTransform.position - transform.position);
+            float angle = hop.sqrMagnitude > Mathf.Epsilon && toTarget.sqrMagnitude > Mathf.Epsilon
+                ? Vector3.Angle(hop, toTarget)
+                : float.NaN;
+            _settleEvent = string.Format(System.Globalization.CultureInfo.InvariantCulture,
+                "settle:{0} requested=({1:F0},{2:F0}) planned=({3:F0},{4:F0}) hopToTarget={5:F0}",
+                refused ? "refused" : "planned", requested.x, requested.z, planned.x, planned.z, angle);
+#endif
         }
 
         private void SetTargetPosition(Vector3 requestedPosition, bool preserveCourse = false)
@@ -559,7 +591,14 @@ namespace EmpireAtWar.Components.Ship.Movement
             }
             bool isArrivalCorrection = _isArrivalCorrectionPlan;
             _isArrivalCorrectionPlan = false;
-            if ((isArrivalCorrection || _isSettling) && plan.Route.Length > ARRIVAL_CORRECTION_MAX_ROUTE_FACTOR *
+            // The planner moves an occupied goal to a free ring slot, in a packed firing line often behind the ship:
+            // a spacing nudge must reach the sideways spot it asked for, or it flies the stern at the target.
+            float settleTolerance = NavigationRadius * SETTLE_GOAL_TOLERANCE_FACTOR;
+            bool settleGoalMoved = _isSettling &&
+                PlanarGeometry.DistanceSquared(plan.Destination, destination) > settleTolerance * settleTolerance;
+            NoteSettle(destination, plan.Destination, settleGoalMoved);
+            if (settleGoalMoved || (isArrivalCorrection || _isSettling) &&
+                plan.Route.Length > ARRIVAL_CORRECTION_MAX_ROUTE_FACTOR *
                     PlanarGeometry.Distance(transform.position, plan.Destination))
             {
                 // A hop shorter than the turning circle flies a loop around the spot (seen on attack-move
