@@ -1,6 +1,6 @@
 using System;
-using EmpireAtWar.Components.Ship.Health;
 using NUnit.Framework;
+using EmpireAtWar.Entities.Units;
 
 namespace EmpireAtWar.Tests.Editor
 {

@@ -1,8 +1,8 @@
 using System;
 using System.Collections.Generic;
-using EmpireAtWar.Components.Ship.Health;
 using EmpireAtWar.Components.Weapon;
 using EmpireAtWar.Entities.EnemyFaction.Models.Combat;
+using EmpireAtWar.Entities.Units;
 using EmpireAtWar.Services.Saves;
 using NUnit.Framework;
 

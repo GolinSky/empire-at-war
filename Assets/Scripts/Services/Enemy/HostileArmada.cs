@@ -1,6 +1,6 @@
-using EmpireAtWar.Components.Ship.Health;
 using EmpireAtWar.Entities.EnemyFaction.Models.Combat;
 using UnityEngine;
+using EmpireAtWar.Entities.Units;
 
 namespace EmpireAtWar.Services.Enemy
 {

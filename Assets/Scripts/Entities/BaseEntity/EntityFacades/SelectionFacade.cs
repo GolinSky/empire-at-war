@@ -4,7 +4,7 @@ using EmpireAtWar.Models.Selection;
 using EmpireAtWar.Services.Selection;
 using UnityEngine;
 
-namespace EmpireAtWar.Entities.Ship.EntityFacades.Selection
+namespace EmpireAtWar.Entities.BaseEntity.EntityFacades
 {
     public class SelectionFacade: IEntitySelectionFacade, IEntitySelectionObserverFacade, ISelectionPositionProvider
     {

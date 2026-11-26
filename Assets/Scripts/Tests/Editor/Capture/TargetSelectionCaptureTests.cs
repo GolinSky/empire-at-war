@@ -7,7 +7,7 @@ using EmpireAtWar.Components.Combat;
 using EmpireAtWar.Entities.BaseEntity;
 using EmpireAtWar.Entities.BaseEntity.EntityFacades;
 using EmpireAtWar.Entities.Ship.EntityFacades;
-using EmpireAtWar.Entities.Ship.EntityFacades.Combat;
+using EmpireAtWar.Entities.Units;
 using EmpireAtWar.Models.Health;
 using EmpireAtWar.Models.Players;
 using EmpireAtWar.Services.Vision;

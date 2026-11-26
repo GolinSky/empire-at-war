@@ -4,6 +4,7 @@ using EmpireAtWar.Components.AttackComponent;
 using EmpireAtWar.Entities.BaseEntity;
 using EmpireAtWar.Entities.Ship.Data;
 using EmpireAtWar.Editor.Balance;
+using EmpireAtWar.Entities.Units;
 using EmpireAtWar.Models.Health;
 using EmpireAtWar.ViewComponents.Health;
 using Newtonsoft.Json.Linq;

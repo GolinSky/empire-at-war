@@ -1,6 +1,6 @@
 using System.Numerics;
+using EmpireAtWar.Entities.Units;
 using EmpireAtWar.Models.Players;
-using EmpireAtWar.Components.Ship.Health;
 
 namespace EmpireAtWar.Entities.CinematicCamera.Model
 {

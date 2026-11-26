@@ -1,7 +1,6 @@
 using System;
 using System.Collections.Generic;
 using EmpireAtWar.Components.AttackComponent;
-using EmpireAtWar.Components.Ship.Health;
 using EmpireAtWar.Components.Hangar;
 using EmpireAtWar.Entities.DefendPlatform;
 using EmpireAtWar.Entities.EnemyFaction.Models.Combat;

@@ -1,4 +1,4 @@
-using EmpireAtWar.Components.Ship.Health;
+using EmpireAtWar.Entities.Units;
 using EmpireAtWar.Models.Factions;
 
 namespace EmpireAtWar.Entities.Tooltip

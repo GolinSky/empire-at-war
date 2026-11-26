@@ -1,7 +1,6 @@
 using System;
 using System.Collections.Generic;
 using EmpireAtWar.Components.AttackComponent;
-using EmpireAtWar.Components.Ship.Health;
 using EmpireAtWar.Services.Timing;
 using EmpireAtWar.Utils;
 using EmpireAtWar.ViewComponents.Health;

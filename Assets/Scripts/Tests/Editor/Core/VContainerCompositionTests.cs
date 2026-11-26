@@ -2,6 +2,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using EmpireAtWar.Components.Ship.Health;
+using EmpireAtWar.Entities.Units;
 using EmpireAtWar.Extensions;
 using EmpireAtWar.Lifecycle;
 using EmpireAtWar.Models.Factions;

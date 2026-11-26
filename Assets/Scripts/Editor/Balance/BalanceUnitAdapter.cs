@@ -6,6 +6,7 @@ using EmpireAtWar.Components.Ship.Health;
 using EmpireAtWar.Entities.Ship.Data;
 using EmpireAtWar.Entities.Squadrons;
 using EmpireAtWar.Entities.Squadrons.Data;
+using EmpireAtWar.Entities.Units;
 using EmpireAtWar.Models.Factions;
 using EmpireAtWar.Models.Health;
 using EmpireAtWar.Repository.Data;

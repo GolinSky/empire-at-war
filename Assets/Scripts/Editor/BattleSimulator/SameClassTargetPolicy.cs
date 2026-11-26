@@ -1,4 +1,5 @@
 using System.Collections.Generic;
+using EmpireAtWar.Entities.Units;
 
 namespace EmpireAtWar.Editor.BattleSimulator
 {

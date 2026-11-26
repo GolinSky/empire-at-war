@@ -3,7 +3,6 @@ using EmpireAtWar.Components.Weapon;
 using EmpireAtWar.Entities.Game;
 using EmpireAtWar.Models.Players;
 using EmpireAtWar.Services.Repair;
-using EmpireAtWar.Services.Squadrons;
 using EmpireAtWar.Services.Enemy;
 using EmpireAtWar.Services.ShipAbilities;
 using EmpireAtWar.Services.UnitExplosion;

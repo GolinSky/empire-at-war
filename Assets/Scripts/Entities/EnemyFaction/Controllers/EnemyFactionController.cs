@@ -1,7 +1,6 @@
 using System;
 using EmpireAtWar.Services.Player;
 using EmpireAtWar.Entities.BaseEntity.EntityFacades;
-using EmpireAtWar.Components.Ship.Health;
 using EmpireAtWar.Entities.SpaceStation;
 using EmpireAtWar.Entities.Units;
 using EmpireAtWar.Models.Players;

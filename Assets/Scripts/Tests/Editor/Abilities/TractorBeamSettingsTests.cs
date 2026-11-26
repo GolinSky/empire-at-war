@@ -1,7 +1,7 @@
 using System;
-using EmpireAtWar.Components.Ship.Health;
 using EmpireAtWar.Components.Combat;
 using System.Reflection;
+using EmpireAtWar.Entities.Units;
 using EmpireAtWar.Services.ShipAbilities;
 using EmpireAtWar.Services.ShipAbilities.Abilities;
 using NUnit.Framework;

@@ -4,6 +4,7 @@ using System;
 using EmpireAtWar.Components.AttackComponent;
 using EmpireAtWar.Components.Ship.Health;
 using UnityEngine;
+using EmpireAtWar.Entities.Units;
 
 namespace EmpireAtWar.Services.ShipAbilities.Abilities
 {

@@ -1,6 +1,6 @@
 using System;
-using EmpireAtWar.Components.Ship.Health;
 using EmpireAtWar.Entities.EnemyFaction.Models.Combat;
+using EmpireAtWar.Entities.Units;
 using EmpireAtWar.Models.Players;
 using EmpireAtWar.Services.Enemy;
 using NUnit.Framework;

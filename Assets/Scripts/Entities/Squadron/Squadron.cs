@@ -5,6 +5,7 @@ using EmpireAtWar.Components.AttackComponent;
 using EmpireAtWar.Components.Combat;
 using EmpireAtWar.Components.Movement.Formation;
 using EmpireAtWar.Components.Radar;
+using EmpireAtWar.Entities.Units;
 using EmpireAtWar.Models.Selection;
 using EmpireAtWar.Components.Ship.Audio;
 using EmpireAtWar.Components.Ship.Health;

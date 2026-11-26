@@ -5,7 +5,7 @@ using EmpireAtWar.Entities.BaseEntity.EntityFacades;
 using EmpireAtWar.Entities.BaseEntity.Orders;
 using UnityEngine;
 
-namespace EmpireAtWar.Entities.Ship.EntityFacades
+namespace EmpireAtWar.Entities.BaseEntity.EntityFacades
 {
     public sealed class StationaryAttackFacade : IFocusFireFacade, IHardPointAttackFacade, IStopFacade
     {

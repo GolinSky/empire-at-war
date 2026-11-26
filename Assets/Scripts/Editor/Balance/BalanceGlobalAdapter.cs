@@ -1,8 +1,8 @@
 using System;
 using System.Linq;
 using EmpireAtWar.Components.AttackComponent;
-using EmpireAtWar.Components.Ship.Health;
 using EmpireAtWar.Entities.Units.Matchups;
+using EmpireAtWar.Entities.Units;
 using EmpireAtWar.Models.Economy;
 using EmpireAtWar.Models.Factions;
 using UnityEditor;

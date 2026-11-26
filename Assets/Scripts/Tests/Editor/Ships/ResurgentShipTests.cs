@@ -3,6 +3,7 @@ using EmpireAtWar.Components.AttackComponent;
 using EmpireAtWar.Components.Ship.Health;
 using EmpireAtWar.Components.Weapon;
 using EmpireAtWar.Entities.Ship.Data;
+using EmpireAtWar.Entities.Units;
 using EmpireAtWar.Models.Factions;
 using EmpireAtWar.Services.ShipAbilities;
 using EmpireAtWar.ViewComponents.Health;

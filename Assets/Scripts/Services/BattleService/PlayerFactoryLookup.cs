@@ -6,7 +6,6 @@ using EmpireAtWar.Entities.Squadrons;
 using EmpireAtWar.Entities.Units;
 using EmpireAtWar.Models.Factions;
 using EmpireAtWar.Models.Players;
-using EmpireAtWar.Ship;
 using UnityEngine;
 using DefendPlatformEntity = EmpireAtWar.Entities.DefendPlatform.DefendPlatform;
 using MiningFacilityEntity = EmpireAtWar.Entities.MiningFacility.MiningFacility;

@@ -1,6 +1,6 @@
 using System;
 
-namespace EmpireAtWar.Components.Ship.Health
+namespace EmpireAtWar.Entities.Units
 {
     /// <summary>
     /// What a ship or squadron is for, so the AI can pick by need and class instead of by price alone. Several flags combine.

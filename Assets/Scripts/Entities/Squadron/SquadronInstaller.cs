@@ -1,10 +1,9 @@
 using EmpireAtWar.Components.Combat;
 using EmpireAtWar.Components.Squadrons.Health;
 using EmpireAtWar.Components.Squadrons.Flight;
+using EmpireAtWar.Entities.BaseEntity.EntityFacades;
 using EmpireAtWar.Entities.BaseEntity;
 using EmpireAtWar.Entities.BaseEntity.Orders;
-using EmpireAtWar.Entities.Ship.EntityFacades.Combat;
-using EmpireAtWar.Entities.Ship.EntityFacades.Health;
 using EmpireAtWar.Entities.Squadrons.Data;
 using EmpireAtWar.Entities.Squadrons.EntityFacades;
 using EmpireAtWar.Entities.Units;

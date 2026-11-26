@@ -4,6 +4,7 @@ using System.Linq;
 using EmpireAtWar.Components.AttackComponent;
 using EmpireAtWar.Components.Combat;
 using EmpireAtWar.Components.Ship.Health;
+using EmpireAtWar.Entities.Units;
 using EmpireAtWar.Mvc;
 
 namespace EmpireAtWar.Models.Health

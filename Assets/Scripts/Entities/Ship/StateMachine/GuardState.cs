@@ -4,6 +4,7 @@ using EmpireAtWar.Components.Radar;
 using EmpireAtWar.Components.Ship.Movement;
 using EmpireAtWar.Components.Weapon;
 using EmpireAtWar.Entities.BaseEntity;
+using EmpireAtWar.Entities.Units;
 using EmpireAtWar.Patterns.StateMachine;
 using EmpireAtWar.Services.UnitOrders;
 using UnityEngine;

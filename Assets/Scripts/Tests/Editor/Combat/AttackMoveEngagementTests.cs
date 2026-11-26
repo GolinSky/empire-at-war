@@ -4,9 +4,9 @@ using EmpireAtWar.Components.Ship.Health;
 using EmpireAtWar.Entities.BaseEntity;
 using EmpireAtWar.Entities.BaseEntity.EntityFacades;
 using EmpireAtWar.Entities.BaseEntity.Orders;
+using EmpireAtWar.Entities.Units;
 using EmpireAtWar.Models.Health;
 using EmpireAtWar.Models.Players;
-using EmpireAtWar.Ship;
 using NUnit.Framework;
 
 namespace EmpireAtWar.Tests.Editor

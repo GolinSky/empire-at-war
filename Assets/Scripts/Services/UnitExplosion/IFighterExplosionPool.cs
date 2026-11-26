@@ -1,6 +1,6 @@
 using UnityEngine;
 
-namespace EmpireAtWar.Services.Squadrons
+namespace EmpireAtWar.Services.UnitExplosion
 {
     public interface IFighterExplosionPool
     {

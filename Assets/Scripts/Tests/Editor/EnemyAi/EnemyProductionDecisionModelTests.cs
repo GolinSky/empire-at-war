@@ -8,7 +8,6 @@ using EmpireAtWar.Controllers.Game;
 using EmpireAtWar.Entities.DefendPlatform;
 using EmpireAtWar.Entities.EnemyFaction.Models;
 using EmpireAtWar.Entities.EnemyFaction.Models.Combat;
-using EmpireAtWar.Components.Ship.Health;
 using EmpireAtWar.Entities.Units;
 using EmpireAtWar.Entities.Game;
 using EmpireAtWar.Entities.MiningFacility;

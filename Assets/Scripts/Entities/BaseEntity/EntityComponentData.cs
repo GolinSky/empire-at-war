@@ -4,6 +4,7 @@ using EmpireAtWar.Components.FogOfWar;
 using EmpireAtWar.Components.Radar;
 using EmpireAtWar.Components.Ship.Health;
 using EmpireAtWar.Components.Weapon;
+using EmpireAtWar.Entities.Units;
 using EmpireAtWar.Models.Health;
 using EmpireAtWar.Services.SpawnBlocking;
 using UnityEngine;

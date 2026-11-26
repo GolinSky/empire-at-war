@@ -1,4 +1,4 @@
-namespace EmpireAtWar.Components.Ship.Health
+namespace EmpireAtWar.Entities.Units
 {
     public enum ShipClass
     {

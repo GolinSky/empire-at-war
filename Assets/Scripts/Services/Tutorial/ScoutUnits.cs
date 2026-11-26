@@ -1,6 +1,6 @@
-using EmpireAtWar.Components.Ship.Health;
 using EmpireAtWar.Controllers.Factions;
 using EmpireAtWar.Entities.Ship.Data;
+using EmpireAtWar.Entities.Units;
 using EmpireAtWar.Mvc;
 
 namespace EmpireAtWar.Services.Tutorial

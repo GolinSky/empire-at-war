@@ -6,6 +6,7 @@ using EmpireAtWar.Components.Ship.EngineGlow;
 using EmpireAtWar.Components.Ship.Health;
 using EmpireAtWar.Components.TeamColor;
 using EmpireAtWar.Entities.Ship.Data;
+using EmpireAtWar.Entities.Units;
 using EmpireAtWar.Models.Factions;
 using EmpireAtWar.Models.Health;
 using EmpireAtWar.Services.ShipAbilities;

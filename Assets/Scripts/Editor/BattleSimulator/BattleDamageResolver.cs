@@ -1,5 +1,5 @@
 using System;
-using EmpireAtWar.Components.Ship.Health;
+using EmpireAtWar.Entities.Units;
 
 namespace EmpireAtWar.Editor.BattleSimulator
 {

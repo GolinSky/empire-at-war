@@ -1,4 +1,4 @@
-using EmpireAtWar.Components.Ship.Health;
+using EmpireAtWar.Entities.Units;
 
 namespace EmpireAtWar.Entities.EnemyFaction.Models
 {

@@ -12,7 +12,6 @@ using EmpireAtWar.Services.Saves;
 using EmpireAtWar.Services.SpawnBlocking;
 using EmpireAtWar.Services.Squadrons;
 using EmpireAtWar.Services.Vision;
-using EmpireAtWar.Ship;
 using EmpireAtWar.Utils;
 using EmpireAtWar.Views.ReinforcementZones;
 using NUnit.Framework;

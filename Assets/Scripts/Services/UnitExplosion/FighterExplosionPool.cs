@@ -6,7 +6,7 @@ using UnityEngine;
 using VContainer;
 using EmpireAtWar.Lifecycle;
 
-namespace EmpireAtWar.Services.Squadrons
+namespace EmpireAtWar.Services.UnitExplosion
 {
     /// <summary>
     /// One set of fighter death explosions shared by every squadron, so squadron views no longer carry an

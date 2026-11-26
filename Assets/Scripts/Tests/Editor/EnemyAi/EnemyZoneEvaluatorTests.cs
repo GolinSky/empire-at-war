@@ -1,9 +1,9 @@
 using System;
 using System.Collections.Generic;
-using EmpireAtWar.Components.Ship.Health;
 using EmpireAtWar.Entities.EnemyFaction.Models.Combat;
 using EmpireAtWar.Entities.EnemyFaction.Models.Objectives;
 using NUnit.Framework;
+using EmpireAtWar.Entities.Units;
 
 namespace EmpireAtWar.Tests.Editor
 {

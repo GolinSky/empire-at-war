@@ -3,6 +3,7 @@ using EmpireAtWar.Components.Radar;
 using EmpireAtWar.Components.FogOfWar;
 using EmpireAtWar.Entities.BaseEntity;
 using EmpireAtWar.Entities.SpaceStation;
+using EmpireAtWar.Entities.Units;
 using EmpireAtWar.Models.Factions;
 using EmpireAtWar.Models.Players;
 using EmpireAtWar.Services.Selection;

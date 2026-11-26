@@ -1,6 +1,6 @@
 using System.Collections.Generic;
 using EmpireAtWar.Models.Players;
-using EmpireAtWar.Services.Squadrons;
+using EmpireAtWar.Services.UnitExplosion;
 using EmpireAtWar.Services.Vision;
 using EmpireAtWar.ViewComponents.Health;
 using NUnit.Framework;

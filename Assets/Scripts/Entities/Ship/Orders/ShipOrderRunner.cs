@@ -1,4 +1,3 @@
-using EmpireAtWar.Components.Ship.Health;
 using static EmpireAtWar.Utils.FormationConversion;
 using System;
 using System.Collections.Generic;
@@ -9,6 +8,7 @@ using EmpireAtWar.Components.Weapon;
 using EmpireAtWar.Entities.BaseEntity;
 using EmpireAtWar.Entities.BaseEntity.EntityFacades;
 using EmpireAtWar.Entities.Ship.StateMachine;
+using EmpireAtWar.Entities.Units;
 using EmpireAtWar.Services.Camera;
 using EmpireAtWar.Services.ShipAbilities;
 using EmpireAtWar.Services.Enemy;

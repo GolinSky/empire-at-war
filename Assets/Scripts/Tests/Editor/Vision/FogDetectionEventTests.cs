@@ -5,7 +5,6 @@ using EmpireAtWar.Components.Combat;
 using EmpireAtWar.Components.FogOfWar;
 using EmpireAtWar.Entities.BaseEntity.EntityFacades;
 using EmpireAtWar.Entities.Ship.EntityFacades;
-using EmpireAtWar.Components.Ship.Health;
 using EmpireAtWar.Models.Players;
 using EmpireAtWar.Services.OwnedAreas;
 using EmpireAtWar.Services.Timing;

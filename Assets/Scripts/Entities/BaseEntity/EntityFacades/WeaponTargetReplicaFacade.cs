@@ -5,7 +5,7 @@ using EmpireAtWar.Components.Weapon;
 using EmpireAtWar.Entities.BaseEntity;
 using EmpireAtWar.Entities.BaseEntity.EntityFacades;
 
-namespace EmpireAtWar.Entities.Ship.EntityFacades
+namespace EmpireAtWar.Entities.BaseEntity.EntityFacades
 {
     /// <summary>Online target relay of an armed entity; clients rebuild the host's attack data with their own factory.</summary>
     public sealed class WeaponTargetReplicaFacade : IWeaponTargetReplicaFacade

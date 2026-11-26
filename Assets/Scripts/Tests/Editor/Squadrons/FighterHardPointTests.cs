@@ -2,7 +2,7 @@ using System.Collections.Generic;
 using System.Reflection;
 using EmpireAtWar.Components.Ship.Health;
 using EmpireAtWar.Models.Health;
-using EmpireAtWar.Services.Squadrons;
+using EmpireAtWar.Services.UnitExplosion;
 using EmpireAtWar.ViewComponents.Health;
 using EmpireAtWar.ViewComponents.Squadrons;
 using NUnit.Framework;

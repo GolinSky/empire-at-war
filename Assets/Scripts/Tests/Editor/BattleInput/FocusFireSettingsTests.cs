@@ -1,7 +1,7 @@
 using System;
 using System.Linq;
-using EmpireAtWar.Components.Ship.Health;
 using EmpireAtWar.Entities.EnemyFaction.Models;
+using EmpireAtWar.Entities.Units;
 using EmpireAtWar.Services.UnitOrders;
 using NUnit.Framework;
 using UnityEditor;

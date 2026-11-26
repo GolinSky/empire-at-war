@@ -1,10 +1,10 @@
+using EmpireAtWar.Entities.Units;
 using EmpireAtWar.Models.Players;
 using System.Collections;
 using System.Collections.Generic;
 using System.Reflection;
 using EmpireAtWar.Components.AttackComponent;
 using EmpireAtWar.Components.Combat;
-using EmpireAtWar.Components.Ship.Health;
 using EmpireAtWar.Components.Weapon;
 using EmpireAtWar.ViewComponents.Health;
 using EmpireAtWar.ViewComponents.Weapon;

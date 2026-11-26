@@ -2,6 +2,7 @@ using EmpireAtWar.Components.AttackComponent;
 using EmpireAtWar.Components.Combat;
 using EmpireAtWar.Components.Ship.Health;
 using EmpireAtWar.Components.Squadrons.Health;
+using EmpireAtWar.Entities.Units;
 using EmpireAtWar.Models.Health;
 using NUnit.Framework;
 using UnityEngine;

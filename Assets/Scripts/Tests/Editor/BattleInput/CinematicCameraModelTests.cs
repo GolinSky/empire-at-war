@@ -1,6 +1,6 @@
 using System;
+using EmpireAtWar.Entities.Units;
 using EmpireAtWar.Tests.Editor;
-using EmpireAtWar.Components.Ship.Health;
 using EmpireAtWar.Entities.CinematicCamera.Model;
 using EmpireAtWar.Services.Camera;
 using NUnit.Framework;

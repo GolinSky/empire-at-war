@@ -1,7 +1,6 @@
 using System.Collections.Generic;
 using EmpireAtWar.Components.AttackComponent;
 using EmpireAtWar.Components.Ship.Movement;
-using EmpireAtWar.Entities.BaseEntity;
 using EmpireAtWar.Entities.Ship.Abilities;
 using EmpireAtWar.Extensions;
 using EmpireAtWar.Models.Players;

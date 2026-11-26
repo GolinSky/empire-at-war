@@ -2,7 +2,6 @@ using System;
 using EmpireAtWar.Models.Players;
 using System.Collections.Generic;
 using EmpireAtWar.Controllers.Factions;
-using EmpireAtWar.Components.Ship.Health;
 using EmpireAtWar.Entities.BaseEntity;
 using EmpireAtWar.Entities.BaseEntity.EntityFacades;
 using EmpireAtWar.Services.Stations;

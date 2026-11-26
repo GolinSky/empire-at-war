@@ -7,9 +7,9 @@ using EmpireAtWar.Components.Ship.EngineGlow;
 using EmpireAtWar.Components.Ship.Health;
 using EmpireAtWar.Components.Ship.Movement;
 using EmpireAtWar.Entities.BaseEntity;
+using EmpireAtWar.Entities.Units;
 using EmpireAtWar.Models.Health;
 using EmpireAtWar.Models.Players;
-using EmpireAtWar.Ship;
 using NUnit.Framework;
 using UnityEngine;
 

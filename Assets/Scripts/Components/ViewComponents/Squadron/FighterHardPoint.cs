@@ -1,6 +1,6 @@
 using EmpireAtWar.Components.AttackComponent;
 using EmpireAtWar.Components.Ship.Health;
-using EmpireAtWar.Services.Squadrons;
+using EmpireAtWar.Services.UnitExplosion;
 using EmpireAtWar.ViewComponents.Health;
 using UnityEngine;
 using VContainer;

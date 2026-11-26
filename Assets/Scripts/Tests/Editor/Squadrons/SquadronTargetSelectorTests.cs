@@ -7,6 +7,7 @@ using EmpireAtWar.Components.Squadrons.Icon;
 using EmpireAtWar.Components.Weapon;
 using EmpireAtWar.Entities.BaseEntity.Orders;
 using EmpireAtWar.Entities.Squadrons.Data;
+using EmpireAtWar.Entities.Units;
 using EmpireAtWar.Services.UnitOrders;
 using EmpireAtWar.Components.Combat;
 using EmpireAtWar.Components.Ship.Health;

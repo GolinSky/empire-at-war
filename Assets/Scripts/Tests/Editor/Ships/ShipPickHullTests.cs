@@ -4,6 +4,7 @@ using EmpireAtWar.Entities.Ship.Data;
 using NUnit.Framework;
 using UnityEditor;
 using UnityEngine;
+using EmpireAtWar.Entities.Units;
 
 namespace EmpireAtWar.Tests.Editor
 {

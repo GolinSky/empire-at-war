@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using EmpireAtWar.Components.AttackComponent;
 using EmpireAtWar.Components.Ship.Health;
 using EmpireAtWar.Components.Weapon;
+using EmpireAtWar.Entities.Units;
 
 namespace EmpireAtWar.Editor.BattleSimulator
 {

@@ -1,7 +1,7 @@
 using EmpireAtWar.Components.Combat;
 using EmpireAtWar.Entities.BaseEntity.EntityFacades;
 
-namespace EmpireAtWar.Entities.Ship.EntityFacades.Combat
+namespace EmpireAtWar.Entities.BaseEntity.EntityFacades
 {
     public class CombatModifiersFacade : ICombatModifiersFacade
     {

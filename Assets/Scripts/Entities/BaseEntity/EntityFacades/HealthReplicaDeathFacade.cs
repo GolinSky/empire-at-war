@@ -1,7 +1,7 @@
 using EmpireAtWar.Entities.BaseEntity.EntityFacades;
 using EmpireAtWar.Models.Health;
 
-namespace EmpireAtWar.Entities.Ship.EntityFacades.Health
+namespace EmpireAtWar.Entities.BaseEntity.EntityFacades
 {
     public sealed class HealthReplicaDeathFacade : IReplicaDeathFacade
     {

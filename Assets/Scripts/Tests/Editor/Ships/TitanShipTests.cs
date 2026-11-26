@@ -11,7 +11,6 @@ using EmpireAtWar.Editor.Balance;
 using EmpireAtWar.Editor.BattleSimulator;
 using EmpireAtWar.Models.Factions;
 using EmpireAtWar.Components.TeamColor;
-using EmpireAtWar.Entities.BaseEntity;
 using EmpireAtWar.Models.Health;
 using EmpireAtWar.Mvc;
 using EmpireAtWar.ViewComponents.Health;

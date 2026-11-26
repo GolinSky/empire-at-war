@@ -1,11 +1,11 @@
 using System;
 using System.Collections.Generic;
 using EmpireAtWar.Components.AttackComponent;
-using EmpireAtWar.Components.Ship.Health;
 using EmpireAtWar.Entities.CaptureSites;
 using EmpireAtWar.Entities.EnemyFaction.Models;
 using EmpireAtWar.Entities.EnemyFaction.Models.Combat;
 using EmpireAtWar.Entities.Game;
+using EmpireAtWar.Entities.Units;
 using EmpireAtWar.Models.Players;
 using EmpireAtWar.Services.CaptureSites;
 using EmpireAtWar.Services.Enemy;

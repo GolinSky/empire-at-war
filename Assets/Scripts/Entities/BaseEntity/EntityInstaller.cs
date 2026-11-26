@@ -1,5 +1,6 @@
 ﻿using System.Collections.Generic;
 using EmpireAtWar.Components.Hangar;
+using EmpireAtWar.Entities.BaseEntity.EntityFacades;
 using EmpireAtWar.Models.MiniMap;
 using EmpireAtWar.Presenters.MiniMap;
 using VContainer;

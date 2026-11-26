@@ -6,8 +6,9 @@ using EmpireAtWar.Components.Ship.Health;
 using EmpireAtWar.Components.Ship.Movement;
 using EmpireAtWar.Lifecycle;
 using EmpireAtWar.Models.Health;
+using EmpireAtWar.Ship;
 
-namespace EmpireAtWar.Ship
+namespace EmpireAtWar.Components.Ship.EngineGlow
 {
     /// <summary>
     /// Engine glow follows the ship: off while ion disabled, dim while stopped, full while moving.

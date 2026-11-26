@@ -1,5 +1,4 @@
 using EmpireAtWar.Entities.Units;
-using EmpireAtWar.Components.Ship.Health;
 using EmpireAtWar.Entities.BaseEntity;
 using EmpireAtWar.Entities.BaseEntity.EntityFacades;
 using System;

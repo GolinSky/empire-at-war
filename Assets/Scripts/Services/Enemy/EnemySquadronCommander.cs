@@ -2,7 +2,6 @@ using System;
 using EmpireAtWar.Models.Players;
 using EmpireAtWar.Controllers.Game;
 using System.Collections.Generic;
-using EmpireAtWar.Components.Ship.Health;
 using EmpireAtWar.Entities.BaseEntity;
 using EmpireAtWar.Components.Movement.Formation;
 using EmpireAtWar.Entities.BaseEntity.EntityFacades;

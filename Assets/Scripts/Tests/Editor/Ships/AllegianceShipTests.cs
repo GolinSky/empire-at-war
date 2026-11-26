@@ -11,6 +11,7 @@ using EmpireAtWar.Entities.Ship.Data;
 using EmpireAtWar.Entities.BaseEntity;
 using EmpireAtWar.Entities.Tooltip;
 using EmpireAtWar.Entities.Units.Matchups;
+using EmpireAtWar.Entities.Units;
 using EmpireAtWar.Services.Tooltip;
 using EmpireAtWar.Components.TeamColor;
 using EmpireAtWar.Models.Factions;

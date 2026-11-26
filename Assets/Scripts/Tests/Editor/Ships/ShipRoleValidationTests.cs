@@ -1,9 +1,9 @@
 using System.Collections.Generic;
 using System.Linq;
 using EmpireAtWar.Components.AttackComponent;
-using EmpireAtWar.Components.Ship.Health;
 using EmpireAtWar.Editor;
 using EmpireAtWar.Entities.Ship.Data;
+using EmpireAtWar.Entities.Units;
 using EmpireAtWar.Models.Factions;
 using NUnit.Framework;
 using UnityEditor;

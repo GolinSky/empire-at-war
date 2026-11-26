@@ -2,8 +2,8 @@ using System;
 using System.Collections.Generic;
 using System.Globalization;
 using System.Linq;
-using EmpireAtWar.Components.Ship.Health;
 using UnityEngine.UIElements;
+using EmpireAtWar.Entities.Units;
 
 namespace EmpireAtWar.Editor.Balance
 {

@@ -8,6 +8,7 @@ using EmpireAtWar.Components.Ship.Health;
 using EmpireAtWar.Components.Ui.Tooltip;
 using EmpireAtWar.Entities.BaseEntity;
 using EmpireAtWar.Entities.Ship.Abilities;
+using EmpireAtWar.Entities.Units;
 using EmpireAtWar.Models.Factions;
 using EmpireAtWar.Models.Health;
 using EmpireAtWar.Models.Players;

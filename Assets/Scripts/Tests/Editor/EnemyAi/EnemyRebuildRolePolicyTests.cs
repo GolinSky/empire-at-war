@@ -1,8 +1,8 @@
 using System.Collections.Generic;
 using System.Linq;
-using EmpireAtWar.Components.Ship.Health;
 using EmpireAtWar.Entities.EnemyFaction.Models;
 using EmpireAtWar.Entities.Ship.Data;
+using EmpireAtWar.Entities.Units;
 using EmpireAtWar.Models.Factions;
 using NUnit.Framework;
 using UnityEditor;

@@ -4,7 +4,7 @@ using UnityEngine;
 using VContainer;
 using EmpireAtWar.Lifecycle;
 
-namespace EmpireAtWar.Entities.BaseEntity
+namespace EmpireAtWar.Entities.BaseEntity.EntityFacades
 {
     public sealed class EntityTransformFacade : IEntityTransformFacade
     {

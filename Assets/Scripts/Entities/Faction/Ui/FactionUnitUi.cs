@@ -1,9 +1,9 @@
 using System;
 using DG.Tweening;
-using EmpireAtWar.Components.Ship.Health;
 using EmpireAtWar.Components.Ui;
 using EmpireAtWar.Components.Ui.Tooltip;
 using EmpireAtWar.Controllers.Factions;
+using EmpireAtWar.Entities.Units;
 using EmpireAtWar.Models.Factions;
 using MPUIKIT;
 using TMPro;

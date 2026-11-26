@@ -2,11 +2,11 @@ using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Text;
-using EmpireAtWar.Components.Ship.Health;
 using EmpireAtWar.Editor.AI;
 using EmpireAtWar.Entities.Ship.Data;
 using UnityEditor;
 using UnityEngine;
+using EmpireAtWar.Entities.Units;
 using ShipView = EmpireAtWar.Ship.Ship;
 
 namespace EmpireAtWar.Editor

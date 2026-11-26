@@ -9,6 +9,7 @@ using EmpireAtWar.Components.Weapon;
 using EmpireAtWar.Editor.Balance;
 using EmpireAtWar.Entities.Ship.Data;
 using EmpireAtWar.Entities.Squadrons.Data;
+using EmpireAtWar.Entities.Units;
 using EmpireAtWar.Models.Health;
 using EmpireAtWar.ViewComponents.Health;
 using EmpireAtWar.ViewComponents.Squadrons;

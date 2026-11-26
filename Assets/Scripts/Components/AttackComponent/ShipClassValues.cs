@@ -1,7 +1,7 @@
 using System;
-using EmpireAtWar.Components.Ship.Health;
 using UnityEngine;
 using UnityEngine.Serialization;
+using EmpireAtWar.Entities.Units;
 
 namespace EmpireAtWar.Components.AttackComponent
 {

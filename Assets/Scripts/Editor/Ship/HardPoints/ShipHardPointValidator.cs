@@ -6,6 +6,7 @@ using EmpireAtWar.Editor.AI;
 using EmpireAtWar.Editor.Balance;
 using EmpireAtWar.Entities.BaseEntity;
 using EmpireAtWar.Entities.Ship.Data;
+using EmpireAtWar.Entities.Units;
 using EmpireAtWar.Models.Health;
 using EmpireAtWar.ViewComponents.Health;
 using UnityEditor;

@@ -18,7 +18,6 @@ using EmpireAtWar.Services.Squadrons;
 using EmpireAtWar.Services.UnitExplosion;
 using EmpireAtWar.Services.UnitOrders;
 using EmpireAtWar.Services.UnitWreck;
-using EmpireAtWar.Ship;
 using EmpireAtWar.Utils;
 using EmpireAtWar.ViewComponents.Health;
 using EmpireAtWar.ViewComponents.Squadrons;

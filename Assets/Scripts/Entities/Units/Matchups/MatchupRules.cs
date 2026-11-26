@@ -1,6 +1,5 @@
 using System;
 using System.Collections.Generic;
-using EmpireAtWar.Components.Ship.Health;
 using EmpireAtWar.Entities.EnemyFaction.Models.Combat;
 using EmpireAtWar.Mvc;
 using UnityEngine;

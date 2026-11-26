@@ -5,6 +5,7 @@ using EmpireAtWar.Components.Weapon;
 using EmpireAtWar.Editor.Balance;
 using EmpireAtWar.Entities.BaseEntity;
 using EmpireAtWar.Entities.Ship.Data;
+using EmpireAtWar.Entities.Units;
 using EmpireAtWar.ViewComponents.Health;
 using NUnit.Framework;
 using UnityEditor;

@@ -1,5 +1,5 @@
-using EmpireAtWar.Components.Ship.Health;
 using EmpireAtWar.Controllers.Factions;
+using EmpireAtWar.Entities.Units;
 using EmpireAtWar.Models.Factions;
 
 namespace EmpireAtWar.Entities.Faction.Ui

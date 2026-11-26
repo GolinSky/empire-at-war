@@ -1,9 +1,9 @@
 using System;
 using System.Collections.Generic;
 using EmpireAtWar.Components.AttackComponent;
+using EmpireAtWar.Entities.Units;
 using EmpireAtWar.Models.Players;
 using EmpireAtWar.Components.Combat;
-using EmpireAtWar.Components.Ship.Health;
 using EmpireAtWar.Components.Weapon;
 using EmpireAtWar.Entities.BaseEntity;
 using EmpireAtWar.Entities.BaseEntity.EntityFacades;

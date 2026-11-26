@@ -1,6 +1,7 @@
 using System;
 using System.Collections.Generic;
 using EmpireAtWar.Components.Ship.Health;
+using EmpireAtWar.Entities.Units;
 
 namespace EmpireAtWar.Models.Health
 {

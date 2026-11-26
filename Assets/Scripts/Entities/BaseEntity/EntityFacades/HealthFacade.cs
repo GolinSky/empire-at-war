@@ -4,7 +4,7 @@ using System;
 using EmpireAtWar.Entities.BaseEntity.EntityFacades;
 using EmpireAtWar.Models.Players;
 
-namespace EmpireAtWar.Entities.Ship.EntityFacades.Health
+namespace EmpireAtWar.Entities.BaseEntity.EntityFacades
 {
     public class HealthFacade: IHealthFacade, IHealthDamageFacade
     {

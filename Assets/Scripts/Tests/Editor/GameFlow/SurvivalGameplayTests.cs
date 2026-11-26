@@ -8,8 +8,6 @@ using UnityEditor;
 using NUnit.Framework;
 using EmpireAtWar.Components.Ship.Movement;
 using EmpireAtWar.Services.IdGeneration;
-using EmpireAtWar.Ship;
-using EmpireAtWar.Entities.BaseEntity;
 using UnityEngine;
 
 namespace EmpireAtWar.Tests.Editor

@@ -108,7 +108,7 @@ public static class BuildCD273Gameplay
         if(AssetDatabase.LoadAssetAtPath<UnityEngine.Object>(DATA)==null) AssetDatabase.CopyAsset("Assets/Settings/Data/Ship/Rebellion/HomeOneShipData.asset",DATA);
         data=Load(DATA); data.targetObject.name="CD273ShipData";
         Set(data,"Hull",2400); Set(data,"Shields",1700); Set(data,"Speed",52);
-        data.FindProperty("<ShipClass>k__BackingField").intValue=(int)EmpireAtWar.Components.Ship.Health.ShipClass.Corvette;
+        data.FindProperty("<ShipClass>k__BackingField").intValue=(int)EmpireAtWar.Entities.Units.ShipClass.Corvette;
         Set(data,"RotationSpeed",45); Set(data,"TurnAcceleration",45); Set(data,"BodyRotationMaxAngle",15);
         data.FindProperty("<HeightTier>k__BackingField").intValue=7;
         Set(data,"ShieldRegenerateValue",1700f/2000f*13.333333f); Set(data,"ShieldRegenerateDelay",3); Set(data,"HullBottom",bottom); Set(data,"HullTop",top);

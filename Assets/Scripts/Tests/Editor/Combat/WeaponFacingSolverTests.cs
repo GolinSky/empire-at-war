@@ -1,7 +1,7 @@
 using EmpireAtWar.Components.AttackComponent;
 using EmpireAtWar.Components.Combat;
-using EmpireAtWar.Components.Ship.Health;
 using EmpireAtWar.Components.Weapon;
+using EmpireAtWar.Entities.Units;
 using EmpireAtWar.ViewComponents.Health;
 using NUnit.Framework;
 using UnityEditor;
