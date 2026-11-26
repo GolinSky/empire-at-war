@@ -302,6 +302,7 @@ namespace EmpireAtWar.Services.Enemy
                     FormattableString.Invariant($"critical=True;etaSeconds=Infinity;timeToLoss={_stationPressure.EstimatedTimeToLossSeconds:F1};") +
                     "reason=no affordable combat unit can arrive before station loss");
             }
+            if (shipBlockedByCapacity) RecordCapSpend(hasDefenseSelection, canBuildDefense);
             _capacityBlocked = shipBlockedByCapacity;
             _factionModel.IsAtUnitCap = shipBlockedByCapacity;
             bool choiceFits = hasShipOption && FitsRemainingCapacity(shipChoice);
@@ -1421,7 +1422,22 @@ namespace EmpireAtWar.Services.Enemy
                    _enemyStructurePlacementService.TryGetRepairPlatformPosition(out _);
         }
 
-        private bool IsPlatformTierReady(FactionData data) => BattleClock.CurrentElapsed >=
+        // N5: at the unit cap money buys no ship, so the platform interval no longer holds it back
+        // (2026-11-26: an ally at 120/120 banked 67k → 256k in 530 s while placing three platforms).
+        /// <summary>N5: at the unit cap, why money is not going into platforms; one row per change.</summary>
+        private void RecordCapSpend(bool hasDefenseSelection, bool canBuildDefense)
+        {
+            string key = FormattableString.Invariant(
+                $"platformSelected={hasDefenseSelection};canBuild={canBuildDefense};inProgress={_purchaseProcessor.HasPlatformInProgress}");
+            if (key == _lastCapSpend) return;
+            _lastCapSpend = key;
+            EnemyAiTelemetry.RecordEvent(_owner.Id, _owner.Faction, "capSpend",
+                FormattableString.Invariant($"{key};money={_economyModel.Money:F0}"));
+        }
+
+        private string _lastCapSpend;
+
+        private bool IsPlatformTierReady(FactionData data) => _capacityBlocked || BattleClock.CurrentElapsed >=
             (EnemyPlatformTier.IsBig(data) ? _nextBigPlatformTime : _nextSmallPlatformTime);
 
         /// <summary>Starts the tier's interval: after a purchase, and after a loss as the rebuy delay (W50).</summary>

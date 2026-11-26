@@ -1008,18 +1008,50 @@ namespace EmpireAtWar.Services.Enemy
             float now = Time.time;
             HostileArmada armada = null;
             float advantage = float.PositiveInfinity;
-            if (!_stationPressure.HasPressure && _ownShips.Count > 0 && planned is not (EnemyStrategicState.HuntFleet or
-                    EnemyStrategicState.AssaultBase or EnemyStrategicState.DefendBase or EnemyStrategicState.RetreatValue))
+            // N3: while the answer is young it stays on the armada it chose; picking the weakest-rated one every
+            // cycle hopped between armadas and re-ordered every ship (2026-11-26: 295 jumps over 300 within 5 s).
+            bool tracking = _armadaMarker != null && now - _armadaPointSince < ARMADA_RESPONSE_HOLD_SECONDS;
+            HostileArmada tracked = null;
+            float trackedAdvantage = float.PositiveInfinity;
+            float trackedDistance = ARMADA_TRACK_DISTANCE;
+            bool canRespond = !_stationPressure.HasPressure && _ownShips.Count > 0 && planned is not (
+                EnemyStrategicState.HuntFleet or EnemyStrategicState.AssaultBase or EnemyStrategicState.DefendBase or
+                EnemyStrategicState.RetreatValue);
+            if (canRespond)
                 foreach (HostileArmada candidate in _teamPicture.Armadas)
                 {
                     if (!candidate.ThreatensAsset ||
                         !HostileArmadaTracker.IsArmada(candidate, CombatMatchup.Advantage(_ownForce, candidate.Strength)))
                         continue;
                     float value = RateAgainstArmada(_ownForce, _ownForceValue, candidate, true);
+                    if (tracking)
+                    {
+                        float distance = PlanarDistance(_armadaMarker.Point, _armadaMarker.Type == TacticalMarkerType.Attack
+                            ? candidate.Centre : candidate.AssetPosition);
+                        if (distance < trackedDistance)
+                        {
+                            tracked = candidate;
+                            trackedAdvantage = value;
+                            trackedDistance = distance;
+                        }
+                    }
                     if (value >= advantage) continue;
                     armada = candidate;
                     advantage = value;
                 }
+            if (tracked != null)
+            {
+                armada = tracked;
+                advantage = trackedAdvantage;
+            }
+            // N4: an armada that drops below the armada test for a moment keeps its answer for a short grace;
+            // the answer switched on and off every few seconds and flipped ships between orders (2026-11-26).
+            if (armada == null && canRespond && _armadaMarker != null &&
+                now - _armadaLastSeen < ARMADA_LOSS_GRACE_SECONDS)
+            {
+                reason = _armadaReason;
+                return _armadaMarker;
+            }
             if (armada == null)
             {
                 _armadaMarker = null;
@@ -1040,14 +1072,19 @@ namespace EmpireAtWar.Services.Enemy
             // Each new point re-orders every ship: keep it while the armada moves less than one weapon range.
             if (_armadaMarker == null || _armadaMarker.Type != type ||
                 PlanarDistance(_armadaMarker.Point, point) > ARMADA_REPOINT_DISTANCE)
+            {
                 _armadaMarker = new TacticalMarker(ARMADA_MARKER_ID, type, _owner.Id, _owner.Team, point, -1, now,
                     now + TeamAiCooperation.STALE_SECONDS);
+                _armadaPointSince = now;
+            }
+            _armadaLastSeen = now;
             bool holds = !intercept && advantage >= profile.RetreatAdvantage;
             reason = intercept
                 ? "Intercept: the team's ships beat the armada that threatens its " + armada.AssetKind + "."
                 : holds
                     ? "Hold: the team beats the armada that threatens its " + armada.AssetKind + " only under its platforms."
                     : "Gather: an armada stronger than the team threatens its " + armada.AssetKind + "; hold under its platforms.";
+            _armadaReason = reason;
             RecordArmadaResponse(FormattableString.Invariant(
                 $"response={(intercept ? "intercept" : holds ? "hold" : "gather")};asset={armada.AssetKind};assetAt=({armada.AssetPosition.x:F0} {armada.AssetPosition.z:F0});armadaShips={armada.Ships};advantage={advantage:F2};mobile={mobile:F2}"));
             return _armadaMarker;
@@ -1059,6 +1096,13 @@ namespace EmpireAtWar.Services.Enemy
         private float _armadaResponseSince = float.NegativeInfinity;
         /// <summary>The intercept point follows the armada only once it moved this far: one common weapon range.</summary>
         private const float ARMADA_REPOINT_DISTANCE = 500f;
+        /// <summary>The armada an answer follows is the one within this distance of its point (N3).</summary>
+        private const float ARMADA_TRACK_DISTANCE = 1000f;
+        /// <summary>An answered armada missing for less than this keeps its answer (N4).</summary>
+        private const float ARMADA_LOSS_GRACE_SECONDS = 6f;
+        private float _armadaPointSince = float.NegativeInfinity;
+        private float _armadaLastSeen = float.NegativeInfinity;
+        private string _armadaReason;
 
         private float RateAgainstArmada(ForceComposition own, float ownValue, HostileArmada armada, bool atAsset) =>
             RateReachAt(own, ownValue, armada.AssetPosition, atAsset);
@@ -2758,38 +2802,56 @@ namespace EmpireAtWar.Services.Enemy
         {
             GameEntity best = null;
             float bestDistance = float.PositiveInfinity;
-            IReadOnlyList<AiWorldSnapshot.Entry> units = _worldSnapshot.LivingUnits;
             foreach (AiWorldSnapshot.Entry station in _worldSnapshot.Bases)
             {
                 if (!_playerRoster.IsHostile(_owner.Id, station.Owner) || station.Entity.HealthModel.IsDestroyed) continue;
+                // N2: a joined assault stays joined while one allied human ship still fights there; the
+                // 3-ship entry test flickered and swung the fleet between bases 2500 apart (2026-11-26).
+                if (station.Entity == _allyAssaultStation && CountAlliedHumanShips(station.Position, 1) >= 1)
+                    return _allyAssaultStation;
                 float distance = PlanarDistance(origin, station.Position);
-                if (distance >= bestDistance) continue;
-                int humanShips = 0;
-                for (int i = 0; i < units.Count && humanShips < ALLY_ASSAULT_MIN_SHIPS; i++)
-                {
-                    AiWorldSnapshot.Entry unit = units[i];
-                    if (unit.Owner == _owner.Id || !unit.UnitTypeId.IsShip ||
-                        !_playerRoster.IsAllied(_owner.Id, unit.Owner) || _playerRoster.Get(unit.Owner).IsAi ||
-                        PlanarDistance(unit.Position, station.Position) > BASE_EXCLUSION_MARGIN) continue;
-                    humanShips++;
-                }
-                if (humanShips < ALLY_ASSAULT_MIN_SHIPS) continue;
+                if (distance >= bestDistance ||
+                    CountAlliedHumanShips(station.Position, ALLY_ASSAULT_MIN_SHIPS) < ALLY_ASSAULT_MIN_SHIPS) continue;
                 best = station.Entity;
                 bestDistance = distance;
             }
+            _allyAssaultStation = best;
             return best;
         }
 
+        private GameEntity _allyAssaultStation;
+
+        /// <summary>Allied human ships within <see cref="BASE_EXCLUSION_MARGIN"/> of <paramref name="position"/>, up to <paramref name="limit"/>.</summary>
+        private int CountAlliedHumanShips(Vector3 position, int limit)
+        {
+            IReadOnlyList<AiWorldSnapshot.Entry> units = _worldSnapshot.LivingUnits;
+            int humanShips = 0;
+            for (int i = 0; i < units.Count && humanShips < limit; i++)
+            {
+                AiWorldSnapshot.Entry unit = units[i];
+                if (unit.Owner == _owner.Id || !unit.UnitTypeId.IsShip ||
+                    !_playerRoster.IsAllied(_owner.Id, unit.Owner) || _playerRoster.Get(unit.Owner).IsAi ||
+                    PlanarDistance(unit.Position, position) > BASE_EXCLUSION_MARGIN) continue;
+                humanShips++;
+            }
+            return humanShips;
+        }
+
         /// <summary>
-        /// S1a / S1b assault target order: a hostile ship fighting near the fleet (on the way or at the base), else the
+        /// S1a / S1b assault target order: a hostile ship fighting near the fleet and no farther from the station than the
+        /// fleet (on the way or at the base), else the
         /// known hostile ship inside <see cref="BASE_EXCLUSION_MARGIN"/> of <paramref name="station"/> nearest the fleet,
         /// else the visible armed platform there nearest the fleet, else the station.
         /// </summary>
         private GameEntity FindAssaultTarget(GameEntity station, Vector3 origin, float now)
         {
-            if (_localThreat != null && _localThreat.TryGetFacade(out IUnitTypeFacade threatType) &&
-                threatType.UnitTypeId.IsShip) return _localThreat;
             Vector3 stationPosition = station.GetFacade<IEntityTransformFacade>().Transform.position;
+            // N2: only a fight on the way: a threat farther from the station than the fleet pinned an ally
+            // assault at another base for minutes (2026-11-26).
+            if (_localThreat != null && _localThreat.TryGetFacade(out IUnitTypeFacade threatType) &&
+                threatType.UnitTypeId.IsShip &&
+                PlanarDistance(_localThreat.GetFacade<IEntityTransformFacade>().Transform.position, stationPosition) <=
+                PlanarDistance(origin, stationPosition)) return _localThreat;
             GameEntity best = null;
             float bestDistance = float.PositiveInfinity;
             foreach (HostileSighting sighting in _intel.Sightings)

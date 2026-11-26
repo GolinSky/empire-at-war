@@ -167,6 +167,24 @@ follows: "[[Done/Bugs/Enemy_AI_Opening_And_Task_Groups]]"
 - No `Hold` "Answering an allied station" with `idleShips` ≥ half the group for > 60 s.
 - Opening unchanged: first 5 min state mix as in 23:15.
 
+## Evidence — 2v2 MonCalamari 2026-11-26 15:43 (editor, 1548 s)
+- Log: `BattleTelemetry/Loading_20261126_154309_ai*.csv`. Empire (human P0 + AI P2) won. No runtime exceptions in Editor.log (all from test runs).
+- Verified working: L2 (P1 built centre mines at 279/318/375 s), L4 (all home mines by battle 113 s), L3 (every idle-pad row has `hostilePads == emptyPads`: the AI skips only pads with enemies on them).
+- **N1 assault stalls on spawns:** P2 sat in `AssaultBase` for 1041→1659 s (618 s). For about 450 s it struck fresh Rebel spawns about 1000 from station 2. It first attacked the station at 1493 s. With a ship target, the strike force = that ship's cap (5). The other ~8 ships ran `ExecuteSiteGuard` at the secured centre. With the station as target: 9–12 strike ships.
+- **N2 ally never hit P3's base:** the human alone killed stations 4 and 266.
+- **N3 armada marker hops:** `SelectArmadaResponse` picks the weakest-rated armada each cycle. The 15 s hold keeps the marker type, not the chosen armada. The point jumps > 500, so it re-issues every ship. 295 marker→marker attack-moves moved > 300 within 5 s, for example P3 at 264.9 (-496,-2446) → 271 (393,-349) → 275 (-61,-1352).
+- **N4 order churn:** 3840 of 6826 AI orders (56%) repeat within 5 s; 1013 A→B→A flips. Top flips: marker↔hold, capture↔hold, strikeOverflow↔hold. These follow state flapping (96 of 325 state switches held < 5 s).
+- **N5 ally banks money at the pop cap:** P2 went from 67k to 256k (1100→1632 s) at capacity 116–120/120. It kept saving for an Executor (needs 50 capacity) with `fits=False`.
+
+## Fixes N1–N5 (2026-11-26, uncommitted, compile clean, tests not run)
+- [x] N1 `EnemyTaskForceExecutor.IssueAttackOrHunt(pushTarget)`: in `AssaultBase` against a defender, eligible ships outside the strike attack-move to the station (`path=assaultPush`); `ExecuteSiteGuard` / gather hold excludes them. No push when the target is the station.
+- [x] N2 `EnemyStrategicContextBuilder.FindAssaultTarget`: `_localThreat` wins only when it is no farther from the station than the fleet. `FindAllyAssaultStation` keeps `_allyAssaultStation` while ≥ 1 allied human ship stays within 900 (entry still needs 3).
+- [x] N3 `SelectArmadaResponse`: while the point is younger than 15 s (`_armadaPointSince`), it keeps the armada nearest the marker point (≤ `ARMADA_TRACK_DISTANCE` 1000), not the weakest-rated one.
+- [x] N4 `SelectArmadaResponse`: an answered armada missing < `ARMADA_LOSS_GRACE_SECONDS` (6 s) keeps the marker and reason; station pressure, no ships or an excluded planned state still drop it at once. Partial: decision-model state flapping is untouched.
+- [x] N5 `EnemyProductionStrategy.IsPlatformTierReady`: at the unit cap (`_capacityBlocked`) the W50 platform interval is skipped. New `capSpend` row per change (`platformSelected`, `canBuild`, `inProgress`, money) names what still blocks spending.
+- Test: `EnemyUnitCommanderTests.AssaultBase_EligibleShipsOutsideTheDefenderStrikePushOnToTheStation`. Reviewed, unchanged: the other `AssaultBase_*`, `StrikeOverflow_*` (station target → no push), `HostileArmadaTrackerTests`, `EnemyProductionDecisionModelTests` (capacity cases tick once; no interval assertion). No unit tests for N2–N5 (builder/production state).
+- Acceptance next battle: ally strike at station within ~120 s of `AssaultBase`; `assaultPush` rows present; marker→marker >300 within 5 s ≪ 295; `capSpend` rows explain any bank > 50k at cap.
+
 ## Files
 - `Assets/Scripts/Entities/EnemyFaction/Models/EnemyStrategicDecisionModel.cs` — rules (S1, S2).
 - `Assets/Scripts/Services/Enemy/EnemyStrategicContextBuilder.cs` — `canAssault`, `canHunt`, `SelectAllyDefenseRequest`, `AssaultGate` (S2–S7).

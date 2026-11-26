@@ -1683,6 +1683,63 @@ namespace EmpireAtWar.Tests.Editor
             finally { UnityEngine.Object.DestroyImmediate(view); }
         }
 
+        // N1: an assault ship the strike on a station defender cannot use pushes on to the station instead of
+        // holding at the gather point; a ship outside the assault force still holds there.
+        [Test]
+        public void AssaultBase_EligibleShipsOutsideTheDefenderStrikePushOnToTheStation()
+        {
+            var striker = new FakeShip(Vector3.zero, 1);
+            var heavy = new FakeShip(Vector3.right, 2);
+            var corvette = new FakeShip(Vector3.left, 3);
+            GameObject stationView = new GameObject("Base");
+            GameObject defenderView = new GameObject("Defender");
+            try
+            {
+                stationView.transform.position = new Vector3(2000f, 0f, 0f);
+                defenderView.transform.position = new Vector3(800f, 0f, 0f);
+                var station = new FakeEntity(new FakeHealthModel(stationView.transform) { Hull = 100f, Shields = 0f },
+                    TestPlayers.Human, 4);
+                var defender = new FakeEntity(new FakeHealthModel(defenderView.transform)
+                    { Hull = 100f, Shields = 0f, ShipClass = ShipClass.Fighter }, TestPlayers.Human, 5);
+                var forces = new Dictionary<IShipEntity, ForceComposition>
+                {
+                    [striker] = CombatForce(100f, 20f, fighterDps: 20f),
+                    [heavy] = CombatForce(100f, 20f),
+                    [corvette] = CombatForce(100f, 20f, fighterDps: 20f)
+                };
+                var targetForces = new Dictionary<IEntity, ForceComposition>
+                {
+                    [station] = new ForceComposition(),
+                    [defender] = new ForceComposition()
+                };
+                Vector3 gather = new Vector3(-500f, 0f, 0f);
+                var orders = new FakeOrderService();
+                EnemyStrategicContext context = Context(new IShipEntity[] { striker, heavy, corvette },
+                    shipForces: forces, targetForces: targetForces, baseTarget: station,
+                    assaultCapitals: new IShipEntity[] { striker, heavy }, guardPosition: gather);
+                context.AssaultTarget = defender;
+
+                new EnemyTaskForceExecutor(orders, UnlimitedFocusFireSlots.Instance).Execute(
+                    new EnemyStrategicDecision(state: EnemyStrategicState.AssaultBase, committedShipCount: 3,
+                        reason: "test"), context);
+
+                OrderCall attack = orders.Calls.Single(call => call.Action == UnitActionId.Attack);
+                Assert.That(attack.Receivers.Select(entity => entity.Id), Is.EqualTo(new long[] { striker.EntityId }));
+                Assert.That(orders.Calls.Where(call => call.Action == UnitActionId.AttackMove &&
+                        call.Point == stationView.transform.position).SelectMany(call => call.Receivers)
+                    .Select(entity => entity.Id), Is.EqualTo(new long[] { heavy.EntityId }),
+                    "The capital the defender strike cannot use pushes on to the station.");
+                Assert.That(orders.Calls.Where(call => call.Point == gather).SelectMany(call => call.Receivers)
+                    .Select(entity => entity.Id), Is.EqualTo(new long[] { corvette.EntityId }),
+                    "Only the ship outside the assault force holds at the gather point.");
+            }
+            finally
+            {
+                UnityEngine.Object.DestroyImmediate(stationView);
+                UnityEngine.Object.DestroyImmediate(defenderView);
+            }
+        }
+
         // S4: in the end game the whole fleet strikes; no ship is left holding at the gather point.
         [Test]
         public void AssaultBase_EndGameSendsEveryShip()

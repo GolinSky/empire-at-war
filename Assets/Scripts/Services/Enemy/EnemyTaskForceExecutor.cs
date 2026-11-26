@@ -60,6 +60,8 @@ namespace EmpireAtWar.Services.Enemy
         private float _defenseAdvance;
         private float _defenseThreatRange;
         private readonly EnemyAttackTaskForce _attackForce = new EnemyAttackTaskForce();
+        private readonly List<IShipEntity> _committedShips = new List<IShipEntity>();
+        private readonly List<IShipEntity> _pushShips = new List<IShipEntity>();
         private readonly List<IShipEntity> _supportShips = new List<IShipEntity>();
         private readonly List<IShipEntity> _strikeShips = new List<IShipEntity>();
         private readonly Dictionary<IShipEntity, GameEntity> _strikeTargets = new Dictionary<IShipEntity, GameEntity>();
@@ -222,7 +224,7 @@ namespace EmpireAtWar.Services.Enemy
                     // allied assault send every ship, not only the capitals.
                     IssueAttackOrHunt(context, decision.CommittedShipCount, context.AssaultTarget ?? context.EnemyBaseTarget,
                         allowHunt: false, eligibleShips: IsWholeFleetAssault(context) ? null : context.AssaultCapitals,
-                        keepTargets: true);
+                        keepTargets: true, pushTarget: context.EnemyBaseTarget);
                     return;
                 case EnemyStrategicState.EngageLocal:
                     ExecuteLocalEngagement(decision, context);
@@ -729,7 +731,8 @@ namespace EmpireAtWar.Services.Enemy
         /// (on its way there, or arrived and idle or fighting) is left alone (W31, W55). A point moved less than
         /// <see cref="ORDER_POINT_KEEP_DISTANCE"/> counts as the same, so a ship keeps its order and arrives (W49).
         /// </summary>
-        private void HoldAtPoint(EnemyStrategicContext context, IReadOnlyList<IShipEntity> ships, int start, Vector3 point)
+        private void HoldAtPoint(EnemyStrategicContext context, IReadOnlyList<IShipEntity> ships, int start, Vector3 point,
+            string path = "path=hold")
         {
             List<GameEntity> receivers = null;
             for (int i = start; i < ships.Count; i++)
@@ -748,7 +751,7 @@ namespace EmpireAtWar.Services.Enemy
                 (receivers ??= new List<GameEntity>()).Add(context.Receivers[ship]);
             }
             if (receivers != null)
-                using (ShipOrderTelemetry.Detail("path=hold"))
+                using (ShipOrderTelemetry.Detail(path))
                     _unitOrderService.IssueAttackMove(receivers, point);
         }
 
@@ -873,7 +876,7 @@ namespace EmpireAtWar.Services.Enemy
 
         private void IssueAttackOrHunt(EnemyStrategicContext context,
             int committed, GameEntity target, bool allowHunt = true, bool assemble = true,
-            IReadOnlyList<IShipEntity> eligibleShips = null, bool keepTargets = false)
+            IReadOnlyList<IShipEntity> eligibleShips = null, bool keepTargets = false, GameEntity pushTarget = null)
         {
             int count = Math.Min(committed, context.Ships.Count);
             if (target == null && !allowHunt)
@@ -960,15 +963,28 @@ namespace EmpireAtWar.Services.Enemy
             {
                 int screeningCount = ready ? _supportShips.Count : 0;
                 _supportShips.Clear();
+                _committedShips.Clear();
+                _committedShips.AddRange(_attackForce.Ships);
+                // N1: the eligible assault ships the strike does not need push on to the station, fighting on the way.
+                // Guarding the centre left the strike trading with the station's fresh spawns (2026-11-26: 450 s).
+                if (ready && pushTarget != null && pushTarget != target)
+                {
+                    _pushShips.Clear();
+                    foreach (IShipEntity ship in eligibleShips ?? context.Ships)
+                        if (!_attackForce.Ships.Contains(ship)) _pushShips.Add(ship);
+                    HoldAtPoint(context, _pushShips, 0, pushTarget.GetFacade<IEntityTransformFacade>().Transform.position,
+                        "path=assaultPush");
+                    _committedShips.AddRange(_pushShips);
+                }
                 if (context.Snapshot.HasSecuredCentre && context.GuardPosition.HasValue &&
                     _lastState is (EnemyStrategicState.AssaultBase or EnemyStrategicState.RaidStructures))
-                    ExecuteSiteGuard(context, _attackForce.Ships);
+                    ExecuteSiteGuard(context, _committedShips);
                 else
                 {
                     // X1, X8: every ship outside the strike force gets an order: it holds at the gather point, or
                     // guards the anchor when the group has none.
                     foreach (IShipEntity ship in context.Ships)
-                        if (!_attackForce.Ships.Contains(ship)) _supportShips.Add(ship);
+                        if (!_committedShips.Contains(ship)) _supportShips.Add(ship);
                     if (context.GuardPosition.HasValue)
                         HoldAtPoint(context, _supportShips, 0, context.GuardPosition.Value);
                     else GuardSupport(context, _supportShips, anchor);
