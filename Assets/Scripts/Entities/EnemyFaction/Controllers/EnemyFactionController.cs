@@ -966,13 +966,16 @@ namespace EmpireAtWar.Entities.EnemyFaction.Controllers
         }
 
         /// <summary>
-        /// A platform uses the flags it was bought with (a restored build: extra platforms allowed, as before W50);
+        /// A repair platform stands beside an uncovered armed platform.
+        /// Another platform uses the flags it was bought with (a restored build: extra platforms allowed, as before W50);
         /// a miner the structure search. No point → the paid build stays queued and retries (W69).
         /// </summary>
         private bool TryGetStructurePosition(UnitRequest request, out Vector3 position)
         {
             bool found;
-            if (request is DefendPlatformUnitRequest)
+            if (request is DefendPlatformUnitRequest platform && EnemyRepairPlatformRule.IsRepairPlatform(platform.Key))
+                found = _enemyStructurePlacementService.TryGetRepairPlatformPosition(out position);
+            else if (request is DefendPlatformUnitRequest)
             {
                 (bool allowExtra, bool firstOnly) = _defenseFlags.TryGetValue(request, out var flags) ? flags : (true, false);
                 found = _enemyStructurePlacementService.TryGetDefensePosition(allowExtra, firstOnly,

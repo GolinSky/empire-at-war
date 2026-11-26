@@ -286,10 +286,14 @@ namespace EmpireAtWar.Services.Enemy
             // P5: also while a ship type fits the free capacity but none can be paid yet: the money goes to the fleet.
             bool firstPlatformsOnly = hasShipOption ? !shipBlockedByCapacity : canOrderShips && HasFittingShipType();
             // One platform queued or under construction at a time; its tier interval already filtered the selection (W50).
+            // A repair platform is never a first platform: it only joins armed ones (its position was checked at selection).
+            bool isRepairPlatform = hasDefenseSelection && EnemyRepairPlatformRule.IsRepairPlatform(defense.Key);
             bool canBuildDefense = !_purchaseProcessor.HasPlatformInProgress &&
                 !platformsBlockedByPressure && hasDefenseSelection && IsAffordable(defense.Value) &&
-                _enemyStructurePlacementService.TryGetDefensePosition(shipBlockedByCapacity, firstPlatformsOnly,
-                    EnemyPlatformTier.IsBig(defense.Value), out _);
+                (isRepairPlatform
+                    ? !firstPlatformsOnly
+                    : _enemyStructurePlacementService.TryGetDefensePosition(shipBlockedByCapacity, firstPlatformsOnly,
+                        EnemyPlatformTier.IsBig(defense.Value), out _));
             UnitTypeId combatChoice = hasCounter ? counterId : hasShip
                 ? UnitTypeId.Ship(ship.Key) : UnitTypeId.Squadron(squadron.Key);
             if (_stationPressure.IsStationCritical && !hasShipOption)
@@ -1351,7 +1355,8 @@ namespace EmpireAtWar.Services.Enemy
         /// <summary>
         /// Prefers an affordable type with fewer existing copies, then the strongest platform within budget.
         /// With <paramref name="cheapestOnly"/> the cheapest buildable type is the only choice. A type whose tier
-        /// interval runs (<see cref="EnemyPlatformTier"/>) is skipped.
+        /// interval runs (<see cref="EnemyPlatformTier"/>) is skipped. A repair platform joins only enough armed
+        /// platforms and an uncovered armed platform to stand beside (<see cref="EnemyRepairPlatformRule"/>).
         /// </summary>
         private bool TrySelectDefense(
             bool cheapestOnly,
@@ -1362,6 +1367,12 @@ namespace EmpireAtWar.Services.Enemy
             foreach (KeyValuePair<DefendPlatformType, FactionData> option
                      in _factionModel.DefendPlatforms)
             {
+                if (EnemyRepairPlatformRule.IsRepairPlatform(option.Key) &&
+                    (cheapestOnly || !CanAddRepairPlatform(option.Key)))
+                {
+                    continue;
+                }
+
                 if (!IsAvailable(option.Value) || !IsPlatformTierReady(option.Value) ||
                     !CanReserve<DefendPlatformUnitRequest>(
                         option.Key.ToString(),
@@ -1397,6 +1408,17 @@ namespace EmpireAtWar.Services.Enemy
             }
 
             return found;
+        }
+
+        private bool CanAddRepairPlatform(DefendPlatformType repairType)
+        {
+            int armed = 0;
+            foreach (DefendPlatformType type in _factionModel.DefendPlatforms.Keys)
+                if (!EnemyRepairPlatformRule.IsRepairPlatform(type))
+                    armed += _unitLimitModel.GetReservedCount<DefendPlatformUnitRequest>(type.ToString());
+            int repairers = _unitLimitModel.GetReservedCount<DefendPlatformUnitRequest>(repairType.ToString());
+            return EnemyRepairPlatformRule.CanAdd(armed, repairers) &&
+                   _enemyStructurePlacementService.TryGetRepairPlatformPosition(out _);
         }
 
         private bool IsPlatformTierReady(FactionData data) => BattleClock.CurrentElapsed >=

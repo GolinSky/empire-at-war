@@ -12,5 +12,6 @@
         MassDriverSatellite = 7,
         MissileSatellite = 8,
         RepairSatellite = 9,
+        Xq6Repair = 10,
     }
 }

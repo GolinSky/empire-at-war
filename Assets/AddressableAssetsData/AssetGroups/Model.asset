@@ -140,6 +140,11 @@ MonoBehaviour:
     m_ReadOnly: 0
     m_SerializedLabels: []
     FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 85779a1f9fbfab4459f6d0bf96d186b1
+    m_Address: Xq6RepairPlatformData
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
   - m_GUID: ae371385bfb7f8d458aa046ea8e5ea01
     m_Address: FactionCatalog
     m_ReadOnly: 0

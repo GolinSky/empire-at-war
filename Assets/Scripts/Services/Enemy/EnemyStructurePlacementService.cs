@@ -15,6 +15,7 @@ using EmpireAtWar.Entities.BaseEntity.EntityFacades;
 using EmpireAtWar.Entities.DefendPlatform;
 using EmpireAtWar.Entities.EnemyFaction.Models;
 using EmpireAtWar.Presenters.ReinforcementZones;
+using EmpireAtWar.Services.Repair;
 using EmpireAtWar.Services.Saves;
 
 namespace EmpireAtWar.Services.Enemy
@@ -299,17 +300,49 @@ namespace EmpireAtWar.Services.Enemy
             CountPlatforms(zone.Center,
                 Mathf.Max(2f * zone.Radius, GetFirstRingRadius(zone.Radius) + RING_COUNT * RING_SPACING));
 
-        /// <summary>Own purchasable platforms within reach; satellites and battle asteroids are capture-site facilities.</summary>
+        /// <summary>
+        /// Own purchasable armed platforms within reach; satellites and battle asteroids are capture-site facilities,
+        /// and a repair platform supports the armed ones without taking their place.
+        /// </summary>
         private int CountPlatforms(Vector3 anchor, float reach)
         {
             Vector2 centre = new Vector2(anchor.x, anchor.z);
             int count = 0;
             foreach (AiWorldSnapshot.Entry structure in _world.Structures)
-                if (structure.Owner == _owner.Id &&
-                    Vector2.Distance(centre, new Vector2(structure.Position.x, structure.Position.z)) <= reach &&
-                    structure.Entity.TryGetFacade(out IDefendPlatformTypeFacade platform) &&
-                    _factionModel.DefendPlatforms.ContainsKey(platform.Type)) count++;
+                if (IsOwnArmedPlatform(structure) &&
+                    Vector2.Distance(centre, new Vector2(structure.Position.x, structure.Position.z)) <= reach) count++;
             return count;
+        }
+
+        private bool IsOwnArmedPlatform(AiWorldSnapshot.Entry structure) =>
+            structure.Owner == _owner.Id &&
+            structure.Entity.TryGetFacade(out IDefendPlatformTypeFacade platform) &&
+            _factionModel.DefendPlatforms.ContainsKey(platform.Type) &&
+            !structure.Entity.TryGetFacade(out IRepairSourceFacade _);
+
+        /// <summary>
+        /// The first own armed platform (snapshot order) outside every own repairer's radius gets a repair platform
+        /// on the nearest free ring around it, so the newcomer covers it.
+        /// </summary>
+        public bool TryGetRepairPlatformPosition(out Vector3 position)
+        {
+            PrepareSearch();
+            _world.EnsureCurrent();
+            _placementSource = "repairPlatform";
+            foreach (AiWorldSnapshot.Entry structure in _world.Structures)
+                if (IsOwnArmedPlatform(structure) && !IsCoveredByOwnRepairer(structure.Position) &&
+                    TryGetPositionNear(structure.Position, 0f, out position)) return true;
+            position = default;
+            return false;
+        }
+
+        private bool IsCoveredByOwnRepairer(Vector3 position)
+        {
+            foreach (AiWorldSnapshot.Entry structure in _world.Structures)
+                if (structure.Owner == _owner.Id && structure.Entity.TryGetFacade(out IRepairSourceFacade repairer) &&
+                    PlanarDistanceSquared(repairer.Position, position) <= repairer.Profile.Radius * repairer.Profile.Radius)
+                    return true;
+            return false;
         }
 
         /// <summary>Why each held zone below its platform limit offered no position; at most one report per interval.</summary>

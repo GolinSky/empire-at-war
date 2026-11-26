@@ -1981,3 +1981,17 @@ MonoBehaviour:
         m_SubObjectType: 
         m_SubObjectGUID: 
         m_EditorAssetChanged: 0
+    - key: Xq6RepairPlatformView
+      value:
+        m_AssetGUID: a0a9b4646dee0da4d9c37f1f9c1c5e98
+        m_SubObjectName: 
+        m_SubObjectType: 
+        m_SubObjectGUID: 
+        m_EditorAssetChanged: 0
+    - key: Xq6RepairPlatformData
+      value:
+        m_AssetGUID: 85779a1f9fbfab4459f6d0bf96d186b1
+        m_SubObjectName: 
+        m_SubObjectType: 
+        m_SubObjectGUID: 
+        m_EditorAssetChanged: 0

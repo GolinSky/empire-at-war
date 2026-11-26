@@ -1081,6 +1081,6 @@ MonoBehaviour:
             stat: 4
             multiplier: 2
   miningFacilities: 03000000
-  defendPlatforms: 000000000200000003000000
+  defendPlatforms: 0000000002000000030000000a000000
   superWeapons: 000000000100000002000000
   shipMarks: 34

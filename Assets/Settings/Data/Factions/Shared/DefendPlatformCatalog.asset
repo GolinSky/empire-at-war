@@ -16,7 +16,6 @@ MonoBehaviour:
     keyValue:
     - key: 2
       value:
-        matchups: {fileID: 0}
         displayName: Golan III
         description: 60,000 hull; 40,000 shields. 12 heavy dual turbolasers, 4 heavy
           assault missile launchers, 12 heavy proton torpedo launchers and 8 laser
@@ -25,6 +24,7 @@ MonoBehaviour:
         role: Heavy anti-capital defensive station
         iconKey: 988c54fd851290641a5fe8c93eff1927:21300000
         isHero: 0
+        isUnique: 0
         <Name>k__BackingField: Golan III
         <MaxCount>k__BackingField: 2
         <AvailableLevel>k__BackingField: 1
@@ -35,7 +35,6 @@ MonoBehaviour:
           type: 3}
     - key: 3
       value:
-        matchups: {fileID: 0}
         displayName: XQ-3 Empress
         description: 36,000 hull; 50,000 shields. 3 heavy three-burst long-range
           turbolasers, 3 heavy three-burst long-range turbo-ion cannons, 6 medium
@@ -45,6 +44,7 @@ MonoBehaviour:
         role: Shield-heavy ion defense platform
         iconKey: 653b257a6a126934d96618b6c8874dae:21300000
         isHero: 0
+        isUnique: 0
         <Name>k__BackingField: XQ-3 Empress
         <MaxCount>k__BackingField: 2
         <AvailableLevel>k__BackingField: 1
@@ -55,13 +55,13 @@ MonoBehaviour:
           type: 3}
     - key: 4
       value:
-        matchups: {fileID: 0}
         displayName: Quad Laser Sat.
         description: 3,000 hull, 5,000 shields; six targetable turrets. Built on
           captured satellite pads.
         role: Stationary mining-point defense
         iconKey: 4f34eb7cb55a9c24abc10d378515d62e:21300000
         isHero: 0
+        isUnique: 0
         <Name>k__BackingField: Quad Laser Satellite
         <MaxCount>k__BackingField: 0
         <AvailableLevel>k__BackingField: 1
@@ -72,13 +72,13 @@ MonoBehaviour:
           type: 3}
     - key: 5
       value:
-        matchups: {fileID: 0}
         displayName: Turbolaser Sat.
         description: 3,000 hull, 5,000 shields; six targetable turrets. Built on
           captured satellite pads.
         role: Stationary mining-point defense
         iconKey: 514bfb32fe0d62847bd99758ec3b05bd:21300000
         isHero: 0
+        isUnique: 0
         <Name>k__BackingField: Turbolaser Satellite
         <MaxCount>k__BackingField: 0
         <AvailableLevel>k__BackingField: 1
@@ -89,7 +89,6 @@ MonoBehaviour:
           type: 3}
     - key: 9
       value:
-        matchups: {fileID: 0}
         displayName: Repair Satellite
         description: 3,000 hull, 5,000 shields; no weapons. Repairs hull and live
           hardpoints of nearby allied ships and structures. Built on captured satellite
@@ -97,6 +96,7 @@ MonoBehaviour:
         role: Stationary fleet repair
         iconKey: d846cedf6810ffb4ea05703dbeeee74c:21300000
         isHero: 0
+        isUnique: 0
         <Name>k__BackingField: Repair Satellite
         <MaxCount>k__BackingField: 0
         <AvailableLevel>k__BackingField: 1
@@ -107,13 +107,13 @@ MonoBehaviour:
           type: 3}
     - key: 6
       value:
-        matchups: {fileID: 0}
         displayName: Ion Satellite
         description: 3,000 hull, 5,000 shields; six targetable turrets. Built on
           captured satellite pads.
         role: Stationary mining-point defense
         iconKey: ea3a41aea9ac2814f8151acea48c72a0:21300000
         isHero: 0
+        isUnique: 0
         <Name>k__BackingField: Ion Satellite
         <MaxCount>k__BackingField: 0
         <AvailableLevel>k__BackingField: 1
@@ -124,13 +124,13 @@ MonoBehaviour:
           type: 3}
     - key: 7
       value:
-        matchups: {fileID: 0}
         displayName: Mass Driver Sat.
         description: 3,000 hull, 5,000 shields; six targetable turrets. Built on
           captured satellite pads.
         role: Stationary mining-point defense
         iconKey: 26f532f229fa8e64a8505e23c65bd5cf:21300000
         isHero: 0
+        isUnique: 0
         <Name>k__BackingField: Mass Driver Satellite
         <MaxCount>k__BackingField: 0
         <AvailableLevel>k__BackingField: 1
@@ -141,13 +141,13 @@ MonoBehaviour:
           type: 3}
     - key: 8
       value:
-        matchups: {fileID: 0}
         displayName: Missile Satellite
         description: 3,000 hull, 5,000 shields; six targetable turrets. Built on
           captured satellite pads.
         role: Stationary mining-point defense
         iconKey: 3285d703aec4dab419f58b760f903d38:21300000
         isHero: 0
+        isUnique: 0
         <Name>k__BackingField: Missile Satellite
         <MaxCount>k__BackingField: 0
         <AvailableLevel>k__BackingField: 1
@@ -158,12 +158,12 @@ MonoBehaviour:
           type: 3}
     - key: 0
       value:
-        matchups: {fileID: 0}
         displayName: XQ-6
         description: Construct at an owned capture site to defend the area.
         role: Defensive platform
         iconKey: 9e99f16d754a042a3b1b0f2d25045f52:21300000
         isHero: 0
+        isUnique: 0
         <Name>k__BackingField: XQ-6
         <MaxCount>k__BackingField: 5
         <AvailableLevel>k__BackingField: 1
@@ -171,4 +171,21 @@ MonoBehaviour:
         <BuildTime>k__BackingField: 5
         <UnitCapacity>k__BackingField: 0
         <Icon>k__BackingField: {fileID: 21300000, guid: 9e99f16d754a042a3b1b0f2d25045f52,
+          type: 3}
+    - key: 10
+      value:
+        displayName: XQ-6 Repair
+        description: Unarmed XQ-6 platform. Repairs hull and live hardpoints of nearby
+          allied ships and structures.
+        role: Defensive repair platform
+        iconKey: 6e198037c7c44a55ac3bd6f8dae7f8f7:21300000
+        isHero: 0
+        isUnique: 0
+        <Name>k__BackingField: XQ-6 Repair
+        <MaxCount>k__BackingField: 5
+        <AvailableLevel>k__BackingField: 1
+        <Price>k__BackingField: 1000
+        <BuildTime>k__BackingField: 5
+        <UnitCapacity>k__BackingField: 0
+        <Icon>k__BackingField: {fileID: 21300000, guid: 6e198037c7c44a55ac3bd6f8dae7f8f7,
           type: 3}

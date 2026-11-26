@@ -345,6 +345,11 @@ MonoBehaviour:
     m_ReadOnly: 0
     m_SerializedLabels: []
     FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 6e198037c7c44a55ac3bd6f8dae7f8f7
+    m_Address: Assets/Art/Textures/Ui/Icons/Ui/DefenseRepairPlatformIcon.png
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
   - m_GUID: 73509b3f4bebe5542ba69d62230fff68
     m_Address: Assets/Art/Textures/Ui/Icons/ShipIcon/Empire/Victory2Icon.png
     m_ReadOnly: 0

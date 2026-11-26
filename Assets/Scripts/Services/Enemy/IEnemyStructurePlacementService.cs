@@ -28,6 +28,13 @@ namespace EmpireAtWar.Services.Enemy
         bool TryGetDefensePosition(bool allowExtra, bool firstOnly, bool bigPlatform, out Vector3 position) =>
             TryGetDefensePosition(allowExtra, firstOnly, out position);
 
+        /// <summary>Beside an own armed platform that no own repairer covers yet.</summary>
+        bool TryGetRepairPlatformPosition(out Vector3 position)
+        {
+            position = default;
+            return false;
+        }
+
         bool TryGetSecondStationPosition(out Vector3 position)
         {
             position = default;

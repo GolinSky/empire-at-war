@@ -16,6 +16,7 @@ using EmpireAtWar.Entities.DefendPlatform;
 using EmpireAtWar.Models.Health;
 using EmpireAtWar.Mvc;
 using EmpireAtWar.Services.Player;
+using EmpireAtWar.ViewComponents.Health;
 using NUnit.Framework;
 using UnityEditor;
 using UnityEngine;
@@ -60,14 +61,42 @@ namespace EmpireAtWar.Tests.Editor
         }
 
         [Test]
-        public void Xq6_HasARepairProfileAndAHiddenRangeRing()
+        public void Xq6_IsArmedAndDoesNotRepair()
         {
-            DefendPlatformData data = AssetDatabase.LoadAssetAtPath<DefendPlatformData>(
-                $"Assets/Settings/Data/Models/DefendPlatform/{DefendPlatformAssets.GetDataName(DefendPlatformType.Xq6)}.asset");
-            Assert.That(data.RepairProfile, Is.Not.Null, "The repair profile enables XQ6 healing.");
+            DefendPlatformData data = LoadData(DefendPlatformType.Xq6);
+            Assert.That(data.RepairProfile, Is.Null, "Healing belongs to the XQ6 repair platform.");
 
-            var prefab = AssetDatabase.LoadAssetAtPath<GameObject>(
-                $"Assets/Prefabs/Models/DefendStation/{DefendPlatformAssets.GetViewName(DefendPlatformType.Xq6)}.prefab");
+            GameObject prefab = LoadView(DefendPlatformType.Xq6);
+            EntityBindings bindings = prefab.GetComponent<EntityBindings>();
+            Assert.That(bindings.RepairRange, Is.Null);
+            Assert.That(prefab.GetComponentsInChildren<RepairRangeComponent>(true), Is.Empty);
+            Assert.That(prefab.GetComponentsInChildren<WeaponHardPoint>(true), Is.Not.Empty);
+        }
+
+        [Test]
+        public void Xq6Repair_IsAnUnarmedCopyOfTheXq6WithARepairProfileAndAHiddenRangeRing()
+        {
+            DefendPlatformData armed = LoadData(DefendPlatformType.Xq6);
+            DefendPlatformData data = LoadData(DefendPlatformType.Xq6Repair);
+            Assert.That(data.RepairProfile, Is.Not.Null, "The repair profile enables healing.");
+            Assert.That(data.WeaponLoadout, Is.Empty);
+            Assert.That(data.ComponentData.Hull, Is.EqualTo(armed.ComponentData.Hull));
+            Assert.That(data.ComponentData.Shields, Is.EqualTo(armed.ComponentData.Shields));
+            Assert.That(data.ComponentData.ShipClass, Is.EqualTo(armed.ComponentData.ShipClass));
+
+            var catalog = AssetDatabase.LoadAssetAtPath<DefendPlatformCatalog>(
+                "Assets/Settings/Data/Factions/Shared/DefendPlatformCatalog.asset");
+            FactionData armedEntry = catalog.Get(DefendPlatformType.Xq6);
+            FactionData repairEntry = catalog.Get(DefendPlatformType.Xq6Repair);
+            Assert.That(repairEntry.Price, Is.EqualTo(armedEntry.Price), "Same price as the armed XQ6.");
+            Assert.That(repairEntry.BuildTime, Is.EqualTo(armedEntry.BuildTime));
+            Assert.That(repairEntry.MaxCount, Is.EqualTo(armedEntry.MaxCount));
+            Assert.That(repairEntry.AvailableLevel, Is.EqualTo(armedEntry.AvailableLevel));
+            Assert.That(repairEntry.Icon, Is.Not.Null.And.Not.SameAs(armedEntry.Icon));
+
+            GameObject prefab = LoadView(DefendPlatformType.Xq6Repair);
+            Assert.That(prefab.GetComponentsInChildren<WeaponHardPoint>(true), Is.Empty, "No guns.");
+            Assert.That(prefab.GetComponentInChildren<HealthComponent>(true).ShipUnits.All(unit => unit != null), Is.True);
             EntityBindings bindings = prefab.GetComponent<EntityBindings>();
             Assert.That(bindings.Injectables.All(component => component != null), Is.True);
             RepairRangeComponent ring = bindings.RepairRange;
@@ -76,7 +105,30 @@ namespace EmpireAtWar.Tests.Editor
             var renderer = (MeshRenderer)new SerializedObject(ring).FindProperty("ring").objectReferenceValue;
             Assert.That(renderer, Is.Not.Null);
             Assert.That(renderer.enabled, Is.False, "The range shows only while the platform is selected.");
+            Material hull = prefab.transform.Find("default").GetComponent<MeshRenderer>().sharedMaterial;
+            Material armedHull = LoadView(DefendPlatformType.Xq6).transform.Find("default").GetComponent<MeshRenderer>().sharedMaterial;
+            Assert.That(hull, Is.Not.SameAs(armedHull), "The repair platform wears the medical albedo.");
+            Assert.That(hull.GetTexture("_BaseMap"), Is.Not.SameAs(armedHull.GetTexture("_BaseMap")));
         }
+
+        [Test]
+        public void Xq6Repair_IsOfferedByEveryFactionThatOffersTheXq6()
+        {
+            foreach (string guid in AssetDatabase.FindAssets("t:FactionDefinition"))
+            {
+                var faction = AssetDatabase.LoadAssetAtPath<FactionDefinition>(AssetDatabase.GUIDToAssetPath(guid));
+                if (faction.DefendPlatforms.Contains(DefendPlatformType.Xq6))
+                    Assert.That(faction.DefendPlatforms, Contains.Item(DefendPlatformType.Xq6Repair), faction.name);
+            }
+        }
+
+        private static DefendPlatformData LoadData(DefendPlatformType type) =>
+            AssetDatabase.LoadAssetAtPath<DefendPlatformData>(
+                $"Assets/Settings/Data/Models/DefendPlatform/{DefendPlatformAssets.GetDataName(type)}.asset");
+
+        private static GameObject LoadView(DefendPlatformType type) =>
+            AssetDatabase.LoadAssetAtPath<GameObject>(
+                $"Assets/Prefabs/Models/DefendStation/{DefendPlatformAssets.GetViewName(type)}.prefab");
 
         [Test]
         public void BattleAsteroid_SplitsIncomeWithAlliesAndRecalculatesResearchUntilReleased()

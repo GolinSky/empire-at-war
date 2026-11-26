@@ -1348,9 +1348,16 @@ namespace EmpireAtWar.Tests.Editor
                     .Create(slot.Id, DefendPlatformType.Xq6, origin + Vector3.forward * 300f), player, slot);
                 AssertDecoratedHealth(platform, platform.Container.Resolve<DefendPlatformData>().ComponentData);
                 AssertRepairable(platform, true);
-                Assert.That(platform.Container.Resolve<IEntity>().TryGetFacade(out IRepairSourceFacade platformRepair), Is.True,
-                    "The XQ6 repairs allies like the repair satellite.");
-                Assert.That(platformRepair.Profile, Is.SameAs(platform.Container.Resolve<DefendPlatformData>().RepairProfile));
+                Assert.That(platform.Container.Resolve<IEntity>().TryGetFacade(out IRepairSourceFacade _), Is.False,
+                    "The armed XQ6 leaves repairs to the XQ6 repair platform.");
+                EntityLifetimeScope repairPlatform = AssertEntity(player.Container.Resolve<DefendPlatformFactory>()
+                    .Create(slot.Id, DefendPlatformType.Xq6Repair, origin + Vector3.forward * 325f), player, slot);
+                DefendPlatformData repairPlatformData = repairPlatform.Container.Resolve<DefendPlatformData>();
+                AssertDecoratedHealth(repairPlatform, repairPlatformData.ComponentData);
+                AssertRepairable(repairPlatform, true);
+                Assert.That(repairPlatform.Container.Resolve<IEntity>().TryGetFacade(out IRepairSourceFacade platformRepair), Is.True,
+                    "The XQ6 repair platform repairs allies like the repair satellite.");
+                Assert.That(platformRepair.Profile, Is.SameAs(repairPlatformData.RepairProfile));
                 EntityLifetimeScope asteroidPlatform = AssertEntity(player.Container.Resolve<DefendPlatformFactory>()
                     .Create(slot.Id, DefendPlatformType.BattleAsteroid, origin + Vector3.forward * 350f), player, slot);
                 AssertDecoratedHealth(asteroidPlatform, asteroidPlatform.Container.Resolve<DefendPlatformData>().ComponentData);
@@ -1376,7 +1383,7 @@ namespace EmpireAtWar.Tests.Editor
                 Assert.That(repairSatellite.Container.Resolve<IEntity>().TryGetFacade(out IRepairSourceFacade repairSource), Is.True);
                 Assert.That(repairSource.Profile, Is.SameAs(repairData.RepairProfile));
             }
-            Assert.That(_entityIds.Count, Is.EqualTo(26));
+            Assert.That(_entityIds.Count, Is.EqualTo(28));
             CombatModifiers first = shipScopes[0].Container.Resolve<CombatModifiers>();
             CombatModifiers second = shipScopes[1].Container.Resolve<CombatModifiers>();
             first.SetCloaked(true);

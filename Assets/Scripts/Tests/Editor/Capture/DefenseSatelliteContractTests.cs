@@ -183,6 +183,7 @@ namespace EmpireAtWar.Tests.Editor
         [TestCase(DefendPlatformType.MassDriverSatellite, "Mass Driver Satellite")]
         [TestCase(DefendPlatformType.MissileSatellite, "Missile Satellite")]
         [TestCase(DefendPlatformType.RepairSatellite, "Repair Satellite")]
+        [TestCase(DefendPlatformType.Xq6Repair, "XQ-6 Repair")]
         [TestCase(DefendPlatformType.BattleAsteroid, "Battle Asteroid")]
         public void DefendPlatformTooltipFacade_ShowsPlatformTypeAsTitle(DefendPlatformType platform, string expectedTitle)
         {

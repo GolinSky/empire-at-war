@@ -105,6 +105,11 @@ MonoBehaviour:
     m_ReadOnly: 0
     m_SerializedLabels: []
     FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: a0a9b4646dee0da4d9c37f1f9c1c5e98
+    m_Address: Xq6RepairPlatformView
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
   - m_GUID: a8260e10d2a10a84f82c24b35c0af780
     m_Address: MassDriverSatelliteWreckView
     m_ReadOnly: 0

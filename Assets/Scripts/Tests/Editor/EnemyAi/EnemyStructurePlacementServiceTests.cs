@@ -24,6 +24,7 @@ using EmpireAtWar.Components.Ship.Health;
 using EmpireAtWar.Models.Health;
 using EmpireAtWar.Models.ReinforcementZones;
 using EmpireAtWar.Presenters.ReinforcementZones;
+using EmpireAtWar.Services.Repair;
 using EmpireAtWar.Services.Saves;
 using EmpireAtWar.Views.ReinforcementZones;
 using NUnit.Framework;
@@ -38,6 +39,7 @@ namespace EmpireAtWar.Tests.Editor
         private const int DEAD_LAYER = 10;
 
         private GameObject _root;
+        private readonly List<RepairProfile> _repairProfiles = new List<RepairProfile>();
         private MapStub _map;
         private ZonesStub _zones;
         private BattleAreaService _areas;
@@ -168,6 +170,8 @@ namespace EmpireAtWar.Tests.Editor
         public void TearDown()
         {
             UnityEngine.Object.DestroyImmediate(_root);
+            foreach (RepairProfile profile in _repairProfiles) UnityEngine.Object.DestroyImmediate(profile);
+            _repairProfiles.Clear();
             new BattleClock(null);
         }
 
@@ -369,6 +373,41 @@ namespace EmpireAtWar.Tests.Editor
         }
 
         [Test]
+        public void RepairPlatformPosition_NeedsAnOwnArmedPlatform()
+        {
+            _map.SetBounds(-1000f, 1000f);
+            Assert.That(_enemyStructurePlacementService.TryGetRepairPlatformPosition(out _), Is.False);
+        }
+
+        [Test]
+        public void RepairPlatformPosition_StandsBesideAnArmedPlatformUntilARepairerCoversIt()
+        {
+            _map.SetBounds(-1000f, 1000f);
+            Vector3 armed = new Vector3(400f, 0f, 0f);
+            AddPlatform(armed);
+
+            Assert.That(_enemyStructurePlacementService.TryGetRepairPlatformPosition(out Vector3 position), Is.True);
+            RepairProfile profile = AddRepairPlatform(position);
+            Assert.That(Vector3.Distance(position, armed), Is.LessThanOrEqualTo(profile.Radius),
+                "The repair platform covers the armed platform it joins.");
+            Assert.That(_enemyStructurePlacementService.TryGetRepairPlatformPosition(out _), Is.False,
+                "A covered platform needs no second repairer.");
+        }
+
+        [Test]
+        public void DefensePosition_ARepairPlatformDoesNotTakeAnArmedPlatformSlot()
+        {
+            _map.SetBounds(-1000f, 1000f);
+            AddZone(TestPlayers.Enemy, Vector3.zero, isMain: true);
+            AddPlatform(new Vector3(70f, 0f, 0f));
+            AddRepairPlatform(new Vector3(-70f, 0f, 0f));
+
+            SettleHeldZones();
+            Assert.That(_enemyStructurePlacementService.TryGetDefensePosition(false, out _), Is.True,
+                "The centre still takes its second armed platform.");
+        }
+
+        [Test]
         public void DefensePosition_SatellitesAndBattleAsteroidsAreNotPlatforms()
         {
             _map.SetBounds(-1000f, 1000f);
@@ -515,6 +554,34 @@ namespace EmpireAtWar.Tests.Editor
             _entities.AddEntity(new PlatformEntity(_nextEntityId++, platform, type));
         }
 
+        private RepairProfile AddRepairPlatform(Vector3 position)
+        {
+            Transform platform = new GameObject("Repair platform").transform;
+            platform.SetParent(_root.transform);
+            platform.position = position;
+            RepairProfile profile = ScriptableObject.CreateInstance<RepairProfile>();
+            _repairProfiles.Add(profile);
+            _entities.AddEntity(new RepairPlatformEntity(_nextEntityId++, platform, profile));
+            return profile;
+        }
+
+        private sealed class RepairPlatformEntity : PlatformEntity, IRepairSourceFacade
+        {
+            public event Action TargetsChanged { add { } remove { } }
+            public RepairProfile Profile { get; }
+            public Vector3 Position => Transform.position;
+            public bool CanRepair => true;
+            public IReadOnlyList<IEntity> Targets => Array.Empty<IEntity>();
+
+            public RepairPlatformEntity(long id, Transform transform, RepairProfile profile)
+                : base(id, transform, DefendPlatformType.Xq6Repair)
+            {
+                Profile = profile;
+            }
+
+            public void SetTargets(IReadOnlyList<IEntity> targets) { }
+        }
+
         private sealed class ZoneSourceStub : IReinforcementZoneSource
         {
             public List<ReinforcementZone> Items { get; } = new List<ReinforcementZone>();
@@ -536,7 +603,7 @@ namespace EmpireAtWar.Tests.Editor
                 OwnerRelation contestingFirst = OwnerRelation.Neutral, OwnerRelation contestingSecond = OwnerRelation.Neutral) { }
         }
 
-        private sealed class PlatformEntity : IEntity, IHealthModelObserver, IEntityTransformFacade, IStructureKindFacade,
+        private class PlatformEntity : IEntity, IHealthModelObserver, IEntityTransformFacade, IStructureKindFacade,
             IDefendPlatformTypeFacade
         {
             public event Action OnDestroy { add { } remove { } }
