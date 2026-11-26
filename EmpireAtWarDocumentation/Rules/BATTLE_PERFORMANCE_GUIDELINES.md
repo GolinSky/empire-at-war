@@ -312,6 +312,23 @@ tags:
 - A scaled lens alone reads as a static circle. Animated layers: ripple bands `sin((edge × _RippleCount − _Progress × _RippleSpeed) × 2π)` modulate the lens (3 bands, 5 per life, amount 0.6); surface value noise `_Turbulence` 0.04 × screen radius, scale 4, speed 1.5 (`_Time.y`, so Editor stills don't show it).
 - Free URP packs `Distortion Shockwaves VFX` (Mirza Beig, 1.2.0) and `Distortion VFX - URP` (Vefects, 2026-10-29) are not imported; claiming them needs the user's Asset Store account.
 - Preview-scene render verified; GPU cost of the copy with many simultaneous deaths unmeasured.
+- Gating 2026-11-26: `UnitExplosionService.Spawn` skips the shockwave when `IVisionService.IsAreaVisible(local, center, hullRadius)` is false (fog never reveals a death) or `MAX_ACTIVE_SHOCKWAVES` 8 are alive. `Tick` frustum-tests `ShockwaveView.Bounds` → `SetOnScreen`; the feature copies only while `ShockwaveView.OnScreenCount > 0` (was every alive wave).
+- `ShockwaveFireRing.shader` returns 0 before noise where `radius − _RingRadius > _RingWidth + _Wobble` or `< −(1.6 × _RingWidth + _Wobble)`: identical output (Fbm ∈ 0..1 bounds wobble to ±`_Wobble`).
+
+### Small VFX costs · 2026-11-26
+
+- Looping hardpoint fire: `HardPointExplosionPool` pauses sustained emission below `MIN_SUSTAINED_SCREEN_PIXELS` 4 (diameter `StartSize × localScale`), same as off-camera/fog. Shared math: `VfxScreenSize.Pixels` (also hull blasts).
+- Hardpoint, fire/smoke, hull-blast and muzzle-blast renderers: `maxParticleSize` 0.5 (was 10 = uncapped) → caps close-zoom overdraw. `UnitDeathExplosion` stays 10: it must cover dreadnought hulls.
+- Particle flipbooks need mipmaps: `Explosion1/2_EmissiveScattering`, `Explosion1/2_SmokeMask`, `Smoke1_Albedo_8x16` had none (shimmer + full-res sampling on small particles). Watch for frame bleed at the smallest mips.
+- `CinematicSmoke1.mat` (URP Particles Lit): `_RECEIVE_SHADOWS_OFF`. Its `_SpecularHighlights` / `_EnvironmentReflections` floats do nothing: Particles Lit has no such keywords.
+- Source/import/compile verified; GPU savings unmeasured, visuals pending user check.
+
+### Hull hit blasts · 2026-11-26
+
+- Per-hit cosmetic VFX: decide in the shared pool before `Play` → fog → per-frame cap / idle / active cap → effect sphere vs frustum (planes once per frame) → projected size ≥ min px. Return `bool`; the unit starts its interval only on success.
+- Such pools never grow in battle (prewarm = active cap); drop, never queue.
+- Fair share across many units: per-unit interval × `max(1, inUse / (cap × 0.5))`.
+- Values: `HullBlastLimits` 24 active / 4 per frame / 0.6 s / 6 px; source-verified + compiled, unmeasured → [[Done/Features/Hull_Hit_Blast_Vfx_Plan]].
 
 ### Squadron budgets and model flashes · 2026-11-18
 

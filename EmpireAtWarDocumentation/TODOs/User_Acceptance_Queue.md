@@ -645,3 +645,10 @@ created: "2026-10-29\r"
 - [ ] [[Done/Bugs/Spacing_Nudge_Turns_Ship_Away]] — In battle: multi-select 6+ ships, Attack and Attack-Move on one target; no holding ship turns its back to the target; overlapping holders slide sideways.
 - [ ] [[Done/Bugs/Spacing_Nudge_Turns_Ship_Away]] — After that battle: telemetry `sample` rows with `movement` field 5 = 1 have `facingDot < -0.7` ≤ 2% (was 19–21%). Tune `MAX_SETTLE_TURN_DEGREES` (100°) if needed.
 - [ ] [[Done/Bugs/Spacing_Nudge_Turns_Ship_Away]] — Run `Navigation` when authorized; compile passed, tests not run.
+
+
+## Hull Hit Blasts
+
+- [ ] [[Done/Features/Hull_Hit_Blast_Vfx_Plan]] — In battle: damaged ships/stations show blasts near the hit hardpoint on hull hits (not on shield-only hits, not on super weapon / Lucky Shot hits), never under the hull, never spammy; none on off-screen or fog-hidden units.
+- [ ] [[Done/Features/Hull_Hit_Blast_Vfx_Plan]] — After a heavy battle: read `[VfxPools] HullBlasts played= skipped…` and `[VfxPools] HullScorchBlastVfx … grown=` (must be 0); tune `SkirmishScope.hullBlastLimits`.
+- [ ] [[Done/Features/Hull_Hit_Blast_Vfx_Plan]] — Run `Health`, `Ships` when authorized; compile passed, tests not run.

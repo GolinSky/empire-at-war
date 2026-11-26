@@ -18,7 +18,7 @@ system:
 |---|---|---|---|
 | `HardPointExplosionVfx` | Explosion 2 + nested `HardPointFireSmoke` | `HardPointExplosionPool` (prewarm 16) | start size 10.5 × hardpoint `destroyedVfxScale` |
 | `HardPointFireSmoke` | Smoke 1, looping | nested above | start size 7.5, child scale 1 |
-| `HullScorchBlastVfx` | Explosion FREE 1 | `HullScorchBlastPool` (prewarm 8), `UnitHullScorchBlasts` | start size 7.5 |
+| `HullScorchBlastVfx` | Explosion FREE 1 | `HullScorchBlastPool` (prewarm = `HullBlastLimits.maxActive` 24, never grows), `UnitHullScorchBlasts` — one per hull hit since 2026-11-26 → [[Done/Features/Hull_Hit_Blast_Vfx_Plan]] | start size 7.5 |
 | `UnitDeathExplosion` | Explosion 1 | `UnitExplosionService` destruction pool | hull sphere × 1.2 × `sizeMultiplier` 2 |
 | `OrbitalHitExplosion` | Explosion 3 | `UnitExplosionService` orbital pool (`UnitExplosionKind.OrbitalHit`); one per salvo, on the last impact (`salvo.IsComplete` in `SuperWeaponFireService.ApplyHit`) | hull sphere × 1.2 × `sizeMultiplier` 1.5 |
 
