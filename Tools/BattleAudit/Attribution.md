@@ -8,7 +8,7 @@
 - Raw counters: `gc_collections` (generation-0 count delta), `gc_allocation_count`, `gc_used_bytes`, `gc_reserved_bytes`, `total_used_bytes`. History windows add `gc_used_mb`, `gc_reserved_mb` and collections. Heap values are end-of-window samples.
 - Lifecycle attribution covers registered Tick/LateTick/PostTick/FixedTick systems on the main thread. Per completed frame: `alloc_topN_name`/`alloc_topN_bytes` and `time_topN_name`/`time_topN_ms` for N=1–5. Summaries retain capture totals and measured attribution overhead. Worker-thread allocations are outside this byte delta.
 - `script_update_remainder_ms` subtracts coordinator Update work from script Update. It excludes late/fixed callbacks to avoid subtracting unrelated phases.
-- Rolling capture triggers on >50 ms or >=1,000,000 GC bytes; `is_hitch=1` means either. `hitches` prints built-in attribution/GC for every trigger and custom markers for the slowest ten. The >200 ms period groups consecutive slow frames into episodes. Pauses and missing context bias period estimates.
+- Rolling capture triggers on >50 ms or >=8,000,000 GC bytes; `is_hitch=1` means either. `hitches` prints built-in attribution/GC for every trigger and custom markers for the slowest ten. The >200 ms period groups consecutive slow frames into episodes. Pauses and missing context bias period estimates.
 
 ## Native flight recorder
 

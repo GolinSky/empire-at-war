@@ -1,5 +1,6 @@
 using System;
 using System.IO;
+using System.Threading.Tasks;
 using EmpireAtWar.Components.Weapon;
 using EmpireAtWar.Services.Analytics;
 using EmpireAtWar.Services.Versioning;
@@ -16,6 +17,8 @@ namespace EmpireAtWar.Services.Timing
         private const int BUFFERED_FRAMES_PER_SECOND = 300;
 
         private const long UNAVAILABLE = long.MinValue;
+        // 1 MB fired on ~7% of Editor frames and kept the rolling CSV writing 60% of the run.
+        private const long HITCH_GC_BYTES = 8_000_000;
 
         private const int FRAME_DURATION = 0;
         private const int MAIN_THREAD = 1;
@@ -184,6 +187,7 @@ namespace EmpireAtWar.Services.Timing
         private static BattlePerformanceCapture _instance;
         private readonly ProfilerRecorder[] _recorders = new ProfilerRecorder[METRIC_COUNT];
         private readonly bool[] _recorderAvailable = new bool[METRIC_COUNT];
+        private static Task _reportWrite = Task.CompletedTask;
         private readonly BattleCaptureFrame _latest = new BattleCaptureFrame(METRIC_COUNT, _markerNames.Length, _workloadNames.Length);
         private BattleHitchCapture _hitches;
         private BattleBuiltinRecorders _builtins;
@@ -273,6 +277,9 @@ namespace EmpireAtWar.Services.Timing
 
         public static void StartCapture() => StartCapture(QUICK_SECONDS);
 
+        // The CSV for a 60 s capture is ~4,000 rows; writing it on the main thread stalled the battle ~375 ms.
+        internal static Task PendingReport => _reportWrite;
+
         public static void StartCapture(int seconds)
         {
             if (seconds < 1 || seconds > EXTENDED_SECONDS) throw new ArgumentOutOfRangeException(nameof(seconds));
@@ -350,6 +357,8 @@ namespace EmpireAtWar.Services.Timing
                 StopCaptureInternal("play_mode_exit");
             }
 
+            _reportWrite.Wait(); // Play Mode exit must not lose the last report.
+
             StopHitchMonitoring();
             DisposeRecorders();
             _instance = null;
@@ -363,6 +372,8 @@ namespace EmpireAtWar.Services.Timing
                 StopCaptureInternal("application_quit");
             }
 
+            _reportWrite.Wait();
+
             _quitting = true;
             DisposeRecorders();
         }
@@ -374,6 +385,7 @@ namespace EmpireAtWar.Services.Timing
                 StopCaptureInternal("restarted");
             }
 
+            _reportWrite.Wait(); // The previous report still reads the sample buffers reused below.
             _frameLimit = seconds * BUFFERED_FRAMES_PER_SECOND;
             if (_timestamps == null || _timestamps.Length < _frameLimit)
             {
@@ -409,36 +421,32 @@ namespace EmpireAtWar.Services.Timing
             float durationSeconds = Time.realtimeSinceStartup - _captureStartTime;
             if (_frameCount > 0)
             {
-                try
+                string directory = CaptureDirectory;
+                string summaryPath = Path.Combine(directory, $"battle_{_captureStartUtc:yyyyMMdd_HHmmss_fff}_summary.txt");
+                // Main-thread state is formatted now; the bulk CSV is written off-thread from buffers that the
+                // next StartCaptureInternal waits for.
+                string attribution = BattleSystemAttribution.FormatSummary(_frameCount);
+                string builtins = "\nBuilt-in recorder selection (unavailable means absent in marker inventory):\n" + _builtins.DescribeSelection();
+                var available = (bool[])_recorderAvailable.Clone();
+                var startUtc = _captureStartUtc; var metadata = _metadata; int frames = _frameCount;
+                var timestamps = _timestamps; var samples = _samples; var markerCounts = _markerSampleCounts;
+                var workload = _workloadSamples; var attributionFrames = _attributionFrames;
+                _reportWrite = Task.Run(() =>
                 {
-                    string directory = CaptureDirectory;
-                    BattlePerformanceCaptureReport.Write(
-                        directory,
-                        _captureStartUtc,
-                        durationSeconds,
-                        reason,
-                        _frameCount,
-                        _timestamps,
-                        _samples,
-                        _markerSampleCounts,
-                        _workloadSamples,
-                        _recorderAvailable,
-                        _metricNames,
-                        _markerNames,
-                        _workloadNames,
-                        FIRST_MARKER_METRIC,
-                        _metadata,
-                        UNAVAILABLE, _attributionFrames);
-                    string summaryPath = Path.Combine(directory, $"battle_{_captureStartUtc:yyyyMMdd_HHmmss_fff}_summary.txt");
-                    BattleSystemAttribution.WriteSummary(summaryPath, _frameCount);
-                    File.AppendAllText(summaryPath, "\nBuilt-in recorder selection (unavailable means absent in marker inventory):\n" + _builtins.DescribeSelection());
-                    Debug.Log($"Battle performance capture saved to {directory}.");
-                }
-                finally
-                {
-                    ReleaseIdleRecorders();
-                }
-
+                    try
+                    {
+                        BattlePerformanceCaptureReport.Write(directory, startUtc, durationSeconds, reason, frames, timestamps,
+                            samples, markerCounts, workload, available, _metricNames, _markerNames, _workloadNames,
+                            FIRST_MARKER_METRIC, metadata, UNAVAILABLE, attributionFrames);
+                        File.AppendAllText(summaryPath, attribution + builtins);
+                        Debug.Log($"Battle performance capture saved to {directory}.");
+                    }
+                    catch (Exception e) when (e is IOException || e is UnauthorizedAccessException)
+                    {
+                        Debug.LogError($"Battle performance capture could not be saved to {directory}: {e.Message}");
+                    }
+                });
+                ReleaseIdleRecorders();
                 return;
             }
 
@@ -608,7 +616,7 @@ namespace EmpireAtWar.Services.Timing
             _pendingWorkload = default;
             BattleSystemAttribution.ReadFrame(frame, _latest);
             _builtins.Read(_latest, FIRST_BUILTIN_METRIC, FIRST_MARKER_METRIC, FIRST_BUILTIN_COUNTER, UNAVAILABLE);
-            _latest.IsHitch |= _latest.Metrics[GC_ALLOCATED] != UNAVAILABLE && _latest.Metrics[GC_ALLOCATED] >= 1000000;
+            _latest.IsHitch |= _latest.Metrics[GC_ALLOCATED] != UNAVAILABLE && _latest.Metrics[GC_ALLOCATED] >= HITCH_GC_BYTES;
             return _latest;
         }
 

@@ -67,6 +67,25 @@ acceptance: pending-user
 - Tool follow-ups (small, tooling owner):
   - `uncovered_ms` is negative in most Editor hitch frames (−17 s … −20 ms) → in the Editor `EditorLoop` already contains `PlayerLoop`; use `frame − EditorLoop` in the Editor and `frame − PlayerLoop` in a Player.
   - `battle_20261118_131216_070_summary.txt` has 12 frames in 103 s — check why the second CSV recorded almost nothing.
+
+## Attribution run 2026-11-26 15:34 (`Logs/BattleAudit/20261126T153424314Z-attribution/`, completed)
+- Editor, Cinematic, 2558×1239, rev `578f1b9ec` dirty, 234–256 entities, 91 ships / 72 squadrons. Earlier 15:27 run interrupted by pause at 1:39.
+- First minute: avg 15.3 ms, p95 22.6, p99 27.3; GPU 1.9 ms → CPU-bound.
+- **H1 holds:** 10 of 12 >200 ms frames are ~340 ms blocking GC every 15–20 s. Uninstrumented match `ebcb1b` (26 min) shows the same 300–360 ms max every window, 1–2 GC/min → not instrument-caused. Heap 1.3 GB used / 3.0 GB reserved (Editor); incremental GC off.
+- Exclude: 646 ms, 4987 ms, 7357 ms frames = allocation sweep / profiler save.
+- Main-thread game allocations ≈ 55–80 KB/frame (sweep + native decode of last 300 frames). Top: `ForceCompositionBuilder.GetOffenseScale` (via `AutoPowerCombatSnapshot`), `AttackTargetState.AttackDiagnostics`, `FactionUi.IsQueued`, `ShipOrderRunner.Tick:145`, `FactionUnitUi.RequestId`, `ShipOrderTelemetry.Record/Flush`.
+- **Unattributed:** counter averages 340 KB/frame; 82% of bytes are 2–6 MB frames in 10–17-frame clusters every ~5 s (≈18 MB/s). Neither sweep window nor native buffer caught one. Thread Pool Worker allocates as much as main thread (no markers).
+- 2026-11-26: user approved the experiment → `gcIncremental: 1` set (uncommitted). Editor restart required (`GarbageCollector.isIncremental` is fixed at launch).
+- **Incremental GC result** (`Logs/BattleAudit/20261126T154839106Z-attribution/`, fresh battle after restart, same quality/resolution): hitch phase (3 min) frames >200 ms 12 → 1; `gc_collect_ms` max 335 → 9.5 ms, total 3121 → 69 ms. Reserved heap 3.0 → 1.4 GB. First minute avg 15.3 → 18.0 ms, p99 27.3 → 30.8 ms (not a matched battle moment; FPS-history minutes 2–3: 53/46 → 58/62 FPS). Verdict: keep `gcIncremental: 1`; confirm in a Development Player.
+- The remaining ~400 ms frame at +60 s (375 ms ScriptRunBehaviourUpdate, 25–60 MB) appears in all three runs exactly when the 60 s detailed CSV ends → instrument cost of the capture stop, not gameplay. Tool follow-up.
+- The 2–6 MB / ~5 s allocation bursts (≈18 MB/s) were absent after the restart (avg 340 → 146 KB/frame, p95 3.3 MB → 188 KB) → likely Editor-session state, not game code. Recheck after a long Editor session.
+- Tool fixes 2026-11-26 (uncommitted):
+  - Empty `allocation-ranking.json` was agent error (merge run with no inputs overwrote it) → `merge_allocations` now refuses empty input; regression test `test_merge_without_captures_keeps_existing_ranking`.
+  - +60 s stall → `BattlePerformanceCapture` writes CSV/summary on a `Task`; next start, Play Mode exit, quit and `BattleAttributionRun.Finish` wait for it.
+  - Rolling GC trigger 1 MB → 8 MB (`HITCH_GC_BYTES`): triggers 848 → 16 per run.
+  - `alloc_topN_bytes` always 0: Unity Mono returns 0 from `GC.GetAllocatedBytesForCurrentThread` → scopes use `Profiler.GetMonoUsedSizeLong()` delta (~4 KB granular, 0 when a GC runs inside the scope).
+- **fps-low run** (`Logs/BattleAudit/20261126T161001615Z-attribution/`, save `fps-low.json`, 67 ships / 61 squadrons, Game view 1091×714 — not resolution-matched): hitch phase 0 game frames >200 ms, no GC pause; GC alloc avg 87 KB/frame (was 340 → 146); resolved game-code allocation ≈ 7.6 KB/frame (was ~60). FPS windows 79 / 64 / 71 / 68. Remaining unresolved 16 KB/frame = Editor GUI. GC heap stable 1.18–1.31 GB, reserved 1.56 GB → no managed leak in 4 min.
+- Old note: `allocation-ranking.json` empty (`sampled_frames 0`) despite two valid captures; `alloc_topN_bytes` always 0; ≥1 MB rolling trigger fired 792× → hitch CSV covers 60% of frames.
 ## Reopened 2026-11-18 — instrument stalls during play
 ### What happens
 - On a frame > 200 ms the flight recorder (`Assets/Scripts/Editor/BattleProfilerFlightRecorder.cs`) immediately, **on the main thread, while the battle runs**:

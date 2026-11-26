@@ -34,6 +34,8 @@ def game_caller(methods):
 
 
 def merge_allocations(output, paths):
+    if not paths:
+        raise ValueError('no allocation captures given; refusing to overwrite ' + str(output))
     totals, captures, total_frames = {}, [], 0
     for path in dict.fromkeys(str(Path(p).resolve()) for p in paths):
         data = load_json(path)

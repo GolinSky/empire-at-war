@@ -3,6 +3,7 @@ using System;
 using System.Collections.Generic;
 using System.IO;
 using UnityEngine;
+using UnityEngine.Profiling;
 using Stopwatch = System.Diagnostics.Stopwatch;
 
 namespace EmpireAtWar.Services.Timing
@@ -56,7 +57,7 @@ namespace EmpireAtWar.Services.Timing
                 long begin = Stopwatch.GetTimestamp();
                 _id = id;
                 _frame = _id < 0 ? -1 : Time.frameCount;
-                _bytes = _id < 0 ? 0 : GC.GetAllocatedBytesForCurrentThread();
+                _bytes = _id < 0 ? 0 : Profiler.GetMonoUsedSizeLong();
                 long ready = Stopwatch.GetTimestamp();
                 if (_id >= 0) AddOverhead(_frame, ready - begin);
                 _start = Stopwatch.GetTimestamp();
@@ -65,7 +66,9 @@ namespace EmpireAtWar.Services.Timing
             {
                 if (_id < 0) return;
                 long end = Stopwatch.GetTimestamp();
-                long bytes = GC.GetAllocatedBytesForCurrentThread() - _bytes;
+                // Unity's Mono returns 0 from GC.GetAllocatedBytesForCurrentThread; the used-heap delta is page-granular
+                // (~4 KB) and reads 0 when a GC runs inside the scope.
+                long bytes = Math.Max(0, Profiler.GetMonoUsedSizeLong() - _bytes);
                 Record(_id, _frame, ToNanoseconds(end - _start), bytes);
                 AddOverhead(_frame, Stopwatch.GetTimestamp() - end);
             }
@@ -161,7 +164,12 @@ namespace EmpireAtWar.Services.Timing
                 totals[id] = total;
             }
         }
-        internal static void WriteSummary(string path, int frames) => WriteSummary(path, frames, _captureTotals);
+        internal static string FormatSummary(int frames)
+        {
+            using var writer = new StringWriter(System.Globalization.CultureInfo.InvariantCulture);
+            WriteSummary(writer, frames, _captureTotals);
+            return writer.ToString();
+        }
         internal static void WriteHitchSummary(string path)
         {
             if (_hitchFrames == 0) return;
@@ -179,6 +187,11 @@ namespace EmpireAtWar.Services.Timing
         {
             Directory.CreateDirectory(Path.GetDirectoryName(path));
             using var writer = new StreamWriter(path, true);
+            WriteSummary(writer, frames, samples);
+        }
+
+        private static void WriteSummary(TextWriter writer, int frames, Dictionary<int, BattleSystemSample> samples)
+        {
             writer.WriteLine("\nPer-system totals (main thread; inclusive callbacks; allocations exclude workers and MonoBehaviour callbacks):");
             writer.WriteLine("system,bytes,calls,total_ms,bytes_per_frame");
             var totals = new List<BattleSystemSample>(samples.Values);

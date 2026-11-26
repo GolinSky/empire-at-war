@@ -13,7 +13,7 @@ verification: Live source review, Unity compilation with zero errors, Python AST
 - Entry points/procedure: `Tools/BattleAudit/README.md` and `Tools/BattleAudit/Attribution.md`.
 - User owns Play Mode. Instruments never load saves, start, stop or pause it.
 - Editor/Development continuous capture: discovered built-in markers, GC counters and lifecycle callback time/bytes. Unsupported values remain `unavailable`.
-- Rolling trigger: >50 ms OR ≥1,000,000 GC bytes. `is_hitch` includes both; selected windows cannot establish average FPS.
+- Rolling trigger: >50 ms OR ≥8,000,000 GC bytes (was 1 MB until 2026-11-26). `is_hitch` includes both; selected windows cannot establish average FPS.
 - Inclusive markers overlap; never sum parents and children. Attribution bytes cover the main thread only.
 
 ## Implementation

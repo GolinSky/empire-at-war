@@ -48,6 +48,14 @@ class BattleAttributionTests(unittest.TestCase):
             with self.assertRaisesRegex(ValueError, 'exhaustive stacks'):
                 merge_allocations(Path(folder) / 'out.json', [source])
 
+    def test_merge_without_captures_keeps_existing_ranking(self):
+        with tempfile.TemporaryDirectory() as folder:
+            output = Path(folder) / 'allocation-ranking.json'
+            output.write_text('{"kept": true}', encoding='utf-8')
+            with self.assertRaisesRegex(ValueError, 'no allocation captures'):
+                merge_allocations(output, [])
+            self.assertEqual('{"kept": true}', output.read_text(encoding='utf-8'))
+
     def test_memory_diff_keeps_owners_and_freed_types(self):
         with tempfile.TemporaryDirectory() as folder:
             before, after = Path(folder) / 'before.json', Path(folder) / 'after.json'

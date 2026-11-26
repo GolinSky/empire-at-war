@@ -110,6 +110,7 @@ namespace EmpireAtWar.Editor
                 BattleProfilerDecoder.WriteJson(Path.Combine(_directory, "run-status.json"), new
                 { status = reason, last_unity_frame = lastFrame, ended_utc = DateTime.UtcNow });
                 await BattleProfilerFlightRecorder.CompleteAnalysis();
+                await BattlePerformanceCapture.PendingReport; // The detailed CSV is written off the main thread.
                 await BattleProfilerDecoder.RunAudit(Path.Combine(_directory, "archive-log.txt"), "archive", source,
                     _directory, _firstFrame.ToString(), lastFrame.ToString(), _startedUtc.ToString("O"));
                 await BattleProfilerDecoder.RunAudit(Path.Combine(_directory, "report-log.txt"), "report", _directory);

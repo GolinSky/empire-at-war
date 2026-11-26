@@ -143,4 +143,4 @@ return new {
 - [Hitch, allocation and memory instruments](Attribution.md): continuous CSV columns, native flight recorder, allocation sweeps, memory growth and repeatable Editor/Player procedure.
 - `battle_audit.py allocations <ranking.json> <stacks.json> ...` merges sampled allocation callers; `memory <before.json> <after.json> <diff.json>` compares type/owner totals.
 - `battle_audit.py compare <editor-dir> <player-dir> <out.json>` compares hitch size/period; `report <run-directory>` writes `analysis.md` from saved evidence.
-- Rolling windows now trigger on >50 ms **or >=1,000,000 GC bytes**. `is_hitch=1` means either condition. Never infer average battle FPS from this selected sample.
+- Rolling windows now trigger on >50 ms **or >=8,000,000 GC bytes**. `is_hitch=1` means either condition. Never infer average battle FPS from this selected sample.
