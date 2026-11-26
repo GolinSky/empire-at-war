@@ -34,4 +34,6 @@ MonoBehaviour:
   weaponLoadout:
   - weaponType: 5
     count: 6
-  <Wreck>k__BackingField: {fileID: 0}
+  <Wreck>k__BackingField: {fileID: 11400000, guid: e6f87605cb687da489b2fe77d5d116da,
+    type: 2}
+  <RepairProfile>k__BackingField: {fileID: 0}

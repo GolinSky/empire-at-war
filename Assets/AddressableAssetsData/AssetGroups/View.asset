@@ -30,6 +30,16 @@ MonoBehaviour:
     m_ReadOnly: 0
     m_SerializedLabels: []
     FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 2992080190f3aec45b2149c87b9915bf
+    m_Address: TurbolaserSatelliteWreckView
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 475dd3b3d77f158419dae29b4ed6165c
+    m_Address: QuadLaserSatelliteWreckView
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
   - m_GUID: 496b266af08a4d14095a8cf797575d90
     m_Address: MissileSatelliteView
     m_ReadOnly: 0
@@ -60,6 +70,11 @@ MonoBehaviour:
     m_ReadOnly: 0
     m_SerializedLabels: []
     FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 72b99913a8b6b3545a85c01a7b2bfa27
+    m_Address: AotrGolanIIIDefensePlatformWreckView
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
   - m_GUID: 7eedc46a86a94114fabe4735b77bdeff
     m_Address: DefendPlatformView
     m_ReadOnly: 0
@@ -80,8 +95,18 @@ MonoBehaviour:
     m_ReadOnly: 0
     m_SerializedLabels: []
     FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 98e3dd185d24bb442a3218792eadf40c
+    m_Address: MissileSatelliteWreckView
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
   - m_GUID: 9e4b91ea8a035d94da292e3708a13e78
     m_Address: AotrEmpressDefensePlatformView
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: a8260e10d2a10a84f82c24b35c0af780
+    m_Address: MassDriverSatelliteWreckView
     m_ReadOnly: 0
     m_SerializedLabels: []
     FlaggedDuringContentUpdateRestriction: 0
@@ -102,6 +127,16 @@ MonoBehaviour:
     FlaggedDuringContentUpdateRestriction: 0
   - m_GUID: b05df5e5e84b7834891dca67992a72b6
     m_Address: MassDriverSatelliteView
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: b5cd8b670298e73439ac4d15ac85265a
+    m_Address: AotrEmpressDefensePlatformWreckView
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: ba50a2a607d62964e820fc4eab045504
+    m_Address: IonSatelliteWreckView
     m_ReadOnly: 0
     m_SerializedLabels: []
     FlaggedDuringContentUpdateRestriction: 0
@@ -127,6 +162,11 @@ MonoBehaviour:
     FlaggedDuringContentUpdateRestriction: 0
   - m_GUID: e47308abb82d4934a82b90e6d0f4163d
     m_Address: TurbolaserSatelliteView
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: eacfdab57a5f0bd4dae619a9fde42a07
+    m_Address: RepairSatelliteWreckView
     m_ReadOnly: 0
     m_SerializedLabels: []
     FlaggedDuringContentUpdateRestriction: 0

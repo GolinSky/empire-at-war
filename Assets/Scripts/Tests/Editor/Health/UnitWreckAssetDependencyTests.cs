@@ -1,4 +1,6 @@
+using System;
 using System.Linq;
+using EmpireAtWar.Entities.DefendPlatform;
 using EmpireAtWar.Entities.SpaceStation;
 using EmpireAtWar.Models.Factions;
 using EmpireAtWar.Services.UnitWreck;
@@ -28,6 +30,21 @@ namespace EmpireAtWar.Tests.Editor
                     Is.EqualTo($"Assets/Prefabs/Models/Wrecks/{faction}SpaceStationLevel{level}WreckView.prefab"));
             Assert.That(AssetDatabase.GUIDToAssetPath(wrecks.Get(5).PrefabKey),
                 Is.EqualTo($"Assets/Prefabs/Models/Wrecks/{faction}SpaceStationWreckView.prefab"));
+        }
+
+        [Test]
+        public void EveryDefendPlatform_LeavesItsOwnWreck()
+        {
+            foreach (DefendPlatformType type in Enum.GetValues(typeof(DefendPlatformType)))
+            {
+                var data = AssetDatabase.LoadAssetAtPath<DefendPlatformData>(
+                    $"Assets/Settings/Data/Models/DefendPlatform/{DefendPlatformAssets.GetDataName(type)}.asset");
+                Assert.That(data.Wreck, Is.Not.Null, type.ToString());
+                string viewName = DefendPlatformAssets.GetViewName(type);
+                string unitName = viewName.Substring(0, viewName.Length - "View".Length);
+                Assert.That(AssetDatabase.GUIDToAssetPath(data.Wreck.PrefabKey),
+                    Is.EqualTo($"Assets/Prefabs/Models/Wrecks/{unitName}WreckView.prefab"), type.ToString());
+            }
         }
 
         [Test]

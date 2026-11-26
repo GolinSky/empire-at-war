@@ -38,4 +38,6 @@ MonoBehaviour:
     <SpawnBlockRadius>k__BackingField: 500
   <Income>k__BackingField: 0
   weaponLoadout: []
-  <Wreck>k__BackingField: {fileID: 0}
+  <Wreck>k__BackingField: {fileID: 11400000, guid: 12be472185f9712468333231ebd1117d,
+    type: 2}
+  <RepairProfile>k__BackingField: {fileID: 0}
