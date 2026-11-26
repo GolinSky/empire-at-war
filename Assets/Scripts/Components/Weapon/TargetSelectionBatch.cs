@@ -214,8 +214,10 @@ namespace EmpireAtWar.Components.Weapon
                 }
 
                 // Slots are all acquired now, so ship positions are read on workers while the copies below run.
+                // The flush hands both reads to workers; without it they wait in the local queue until completed.
                 if (candidateCount > 0) _capture.BeginPositionRead();
                 _origins.BeginRead();
+                JobHandle.ScheduleBatchedJobs();
 #if UNITY_EDITOR || DEVELOPMENT_BUILD
                 using (BattleProfilerMarkers.TargetBatchCaptureCopy.Auto())
 #endif

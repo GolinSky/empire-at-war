@@ -46,46 +46,41 @@ namespace EmpireAtWar.Services.Timing
         private const int TARGET_BATCH_COMPLETE = 23;
         private const int TARGET_BATCH_APPLY = 24;
         private const int DUE_BATCH = 25;
-        private const int DUE_BATCH_PREPARE = 26;
-        private const int DUE_BATCH_SERIAL = 27;
-        private const int DUE_BATCH_JOB = 28;
-        private const int DUE_BATCH_SCHEDULE = 29;
-        private const int DUE_BATCH_COMPLETE = 30;
-        private const int DUE_BATCH_APPLY = 31;
-        private const int NAVIGATION_PLAN = 32;
-        private const int NAVIGATION_CANDIDATES = 33;
-        private const int NAVIGATION_ROUTE_BUILD = 34;
-        private const int NAVIGATION_PATH_SEARCH = 35;
-        private const int NAVIGATION_NEAREST_REACHABLE = 36;
-        private const int RADAR_SNAPSHOT = 37;
-        private const int RADAR_JOB = 38;
-        private const int RADAR_APPLY = 39;
-        private const int SHIP_ORDER_TICK = 40;
-        private const int SHIP_AUDIO = 41;
-        private const int SQUADRON_ORDER = 42;
-        private const int SQUADRON_PILOT = 43;
-        private const int SQUADRON_FLIGHT = 44;
-        private const int DUE_SORT = 45;
-        private const int DUE_LOOKUP = 46;
-        private const int DUE_EMISSION = 47;
-        private const int DUE_IMPACT = 48;
-        private const int SFX_APPLY_MIX = 49;
-        private const int NAVIGATION_GRID_BUILD = 50;
-        private const int NAVIGATION_PRESERVE_COURSE = 51;
-        private const int NAVIGATION_NEW_COURSE = 52;
-        private const int NAVIGATION_ARRIVAL = 53;
-        private const int TARGET_FALLBACK_NON_FINITE = 54;
-        private const int TARGET_FALLBACK_PARENT_TILT = 55;
-        private const int TARGET_FALLBACK_RANGE_BOUNDARY = 56;
-        private const int TARGET_FALLBACK_YAW_BOUNDARY = 57;
-        private const int TARGET_FALLBACK_DEGENERATE_DIRECTION = 58;
-        private const int TARGET_FALLBACK_TARGET_VERSION = 59;
-        private const int TARGET_FALLBACK_INVALID_CANDIDATE = 60;
-        private const int TARGET_FALLBACK_OUT_OF_SPAN = 61;
-        private const int NAVIGATION_STATIONARY_REUSE = 62;
-        private const int FIRST_BUILTIN_METRIC = 63;
-        private const int METRIC_COUNT = 85;
-        private const int FIRST_BUILTIN_COUNTER = 20;
+        private const int DUE_BATCH_SERIAL = 26;
+        private const int NAVIGATION_PLAN = 27;
+        private const int NAVIGATION_CANDIDATES = 28;
+        private const int NAVIGATION_ROUTE_BUILD = 29;
+        private const int NAVIGATION_PATH_SEARCH = 30;
+        private const int NAVIGATION_NEAREST_REACHABLE = 31;
+        private const int RADAR_SNAPSHOT = 32;
+        private const int RADAR_JOB = 33;
+        private const int RADAR_APPLY = 34;
+        private const int SHIP_ORDER_TICK = 35;
+        private const int SHIP_AUDIO = 36;
+        private const int SQUADRON_ORDER = 37;
+        private const int SQUADRON_PILOT = 38;
+        private const int SQUADRON_FLIGHT = 39;
+        private const int DUE_SORT = 40;
+        private const int DUE_LOOKUP = 41;
+        private const int DUE_EMISSION = 42;
+        private const int DUE_IMPACT = 43;
+        private const int SFX_APPLY_MIX = 44;
+        private const int NAVIGATION_GRID_BUILD = 45;
+        private const int NAVIGATION_PRESERVE_COURSE = 46;
+        private const int NAVIGATION_NEW_COURSE = 47;
+        private const int NAVIGATION_ARRIVAL = 48;
+        private const int TARGET_FALLBACK_NON_FINITE = 49;
+        private const int TARGET_FALLBACK_PARENT_TILT = 50;
+        private const int TARGET_FALLBACK_RANGE_BOUNDARY = 51;
+        private const int TARGET_FALLBACK_YAW_BOUNDARY = 52;
+        private const int TARGET_FALLBACK_DEGENERATE_DIRECTION = 53;
+        private const int TARGET_FALLBACK_TARGET_VERSION = 54;
+        private const int TARGET_FALLBACK_INVALID_CANDIDATE = 55;
+        private const int TARGET_FALLBACK_OUT_OF_SPAN = 56;
+        private const int NAVIGATION_STATIONARY_REUSE = 57;
+        private const int FIRST_BUILTIN_METRIC = 58;
+        private const int METRIC_COUNT = 80;
+        private const int FIRST_BUILTIN_COUNTER = 17;
         private const int FIRST_MARKER_METRIC = SHIP_TICK;
 
         private static readonly string[] _metricNames = CombineMetricNames(new string[]
@@ -93,7 +88,7 @@ namespace EmpireAtWar.Services.Timing
             "frame_duration_ns", "main_thread_ns", "render_thread_ns", "gpu_frame_ns", "gc_allocated_bytes", "draw_calls", "setpass_calls", "batches", "triangles",
             "ship_tick_ns", "weapon_tick_ns", "weapon_try_fire_ns", "projectile_get_or_create_ns", "projectile_instantiate_ns", "projectile_turret_update_ns", "projectile_laser_update_ns", "radar_scan_ns",
             "target_batch_ns", "target_batch_capture_ns", "target_batch_prepare_ns", "target_batch_serial_ns", "target_batch_job_ns", "target_batch_schedule_ns", "target_batch_complete_ns", "target_batch_apply_ns",
-            "due_batch_ns", "due_batch_prepare_ns", "due_batch_serial_ns", "due_batch_job_ns", "due_batch_schedule_ns", "due_batch_complete_ns", "due_batch_apply_ns",
+            "due_batch_ns", "due_batch_serial_ns",
             "navigation_plan_ns", "navigation_candidates_ns", "navigation_route_build_ns", "navigation_flood_ns", "navigation_nearest_reachable_ns",
             "radar_snapshot_ns", "radar_job_ns", "radar_apply_ns",
             "ship_order_tick_ns",
@@ -139,12 +134,7 @@ namespace EmpireAtWar.Services.Timing
             BattleProfilerMarkers.TARGET_BATCH_COMPLETE,
             BattleProfilerMarkers.TARGET_BATCH_APPLY,
             BattleProfilerMarkers.DUE_BATCH,
-            BattleProfilerMarkers.DUE_BATCH_PREPARE,
             BattleProfilerMarkers.DUE_BATCH_SERIAL,
-            BattleProfilerMarkers.DUE_BATCH_JOB,
-            BattleProfilerMarkers.DUE_BATCH_SCHEDULE,
-            BattleProfilerMarkers.DUE_BATCH_COMPLETE,
-            BattleProfilerMarkers.DUE_BATCH_APPLY,
             BattleProfilerMarkers.NAVIGATION_PLAN,
             BattleProfilerMarkers.NAVIGATION_CANDIDATES,
             BattleProfilerMarkers.NAVIGATION_ROUTE_BUILD,
@@ -181,8 +171,8 @@ namespace EmpireAtWar.Services.Timing
         {
             "completed_unity_frame", "target_requests", "target_candidates", "target_serial_calls", "target_job_calls", "target_fallbacks",
             "target_input_capacity", "target_position_capacity", "target_result_capacity", "target_buffer_growths",
-            "due_records", "due_flagged", "due_committed", "due_serial_calls", "due_job_calls",
-            "due_input_capacity", "due_result_capacity", "due_buffer_growths", "pending_sequences", "pending_impacts"
+            "due_records", "due_flagged", "due_committed", "due_serial_calls", "due_collected_calls",
+            "pending_sequences", "pending_impacts"
         });
         private static BattlePerformanceCapture _instance;
         private readonly ProfilerRecorder[] _recorders = new ProfilerRecorder[METRIC_COUNT];
@@ -499,12 +489,7 @@ namespace EmpireAtWar.Services.Timing
             StartMarkerRecorder(TARGET_BATCH_COMPLETE, BattleProfilerMarkers.TargetBatchComplete);
             StartMarkerRecorder(TARGET_BATCH_APPLY, BattleProfilerMarkers.TargetBatchApply);
             StartMarkerRecorder(DUE_BATCH, BattleProfilerMarkers.DueBatch);
-            StartMarkerRecorder(DUE_BATCH_PREPARE, BattleProfilerMarkers.DueBatchPrepare);
             StartMarkerRecorder(DUE_BATCH_SERIAL, BattleProfilerMarkers.DueBatchSerial);
-            StartMarkerRecorder(DUE_BATCH_JOB, BattleProfilerMarkers.DueBatchJob);
-            StartMarkerRecorder(DUE_BATCH_SCHEDULE, BattleProfilerMarkers.DueBatchSchedule);
-            StartMarkerRecorder(DUE_BATCH_COMPLETE, BattleProfilerMarkers.DueBatchComplete);
-            StartMarkerRecorder(DUE_BATCH_APPLY, BattleProfilerMarkers.DueBatchApply);
             StartMarkerRecorder(NAVIGATION_PLAN, BattleProfilerMarkers.NavigationPlan);
             StartMarkerRecorder(NAVIGATION_CANDIDATES, BattleProfilerMarkers.NavigationCandidates);
             StartMarkerRecorder(NAVIGATION_ROUTE_BUILD, BattleProfilerMarkers.NavigationRouteBuild);
@@ -653,8 +638,7 @@ namespace EmpireAtWar.Services.Timing
                 scenario: "unspecified",
                 targetThreshold: CombatAttackCoordinator.JOB_SELECTION_THRESHOLD,
                 targetBatchSize: CombatAttackCoordinator.TARGET_JOB_BATCH_SIZE,
-                dueThreshold: CombatAttackCoordinator.JOB_PROGRESSION_THRESHOLD,
-                dueBatchSize: CombatAttackCoordinator.DUE_JOB_BATCH_SIZE);
+                dueThreshold: CombatAttackCoordinator.COLLECTED_DUE_THRESHOLD);
         }
 
         private static string ReadGit(string arguments)
@@ -739,10 +723,7 @@ namespace EmpireAtWar.Services.Timing
             public int DueFlagged;
             public int DueCommitted;
             public int DueSerialCalls;
-            public int DueJobCalls;
-            public int DueInputCapacity;
-            public int DueResultCapacity;
-            public int DueBufferGrowths;
+            public int DueCollectedCalls;
             public int PendingSequences;
             public int PendingImpacts;
 
@@ -762,10 +743,7 @@ namespace EmpireAtWar.Services.Timing
                 samples[offset++] = DueFlagged;
                 samples[offset++] = DueCommitted;
                 samples[offset++] = DueSerialCalls;
-                samples[offset++] = DueJobCalls;
-                samples[offset++] = DueInputCapacity;
-                samples[offset++] = DueResultCapacity;
-                samples[offset++] = DueBufferGrowths;
+                samples[offset++] = DueCollectedCalls;
                 samples[offset++] = PendingSequences;
                 samples[offset] = PendingImpacts;
             }

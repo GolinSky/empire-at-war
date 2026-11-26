@@ -265,6 +265,13 @@ Code complete; only user acceptance left. Gates → [[TODOs/User_Acceptance_Queu
 - [ ] **Derive hardpoint HP from hull HP (budget ratio, type weights, per-class minimum)** → [[Review/Refactoring/Hardpoint_Health_From_Hull_Plan|Hardpoint Health From Hull]]; [[Review/Refactoring/Hardpoint_Health_From_Hull_Plan - Research|Current Σ HP / hull table]]
   - Status: implemented 2026-10-29 (`R = 1.15`, 62 data / 61 prefabs migrated); tests not run.
   - Next: user skirmish/tuning acceptance; refresh ALO recipe HP baselines before next import.
+### Optimization
+
+- [ ] **Job System audit: flush target-selection reads, collected due pass, persistent facing buffers, polled-job flushes** → [[Review/Optimization/Job_System_Audit_Plan|Job System Audit Plan]]
+  - 2026-11-26: static audit of 30 jobs; 3 real + 2 minor findings, sorted by priority. Nothing implemented. Next: Phase 1 `ScheduleBatchedJobs()` in `TargetSelectionBatch`.
+  - 2026-11-26 source review: all 4 findings confirmed. Phase 1 → "cheap, unmeasured" (+ `Capture` tests); Phase 2 gate → `ProcessDueEventsSerialCollected` via existing microbenchmark; Phase 4 → optional.
+  - 2026-11-26 implementation: all 4 phases done; due job replaced by a collected pass after microbenchmark; compile clean; `Combat`, `Capture`, `Navigation`, `Audio`, `Core` passed. Gates: Phase 1 worker-overlap capture, in-battle combat check.
+
   - 2026-11-26: moved to Review by user decision; only user acceptance left (see plan "Review 2026-11-26").
 
 ## Architecture Backlog

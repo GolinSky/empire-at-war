@@ -5,6 +5,11 @@ created: "2026-10-29\r"
 ---
 # User Acceptance Queue
 
+## Job System Audit
+
+- [ ] [[Review/Optimization/Job_System_Audit_Plan]] — Profiler capture in a crowded battle: `Battle.Attack.TargetBatch.Capture.Copy` overlaps worker `TargetSlotPositionJob` / `TargetOriginReadJob`; `TargetBatch.Capture` total does not grow.
+- [ ] [[Review/Optimization/Job_System_Audit_Plan]] — In a large battle: hits, salvos and stationary capital facing look unchanged (due events now use one collected pass; facing buffers reused).
+
 ## Unified Unit Tooltip
 
 - [ ] [[Done/Features/Unified_Unit_Tooltip]] — In battle: hover a ship/squadron in the build menu, queue, reserves, selection groups and world; check name · class · role tags, role text, Hull/Shields/Shield regen from data, research bonus as `+n` after researching hull/shield capacity, strong/weak rows with opposing-faction icons.

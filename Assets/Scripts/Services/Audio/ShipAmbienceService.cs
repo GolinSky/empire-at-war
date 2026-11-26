@@ -171,6 +171,7 @@ namespace EmpireAtWar.Services.Audio
                 Positions = _positions, Audible = _audible, Count = _units.Count,
                 Focus = new float2(focus.x, focus.z), MinimumDistanceSquared = _distance
             }.Schedule(positions);
+            JobHandle.ScheduleBatchedJobs();
             _pending = true;
             _nextUpdate = Time.unscaledTime + _data.UpdateInterval;
         }

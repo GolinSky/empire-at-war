@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using EmpireAtWar.Utils;
 using Unity.Collections;
 using Unity.Jobs;
 #if UNITY_EDITOR || DEVELOPMENT_BUILD
@@ -10,7 +11,7 @@ using UnityEngine;
 namespace EmpireAtWar.Components.Weapon
 {
     // Samples actual firing solutions, including how each mount moves around the hull pivot.
-    internal sealed class WeaponFacingSolver
+    internal sealed class WeaponFacingSolver : IDisposable
     {
         private const int HEADING_COUNT = 360 / WeaponFacingSweepJob.TURN_STEP;
         private const int BURST_PAIR_THRESHOLD = 64;
@@ -39,6 +40,25 @@ namespace EmpireAtWar.Components.Weapon
         private readonly List<int> _reachableTargets = new List<int>();
         private Vector2[] _turnedTargets = Array.Empty<Vector2>();
         private int _preparedHeadings;
+        // Burst sweep buffers live across solves; jobs see exact-length views of them.
+        private NativeArray<Vector2> _sweepOffsets;
+        private NativeArray<float> _sweepHeights;
+        private NativeArray<Vector2> _sweepTargets;
+        private NativeArray<int> _sweepIndices;
+        private NativeArray<WeaponFacingSweepJob.Mount> _sweepMounts;
+        private NativeArray<Vector2> _sweepRotations;
+        private NativeArray<WeaponFacingSweepJob.Bounds> _sweepBounds;
+
+        public void Dispose()
+        {
+            if (_sweepOffsets.IsCreated) _sweepOffsets.Dispose();
+            if (_sweepHeights.IsCreated) _sweepHeights.Dispose();
+            if (_sweepTargets.IsCreated) _sweepTargets.Dispose();
+            if (_sweepIndices.IsCreated) _sweepIndices.Dispose();
+            if (_sweepMounts.IsCreated) _sweepMounts.Dispose();
+            if (_sweepRotations.IsCreated) _sweepRotations.Dispose();
+            if (_sweepBounds.IsCreated) _sweepBounds.Dispose();
+        }
 
         public void Clear()
         {
@@ -162,14 +182,23 @@ namespace EmpireAtWar.Components.Weapon
         private float FindTurnBurst(List<Mount> mounts, int maximumScore, float? targetBearing, float sectorHalfAngle,
             out int bestScore)
         {
-            using var targets = new NativeArray<Vector2>(_targets.Count, Allocator.TempJob,
-                NativeArrayOptions.UninitializedMemory);
-            using var heights = new NativeArray<float>(_targets.Count, Allocator.TempJob);
-            using var rotations = new NativeArray<Vector2>(_headingRotations, Allocator.TempJob);
-            using var indices = new NativeArray<int>(_reachableTargets.Count, Allocator.TempJob);
-            using var input = new NativeArray<WeaponFacingSweepJob.Mount>(mounts.Count, Allocator.TempJob);
-            using var bounds = new NativeArray<WeaponFacingSweepJob.Bounds>(HEADING_COUNT, Allocator.TempJob);
-            using var offsets = new NativeArray<Vector2>(_targets.Count, Allocator.TempJob);
+            NativeArrayBuffer.EnsureCapacity(ref _sweepOffsets, _targets.Count);
+            NativeArrayBuffer.EnsureCapacity(ref _sweepHeights, _targets.Count);
+            NativeArrayBuffer.EnsureCapacity(ref _sweepTargets, _targets.Count);
+            NativeArrayBuffer.EnsureCapacity(ref _sweepIndices, _reachableTargets.Count);
+            NativeArrayBuffer.EnsureCapacity(ref _sweepMounts, mounts.Count);
+            if (!_sweepRotations.IsCreated)
+                _sweepRotations = new NativeArray<Vector2>(_headingRotations, Allocator.Persistent);
+            if (!_sweepBounds.IsCreated)
+                _sweepBounds = new NativeArray<WeaponFacingSweepJob.Bounds>(HEADING_COUNT, Allocator.Persistent);
+            // The job loops over Offsets, Mounts and Scores by length, so it gets exact-length views.
+            NativeArray<Vector2> targets = _sweepTargets.GetSubArray(0, _targets.Count);
+            NativeArray<float> heights = _sweepHeights.GetSubArray(0, _targets.Count);
+            NativeArray<int> indices = _sweepIndices.GetSubArray(0, _reachableTargets.Count);
+            NativeArray<WeaponFacingSweepJob.Mount> input = _sweepMounts.GetSubArray(0, mounts.Count);
+            NativeArray<Vector2> offsets = _sweepOffsets.GetSubArray(0, _targets.Count);
+            NativeArray<Vector2> rotations = _sweepRotations;
+            NativeArray<WeaponFacingSweepJob.Bounds> bounds = _sweepBounds;
             var job = new WeaponFacingSweepJob
             {
                 Offsets = offsets, Rotations = rotations, Heights = heights, Targets = targets,

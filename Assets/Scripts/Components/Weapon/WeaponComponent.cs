@@ -279,6 +279,8 @@ namespace EmpireAtWar.Components.Weapon
             _liveGroupsAtRebuild.Clear();
             _candidatesDirty = false;
             ReleaseCandidates();
+            // Native sweep buffers; a reused view reallocates them on its next Burst solve.
+            _facingSolver.Dispose();
             _targetPositions.Clear();
             _turningSalvos.Clear();
             _attackDataList.Clear();

@@ -24,7 +24,7 @@ Counts are fixture source files carrying a category in the class header. A file 
 | `Balance` | 12 |
 | `BattleInput` | 31 |
 | `Capture` | 11 |
-| `Combat` | 25 |
+| `Combat` | 24 |
 | `Core` | 27 |
 | `Economy` | 12 |
 | `EnemyAi` | 19 |
@@ -164,9 +164,8 @@ All paths below are relative to `Assets/Scripts/Tests/Editor/`.
 - [ReinforcementZonesSystemTests.cs](../../Assets/Scripts/Tests/Editor/Capture/ReinforcementZonesSystemTests.cs)
 - [TargetSelectionCaptureTests.cs](../../Assets/Scripts/Tests/Editor/Capture/TargetSelectionCaptureTests.cs)
 
-### Combat (25)
+### Combat (24)
 
-- [AttackDueJobTests.cs](../../Assets/Scripts/Tests/Editor/Combat/AttackDueJobTests.cs)
 - [AttackMoveEngagementTests.cs](../../Assets/Scripts/Tests/Editor/Combat/AttackMoveEngagementTests.cs)
 - [AttackSequenceStateTests.cs](../../Assets/Scripts/Tests/Editor/Combat/AttackSequenceStateTests.cs)
 - [BeamVisualsTests.cs](../../Assets/Scripts/Tests/Editor/Combat/BeamVisualsTests.cs)

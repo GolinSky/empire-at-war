@@ -60,7 +60,7 @@ namespace EmpireAtWar.Tests.Editor
         [TestCase(9)]
         public void CombatFacingTurnsIntoForwardFireInsteadOfChoosingAnAftBattery(int copies)
         {
-            var solver = new WeaponFacingSolver();
+            using var solver = new WeaponFacingSolver();
             for (int i = 0; i < copies; i++) solver.AddTarget(Vector3.back * 100f);
             for (int i = 0; i < copies; i++)
                 solver.AddMount(Vector3.back * 80f, Quaternion.identity, 30f, -180f, 180f, 100, mainBattery: true);
@@ -129,7 +129,7 @@ namespace EmpireAtWar.Tests.Editor
         public void SeededLayoutsPreserveReferenceTurnAndScore(int seed)
         {
             var random = new System.Random(seed);
-            var solver = new WeaponFacingSolver();
+            using var solver = new WeaponFacingSolver();
             for (int layout = 0; layout < 80; layout++)
             {
                 solver.Clear();
@@ -166,6 +166,34 @@ namespace EmpireAtWar.Tests.Editor
                 Assert.That(score, Is.EqualTo(expectedScore), $"Score on layout {layout}");
                 Assert.That(turn, Is.EqualTo(expected), $"Turn on layout {layout}");
             }
+        }
+
+        [Test]
+        public void ReusedBurstBuffersMatchAFreshSolverAfterASectorLimitedSolve()
+        {
+            // 9 targets × 9 mounts = 81 pairs → Burst sweep. The free first solve scores a full broadside about
+            // 80° away; the bow-limited second solve skips that heading and must not read its old score.
+            using var reused = new WeaponFacingSolver();
+            AddAbeamTargetsAndBowMounts(reused);
+            reused.FindTurn(out int firstScore);
+            Assume.That(firstScore, Is.GreaterThan(0), "The first solve must leave a scored heading behind.");
+            reused.Clear();
+            AddAbeamTargetsAndBowMounts(reused);
+            float reusedTurn = reused.FindTurn(out int reusedScore, targetBearing: 0f);
+
+            using var fresh = new WeaponFacingSolver();
+            AddAbeamTargetsAndBowMounts(fresh);
+            float freshTurn = fresh.FindTurn(out int freshScore, targetBearing: 0f);
+
+            Assert.That(reusedScore, Is.EqualTo(freshScore));
+            Assert.That(reusedTurn, Is.EqualTo(freshTurn));
+        }
+
+        private static void AddAbeamTargetsAndBowMounts(WeaponFacingSolver solver)
+        {
+            for (int i = 0; i < 9; i++) solver.AddTarget(Vector3.right * (100f + i));
+            for (int i = 0; i < 9; i++)
+                solver.AddMount(Vector3.zero, Quaternion.identity, 150f, -10f, 10f, 1, mainBattery: true);
         }
 
         [TestCase(0f, 0f, 100f, 0f, 0f)]

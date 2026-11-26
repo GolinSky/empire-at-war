@@ -160,7 +160,7 @@ namespace EmpireAtWar.Tests.Weapon
         }
 
         [Test, Explicit]
-        public void BenchmarkSerialAndJobDuePipelinesOnMatchedImpacts()
+        public void BenchmarkRescanAndCollectedDuePipelinesOnMatchedImpacts()
         {
             StringBuilder csv = new StringBuilder("records,due,variant,run,median_ns,p95_ns\n");
             int[] counts = { 1, 31, 32, 33, 63, 64, 65, 256 };
@@ -171,9 +171,8 @@ namespace EmpireAtWar.Tests.Weapon
                 {
                     for (int run = 0; run < 3; run++)
                     {
-                        BenchmarkVariant(count, dueCount, DueBenchmarkVariant.ExistingSerial, run, csv);
-                        BenchmarkVariant(count, dueCount, DueBenchmarkVariant.CollectedSerial, run, csv);
-                        BenchmarkVariant(count, dueCount, DueBenchmarkVariant.Job, run, csv);
+                        BenchmarkVariant(count, dueCount, DueBenchmarkVariant.Rescan, run, csv);
+                        BenchmarkVariant(count, dueCount, DueBenchmarkVariant.Collected, run, csv);
                     }
                 }
             }
@@ -206,14 +205,11 @@ namespace EmpireAtWar.Tests.Weapon
                     long start = Stopwatch.GetTimestamp();
                     switch (variant)
                     {
-                        case DueBenchmarkVariant.ExistingSerial:
+                        case DueBenchmarkVariant.Rescan:
                             coordinator.ProcessDueEventsSerial(Time.time, Time.frameCount);
                             break;
-                        case DueBenchmarkVariant.CollectedSerial:
-                            coordinator.ProcessDueEventsSerialCollected(Time.time, Time.frameCount);
-                            break;
-                        case DueBenchmarkVariant.Job:
-                            coordinator.ProcessDueEventsBatched(Time.time, Time.frameCount);
+                        case DueBenchmarkVariant.Collected:
+                            coordinator.ProcessDueEventsCollected(Time.time, Time.frameCount);
                             break;
                     }
                     long elapsed = Stopwatch.GetTimestamp() - start;
@@ -255,7 +251,7 @@ namespace EmpireAtWar.Tests.Weapon
             }
         }
 
-        private enum DueBenchmarkVariant { ExistingSerial, CollectedSerial, Job }
+        private enum DueBenchmarkVariant { Rescan, Collected }
 
         private sealed class RecordingOwner : IWeaponHitResolver
         {

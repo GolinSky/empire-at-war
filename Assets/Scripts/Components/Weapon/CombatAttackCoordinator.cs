@@ -4,12 +4,9 @@ using EmpireAtWar.Components.AttackComponent;
 using EmpireAtWar.Models.Health;
 using EmpireAtWar.Services.Timing;
 using EmpireAtWar.ViewComponents.Health;
-using Unity.Collections;
 using UnityEngine;
-using Unity.Jobs;
 using VContainer;
 using EmpireAtWar.Lifecycle;
-using EmpireAtWar.Utils;
 
 namespace EmpireAtWar.Components.Weapon
 {
@@ -17,9 +14,9 @@ namespace EmpireAtWar.Components.Weapon
     public sealed class CombatAttackCoordinator : ILateTickable, IOrderedDisposable
     {
         internal const int JOB_SELECTION_THRESHOLD = TargetSelectionBatch.JOB_SELECTION_THRESHOLD;
-        internal const int JOB_PROGRESSION_THRESHOLD = 64;
+        // From this many records one collecting pass beats rescanning per due event (due microbenchmark, 2026-11-26).
+        internal const int COLLECTED_DUE_THRESHOLD = 64;
         internal const int TARGET_JOB_BATCH_SIZE = TargetSelectionBatch.TARGET_JOB_BATCH_SIZE;
-        internal const int DUE_JOB_BATCH_SIZE = 32;
         // A ship is doomed once in-flight hits are expected to remove this much more than its shields and hull;
         // the margin covers intercepted missiles, shield regeneration and damage reduction.
         internal const float DOOMED_MARGIN = 1.25f;
@@ -37,9 +34,6 @@ namespace EmpireAtWar.Components.Weapon
             new Dictionary<IHealthModelObserver, float>();
         private static readonly Comparison<DueEvent> _compareDueEvents = CompareDueEvents;
         private readonly TargetSelectionBatch _targetSelection;
-
-        private NativeArray<AttackDueJob.Input> _dueInputs;
-        private NativeArray<byte> _dueResults;
 
         private long _nextEventSequence;
 
@@ -71,8 +65,6 @@ namespace EmpireAtWar.Components.Weapon
             _owners.Clear();
             _targetSelection.Dispose();
             _dueEvents.Clear();
-            if (_dueInputs.IsCreated) _dueInputs.Dispose();
-            if (_dueResults.IsCreated) _dueResults.Dispose();
         }
 
         public void ClearPendingAttacks()
@@ -228,8 +220,6 @@ namespace EmpireAtWar.Components.Weapon
             int targetInputCapacity = _targetSelection.InputCapacity;
             int targetPositionCapacity = _targetSelection.PositionCapacity;
             int targetResultCapacity = _targetSelection.ResultCapacity;
-            int dueInputCapacityBefore = _dueInputs.IsCreated ? _dueInputs.Length : 0;
-            int dueResultCapacityBefore = _dueResults.IsCreated ? _dueResults.Length : 0;
             long fallbackCount = AttackSequenceDiagnostics.TargetSelectionFallbacks;
             _lastDueFlaggedCount = 0;
             _dueCommittedCount = 0;
@@ -244,9 +234,9 @@ namespace EmpireAtWar.Components.Weapon
             using (BattleProfilerMarkers.DueBatch.Auto())
 #endif
             {
-                if (dueRecords >= JOB_PROGRESSION_THRESHOLD)
+                if (dueRecords >= COLLECTED_DUE_THRESHOLD)
                 {
-                    ProcessDueEventsBatched(now, frame);
+                    ProcessDueEventsCollected(now, frame);
                 }
                 else
                 {
@@ -264,8 +254,6 @@ namespace EmpireAtWar.Components.Weapon
                 int currentTargetInputCapacity = _targetSelection.InputCapacity;
                 int currentTargetPositionCapacity = _targetSelection.PositionCapacity;
                 int currentTargetResultCapacity = _targetSelection.ResultCapacity;
-                int dueInputCapacity = _dueInputs.IsCreated ? _dueInputs.Length : 0;
-                int dueResultCapacity = _dueResults.IsCreated ? _dueResults.Length : 0;
                 BattlePerformanceCapture.RecordCombatWorkload(new BattlePerformanceCapture.CombatWorkload
                 {
                     CompletedUnityFrame = frame,
@@ -281,14 +269,10 @@ namespace EmpireAtWar.Components.Weapon
                                           (currentTargetPositionCapacity > targetPositionCapacity ? 1 : 0) +
                                           (currentTargetResultCapacity > targetResultCapacity ? 1 : 0),
                     DueRecords = dueRecords,
-                    DueFlagged = dueRecords >= JOB_PROGRESSION_THRESHOLD ? _lastDueFlaggedCount : _dueCommittedCount,
+                    DueFlagged = dueRecords >= COLLECTED_DUE_THRESHOLD ? _lastDueFlaggedCount : _dueCommittedCount,
                     DueCommitted = _dueCommittedCount,
-                    DueSerialCalls = dueRecords > 0 && dueRecords < JOB_PROGRESSION_THRESHOLD ? 1 : 0,
-                    DueJobCalls = dueRecords >= JOB_PROGRESSION_THRESHOLD ? 1 : 0,
-                    DueInputCapacity = dueInputCapacity,
-                    DueResultCapacity = dueResultCapacity,
-                    DueBufferGrowths = (dueInputCapacity > dueInputCapacityBefore ? 1 : 0) +
-                                       (dueResultCapacity > dueResultCapacityBefore ? 1 : 0),
+                    DueSerialCalls = dueRecords > 0 && dueRecords < COLLECTED_DUE_THRESHOLD ? 1 : 0,
+                    DueCollectedCalls = dueRecords >= COLLECTED_DUE_THRESHOLD ? 1 : 0,
                     PendingSequences = _sequences.Count,
                     PendingImpacts = _impacts.Count
                 });
@@ -305,8 +289,8 @@ namespace EmpireAtWar.Components.Weapon
                 CommitDueEvent(isImpact, index, now, frame);
         }
 
-#if UNITY_EDITOR || DEVELOPMENT_BUILD
-        internal void ProcessDueEventsSerialCollected(float now, int frame)
+        /// <summary>One pass collects the records due now; they commit in due-time order.</summary>
+        internal void ProcessDueEventsCollected(float now, int frame)
         {
             _dueEvents.Clear();
             for (int i = 0; i < _sequences.Count; i++)
@@ -325,79 +309,6 @@ namespace EmpireAtWar.Components.Weapon
             }
 
             CommitCollectedDueEvents(now, frame);
-        }
-#endif
-
-        internal void ProcessDueEventsBatched(float now, int frame)
-        {
-            int sequenceCount = _sequences.Count;
-            int recordCount = sequenceCount + _impacts.Count;
-#if UNITY_EDITOR || DEVELOPMENT_BUILD
-            using (BattleProfilerMarkers.DueBatchPrepare.Auto())
-#endif
-            {
-                NativeArrayBuffer.EnsureCapacity(ref _dueInputs, recordCount);
-                NativeArrayBuffer.EnsureCapacity(ref _dueResults, recordCount);
-
-                for (int i = 0; i < sequenceCount; i++)
-                {
-                    SequenceRecord record = _sequences[i];
-                    _dueInputs[i] = new AttackDueJob.Input { DueTime = record.NextTime, EarliestFrame = record.EarliestFrame };
-                }
-
-                for (int i = 0; i < _impacts.Count; i++)
-                {
-                    ImpactRecord record = _impacts[i];
-                    _dueInputs[sequenceCount + i] = new AttackDueJob.Input
-                        { DueTime = record.DueTime, EarliestFrame = record.EarliestFrame };
-                }
-            }
-
-#if UNITY_EDITOR || DEVELOPMENT_BUILD
-            using (BattleProfilerMarkers.DueBatchJob.Auto())
-#endif
-            {
-                AttackDueJob job = new AttackDueJob
-                {
-                    Inputs = _dueInputs,
-                    Results = _dueResults,
-                    Now = now,
-                    Frame = frame
-                };
-                JobHandle handle;
-#if UNITY_EDITOR || DEVELOPMENT_BUILD
-                using (BattleProfilerMarkers.DueBatchSchedule.Auto())
-#endif
-                    handle = job.Schedule(recordCount, DUE_JOB_BATCH_SIZE);
-#if UNITY_EDITOR || DEVELOPMENT_BUILD
-                using (BattleProfilerMarkers.DueBatchComplete.Auto())
-#endif
-                    handle.Complete();
-            }
-
-#if UNITY_EDITOR || DEVELOPMENT_BUILD
-            using (BattleProfilerMarkers.DueBatchApply.Auto())
-#endif
-            {
-                _dueEvents.Clear();
-                for (int i = 0; i < recordCount; i++)
-                {
-                    if (_dueResults[i] == 0) continue;
-                    if (i < sequenceCount)
-                    {
-                        SequenceRecord record = _sequences[i];
-                        _dueEvents.Add(new DueEvent { Time = record.NextTime, Sequence = record.EventSequence });
-                    }
-                    else
-                    {
-                        ImpactRecord record = _impacts[i - sequenceCount];
-                        _dueEvents.Add(new DueEvent
-                            { IsImpact = true, Time = record.DueTime, Sequence = record.EventSequence });
-                    }
-                }
-
-                CommitCollectedDueEvents(now, frame);
-            }
         }
 
         private void CommitCollectedDueEvents(float now, int frame)

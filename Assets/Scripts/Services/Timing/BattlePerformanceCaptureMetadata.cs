@@ -19,7 +19,6 @@ namespace EmpireAtWar.Services.Timing
         public int TargetThreshold { get; }
         public int TargetBatchSize { get; }
         public int DueThreshold { get; }
-        public int DueBatchSize { get; }
 
         public BattlePerformanceCaptureMetadata(
             string unityVersion,
@@ -38,7 +37,6 @@ namespace EmpireAtWar.Services.Timing
             int targetThreshold,
             int targetBatchSize,
             int dueThreshold,
-            int dueBatchSize,
             float renderScale)
         {
             UnityVersion = unityVersion;
@@ -58,7 +56,6 @@ namespace EmpireAtWar.Services.Timing
             TargetThreshold = targetThreshold;
             TargetBatchSize = targetBatchSize;
             DueThreshold = dueThreshold;
-            DueBatchSize = dueBatchSize;
         }
     }
 }

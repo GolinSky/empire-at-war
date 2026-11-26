@@ -145,7 +145,8 @@ namespace EmpireAtWar.Tests.Timing
             Assert.That(markers.Length, Is.EqualTo(count - first));
             Assert.That(metrics, Does.Contain("player_loop_ns"));
             Assert.That(metrics, Does.Contain("attribution_overhead_ns"));
-            Assert.That(workload.Skip(20), Is.EqualTo(BattleBuiltinRecorders.CounterColumns));
+            int firstCounter = (int)type.GetField("FIRST_BUILTIN_COUNTER", flags).GetRawConstantValue();
+            Assert.That(workload.Skip(firstCounter), Is.EqualTo(BattleBuiltinRecorders.CounterColumns));
         }
 
         [Test]
@@ -186,7 +187,7 @@ namespace EmpireAtWar.Tests.Timing
                     new[] { "completed_unity_frame", "target_requests", "due_records" },
                     1,
                     new BattlePerformanceCaptureMetadata(unityVersion: "6000.4", runtime: "Editor", quality: "High", resolution: "100x100", renderScale: 0.77f, timeScale: 1f,
-                        vSyncCount: 0, targetFrameRate: 60, graphicsDevice: "GPU", processor: "CPU", sourceRevision: "abc123", sourceState: "dirty", buildGuid: "build", scenario: "test", targetThreshold: 8, targetBatchSize: 1, dueThreshold: 64, dueBatchSize: 32),
+                        vSyncCount: 0, targetFrameRate: 60, graphicsDevice: "GPU", processor: "CPU", sourceRevision: "abc123", sourceState: "dirty", buildGuid: "build", scenario: "test", targetThreshold: 8, targetBatchSize: 1, dueThreshold: 64),
                     long.MinValue);
 
                 string csv = File.ReadAllText(Path.Combine(directory, "battle_20260917_120000_000.csv"));
@@ -198,7 +199,7 @@ namespace EmpireAtWar.Tests.Timing
                 Assert.That(summary, Does.Contain("source_revision=abc123"));
                 Assert.That(summary, Does.Contain("render_scale=0.770"));
                 Assert.That(summary, Does.Contain("target_job_threshold=8"));
-                Assert.That(summary, Does.Contain("due_job_batch_size=32"));
+                Assert.That(summary, Does.Contain("due_collected_threshold=64"));
             }
             finally
             {

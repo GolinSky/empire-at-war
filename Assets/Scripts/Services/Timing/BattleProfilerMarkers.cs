@@ -51,12 +51,7 @@ namespace EmpireAtWar.Services.Timing
         public const string TARGET_BATCH_COMPLETE = "Battle.Attack.TargetBatch.Complete";
         public const string TARGET_BATCH_APPLY = "Battle.Attack.TargetBatch.Apply";
         public const string DUE_BATCH = "Battle.Attack.DueBatch";
-        public const string DUE_BATCH_JOB = "Battle.Attack.DueBatch.Job";
-        public const string DUE_BATCH_PREPARE = "Battle.Attack.DueBatch.Prepare";
         public const string DUE_BATCH_SERIAL = "Battle.Attack.DueBatch.Serial";
-        public const string DUE_BATCH_SCHEDULE = "Battle.Attack.DueBatch.Schedule";
-        public const string DUE_BATCH_COMPLETE = "Battle.Attack.DueBatch.Complete";
-        public const string DUE_BATCH_APPLY = "Battle.Attack.DueBatch.Apply";
         public const string PROJECTILE_GET_OR_CREATE = "Battle.Projectile.GetOrCreate";
         public const string PROJECTILE_INSTANTIATE = "Battle.Projectile.Instantiate";
         public const string PROJECTILE_TURRET_UPDATE = "Battle.Projectile.TurretUpdate";
@@ -137,12 +132,7 @@ namespace EmpireAtWar.Services.Timing
         public static readonly ProfilerMarker TargetBatchComplete = new ProfilerMarker(TARGET_BATCH_COMPLETE);
         public static readonly ProfilerMarker TargetBatchApply = new ProfilerMarker(TARGET_BATCH_APPLY);
         public static readonly ProfilerMarker DueBatch = new ProfilerMarker(DUE_BATCH);
-        public static readonly ProfilerMarker DueBatchJob = new ProfilerMarker(DUE_BATCH_JOB);
-        public static readonly ProfilerMarker DueBatchPrepare = new ProfilerMarker(DUE_BATCH_PREPARE);
         public static readonly ProfilerMarker DueBatchSerial = new ProfilerMarker(DUE_BATCH_SERIAL);
-        public static readonly ProfilerMarker DueBatchSchedule = new ProfilerMarker(DUE_BATCH_SCHEDULE);
-        public static readonly ProfilerMarker DueBatchComplete = new ProfilerMarker(DUE_BATCH_COMPLETE);
-        public static readonly ProfilerMarker DueBatchApply = new ProfilerMarker(DUE_BATCH_APPLY);
         public static readonly ProfilerMarker ProjectileGetOrCreate = new ProfilerMarker(PROJECTILE_GET_OR_CREATE);
         public static readonly ProfilerMarker ProjectileInstantiate = new ProfilerMarker(PROJECTILE_INSTANTIATE);
         public static readonly ProfilerMarker ProjectileTurretUpdate = new ProfilerMarker(PROJECTILE_TURRET_UPDATE);

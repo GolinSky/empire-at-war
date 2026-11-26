@@ -37,7 +37,12 @@ namespace EmpireAtWar.Components.Weapon
         {
             for (int step = 0; step < Scores.Length; step++)
             {
-                if (LimitToForwardSector && !KeepsTargetAhead(step, TargetBearing, SectorHalfAngle)) continue;
+                // Scores is reused across solves, so a skipped heading must clear last solve's bounds.
+                if (LimitToForwardSector && !KeepsTargetAhead(step, TargetBearing, SectorHalfAngle))
+                {
+                    Scores[step] = default;
+                    continue;
+                }
                 Vector2 rotation = Rotations[step];
                 for (int i = 0; i < Offsets.Length; i++)
                 {

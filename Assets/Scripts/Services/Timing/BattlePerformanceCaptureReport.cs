@@ -155,9 +155,9 @@ namespace EmpireAtWar.Services.Timing
             report.AppendFormat(CultureInfo.InvariantCulture, "started_utc={0:O}\nframes={1}\nduration_seconds={2:F3}\nstop_reason={3}\n", captureStartUtc, frameCount, durationSeconds, stopReason);
             report.AppendFormat(CultureInfo.InvariantCulture, "unity={0}\nruntime={1}\nquality={2}\nresolution={3}\ntime_scale={4:F3}\nvsync_count={5}\ntarget_frame_rate={6}\ngraphics_device={7}\nprocessor={8}\n", metadata.UnityVersion, metadata.Runtime, metadata.Quality, metadata.Resolution, metadata.TimeScale, metadata.VSyncCount, metadata.TargetFrameRate, metadata.GraphicsDevice, metadata.Processor);
             report.AppendFormat(CultureInfo.InvariantCulture,
-                "source_revision={0}\nsource_state={1}\nbuild_guid={2}\nscenario={3}\ntarget_variant=automatic\ntarget_job_threshold={4}\ntarget_job_batch_size={5}\ndue_variant=automatic\ndue_job_threshold={6}\ndue_job_batch_size={7}\n",
+                "source_revision={0}\nsource_state={1}\nbuild_guid={2}\nscenario={3}\ntarget_variant=automatic\ntarget_job_threshold={4}\ntarget_job_batch_size={5}\ndue_variant=automatic\ndue_collected_threshold={6}\n",
                 metadata.SourceRevision, metadata.SourceState, metadata.BuildGuid, metadata.Scenario,
-                metadata.TargetThreshold, metadata.TargetBatchSize, metadata.DueThreshold, metadata.DueBatchSize);
+                metadata.TargetThreshold, metadata.TargetBatchSize, metadata.DueThreshold);
             report.AppendLine("Job schedule and completion markers measure main-thread dispatch and wait; inspect CPU Timeline for worker execution.");
             report.AppendLine("CSV rows sample the preceding completed Unity frame; completed_unity_frame identifies its combat workload.");
             report.AppendLine("cpu_main_thread and cpu_render_thread include waits. GPU values can arrive later than CPU values.");

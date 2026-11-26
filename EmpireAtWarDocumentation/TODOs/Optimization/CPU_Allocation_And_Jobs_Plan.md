@@ -112,7 +112,7 @@ created: 2026-11-14
 | AI force scoring | Managed scans in `ForceCompositionBuilder` | Re-measure after Phases 1 and 3 |
 | Hazard membership | 10 Hz entity × hazard, interface `Contains` | Re-measure after the Phase 1 early-out |
 | Decor culling | Per-instance loop each `LateUpdate` | Surviving instance count after cell culling |
-| Attack due batch | `JOB_PROGRESSION_THRESHOLD = 64`, `DUE_JOB_BATCH_SIZE = 32` | Compare `DueBatch*` markers with the serial path |
+| Attack due batch | `JOB_PROGRESSION_THRESHOLD = 64`, `DUE_JOB_BATCH_SIZE = 32` | Done 2026-11-26: microbenchmark → job replaced by one collected pass; see [[Review/Optimization/Job_System_Audit_Plan]] Phase 2 |
 | Radar grid | Per-radar scan of eligible bits | Sparse versus dense battle comparison |
 | `AutoPowerCombatSnapshot:49` | Clears every bucket ever created | Bucket count in a long battle |
 

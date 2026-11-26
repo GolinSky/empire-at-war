@@ -81,6 +81,7 @@ namespace EmpireAtWar.Services.ShipNavigation
                 Inputs = _inputs, Results = _results, Ranges = _ranges,
                 Occupants = _occupants, OccupancyHashes = _occupancyHashes, CellSize = cellSize
             }.Schedule(count, 32);
+            JobHandle.ScheduleBatchedJobs();
             IsScheduled = true;
         }
 
