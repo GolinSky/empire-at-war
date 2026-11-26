@@ -52,6 +52,7 @@ CBUFFER_START(UnityPerMaterial)
     half _TeamLiveryMinSaturation;
     half _TeamLiveryStrength;
 #ifndef SHIP_WRECK
+    half4 _HullMarkingInk;
     float _RadialHullMarkings;
     float _HullMarkingSpacing;
     float _HullMarkingDiameter;

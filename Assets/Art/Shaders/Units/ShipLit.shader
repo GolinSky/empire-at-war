@@ -48,6 +48,7 @@ Shader "EmpireAtWar/Ship Lit"
         [Header(Hull Markings)]
         [Toggle(_RADIAL_HULL_MARKINGS)] _RadialHullMarkings("Three Radial Markings", Float) = 0
         [NoScaleOffset] _HullMarkingMap("Marking (Centered Circle, 46% Width)", 2D) = "white" {}
+        _HullMarkingInk("Marking Ink (Alpha = Tint Strength)", Color) = (1, 1, 1, 0)
         _HullMarkingSpacing("Distance From Center", Float) = 1.0
         _HullMarkingDiameter("Diameter", Float) = 1.0
 

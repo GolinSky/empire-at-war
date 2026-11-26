@@ -110,7 +110,13 @@ half3 ApplyRadialHullMarkings(half3 albedo, Varyings input)
     float edgeWidth = max(fwidth(radius), 0.01);
     half coverage = 1.0 - smoothstep(1.0 - edgeWidth, 1.0, radius);
     half upward = step(0.55, TransformWorldToObjectNormal(input.normalWS).y);
-    return lerp(albedo, paint * _BaseColor.rgb, coverage * upward);
+    // Colored ink marks the emblem. Keep its neutral backing and the paint's grain.
+    half peak = max(paint.r, max(paint.g, paint.b));
+    half chroma = peak - min(paint.r, min(paint.g, paint.b));
+    half ink = smoothstep(0.03h, 0.25h, chroma);
+    half3 tintedPaint = lerp(paint, _HullMarkingInk.rgb * (0.75h + peak * 0.5h), ink);
+    paint = lerp(paint * _BaseColor.rgb, tintedPaint, _HullMarkingInk.a);
+    return lerp(albedo, paint, coverage * upward);
 }
 #endif
 
