@@ -107,8 +107,11 @@ namespace EmpireAtWar.Tests.Editor
             Assert.That(renderer.enabled, Is.False, "The range shows only while the platform is selected.");
             Material hull = prefab.transform.Find("default").GetComponent<MeshRenderer>().sharedMaterial;
             Material armedHull = LoadView(DefendPlatformType.Xq6).transform.Find("default").GetComponent<MeshRenderer>().sharedMaterial;
-            Assert.That(hull, Is.Not.SameAs(armedHull), "The repair platform wears the medical albedo.");
-            Assert.That(hull.GetTexture("_BaseMap"), Is.Not.SameAs(armedHull.GetTexture("_BaseMap")));
+            Assert.That(hull, Is.Not.SameAs(armedHull), "The repair platform has its own hull material.");
+            Assert.That(hull.IsKeywordEnabled("_RADIAL_HULL_MARKINGS"), Is.True, "The medical emblems are projected markings.");
+            Texture marking = hull.GetTexture("_HullMarkingMap");
+            Assert.That(marking, Is.Not.Null);
+            Assert.That(marking, Is.Not.SameAs(armedHull.GetTexture("_BaseMap")), "The marking is the medical emblem, not the hull albedo.");
         }
 
         [Test]

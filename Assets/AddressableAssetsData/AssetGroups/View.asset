@@ -150,6 +150,11 @@ MonoBehaviour:
     m_ReadOnly: 0
     m_SerializedLabels: []
     FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: ba6bc2c54ec8aaa4c891d9b1089403cb
+    m_Address: Xq6RepairPlatformWreckView
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
   - m_GUID: c90c026a3e39ede4aa839f3f104bb1f8
     m_Address: MiningFacilityWreckView
     m_ReadOnly: 0
