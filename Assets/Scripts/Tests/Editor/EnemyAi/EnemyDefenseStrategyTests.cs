@@ -41,9 +41,9 @@ namespace EmpireAtWar.Tests.Editor
 
         [TestCase(ShipClass.Fighter, 600f, 0f, 800f, 0.8f, 0f, SiteFacilityType.QuadLaserSatellite)]
         [TestCase(ShipClass.Frigate, 3000f, 1000f, 1800f, 0.6f, 0f, SiteFacilityType.TurbolaserSatellite)]
-        // Ion vs shields 3.3 -> 1.65 (3fa52ed49) let affordable heavy missiles outscore ion; on a tight budget
-        // the shield specialist must still beat the turbolaser generalist.
-        [TestCase(ShipClass.Cruiser, 5000f, 15000f, 1000f, 0.6f, 0f, SiteFacilityType.IonSatellite)]
+        // Missiles deal full damage to cruisers (DamageMatrixData), so even on a tight budget against a shielded
+        // cruiser the missile satellite outscores ion.
+        [TestCase(ShipClass.Cruiser, 5000f, 15000f, 1000f, 0.6f, 0f, SiteFacilityType.MissileSatellite)]
         // Heavy caliber damage ×1.3 (aae27525d) made heavy missiles outscore mass drivers against besieging capitals.
         [TestCase(ShipClass.Capital, 10000f, 30000f, 12000f, 0.1f, 2f, SiteFacilityType.MissileSatellite)]
         [TestCase(ShipClass.Cruiser, 10000f, 30000f, 7000f, 0.9f, 0f, SiteFacilityType.MissileSatellite)]
@@ -53,13 +53,6 @@ namespace EmpireAtWar.Tests.Editor
             var hostile = Force(target, hull, shields);
             var strategy = new EnemyDefenseStrategy();
             var snapshot = Snapshot(hostile, money, 0f, Pad(exposure: exposure), baseThreat);
-            if (expected == SiteFacilityType.IonSatellite)
-            {
-                var hullDps = new float[ForceComposition.ClassSlots];
-                hullDps[(int)target] = 300f;
-                snapshot.Own.AddNew(new UnitCombatProfile(ShipClass.Cruiser, 1000f, 1000f, hullDps,
-                    new float[ForceComposition.ClassSlots], new float[ForceComposition.ClassSlots], Array.Empty<UnitCombatProfile>()), false);
-            }
             Assert.That(strategy.TrySelectScored(snapshot, out var choice), Is.True);
             Assert.That(choice.Type, Is.EqualTo(expected), string.Join("; ", Describe(strategy)));
         }

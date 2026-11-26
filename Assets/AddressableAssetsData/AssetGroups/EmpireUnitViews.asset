@@ -140,11 +140,6 @@ MonoBehaviour:
     m_ReadOnly: 0
     m_SerializedLabels: []
     FlaggedDuringContentUpdateRestriction: 0
-  - m_GUID: 51b0b437cc9c1df4c9b28cfbecda0512
-    m_Address: ArquitensImperialCruiserWreckView
-    m_ReadOnly: 0
-    m_SerializedLabels: []
-    FlaggedDuringContentUpdateRestriction: 0
   - m_GUID: 52f523efadc8d8c41b886053168da5a3
     m_Address: VictoryIReinforcementView
     m_ReadOnly: 0

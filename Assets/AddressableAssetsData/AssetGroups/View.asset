@@ -55,6 +55,11 @@ MonoBehaviour:
     m_ReadOnly: 0
     m_SerializedLabels: []
     FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 51b0b437cc9c1df4c9b28cfbecda0512
+    m_Address: ArquitensImperialCruiserWreckView
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
   - m_GUID: 523e9838d779ae944a61bd904bf8f2fb
     m_Address: MiningFacilityView
     m_ReadOnly: 0

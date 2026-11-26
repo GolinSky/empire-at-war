@@ -6,7 +6,7 @@ namespace EmpireAtWar.Components.AttackComponent
         PointDefense = 1,
         Turbolaser = 2,
         Ion = 4,
-        /// <summary>Missiles: artillery that pierces shields and deals full damage to cruisers and capitals.</summary>
+        /// <summary>Missiles: long-range artillery that pierces shields; best against cruisers and capitals.</summary>
         Missile = 5,
         ProtonTorpedo = 6,
         Beam = 7,

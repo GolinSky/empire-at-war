@@ -173,13 +173,13 @@ MonoBehaviour:
       fighter: 0.5
       bomber: 0.5
       interceptor: 0.5
-      corvette: 0.5
-      frigate: 0.8
-      cruiser: 1
-      heavyCruiser: 1
-      capital: 1
-      battleCruiser: 0.9
-      dreadnought: 0.8
+      corvette: 0.3
+      frigate: 0.5
+      cruiser: 0.6
+      heavyCruiser: 0.6
+      capital: 0.55
+      battleCruiser: 0.45
+      dreadnought: 0.35
       structure: 0.4
       heroStrikecraft: 0.2
     accuracy:

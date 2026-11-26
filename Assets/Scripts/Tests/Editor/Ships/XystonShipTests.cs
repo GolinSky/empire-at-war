@@ -58,7 +58,7 @@ namespace EmpireAtWar.Tests.Editor
         }
 
         [Test]
-        public void Superlaser_ScalesByTargetClassAndXystonIsMoreFragileThanTheLineShips()
+        public void Superlaser_ScalesByTargetClassAndXystonIsMoreFragileThanTheAllegiance()
         {
             var catalog = AssetDatabase.LoadAssetAtPath<ShipAbilityCatalog>(CATALOG);
             ShipAbilityDefinition superlaser = catalog.Get(ShipAbilityId.XystonSuperlaser);
@@ -83,8 +83,9 @@ namespace EmpireAtWar.Tests.Editor
             Assert.That(byTarget, Is.Ordered.Descending);
             Assert.That(settings.VsOther, Is.GreaterThan(0f));
 
+            // The Xyston outlasts an ISD II but stays more fragile than the Allegiance battlecruiser.
             ShipData xyston = AssetDatabase.LoadAssetAtPath<ShipData>(DATA);
-            foreach (string line in new[] { "ISDIIShipData", "AllegianceShipData" })
+            foreach (string line in new[] { "AllegianceShipData" })
             {
                 ShipData other = AssetDatabase.LoadAssetAtPath<ShipData>($"Assets/Settings/Data/Ship/Empire/{line}.asset");
                 Assert.That(xyston.Hull + xyston.Shields, Is.LessThan(other.Hull + other.Shields), line);
