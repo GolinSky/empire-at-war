@@ -4,11 +4,10 @@ using EmpireAtWar.Components.Ship.Health;
 using EmpireAtWar.Entities.BaseEntity.EntityFacades;
 using EmpireAtWar.Extensions;
 using EmpireAtWar.Lifecycle;
-using EmpireAtWar.Services.UnitExplosion;
 using UnityEngine;
 using VContainer;
 
-namespace EmpireAtWar.Entities.BaseEntity
+namespace EmpireAtWar.Services.UnitExplosion
 {
     /// <summary>
     /// A short blast on hull hits, near the hit hardpoint with a random offset across the hull. One unit waits

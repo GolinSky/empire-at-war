@@ -1,9 +1,8 @@
 using EmpireAtWar.Components.Ship.Health;
-using EmpireAtWar.Components.TeamColor;
 using EmpireAtWar.Lifecycle;
 using EmpireAtWar.Models.Health;
 
-namespace EmpireAtWar.Entities.BaseEntity
+namespace EmpireAtWar.Components.TeamColor
 {
     /// <summary>
     /// Shows the unit's hull loss on its hull (ShipHullDamage.hlsl). Follows repairs and pooled respawns too,

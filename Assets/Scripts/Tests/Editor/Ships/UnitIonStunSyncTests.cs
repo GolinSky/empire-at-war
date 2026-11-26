@@ -1,6 +1,5 @@
 using EmpireAtWar.Components.Combat;
 using EmpireAtWar.Components.TeamColor;
-using EmpireAtWar.Entities.BaseEntity;
 using NUnit.Framework;
 
 namespace EmpireAtWar.Tests.Editor

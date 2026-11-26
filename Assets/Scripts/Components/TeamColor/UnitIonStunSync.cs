@@ -1,8 +1,7 @@
 using EmpireAtWar.Components.Combat;
-using EmpireAtWar.Components.TeamColor;
 using EmpireAtWar.Lifecycle;
 
-namespace EmpireAtWar.Entities.BaseEntity
+namespace EmpireAtWar.Components.TeamColor
 {
     /// <summary>Shows electricity on the hull (ShipIonStunPass.hlsl) while the unit is ion disabled.</summary>
     public sealed class UnitIonStunSync : IInitializable, ILateDisposable

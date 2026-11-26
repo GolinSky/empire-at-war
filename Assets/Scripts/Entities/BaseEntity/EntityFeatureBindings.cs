@@ -20,6 +20,7 @@ using EmpireAtWar.Models.Health;
 using EmpireAtWar.Models.Selection;
 using EmpireAtWar.Services.Repair;
 using EmpireAtWar.Services.Selection;
+using EmpireAtWar.Services.UnitExplosion;
 using EmpireAtWar.Ship;
 using UnityEngine;
 using VContainer;

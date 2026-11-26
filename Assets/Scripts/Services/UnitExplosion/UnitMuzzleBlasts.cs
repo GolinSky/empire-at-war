@@ -2,10 +2,9 @@ using EmpireAtWar.Components.AttackComponent;
 using EmpireAtWar.Components.Weapon;
 using EmpireAtWar.Entities.BaseEntity.EntityFacades;
 using EmpireAtWar.Lifecycle;
-using EmpireAtWar.Services.UnitExplosion;
 using UnityEngine;
 
-namespace EmpireAtWar.Entities.BaseEntity
+namespace EmpireAtWar.Services.UnitExplosion
 {
     /// <summary>
     /// Plays one muzzle blast per main-battery salvo, slightly above the mount and pushed towards the aim point, sized
