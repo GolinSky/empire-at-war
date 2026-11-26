@@ -139,6 +139,15 @@ follows: "[[Done/Bugs/Enemy_AI_Opening_And_Task_Groups]]"
 - Not covered by tests: L2 centre gate (private, needs site + presence fixture), L4 filter (needs a world snapshot with an allied station).
 - Battle gate (next 2v2 host log): ally `AssaultBase` until the last hostile station falls; no owned centre mine unbuilt > 120 s; `noChoice` rows explain empty held pads; each AI's opening ship takes its own home mine; 0 `NullReferenceException`.
 
+## Focus fire cap and attack-move churn (2026-11-26, uncommitted; compile 0 errors; tests not run)
+- Evidence (`Loading_20261125_192414_ai_orders.csv`, 588 s, editor build at `374a2047d`): no ship target over its cap; frigates/cruisers at cap 3 in 5–8 three-second buckets. AI orders: 1,806 attack-moves, ≈ 440 attacks. 805 of 1,640 attack-move repeats < 5 s after the last; 214 A→B→A flips < 30 s (dedup compares only the last order).
+- Example: new Munificent (P1, station under siege) flipped every 0.5–3 s between Attack 252, an overflow attack-move onto it and a defense point.
+- [x] **F1 Squadron cap bypass.** `EnemySquadronCommander.AttackWithinCap`: bomber strikes and visible raids attack only with a free or held squadron slot (`IFocusFireSlots.HasSlotFor`); else the wing attack-moves onto the target (same as order overflow). Constructor gains `IFocusFireSlots`.
+- [x] **F2 Defense flip-flop.** `EnemyTaskForceExecutor.SelectInterceptors`: interceptors up to `StrikeLimit` in passes carrier → slot holder → last cycle's interceptor of this target → nearest to the station (was nearest-first, which handed the attack to a non-holder that the order service then overflowed).
+- [x] **F3 Telemetry.** Every executor attack-move carries `detail=path=…` (`defensePoint`, `hold`, `capture`, `captureEdge`, `captureEscort`, `captureRoute`, `marker`, `markerOverflow`, `screen`, `strikeOverflow`) in `_ai_orders.csv` (editor/dev builds only).
+- Tests (not run): new `EnemyUnitCommanderTests.DefendBase_SlotHolderKeepsTheInterceptOverANearerDefender` (+ `HeldFocusFireSlots` fake). 14 `new EnemySquadronCommander(` test calls gained `UnlimitedFocusFireSlots.Instance`. Not covered: F1 strike overflow.
+- Open: the remaining flips (> 300 destination shift < 15 s) are not attributed yet → read `path=` in the next dev-build order log before changing more.
+
 ## Decisions needed (user)
 - **D1 Ally join trigger (S6).** Default: automatic when your ships fight at a hostile station. Alternative: only on your Attack marker.
 - **D2 Zone cost of a strike (S3).** Default: zones keep the force their known hostiles need; an empty zone keeps none. Alternative: every held zone keeps ≥ 2 ships (W60 garrison rule) during a strike.

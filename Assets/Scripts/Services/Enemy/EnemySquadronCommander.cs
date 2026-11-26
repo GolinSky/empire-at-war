@@ -18,6 +18,7 @@ using EmpireAtWar.Lifecycle;
 using static EmpireAtWar.Utils.FormationConversion;
 using EmpireAtWar.Services.TacticalMarkers;
 using EmpireAtWar.Services.Vision;
+using EmpireAtWar.Services.UnitOrders;
 using EmpireAtWar.Presenters.ReinforcementZones;
 
 namespace EmpireAtWar.Services.Enemy
@@ -126,6 +127,7 @@ namespace EmpireAtWar.Services.Enemy
         private readonly AiWorldSnapshot _worldSnapshot;
         private readonly EnemyAiScheduler _scheduler;
         private readonly IVisionService _vision;
+        private readonly IFocusFireSlots _focusFire;
 
         private EnemyAiScheduler.WorkHandle _workHandle;
         private bool _isRunning;
@@ -177,9 +179,10 @@ namespace EmpireAtWar.Services.Enemy
             TeamIntelRegistry intelRegistry,
             PlayerSlot owner, EnemyPatrolService patrol, EnemyPatrolSafety patrolSafety,
             INotifier<BattleState> battleState, AiWorldSnapshot worldSnapshot,
-            EnemyAiScheduler scheduler, IVisionService vision)
+            EnemyAiScheduler scheduler, IVisionService vision, IFocusFireSlots focusFire)
         {
             _owner = owner;
+            _focusFire = focusFire;
 #if UNITY_EDITOR || DEVELOPMENT_BUILD
             PeriodicDiagnostics = new EnemyDecisionDiagnostics("EnemyAI.Squadron.Periodic." + owner.Id);
             LaunchDiagnostics = new EnemyDecisionDiagnostics("EnemyAI.Squadron.Launch." + owner.Id);
@@ -462,6 +465,19 @@ namespace EmpireAtWar.Services.Enemy
             return closest < float.MaxValue;
         }
 
+        /// <summary>
+        /// A direct attack follows the focus fire cap like an issued order: with no free squadron slot on the target
+        /// (and none held) the wing attack-moves onto it instead, as order overflow does. Strikes bypassed the cap
+        /// before (2026-11-26 review of the 19:24 log).
+        /// </summary>
+        private void AttackWithinCap(ISquadron squadron, IEntity target)
+        {
+            IEntity wing = _entityLocator.GetEntity(squadron.EntityId);
+            if (_focusFire.HasSlotFor(wing, target))
+                wing.GetFacade<IAttackFacade>().Attack(target, Vector3.zero, null);
+            else squadron.AttackMoveTo(target.GetFacade<IEntityTransformFacade>().Transform.position);
+        }
+
         private void IssueOrder(ISquadron squadron)
         {
             if (_stationDefense.HasValue && !_squadrons[squadron].IsHangarLaunched)
@@ -485,7 +501,7 @@ namespace EmpireAtWar.Services.Enemy
 
             if (_bomberStrikes.TryGetValue(squadron, out IEntity strike) && !strike.HealthModel.IsDestroyed)
             {
-                _entityLocator.GetEntity(squadron.EntityId).GetFacade<IAttackFacade>().Attack(strike, Vector3.zero, null);
+                AttackWithinCap(squadron, strike);
                 return;
             }
 
@@ -500,8 +516,7 @@ namespace EmpireAtWar.Services.Enemy
                 _entityLocator.TryGetEntity(raid.EntityId, out IEntity raidTarget))
             {
                 if (_vision.IsVisible(_owner.Id, raidTarget))
-                    _entityLocator.GetEntity(squadron.EntityId).GetFacade<IAttackFacade>()
-                        .Attack(raidTarget, Vector3.zero, null);
+                    AttackWithinCap(squadron, raidTarget);
                 else
                     squadron.AttackMoveTo(ToVector(raid.Position));
                 return;

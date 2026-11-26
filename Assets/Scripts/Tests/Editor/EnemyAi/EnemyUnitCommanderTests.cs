@@ -289,7 +289,7 @@ namespace EmpireAtWar.Tests.Editor
                 1f, 0f, Array.Empty<float>(), Array.Empty<float>(), Array.Empty<float>(), Array.Empty<UnitCombatProfile>()));
             var squadron = new FakeSquadron(1, owner.Id);
             var commander = new EnemySquadronCommander(Array.Empty<IEnemyCaptureObjectiveSource>(),
-                null, locator, roster, null, catalog, null, intel, owner, patrol, null, battleState, snapshot, scheduler, null);
+                null, locator, roster, null, catalog, null, intel, owner, patrol, null, battleState, snapshot, scheduler, null, UnlimitedFocusFireSlots.Instance);
 
             commander.Initialize();
             try
@@ -332,7 +332,7 @@ namespace EmpireAtWar.Tests.Editor
             var battleState = new ReplayNotifier<BattleState>(BattleState.Running);
             EnemySquadronCommander commander = new EnemySquadronCommander(Array.Empty<IEnemyCaptureObjectiveSource>(), null, locator, roster,
                 null, catalog, null, new TeamIntelRegistry(), roster.Get(TestPlayers.Enemy), null, null,
-                battleState, new AiWorldSnapshot(locator), new EnemyAiScheduler(battleState), null);
+                battleState, new AiWorldSnapshot(locator), new EnemyAiScheduler(battleState), null, UnlimitedFocusFireSlots.Instance);
             MethodInfo discover = typeof(EnemySquadronCommander).GetMethod("TrackOwnedSquadrons",
                 BindingFlags.Instance | BindingFlags.NonPublic);
             MethodInfo track = typeof(EnemySquadronCommander).GetMethod("Track",
@@ -377,7 +377,7 @@ namespace EmpireAtWar.Tests.Editor
             var battleState = new ReplayNotifier<BattleState>(BattleState.Running);
             EnemySquadronCommander commander = new EnemySquadronCommander(Array.Empty<IEnemyCaptureObjectiveSource>(), null, locator, roster,
                 null, catalog, null, new TeamIntelRegistry(), roster.Get(TestPlayers.Enemy), null, null,
-                battleState, new AiWorldSnapshot(locator), new EnemyAiScheduler(battleState), null);
+                battleState, new AiWorldSnapshot(locator), new EnemyAiScheduler(battleState), null, UnlimitedFocusFireSlots.Instance);
             var tracked = (Dictionary<ISquadron, CommandedSquadron>)typeof(EnemySquadronCommander)
                 .GetField("_squadrons", BindingFlags.Instance | BindingFlags.NonPublic).GetValue(commander);
             MethodInfo issueOrder = typeof(EnemySquadronCommander).GetMethod("IssueOrder",
@@ -419,7 +419,7 @@ namespace EmpireAtWar.Tests.Editor
             var commander = new EnemySquadronCommander(SiteObjectives(sites, roster), new ZoneSource(roster), locator, roster,
                 new ForceCompositionBuilder(locator, null, snapshot), null, new ScoutPlacement(), new TeamIntelRegistry(),
                 roster.Get(TestPlayers.Enemy), null, null,
-                battleState, snapshot, new EnemyAiScheduler(battleState), null);
+                battleState, snapshot, new EnemyAiScheduler(battleState), null, UnlimitedFocusFireSlots.Instance);
             var tracked = (Dictionary<ISquadron, CommandedSquadron>)typeof(EnemySquadronCommander)
                 .GetField("_squadrons", BindingFlags.Instance | BindingFlags.NonPublic).GetValue(commander);
             var fighter = new UnitCombatProfile(ShipClass.Fighter, 1f, 0f, new float[ForceComposition.ClassSlots],
@@ -482,7 +482,7 @@ namespace EmpireAtWar.Tests.Editor
             var commander = new EnemySquadronCommander(Array.Empty<IEnemyCaptureObjectiveSource>(), zones, locator, roster,
                 forces, catalog, new ScoutPlacement(), intel, owner, null,
                 new EnemyPatrolSafety(intel, locator, roster, owner, null, null, null, forces), battleState,
-                snapshot, new EnemyAiScheduler(battleState), null);
+                snapshot, new EnemyAiScheduler(battleState), null, UnlimitedFocusFireSlots.Instance);
             var centreMine = new FakeEntity(new FakeHealthModel(null), TestPlayers.Human, 20) { IsMine = true, IsUnit = false };
             var outerMine = new FakeEntity(new FakeHealthModel(null), TestPlayers.Human, 21) { IsMine = true, IsUnit = false };
             locator.AddEntity(centreMine);
@@ -529,7 +529,7 @@ namespace EmpireAtWar.Tests.Editor
             var zones = new ZoneSource(roster, 2, Vector3.left * 1500f, Vector3.right * 500f, Vector3.forward * 800f);
             var commander = new EnemySquadronCommander(Array.Empty<IEnemyCaptureObjectiveSource>(), zones,
                 locator, roster, null, null, null, new TeamIntelRegistry(), roster.Get(TestPlayers.Enemy), null, null,
-                battleState, snapshot, new EnemyAiScheduler(battleState), null);
+                battleState, snapshot, new EnemyAiScheduler(battleState), null, UnlimitedFocusFireSlots.Instance);
             BindingFlags flags = BindingFlags.Instance | BindingFlags.NonPublic;
             var tracked = (Dictionary<ISquadron, CommandedSquadron>)typeof(EnemySquadronCommander)
                 .GetField("_squadrons", flags).GetValue(commander);
@@ -576,7 +576,7 @@ namespace EmpireAtWar.Tests.Editor
             var zones = new ZoneSource(roster, -1, far, near);
             var commander = new EnemySquadronCommander(Array.Empty<IEnemyCaptureObjectiveSource>(), zones,
                 locator, roster, null, null, null, new TeamIntelRegistry(), roster.Get(TestPlayers.Enemy), null, null,
-                battleState, snapshot, new EnemyAiScheduler(battleState), null);
+                battleState, snapshot, new EnemyAiScheduler(battleState), null, UnlimitedFocusFireSlots.Instance);
             BindingFlags flags = BindingFlags.Instance | BindingFlags.NonPublic;
             var tracked = (Dictionary<ISquadron, CommandedSquadron>)typeof(EnemySquadronCommander)
                 .GetField("_squadrons", flags).GetValue(commander);
@@ -630,7 +630,7 @@ namespace EmpireAtWar.Tests.Editor
                 var battleState = new ReplayNotifier<BattleState>(BattleState.Running);
                 var commander = new EnemySquadronCommander(Array.Empty<IEnemyCaptureObjectiveSource>(), null, locator,
                     roster, null, catalog, null, new TeamIntelRegistry(), roster.Get(TestPlayers.Enemy), null, null,
-                    battleState, new AiWorldSnapshot(locator), new EnemyAiScheduler(battleState), null);
+                    battleState, new AiWorldSnapshot(locator), new EnemyAiScheduler(battleState), null, UnlimitedFocusFireSlots.Instance);
                 var tracked = (Dictionary<ISquadron, CommandedSquadron>)typeof(EnemySquadronCommander)
                     .GetField("_squadrons", BindingFlags.Instance | BindingFlags.NonPublic).GetValue(commander);
                 try
@@ -666,7 +666,7 @@ namespace EmpireAtWar.Tests.Editor
             var snapshot = new AiWorldSnapshot(locator);
             var commander = new EnemySquadronCommander(Array.Empty<IEnemyCaptureObjectiveSource>(), null, locator, roster,
                 new ForceCompositionBuilder(locator, catalog, snapshot), catalog, null, new TeamIntelRegistry(),
-                roster.Get(TestPlayers.Enemy), null, null, battleState, snapshot, new EnemyAiScheduler(battleState), null);
+                roster.Get(TestPlayers.Enemy), null, null, battleState, snapshot, new EnemyAiScheduler(battleState), null, UnlimitedFocusFireSlots.Instance);
             BindingFlags flags = BindingFlags.Instance | BindingFlags.NonPublic;
             var tracked = (Dictionary<ISquadron, CommandedSquadron>)typeof(EnemySquadronCommander)
                 .GetField("_squadrons", flags).GetValue(commander);
@@ -719,7 +719,7 @@ namespace EmpireAtWar.Tests.Editor
                 var commander = new EnemySquadronCommander(Array.Empty<IEnemyCaptureObjectiveSource>(),
                     new ZoneSource(roster, -1, zoneCentre), locator, roster, forces, catalog, new ScoutPlacement(), intel,
                     owner, null, null, battleState, snapshot, new EnemyAiScheduler(battleState),
-                    new VisionService(roster, fogEnabled: false));
+                    new VisionService(roster, fogEnabled: false), UnlimitedFocusFireSlots.Instance);
                 BindingFlags flags = BindingFlags.Instance | BindingFlags.NonPublic;
                 var tracked = (Dictionary<ISquadron, CommandedSquadron>)typeof(EnemySquadronCommander)
                     .GetField("_squadrons", flags).GetValue(commander);
@@ -777,7 +777,7 @@ namespace EmpireAtWar.Tests.Editor
                 var commander = new EnemySquadronCommander(Array.Empty<IEnemyCaptureObjectiveSource>(),
                     new ZoneSource(roster), locator, roster, new ForceCompositionBuilder(locator, catalog, snapshot),
                     catalog, new ScoutPlacement(), new TeamIntelRegistry(), owner, null, null, battleState, snapshot,
-                    new EnemyAiScheduler(battleState), new VisionService(roster, fogEnabled: false));
+                    new EnemyAiScheduler(battleState), new VisionService(roster, fogEnabled: false), UnlimitedFocusFireSlots.Instance);
                 MethodInfo find = typeof(EnemySquadronCommander).GetMethod("TryFindShipFightTarget",
                     BindingFlags.Instance | BindingFlags.NonPublic);
                 object[] arguments = { Vector3.zero, null };
@@ -820,7 +820,7 @@ namespace EmpireAtWar.Tests.Editor
                 var battleState = new ReplayNotifier<BattleState>(BattleState.Running);
                 var commander = new EnemySquadronCommander(Array.Empty<IEnemyCaptureObjectiveSource>(), zones,
                     locator, roster, forces, catalog, null, intel, owner, null, null, battleState, snapshot,
-                    new EnemyAiScheduler(battleState), new VisionService(roster, fogEnabled: false));
+                    new EnemyAiScheduler(battleState), new VisionService(roster, fogEnabled: false), UnlimitedFocusFireSlots.Instance);
                 BindingFlags flags = BindingFlags.Instance | BindingFlags.NonPublic;
                 var tracked = (Dictionary<ISquadron, CommandedSquadron>)typeof(EnemySquadronCommander)
                     .GetField("_squadrons", flags).GetValue(commander);
@@ -933,7 +933,7 @@ namespace EmpireAtWar.Tests.Editor
             PlayerSlot owner = roster.Get(TestPlayers.Enemy);
             var commander = new EnemySquadronCommander(Array.Empty<IEnemyCaptureObjectiveSource>(), zones, locator,
                 roster, forces, catalog, new ScoutPlacement(), intel, owner, null, null, battleState, snapshot,
-                new EnemyAiScheduler(battleState), new VisionService(roster, fogEnabled: false));
+                new EnemyAiScheduler(battleState), new VisionService(roster, fogEnabled: false), UnlimitedFocusFireSlots.Instance);
             BindingFlags flags = BindingFlags.Instance | BindingFlags.NonPublic;
             var tracked = (Dictionary<ISquadron, CommandedSquadron>)typeof(EnemySquadronCommander)
                 .GetField("_squadrons", flags).GetValue(commander);
@@ -1042,7 +1042,7 @@ namespace EmpireAtWar.Tests.Editor
                 var commander = new EnemySquadronCommander(Array.Empty<IEnemyCaptureObjectiveSource>(),
                     new ZoneSource(roster, -1, zoneCentre), locator, roster, forces, catalog, new ScoutPlacement(), intel,
                     owner, null, null, battleState, snapshot, new EnemyAiScheduler(battleState),
-                    new VisionService(roster, fogEnabled: false));
+                    new VisionService(roster, fogEnabled: false), UnlimitedFocusFireSlots.Instance);
                 BindingFlags flags = BindingFlags.Instance | BindingFlags.NonPublic;
                 var tracked = (Dictionary<ISquadron, CommandedSquadron>)typeof(EnemySquadronCommander)
                     .GetField("_squadrons", flags).GetValue(commander);
@@ -1955,6 +1955,38 @@ namespace EmpireAtWar.Tests.Editor
                 Assert.That(orders.Calls.Any(call => call.Action == UnitActionId.Attack), Is.False);
                 Assert.That(orders.Calls.Single().Point.magnitude,
                     Is.LessThanOrEqualTo(station.NavigationRadius + 1755f + 300f));
+            }
+            finally
+            {
+                UnityEngine.Object.DestroyImmediate(attackerView);
+                UnityEngine.Object.DestroyImmediate(stationView);
+            }
+        }
+
+        // 19:24 log: the nearer defender took the attack from the slot holder every cycle, so both flipped between an
+        // overflow attack-move and a defense point. The holder keeps the intercept; the nearer ship holds a point.
+        [Test]
+        public void DefendBase_SlotHolderKeepsTheInterceptOverANearerDefender()
+        {
+            var near = new FakeShip(Vector3.right * 10f, 1);
+            var holder = new FakeShip(Vector3.right * 200f, 4);
+            var stationView = new GameObject("Station");
+            var attackerView = new GameObject("Attacker");
+            try
+            {
+                var station = new FakeEntity(new FakeHealthModel(stationView.transform), TestPlayers.Enemy, 2);
+                var attacker = new FakeEntity(new FakeHealthModel(attackerView.transform), TestPlayers.Human, 3)
+                    { WeaponRange = 300f };
+                attackerView.transform.position = Vector3.right * 600f;
+                var orders = new FakeOrderService();
+                var executor = new EnemyTaskForceExecutor(orders, new HeldFocusFireSlots(holder.EntityId));
+
+                executor.Execute(new EnemyStrategicDecision("test", EnemyStrategicState.DefendBase, 2),
+                    Context(new IShipEntity[] { near, holder }, ownBase: station, defenseTarget: attacker));
+
+                long[] attackers = orders.Calls.Where(call => call.Action == UnitActionId.Attack)
+                    .SelectMany(call => call.Receivers).Select(entity => entity.Id).ToArray();
+                Assert.That(attackers, Is.EqualTo(new[] { holder.EntityId }));
             }
             finally
             {
@@ -4326,6 +4358,32 @@ namespace EmpireAtWar.Tests.Editor
             public bool Holds(IEntity attacker, IEntity target) => false;
 
             public bool HasSlotFor(IEntity attacker, IEntity target) => true;
+
+            public bool TryClaim(IEntity attacker, IEntity target) => throw new NotSupportedException();
+
+            public void Release(long attackerId) => throw new NotSupportedException();
+
+            public void CopyHeldTargets(List<IEntity> destination) => throw new NotSupportedException();
+        }
+
+        // A one-slot ship cap on every target, already held by one ship of the team.
+        private sealed class HeldFocusFireSlots : IFocusFireSlots
+        {
+            private readonly long _holderId;
+
+            public HeldFocusFireSlots(long holderId) => _holderId = holderId;
+
+            public event Action<IEntity> Changed { add { } remove { } }
+
+            public int GetCap(IEntity target, bool isSquadron) => isSquadron ? FocusFireCaps.UNLIMITED : 1;
+
+            public int CountHolders(PlayerId team, IEntity target, bool isSquadron) => isSquadron ? 0 : 1;
+
+            public int FreeSlots(PlayerId team, IEntity target, bool isSquadron) => isSquadron ? int.MaxValue : 0;
+
+            public bool Holds(IEntity attacker, IEntity target) => attacker.Id == _holderId;
+
+            public bool HasSlotFor(IEntity attacker, IEntity target) => attacker.Id == _holderId;
 
             public bool TryClaim(IEntity attacker, IEntity target) => throw new NotSupportedException();
 

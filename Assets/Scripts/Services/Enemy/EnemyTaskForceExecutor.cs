@@ -31,6 +31,8 @@ namespace EmpireAtWar.Services.Enemy
         private readonly IUnitOrderService _unitOrderService;
         private readonly AiOrderDeduplicator _orderFilter;
         private readonly IFocusFireSlots _focusFire;
+        private readonly HashSet<IShipEntity> _interceptors = new HashSet<IShipEntity>();
+        private readonly List<IShipEntity> _interceptOrder = new List<IShipEntity>();
         /// <summary>Strike ships over the focus fire limit; they attack-move to the target instead (approach 5).</summary>
         private readonly List<IShipEntity> _overflowShips = new List<IShipEntity>();
         private readonly List<IShipEntity> _strikeOrder = new List<IShipEntity>();
@@ -403,8 +405,8 @@ namespace EmpireAtWar.Services.Enemy
             if (intercept) _attackForce.Assemble(context, target, count);
             else _attackForce.Clear();
             // Interceptors past the focus fire limit take a defense point instead.
-            int interceptLimit = intercept ? StrikeLimit(context, target, ships, count) : 0;
-            int interceptors = 0;
+            if (intercept) SelectInterceptors(context, target, ships, count);
+            else _interceptors.Clear();
             List<Vector3> interceptOffsets = intercept ? BattleOffsets(ships, count, target) : null;
             context.DefensePointReason = hasBearing
                 ? _defenseAdvance > 0f ? "Advance toward known threat: station damaged without defenders in range." :
@@ -417,10 +419,8 @@ namespace EmpireAtWar.Services.Enemy
             for (int i = 0; i < count; i++)
             {
                 IShipEntity ship = ships[i];
-                if (intercept && interceptors < interceptLimit && _attackForce.Ships.Contains(ship) &&
-                    _attackForce.TargetDps(context, ship) > 0f)
+                if (intercept && _interceptors.Contains(ship))
                 {
-                    interceptors++;
                     // X6: an interceptor whose attack ended on the same target is sent again.
                     if (!_defenseTargets.TryGetValue(ship, out GameEntity previous) || previous != target ||
                         ship.CurrentOrder != UnitOrderType.Attack)
@@ -470,10 +470,45 @@ namespace EmpireAtWar.Services.Enemy
                 context.OrderDestination = _defensePoints[ship];
             }
             if (changedDefense)
-                _unitOrderService.IssueAttackMove(defenseReceivers, defensePoints);
+                using (ShipOrderTelemetry.Detail("path=defensePoint"))
+                    _unitOrderService.IssueAttackMove(defenseReceivers, defensePoints);
             if (unplaced != null) StopRemaining(context, unplaced, 0);
             ReleaseUncommittedDefenders(context, ships, count);
             ActionReason += "; " + context.DefensePointReason;
+        }
+
+        /// <summary>
+        /// The defenders that attack <paramref name="target"/>: armed members of the intercept force, up to
+        /// <see cref="StrikeLimit"/>. Carriers and slot holders first, then last cycle's interceptors of this target,
+        /// then the nearest to the station. Picking nearest-first let a non-holder take the attack while the holder
+        /// still held the slot: the order service sent the newcomer onto an overflow attack-move, the holder fell back
+        /// to a defense point, and the two swapped every decision (0.5–3 s in the 19:24 log).
+        /// </summary>
+        private void SelectInterceptors(EnemyStrategicContext context, GameEntity target, IReadOnlyList<IShipEntity> ships,
+            int count)
+        {
+            _interceptors.Clear();
+            _interceptOrder.Clear();
+            for (int i = 0; i < count; i++)
+                if (_attackForce.Ships.Contains(ships[i]) && _attackForce.TargetDps(context, ships[i]) > 0f)
+                    _interceptOrder.Add(ships[i]);
+            int limit = Math.Min(_interceptOrder.Count, StrikeLimit(context, target, ships, count));
+            // Passes keep the station-distance order inside each rank.
+            for (int pass = 0; pass < 4 && _interceptors.Count < limit; pass++)
+                foreach (IShipEntity ship in _interceptOrder)
+                {
+                    if (_interceptors.Count >= limit) break;
+                    if (_interceptors.Contains(ship) || InterceptPass(context, target, ship) != pass) continue;
+                    _interceptors.Add(ship);
+                }
+        }
+
+        // 0 carrier, 1 slot holder, 2 last cycle's interceptor of this target, 3 any other.
+        private int InterceptPass(EnemyStrategicContext context, GameEntity target, IShipEntity ship)
+        {
+            int rank = StrikeRank(context, target, ship);
+            if (rank < 2) return rank;
+            return _defenseTargets.TryGetValue(ship, out GameEntity previous) && previous == target ? 2 : 3;
         }
 
         // Ships outside the defense detachment keep a fight they are in (attack, attack-move, hunt). Former defenders,
@@ -542,7 +577,8 @@ namespace EmpireAtWar.Services.Enemy
                 var movers = new List<GameEntity>();
                 foreach (IShipEntity ship in _body)
                     movers.Add(context.Receivers[ship]);
-                _unitOrderService.IssueAttackMove(movers, context.CaptureTarget);
+                using (ShipOrderTelemetry.Detail("path=captureRoute"))
+                    _unitOrderService.IssueAttackMove(movers, context.CaptureTarget);
                 ActionReason = "Route around the hostile-held centre before attacking the blocking structure.";
                 FinishCaptureAssignments(context, anchor, count);
                 return;
@@ -596,7 +632,9 @@ namespace EmpireAtWar.Services.Enemy
                         (ship.CurrentOrder == UnitOrderType.AttackMove ||
                          ship.CurrentOrder == UnitOrderType.None && (ship.WorldPosition - point).sqrMagnitude <=
                          ship.NavigationRadius * ship.NavigationRadius);
-                    if (!retain) _unitOrderService.IssueAttackMove(new[] { context.Receivers[ship] }, point);
+                    if (!retain)
+                        using (ShipOrderTelemetry.Detail("path=captureEscort"))
+                            _unitOrderService.IssueAttackMove(new[] { context.Receivers[ship] }, point);
                     _captureEscortPoints[ship] = point;
                     continue;
                 }
@@ -621,8 +659,9 @@ namespace EmpireAtWar.Services.Enemy
                 {
                     // Stay in combat posture: an attack-move to the circle edge, never a Move that ignores hostiles.
                     Vector3 edgeDirection = offset.sqrMagnitude > Mathf.Epsilon ? offset.normalized : Vector3.right;
-                    _unitOrderService.IssueAttackMove(new[] { context.Receivers[ship] },
-                        _captureTarget + edgeDirection * radius * CAPTURE_EDGE_FRACTION);
+                    using (ShipOrderTelemetry.Detail("path=captureEdge"))
+                        _unitOrderService.IssueAttackMove(new[] { context.Receivers[ship] },
+                            _captureTarget + edgeDirection * radius * CAPTURE_EDGE_FRACTION);
                     ActionReason = stalled ? "Capture approach stalled outside the objective; move into the circle." :
                         "Capture diversion exceeded its leash; return to the objective.";
                     continue;
@@ -640,7 +679,8 @@ namespace EmpireAtWar.Services.Enemy
                 changedPoints.Add(capturePoint);
             }
             foreach (Vector3 point in changedPoints)
-                _unitOrderService.IssueAttackMove(captureGroups[point], point);
+                using (ShipOrderTelemetry.Detail("path=capture"))
+                    _unitOrderService.IssueAttackMove(captureGroups[point], point);
             if (changedPoints.Count > 0)
                 ActionReason = sameTarget ? "Recovering idle or newly available ships outside the capture area." :
                     "New capture objective; approach with a bounded combat diversion.";
@@ -707,7 +747,9 @@ namespace EmpireAtWar.Services.Enemy
                 _holdPoints[ship] = point;
                 (receivers ??= new List<GameEntity>()).Add(context.Receivers[ship]);
             }
-            if (receivers != null) _unitOrderService.IssueAttackMove(receivers, point);
+            if (receivers != null)
+                using (ShipOrderTelemetry.Detail("path=hold"))
+                    _unitOrderService.IssueAttackMove(receivers, point);
         }
 
         /// <param name="attackTarget">Hostile unit of an Attack marker; null attacks-moves to the point.</param>
@@ -750,7 +792,8 @@ namespace EmpireAtWar.Services.Enemy
                     break;
                 case TacticalMarkerType.Attack:
                 case TacticalMarkerType.Defend:
-                    _unitOrderService.IssueAttackMove(receivers, marker.Point);
+                    using (ShipOrderTelemetry.Detail("path=marker"))
+                        _unitOrderService.IssueAttackMove(receivers, marker.Point);
                     break;
                 default:
                     _unitOrderService.IssueMove(receivers, marker.Point);
@@ -898,8 +941,9 @@ namespace EmpireAtWar.Services.Enemy
                         if (!sameBattleTarget || ship.CurrentOrder != UnitOrderType.AttackMove)
                             screens.Add(context.Receivers[ship]);
                     if (screens.Count > 0)
-                        _unitOrderService.IssueAttackMove(screens,
-                            target.GetFacade<IEntityTransformFacade>().Transform.position);
+                        using (ShipOrderTelemetry.Detail("path=screen"))
+                            _unitOrderService.IssueAttackMove(screens,
+                                target.GetFacade<IEntityTransformFacade>().Transform.position);
                 }
             }
             else
@@ -1041,7 +1085,8 @@ namespace EmpireAtWar.Services.Enemy
             }
 
             if (receivers.Count > 0)
-                _unitOrderService.IssueAttackMove(receivers, target.GetFacade<IEntityTransformFacade>().Transform.position);
+                using (ShipOrderTelemetry.Detail("path=strikeOverflow"))
+                    _unitOrderService.IssueAttackMove(receivers, target.GetFacade<IEntityTransformFacade>().Transform.position);
         }
 
         // A marker attack fills the focus fire limit with slot holders first, then the nearest ships; the rest
@@ -1071,7 +1116,8 @@ namespace EmpireAtWar.Services.Enemy
             for (int i = 0; i < _strikeOrder.Count; i++)
                 (i < limit ? attackers : overflow).Add(context.Receivers[_strikeOrder[i]]);
             if (attackers.Count > 0) _unitOrderService.IssueAttack(attackers, target);
-            _unitOrderService.IssueAttackMove(overflow, targetPosition);
+            using (ShipOrderTelemetry.Detail("path=markerOverflow"))
+                _unitOrderService.IssueAttackMove(overflow, targetPosition);
         }
 
         /// <summary>

@@ -560,7 +560,7 @@ namespace EmpireAtWar.Tests.Editor
             AiWorldSnapshot snapshot,
             EnemyAiScheduler scheduler) =>
             new EnemySquadronCommander(Array.Empty<IEnemyCaptureObjectiveSource>(), null, null, null,
-                null, null, null, new TeamIntelRegistry(), owner, null, null, state, snapshot, scheduler, null);
+                null, null, null, new TeamIntelRegistry(), owner, null, null, state, snapshot, scheduler, null, UnlimitedFocusFireSlots.Instance);
 
         private sealed class TestEntity : IEntity, IEntityTransformFacade, ICombatModifiersFacade, IUnitTypeFacade,
             IMiningFacilityFacade, IPlayerBaseFacade, IUnitOrderObserverFacade
