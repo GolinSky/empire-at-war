@@ -12,11 +12,6 @@ namespace EmpireAtWar.Entities.Tooltip
         {
             IHealthModelObserver health = entity.HealthModel;
             var stats = new List<TooltipStat>();
-            if (health is IHealthTooltipObserver capacity && capacity.ShieldRegeneration > 0f)
-            {
-                stats.Add(new TooltipStat(label: "Shield regeneration per tick", current: capacity.ShieldRegeneration));
-                stats.Add(new TooltipStat(label: "Regeneration interval (s)", current: capacity.ShieldRegenerationInterval));
-            }
             string order = entity.TryGetFacade(out IUnitOrderObserverFacade orders)
                 ? $" · Order: {orders.CurrentOrder}" : "";
             string status = $"Owner: {ownerName} · {health.ShipClass}{order}";

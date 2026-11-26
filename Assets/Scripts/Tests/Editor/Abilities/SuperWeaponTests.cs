@@ -791,7 +791,7 @@ namespace EmpireAtWar.Tests.Editor
                     Confirmation, InputLock);
                 _constructionCancellation.Initialize();
                 BuildQueue = new ShipBuildUiController(null, null, commands, owner, Faction, null, null,
-                    _constructionCancellation);
+                    _constructionCancellation, null);
                 Presenter = new SuperWeaponPresenter(
                     superWeaponFireService: null, viewProvider: new OrbitalViewProvider(view), routeNavigation: null,
                     abilities: new ShipAbilityService(null, null, null), localPlayer: local, uiService: null,

@@ -50,6 +50,7 @@ namespace EmpireAtWar.Entities.Faction.Ui
         private readonly SecondStationLevelModel _secondStation;
         private readonly StationLevelData _stationLevels;
         private readonly IProductionAccess _productionAccess;
+        private readonly UnitRosterTooltips _unitTooltips;
         private TooltipHoverSubscription _tooltipHover;
 
         private bool _isTooltipActive;
@@ -79,8 +80,10 @@ namespace EmpireAtWar.Entities.Faction.Ui
             SecondStationLevelModel secondStation,
             StationLevelData stationLevels,
             IProductionAccess productionAccess,
-            IFactionProductionMenusProvider productionMenusProvider) : base(uiService, cancelRouter)
+            IFactionProductionMenusProvider productionMenusProvider,
+            UnitRosterTooltips unitTooltips) : base(uiService, cancelRouter)
         {
+            _unitTooltips = unitTooltips;
             _productionAccess = productionAccess;
             _productionMenusProvider = productionMenusProvider;
             _secondStation = secondStation;
@@ -329,7 +332,7 @@ namespace EmpireAtWar.Entities.Faction.Ui
                 }
             if (data.UnitCapacity > _reinforcements.CapacityLeft)
                 requirements.Add(new TooltipRequirement("Population capacity for deployment", false));
-            return UnitTooltipContent.Build(data, stats, requirements, status);
+            return _unitTooltips.Build(request, stats, requirements, status);
         }
     }
 }

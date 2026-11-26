@@ -52,6 +52,7 @@ namespace EmpireAtWar.Entities.ShipUi
         private readonly TooltipRequests _tooltips;
         private readonly TooltipIconData _tooltipIcons;
         private readonly FactionCatalog _factions;
+        private readonly UnitRosterTooltips _unitTooltips;
         private TooltipHoverSubscription _shipTooltipHover;
         private TooltipHoverSubscription _groupTooltipHover;
 
@@ -74,8 +75,10 @@ namespace EmpireAtWar.Entities.ShipUi
             ShipAbilityService shipAbilityService,
             TooltipIconData tooltipIcons,
             FactionCatalog factions,
-            ISettingsService settings, ILocalPlayer localPlayer, ShipDestroyFlow destroyFlow) : base(uiService, cancelRouter)
+            ISettingsService settings, ILocalPlayer localPlayer, ShipDestroyFlow destroyFlow,
+            UnitRosterTooltips unitTooltips) : base(uiService, cancelRouter)
         {
+            _unitTooltips = unitTooltips;
             _selectionService = selectionService;
             _settings = settings;
             _localPlayer = localPlayer;
@@ -445,10 +448,7 @@ namespace EmpireAtWar.Entities.ShipUi
                     count++;
                     if (entity.HealthModel.HullPercentage < 1f) damaged++;
                 }
-                var data = unitTypeId.IsShip
-                    ? _factions.GetShipFactionData(unitTypeId.ShipType)
-                    : _factions.GetSquadronFactionData(unitTypeId.SquadronType);
-                return UnitTooltipContent.Build(data, new[]
+                return _unitTooltips.Build(unitTypeId, new[]
                 {
                     new TooltipStat(label: "Selected", current: count),
                     new TooltipStat(label: "Damaged", current: damaged)

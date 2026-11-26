@@ -84,5 +84,9 @@ namespace EmpireAtWar.Entities.Squadrons.Data
         [Tooltip("Baked by Tools/AI/Bake Weapon Loadouts from the view prefab's WeaponComponent hardpoints.")]
         [SerializeField] private List<WeaponLoadoutEntry> weaponLoadout = new List<WeaponLoadoutEntry>();
         public IReadOnlyList<WeaponLoadoutEntry> WeaponLoadout => weaponLoadout;
+
+        [Header("Roles")]
+        [SerializeField] private UnitRole roles;
+        public UnitRole Roles => roles;
     }
 }

@@ -1,6 +1,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using EmpireAtWar.Components.AttackComponent;
+using EmpireAtWar.Components.Ship.Health;
 using EmpireAtWar.Editor;
 using EmpireAtWar.Entities.Ship.Data;
 using EmpireAtWar.Models.Factions;
@@ -40,11 +41,11 @@ namespace EmpireAtWar.Tests.Editor
             foreach (ShipRoleEntry entry in _owners)
             {
                 ShipData ship = entry.Ship;
-                Assert.That(ship.Roles, Is.Not.EqualTo(ShipRole.None), ship.name);
-                int durabilityFlags = new[] { ShipRole.Balanced, ShipRole.Brawler, ShipRole.Fragile }
+                Assert.That(ship.Roles, Is.Not.EqualTo(UnitRole.None), ship.name);
+                int durabilityFlags = new[] { UnitRole.Balanced, UnitRole.Brawler, UnitRole.Fragile }
                     .Count(flag => ship.Roles.HasFlag(flag));
                 Assert.That(durabilityFlags, Is.EqualTo(1), $"{ship.name}: {ship.Roles}");
-                Assert.That(ship.Roles.HasFlag(ShipRole.Fast) && ship.Roles.HasFlag(ShipRole.Slow), Is.False, ship.name);
+                Assert.That(ship.Roles.HasFlag(UnitRole.Fast) && ship.Roles.HasFlag(UnitRole.Slow), Is.False, ship.name);
             }
         }
 
@@ -52,7 +53,7 @@ namespace EmpireAtWar.Tests.Editor
         public void Carrier_HasEnoughHangarBays()
         {
             foreach (ShipRoleEntry entry in _owners)
-                Assert.That(entry.Ship.Roles.HasFlag(ShipRole.Carrier), Is.EqualTo(ShipRoleRules.IsCarrier(entry.Ship)),
+                Assert.That(entry.Ship.Roles.HasFlag(UnitRole.Carrier), Is.EqualTo(ShipRoleRules.IsCarrier(entry.Ship)),
                     $"{entry.Ship.name}: {entry.Ship.HangarBays.Count} bays");
         }
 
@@ -67,7 +68,7 @@ namespace EmpireAtWar.Tests.Editor
         [Test]
         public void Support_HasASupportAbility()
         {
-            foreach (ShipRoleEntry entry in _owners.Where(entry => entry.Ship.Roles.HasFlag(ShipRole.Support)))
+            foreach (ShipRoleEntry entry in _owners.Where(entry => entry.Ship.Roles.HasFlag(UnitRole.Support)))
                 Assert.That(ShipRoleRules.HasSupportAbility(entry.Ship), Is.True, entry.Ship.name);
         }
 
@@ -77,10 +78,10 @@ namespace EmpireAtWar.Tests.Editor
             foreach (ShipRoleEntry entry in _owners)
             {
                 ShipData ship = entry.Ship;
-                if (ship.Roles.HasFlag(ShipRole.MissileSpecialist))
+                if (ship.Roles.HasFlag(UnitRole.MissileSpecialist))
                     Assert.That(ShipRoleRules.IsLargestShare(ship, _weapons, ShipRoleRules.MissileFamilies), Is.True,
                         ship.name);
-                if (ship.Roles.HasFlag(ShipRole.IonSpecialist))
+                if (ship.Roles.HasFlag(UnitRole.IonSpecialist))
                     Assert.That(ShipRoleRules.IsIonSpecialist(ship, _weapons), Is.True, ship.name);
                 int largestGroups = new[]
                     {
@@ -97,9 +98,9 @@ namespace EmpireAtWar.Tests.Editor
             foreach (ShipRoleEntry entry in _owners)
             {
                 float median = ShipRoleRules.Median(ClassMates(entry).Select(mate => mate.Ship.Speed));
-                if (entry.Ship.Roles.HasFlag(ShipRole.Fast))
+                if (entry.Ship.Roles.HasFlag(UnitRole.Fast))
                     Assert.That(entry.Ship.Speed, Is.GreaterThan(median), entry.Ship.name);
-                if (entry.Ship.Roles.HasFlag(ShipRole.Slow))
+                if (entry.Ship.Roles.HasFlag(UnitRole.Slow))
                     Assert.That(entry.Ship.Speed, Is.LessThan(median), entry.Ship.name);
             }
         }
@@ -110,9 +111,9 @@ namespace EmpireAtWar.Tests.Editor
             foreach (ShipRoleEntry entry in _owners)
             {
                 float median = ShipRoleRules.Median(ClassMates(entry).Select(ShipRoleRules.DurabilityPerCredit));
-                if (entry.Ship.Roles.HasFlag(ShipRole.Brawler))
+                if (entry.Ship.Roles.HasFlag(UnitRole.Brawler))
                     Assert.That(ShipRoleRules.DurabilityPerCredit(entry), Is.GreaterThan(median), entry.Ship.name);
-                if (entry.Ship.Roles.HasFlag(ShipRole.Fragile))
+                if (entry.Ship.Roles.HasFlag(UnitRole.Fragile))
                     Assert.That(ShipRoleRules.DurabilityPerCredit(entry), Is.LessThan(median), entry.Ship.name);
             }
         }
@@ -126,17 +127,17 @@ namespace EmpireAtWar.Tests.Editor
                     AssetDatabase.LoadAssetAtPath<FactionDefinition>(AssetDatabase.GUIDToAssetPath(guid));
                 List<ShipRoleEntry> fleet = _roster.Where(entry => entry.Faction == faction.FactionType).ToList();
                 if (fleet.Count == 0) continue;
-                ShipRole marks = faction.ShipMarks;
+                UnitRole marks = faction.ShipMarks;
                 string name = faction.FactionType.ToString();
-                Assert.That(marks.HasFlag(ShipRole.Fast) && marks.HasFlag(ShipRole.Slow), Is.False, name);
+                Assert.That(marks.HasFlag(UnitRole.Fast) && marks.HasFlag(UnitRole.Slow), Is.False, name);
                 float speed = ShipRoleRules.AverageRatio(fleet, _roster, entry => entry.Ship.Speed);
                 float durability = ShipRoleRules.AverageRatio(fleet, _roster, entry => ShipRoleRules.Durability(entry.Ship));
                 float guns = ShipRoleRules.AverageRatio(fleet, _roster, entry => ShipRoleRules.GunCount(entry.Ship));
-                if (marks.HasFlag(ShipRole.Fast)) Assert.That(speed, Is.GreaterThan(1f), name);
-                if (marks.HasFlag(ShipRole.Slow)) Assert.That(speed, Is.LessThan(1f), name);
-                if (marks.HasFlag(ShipRole.Brawler)) Assert.That(durability, Is.GreaterThan(1f), name);
-                if (marks.HasFlag(ShipRole.Fragile)) Assert.That(durability, Is.LessThan(1f), name);
-                if (marks.HasFlag(ShipRole.Dps)) Assert.That(guns, Is.GreaterThan(1f), name);
+                if (marks.HasFlag(UnitRole.Fast)) Assert.That(speed, Is.GreaterThan(1f), name);
+                if (marks.HasFlag(UnitRole.Slow)) Assert.That(speed, Is.LessThan(1f), name);
+                if (marks.HasFlag(UnitRole.Brawler)) Assert.That(durability, Is.GreaterThan(1f), name);
+                if (marks.HasFlag(UnitRole.Fragile)) Assert.That(durability, Is.LessThan(1f), name);
+                if (marks.HasFlag(UnitRole.Dps)) Assert.That(guns, Is.GreaterThan(1f), name);
             }
         }
     }

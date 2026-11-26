@@ -1,6 +1,7 @@
 using System.Linq;
 using EmpireAtWar.Components.Ui.Tooltip;
 using EmpireAtWar.Entities.Tooltip;
+using EmpireAtWar.Entities.Units.Matchups;
 using EmpireAtWar.Models.Factions;
 using EmpireAtWar.Services.Tooltip;
 using EmpireAtWar.Ui.Base;
@@ -17,6 +18,7 @@ namespace EmpireAtWar.Tests.Editor
         private const string PREFAB_PATH = "Assets/Prefabs/Ui/Tooltip/TooltipUi.prefab";
         private const string MATCHUP_ROW_PATH = "Assets/Prefabs/Ui/Tooltip/TooltipMatchupRow.prefab";
         private const string ICON_DATA_PATH = "Assets/Settings/Data/Tooltip/TooltipIconData.asset";
+        private const string MATCHUP_RULES_PATH = "Assets/Settings/Data/Units/MatchupRules.asset";
 
         [TestCase("MainMenu/SkirmishUi", 14)]
         [TestCase("MainMenu/SurvivalUi", 7)]
@@ -61,15 +63,20 @@ namespace EmpireAtWar.Tests.Editor
             var icons = AssetDatabase.LoadAssetAtPath<TooltipIconData>(ICON_DATA_PATH);
             int slots = new SerializedObject(AssetDatabase.LoadAssetAtPath<TooltipMatchupRowView>(MATCHUP_ROW_PATH))
                 .FindProperty("icons").arraySize;
-            foreach (string guid in AssetDatabase.FindAssets("t:" + nameof(UnitMatchupData)))
+            var rules = AssetDatabase.LoadAssetAtPath<MatchupRules>(MATCHUP_RULES_PATH);
+            foreach (MatchupGroup group in rules.Groups)
+            foreach (FactionType viewer in System.Enum.GetValues(typeof(FactionType)))
             {
-                var data = AssetDatabase.LoadAssetAtPath<UnitMatchupData>(AssetDatabase.GUIDToAssetPath(guid));
-                foreach (TooltipIcon entry in data.StrongAgainst.Concat(data.WeakAgainst))
-                {
-                    Assert.That(entry.IconKeys.Count, Is.InRange(1, slots), data.name + "/" + entry.Label);
-                    foreach (string key in entry.IconKeys)
-                        Assert.That(icons.Resolve(key), Is.Not.Null, data.name + "/" + entry.Label);
-                }
+                int shown = group.Icons.Count(icon => icon.Faction != viewer) +
+                            (string.IsNullOrEmpty(group.NeutralIconKey) ? 0 : 1);
+                Assert.That(shown, Is.InRange(1, slots), group.Label + " seen by " + viewer);
+            }
+            foreach (MatchupGroup group in rules.Groups)
+            {
+                foreach (MatchupIcon icon in group.Icons)
+                    Assert.That(icons.Resolve(icon.IconKey), Is.Not.Null, group.Label);
+                if (!string.IsNullOrEmpty(group.NeutralIconKey))
+                    Assert.That(icons.Resolve(group.NeutralIconKey), Is.Not.Null, group.Label);
             }
         }
 

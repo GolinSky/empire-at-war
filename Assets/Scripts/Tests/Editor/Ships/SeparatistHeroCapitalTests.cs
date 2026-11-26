@@ -37,7 +37,7 @@ namespace EmpireAtWar.Tests.Editor
                 ShipType.InvisibleHand);
             Assert.That(faction.FindPropertyRelative("isHero").boolValue, Is.True);
             Assert.That(faction.FindPropertyRelative("<MaxCount>k__BackingField").intValue, Is.EqualTo(1));
-            Assert.That(faction.FindPropertyRelative("matchups").objectReferenceValue, Is.Not.Null);
+            Assert.That(faction.FindPropertyRelative("role").stringValue, Is.Not.Empty);
             Object icon = faction.FindPropertyRelative("<Icon>k__BackingField").objectReferenceValue;
             Assert.That(icon, Is.Not.Null);
             Assert.That(faction.FindPropertyRelative("iconKey").stringValue,

@@ -26,6 +26,7 @@ namespace EmpireAtWar.Entities.Faction.Ui
         private ShipBuildUi _ui;
 
         private readonly TooltipRequests _tooltips;
+        private readonly UnitRosterTooltips _unitTooltips;
         private TooltipHoverSubscription _tooltipHover;
 
         private bool _isTooltipActive;
@@ -41,8 +42,10 @@ namespace EmpireAtWar.Entities.Faction.Ui
             PlayerSlot owner,
             IPlayerFactionModelObserver model,
             ISkirmishRouteNavigation routeNavigation,
-            ITooltipService tooltipService, OrbitalConstructionCancellation orbitalCancellation) : base(uiService, cancelRouter)
+            ITooltipService tooltipService, OrbitalConstructionCancellation orbitalCancellation,
+            UnitRosterTooltips unitTooltips) : base(uiService, cancelRouter)
         {
+            _unitTooltips = unitTooltips;
             _commands = commands;
             _orbitalCancellation = orbitalCancellation;
             _owner = owner;
@@ -118,7 +121,7 @@ namespace EmpireAtWar.Entities.Faction.Ui
                 string status = snapshot.UnitRequest is SuperWeaponUnitRequest
                     ? "Click for cancellation options."
                     : "Click to cancel the current item and refund its cost.";
-                return UnitTooltipContent.Build(data, new[]
+                return _unitTooltips.Build(snapshot.UnitRequest, new[]
                 {
                     new TooltipStat(label: "Remaining time (s)", current: snapshot.RemainingBuildTime, format: "0"),
                     new TooltipStat(label: "Progress (s)", current: data.BuildTime - snapshot.RemainingBuildTime, format: "0", max: data.BuildTime),

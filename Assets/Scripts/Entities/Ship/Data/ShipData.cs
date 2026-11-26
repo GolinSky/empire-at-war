@@ -100,7 +100,7 @@ namespace EmpireAtWar.Entities.Ship.Data
 
         [Header("AI Roles")]
         [Tooltip("Proposed by Tools/AI/Propose Ship Roles from class medians and the weapon loadout; reviewed by hand.")]
-        [SerializeField] private ShipRole roles;
-        public ShipRole Roles => roles;
+        [SerializeField] private UnitRole roles;
+        public UnitRole Roles => roles;
     }
 }

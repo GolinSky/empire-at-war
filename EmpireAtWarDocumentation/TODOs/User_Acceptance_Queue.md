@@ -5,6 +5,11 @@ created: "2026-10-29\r"
 ---
 # User Acceptance Queue
 
+## Unified Unit Tooltip
+
+- [ ] [[Done/Features/Unified_Unit_Tooltip]] — In battle: hover a ship/squadron in the build menu, queue, reserves, selection groups and world; check name · class · role tags, role text, Hull/Shields/Shield regen from data, research bonus as `+n` after researching hull/shield capacity, strong/weak rows with opposing-faction icons.
+- [ ] [[Done/Features/Unified_Unit_Tooltip]] — Review `MatchupRules.asset` rules/groups and set `SquadronData.roles` where wanted.
+
 ## Repair Satellite
 
 - [ ] [[Done/Features/Repair_Feature_Plan]] — In battle: build a Repair Satellite on a captured satellite pad; check the model/scale on the pad, the radius ring when selected, that damaged own/allied ships and structures in range regain hull + live hardpoints (not shields, not destroyed hardpoints), and that it stops while ion-disabled. Tune `0.5 %/s`, radius `400`, `10` targets, `2` per target, cost `500`. Decide on ship repair beams.

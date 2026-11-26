@@ -9,6 +9,9 @@ using EmpireAtWar.Editor.Balance;
 using EmpireAtWar.Editor.BattleSimulator;
 using EmpireAtWar.Entities.Ship.Data;
 using EmpireAtWar.Entities.BaseEntity;
+using EmpireAtWar.Entities.Tooltip;
+using EmpireAtWar.Entities.Units.Matchups;
+using EmpireAtWar.Services.Tooltip;
 using EmpireAtWar.Components.TeamColor;
 using EmpireAtWar.Models.Factions;
 using EmpireAtWar.Models.Health;
@@ -100,9 +103,11 @@ namespace EmpireAtWar.Tests.Editor
                 .Single(p => p.FindPropertyRelative("key").intValue == 213).FindPropertyRelative("value");
             Assert.That(unit.FindPropertyRelative("<Icon>k__BackingField").objectReferenceValue,
                 Is.EqualTo(AssetDatabase.LoadAssetAtPath<Sprite>("Assets/Art/Textures/Ui/Icons/ShipIcon/Empire/AllegianceIcon.png")));
-            var matchups = new SerializedObject(unit.FindPropertyRelative("matchups").objectReferenceValue);
-            Assert.That(matchups.FindProperty("strongAgainst").GetArrayElementAtIndex(1).FindPropertyRelative("label").stringValue,
-                Is.EqualTo("Capital ships"));
+            var data = AssetDatabase.LoadAssetAtPath<ShipData>(DATA);
+            var strong = new List<TooltipIcon>();
+            UnitMatchupResolver.Resolve(AssetDatabase.LoadAssetAtPath<MatchupRules>("Assets/Settings/Data/Units/MatchupRules.asset"),
+                data.ShipClass, data.Roles, FactionType.Empire, strong, new List<TooltipIcon>());
+            Assert.That(strong.Select(row => row.Label), Does.Contain("Capital ships"));
         }
 
         [Test]

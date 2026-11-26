@@ -25,6 +25,7 @@ namespace EmpireAtWar.Entities.Reinforcement
         private readonly ReinforcementModel _model;
         private readonly ReinforcementData _data;
         private readonly TooltipRequests _tooltips;
+        private readonly UnitRosterTooltips _unitTooltips;
         private TooltipHoverSubscription _tooltipHover;
 
         private bool _isTooltipActive;
@@ -42,8 +43,10 @@ namespace EmpireAtWar.Entities.Reinforcement
             ITooltipService tooltipService,
             ReinforcementModel model,
             ReinforcementData data,
-            ICoreGameHudStatus hud) : base(uiService, cancelRouter)
+            ICoreGameHudStatus hud,
+            UnitRosterTooltips unitTooltips) : base(uiService, cancelRouter)
         {
+            _unitTooltips = unitTooltips;
             _reinforcementService = reinforcementService;
             _model = model;
             _data = data;
@@ -148,7 +151,7 @@ namespace EmpireAtWar.Entities.Reinforcement
         {
             if (key is UnitRequest request)
                 _tooltips.Show(source, request.Id, anchor, () => _isTooltipActive && _model.GetReserveCount(request) > 0,
-                    () => UnitTooltipContent.Build(request.FactionData, new[]
+                    () => _unitTooltips.Build(request, new[]
                     {
                         new TooltipStat(label: "Available reserves", current: _model.GetReserveCount(request)),
                         new TooltipStat(label: "Fleet capacity", current: request.FactionData.UnitCapacity),

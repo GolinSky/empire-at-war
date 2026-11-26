@@ -2,7 +2,7 @@ using System;
 using System.Linq;
 using EmpireAtWar.Components.AttackComponent;
 using EmpireAtWar.Components.Ship.Health;
-using EmpireAtWar.Entities.EnemyFaction.Data;
+using EmpireAtWar.Entities.Units.Matchups;
 using EmpireAtWar.Models.Economy;
 using EmpireAtWar.Models.Factions;
 using UnityEditor;
@@ -17,19 +17,24 @@ namespace EmpireAtWar.Editor.Balance
             BalanceStructureAdapter.Register(registry);
             Object economy = registry.Resolve<EconomyData>();
             registry.AutoFields(economy, "", "", "IncomeDelay StartMoneyAmount", BalanceFieldGroup.GlobalData, "Economy", BalanceFieldOwner.SharedProfile, true, registry.Units);
-            Object matchups = registry.Resolve<ShipClassMatchupData>();
+            Object matchups = registry.Resolve<MatchupRules>();
             registry.Add(matchups, "strongBonus", "strongBonus", BalanceFieldGroup.GlobalData, "Class production preference", BalanceFieldOwner.SharedProfile, true, registry.Units);
             registry.Add(matchups, "weakPenalty", "weakPenalty", BalanceFieldGroup.GlobalData, "Class production preference",
                 BalanceFieldOwner.SharedProfile, true, registry.Units, maximum: 1);
             using (SerializedObject serialized = new SerializedObject(matchups))
-                foreach (SerializedProperty row in BalanceRegistration.Elements(serialized.FindProperty("matchups")))
+            {
+                int index = 0;
+                foreach (SerializedProperty rule in BalanceRegistration.Elements(serialized.FindProperty("rules")))
                 {
-                    int id = row.FindPropertyRelative("shipClass").intValue;
-                    foreach (string name in new[] { "strongAgainst", "weakAgainst" })
-                        registry.Add(matchups, "class/" + id + "/" + name, row.propertyPath + "." + name, BalanceFieldGroup.GlobalData,
-                            ((ShipClass)id) + " production preference", BalanceFieldOwner.SharedProfile, true,
-                            registry.Units.Where(unit => unit.Class == ((ShipClass)id).ToString()), typeof(ShipClass), serializedTarget: serialized);
+                    string[] attackers = BalanceRegistration.Elements(rule.FindPropertyRelative("attacker.classes"))
+                        .Select(element => ((ShipClass)element.intValue).ToString()).ToArray();
+                    foreach (string side in new[] { "attacker", "target" })
+                        registry.Add(matchups, "rule/" + index + "/" + side, rule.propertyPath + "." + side + ".classes",
+                            BalanceFieldGroup.GlobalData, "Matchup rule " + index, BalanceFieldOwner.SharedProfile, true,
+                            registry.Units.Where(unit => attackers.Contains(unit.Class)), typeof(ShipClass), serializedTarget: serialized);
+                    index++;
                 }
+            }
             Matrix(registry);
             foreach (FactionDefinition faction in registry.Resolve<FactionCatalog>().Factions) Research(registry, faction);
         }

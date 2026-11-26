@@ -8,7 +8,7 @@ using EmpireAtWar.Components.Ship.Health.HardPointOverlay;
 using EmpireAtWar.Components.Ship.Selection;
 using EmpireAtWar.Entities.CaptureSites;
 using EmpireAtWar.Entities.DefendPlatform;
-using EmpireAtWar.Entities.EnemyFaction.Data;
+using EmpireAtWar.Entities.Units.Matchups;
 using EmpireAtWar.Entities.Game;
 using EmpireAtWar.Entities.MiningFacility;
 using EmpireAtWar.Entities.Ship.Data;
@@ -174,7 +174,7 @@ namespace EmpireAtWar.Repository
             assets.BeginPreload<DamageMatrixData>(nameof(DamageMatrixData));
             assets.BeginPreload<LayerData>(nameof(LayerData));
             assets.BeginPreload<ReinforcementData>(nameof(ReinforcementData));
-            assets.BeginPreload<ShipClassMatchupData>(nameof(ShipClassMatchupData));
+            assets.BeginPreload<MatchupRules>(nameof(MatchupRules));
             assets.BeginPreload<HardPointOverlayData>(nameof(HardPointOverlayData));
             assets.BeginPreload<TooltipSettings>(nameof(TooltipSettings));
             assets.BeginPreload<TooltipIconData>(nameof(TooltipIconData));

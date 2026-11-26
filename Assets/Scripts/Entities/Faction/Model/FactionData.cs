@@ -7,7 +7,6 @@ namespace EmpireAtWar.Models.Factions
     [Serializable]
     public class FactionData
     {
-        [SerializeField] private UnitMatchupData matchups;
         [SerializeField] private string displayName;
 
         [SerializeField, TextArea] private string description;
@@ -24,7 +23,6 @@ namespace EmpireAtWar.Models.Factions
         public bool IsHero => isHero;
         /// <summary>One of this type may be queued, in reserve or alive at a time. Every hero is unique.</summary>
         public bool IsUnique => isHero || isUnique;
-        public UnitMatchupData Matchups => matchups;
         [field:SerializeField] public string Name { get; private set; }
         [field:SerializeField] public int MaxCount { get; private set; }
         [field:SerializeField] public int AvailableLevel { get; private set; }

@@ -1,7 +1,7 @@
 using EmpireAtWar.Components.AttackComponent;
 using EmpireAtWar.Components.Radar;
 using EmpireAtWar.Entities.DefendPlatform;
-using EmpireAtWar.Entities.EnemyFaction.Data;
+using EmpireAtWar.Entities.Units.Matchups;
 using EmpireAtWar.Entities.MiningFacility;
 using EmpireAtWar.Entities.Ship.Data;
 using EmpireAtWar.Entities.SuperWeapons;
@@ -26,7 +26,7 @@ namespace EmpireAtWar.Services.VContainer
             AssetRegistrations.RegisterShared<LayerData>(builder, assets);
             AssetRegistrations.RegisterShared<ShipsData>(builder, assets);
             AssetRegistrations.RegisterShared<ReinforcementData>(builder, assets);
-            AssetRegistrations.RegisterShared<ShipClassMatchupData>(builder, assets);
+            AssetRegistrations.RegisterShared<MatchupRules>(builder, assets);
         }
     }
 }

@@ -1,0 +1,262 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 476242a55486921409e9dfa585e7bbbc, type: 3}
+  m_Name: MatchupRules
+  m_EditorClassIdentifier: Assembly-CSharp::EmpireAtWar.Entities.Units.Matchups.MatchupRules
+  rules:
+  - attacker:
+      classes: 0000000009000000
+      roles: 0
+    target:
+      classes: 01000000
+      roles: 0
+  - attacker:
+      classes: 09000000
+      roles: 0
+    target:
+      classes: 0000000007000000
+      roles: 0
+  - attacker:
+      classes: 07000000
+      roles: 0
+    target:
+      classes: 0000000001000000
+      roles: 0
+  - attacker:
+      classes: 01000000
+      roles: 0
+    target:
+      classes: 03000000080000000a00000004000000050000000b00000006000000
+      roles: 0
+  - attacker:
+      classes: 02000000
+      roles: 0
+    target:
+      classes: 000000000700000001000000
+      roles: 0
+  - attacker:
+      classes: 03000000
+      roles: 0
+    target:
+      classes: 02000000
+      roles: 0
+  - attacker:
+      classes: 08000000
+      roles: 0
+    target:
+      classes: 0300000002000000
+      roles: 0
+  - attacker:
+      classes: 0a000000
+      roles: 0
+    target:
+      classes: 0800000003000000
+      roles: 0
+  - attacker:
+      classes: 04000000
+      roles: 0
+    target:
+      classes: 0a000000080000000300000006000000
+      roles: 0
+  - attacker:
+      classes: 05000000
+      roles: 0
+    target:
+      classes: 040000000a000000080000000300000006000000
+      roles: 0
+  - attacker:
+      classes: 0b000000
+      roles: 0
+    target:
+      classes: 05000000040000000a000000080000000300000006000000
+      roles: 0
+  - attacker:
+      classes: 
+      roles: 1024
+    target:
+      classes: 04000000050000000b00000006000000
+      roles: 0
+  - attacker:
+      classes: 
+      roles: 512
+    target:
+      classes: 000000000700000001000000
+      roles: 0
+  - attacker:
+      classes: 
+      roles: 4096
+    target:
+      classes: 04000000050000000b000000
+      roles: 0
+  groups:
+  - label: Fighters
+    members:
+      classes: 0000000009000000
+      roles: 0
+    icons:
+    - faction: 0
+      iconKey: 41429e00e6d997249adaf10dc6d292a6:21300000
+    - faction: 1
+      iconKey: 9fcb02cde6a89f84a91b532e31af44f4:21300000
+    - faction: 2
+      iconKey: ea53c8c126651444aaedb6d6761e02b3:21300000
+    - faction: 3
+      iconKey: 7c8d76c748665eb4f8c008d83b753703:21300000
+    neutralIconKey: 
+  - label: Interceptors
+    members:
+      classes: 07000000
+      roles: 0
+    icons:
+    - faction: 0
+      iconKey: 6db48aa8ac87e0e4faf79f796d5b3f37:21300000
+    - faction: 1
+      iconKey: 6475693b4e9a23943aa6f6d43d698437:21300000
+    - faction: 2
+      iconKey: 524d65b06058f0a428ee3d2a9b9b78e9:21300000
+    - faction: 3
+      iconKey: 64e95301a26b2ca498bc930f9eae7727:21300000
+    neutralIconKey: 
+  - label: Bombers
+    members:
+      classes: 01000000
+      roles: 0
+    icons:
+    - faction: 0
+      iconKey: 8aec8fa8b8581064dbf2721ad11585bb:21300000
+    - faction: 1
+      iconKey: 0148d1e047b1c024494b31fb02e655ed:21300000
+    - faction: 2
+      iconKey: 793233063a2c3d241ab5dbc0af1a35d4:21300000
+    - faction: 3
+      iconKey: 6deef1e660f9c3a41b4d343f91418382:21300000
+    neutralIconKey: 
+  - label: Corvettes
+    members:
+      classes: 02000000
+      roles: 0
+    icons:
+    - faction: 0
+      iconKey: 7e5117ae6840c8d4a9252e2b589de44f:21300000
+    - faction: 1
+      iconKey: c204e9888dc32854493ab00345e38bf4:21300000
+    - faction: 2
+      iconKey: 68a48dec07691c448a7ed517f75c5a1a:21300000
+    - faction: 3
+      iconKey: 19c7fd1609d6359439e7fb94cbbc0065:21300000
+    neutralIconKey: 
+  - label: Frigates
+    members:
+      classes: 03000000
+      roles: 0
+    icons:
+    - faction: 0
+      iconKey: ae699c8c0850c9245b84a34c5fb8d767:21300000
+    - faction: 1
+      iconKey: abf3987a701188747b639680e9203c3e:21300000
+    - faction: 2
+      iconKey: a5d07dd53c680c6408f3e98f4ce75765:21300000
+    - faction: 3
+      iconKey: e54026c071416a845b2d23e814c1e8d5:21300000
+    neutralIconKey: 
+  - label: Cruisers
+    members:
+      classes: 080000000a000000
+      roles: 0
+    icons:
+    - faction: 0
+      iconKey: 003f227a5109a5745879774b3be70886:21300000
+    - faction: 1
+      iconKey: dcdfa3aa3e1fabb44b5e337f8aa8370f:21300000
+    - faction: 2
+      iconKey: 66c1ea9cf4e49774d99aff299b8237ca:21300000
+    - faction: 3
+      iconKey: 552ac5636e4f65c44994f1337d051b8a:21300000
+    neutralIconKey: 
+  - label: Capital ships
+    members:
+      classes: 04000000
+      roles: 0
+    icons:
+    - faction: 0
+      iconKey: d899a22bd6d129e46a5aed14df2b81fa:21300000
+    - faction: 1
+      iconKey: 60d91c69afc54ad4fa9b45f6990ff8af:21300000
+    - faction: 2
+      iconKey: b95f55f2e2f204f42a94f0c44c5baa85:21300000
+    - faction: 3
+      iconKey: b8f66d736a9c0a841b8957320119ca55:21300000
+    neutralIconKey: 
+  - label: Battlecruisers and dreadnoughts
+    members:
+      classes: 050000000b000000
+      roles: 0
+    icons:
+    - faction: 0
+      iconKey: 771dbf8529c7a394b864ffcb0bd556d7:21300000
+    - faction: 1
+      iconKey: 8128fcc8b8e454e47ab592309d37208e:21300000
+    - faction: 2
+      iconKey: f71730a251297854b97875858cdb2249:21300000
+    - faction: 3
+      iconKey: ebec4f97ee2c2454883747a62531d2c9:21300000
+    neutralIconKey: 
+  - label: Structures
+    members:
+      classes: 06000000
+      roles: 0
+    icons: []
+    neutralIconKey: 3d8c2c187dbb7c149b2b91ea81cc45fd:21300000
+  - label: Artillery ships
+    members:
+      classes: 
+      roles: 1024
+    icons:
+    - faction: 0
+      iconKey: 552ac5636e4f65c44994f1337d051b8a:21300000
+    - faction: 1
+      iconKey: f786c5540a32883458104436e8362962:21300000
+    - faction: 2
+      iconKey: 469dd9f50be001b43938f09f7cdbcb4f:21300000
+    - faction: 3
+      iconKey: 3896a253ad3c5024b8b7260fb0c214a9:21300000
+    neutralIconKey: 
+  - label: Anti-strikecraft ships
+    members:
+      classes: 
+      roles: 512
+    icons:
+    - faction: 0
+      iconKey: 7e5117ae6840c8d4a9252e2b589de44f:21300000
+    - faction: 1
+      iconKey: 5f8bc4a82cc113244b19a13b489bb0f0:21300000
+    - faction: 2
+      iconKey: 68a48dec07691c448a7ed517f75c5a1a:21300000
+    - faction: 3
+      iconKey: 19c7fd1609d6359439e7fb94cbbc0065:21300000
+    neutralIconKey: 
+  - label: Anti-capital ships
+    members:
+      classes: 
+      roles: 4096
+    icons:
+    - faction: 0
+      iconKey: ae699c8c0850c9245b84a34c5fb8d767:21300000
+    - faction: 1
+      iconKey: dcdfa3aa3e1fabb44b5e337f8aa8370f:21300000
+    - faction: 2
+      iconKey: 68a48dec07691c448a7ed517f75c5a1a:21300000
+    - faction: 3
+      iconKey: e54026c071416a845b2d23e814c1e8d5:21300000
+    neutralIconKey: 
+  strongBonus: 0.5
+  weakPenalty: 0.5

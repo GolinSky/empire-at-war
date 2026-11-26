@@ -9,7 +9,7 @@ using EmpireAtWar.Services.ShipAbilities;
 namespace EmpireAtWar.Editor
 {
     /// <summary>
-    /// What each <see cref="ShipRole"/> flag means in ship data. Durability, speed, guns and anti-capital damage compare a
+    /// What each <see cref="UnitRole"/> flag means in ship data. Durability, speed, guns and anti-capital damage compare a
     /// ship with its own faction's ships of the same class (every faction's when that class is too small, see
     /// <see cref="ShipRoleRoster.ClassMates"/>), so a faction-wide trait (every Empire ship is slow) is the
     /// faction's mark (<see cref="ProposeFactionMarks"/>), not a flag on every ship. Durability is weighed against price:
@@ -109,29 +109,29 @@ namespace EmpireAtWar.Editor
         /// The flags ship data supports; <paramref name="classMates"/> are the ships of its faction and class, itself
         /// included.
         /// </summary>
-        public static ShipRole Propose(ShipRoleEntry entry, IReadOnlyCollection<ShipRoleEntry> classMates,
+        public static UnitRole Propose(ShipRoleEntry entry, IReadOnlyCollection<ShipRoleEntry> classMates,
             WeaponsData weapons)
         {
             ShipData ship = entry.Ship;
-            ShipRole roles = ShipRole.None;
+            UnitRole roles = UnitRole.None;
             float durability = Median(classMates.Select(DurabilityPerCredit));
             float speed = Median(classMates.Select(mate => mate.Ship.Speed));
             float guns = Median(classMates.Select(mate => (float)GunCount(mate.Ship)));
             float capitalDamage = Median(classMates.Select(mate => CapitalDamage(mate.Ship, weapons)));
-            if (DurabilityPerCredit(entry) > durability * (1f + DURABILITY_BAND)) roles |= ShipRole.Brawler;
-            else if (DurabilityPerCredit(entry) < durability * (1f - DURABILITY_BAND)) roles |= ShipRole.Fragile;
-            else roles |= ShipRole.Balanced;
-            if (ship.Speed > speed * (1f + SPEED_BAND)) roles |= ShipRole.Fast;
-            else if (ship.Speed < speed * (1f - SPEED_BAND)) roles |= ShipRole.Slow;
-            if (GunCount(ship) > guns * (1f + GUN_BAND)) roles |= ShipRole.Dps;
+            if (DurabilityPerCredit(entry) > durability * (1f + DURABILITY_BAND)) roles |= UnitRole.Brawler;
+            else if (DurabilityPerCredit(entry) < durability * (1f - DURABILITY_BAND)) roles |= UnitRole.Fragile;
+            else roles |= UnitRole.Balanced;
+            if (ship.Speed > speed * (1f + SPEED_BAND)) roles |= UnitRole.Fast;
+            else if (ship.Speed < speed * (1f - SPEED_BAND)) roles |= UnitRole.Slow;
+            if (GunCount(ship) > guns * (1f + GUN_BAND)) roles |= UnitRole.Dps;
             if (CapitalDamage(ship, weapons) > capitalDamage * (1f + ANTI_CAPITAL_BAND) || HasAntiCapitalAbility(ship))
-                roles |= ShipRole.AntiCapital;
-            if (IsCarrier(ship)) roles |= ShipRole.Carrier;
-            if (IsLargestShare(ship, weapons, MissileFamilies)) roles |= ShipRole.MissileSpecialist;
-            if (IsIonSpecialist(ship, weapons)) roles |= ShipRole.IonSpecialist;
-            if (IsLargestShare(ship, weapons, AntiStrikecraftFamilies)) roles |= ShipRole.AntiStrikecraft;
-            if (ship.UsesArtilleryStandoff) roles |= ShipRole.Artillery;
-            if (HasSupportAbility(ship)) roles |= ShipRole.Support;
+                roles |= UnitRole.AntiCapital;
+            if (IsCarrier(ship)) roles |= UnitRole.Carrier;
+            if (IsLargestShare(ship, weapons, MissileFamilies)) roles |= UnitRole.MissileSpecialist;
+            if (IsIonSpecialist(ship, weapons)) roles |= UnitRole.IonSpecialist;
+            if (IsLargestShare(ship, weapons, AntiStrikecraftFamilies)) roles |= UnitRole.AntiStrikecraft;
+            if (ship.UsesArtilleryStandoff) roles |= UnitRole.Artillery;
+            if (HasSupportAbility(ship)) roles |= UnitRole.Support;
             return roles;
         }
 
@@ -140,18 +140,18 @@ namespace EmpireAtWar.Editor
         /// faction's median for that class, averaged over its classes. Fast / Slow, Brawler / Fragile and Dps when the
         /// average is more than <see cref="FACTION_MARK_BAND"/> away.
         /// </summary>
-        public static ShipRole ProposeFactionMarks(IReadOnlyCollection<ShipRoleEntry> faction,
+        public static UnitRole ProposeFactionMarks(IReadOnlyCollection<ShipRoleEntry> faction,
             IReadOnlyCollection<ShipRoleEntry> roster)
         {
             float speed = AverageRatio(faction, roster, entry => entry.Ship.Speed);
             float durability = AverageRatio(faction, roster, entry => Durability(entry.Ship));
             float guns = AverageRatio(faction, roster, entry => GunCount(entry.Ship));
-            ShipRole marks = ShipRole.None;
-            if (speed > 1f + FACTION_MARK_BAND) marks |= ShipRole.Fast;
-            else if (speed < 1f - FACTION_MARK_BAND) marks |= ShipRole.Slow;
-            if (durability > 1f + FACTION_MARK_BAND) marks |= ShipRole.Brawler;
-            else if (durability < 1f - FACTION_MARK_BAND) marks |= ShipRole.Fragile;
-            if (guns > 1f + FACTION_MARK_BAND) marks |= ShipRole.Dps;
+            UnitRole marks = UnitRole.None;
+            if (speed > 1f + FACTION_MARK_BAND) marks |= UnitRole.Fast;
+            else if (speed < 1f - FACTION_MARK_BAND) marks |= UnitRole.Slow;
+            if (durability > 1f + FACTION_MARK_BAND) marks |= UnitRole.Brawler;
+            else if (durability < 1f - FACTION_MARK_BAND) marks |= UnitRole.Fragile;
+            if (guns > 1f + FACTION_MARK_BAND) marks |= UnitRole.Dps;
             return marks;
         }
 

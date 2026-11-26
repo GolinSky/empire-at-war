@@ -231,6 +231,8 @@ namespace EmpireAtWar.Services.VContainer
             builder.Register<ShipAbilityAutoUse>(Lifetime.Singleton);
             builder.Register<ShipAbilityFactory>(Lifetime.Singleton).AsImplementedInterfaces().AsSelf();
             builder.Register<ShipAbilityService>(Lifetime.Singleton).AsImplementedInterfaces().AsSelf();
+            builder.Register<UnitSheetCatalog>(Lifetime.Singleton).AsImplementedInterfaces();
+            builder.Register<UnitRosterTooltips>(Lifetime.Singleton);
             builder.Register<UnitCombatProfileCatalog>(Lifetime.Singleton);
             builder.Register<ForceCompositionBuilder>(Lifetime.Singleton);
             builder.Register<AutoPowerCombatSnapshot>(Lifetime.Singleton);

@@ -2,6 +2,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using EmpireAtWar.Components.AttackComponent;
+using EmpireAtWar.Components.Ship.Health;
 using EmpireAtWar.Entities.Ship.Data;
 using EmpireAtWar.Models.Factions;
 using UnityEditor;
@@ -30,13 +31,13 @@ namespace EmpireAtWar.Editor
                 FactionDefinition faction =
                     AssetDatabase.LoadAssetAtPath<FactionDefinition>(AssetDatabase.GUIDToAssetPath(guid));
                 List<ShipRoleEntry> fleet = roster.Where(entry => entry.Faction == faction.FactionType).ToList();
-                ShipRole marks = ShipRoleRules.ProposeFactionMarks(fleet, roster);
+                UnitRole marks = ShipRoleRules.ProposeFactionMarks(fleet, roster);
                 Write(faction, "shipMarks", marks);
                 report.AppendLine($"{faction.FactionType} marks: {marks}");
             }
             foreach (ShipRoleEntry entry in roster.Where(entry => entry.IsOwner))
             {
-                ShipRole roles = ShipRoleRules.Propose(entry, ShipRoleRoster.ClassMates(roster, entry), weapons);
+                UnitRole roles = ShipRoleRules.Propose(entry, ShipRoleRoster.ClassMates(roster, entry), weapons);
                 Write(entry.Ship, "roles", roles);
                 report.AppendLine($"{entry.Faction} {entry.Ship.name} ({entry.Ship.ShipClass}): {roles}");
             }
@@ -45,7 +46,7 @@ namespace EmpireAtWar.Editor
             return report.ToString();
         }
 
-        private static void Write(Object asset, string property, ShipRole value)
+        private static void Write(Object asset, string property, UnitRole value)
         {
             var serialized = new SerializedObject(asset);
             serialized.FindProperty(property).intValue = (int)value;

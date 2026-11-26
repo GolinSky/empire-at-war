@@ -532,7 +532,7 @@ namespace EmpireAtWar.Tests.Editor
                 tooltipService: null, economy: null, hud: null, battleState: null, roster: null,
                 reinforcements: null, assets: null, shipsData: null, interfaceAudio: null, notifications: null,
                 secondStation: new SecondStationLevelModel(), stationLevels: null, productionAccess: new OwnBaseAccess(),
-                productionMenusProvider: null);
+                productionMenusProvider: null, unitTooltips: null);
         }
 
         private sealed class AvailabilityPresenter : IFactionPresenter

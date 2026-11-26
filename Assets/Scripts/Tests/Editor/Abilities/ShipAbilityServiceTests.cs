@@ -1199,7 +1199,7 @@ namespace EmpireAtWar.Tests.Editor
                 icons: null, shipAbilityService: service, tooltipIcons: null, factions: null,
                 settings: new SettingsService(null,
                     Array.Empty<ISettingsApplier>()),
-                localPlayer: TestPlayers.CreateLocalPlayer(TestPlayers.CreateDuel()), destroyFlow: null);
+                localPlayer: TestPlayers.CreateLocalPlayer(TestPlayers.CreateDuel()), destroyFlow: null, unitTooltips: null);
             int unhandledCount = 0;
             router.CancelUnhandled += () => unhandledCount++;
             router.Initialize();
