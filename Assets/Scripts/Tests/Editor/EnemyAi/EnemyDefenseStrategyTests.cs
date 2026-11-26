@@ -41,9 +41,9 @@ namespace EmpireAtWar.Tests.Editor
 
         [TestCase(ShipClass.Fighter, 600f, 0f, 800f, 0.8f, 0f, SiteFacilityType.QuadLaserSatellite)]
         [TestCase(ShipClass.Frigate, 3000f, 1000f, 1800f, 0.6f, 0f, SiteFacilityType.TurbolaserSatellite)]
-        // Missiles deal full damage to cruisers (DamageMatrixData), so even on a tight budget against a shielded
-        // cruiser the missile satellite outscores ion.
-        [TestCase(ShipClass.Cruiser, 5000f, 15000f, 1000f, 0.6f, 0f, SiteFacilityType.MissileSatellite)]
+        // Missile damage vs cruisers 1 -> 0.6 (8dcdf83a5): on a tight budget the turbolaser generalist beats
+        // the missile satellite; with money to spare (last case) missiles still win.
+        [TestCase(ShipClass.Cruiser, 5000f, 15000f, 1000f, 0.6f, 0f, SiteFacilityType.TurbolaserSatellite)]
         // Heavy caliber damage ×1.3 (aae27525d) made heavy missiles outscore mass drivers against besieging capitals.
         [TestCase(ShipClass.Capital, 10000f, 30000f, 12000f, 0.1f, 2f, SiteFacilityType.MissileSatellite)]
         [TestCase(ShipClass.Cruiser, 10000f, 30000f, 7000f, 0.9f, 0f, SiteFacilityType.MissileSatellite)]

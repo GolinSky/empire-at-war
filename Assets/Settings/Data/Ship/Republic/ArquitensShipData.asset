@@ -74,6 +74,6 @@ MonoBehaviour:
     count: 6
   - weaponType: 94
     count: 4
-  - weaponType: 128
-    count: 4
+  - weaponType: 95
+    count: 2
   roles: 4101

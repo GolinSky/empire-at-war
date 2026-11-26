@@ -208,7 +208,7 @@ MonoBehaviour:
   healthOverride: 0
   healthWeight: 1
   <HardPointType>k__BackingField: 0
-  <Id>k__BackingField: 12
+  <Id>k__BackingField: 11
   yAxisRange:
     <Min>k__BackingField: -94
     <Max>k__BackingField: 152
@@ -422,37 +422,6 @@ Transform:
   m_ConstrainProportionsScale: 0
   m_Children: []
   m_Father: {fileID: 7261833875707191351}
-  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
---- !u!1 &2327681768017452785
-GameObject:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  serializedVersion: 6
-  m_Component:
-  - component: {fileID: 80040220660748149}
-  m_Layer: 0
-  m_Name: DestroyedVfxAnchor
-  m_TagString: Untagged
-  m_Icon: {fileID: 0}
-  m_NavMeshLayer: 0
-  m_StaticEditorFlags: 0
-  m_IsActive: 1
---- !u!4 &80040220660748149
-Transform:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 2327681768017452785}
-  serializedVersion: 2
-  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: -0.07763009, y: 0.3200508, z: 0}
-  m_LocalScale: {x: 1, y: 1, z: 1}
-  m_ConstrainProportionsScale: 0
-  m_Children: []
-  m_Father: {fileID: 8908674444843516004}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &2954142491591284552
 GameObject:
@@ -789,64 +758,6 @@ SpriteRenderer:
   m_SpriteTileMode: 0
   m_WasSpriteAssigned: 1
   m_SpriteSortPoint: 0
---- !u!1 &4609842530250849160
-GameObject:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  serializedVersion: 6
-  m_Component:
-  - component: {fileID: 6735129341767458509}
-  - component: {fileID: 5245499180742392220}
-  m_Layer: 0
-  m_Name: ConcussionMissileLauncher
-  m_TagString: Untagged
-  m_Icon: {fileID: 0}
-  m_NavMeshLayer: 0
-  m_StaticEditorFlags: 0
-  m_IsActive: 1
---- !u!4 &6735129341767458509
-Transform:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 4609842530250849160}
-  serializedVersion: 2
-  m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
-  m_LocalPosition: {x: 0.49971542, y: -0.6386864, z: 14.529484}
-  m_LocalScale: {x: 7.175053, y: 7.175053, z: 7.175053}
-  m_ConstrainProportionsScale: 0
-  m_Children:
-  - {fileID: 2382466124186941878}
-  m_Father: {fileID: 5889165115786701736}
-  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
---- !u!114 &5245499180742392220
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 4609842530250849160}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 6535a63451984d3d8510459aec130f3f, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  spawnDestroyedExplosion: 1
-  destroyedVfxAnchor: {fileID: 2382466124186941878}
-  destroyedVfxScale: 1
-  unlockLevel: 1
-  healthOverride: 0
-  healthWeight: 1
-  <HardPointType>k__BackingField: 0
-  <Id>k__BackingField: 10
-  yAxisRange:
-    <Min>k__BackingField: -139
-    <Max>k__BackingField: 146
-  mainBattery: 0
-  <WeaponType>k__BackingField: 128
 --- !u!1 &4891785547253868335
 GameObject:
   m_ObjectHideFlags: 0
@@ -1183,12 +1094,12 @@ MonoBehaviour:
   healthOverride: 0
   healthWeight: 1
   <HardPointType>k__BackingField: 0
-  <Id>k__BackingField: 15
+  <Id>k__BackingField: 13
   yAxisRange:
     <Min>k__BackingField: -139
     <Max>k__BackingField: 146
   mainBattery: 0
-  <WeaponType>k__BackingField: 128
+  <WeaponType>k__BackingField: 95
 --- !u!1 &6055870593759586462
 GameObject:
   m_ObjectHideFlags: 0
@@ -1241,12 +1152,12 @@ MonoBehaviour:
   healthOverride: 0
   healthWeight: 1
   <HardPointType>k__BackingField: 0
-  <Id>k__BackingField: 14
+  <Id>k__BackingField: 12
   yAxisRange:
     <Min>k__BackingField: -139
     <Max>k__BackingField: 146
   mainBattery: 0
-  <WeaponType>k__BackingField: 128
+  <WeaponType>k__BackingField: 95
 --- !u!1 &6221076368196045240
 GameObject:
   m_ObjectHideFlags: 0
@@ -1405,7 +1316,6 @@ Transform:
   - {fileID: 8933634510437929440}
   - {fileID: 8097761533914127842}
   - {fileID: 1250336899492543957}
-  - {fileID: 6735129341767458509}
   - {fileID: 4322667839875151633}
   - {fileID: 2662193322247188541}
   - {fileID: 6739175238629256057}
@@ -1415,7 +1325,6 @@ Transform:
   - {fileID: 5044909199499922939}
   - {fileID: 8460842524688143856}
   - {fileID: 4122995423000601087}
-  - {fileID: 8908674444843516004}
   - {fileID: 6438123208583635787}
   - {fileID: 6403889245223008679}
   - {fileID: 1630001750415747286}
@@ -1709,10 +1618,8 @@ MonoBehaviour:
   - {fileID: 7946665847653583100}
   - {fileID: 1462627055147111300}
   - {fileID: 5820015615388131227}
-  - {fileID: 5245499180742392220}
   - {fileID: 1585576362758391952}
   - {fileID: 4992112350825489914}
-  - {fileID: 3782511612348968130}
   - {fileID: 1254899073935414372}
   - {fileID: 843053231553319703}
 --- !u!114 &4150898646505647277
@@ -1873,11 +1780,9 @@ MonoBehaviour:
   - {fileID: 7946665847653583100}
   - {fileID: 1462627055147111300}
   - {fileID: 5820015615388131227}
-  - {fileID: 5245499180742392220}
   - {fileID: 3691302055827776104}
   - {fileID: 1585576362758391952}
   - {fileID: 4992112350825489914}
-  - {fileID: 3782511612348968130}
   - {fileID: 1254899073935414372}
   - {fileID: 843053231553319703}
 --- !u!114 &3691302055827776104
@@ -1949,7 +1854,7 @@ MonoBehaviour:
   healthOverride: 0
   healthWeight: 1
   <HardPointType>k__BackingField: 0
-  <Id>k__BackingField: 11
+  <Id>k__BackingField: 10
   yAxisRange:
     <Min>k__BackingField: -152
     <Max>k__BackingField: 94
@@ -2008,102 +1913,11 @@ MonoBehaviour:
   - {fileID: 3406233814493811603}
   - {fileID: 3304444583058273618}
   - {fileID: 7946665847653583100}
-  - {fileID: 5245499180742392220}
   - {fileID: 1585576362758391952}
   - {fileID: 4992112350825489914}
-  - {fileID: 3782511612348968130}
   - {fileID: 1254899073935414372}
   - {fileID: 843053231553319703}
   rangeMultiplier: 1
---- !u!1 &7725459739705907566
-GameObject:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  serializedVersion: 6
-  m_Component:
-  - component: {fileID: 2382466124186941878}
-  m_Layer: 0
-  m_Name: DestroyedVfxAnchor
-  m_TagString: Untagged
-  m_Icon: {fileID: 0}
-  m_NavMeshLayer: 0
-  m_StaticEditorFlags: 0
-  m_IsActive: 1
---- !u!4 &2382466124186941878
-Transform:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 7725459739705907566}
-  serializedVersion: 2
-  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: -0.07763009, y: 0.3200508, z: 0}
-  m_LocalScale: {x: 1, y: 1, z: 1}
-  m_ConstrainProportionsScale: 0
-  m_Children: []
-  m_Father: {fileID: 6735129341767458509}
-  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
---- !u!1 &7757714990544264011
-GameObject:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  serializedVersion: 6
-  m_Component:
-  - component: {fileID: 8908674444843516004}
-  - component: {fileID: 3782511612348968130}
-  m_Layer: 0
-  m_Name: ConcussionMissileLauncher2
-  m_TagString: Untagged
-  m_Icon: {fileID: 0}
-  m_NavMeshLayer: 0
-  m_StaticEditorFlags: 0
-  m_IsActive: 1
---- !u!4 &8908674444843516004
-Transform:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 7757714990544264011}
-  serializedVersion: 2
-  m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
-  m_LocalPosition: {x: -0.5860516, y: -0.75014603, z: 17.030659}
-  m_LocalScale: {x: 7.175053, y: 7.175053, z: 7.175053}
-  m_ConstrainProportionsScale: 0
-  m_Children:
-  - {fileID: 80040220660748149}
-  m_Father: {fileID: 5889165115786701736}
-  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
---- !u!114 &3782511612348968130
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 7757714990544264011}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 6535a63451984d3d8510459aec130f3f, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  spawnDestroyedExplosion: 1
-  destroyedVfxAnchor: {fileID: 80040220660748149}
-  destroyedVfxScale: 1
-  unlockLevel: 1
-  healthOverride: 0
-  healthWeight: 1
-  <HardPointType>k__BackingField: 0
-  <Id>k__BackingField: 13
-  yAxisRange:
-    <Min>k__BackingField: -139
-    <Max>k__BackingField: 146
-  mainBattery: 0
-  <WeaponType>k__BackingField: 128
 --- !u!1 &7862839597077674575
 GameObject:
   m_ObjectHideFlags: 0
