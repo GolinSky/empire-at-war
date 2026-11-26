@@ -12,13 +12,47 @@ namespace EmpireAtWar.Services.ShipAbilities.Abilities
     [Serializable]
     public sealed class SuperlaserSettings : ShipAbilitySettings, IShipAbilityTargetRule, IShipAbilityTargetPriority
     {
-        [SerializeField] private DamageType damageType = DamageType.Beam;
+        [SerializeField] private DamageType damageType = DamageType.Superlaser;
         [SerializeField] private float damage;
         [SerializeField] private Color beamColor = new Color(1f, 0.12f, 0.08f, 1f);
+
+        [Header("Damage scale by target")]
+        [SerializeField] private float vsStation = 4f;
+        [SerializeField] private float vsStructure = 2f;
+        [SerializeField] private float vsDreadnought = 1.5f;
+        [SerializeField] private float vsBattleCruiser = 1f;
+        [SerializeField] private float vsCapital = 0.8f;
+        [SerializeField] private float vsHeavyCruiser = 0.6f;
+        [SerializeField] private float vsCruiser = 0.5f;
+        [SerializeField] private float vsOther = 0.2f;
 
         public DamageType DamageType => damageType;
         public float Damage => damage;
         public Color BeamColor => beamColor;
+        public float VsStation => vsStation;
+        public float VsStructure => vsStructure;
+        public float VsDreadnought => vsDreadnought;
+        public float VsBattleCruiser => vsBattleCruiser;
+        public float VsCapital => vsCapital;
+        public float VsHeavyCruiser => vsHeavyCruiser;
+        public float VsCruiser => vsCruiser;
+        public float VsOther => vsOther;
+
+        /// <summary>Scale on the whole beam (shields and hull) against this target.</summary>
+        public float GetDamageMultiplier(IEntity target)
+        {
+            if (target.IsPlayerBase()) return vsStation;
+            return target.HealthModel.ShipClass switch
+            {
+                ShipClass.Structure => vsStructure,
+                ShipClass.Dreadnought => vsDreadnought,
+                ShipClass.BattleCruiser => vsBattleCruiser,
+                ShipClass.Capital => vsCapital,
+                ShipClass.HeavyCruiser => vsHeavyCruiser,
+                ShipClass.Cruiser => vsCruiser,
+                _ => vsOther
+            };
+        }
 
         public bool CanTarget(IShipAbilityFacade caster, IEntity target) =>
             target.HealthModel.ShipClass is ShipClass.Frigate or ShipClass.Cruiser or ShipClass.HeavyCruiser or

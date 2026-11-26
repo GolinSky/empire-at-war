@@ -23,5 +23,7 @@ namespace EmpireAtWar.Components.AttackComponent
         HeroLaser = 15,
         /// <summary>Precision ability damage: bypasses shields and hardpoints to strike the hull directly.</summary>
         PrecisionStrike = 16,
+        /// <summary>Xyston superlaser: neutral matrix row; SuperlaserSettings applies its own per-class damage scale.</summary>
+        Superlaser = 17,
     }
 }

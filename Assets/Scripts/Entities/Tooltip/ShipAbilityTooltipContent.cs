@@ -48,6 +48,17 @@ namespace EmpireAtWar.Entities.Tooltip
                 _ => 0f
             };
             if (effectRadius > 0f) stats.Add(new TooltipStat("Effect radius", effectRadius));
+            if (definition.Settings is SuperlaserSettings superlaser)
+            {
+                stats.Add(new TooltipStat("Damage vs stations", superlaser.Damage * superlaser.VsStation, "N0"));
+                stats.Add(new TooltipStat("Damage vs other structures", superlaser.Damage * superlaser.VsStructure, "N0"));
+                stats.Add(new TooltipStat("Damage vs dreadnoughts", superlaser.Damage * superlaser.VsDreadnought, "N0"));
+                stats.Add(new TooltipStat("Damage vs battlecruisers", superlaser.Damage * superlaser.VsBattleCruiser, "N0"));
+                stats.Add(new TooltipStat("Damage vs capitals", superlaser.Damage * superlaser.VsCapital, "N0"));
+                stats.Add(new TooltipStat("Damage vs heavy cruisers", superlaser.Damage * superlaser.VsHeavyCruiser, "N0"));
+                stats.Add(new TooltipStat("Damage vs cruisers", superlaser.Damage * superlaser.VsCruiser, "N0"));
+                stats.Add(new TooltipStat("Damage vs frigates", superlaser.Damage * superlaser.VsOther, "N0"));
+            }
 
             float duration = definition.Settings.GetEffectDuration(definition.Duration);
             if (definition.Settings is LuckyShotSettings luckyShot)

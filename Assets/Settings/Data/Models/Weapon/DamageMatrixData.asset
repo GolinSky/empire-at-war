@@ -509,6 +509,37 @@ MonoBehaviour:
     shipShieldMultiplier: 1
     squadronShieldMultiplier: 1
     shieldPiercing: 1
+  - damageType: 17
+    damage:
+      fighter: 1
+      bomber: 1
+      interceptor: 1
+      corvette: 1
+      frigate: 1
+      cruiser: 1
+      heavyCruiser: 1
+      capital: 1
+      battleCruiser: 1
+      dreadnought: 1
+      structure: 1
+      heroStrikecraft: 0.5
+    accuracy:
+      fighter: 1
+      bomber: 1
+      interceptor: 1
+      corvette: 1
+      frigate: 1
+      cruiser: 1
+      heavyCruiser: 1
+      capital: 1
+      battleCruiser: 1
+      dreadnought: 1
+      structure: 1
+      heroStrikecraft: 1
+    vsShield: 1
+    shipShieldMultiplier: 1
+    squadronShieldMultiplier: 1
+    shieldPiercing: 0
   missSpread: 6
   factionDamageScales:
   - faction: 2

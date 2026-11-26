@@ -58,7 +58,7 @@ namespace EmpireAtWar.Tests.Editor
         }
 
         [Test]
-        public void Superlaser_DestroysAFullHealthIsdIAndXystonIsMoreFragileThanTheLineShips()
+        public void Superlaser_ScalesByTargetClassAndXystonIsMoreFragileThanTheLineShips()
         {
             var catalog = AssetDatabase.LoadAssetAtPath<ShipAbilityCatalog>(CATALOG);
             ShipAbilityDefinition superlaser = catalog.Get(ShipAbilityId.XystonSuperlaser);
@@ -66,13 +66,22 @@ namespace EmpireAtWar.Tests.Editor
             Assert.That(superlaser.RequiresEnemyTarget, Is.True);
             Assert.That(superlaser.Range, Is.GreaterThan(0f));
             Assert.That(superlaser.AutoPower, Is.EqualTo(AutoPowerRole.Target));
+            Assert.That(settings.Damage, Is.GreaterThan(0f));
 
-            // Mid capital: one full-health ISD I, shields then hull, through the shipped damage matrix.
+            // The superlaser's own per-class scale is the whole matchup: its matrix row is neutral against every target.
+            Assert.That(settings.DamageType, Is.EqualTo(DamageType.Superlaser));
             var matrix = AssetDatabase.LoadAssetAtPath<DamageMatrixData>(AssetDatabase.GUIDToAssetPath(AssetDatabase.FindAssets("t:DamageMatrixData").Single()));
-            ShipData isdI = AssetDatabase.LoadAssetAtPath<ShipData>("Assets/Settings/Data/Ship/Empire/ISDIShipData.asset");
-            float required = isdI.Shields / matrix.GetShipShieldMultiplier(settings.DamageType) +
-                             isdI.Hull / matrix.GetDamageMultiplier(settings.DamageType, isdI.ShipClass);
-            Assert.That(settings.Damage, Is.GreaterThanOrEqualTo(required));
+            Assert.That(matrix.GetShipShieldMultiplier(settings.DamageType), Is.EqualTo(1f));
+            Assert.That(matrix.IsShieldPiercing(settings.DamageType), Is.False);
+            foreach (ShipClass target in new[] { ShipClass.Frigate, ShipClass.Cruiser, ShipClass.HeavyCruiser, ShipClass.Capital,
+                         ShipClass.BattleCruiser, ShipClass.Dreadnought, ShipClass.Structure })
+                Assert.That(matrix.GetDamageMultiplier(settings.DamageType, target), Is.EqualTo(1f), target.ToString());
+
+            // Stations take the most, then structures and the largest ships, down to frigates.
+            float[] byTarget = { settings.VsStation, settings.VsStructure, settings.VsDreadnought, settings.VsBattleCruiser,
+                settings.VsCapital, settings.VsHeavyCruiser, settings.VsCruiser, settings.VsOther };
+            Assert.That(byTarget, Is.Ordered.Descending);
+            Assert.That(settings.VsOther, Is.GreaterThan(0f));
 
             ShipData xyston = AssetDatabase.LoadAssetAtPath<ShipData>(DATA);
             foreach (string line in new[] { "ISDIIShipData", "AllegianceShipData" })

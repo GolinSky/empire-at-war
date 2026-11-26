@@ -59,6 +59,20 @@ namespace EmpireAtWar.Tests.Editor
         }
 
         [Test]
+        public void DamageMultiplier_StationOverridesStructureAndEachClassUsesItsOwnScale()
+        {
+            Assert.That(_settings.GetDamageMultiplier(Station()), Is.EqualTo(_settings.VsStation));
+            Assert.That(_settings.GetDamageMultiplier(Ship(ShipClass.Structure)), Is.EqualTo(_settings.VsStructure));
+            Assert.That(_settings.GetDamageMultiplier(Ship(ShipClass.Dreadnought)), Is.EqualTo(_settings.VsDreadnought));
+            Assert.That(_settings.GetDamageMultiplier(Ship(ShipClass.BattleCruiser)), Is.EqualTo(_settings.VsBattleCruiser));
+            Assert.That(_settings.GetDamageMultiplier(Ship(ShipClass.Capital)), Is.EqualTo(_settings.VsCapital));
+            Assert.That(_settings.GetDamageMultiplier(Ship(ShipClass.HeavyCruiser)), Is.EqualTo(_settings.VsHeavyCruiser));
+            Assert.That(_settings.GetDamageMultiplier(Ship(ShipClass.Cruiser)), Is.EqualTo(_settings.VsCruiser));
+            Assert.That(_settings.GetDamageMultiplier(Ship(ShipClass.Frigate)), Is.EqualTo(_settings.VsOther));
+            Assert.That(_settings.VsStation, Is.GreaterThan(_settings.VsStructure));
+        }
+
+        [Test]
         public void BeamColor_IsRed()
         {
             UnityEngine.Color color = _settings.BeamColor;

@@ -47,13 +47,16 @@ namespace EmpireAtWar.Services.ShipAbilities.Abilities
 
         protected abstract Transform GetMuzzle(IShipAbilityFacade caster);
 
+        /// <summary>Scale on the whole beam against this target, shields and hull alike.</summary>
+        protected virtual float GetTargetDamageMultiplier(IEntity target) => 1f;
+
         public void Start(IShipAbilityFacade caster, ShipAbilityDefinition definition, IEntity target)
         {
             _caster = caster;
             _target = target;
             _health = target.GetFacade<IHealthFacade>();
             _timeLeft = definition.Duration;
-            _damagePerSecond = _damage / definition.Duration;
+            _damagePerSecond = _damage * GetTargetDamageMultiplier(target) / definition.Duration;
             _pendingTime = 0f;
             _view = Object.Instantiate(_profile.BeamPrefab);
             _view.PrepareImpact(_impactPresenter, target.HealthModel, _damageType, _damage, 1.5f, true);

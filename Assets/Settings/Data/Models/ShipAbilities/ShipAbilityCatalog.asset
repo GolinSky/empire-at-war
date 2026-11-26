@@ -513,8 +513,9 @@ MonoBehaviour:
         icon: {fileID: 21300000, guid: 704f7450173727e43becc6f5e49c86ed, type: 3}
         displayName: Superlaser
         description: Fire the spinal superlaser at a frigate, capital ship, station
-          or structure. Deals 46,800 base beam damage over 6 s, then recovers for
-          60 s. Cannot target fighters or corvettes.
+          or structure. Deals 65,520 base damage over 6 s, scaled by target class
+          from x4 against stations to x0.2 against frigates, then recovers for 60
+          s. Cannot target fighters or corvettes.
         duration: 6
         recoveryDelay: 60
         canCancel: 0
@@ -577,9 +578,17 @@ MonoBehaviour:
       type: {class: SuperlaserSettings, ns: EmpireAtWar.Services.ShipAbilities.Abilities,
         asm: Assembly-CSharp}
       data:
-        damageType: 7
-        damage: 46800
+        damageType: 17
+        damage: 65520
         beamColor: {r: 1, g: 0.12, b: 0.08, a: 1}
+        vsStation: 4
+        vsStructure: 2
+        vsDreadnought: 1.5
+        vsBattleCruiser: 1
+        vsCapital: 0.8
+        vsHeavyCruiser: 0.6
+        vsCruiser: 0.5
+        vsOther: 0.2
     - rid: 6801466862182334539
       type: {class: IonPulseSettings, ns: EmpireAtWar.Services.ShipAbilities.Abilities,
         asm: Assembly-CSharp}
