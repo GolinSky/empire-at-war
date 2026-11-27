@@ -298,6 +298,8 @@ namespace EmpireAtWar.Tests.Editor
         // Warhead rebalance (8ab5e40f0): heavy rocket baseline damage reduced from 93.75 to 75.
         // Projectile visual reduction (2026-11-19): missiles fire 1 shot per doubled reload with the salvo's damage,
         // so the baseline is held as sustained damage per second, not as shots and reload.
+        // Executor range x1.5 -> x2.5 (2026-11-27): its navigation radius holds targets ~1150 from its centre,
+        // so x1.5 guns left about 1 in 4 mounts in reach.
         [TestCase(WeaponType.HeavyArtilleryRocket, 75f, 1.2f, HEAVY_CALIBER_RAISE, 4, 10f, 1072.5f)]
         [TestCase(WeaponType.ExecutorHeavyTurbolaser, 37.5f, 1.2f, HEAVY_CALIBER_RAISE, 3, 8f, 1462.5f)]
         [TestCase(WeaponType.ExecutorHeavyDualTurbolaser, 75f, 1.2f, HEAVY_CALIBER_RAISE, 3, 8f, 1462.5f)]
@@ -315,29 +317,6 @@ namespace EmpireAtWar.Tests.Editor
             float baselineDps = baselineDamage * foldedAccuracy * caliberRaise * shots / reload;
             Assert.That(profile.DamagePerSecond, Is.EqualTo(baselineDps).Within(baselineDps * 0.001f));
             Assert.That(profile.Range, Is.EqualTo(range).Within(0.01f));
-        }
-
-        // RaW 1.5.5 red/blue turbolaser projectiles: twin 1.67×, quad 2.0–2.67× the single bolt.
-        [TestCase(WeaponMount.Dual, 1.6f)]
-        // Executor range x1.5 -> x2.5 (2026-11-27): its navigation radius holds targets ~1150 from its centre,
-        // so x1.5 guns left about 1 in 4 mounts in reach.
-        [TestCase(WeaponMount.Triple, 2f)]
-        [TestCase(WeaponMount.Quad, 2.4f)]
-        [TestCase(WeaponMount.Octuple, 4f)]
-        public void Mounts_MultiplyShotDamageByMountRule_AndKeepShots(WeaponMount mount, float multiplier)
-        {
-            WeaponsData weapons = Weapons;
-            WeaponFamilyRule family = weapons.GetFamily(WeaponFamily.Turbolaser);
-            WeaponProfile single = Build(weapons, WeaponMount.Single);
-            WeaponProfile mounted = Build(weapons, mount);
-
-            Assert.That(weapons.GetMount(mount).DamageMultiplier, Is.EqualTo(multiplier).Within(0.001f));
-            Assert.That(mounted.Damage, Is.EqualTo(single.Damage * multiplier).Within(0.001f));
-            Assert.That(mounted.ShotsPerSalvo, Is.EqualTo(single.ShotsPerSalvo));
-            var expectedPrefab = mount == WeaponMount.Quad ? family.QuadShotPrefab :
-                mount == WeaponMount.Octuple ? family.OctupleShotPrefab : family.MultiBarrelShotPrefab;
-            Assert.That(expectedPrefab, Is.Not.Null);
-            Assert.That(mounted.ShotPrefab, Is.EqualTo(expectedPrefab));
         }
 
         // The Viscount's navigation radius keeps targets far from its centre: its guns keep stock damage and reload but
@@ -358,6 +337,27 @@ namespace EmpireAtWar.Tests.Editor
             Assert.That(viscount.DamagePerSecond, Is.EqualTo(stock.DamagePerSecond).Within(stock.DamagePerSecond * 0.001f));
             Assert.That(viscount.ShotPrefab, Is.EqualTo(stock.ShotPrefab));
             Assert.That(viscount.Range, Is.GreaterThan(stock.Range));
+        }
+
+        // RaW 1.5.5 red/blue turbolaser projectiles: twin 1.67×, quad 2.0–2.67× the single bolt.
+        [TestCase(WeaponMount.Dual, 1.6f)]
+        [TestCase(WeaponMount.Triple, 2f)]
+        [TestCase(WeaponMount.Quad, 2.4f)]
+        [TestCase(WeaponMount.Octuple, 4f)]
+        public void Mounts_MultiplyShotDamageByMountRule_AndKeepShots(WeaponMount mount, float multiplier)
+        {
+            WeaponsData weapons = Weapons;
+            WeaponFamilyRule family = weapons.GetFamily(WeaponFamily.Turbolaser);
+            WeaponProfile single = Build(weapons, WeaponMount.Single);
+            WeaponProfile mounted = Build(weapons, mount);
+
+            Assert.That(weapons.GetMount(mount).DamageMultiplier, Is.EqualTo(multiplier).Within(0.001f));
+            Assert.That(mounted.Damage, Is.EqualTo(single.Damage * multiplier).Within(0.001f));
+            Assert.That(mounted.ShotsPerSalvo, Is.EqualTo(single.ShotsPerSalvo));
+            var expectedPrefab = mount == WeaponMount.Quad ? family.QuadShotPrefab :
+                mount == WeaponMount.Octuple ? family.OctupleShotPrefab : family.MultiBarrelShotPrefab;
+            Assert.That(expectedPrefab, Is.Not.Null);
+            Assert.That(mounted.ShotPrefab, Is.EqualTo(expectedPrefab));
         }
 
         [Test]

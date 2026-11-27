@@ -1,0 +1,410 @@
+<?xml version="1.0" encoding="utf-8"?>
+<test-run id="2" testcasecount="38" result="Passed" total="38" passed="38" failed="0" inconclusive="0" skipped="0" asserts="0" engine-version="3.5.0.0" clr-version="4.0.30319.42000" start-time="2026-11-27 13:22:42Z" end-time="2026-11-27 13:23:46Z" duration="63,3799159">
+  <test-suite type="TestSuite" id="7658" name="EmpireAtWar" fullname="EmpireAtWar" runstate="Runnable" testcasecount="5597" result="Passed" start-time="2026-11-27 13:22:42Z" end-time="2026-11-27 13:23:46Z" duration="63.379916" total="38" passed="38" failed="0" inconclusive="0" skipped="0" asserts="0">
+    <properties>
+      <property name="platform" value="EditMode" />
+    </properties>
+    <test-suite type="SetUpFixture" id="1001" name="Assembly-CSharp-Editor.dll" fullname="SceneLeakGuard" classname="SceneLeakGuard" runstate="Runnable" testcasecount="5560" result="Passed" start-time="2026-11-27 13:22:42Z" end-time="2026-11-27 13:23:46Z" duration="63.367647" total="38" passed="38" failed="0" inconclusive="0" skipped="0" asserts="0">
+      <properties>
+        <property name="_PID" value="20216" />
+        <property name="_APPDOMAIN" value="Unity Child Domain" />
+        <property name="platform" value="EditMode" />
+        <property name="EditorOnly" value="True" />
+      </properties>
+      <test-suite type="TestSuite" id="7584" name="EmpireAtWar" fullname="EmpireAtWar" runstate="Runnable" testcasecount="5560" result="Passed" start-time="2026-11-27 13:22:42Z" end-time="2026-11-27 13:23:46Z" duration="63.361311" total="38" passed="38" failed="0" inconclusive="0" skipped="0" asserts="0">
+        <properties />
+        <test-suite type="TestSuite" id="7585" name="Tests" fullname="EmpireAtWar.Tests" runstate="Runnable" testcasecount="5560" result="Passed" start-time="2026-11-27 13:22:42Z" end-time="2026-11-27 13:23:46Z" duration="63.354562" total="38" passed="38" failed="0" inconclusive="0" skipped="0" asserts="0">
+          <properties />
+          <test-suite type="TestSuite" id="7595" name="Editor" fullname="EmpireAtWar.Tests.Editor" runstate="Runnable" testcasecount="5001" result="Passed" start-time="2026-11-27 13:22:42Z" end-time="2026-11-27 13:23:46Z" duration="63.344740" total="38" passed="38" failed="0" inconclusive="0" skipped="0" asserts="0">
+            <properties />
+            <test-suite type="TestFixture" id="3151" name="RealEntityCompositionTests" fullname="EmpireAtWar.Tests.Editor.RealEntityCompositionTests" classname="EmpireAtWar.Tests.Editor.RealEntityCompositionTests" runstate="Runnable" testcasecount="38" result="Passed" start-time="2026-11-27 13:22:42Z" end-time="2026-11-27 13:23:46Z" duration="63.277051" total="38" passed="38" failed="0" inconclusive="0" skipped="0" asserts="0">
+              <properties>
+                <property name="Category" value="Core" />
+              </properties>
+              <test-suite type="ParameterizedMethod" id="3193" name="ActualScopes_AllSevenUnitFactoriesBuildForLocalAndAiOwnersAndPoolWithoutRebuilding" fullname="EmpireAtWar.Tests.Editor.RealEntityCompositionTests.ActualScopes_AllSevenUnitFactoriesBuildForLocalAndAiOwnersAndPoolWithoutRebuilding" classname="EmpireAtWar.Tests.Editor.RealEntityCompositionTests" runstate="Runnable" testcasecount="8" result="Passed" start-time="2026-11-27 13:22:42Z" end-time="2026-11-27 13:22:57Z" duration="14.275855" total="8" passed="8" failed="0" inconclusive="0" skipped="0" asserts="0">
+                <properties />
+                <test-case id="3185" name="ActualScopes_AllSevenUnitFactoriesBuildForLocalAndAiOwnersAndPoolWithoutRebuilding(All,AiOpponent)" fullname="EmpireAtWar.Tests.Editor.RealEntityCompositionTests.ActualScopes_AllSevenUnitFactoriesBuildForLocalAndAiOwnersAndPoolWithoutRebuilding(All,AiOpponent)" methodname="ActualScopes_AllSevenUnitFactoriesBuildForLocalAndAiOwnersAndPoolWithoutRebuilding" classname="EmpireAtWar.Tests.Editor.RealEntityCompositionTests" runstate="Runnable" seed="1801016986" result="Passed" start-time="2026-11-27 13:22:42Z" end-time="2026-11-27 13:22:46Z" duration="3.953110" asserts="0">
+                  <properties>
+                    <property name="retryIteration" value="0" />
+                    <property name="repeatIteration" value="0" />
+                  </properties>
+                  <output><![CDATA[[Online][Steam] Steam disabled for this container
+[Online][Steam] Steam disabled for this container
+]]></output>
+                </test-case>
+                <test-case id="3186" name="ActualScopes_AllSevenUnitFactoriesBuildForLocalAndAiOwnersAndPoolWithoutRebuilding(CaptureSites, MiningSites, Economy, Fog,AiOpponent)" fullname="EmpireAtWar.Tests.Editor.RealEntityCompositionTests.ActualScopes_AllSevenUnitFactoriesBuildForLocalAndAiOwnersAndPoolWithoutRebuilding(CaptureSites, MiningSites, Economy, Fog,AiOpponent)" methodname="ActualScopes_AllSevenUnitFactoriesBuildForLocalAndAiOwnersAndPoolWithoutRebuilding" classname="EmpireAtWar.Tests.Editor.RealEntityCompositionTests" runstate="Runnable" seed="257645355" result="Passed" start-time="2026-11-27 13:22:46Z" end-time="2026-11-27 13:22:48Z" duration="1.543062" asserts="0">
+                  <properties>
+                    <property name="retryIteration" value="0" />
+                    <property name="repeatIteration" value="0" />
+                  </properties>
+                  <output><![CDATA[[Online][Steam] Steam disabled for this container
+[Online][Steam] Steam disabled for this container
+]]></output>
+                </test-case>
+                <test-case id="3187" name="ActualScopes_AllSevenUnitFactoriesBuildForLocalAndAiOwnersAndPoolWithoutRebuilding(SuperWeapons, MiningSites, Economy, Fog,AiOpponent)" fullname="EmpireAtWar.Tests.Editor.RealEntityCompositionTests.ActualScopes_AllSevenUnitFactoriesBuildForLocalAndAiOwnersAndPoolWithoutRebuilding(SuperWeapons, MiningSites, Economy, Fog,AiOpponent)" methodname="ActualScopes_AllSevenUnitFactoriesBuildForLocalAndAiOwnersAndPoolWithoutRebuilding" classname="EmpireAtWar.Tests.Editor.RealEntityCompositionTests" runstate="Runnable" seed="2068341164" result="Passed" start-time="2026-11-27 13:22:48Z" end-time="2026-11-27 13:22:50Z" duration="1.641901" asserts="0">
+                  <properties>
+                    <property name="retryIteration" value="0" />
+                    <property name="repeatIteration" value="0" />
+                  </properties>
+                  <output><![CDATA[[Online][Steam] Steam disabled for this container
+[Online][Steam] Steam disabled for this container
+]]></output>
+                </test-case>
+                <test-case id="3188" name="ActualScopes_AllSevenUnitFactoriesBuildForLocalAndAiOwnersAndPoolWithoutRebuilding(SuperWeapons, CaptureSites, Economy, Fog,AiOpponent)" fullname="EmpireAtWar.Tests.Editor.RealEntityCompositionTests.ActualScopes_AllSevenUnitFactoriesBuildForLocalAndAiOwnersAndPoolWithoutRebuilding(SuperWeapons, CaptureSites, Economy, Fog,AiOpponent)" methodname="ActualScopes_AllSevenUnitFactoriesBuildForLocalAndAiOwnersAndPoolWithoutRebuilding" classname="EmpireAtWar.Tests.Editor.RealEntityCompositionTests" runstate="Runnable" seed="1665516629" result="Passed" start-time="2026-11-27 13:22:50Z" end-time="2026-11-27 13:22:51Z" duration="1.464029" asserts="0">
+                  <properties>
+                    <property name="retryIteration" value="0" />
+                    <property name="repeatIteration" value="0" />
+                  </properties>
+                  <output><![CDATA[[Online][Steam] Steam disabled for this container
+[Online][Steam] Steam disabled for this container
+]]></output>
+                </test-case>
+                <test-case id="3189" name="ActualScopes_AllSevenUnitFactoriesBuildForLocalAndAiOwnersAndPoolWithoutRebuilding(SuperWeapons, CaptureSites, MiningSites, Fog,AiOpponent)" fullname="EmpireAtWar.Tests.Editor.RealEntityCompositionTests.ActualScopes_AllSevenUnitFactoriesBuildForLocalAndAiOwnersAndPoolWithoutRebuilding(SuperWeapons, CaptureSites, MiningSites, Fog,AiOpponent)" methodname="ActualScopes_AllSevenUnitFactoriesBuildForLocalAndAiOwnersAndPoolWithoutRebuilding" classname="EmpireAtWar.Tests.Editor.RealEntityCompositionTests" runstate="Runnable" seed="120667335" result="Passed" start-time="2026-11-27 13:22:51Z" end-time="2026-11-27 13:22:52Z" duration="1.370030" asserts="0">
+                  <properties>
+                    <property name="retryIteration" value="0" />
+                    <property name="repeatIteration" value="0" />
+                  </properties>
+                  <output><![CDATA[[Online][Steam] Steam disabled for this container
+[Online][Steam] Steam disabled for this container
+]]></output>
+                </test-case>
+                <test-case id="3190" name="ActualScopes_AllSevenUnitFactoriesBuildForLocalAndAiOwnersAndPoolWithoutRebuilding(SuperWeapons, CaptureSites, MiningSites, Economy,AiOpponent)" fullname="EmpireAtWar.Tests.Editor.RealEntityCompositionTests.ActualScopes_AllSevenUnitFactoriesBuildForLocalAndAiOwnersAndPoolWithoutRebuilding(SuperWeapons, CaptureSites, MiningSites, Economy,AiOpponent)" methodname="ActualScopes_AllSevenUnitFactoriesBuildForLocalAndAiOwnersAndPoolWithoutRebuilding" classname="EmpireAtWar.Tests.Editor.RealEntityCompositionTests" runstate="Runnable" seed="479108099" result="Passed" start-time="2026-11-27 13:22:52Z" end-time="2026-11-27 13:22:54Z" duration="1.507525" asserts="0">
+                  <properties>
+                    <property name="retryIteration" value="0" />
+                    <property name="repeatIteration" value="0" />
+                  </properties>
+                  <output><![CDATA[[Online][Steam] Steam disabled for this container
+[Online][Steam] Steam disabled for this container
+]]></output>
+                </test-case>
+                <test-case id="3191" name="ActualScopes_AllSevenUnitFactoriesBuildForLocalAndAiOwnersAndPoolWithoutRebuilding(None,AiOpponent)" fullname="EmpireAtWar.Tests.Editor.RealEntityCompositionTests.ActualScopes_AllSevenUnitFactoriesBuildForLocalAndAiOwnersAndPoolWithoutRebuilding(None,AiOpponent)" methodname="ActualScopes_AllSevenUnitFactoriesBuildForLocalAndAiOwnersAndPoolWithoutRebuilding" classname="EmpireAtWar.Tests.Editor.RealEntityCompositionTests" runstate="Runnable" seed="1315378092" result="Passed" start-time="2026-11-27 13:22:54Z" end-time="2026-11-27 13:22:55Z" duration="1.391590" asserts="0">
+                  <properties>
+                    <property name="retryIteration" value="0" />
+                    <property name="repeatIteration" value="0" />
+                  </properties>
+                  <output><![CDATA[[Online][Steam] Steam disabled for this container
+[Online][Steam] Steam disabled for this container
+]]></output>
+                </test-case>
+                <test-case id="3192" name="ActualScopes_AllSevenUnitFactoriesBuildForLocalAndAiOwnersAndPoolWithoutRebuilding(None,WaveAttacker)" fullname="EmpireAtWar.Tests.Editor.RealEntityCompositionTests.ActualScopes_AllSevenUnitFactoriesBuildForLocalAndAiOwnersAndPoolWithoutRebuilding(None,WaveAttacker)" methodname="ActualScopes_AllSevenUnitFactoriesBuildForLocalAndAiOwnersAndPoolWithoutRebuilding" classname="EmpireAtWar.Tests.Editor.RealEntityCompositionTests" runstate="Runnable" seed="784301301" result="Passed" start-time="2026-11-27 13:22:55Z" end-time="2026-11-27 13:22:57Z" duration="1.374022" asserts="0">
+                  <properties>
+                    <property name="retryIteration" value="0" />
+                    <property name="repeatIteration" value="0" />
+                  </properties>
+                  <output><![CDATA[[Online][Steam] Steam disabled for this container
+[Online][Steam] Steam disabled for this container
+]]></output>
+                </test-case>
+              </test-suite>
+              <test-suite type="ParameterizedMethod" id="3160" name="AiPlayer_RejectsSecondStationInOpeningAndAfterProductionLoss" fullname="EmpireAtWar.Tests.Editor.RealEntityCompositionTests.AiPlayer_RejectsSecondStationInOpeningAndAfterProductionLoss" classname="EmpireAtWar.Tests.Editor.RealEntityCompositionTests" runstate="Runnable" testcasecount="2" result="Passed" start-time="2026-11-27 13:22:57Z" end-time="2026-11-27 13:23:00Z" duration="3.027428" total="2" passed="2" failed="0" inconclusive="0" skipped="0" asserts="0">
+                <properties>
+                  <property name="Category" value="EnemyAi" />
+                </properties>
+                <test-case id="3158" name="AiPlayer_RejectsSecondStationInOpeningAndAfterProductionLoss(True)" fullname="EmpireAtWar.Tests.Editor.RealEntityCompositionTests.AiPlayer_RejectsSecondStationInOpeningAndAfterProductionLoss(True)" methodname="AiPlayer_RejectsSecondStationInOpeningAndAfterProductionLoss" classname="EmpireAtWar.Tests.Editor.RealEntityCompositionTests" runstate="Runnable" seed="224037614" result="Passed" start-time="2026-11-27 13:22:57Z" end-time="2026-11-27 13:22:58Z" duration="1.543916" asserts="0">
+                  <properties>
+                    <property name="retryIteration" value="0" />
+                    <property name="repeatIteration" value="0" />
+                  </properties>
+                  <output><![CDATA[[Online][Steam] Steam disabled for this container
+[Online][Steam] Steam disabled for this container
+Destroy may not be called from edit mode! Use DestroyImmediate instead.
+Destroying an object in edit mode destroys it permanently.
+Destroy may not be called from edit mode! Use DestroyImmediate instead.
+Destroying an object in edit mode destroys it permanently.
+Destroy may not be called from edit mode! Use DestroyImmediate instead.
+Destroying an object in edit mode destroys it permanently.
+Destroy may not be called from edit mode! Use DestroyImmediate instead.
+Destroying an object in edit mode destroys it permanently.
+[EnemyAI] BattleTime=0,0, Player=Player1:Separatist, Difficulty=Medium, Group=8:main, Objective=DestroyEnemyFleet, State=RebuildFleet, Committed=0/0, EnemyShips=0, FleetAdvantage=100,00, BaseThreat=0,00, LocalAdvantage=100,00, ControlledZones=0, Reason=No combat ships are available.
+[EnemyAI] BattleTime=0,0, Player=Player1:Separatist, Difficulty=Medium, Group=8:main, Objective=DestroyEnemyFleet, State=RebuildFleet, Committed=0/0, EnemyShips=0, FleetAdvantage=100,00, BaseThreat=0,00, LocalAdvantage=100,00, ControlledZones=0, Reason=No combat ships are available.
+]]></output>
+                </test-case>
+                <test-case id="3159" name="AiPlayer_RejectsSecondStationInOpeningAndAfterProductionLoss(False)" fullname="EmpireAtWar.Tests.Editor.RealEntityCompositionTests.AiPlayer_RejectsSecondStationInOpeningAndAfterProductionLoss(False)" methodname="AiPlayer_RejectsSecondStationInOpeningAndAfterProductionLoss" classname="EmpireAtWar.Tests.Editor.RealEntityCompositionTests" runstate="Runnable" seed="1279233979" result="Passed" start-time="2026-11-27 13:22:58Z" end-time="2026-11-27 13:23:00Z" duration="1.415626" asserts="0">
+                  <properties>
+                    <property name="retryIteration" value="0" />
+                    <property name="repeatIteration" value="0" />
+                  </properties>
+                  <output><![CDATA[[Online][Steam] Steam disabled for this container
+[Online][Steam] Steam disabled for this container
+Destroy may not be called from edit mode! Use DestroyImmediate instead.
+Destroying an object in edit mode destroys it permanently.
+Destroy may not be called from edit mode! Use DestroyImmediate instead.
+Destroying an object in edit mode destroys it permanently.
+[EnemyAI] BattleTime=0,0, Player=Player1:Separatist, Difficulty=Medium, Group=9:main, Objective=DestroyEnemyFleet, State=RebuildFleet, Committed=0/0, EnemyShips=0, FleetAdvantage=100,00, BaseThreat=0,00, LocalAdvantage=100,00, ControlledZones=0, Reason=No combat ships are available.
+[EnemyAI] BattleTime=0,0, Player=Player1:Separatist, Difficulty=Medium, Group=9:main, Objective=DestroyEnemyFleet, State=RebuildFleet, Committed=0/0, EnemyShips=0, FleetAdvantage=100,00, BaseThreat=0,00, LocalAdvantage=100,00, ControlledZones=0, Reason=No combat ships are available.
+]]></output>
+                </test-case>
+              </test-suite>
+              <test-case id="3157" name="AiPlayer_ResolvesBattleCombatProfilesAndForceComposition" fullname="EmpireAtWar.Tests.Editor.RealEntityCompositionTests.AiPlayer_ResolvesBattleCombatProfilesAndForceComposition" methodname="AiPlayer_ResolvesBattleCombatProfilesAndForceComposition" classname="EmpireAtWar.Tests.Editor.RealEntityCompositionTests" runstate="Runnable" seed="1082315266" result="Passed" start-time="2026-11-27 13:23:00Z" end-time="2026-11-27 13:23:01Z" duration="1.383487" asserts="0">
+                <properties>
+                  <property name="Category" value="EnemyAi" />
+                  <property name="retryIteration" value="0" />
+                  <property name="repeatIteration" value="0" />
+                </properties>
+                <output><![CDATA[[Online][Steam] Steam disabled for this container
+[Online][Steam] Steam disabled for this container
+]]></output>
+              </test-case>
+              <test-suite type="ParameterizedMethod" id="3170" name="PlayerAutoPower_GlobalAndShipOffBlockNewStartsAndKeepRunningEffects" fullname="EmpireAtWar.Tests.Editor.RealEntityCompositionTests.PlayerAutoPower_GlobalAndShipOffBlockNewStartsAndKeepRunningEffects" classname="EmpireAtWar.Tests.Editor.RealEntityCompositionTests" runstate="Runnable" testcasecount="2" result="Passed" start-time="2026-11-27 13:23:01Z" end-time="2026-11-27 13:23:08Z" duration="6.784804" total="2" passed="2" failed="0" inconclusive="0" skipped="0" asserts="0">
+                <properties />
+                <test-case id="3168" name="PlayerAutoPower_GlobalAndShipOffBlockNewStartsAndKeepRunningEffects(True)" fullname="EmpireAtWar.Tests.Editor.RealEntityCompositionTests.PlayerAutoPower_GlobalAndShipOffBlockNewStartsAndKeepRunningEffects(True)" methodname="PlayerAutoPower_GlobalAndShipOffBlockNewStartsAndKeepRunningEffects" classname="EmpireAtWar.Tests.Editor.RealEntityCompositionTests" runstate="Runnable" seed="1691780003" result="Passed" start-time="2026-11-27 13:23:04Z" end-time="2026-11-27 13:23:06Z" duration="2.115273" asserts="0">
+                  <properties>
+                    <property name="retryIteration" value="0" />
+                    <property name="repeatIteration" value="0" />
+                  </properties>
+                  <output><![CDATA[[Online][Steam] Steam disabled for this container
+[Online][Steam] Steam disabled for this container
+]]></output>
+                </test-case>
+                <test-case id="3169" name="PlayerAutoPower_GlobalAndShipOffBlockNewStartsAndKeepRunningEffects(False)" fullname="EmpireAtWar.Tests.Editor.RealEntityCompositionTests.PlayerAutoPower_GlobalAndShipOffBlockNewStartsAndKeepRunningEffects(False)" methodname="PlayerAutoPower_GlobalAndShipOffBlockNewStartsAndKeepRunningEffects" classname="EmpireAtWar.Tests.Editor.RealEntityCompositionTests" runstate="Runnable" seed="826383442" result="Passed" start-time="2026-11-27 13:23:06Z" end-time="2026-11-27 13:23:08Z" duration="1.474283" asserts="0">
+                  <properties>
+                    <property name="retryIteration" value="0" />
+                    <property name="repeatIteration" value="0" />
+                  </properties>
+                  <output><![CDATA[[Online][Steam] Steam disabled for this container
+[Online][Steam] Steam disabled for this container
+]]></output>
+                </test-case>
+              </test-suite>
+              <test-suite type="ParameterizedMethod" id="3176" name="PlayerAutoPower_MainBatteriesUsesNormalLifecycle" fullname="EmpireAtWar.Tests.Editor.RealEntityCompositionTests.PlayerAutoPower_MainBatteriesUsesNormalLifecycle" classname="EmpireAtWar.Tests.Editor.RealEntityCompositionTests" runstate="Runnable" testcasecount="2" result="Passed" start-time="2026-11-27 13:23:08Z" end-time="2026-11-27 13:23:11Z" duration="2.989188" total="2" passed="2" failed="0" inconclusive="0" skipped="0" asserts="0">
+                <properties />
+                <test-case id="3174" name="PlayerAutoPower_MainBatteriesUsesNormalLifecycle(Allegiance)" fullname="EmpireAtWar.Tests.Editor.RealEntityCompositionTests.PlayerAutoPower_MainBatteriesUsesNormalLifecycle(Allegiance)" methodname="PlayerAutoPower_MainBatteriesUsesNormalLifecycle" classname="EmpireAtWar.Tests.Editor.RealEntityCompositionTests" runstate="Runnable" seed="230162718" result="Passed" start-time="2026-11-27 13:23:08Z" end-time="2026-11-27 13:23:09Z" duration="1.505929" asserts="0">
+                  <properties>
+                    <property name="retryIteration" value="0" />
+                    <property name="repeatIteration" value="0" />
+                  </properties>
+                  <output><![CDATA[[Online][Steam] Steam disabled for this container
+[Online][Steam] Steam disabled for this container
+]]></output>
+                </test-case>
+                <test-case id="3175" name="PlayerAutoPower_MainBatteriesUsesNormalLifecycle(ISDII)" fullname="EmpireAtWar.Tests.Editor.RealEntityCompositionTests.PlayerAutoPower_MainBatteriesUsesNormalLifecycle(ISDII)" methodname="PlayerAutoPower_MainBatteriesUsesNormalLifecycle" classname="EmpireAtWar.Tests.Editor.RealEntityCompositionTests" runstate="Runnable" seed="378136992" result="Passed" start-time="2026-11-27 13:23:09Z" end-time="2026-11-27 13:23:11Z" duration="1.453087" asserts="0">
+                  <properties>
+                    <property name="retryIteration" value="0" />
+                    <property name="repeatIteration" value="0" />
+                  </properties>
+                  <output><![CDATA[[Online][Steam] Steam disabled for this container
+[Online][Steam] Steam disabled for this container
+]]></output>
+                </test-case>
+              </test-suite>
+              <test-case id="3171" name="PlayerAutoPower_ManualCancellationRetainsManualDelay" fullname="EmpireAtWar.Tests.Editor.RealEntityCompositionTests.PlayerAutoPower_ManualCancellationRetainsManualDelay" methodname="PlayerAutoPower_ManualCancellationRetainsManualDelay" classname="EmpireAtWar.Tests.Editor.RealEntityCompositionTests" runstate="Runnable" seed="1113401990" result="Passed" start-time="2026-11-27 13:23:11Z" end-time="2026-11-27 13:23:12Z" duration="1.564012" asserts="0">
+                <properties>
+                  <property name="retryIteration" value="0" />
+                  <property name="repeatIteration" value="0" />
+                </properties>
+                <output><![CDATA[[Online][Steam] Steam disabled for this container
+[Online][Steam] Steam disabled for this container
+]]></output>
+              </test-case>
+              <test-case id="3166" name="PlayerAutoPower_RuntimeOnlyMonitorsOwnedShipsAndUsesNormalLifecycle" fullname="EmpireAtWar.Tests.Editor.RealEntityCompositionTests.PlayerAutoPower_RuntimeOnlyMonitorsOwnedShipsAndUsesNormalLifecycle" methodname="PlayerAutoPower_RuntimeOnlyMonitorsOwnedShipsAndUsesNormalLifecycle" classname="EmpireAtWar.Tests.Editor.RealEntityCompositionTests" runstate="Runnable" seed="1033562045" result="Passed" start-time="2026-11-27 13:23:12Z" end-time="2026-11-27 13:23:14Z" duration="1.420382" asserts="0">
+                <properties>
+                  <property name="retryIteration" value="0" />
+                  <property name="repeatIteration" value="0" />
+                </properties>
+                <output><![CDATA[[Online][Steam] Steam disabled for this container
+[Online][Steam] Steam disabled for this container
+]]></output>
+              </test-case>
+              <test-case id="3173" name="PlayerAutoPower_ShieldBoostStartsWhileAnotherAbilityRuns" fullname="EmpireAtWar.Tests.Editor.RealEntityCompositionTests.PlayerAutoPower_ShieldBoostStartsWhileAnotherAbilityRuns" methodname="PlayerAutoPower_ShieldBoostStartsWhileAnotherAbilityRuns" classname="EmpireAtWar.Tests.Editor.RealEntityCompositionTests" runstate="Runnable" seed="741723456" result="Passed" start-time="2026-11-27 13:23:14Z" end-time="2026-11-27 13:23:15Z" duration="1.408973" asserts="0">
+                <properties>
+                  <property name="retryIteration" value="0" />
+                  <property name="repeatIteration" value="0" />
+                </properties>
+                <output><![CDATA[[Online][Steam] Steam disabled for this container
+[Online][Steam] Steam disabled for this container
+]]></output>
+              </test-case>
+              <test-case id="3167" name="PlayerAutoPower_SingleSelectionDoesNotPause" fullname="EmpireAtWar.Tests.Editor.RealEntityCompositionTests.PlayerAutoPower_SingleSelectionDoesNotPause" methodname="PlayerAutoPower_SingleSelectionDoesNotPause" classname="EmpireAtWar.Tests.Editor.RealEntityCompositionTests" runstate="Runnable" seed="691318181" result="Passed" start-time="2026-11-27 13:23:15Z" end-time="2026-11-27 13:23:17Z" duration="1.437235" asserts="0">
+                <properties>
+                  <property name="retryIteration" value="0" />
+                  <property name="repeatIteration" value="0" />
+                </properties>
+                <output><![CDATA[[Online][Steam] Steam disabled for this container
+[Online][Steam] Steam disabled for this container
+]]></output>
+              </test-case>
+              <test-case id="3172" name="PlayerAutoPower_WeaponsStackOnShieldBoostAndChosenCooldownIsNotRestarted" fullname="EmpireAtWar.Tests.Editor.RealEntityCompositionTests.PlayerAutoPower_WeaponsStackOnShieldBoostAndChosenCooldownIsNotRestarted" methodname="PlayerAutoPower_WeaponsStackOnShieldBoostAndChosenCooldownIsNotRestarted" classname="EmpireAtWar.Tests.Editor.RealEntityCompositionTests" runstate="Runnable" seed="641092981" result="Passed" start-time="2026-11-27 13:23:17Z" end-time="2026-11-27 13:23:18Z" duration="1.520866" asserts="0">
+                <properties>
+                  <property name="retryIteration" value="0" />
+                  <property name="repeatIteration" value="0" />
+                </properties>
+                <output><![CDATA[[Online][Steam] Steam disabled for this container
+[Online][Steam] Steam disabled for this container
+]]></output>
+              </test-case>
+              <test-case id="3156" name="PlayerBootstrap_SecondPlayerBuildFailureRollsBackBothRootsAndFactoryLookup" fullname="EmpireAtWar.Tests.Editor.RealEntityCompositionTests.PlayerBootstrap_SecondPlayerBuildFailureRollsBackBothRootsAndFactoryLookup" methodname="PlayerBootstrap_SecondPlayerBuildFailureRollsBackBothRootsAndFactoryLookup" classname="EmpireAtWar.Tests.Editor.RealEntityCompositionTests" runstate="Runnable" seed="181590373" result="Passed" start-time="2026-11-27 13:23:18Z" end-time="2026-11-27 13:23:19Z" duration="1.041756" asserts="0">
+                <properties>
+                  <property name="retryIteration" value="0" />
+                  <property name="repeatIteration" value="0" />
+                </properties>
+                <output><![CDATA[[Online][Steam] Steam disabled for this container
+[Online][Steam] Steam disabled for this container
+]]></output>
+              </test-case>
+              <test-case id="3155" name="ProjectContainer_NeverStartsRealSteam" fullname="EmpireAtWar.Tests.Editor.RealEntityCompositionTests.ProjectContainer_NeverStartsRealSteam" methodname="ProjectContainer_NeverStartsRealSteam" classname="EmpireAtWar.Tests.Editor.RealEntityCompositionTests" runstate="Runnable" seed="1931774883" result="Passed" start-time="2026-11-27 13:23:19Z" end-time="2026-11-27 13:23:19Z" duration="0.004469" asserts="0">
+                <properties>
+                  <property name="retryIteration" value="0" />
+                  <property name="repeatIteration" value="0" />
+                </properties>
+                <output><![CDATA[[Online][Steam] Steam disabled for this container
+[Online][Steam] Steam disabled for this container
+]]></output>
+              </test-case>
+              <test-case id="3152" name="SatelliteSite_ReservesOnlyItsFootprintForReinforcementStructures" fullname="EmpireAtWar.Tests.Editor.RealEntityCompositionTests.SatelliteSite_ReservesOnlyItsFootprintForReinforcementStructures" methodname="SatelliteSite_ReservesOnlyItsFootprintForReinforcementStructures" classname="EmpireAtWar.Tests.Editor.RealEntityCompositionTests" runstate="Runnable" seed="1645346505" result="Passed" start-time="2026-11-27 13:23:19Z" end-time="2026-11-27 13:23:21Z" duration="1.516339" asserts="0">
+                <properties>
+                  <property name="Category" value="Capture" />
+                  <property name="retryIteration" value="0" />
+                  <property name="repeatIteration" value="0" />
+                </properties>
+                <output><![CDATA[[Online][Steam] Steam disabled for this container
+[Online][Steam] Steam disabled for this container
+]]></output>
+              </test-case>
+              <test-case id="3180" name="SavedSkirmish_RestoresPlayerStateStructuresAndOwnerBookkeepingIntoNewBattle" fullname="EmpireAtWar.Tests.Editor.RealEntityCompositionTests.SavedSkirmish_RestoresPlayerStateStructuresAndOwnerBookkeepingIntoNewBattle" methodname="SavedSkirmish_RestoresPlayerStateStructuresAndOwnerBookkeepingIntoNewBattle" classname="EmpireAtWar.Tests.Editor.RealEntityCompositionTests" runstate="Runnable" seed="1928709180" result="Passed" start-time="2026-11-27 13:23:21Z" end-time="2026-11-27 13:23:24Z" duration="3.033266" asserts="0">
+                <properties>
+                  <property name="retryIteration" value="0" />
+                  <property name="repeatIteration" value="0" />
+                </properties>
+                <output><![CDATA[[Online][Steam] Steam disabled for this container
+[Online][Steam] Steam disabled for this container
+]]></output>
+              </test-case>
+              <test-case id="3184" name="SavedSurvival_ResumesTheWaveInProgressWithoutQueuingItAgain" fullname="EmpireAtWar.Tests.Editor.RealEntityCompositionTests.SavedSurvival_ResumesTheWaveInProgressWithoutQueuingItAgain" methodname="SavedSurvival_ResumesTheWaveInProgressWithoutQueuingItAgain" classname="EmpireAtWar.Tests.Editor.RealEntityCompositionTests" runstate="Runnable" seed="1961465989" result="Passed" start-time="2026-11-27 13:23:24Z" end-time="2026-11-27 13:23:26Z" duration="2.162629" asserts="0">
+                <properties>
+                  <property name="retryIteration" value="0" />
+                  <property name="repeatIteration" value="0" />
+                </properties>
+                <output><![CDATA[[Online][Steam] Steam disabled for this container
+[Online][Steam] Steam disabled for this container
+]]></output>
+              </test-case>
+              <test-case id="3179" name="SavedUnits_RestoreWithIdsPoseHealthAbilitiesHangarAndOrders" fullname="EmpireAtWar.Tests.Editor.RealEntityCompositionTests.SavedUnits_RestoreWithIdsPoseHealthAbilitiesHangarAndOrders" methodname="SavedUnits_RestoreWithIdsPoseHealthAbilitiesHangarAndOrders" classname="EmpireAtWar.Tests.Editor.RealEntityCompositionTests" runstate="Runnable" seed="1934438926" result="Passed" start-time="2026-11-27 13:23:26Z" end-time="2026-11-27 13:23:27Z" duration="1.426441" asserts="0">
+                <properties>
+                  <property name="retryIteration" value="0" />
+                  <property name="repeatIteration" value="0" />
+                </properties>
+                <output><![CDATA[[Online][Steam] Steam disabled for this container
+[Online][Steam] Steam disabled for this container
+]]></output>
+              </test-case>
+              <test-case id="3178" name="ShipAutoPower_ObservesLiveWeaponsAndShieldRecoveryGates" fullname="EmpireAtWar.Tests.Editor.RealEntityCompositionTests.ShipAutoPower_ObservesLiveWeaponsAndShieldRecoveryGates" methodname="ShipAutoPower_ObservesLiveWeaponsAndShieldRecoveryGates" classname="EmpireAtWar.Tests.Editor.RealEntityCompositionTests" runstate="Runnable" seed="1070600896" result="Passed" start-time="2026-11-27 13:23:27Z" end-time="2026-11-27 13:23:29Z" duration="1.827790" asserts="0">
+                <properties>
+                  <property name="retryIteration" value="0" />
+                  <property name="repeatIteration" value="0" />
+                </properties>
+                <output><![CDATA[[Online][Steam] Steam disabled for this container
+[Online][Steam] Steam disabled for this container
+]]></output>
+              </test-case>
+              <test-case id="3165" name="SquadronPrewarm_AfterRestore_AllocatesIdsPastRestoredEntitiesAndRespawnsWithoutCollision" fullname="EmpireAtWar.Tests.Editor.RealEntityCompositionTests.SquadronPrewarm_AfterRestore_AllocatesIdsPastRestoredEntitiesAndRespawnsWithoutCollision" methodname="SquadronPrewarm_AfterRestore_AllocatesIdsPastRestoredEntitiesAndRespawnsWithoutCollision" classname="EmpireAtWar.Tests.Editor.RealEntityCompositionTests" runstate="Runnable" seed="485390455" result="Passed" start-time="2026-11-27 13:23:29Z" end-time="2026-11-27 13:23:32Z" duration="2.998309" asserts="0">
+                <properties>
+                  <property name="Category" value="Squadrons" />
+                  <property name="retryIteration" value="0" />
+                  <property name="repeatIteration" value="0" />
+                </properties>
+                <output><![CDATA[[Online][Steam] Steam disabled for this container
+[Online][Steam] Steam disabled for this container
+]]></output>
+              </test-case>
+              <test-case id="3161" name="SquadronPrewarm_BuildsAndStowsOneSquadronPerSlice" fullname="EmpireAtWar.Tests.Editor.RealEntityCompositionTests.SquadronPrewarm_BuildsAndStowsOneSquadronPerSlice" methodname="SquadronPrewarm_BuildsAndStowsOneSquadronPerSlice" classname="EmpireAtWar.Tests.Editor.RealEntityCompositionTests" runstate="Runnable" seed="532885599" result="Passed" start-time="2026-11-27 13:23:32Z" end-time="2026-11-27 13:23:34Z" duration="1.417214" asserts="0">
+                <properties>
+                  <property name="retryIteration" value="0" />
+                  <property name="repeatIteration" value="0" />
+                </properties>
+                <output><![CDATA[[Online][Steam] Steam disabled for this container
+[Online][Steam] Steam disabled for this container
+]]></output>
+              </test-case>
+              <test-case id="3163" name="SquadronPrewarm_CancellationStopsCreationAndKeepsBuiltSquadronsReusable" fullname="EmpireAtWar.Tests.Editor.RealEntityCompositionTests.SquadronPrewarm_CancellationStopsCreationAndKeepsBuiltSquadronsReusable" methodname="SquadronPrewarm_CancellationStopsCreationAndKeepsBuiltSquadronsReusable" classname="EmpireAtWar.Tests.Editor.RealEntityCompositionTests" runstate="Runnable" seed="2033138693" result="Passed" start-time="2026-11-27 13:23:34Z" end-time="2026-11-27 13:23:35Z" duration="1.628832" asserts="0">
+                <properties>
+                  <property name="retryIteration" value="0" />
+                  <property name="repeatIteration" value="0" />
+                </properties>
+                <output><![CDATA[[Online][Steam] Steam disabled for this container
+[Online][Steam] Steam disabled for this container
+]]></output>
+              </test-case>
+              <test-case id="3164" name="SquadronPrewarm_CancelledBeforeStartBuildsNothing" fullname="EmpireAtWar.Tests.Editor.RealEntityCompositionTests.SquadronPrewarm_CancelledBeforeStartBuildsNothing" methodname="SquadronPrewarm_CancelledBeforeStartBuildsNothing" classname="EmpireAtWar.Tests.Editor.RealEntityCompositionTests" runstate="Runnable" seed="1368145145" result="Passed" start-time="2026-11-27 13:23:35Z" end-time="2026-11-27 13:23:37Z" duration="1.465367" asserts="0">
+                <properties>
+                  <property name="retryIteration" value="0" />
+                  <property name="repeatIteration" value="0" />
+                </properties>
+                <output><![CDATA[[Online][Steam] Steam disabled for this container
+[Online][Steam] Steam disabled for this container
+]]></output>
+              </test-case>
+              <test-case id="3162" name="SquadronPrewarm_LeavesTheFalconAvailableForPurchase" fullname="EmpireAtWar.Tests.Editor.RealEntityCompositionTests.SquadronPrewarm_LeavesTheFalconAvailableForPurchase" methodname="SquadronPrewarm_LeavesTheFalconAvailableForPurchase" classname="EmpireAtWar.Tests.Editor.RealEntityCompositionTests" runstate="Runnable" seed="2077518234" result="Passed" start-time="2026-11-27 13:23:37Z" end-time="2026-11-27 13:23:38Z" duration="1.542156" asserts="0">
+                <properties>
+                  <property name="Category" value="Squadrons" />
+                  <property name="retryIteration" value="0" />
+                  <property name="repeatIteration" value="0" />
+                </properties>
+                <output><![CDATA[[Online][Steam] Steam disabled for this container
+[Online][Steam] Steam disabled for this container
+]]></output>
+              </test-case>
+              <test-case id="3181" name="SurvivalAttackers_HaveOnlyLifecycleMarkersAndCompleteTheWaveAfterDespawn" fullname="EmpireAtWar.Tests.Editor.RealEntityCompositionTests.SurvivalAttackers_HaveOnlyLifecycleMarkersAndCompleteTheWaveAfterDespawn" methodname="SurvivalAttackers_HaveOnlyLifecycleMarkersAndCompleteTheWaveAfterDespawn" classname="EmpireAtWar.Tests.Editor.RealEntityCompositionTests" runstate="Runnable" seed="1461987416" result="Passed" start-time="2026-11-27 13:23:38Z" end-time="2026-11-27 13:23:39Z" duration="1.128829" asserts="0">
+                <properties>
+                  <property name="retryIteration" value="0" />
+                  <property name="repeatIteration" value="0" />
+                </properties>
+                <output><![CDATA[[Online][Steam] Steam disabled for this container
+[Online][Steam] Steam disabled for this container
+]]></output>
+              </test-case>
+              <test-case id="3183" name="SurvivalAttackers_ProfileRepeatedCompletedOrders" fullname="EmpireAtWar.Tests.Editor.RealEntityCompositionTests.SurvivalAttackers_ProfileRepeatedCompletedOrders" methodname="SurvivalAttackers_ProfileRepeatedCompletedOrders" classname="EmpireAtWar.Tests.Editor.RealEntityCompositionTests" runstate="Runnable" seed="1433733415" result="Passed" start-time="2026-11-27 13:23:39Z" end-time="2026-11-27 13:23:41Z" duration="1.205211" asserts="0">
+                <properties>
+                  <property name="retryIteration" value="0" />
+                  <property name="repeatIteration" value="0" />
+                </properties>
+                <output><![CDATA[[Online][Steam] Steam disabled for this container
+[Online][Steam] Steam disabled for this container
+Survival repeated completion: 600 director ticks, 37 orders, 777 allocation samples, 0,822 ms. Controlled completion stress case, not a measured gameplay frame rate.
+Survival repeated completion: 600 director ticks, 37 orders, 777 allocation samples, 0,822 ms. Controlled completion stress case, not a measured gameplay frame rate.
+]]></output>
+              </test-case>
+              <test-case id="3182" name="SurvivalAttackers_ResumeAssaultAfterTheirOrderIsStopped" fullname="EmpireAtWar.Tests.Editor.RealEntityCompositionTests.SurvivalAttackers_ResumeAssaultAfterTheirOrderIsStopped" methodname="SurvivalAttackers_ResumeAssaultAfterTheirOrderIsStopped" classname="EmpireAtWar.Tests.Editor.RealEntityCompositionTests" runstate="Runnable" seed="2034786368" result="Passed" start-time="2026-11-27 13:23:41Z" end-time="2026-11-27 13:23:42Z" duration="1.076222" asserts="0">
+                <properties>
+                  <property name="retryIteration" value="0" />
+                  <property name="repeatIteration" value="0" />
+                </properties>
+                <output><![CDATA[[Online][Steam] Steam disabled for this container
+[Online][Steam] Steam disabled for this container
+]]></output>
+              </test-case>
+              <test-case id="3153" name="SurvivalComposition_BuildsHostAllyAndWaveScopes" fullname="EmpireAtWar.Tests.Editor.RealEntityCompositionTests.SurvivalComposition_BuildsHostAllyAndWaveScopes" methodname="SurvivalComposition_BuildsHostAllyAndWaveScopes" classname="EmpireAtWar.Tests.Editor.RealEntityCompositionTests" runstate="Runnable" seed="1640234473" result="Passed" start-time="2026-11-27 13:23:42Z" end-time="2026-11-27 13:23:43Z" duration="1.076228" asserts="0">
+                <properties>
+                  <property name="retryIteration" value="0" />
+                  <property name="repeatIteration" value="0" />
+                </properties>
+                <output><![CDATA[[Online][Steam] Steam disabled for this container
+[Online][Steam] Steam disabled for this container
+]]></output>
+              </test-case>
+              <test-case id="3154" name="TacticalMarkers_ResolveWithCaptureSitesAndRouteCommandsAfterLifecycleInitialization" fullname="EmpireAtWar.Tests.Editor.RealEntityCompositionTests.TacticalMarkers_ResolveWithCaptureSitesAndRouteCommandsAfterLifecycleInitialization" methodname="TacticalMarkers_ResolveWithCaptureSitesAndRouteCommandsAfterLifecycleInitialization" classname="EmpireAtWar.Tests.Editor.RealEntityCompositionTests" runstate="Runnable" seed="1715042504" result="Passed" start-time="2026-11-27 13:23:43Z" end-time="2026-11-27 13:23:44Z" duration="1.440007" asserts="0">
+                <properties>
+                  <property name="Category" value="BattleInput" />
+                  <property name="retryIteration" value="0" />
+                  <property name="repeatIteration" value="0" />
+                </properties>
+                <output><![CDATA[[Online][Steam] Steam disabled for this container
+[Online][Steam] Steam disabled for this container
+]]></output>
+              </test-case>
+              <test-case id="3177" name="Xyston_SpawnsWithSuperlaserReadyFromTheBoundMuzzle" fullname="EmpireAtWar.Tests.Editor.RealEntityCompositionTests.Xyston_SpawnsWithSuperlaserReadyFromTheBoundMuzzle" methodname="Xyston_SpawnsWithSuperlaserReadyFromTheBoundMuzzle" classname="EmpireAtWar.Tests.Editor.RealEntityCompositionTests" runstate="Runnable" seed="441768933" result="Passed" start-time="2026-11-27 13:23:44Z" end-time="2026-11-27 13:23:46Z" duration="1.454882" asserts="0">
+                <properties>
+                  <property name="Category" value="Ships" />
+                  <property name="retryIteration" value="0" />
+                  <property name="repeatIteration" value="0" />
+                </properties>
+                <output><![CDATA[[Online][Steam] Steam disabled for this container
+[Online][Steam] Steam disabled for this container
+]]></output>
+              </test-case>
+            </test-suite>
+          </test-suite>
+        </test-suite>
+      </test-suite>
+    </test-suite>
+  </test-suite>
+</test-run>

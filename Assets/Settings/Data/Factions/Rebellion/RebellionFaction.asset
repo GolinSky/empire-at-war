@@ -89,7 +89,7 @@ MonoBehaviour:
         isUnique: 0
         <Name>k__BackingField: MC75 Profundity
         <MaxCount>k__BackingField: 3
-        <AvailableLevel>k__BackingField: 3
+        <AvailableLevel>k__BackingField: 4
         <Price>k__BackingField: 5000
         <BuildTime>k__BackingField: 40
         <UnitCapacity>k__BackingField: 5
@@ -121,7 +121,7 @@ MonoBehaviour:
         isUnique: 0
         <Name>k__BackingField: MC30c Frigate
         <MaxCount>k__BackingField: 3
-        <AvailableLevel>k__BackingField: 3
+        <AvailableLevel>k__BackingField: 2
         <Price>k__BackingField: 3500
         <BuildTime>k__BackingField: 30
         <UnitCapacity>k__BackingField: 3
@@ -169,8 +169,8 @@ MonoBehaviour:
         isUnique: 0
         <Name>k__BackingField: Assault Frigate Mk II
         <MaxCount>k__BackingField: 10
-        <AvailableLevel>k__BackingField: 2
-        <Price>k__BackingField: 3000
+        <AvailableLevel>k__BackingField: 3
+        <Price>k__BackingField: 4500
         <BuildTime>k__BackingField: 30
         <UnitCapacity>k__BackingField: 4
         <Icon>k__BackingField: {fileID: 21300000, guid: ae063a7eec8a5af4696394f297681415,
@@ -202,7 +202,7 @@ MonoBehaviour:
         <Name>k__BackingField: Liberator Cruiser
         <MaxCount>k__BackingField: 3
         <AvailableLevel>k__BackingField: 3
-        <Price>k__BackingField: 4500
+        <Price>k__BackingField: 4200
         <BuildTime>k__BackingField: 30
         <UnitCapacity>k__BackingField: 5
         <Icon>k__BackingField: {fileID: 21300000, guid: 1583a68acc7d9f9488c947c5470db384,
@@ -233,8 +233,8 @@ MonoBehaviour:
         isUnique: 0
         <Name>k__BackingField: Bothan Assault Cruiser
         <MaxCount>k__BackingField: 3
-        <AvailableLevel>k__BackingField: 3
-        <Price>k__BackingField: 4500
+        <AvailableLevel>k__BackingField: 2
+        <Price>k__BackingField: 4000
         <BuildTime>k__BackingField: 35
         <UnitCapacity>k__BackingField: 5
         <Icon>k__BackingField: {fileID: 21300000, guid: 60f458712418dd74393a49293c347c81,
@@ -282,7 +282,7 @@ MonoBehaviour:
         <Name>k__BackingField: MC80 Freedom
         <MaxCount>k__BackingField: 3
         <AvailableLevel>k__BackingField: 3
-        <Price>k__BackingField: 4500
+        <Price>k__BackingField: 4300
         <BuildTime>k__BackingField: 45
         <UnitCapacity>k__BackingField: 8
         <Icon>k__BackingField: {fileID: 21300000, guid: f20def5849b5bd649bb2e04331267807,

@@ -17,7 +17,7 @@ namespace EmpireAtWar.Entities.Units
         Balanced = 1 << 0,
         /// <summary>More durable for its price than most of its faction's class.</summary>
         Brawler = 1 << 1,
-        /// <summary>More guns than most of its faction's class.</summary>
+        /// <summary>More total damage per second than most of its faction's class.</summary>
         Dps = 1 << 2,
         /// <summary>Less durable for its price than most of its faction's class.</summary>
         Fragile = 1 << 3,

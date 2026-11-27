@@ -106,6 +106,17 @@ namespace EmpireAtWar.Tests.Editor
         }
 
         [Test]
+        public void Dps_IsAboveTheFactionClassMedianTotalDamage()
+        {
+            foreach (ShipRoleEntry entry in _owners.Where(entry => entry.Ship.Roles.HasFlag(UnitRole.Dps)))
+            {
+                float median = ShipRoleRules.Median(ClassMates(entry)
+                    .Select(mate => ShipRoleRules.TotalDamage(mate.Ship, _weapons)));
+                Assert.That(ShipRoleRules.TotalDamage(entry.Ship, _weapons), Is.GreaterThan(median), entry.Ship.name);
+            }
+        }
+
+        [Test]
         public void BrawlerAndFragile_AreAboveAndBelowTheFactionClassMedianDurabilityPerCredit()
         {
             foreach (ShipRoleEntry entry in _owners)

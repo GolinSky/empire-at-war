@@ -9,7 +9,7 @@ using EmpireAtWar.Services.ShipAbilities;
 namespace EmpireAtWar.Editor
 {
     /// <summary>
-    /// What each <see cref="UnitRole"/> flag means in ship data. Durability, speed, guns and anti-capital damage compare a
+    /// What each <see cref="UnitRole"/> flag means in ship data. Durability, speed, damage and anti-capital damage compare a
     /// ship with its own faction's ships of the same class (every faction's when that class is too small, see
     /// <see cref="ShipRoleRoster.ClassMates"/>), so a faction-wide trait (every Empire ship is slow) is the
     /// faction's mark (<see cref="ProposeFactionMarks"/>), not a flag on every ship. Durability is weighed against price:
@@ -21,8 +21,8 @@ namespace EmpireAtWar.Editor
         public const float DURABILITY_BAND = 0.15f;
         /// <summary>Fast above, Slow below the faction-class median speed by more than this share.</summary>
         public const float SPEED_BAND = 0.05f;
-        /// <summary>Dps above the faction-class median gun count by more than this share.</summary>
-        public const float GUN_BAND = 0.15f;
+        /// <summary>Dps above the faction-class median total damage per second by more than this share.</summary>
+        public const float DPS_BAND = 0.15f;
         /// <summary>AntiCapital above the faction-class median damage against capitals by more than this share.</summary>
         public const float ANTI_CAPITAL_BAND = 0.15f;
         /// <summary>A faction mark needs its class medians this far from the all-faction class medians on average.</summary>
@@ -50,6 +50,10 @@ namespace EmpireAtWar.Editor
         public static float DurabilityPerCredit(ShipRoleEntry entry) => Durability(entry.Ship) / Math.Max(1f, entry.Price);
 
         public static int GunCount(ShipData ship) => ship.WeaponLoadout.Sum(entry => entry.Count);
+
+        /// <summary>Sustained damage per second of every gun, before any size bias.</summary>
+        public static float TotalDamage(ShipData ship, WeaponsData weapons) =>
+            ship.WeaponLoadout.Sum(entry => weapons.GetProfile(entry.WeaponType).DamagePerSecond * entry.Count);
 
         /// <summary>Sustained damage per second against a capital ship, with each weapon's size bias.</summary>
         public static float CapitalDamage(ShipData ship, WeaponsData weapons) =>
@@ -118,14 +122,14 @@ namespace EmpireAtWar.Editor
             UnitRole roles = UnitRole.None;
             float durability = Median(classMates.Select(DurabilityPerCredit));
             float speed = Median(classMates.Select(mate => mate.Ship.Speed));
-            float guns = Median(classMates.Select(mate => (float)GunCount(mate.Ship)));
+            float totalDamage = Median(classMates.Select(mate => TotalDamage(mate.Ship, weapons)));
             float capitalDamage = Median(classMates.Select(mate => CapitalDamage(mate.Ship, weapons)));
             if (DurabilityPerCredit(entry) > durability * (1f + DURABILITY_BAND)) roles |= UnitRole.Brawler;
             else if (DurabilityPerCredit(entry) < durability * (1f - DURABILITY_BAND)) roles |= UnitRole.Fragile;
             else roles |= UnitRole.Balanced;
             if (ship.Speed > speed * (1f + SPEED_BAND)) roles |= UnitRole.Fast;
             else if (ship.Speed < speed * (1f - SPEED_BAND)) roles |= UnitRole.Slow;
-            if (GunCount(ship) > guns * (1f + GUN_BAND)) roles |= UnitRole.Dps;
+            if (TotalDamage(ship, weapons) > totalDamage * (1f + DPS_BAND)) roles |= UnitRole.Dps;
             if (CapitalDamage(ship, weapons) > capitalDamage * (1f + ANTI_CAPITAL_BAND) || HasAntiCapitalAbility(ship))
                 roles |= UnitRole.AntiCapital;
             if (IsCarrier(ship)) roles |= UnitRole.Carrier;
