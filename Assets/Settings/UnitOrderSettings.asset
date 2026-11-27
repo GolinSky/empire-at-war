@@ -47,27 +47,26 @@ MonoBehaviour:
     shipSlots: 2
     squadronSlots: 4
   - shipClass: 2
-    shipSlots: 2
+    shipSlots: 1
     squadronSlots: 4
   - shipClass: 3
-    shipSlots: 3
+    shipSlots: 1
     squadronSlots: 4
   - shipClass: 8
-    shipSlots: 3
+    shipSlots: 2
     squadronSlots: 6
   - shipClass: 10
-    shipSlots: 4
+    shipSlots: 2
     squadronSlots: 6
   - shipClass: 4
-    shipSlots: 5
+    shipSlots: 3
     squadronSlots: 8
   - shipClass: 5
-    shipSlots: 6
+    shipSlots: 4
     squadronSlots: 8
   - shipClass: 11
-    shipSlots: 8
+    shipSlots: 5
     squadronSlots: 12
   - shipClass: 6
     shipSlots: 0
     squadronSlots: 0
-  heroExtraSlots: 1

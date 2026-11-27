@@ -45,17 +45,18 @@ acceptance: pending-user
 | Target class | Ship slots | Squadron slots |
 |---|---|---|
 | Fighter / Bomber / Interceptor / HeroStrikecraft | 2 | 4 |
-| Corvette | 2 | 4 |
-| Frigate | 3 | 4 |
-| Cruiser | 3 | 6 |
-| HeavyCruiser | 4 | 6 |
-| Capital | 5 | 8 |
-| BattleCruiser | 6 | 8 |
-| Dreadnought | 8 | 12 |
+| Corvette | 1 | 4 |
+| Frigate | 1 | 4 |
+| Cruiser | 2 | 6 |
+| HeavyCruiser | 2 | 6 |
+| Capital | 3 | 8 |
+| BattleCruiser | 4 | 8 |
+| Dreadnought | 5 | 12 |
 | Structure | 0 (unlimited) | 0 (unlimited) |
 
 - Squadron cap is separate from the ship cap and 2× the first draft (user 2026-11-25).
-- Hero target: class cap `+1` ship slot and `+1` squadron slot (`heroExtraSlots = 1`, user 2026-11-25).
+- Ship slots lowered 2026-11-27 (user): dreadnoughts died in 43–63 s with 10–12 enemy ships on them (8 slot holders + 4–6 attack-move overflow).
+- Heroes count as their class, no extra slots (user 2026-11-27; `heroExtraSlots` and the `FactionCatalog` hero check removed from `FocusFireCaps`). Superseded: the earlier `+1` hero slot.
 
 - AI cap scale (`EnemyAiDifficultyProfile.FocusFireScale`, rounded up, minimum 1): Easy `0.5`, Medium `0.75`, Hard `1`, UltraHard `1`.
 - Values live in `UnitOrderSettings` under `[Header("Focus Fire")]`; never hardcode them in code or tests.
@@ -100,7 +101,7 @@ acceptance: pending-user
 - Player re-orders slot holders onto the same target → no slot change, no churn.
 - Slot holder leaves reach (`EnemyAttackTargetRules.KeepsTarget` false) → release.
 - Target cloaks or dies → all its slots released.
-- Hero ships as targets: `ShipClass` cap + `heroExtraSlots`.
+- Hero ships as targets: plain `ShipClass` cap (hero bonus removed 2026-11-27).
 - Attack-move ships on a capped target → allowed, not counted, not shown in the slot counter.
 - Overflow from an ordered attack (Phase 2) and AI screens (Phase 4) run attack-move → against a lone target they may still pick it; in a group fight they spread. Accepted leak; include in the time-to-kill measurement.
 - `keepTargets: true` AI states (AssaultBase, EngageLocal): a ship keeping its own target keeps its slot.

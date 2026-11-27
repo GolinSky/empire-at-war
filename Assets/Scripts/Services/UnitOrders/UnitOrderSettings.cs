@@ -43,17 +43,15 @@ namespace EmpireAtWar.Services.UnitOrders
             new FocusFireCap(ShipClass.Bomber, 2, 4),
             new FocusFireCap(ShipClass.Interceptor, 2, 4),
             new FocusFireCap(ShipClass.HeroStrikecraft, 2, 4),
-            new FocusFireCap(ShipClass.Corvette, 2, 4),
-            new FocusFireCap(ShipClass.Frigate, 3, 4),
-            new FocusFireCap(ShipClass.Cruiser, 3, 6),
-            new FocusFireCap(ShipClass.HeavyCruiser, 4, 6),
-            new FocusFireCap(ShipClass.Capital, 5, 8),
-            new FocusFireCap(ShipClass.BattleCruiser, 6, 8),
-            new FocusFireCap(ShipClass.Dreadnought, 8, 12),
+            new FocusFireCap(ShipClass.Corvette, 1, 4),
+            new FocusFireCap(ShipClass.Frigate, 1, 4),
+            new FocusFireCap(ShipClass.Cruiser, 2, 6),
+            new FocusFireCap(ShipClass.HeavyCruiser, 2, 6),
+            new FocusFireCap(ShipClass.Capital, 3, 8),
+            new FocusFireCap(ShipClass.BattleCruiser, 4, 8),
+            new FocusFireCap(ShipClass.Dreadnought, 5, 12),
             new FocusFireCap(ShipClass.Structure, 0, 0),
         };
-        [Tooltip("Extra ship and squadron slots on a hero target.")]
-        [SerializeField, Min(0)] private int heroExtraSlots = 1;
 
         public float GuardFollowRadius => guardFollowRadius;
         public float GuardChaseDistance => guardChaseDistance;
@@ -61,7 +59,6 @@ namespace EmpireAtWar.Services.UnitOrders
         public float SquadronLeashFactor => squadronLeashFactor;
         public float HuntRetargetInterval => huntRetargetInterval;
         public float StationClearance => stationClearance;
-        public int HeroExtraSlots => heroExtraSlots;
 
         /// <summary>Slots of <paramref name="shipClass"/> for ship or squadron attackers; 0 = unlimited.</summary>
         public int GetFocusFireCap(ShipClass shipClass, bool isSquadron)
