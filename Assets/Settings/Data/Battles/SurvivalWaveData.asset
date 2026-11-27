@@ -70,10 +70,10 @@ MonoBehaviour:
         quantity: 2
       - isSquadron: 0
         unitId: 2
-        quantity: 6
+        quantity: 4
       - isSquadron: 0
         unitId: 5
-        quantity: 5
+        quantity: 3
       - isSquadron: 0
         unitId: 8
         quantity: 1
@@ -102,10 +102,10 @@ MonoBehaviour:
         quantity: 2
       - isSquadron: 0
         unitId: 2
-        quantity: 6
+        quantity: 4
       - isSquadron: 0
         unitId: 5
-        quantity: 5
+        quantity: 3
       - isSquadron: 0
         unitId: 8
         quantity: 1
@@ -143,10 +143,10 @@ MonoBehaviour:
         quantity: 2
       - isSquadron: 0
         unitId: 2
-        quantity: 6
+        quantity: 4
       - isSquadron: 0
         unitId: 5
-        quantity: 5
+        quantity: 3
       - isSquadron: 0
         unitId: 8
         quantity: 1
@@ -244,10 +244,10 @@ MonoBehaviour:
         quantity: 2
       - isSquadron: 0
         unitId: 108
-        quantity: 6
+        quantity: 4
       - isSquadron: 0
         unitId: 101
-        quantity: 6
+        quantity: 4
       - isSquadron: 1
         unitId: 100
         quantity: 4
@@ -276,7 +276,7 @@ MonoBehaviour:
         quantity: 2
       - isSquadron: 0
         unitId: 108
-        quantity: 6
+        quantity: 4
       - isSquadron: 0
         unitId: 100
         quantity: 2
@@ -285,7 +285,7 @@ MonoBehaviour:
         quantity: 1
       - isSquadron: 0
         unitId: 101
-        quantity: 6
+        quantity: 4
       - isSquadron: 0
         unitId: 112
         quantity: 3
@@ -323,7 +323,7 @@ MonoBehaviour:
         quantity: 2
       - isSquadron: 0
         unitId: 108
-        quantity: 6
+        quantity: 4
       - isSquadron: 0
         unitId: 100
         quantity: 2
@@ -332,7 +332,7 @@ MonoBehaviour:
         quantity: 1
       - isSquadron: 0
         unitId: 101
-        quantity: 6
+        quantity: 4
       - isSquadron: 0
         unitId: 112
         quantity: 3
@@ -374,19 +374,22 @@ MonoBehaviour:
         quantity: 4
       - isSquadron: 0
         unitId: 300
-        quantity: 3
+        quantity: 2
       - isSquadron: 0
         unitId: 308
-        quantity: 3
+        quantity: 2
       - isSquadron: 0
         unitId: 311
+        quantity: 2
+      - isSquadron: 0
+        unitId: 307
+        quantity: 2
+      - isSquadron: 0
+        unitId: 312
         quantity: 2
       - isSquadron: 1
         unitId: 301
         quantity: 3
-      - isSquadron: 0
-        unitId: 309
-        quantity: 2
       spawnGroupCount: 2
     - entries:
       - isSquadron: 0
@@ -394,15 +397,12 @@ MonoBehaviour:
         quantity: 4
       - isSquadron: 0
         unitId: 300
-        quantity: 3
-      - isSquadron: 0
-        unitId: 308
-        quantity: 3
-      - isSquadron: 0
-        unitId: 311
         quantity: 2
       - isSquadron: 0
-        unitId: 304
+        unitId: 308
+        quantity: 2
+      - isSquadron: 0
+        unitId: 311
         quantity: 2
       - isSquadron: 0
         unitId: 307
@@ -432,10 +432,10 @@ MonoBehaviour:
         quantity: 4
       - isSquadron: 0
         unitId: 300
-        quantity: 3
+        quantity: 2
       - isSquadron: 0
         unitId: 308
-        quantity: 3
+        quantity: 2
       - isSquadron: 0
         unitId: 311
         quantity: 2
@@ -465,13 +465,13 @@ MonoBehaviour:
         quantity: 3
       - isSquadron: 0
         unitId: 323
-        quantity: 3
+        quantity: 2
       - isSquadron: 0
         unitId: 324
         quantity: 2
       - isSquadron: 0
         unitId: 326
-        quantity: 3
+        quantity: 2
       - isSquadron: 1
         unitId: 300
         quantity: 5
@@ -482,10 +482,10 @@ MonoBehaviour:
         quantity: 4
       - isSquadron: 0
         unitId: 300
-        quantity: 3
+        quantity: 2
       - isSquadron: 0
         unitId: 308
-        quantity: 3
+        quantity: 2
       - isSquadron: 0
         unitId: 311
         quantity: 2
@@ -515,7 +515,7 @@ MonoBehaviour:
         quantity: 3
       - isSquadron: 0
         unitId: 323
-        quantity: 3
+        quantity: 2
       - isSquadron: 0
         unitId: 324
         quantity: 2
@@ -539,7 +539,7 @@ MonoBehaviour:
         quantity: 2
       - isSquadron: 0
         unitId: 326
-        quantity: 3
+        quantity: 2
       - isSquadron: 1
         unitId: 301
         quantity: 6
@@ -595,16 +595,16 @@ MonoBehaviour:
         quantity: 3
       - isSquadron: 0
         unitId: 211
-        quantity: 3
+        quantity: 2
       - isSquadron: 0
         unitId: 203
-        quantity: 3
+        quantity: 2
       - isSquadron: 0
         unitId: 204
-        quantity: 3
+        quantity: 2
       - isSquadron: 0
         unitId: 212
-        quantity: 3
+        quantity: 2
       - isSquadron: 1
         unitId: 201
         quantity: 4
@@ -627,19 +627,19 @@ MonoBehaviour:
         quantity: 3
       - isSquadron: 0
         unitId: 211
-        quantity: 3
+        quantity: 2
       - isSquadron: 0
         unitId: 203
-        quantity: 3
+        quantity: 2
       - isSquadron: 0
         unitId: 204
-        quantity: 3
+        quantity: 2
       - isSquadron: 0
         unitId: 210
         quantity: 2
       - isSquadron: 0
         unitId: 212
-        quantity: 3
+        quantity: 2
       - isSquadron: 0
         unitId: 201
         quantity: 3
@@ -677,19 +677,19 @@ MonoBehaviour:
         quantity: 3
       - isSquadron: 0
         unitId: 211
-        quantity: 3
+        quantity: 2
       - isSquadron: 0
         unitId: 203
-        quantity: 3
+        quantity: 2
       - isSquadron: 0
         unitId: 204
-        quantity: 3
+        quantity: 2
       - isSquadron: 0
         unitId: 210
         quantity: 2
       - isSquadron: 0
         unitId: 212
-        quantity: 3
+        quantity: 2
       - isSquadron: 0
         unitId: 201
         quantity: 3
