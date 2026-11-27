@@ -147,7 +147,7 @@ namespace EmpireAtWar.Services.Enemy
             _receivers.Clear();
             foreach (IEntity receiver in receivers)
             {
-                if (IsEngagingEnRoute(receiver) || IsRepeat(receiver, type, target, point, now)) continue;
+                if (IsRepeat(receiver, type, target, point, now)) continue;
                 _issued[receiver] = (type, target, point, now);
                 _receivers.Add(receiver);
             }
@@ -166,8 +166,7 @@ namespace EmpireAtWar.Services.Enemy
             _destinations.Clear();
             for (int i = 0; i < receivers.Count; i++)
             {
-                if (IsEngagingEnRoute(receivers[i]) ||
-                    IsRepeat(receivers[i], type, target, destinations[i], now, target != null)) continue;
+                if (IsRepeat(receivers[i], type, target, destinations[i], now, target != null)) continue;
                 _issued[receivers[i]] = (type, target, destinations[i], now);
                 _receivers.Add(receivers[i]);
                 _destinations.Add(destinations[i]);
@@ -176,14 +175,13 @@ namespace EmpireAtWar.Services.Enemy
             return _receivers.Count > 0;
         }
 
-        /// <summary>Orders that are not filtered: every receiver except a ship engaged en route; resets their memory.</summary>
+        /// <summary>Orders that are not filtered: every receiver; resets their memory.</summary>
         private bool Pass(IReadOnlyList<IEntity> receivers, IReadOnlyList<Vector3> offsets = null)
         {
             _receivers.Clear();
             _destinations.Clear();
             for (int i = 0; i < receivers.Count; i++)
             {
-                if (IsEngagingEnRoute(receivers[i])) continue;
                 _issued.Remove(receivers[i]);
                 _receivers.Add(receivers[i]);
                 if (offsets != null) _destinations.Add(offsets[i]);
@@ -215,9 +213,6 @@ namespace EmpireAtWar.Services.Enemy
             _receivers.Clear();
             _kept.Clear();
         }
-
-        private static bool IsEngagingEnRoute(IEntity receiver) =>
-            receiver.TryGetFacade(out IUnitOrderObserverFacade orders) && orders.IsEngagingEnRoute;
 
         // Lost ships never get another order; their entries go once the memory grows.
         private void Prune()

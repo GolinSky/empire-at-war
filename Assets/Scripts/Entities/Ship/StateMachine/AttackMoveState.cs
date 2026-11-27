@@ -1,12 +1,9 @@
 using System;
-using EmpireAtWar.Components.AttackComponent;
-using EmpireAtWar.Components.Movement.Formation;
 using EmpireAtWar.Components.Radar;
 using EmpireAtWar.Components.Ship.Movement;
 using EmpireAtWar.Components.Weapon;
 using EmpireAtWar.Entities.BaseEntity;
 using EmpireAtWar.Entities.BaseEntity.Orders;
-using EmpireAtWar.Entities.Units;
 using EmpireAtWar.Patterns.StateMachine;
 using UnityEngine;
 using EmpireAtWar.Entities.BaseEntity.EntityFacades;
@@ -14,110 +11,61 @@ using EmpireAtWar.Entities.BaseEntity.EntityFacades;
 namespace EmpireAtWar.Entities.Ship.StateMachine
 {
     /// <summary>
-    /// The destination marks an area: the enemies within the ship's reach of the point. The ship flies toward it
-    /// without breaking off for fights outside it (weapons still fire at what passes in range). As soon as the
-    /// attack-move group detects an enemy inside the area, the ship stops flying to the point and engages from
-    /// firing range; it never chases beyond that leash. With no enemy there it flies to the point and fights
-    /// what arrives.
-    /// The one exception en route: a warship (corvette or bigger) that hit this ship in the last
-    /// <see cref="ShipThreatSense.RECENT_DAMAGE_SECONDS"/> and is in weapon reach. The ship stops, fights it without
-    /// chasing, then continues to the destination (<see cref="IsEngagingEnRoute"/>).
-    /// Targets come from the shared <see cref="AttackMoveEngagement"/> so the group spreads its fire; targets in
-    /// weapon reach and attackers of a team station or of this ship rank first. A ship that loses its target looks
-    /// for the next one first and returns to the destination only when none is left.
+    /// The ship flies to its slot in the group's formation (the destination) and never leaves it to chase. Its guns
+    /// fire at whatever they reach on the way and on the slot, spread over the enemies
+    /// (<see cref="IWeaponComponent.SetSpreadFire"/>): no enemy is made the main target. Once stopped on the slot
+    /// it holds there and turns toward the enemy the shared <see cref="AttackMoveEngagement"/> gives it: the
+    /// loadout's preferred enemies first, then enemies in weapon reach, then threat, then the one fewest of the
+    /// group face. The order ends once the group reports no enemy.
     /// </summary>
     public sealed class AttackMoveState : IBaseState
     {
-        // Seconds between target searches while the ship has no target, with a random first delay. A whole
-        // attack-move group otherwise searches, claims and arms its weapons on the order's frame (~28 ms for
-        // 178 ships) and again on the frame their shared targets die.
+        // Seconds between facing-target searches, with a random first delay. A whole attack-move group otherwise
+        // searches and claims on the order's frame (~28 ms for 178 ships) and again when their shared targets die.
         private const float SEARCH_INTERVAL = 0.25f;
-        // Engagement priority of a target already in weapon reach; above every threat rank.
+        // Facing priority of an enemy already in weapon reach; above every threat rank.
         private const int IN_REACH_PRIORITY = 3;
 
         private readonly IShipMovement _movement;
         private readonly IWeaponComponent _weapon;
         private readonly IRadarComponent _radar;
-        private readonly IAttackDataFactory _attackDataFactory;
-        private readonly IShipThreatSense _threats;
-        private IEntity _engagementTarget;
-        // A warship that hit this ship on the way; fought before the flight continues.
-        private IEntity _enRouteTarget;
-
         private readonly Func<IEntity, float> _rangeTo;
         private readonly Func<IEntity, bool> _isPreferred;
-        private readonly Func<IEntity, bool> _isLeashed;
-        private readonly Func<IEntity, bool> _isLeashedPreferred;
         private readonly Func<IEntity, int> _priority;
         private AttackMoveEngagement _nextEngagement;
         private AttackMoveEngagement _engagement;
+        // The enemy the ship turns to on its slot; its guns pick their own targets.
+        private IEntity _facingTarget;
 
         private Vector3 _destination;
-        private float _standoffFactor = ShipEngagement.GetStandoffFactor(FormationRow.Front);
-
         private int _member;
         private float _nextSearchTime;
-        private float _nextEnRouteSearchTime;
-        // A search found nothing since the last target was dropped; until then the order is not finished.
+        // A search ran since the ship stopped on its slot; until then the order is not finished.
         private bool _hasSearched;
-        // Set once the ship reaches the destination or the group detects an enemy in its area; until then it claims no enemies.
         private bool _hasArrived;
-        // A target was lost: return to the destination unless the next search finds another.
-        private bool _isReturnPending;
-        // Holding on the current target; enables the leave margin.
-        private bool _isHolding;
 
-        public bool IsComplete => _engagementTarget == null && _enRouteTarget == null && _hasSearched &&
-                                  !_movement.IsMoving;
-        public bool IsEngaging => _engagementTarget != null || _enRouteTarget != null;
-        /// <summary>Stopped on the way to fight a warship that hit it; the flight resumes once that fight ends.</summary>
-        public bool IsEngagingEnRoute => _enRouteTarget != null;
+        public bool IsComplete => _hasArrived && _hasSearched && _facingTarget == null && !_movement.IsMoving;
+        public bool IsEngaging => _facingTarget != null;
 
 #if UNITY_EDITOR || DEVELOPMENT_BUILD
-        internal IEntity EngagementTarget => _engagementTarget ?? _enRouteTarget;
-        private string _pendingDropEvent;
-
-        /// <summary>Telemetry only: why the last engagement target was dropped since the previous call, or null.</summary>
-        internal string TakeDropEvent()
-        {
-            string pending = _pendingDropEvent;
-            _pendingDropEvent = null;
-            return pending;
-        }
+        internal IEntity EngagementTarget => _facingTarget;
 #endif
 
-        [System.Diagnostics.Conditional("UNITY_EDITOR"), System.Diagnostics.Conditional("DEVELOPMENT_BUILD")]
-        private void NoteDrop(IEntity target, string reason)
-        {
-#if UNITY_EDITOR || DEVELOPMENT_BUILD
-            bool destroyed = target.HealthModel.IsDestroyed;
-            _pendingDropEvent = string.Format(System.Globalization.CultureInfo.InvariantCulture,
-                "drop:{0} target={1} destroyed={2} canEngage={3} dist={4:F0}", reason, target.Id, destroyed ? 1 : 0,
-                !destroyed && ShipEngagement.CanEngage(target, _movement, _weapon) ? 1 : 0,
-                destroyed ? -1f : _rangeTo(target));
-#endif
-        }
-
-        public AttackMoveState(IShipMovement movement, IWeaponComponent weapon,
-            IRadarComponent radar, IAttackDataFactory attackDataFactory, IShipThreatSense threats)
+        public AttackMoveState(IShipMovement movement, IWeaponComponent weapon, IRadarComponent radar,
+            IShipThreatSense threats)
         {
             _movement = movement;
             _weapon = weapon;
             _radar = radar;
-            _attackDataFactory = attackDataFactory;
-            _threats = threats;
             _rangeTo = enemy => _movement.GetRange(enemy.GetFacade<IEntityTransformFacade>().Transform.position);
             _isPreferred = enemy => ShipEngagement.IsPreferred(enemy, _weapon);
-            _isLeashed = enemy => ShipEngagement.IsInReachFrom(_destination, _movement, _weapon, enemy);
-            _isLeashedPreferred = enemy => _isLeashed(enemy) && _isPreferred(enemy);
             _priority = enemy => (ShipEngagement.CanEngage(enemy, _movement, _weapon) ? IN_REACH_PRIORITY : 0) +
-                                 ShipEngagement.ThreatRank(enemy, _threats);
+                                 ShipEngagement.ThreatRank(enemy, threats);
         }
 
-        public void SetData(Vector3 destination, AttackMoveEngagement engagement, FormationRow row = FormationRow.Front)
+        public void SetData(Vector3 destination, AttackMoveEngagement engagement)
         {
             _destination = destination;
-            _standoffFactor = ShipEngagement.GetStandoffFactor(row);
             // Applied on Enter: SetData runs before Exit, which must leave the engagement it joined.
             _nextEngagement = engagement;
         }
@@ -125,17 +73,15 @@ namespace EmpireAtWar.Entities.Ship.StateMachine
         public void Enter()
         {
             _engagement = _nextEngagement;
-            _engagementTarget = null;
-            _enRouteTarget = null;
+            _facingTarget = null;
             _hasArrived = false;
-            _isReturnPending = false;
-            _isHolding = false;
-            _nextEnRouteSearchTime = float.NegativeInfinity;
+            _hasSearched = false;
             _member = _engagement.Join();
+            _weapon.SetSpreadFire(true);
             // A ship stopped on its slot stays put: a re-plan this short only loops around it.
             if (_movement.IsMoving || _movement.GetRange(_destination) > _movement.NavigationRadius)
                 _movement.MoveToPosition(_destination);
-            DelaySearch();
+            _nextSearchTime = Time.time + UnityEngine.Random.value * SEARCH_INTERVAL;
         }
 
         public void Tick(float deltaTime)
@@ -143,168 +89,31 @@ namespace EmpireAtWar.Entities.Ship.StateMachine
             _engagement.Report(_member, _radar.Enemies);
             if (!_hasArrived)
             {
-                if (!IsAreaContactFound() && TickEnRoute()) return;
+                // Flying with the group: guns fire on the way, the course holds.
+                if (_movement.IsMoving) return;
                 _hasArrived = true;
             }
 
-            if (_engagementTarget != null &&
-                (!_engagement.Contains(_engagementTarget) || !_isLeashed(_engagementTarget)))
-            {
-                NoteDrop(_engagementTarget, !_engagement.Contains(_engagementTarget) ? "notInEngagement" : "leash");
-                // Hold course until the next search: heading back first and then turning for the next target
-                // made the ship zigzag between the point and the fight.
-                _weapon.ResetTarget();
-                _engagementTarget = null;
-                _isHolding = false;
-                _isReturnPending = true;
-                DelaySearch();
-            }
-
-            // A held target the loadout is not built for gives way once a preferred enemy is in the set.
-            bool isSearching = _engagementTarget == null || !_isPreferred(_engagementTarget);
-            if (isSearching && Time.time >= _nextSearchTime)
+            if (Time.time >= _nextSearchTime)
             {
                 _nextSearchTime = Time.time + SEARCH_INTERVAL;
                 _hasSearched = true;
-                if (_engagementTarget == null || _engagement.HasPreferred(_isLeashedPreferred))
-                {
-                    IEntity selectedTarget = _engagement.SelectTarget(_member, _rangeTo, _isPreferred, _isLeashed,
-                        _priority);
-                    if (selectedTarget != _engagementTarget)
-                    {
-                        if (_engagementTarget != null) NoteDrop(_engagementTarget, "notPreferred");
-                        _movement.CancelCombatHold();
-                        _isHolding = false;
-                    }
-                    _engagementTarget = selectedTarget;
-                    if (_engagementTarget != null)
-                    {
-                        _isReturnPending = false;
-                        _weapon.AddTarget(_attackDataFactory.ConstructData(_engagementTarget), AttackType.MainTarget);
-                        // A new target always breaks off the course to the attack-move point.
-                        if (!ShipEngagement.CanEngage(_engagementTarget, _movement, _weapon))
-                            ShipEngagement.Pursue(_movement, _weapon, _engagementTarget, newTarget: true,
-                                standoffFactor: _standoffFactor);
-                    }
-                }
+                IEntity next = _engagement.SelectTarget(_member, _rangeTo, _isPreferred, priority: _priority);
+                if (next == null && _facingTarget != null) _movement.CancelCombatHold();
+                _facingTarget = next;
             }
 
-            if (_engagementTarget == null)
-            {
-                if (_isReturnPending && _hasSearched)
-                {
-                    _isReturnPending = false;
-                    // A ship already on the point stays put: a re-plan this short only loops around it.
-                    if (_movement.GetRange(_destination) > _movement.NavigationRadius)
-                        _movement.MoveToPosition(_destination);
-                }
-            }
-            else
-            {
-                if (ShipEngagement.CanHoldOn(_engagementTarget, _movement, _weapon, _isHolding))
-                {
-                    _isHolding = true;
-                    _movement.HoldPosition(_engagementTarget);
-                    _movement.LookAtTarget(_engagementTarget);
-                }
-                else
-                {
-                    _isHolding = false;
-                    ShipEngagement.Pursue(_movement, _weapon, _engagementTarget, standoffFactor: _standoffFactor);
-                }
-            }
-        }
-
-        // The point marks an area, not a stop: once the group detects an enemy inside it, the ship stops flying to the
-        // point and engages from firing range. Not while it fights a warship that hit it on the way.
-        private bool IsAreaContactFound() =>
-            _enRouteTarget == null && Time.time >= _nextSearchTime && _engagement.HasPreferred(_isLeashed);
-
-        /// <summary>
-        /// Flight to the point: true while the ship is still on its way (flying or fighting an attacker), false once
-        /// it has arrived.
-        /// </summary>
-        private bool TickEnRoute()
-        {
-            if (_enRouteTarget != null)
-            {
-                if (!_enRouteTarget.IsCloaked() &&
-                    ShipEngagement.CanEngage(_enRouteTarget, _movement, _weapon, isHolding: true))
-                {
-                    _movement.HoldPosition(_enRouteTarget);
-                    _movement.LookAtTarget(_enRouteTarget);
-                    return true;
-                }
-
-                // Look for the next attacker before turning back onto the course.
-                IEntity next = _threats.WasDamagedRecently ? FindEnRouteAttacker() : null;
-                if (next != null)
-                {
-                    BeginEnRouteFight(next);
-                    return true;
-                }
-
-                _enRouteTarget = null;
-                _weapon.ResetTarget();
-                _movement.CancelCombatHold();
-                if (_movement.GetRange(_destination) <= _movement.NavigationRadius) return false;
-                _movement.MoveToPosition(_destination);
-                return true;
-            }
-
-            if (!_movement.IsMoving) return false;
-            if (!_threats.WasDamagedRecently || Time.time < _nextEnRouteSearchTime) return true;
-            _nextEnRouteSearchTime = Time.time + SEARCH_INTERVAL;
-            IEntity attacker = FindEnRouteAttacker();
-            if (attacker != null) BeginEnRouteFight(attacker);
-            return true;
-        }
-
-        // The biggest, then nearest, warship on own radar that attacks this ship from inside its weapon reach.
-        private IEntity FindEnRouteAttacker()
-        {
-            IEntity best = null;
-            int bestTier = -1;
-            float bestDistance = float.PositiveInfinity;
-            // Indexed: ObservableList boxes its enumerator.
-            for (int i = 0; i < _radar.Enemies.Count; i++)
-            {
-                IEntity enemy = _radar.Enemies[i];
-                if (enemy.IsCloaked() || !ShipEngagement.IsWarship(enemy) ||
-                    !ShipEngagement.CanEngage(enemy, _movement, _weapon) || !_threats.IsAttackingSelf(enemy)) continue;
-                int tier = enemy.HealthModel.ShipClass.HullTier();
-                float distance = _rangeTo(enemy);
-                if (tier < bestTier || tier == bestTier && distance >= bestDistance) continue;
-                best = enemy;
-                bestTier = tier;
-                bestDistance = distance;
-            }
-
-            return best;
-        }
-
-        private void BeginEnRouteFight(IEntity attacker)
-        {
-            _enRouteTarget = attacker;
-            _weapon.AddTarget(_attackDataFactory.ConstructData(attacker), AttackType.MainTarget);
-            _movement.HoldPosition(attacker);
-            _movement.LookAtTarget(attacker);
-        }
-
-        private void DelaySearch()
-        {
-            _hasSearched = false;
-            _nextSearchTime = Time.time + UnityEngine.Random.value * SEARCH_INTERVAL;
+            if (_facingTarget == null) return;
+            _movement.HoldPosition(_facingTarget);
+            _movement.LookAtTarget(_facingTarget);
         }
 
         public void Exit()
         {
             _movement.CancelCombatHold();
             _engagement.Leave(_member);
-            _engagementTarget = null;
-            _enRouteTarget = null;
-            _isHolding = false;
-            _weapon.ResetTarget();
+            _facingTarget = null;
+            _weapon.SetSpreadFire(false);
         }
     }
 }

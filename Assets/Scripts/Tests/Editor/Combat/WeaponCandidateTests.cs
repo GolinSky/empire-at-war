@@ -388,6 +388,8 @@ namespace EmpireAtWar.Tests.Weapon
             }
             typeof(WeaponComponent).GetField("hardPoints", PRIVATE_INSTANCE).SetValue(_weapon, mounts);
             typeof(WeaponComponent).GetField("_retryAt", PRIVATE_INSTANCE).SetValue(_weapon, new float[count]);
+            typeof(WeaponComponent).GetField("_engagedGroups", PRIVATE_INSTANCE)
+                .SetValue(_weapon, new AttackData[count]);
             int[] facingWeights = new int[count];
             for (int i = 0; i < count; i++) facingWeights[i] = 1;
             typeof(WeaponComponent).GetField("_facingWeights", PRIVATE_INSTANCE).SetValue(_weapon, facingWeights);
@@ -459,6 +461,40 @@ namespace EmpireAtWar.Tests.Weapon
 
             _weapon.ResetTarget();
             Assert.That(_weapon.IgnoresStrikecraft(heavy), Is.True);
+        }
+
+        // Spread fire puts a group holding more than an even share of the ship's guns in the doomed tier: guns take it
+        // only when nothing else of their preference is in reach (WeaponTargetSelectionJob.MatchesPass).
+        [Test]
+        public void SpreadFire_GroupOverItsShareOfTheShipsGunsIsSkippedLikeADoomedOne()
+        {
+            ConfigureMounts(4);
+            AttackData crowded = Group(1);
+            AttackData open = Group(1);
+            AttackData far = Group(1);
+            _weapon.AddTarget(crowded, AttackType.Base);
+            _weapon.AddTarget(open, AttackType.Base);
+            _weapon.AddTarget(far, AttackType.Base);
+            AttackData[] engaged = (AttackData[])Field("_engagedGroups");
+            // 4 guns over 3 enemies: a share is 2 guns. Three guns already fire at one enemy.
+            engaged[0] = crowded;
+            engaged[1] = crowded;
+            engaged[2] = crowded;
+            MethodInfo isDoomed = typeof(WeaponComponent).GetMethod("IsDoomed", PRIVATE_INSTANCE);
+            bool IsDoomed(AttackData group) => (bool)isDoomed.Invoke(_weapon, new object[] { group });
+
+            Assert.That(IsDoomed(crowded), Is.False, "Without spread fire every gun may join one target.");
+            _weapon.SetSpreadFire(true);
+            Assert.That(IsDoomed(crowded), Is.True);
+            Assert.That(IsDoomed(open), Is.False);
+
+            engaged[2] = open;
+            Assert.That(IsDoomed(crowded), Is.False, "An even share is not crowded.");
+
+            _weapon.AddTarget(crowded, AttackType.MainTarget);
+            engaged[2] = crowded;
+            Assert.That(IsDoomed(crowded), Is.False, "A main target is never skipped.");
+            _weapon.SetSpreadFire(false);
         }
 
         [Test]

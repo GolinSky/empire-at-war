@@ -482,19 +482,17 @@ namespace EmpireAtWar.Tests.Editor
 
             _unitOrderService.IssueAttackMove(new IEntity[] { capital, wingman, cruiser, artillery }, point);
 
-            Assert.That(capital.Command.LastRow, Is.EqualTo(FormationRow.Front));
-            Assert.That(wingman.Command.LastRow, Is.EqualTo(FormationRow.Front));
             Vector3 heading = (point - new Vector3(-25f, 0f, 0f)).normalized;
             Assert.That(Vector3.Dot(capital.Command.LastPoint - point, heading), Is.EqualTo(0f).Within(0.01f),
                 "The front line stands on the point.");
-            Assert.That(cruiser.Command.LastRow, Is.EqualTo(FormationRow.Middle));
-            Assert.That(artillery.Command.LastRow, Is.EqualTo(FormationRow.Back));
+            Assert.That(Vector3.Dot(wingman.Command.LastPoint - point, heading), Is.EqualTo(0f).Within(0.01f),
+                "Same hull tier: the wingman shares the front line.");
             Assert.That(capital.Command.LastPoint.z, Is.GreaterThan(cruiser.Command.LastPoint.z));
             Assert.That(cruiser.Command.LastPoint.z, Is.GreaterThan(artillery.Command.LastPoint.z));
         }
 
         [Test]
-        public void AttackMove_RepeatedNearby_KeepsEachShipsSlotOffsetAndRow()
+        public void AttackMove_RepeatedNearby_KeepsEachShipsSlotOffset()
         {
             FakeEntity[] ships = { Entity(1, TestPlayers.Human), Entity(2, TestPlayers.Human), Entity(3, TestPlayers.Human) };
             ships[0].Command.HullTier = 5;
@@ -504,11 +502,9 @@ namespace EmpireAtWar.Tests.Editor
             Vector3 first = new Vector3(0f, 0f, 1000f);
             _unitOrderService.IssueAttackMove(ships, first);
             Vector3[] offsets = new Vector3[ships.Length];
-            FormationRow[] rows = new FormationRow[ships.Length];
             for (int i = 0; i < ships.Length; i++)
             {
                 offsets[i] = ships[i].Command.LastPoint - first;
-                rows[i] = ships[i].Command.LastRow;
                 // The ships moved since: a rebuilt layout would sort them differently.
                 ships[i].Command.WorldPosition = new Vector3(-i * 80f, 0f, 700f + i * 50f);
             }
@@ -521,7 +517,6 @@ namespace EmpireAtWar.Tests.Editor
                 Vector3 offset = ships[i].Command.LastPoint - second;
                 Assert.That(offset.x, Is.EqualTo(offsets[i].x).Within(0.01f));
                 Assert.That(offset.z, Is.EqualTo(offsets[i].z).Within(0.01f));
-                Assert.That(ships[i].Command.LastRow, Is.EqualTo(rows[i]));
             }
         }
 
@@ -544,7 +539,7 @@ namespace EmpireAtWar.Tests.Editor
         }
 
         [Test]
-        public void Attack_OverTheFocusFireCap_NearestShipsAttackAndTheRestAttackMoveToTheTarget()
+        public void Attack_OverTheFocusFireCap_NearestShipsAttackAndTheRestAttackMoveToEngagementRangeOfTheTarget()
         {
             CappedSlots slots = new CappedSlots { FreeShips = 2 };
             _unitOrderService = CreateService(slots);
@@ -555,6 +550,7 @@ namespace EmpireAtWar.Tests.Editor
             near.Command.WorldPosition = new Vector3(0f, 0f, 100f);
             far.Command.WorldPosition = new Vector3(0f, 0f, 300f);
             middle.Command.WorldPosition = new Vector3(0f, 0f, 200f);
+            far.Command.EngagementRange = 120f;
             var published = new List<UnitActionId>();
             _unitOrderService.OrderIssued += order => published.Add(order.Action);
             IReadOnlyList<IEntity> relayed = null;
@@ -565,8 +561,11 @@ namespace EmpireAtWar.Tests.Editor
             Assert.That(near.Command.LastAction, Is.EqualTo(UnitActionId.Attack));
             Assert.That(middle.Command.LastAction, Is.EqualTo(UnitActionId.Attack));
             Assert.That(far.Command.LastAction, Is.EqualTo(UnitActionId.AttackMove));
-            Assert.That(Vector3.Distance(far.Command.LastPoint, target.Health.Transform.position), Is.LessThan(50f),
-                "Overflow attack-moves to the target.");
+            Vector3 targetPosition = target.Health.Transform.position;
+            Assert.That(Vector3.Distance(far.Command.LastPoint, targetPosition), Is.EqualTo(120f).Within(0.01f),
+                "Overflow stops at its engagement range: attack-move never closes in by itself.");
+            Assert.That(Vector3.Dot(far.Command.LastPoint - targetPosition, far.Command.WorldPosition - targetPosition),
+                Is.GreaterThan(0f), "On its own side of the target.");
             Assert.That(relayed, Is.EquivalentTo(new IEntity[] { near, middle }), "Only real attackers are relayed.");
             Assert.That(published, Is.EqualTo(new[] { UnitActionId.Attack, UnitActionId.AttackMove }),
                 "Order feedback shows the overflow as attack-move.");
@@ -699,7 +698,8 @@ namespace EmpireAtWar.Tests.Editor
             public float PaceSpeed { get; set; } = 30f;
             public int HullTier { get; set; }
             public bool IsBackRow { get; set; }
-            public FormationRow LastRow { get; private set; }
+            public float EngagementRange { get; set; }
+            public float GetEngagementRange(ShipClass targetClass) => EngagementRange;
 
             public void MoveTo(Vector2 point) => Record(UnitActionId.Move, point);
 
@@ -714,9 +714,8 @@ namespace EmpireAtWar.Tests.Editor
 
             public void FocusFire(IEntity target) => Record(UnitActionId.Attack);
 
-            public void AttackMoveTo(Vector3 point, AttackMoveEngagement engagement, PaceCluster pace = null,
-                FormationRow row = FormationRow.Front)
-            { LastEngagement = engagement; LastPace = pace; LastRow = row; Record(UnitActionId.AttackMove, point); }
+            public void AttackMoveTo(Vector3 point, AttackMoveEngagement engagement, PaceCluster pace = null)
+            { LastEngagement = engagement; LastPace = pace; Record(UnitActionId.AttackMove, point); }
 
             public void Stop() => Record(UnitActionId.Stop);
 

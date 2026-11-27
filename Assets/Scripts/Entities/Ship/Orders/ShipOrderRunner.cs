@@ -51,7 +51,6 @@ namespace EmpireAtWar.Entities.Ship.Orders
         private readonly AbilityApproachState _abilityApproachState;
         private ShipAbilityId _pendingAbilityId;
         private IEntity _pendingAbilityTarget;
-        private FormationRow _attackMoveRow;
 
         // Team-vision replacement search around the dead target; ships do not cross the map for one.
         private const float REPLACEMENT_RADIUS = 1500f;
@@ -72,7 +71,6 @@ namespace EmpireAtWar.Entities.Ship.Orders
             !_replicaOrder.HasValue && CurrentOrder == UnitOrderType.Attack ? _orders.Target : null;
         public int OrderRevision => _orders.Revision;
         /// <summary>Attack-move ship stopped on the way to fight a warship that hit it (W66: the AI group reads this).</summary>
-        public bool IsEngagingEnRoute => _stateMachine.CurrentState == _attackMoveState && _attackMoveState.IsEngagingEnRoute;
         /// <summary>Online client: the host just gave this ship a new order.</summary>
         public event Action<UnitOrderType> ReplicaOrderIssued;
 
@@ -159,11 +157,6 @@ namespace EmpireAtWar.Entities.Ship.Orders
                 ShipOrderTelemetry.Record(_telemetrySource, _abilityCaster, _orders, _movement, _weapon, _radar,
                     attackEvent.StartsWith("leg:") ? "attackLeg" : "attackHold", attackEvent,
                     nameof(AttackTargetState), _attackTargetState.AttackDiagnostics);
-            string dropEvent = _stateMachine.CurrentState == _attackMoveState ? _attackMoveState.TakeDropEvent() : null;
-            if (dropEvent != null)
-                ShipOrderTelemetry.Record(_telemetrySource, _abilityCaster, _orders, _movement, _weapon, _radar,
-                    "attackMoveDrop", dropEvent, nameof(AttackMoveState), "",
-                    _attackMoveState.EngagementTarget);
             string settleEvent = _movement is IShipMovementDiagnostics diagnostics ? diagnostics.TakeSettleEvent() : null;
             if (settleEvent != null)
                 ShipOrderTelemetry.Record(_telemetrySource, _abilityCaster, _orders, _movement, _weapon, _radar,
@@ -376,11 +369,9 @@ namespace EmpireAtWar.Entities.Ship.Orders
             return true;
         }
 
-        public void AttackMoveTo(Vector3 destination, AttackMoveEngagement engagement, PaceCluster pace = null,
-            FormationRow row = FormationRow.Front)
+        public void AttackMoveTo(Vector3 destination, AttackMoveEngagement engagement, PaceCluster pace = null)
         {
             if (RejectWhileAnchored(UnitOrderType.AttackMove)) return;
-            _attackMoveRow = row;
             _abilities.TryCancel(_abilityCaster, ShipAbilityId.Cloak);
             FormationPoint point = ToPoint(destination);
             if (_pendingAbilityTarget == null && _orders.Engagement == engagement &&
@@ -507,7 +498,7 @@ namespace EmpireAtWar.Entities.Ship.Orders
                     _stateMachine.SetState(_attackTargetState);
                     break;
                 case UnitOrderType.AttackMove:
-                    _attackMoveState.SetData(ToVector(_orders.Destination), _orders.Engagement, _attackMoveRow);
+                    _attackMoveState.SetData(ToVector(_orders.Destination), _orders.Engagement);
                     _stateMachine.SetState(_attackMoveState);
                     break;
                 case UnitOrderType.Guard:
@@ -557,6 +548,24 @@ namespace EmpireAtWar.Entities.Ship.Orders
             return team != null && team.HealthModel.ShipClass == deadClass ? team : own ?? team;
         }
 
+        public float GetEngagementRange(ShipClass targetClass) => _weapon.GetEngagementRange(targetClass);
+
+        // The point on the line to the dead target where it would sit at engagement range; the ship's own
+        // position when it is already that close.
+        private Vector3 GetFightApproach()
+        {
+            Vector3 position = _movement.CurrentPosition;
+            Vector3 fight = _attackTargetState.LastTargetPosition;
+            Vector3 offset = position - fight;
+            offset.y = 0f;
+            float range = _weapon.GetEngagementRange(_attackTargetState.LastTargetClass.Value);
+            float distance = offset.magnitude;
+            if (distance <= range) return position;
+            Vector3 approach = fight + offset * (range / distance);
+            approach.y = position.y;
+            return approach;
+        }
+
         private bool HasOpenCandidate(List<IEntity> candidates)
         {
             foreach (IEntity candidate in candidates)
@@ -604,6 +613,11 @@ namespace EmpireAtWar.Entities.Ship.Orders
                     Issue(UnitOrderType.Attack, target: nextTarget, holdAttackPosition: true);
                     return;
                 }
+
+                // Nothing in reach (a back-line ship): close up to firing range of the fight instead of idling.
+                RecordOrder("complete", "Attack target destroyed; nothing in reach, attack-moving to the fight.");
+                Issue(UnitOrderType.AttackMove, ToPoint(GetFightApproach()), engagement: new AttackMoveEngagement());
+                return;
             }
 
             RecordOrder("complete", _orders.Target != null && _orders.Target.HealthModel.IsDestroyed

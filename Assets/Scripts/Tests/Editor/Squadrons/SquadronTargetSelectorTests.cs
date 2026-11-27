@@ -599,6 +599,7 @@ namespace EmpireAtWar.Tests.Editor
             public bool TryGetHardPointApproach(AttackData target, out Vector3 offset) =>
                 throw new NotSupportedException();
             public void ResetTarget() { ResetCount++; }
+            public void SetSpreadFire(bool spreads) { }
             public void Release() => throw new NotSupportedException();
         }
 

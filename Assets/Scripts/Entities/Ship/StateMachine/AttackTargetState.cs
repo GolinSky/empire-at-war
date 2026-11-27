@@ -101,6 +101,9 @@ namespace EmpireAtWar.Entities.Ship.StateMachine
         /// <summary>Class of the current or completed target.</summary>
         public ShipClass? LastTargetClass { get; private set; }
 
+        /// <summary>Where the current or completed target was last seen alive.</summary>
+        public Vector3 LastTargetPosition { get; private set; }
+
         private bool _holdPosition;
 
         public bool IsComplete => _mainTarget == null || _mainTarget.IsDestroyed || !_mainTarget.HasUnits ||
@@ -135,6 +138,7 @@ namespace EmpireAtWar.Entities.Ship.StateMachine
             _mainTarget = _mainTargetEntity.HealthModel;
             LastTargetClass = _mainTarget.ShipClass;
             _mainTargetTransform = _mainTargetEntity.GetFacade<IEntityTransformFacade>().Transform;
+            LastTargetPosition = _mainTargetTransform.position;
             _focusedHardPoint = hardPointId == UnitOrderModel.NO_HARD_POINT
                 ? null
                 : _mainTargetEntity.GetFacade<IHardPointsFacade>().HardPoints[hardPointId];
@@ -228,6 +232,8 @@ namespace EmpireAtWar.Entities.Ship.StateMachine
             {
                 return;
             }
+
+            LastTargetPosition = TargetPosition;
 
             // Once the chosen hardpoint is gone the order keeps going against the whole ship.
             if (_focusedHardPoint != null && _focusedHardPoint.IsDestroyed)

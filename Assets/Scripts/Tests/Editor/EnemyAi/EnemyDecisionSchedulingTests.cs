@@ -571,7 +571,6 @@ namespace EmpireAtWar.Tests.Editor
         {
             public UnitOrderType CurrentOrder => UnitOrderType.None;
             public IEntity AttackTarget => null;
-            public bool IsEngagingEnRoute => false;
             public bool IsUnit { get; set; }
             public bool IsMiningFacility { get; set; }
             public float GrossIncome { get; set; }

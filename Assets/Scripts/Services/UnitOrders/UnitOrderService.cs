@@ -20,7 +20,7 @@ namespace EmpireAtWar.Services.UnitOrders
     public sealed class UnitOrderService : IUnitOrderService
     {
         private const float ATTACK_ARC_HALF_DEGREES = 60f;
-        // A repeated attack-move this close to the last one keeps each ship's slot offset and row: rebuilt rows
+        // A repeated attack-move this close to the last one keeps each ship's slot offset: rebuilt rows
         // gave ships near their slot a new one behind them, and they turned around for a short hop.
         private const float ATTACK_MOVE_SLOT_REUSE_DISTANCE = 300f;
 
@@ -110,7 +110,7 @@ namespace EmpireAtWar.Services.UnitOrders
             List<IEntity> attackers = SplitFocusFire(receivers, target, overflow);
             IssueAttack(attackers, target, AttackerOffsets(receivers, attackers, offsets),
                 UnitOrderModel.NO_HARD_POINT, MovePace.Formation);
-            IssueOverflow(overflow, target, MovePace.Formation);
+            IssueOverflow(overflow, target);
         }
 
         public void IssueHardPointAttack(IReadOnlyList<IEntity> receivers, IEntity target, int hardPointId,
@@ -126,7 +126,7 @@ namespace EmpireAtWar.Services.UnitOrders
             List<IEntity> overflow = new List<IEntity>();
             List<IEntity> attackers = SplitFocusFire(receivers, target, overflow);
             IssueAttack(attackers, target, AttackOffsets(attackers, target), hardPointId, pace);
-            IssueOverflow(overflow, target, pace);
+            IssueOverflow(overflow, target);
         }
 
         // Focus fire cap: ships and squadrons fill separate pools of the attacking team's free slots. Receivers that
@@ -193,11 +193,28 @@ namespace EmpireAtWar.Services.UnitOrders
             return kept;
         }
 
-        // Overflow fights on around the target: attack-move engages other hostiles there and claims no slot.
-        private void IssueOverflow(IReadOnlyList<IEntity> overflow, IEntity target, MovePace pace)
+        // Overflow fights on around the target and claims no slot: each unit attack-moves to engagement range of it on
+        // its own bearing (attack-move holds its point and never closes in), or stays where it already is that close.
+        private void IssueOverflow(IReadOnlyList<IEntity> overflow, IEntity target)
         {
             if (overflow.Count == 0) return;
-            IssueAttackMove(overflow, target.GetFacade<IEntityTransformFacade>().Transform.position, pace);
+            Vector3 point = target.GetFacade<IEntityTransformFacade>().Transform.position;
+            List<Vector3> destinations = new List<Vector3>(overflow.Count);
+            foreach (IEntity unit in overflow)
+                destinations.Add(OverflowPoint(unit.GetFacade<IAttackMoveFacade>(), point, target.HealthModel.ShipClass));
+            IssueAttackMove(overflow, destinations);
+        }
+
+        private static Vector3 OverflowPoint(IAttackMoveFacade unit, Vector3 point, ShipClass targetClass)
+        {
+            Vector3 offset = unit.WorldPosition - point;
+            offset.y = 0f;
+            float range = unit.GetEngagementRange(targetClass);
+            float distance = offset.magnitude;
+            if (distance <= range) return unit.WorldPosition;
+            Vector3 approach = point + offset * (range / distance);
+            approach.y = unit.WorldPosition.y;
+            return approach;
         }
 
         // Only ships get a slot, and a slot only picks the side: the attack state approaches along its direction
@@ -388,16 +405,15 @@ namespace EmpireAtWar.Services.UnitOrders
         {
             List<IEntity> entities = new List<IEntity>();
             List<IAttackMoveFacade> commands = Collect<IAttackMoveFacade>(receivers, entities);
-            List<FormationRow> rows = new List<FormationRow>(commands.Count);
-            List<Vector3> slots = TryReuseAttackMoveLayout(entities, commands, point, rows) ??
-                AttackMoveRows(commands, point, rows);
-            if (entities.Count > 0) RememberAttackMoveLayout(entities, point, slots, rows);
+            List<Vector3> slots = TryReuseAttackMoveLayout(entities, commands, point) ??
+                AttackMoveRows(commands, point);
+            if (entities.Count > 0) RememberAttackMoveLayout(entities, point, slots);
             AttackMoveEngagement engagement = new AttackMoveEngagement();
             PaceCluster[] clusters = pace == MovePace.Formation
                 ? CreateAttackMoveClusters(entities, commands, point)
                 : null;
             for (int i = 0; i < commands.Count; i++)
-                commands[i].AttackMoveTo(slots[i], engagement, clusters?[i], rows[i]);
+                commands[i].AttackMoveTo(slots[i], engagement, clusters?[i]);
             Publish(UnitActionId.AttackMove, receivers, commands.Count, point);
         }
 
@@ -594,7 +610,7 @@ namespace EmpireAtWar.Services.UnitOrders
         }
 
         private List<Vector3> TryReuseAttackMoveLayout(IReadOnlyList<IEntity> entities,
-            IReadOnlyList<IAttackMoveFacade> commands, Vector3 point, List<FormationRow> rows)
+            IReadOnlyList<IAttackMoveFacade> commands, Vector3 point)
         {
             if (entities.Count == 0 || !_lastAttackMoves.TryGetValue(entities[0].Owner, out AttackMoveLayout last) ||
                 PlanarGeometry.Distance(last.Point, point) > ATTACK_MOVE_SLOT_REUSE_DISTANCE)
@@ -604,33 +620,30 @@ namespace EmpireAtWar.Services.UnitOrders
             List<Vector3> slots = new List<Vector3>(entities.Count);
             for (int i = 0; i < entities.Count; i++)
             {
-                (Vector3 offset, FormationRow row) = last.Slots[entities[i].Id];
+                Vector3 offset = last.Slots[entities[i].Id];
                 slots.Add(new Vector3(point.x + offset.x, commands[i].WorldPosition.y, point.z + offset.z));
-                rows.Add(row);
             }
             return slots;
         }
 
         private void RememberAttackMoveLayout(IReadOnlyList<IEntity> entities, Vector3 point,
-            IReadOnlyList<Vector3> slots, IReadOnlyList<FormationRow> rows)
+            IReadOnlyList<Vector3> slots)
         {
             var layout = new AttackMoveLayout(point);
             for (int i = 0; i < entities.Count; i++)
-                layout.Slots[entities[i].Id] = (new Vector3(slots[i].x - point.x, 0f, slots[i].z - point.z), rows[i]);
+                layout.Slots[entities[i].Id] = new Vector3(slots[i].x - point.x, 0f, slots[i].z - point.z);
             _lastAttackMoves[entities[0].Owner] = layout;
         }
 
         private sealed class AttackMoveLayout
         {
             public Vector3 Point { get; }
-            public Dictionary<long, (Vector3 Offset, FormationRow Row)> Slots { get; } =
-                new Dictionary<long, (Vector3, FormationRow)>();
+            public Dictionary<long, Vector3> Slots { get; } = new Dictionary<long, Vector3>();
 
             public AttackMoveLayout(Vector3 point) => Point = point;
         }
 
-        private static List<Vector3> AttackMoveRows(IReadOnlyList<IAttackMoveFacade> commands, Vector3 point,
-            List<FormationRow> rows)
+        private static List<Vector3> AttackMoveRows(IReadOnlyList<IAttackMoveFacade> commands, Vector3 point)
         {
             List<FormationPoint> positions = new List<FormationPoint>(commands.Count);
             List<float> radii = new List<float>(commands.Count);
@@ -645,7 +658,7 @@ namespace EmpireAtWar.Services.UnitOrders
             }
             List<FormationPoint> destinations = new List<FormationPoint>(commands.Count);
             FormationModel.CalculateRowDestinations(positions, radii, tiers, backRow, ToPoint(point),
-                destinations, rows);
+                destinations, new List<FormationRow>(commands.Count));
             List<Vector3> slots = new List<Vector3>(destinations.Count);
             for (int i = 0; i < destinations.Count; i++)
                 slots.Add(new Vector3(destinations[i].X, commands[i].WorldPosition.y, destinations[i].Z));

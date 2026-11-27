@@ -3,6 +3,7 @@ using EmpireAtWar.Components.Movement.Formation;
 using EmpireAtWar.Entities.BaseEntity;
 using EmpireAtWar.Entities.BaseEntity.EntityFacades;
 using EmpireAtWar.Entities.BaseEntity.Orders;
+using EmpireAtWar.Entities.Units;
 using EmpireAtWar.Services.ShipAbilities;
 using UnityEngine;
 
@@ -15,8 +16,6 @@ namespace EmpireAtWar.Entities.Squadrons.EntityFacades
 
         public UnitOrderType CurrentOrder => _squadron.CurrentOrder;
         public IEntity AttackTarget => _squadron.AttackTarget;
-        // Squadrons swarm what their radar finds; only ships break off an attack-move for a warship (W66).
-        public bool IsEngagingEnRoute => false;
         public int OrderRevision => _squadron.OrderRevision;
 
         public void ApplyReplicaOrder(UnitOrderType order, bool isNewOrder) =>
@@ -27,6 +26,7 @@ namespace EmpireAtWar.Entities.Squadrons.EntityFacades
         public float PaceSpeed => _squadron.PaceSpeed;
         public int HullTier => 0;
         public bool IsBackRow => false;
+        public float GetEngagementRange(ShipClass targetClass) => 0f;
 
         public SquadronOrderFacade(Squadron squadron) => _squadron = squadron;
 
@@ -38,8 +38,7 @@ namespace EmpireAtWar.Entities.Squadrons.EntityFacades
             _squadron.Attack(target, formationOffset, pace);
 
         // Fighters swarm whatever their own radar finds, so squadrons do not join the shared engagement.
-        public void AttackMoveTo(Vector3 worldPosition, AttackMoveEngagement engagement, PaceCluster pace = null,
-            FormationRow row = FormationRow.Front) =>
+        public void AttackMoveTo(Vector3 worldPosition, AttackMoveEngagement engagement, PaceCluster pace = null) =>
             _squadron.AttackMoveTo(worldPosition, pace);
 
         public void Stop() => _squadron.Stop();

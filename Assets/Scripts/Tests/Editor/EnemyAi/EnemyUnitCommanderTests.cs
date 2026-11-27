@@ -1157,7 +1157,6 @@ namespace EmpireAtWar.Tests.Editor
         private sealed class FakeSquadron : IEntity, ISquadron, IUnitTypeFacade, IUnitOrderObserverFacade
         {
             public IEntity AttackTarget => null;
-            public bool IsEngagingEnRoute => false;
             public event Action Released;
             public UnitOrderType CurrentOrder { get; set; }
             public int OrdersReceived { get; private set; }
@@ -2754,45 +2753,6 @@ namespace EmpireAtWar.Tests.Editor
                 Context(new IShipEntity[] { ship }, guardPosition: gather));
             Assert.That(orders.Calls.Single().Action, Is.EqualTo(UnitActionId.AttackMove),
                 "After an order elsewhere the ship is placed afresh.");
-        }
-
-        // W66, D3: a ship fighting on its way is not re-ordered, the group keeps going, and the group asks once per
-        // interval for one reinforcement drop beside it.
-        [Test]
-        public void EngagedEnRoute_ShipIsNotReorderedAndTheGroupAsksOnceForADrop()
-        {
-            var engaged = new FakeShip(Vector3.zero, 1) { CurrentOrder = UnitOrderType.AttackMove };
-            var free = new FakeShip(Vector3.right * 50f, 2);
-            Vector3 guard = Vector3.forward * (FleetCohesion.RADIUS * 3f);
-            EnemyStrategicContext context = Context(new IShipEntity[] { engaged, free }, guardPosition: guard);
-            var engagedEntity = (FakeEntity)context.Receivers[engaged];
-            engagedEntity.IsEngagingEnRoute = true;
-            var orders = new FakeOrderService();
-            var executor = new EnemyTaskForceExecutor(orders, UnlimitedFocusFireSlots.Instance);
-
-            executor.Execute(new EnemyStrategicDecision("test", EnemyStrategicState.GuardSite, 2), context);
-
-            Assert.That(orders.Calls.SelectMany(call => call.Receivers).Select(receiver => receiver.Id),
-                Is.EqualTo(new[] { free.EntityId }), "The group keeps going; the fighting ship keeps its fight.");
-
-            var group = new EnemyShipTaskGroup(null, new EnemyStrategicDecisionModel(), executor,
-                new EnemyStrikeCycleAssessor(null, UnlimitedFocusFireSlots.Instance, TestHitAndRunSettings.OFF));
-            typeof(EnemyShipTaskGroup).GetField("<Context>k__BackingField", BindingFlags.Instance | BindingFlags.NonPublic)
-                .SetValue(group, context);
-            Assert.That(group.TryRequestReinforcementDrop(0f, out Vector3 drop), Is.True);
-            Assert.That(drop, Is.EqualTo(engaged.WorldPosition));
-            Assert.That(group.TryRequestReinforcementDrop(EnemyShipTaskGroup.DROP_REQUEST_INTERVAL * 0.5f, out _),
-                Is.False, "One drop request per interval.");
-            Assert.That(group.TryRequestReinforcementDrop(EnemyShipTaskGroup.DROP_REQUEST_INTERVAL, out _), Is.True);
-            engagedEntity.IsEngagingEnRoute = false;
-            Assert.That(group.TryRequestReinforcementDrop(EnemyShipTaskGroup.DROP_REQUEST_INTERVAL * 3f, out _),
-                Is.False, "No fight on the way: no drop.");
-
-            free.CurrentOrder = UnitOrderType.AttackMove;
-            orders.Calls.Clear();
-            executor.Execute(new EnemyStrategicDecision("test", EnemyStrategicState.GuardSite, 2), context);
-            Assert.That(orders.Calls.Single().Receivers.Single().Id, Is.EqualTo(engaged.EntityId),
-                "Once its fight ends the ship rejoins its group's order.");
         }
 
         // Hit-and-run: the strike ships attack the cycle's target; the other ships keep the state's orders.
@@ -4944,7 +4904,6 @@ namespace EmpireAtWar.Tests.Editor
             public DefendPlatformType Type { get; set; } = DefendPlatformType.TurbolaserSatellite;
             public UnitOrderType CurrentOrder { get; set; } = UnitOrderType.None;
             public IEntity AttackTarget { get; set; }
-            public bool IsEngagingEnRoute { get; set; }
             public bool IsUnit { get; set; } = true;
             public bool IsDefendPlatform { get; set; }
             public StructureKind Kind => StructureKind.DefendPlatform;

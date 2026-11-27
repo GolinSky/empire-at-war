@@ -9,6 +9,7 @@
 
 ### Features
 
+- [ ] **Attack-move spread fire + formation hold; no idle back line after an attack kill; lower ship focus-fire caps** → [[TODOs/Features/AttackMove_Spread_Fire_And_Formation|AttackMove Spread Fire & Formation]] — 2026-11-27: implemented; 7 categories green; user battle check pending.
 - [ ] **Ship hull damage visuals (scorches, burnt plating, breaches in `Ship Lit`)** → [[TODOs/Features/Ship_Hull_Damage_Shader_Plan|Ship Hull Damage Shader Plan]] — 2026-11-20: Phase 1 implemented and tuned with the user (procedural soot scorches, off-centre sunken burnt patches with glowing rim, 31 steps, per-ship auto mark scale). Perf review + optimizations R1–R6 done (plane pre-test, shape skip, far-ship LOD, cheap activation hash, quality tier, dead texture removed). Tests not run. Next (user): in-game check, GPU capture, Phase 2 decision.
 - [ ] **Ship UI: icon double-tap camera focus (off-screen only) + tap group entry → select that single unit** → [[TODOs/Features/Ship_Ui_Icon_Focus_And_Entry_Select|Ship UI Icon Focus & Entry Select]] — 2026-11-19: plan drafted; 3 open questions (hero guard, on-screen behavior, collapsed groups).
 - [ ] **Forbidden UI SFX** → [[Done/Features/Ui_Sfx_System#Deferred follow-up|Deferred forbidden cue]].

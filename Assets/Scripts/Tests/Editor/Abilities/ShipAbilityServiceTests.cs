@@ -1558,7 +1558,6 @@ namespace EmpireAtWar.Tests.Editor
             public float PaceSpeed => 30f;
             public UnitOrderType CurrentOrder { get; set; }
             public IEntity AttackTarget { get; private set; }
-            public bool IsEngagingEnRoute => false;
             public int AttackCount { get; private set; }
             public void Attack(IEntity target, Vector3 formationOffset, PaceCluster pace = null)
             {

@@ -30,6 +30,7 @@ namespace EmpireAtWar.Entities.Ship.EntityFacades
         // BattleCruisers and larger lead whatever their loadout (the Xyston is laser-heavy).
         public bool IsBackRow => (_data.Roles & (UnitRole.Artillery | UnitRole.AntiStrikecraft)) != 0 &&
             HullTier < ShipClass.BattleCruiser.HullTier();
+        public float GetEngagementRange(ShipClass targetClass) => _orders.GetEngagementRange(targetClass);
         public bool IsArriving => _moveModel.Phase == MovementPhase.Arriving;
         public bool IsAbilityFacing => _orders.IsAbilityFacing;
         public void BeginAbilityFacing() => _orders.BeginAbilityFacing();
@@ -37,7 +38,6 @@ namespace EmpireAtWar.Entities.Ship.EntityFacades
         public void EndAbilityFacing() => _orders.EndAbilityFacing();
         public UnitOrderType CurrentOrder => _orders.CurrentOrder;
         public IEntity AttackTarget => _orders.AttackTarget;
-        public bool IsEngagingEnRoute => _orders.IsEngagingEnRoute;
         public int OrderRevision => _orders.OrderRevision;
 
         public void ApplyReplicaOrder(UnitOrderType order, bool isNewOrder) =>
@@ -61,9 +61,8 @@ namespace EmpireAtWar.Entities.Ship.EntityFacades
         public void AttackHardPoint(IEntity target, int hardPointId, Vector3 formationOffset, PaceCluster pace = null) =>
             _orders.AttackHardPoint(target, hardPointId, formationOffset, pace);
 
-        public void AttackMoveTo(Vector3 worldPosition, AttackMoveEngagement engagement, PaceCluster pace = null,
-            FormationRow row = FormationRow.Front) =>
-            _orders.AttackMoveTo(worldPosition, engagement, pace, row);
+        public void AttackMoveTo(Vector3 worldPosition, AttackMoveEngagement engagement, PaceCluster pace = null) =>
+            _orders.AttackMoveTo(worldPosition, engagement, pace);
 
         public void Stop() => _orders.Stop();
 

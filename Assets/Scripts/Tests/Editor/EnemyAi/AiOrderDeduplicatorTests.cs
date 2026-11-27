@@ -163,26 +163,6 @@ namespace EmpireAtWar.Tests.Editor
             Assert.That(orders.Issued, Is.EqualTo(new[] { "AttackMove:1", "Stop:1", "AttackMove:1" }));
         }
 
-        // W66: a ship fighting a warship that hit it on its attack-move keeps that fight; only a retreat reaches it.
-        [Test]
-        public void ShipEngagedEnRoute_KeepsItsFightUntilARetreat()
-        {
-            var orders = new RecordingOrders();
-            var filter = new AiOrderDeduplicator(orders);
-            var engaged = new OrderedEntity(UnitOrderType.AttackMove) { IsEngagingEnRoute = true };
-            var free = new OrderedEntity(UnitOrderType.None);
-
-            filter.IssueAttackMove(new IEntity[] { engaged, free }, Vector3.zero);
-            filter.IssueStop(new IEntity[] { engaged });
-            filter.IssueGuard(new IEntity[] { engaged, free }, free);
-            filter.IssueRetreat(new IEntity[] { engaged }, Vector3.one);
-
-            Assert.That(orders.Issued, Is.EqualTo(new[] { "AttackMove:1", "Guard:1", "Retreat:1" }));
-            Assert.That(orders.Receivers[0], Is.EqualTo(new IEntity[] { free }));
-            Assert.That(orders.Receivers[1], Is.EqualTo(new IEntity[] { free }));
-            Assert.That(orders.Receivers[2], Is.EqualTo(new IEntity[] { engaged }));
-        }
-
         private sealed class RecordingOrders : IUnitOrderService
         {
             public List<string> Issued { get; } = new List<string>();
@@ -228,7 +208,6 @@ namespace EmpireAtWar.Tests.Editor
             public PlayerId Owner => TestPlayers.Enemy;
             public UnitOrderType CurrentOrder { get; }
             public IEntity AttackTarget { get; set; }
-            public bool IsEngagingEnRoute { get; set; }
 
             public OrderedEntity(UnitOrderType currentOrder) => CurrentOrder = currentOrder;
 

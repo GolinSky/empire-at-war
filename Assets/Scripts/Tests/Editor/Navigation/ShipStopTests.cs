@@ -81,6 +81,7 @@ namespace EmpireAtWar.Tests.Editor
                 throw new System.NotSupportedException();
 
             public void ResetTarget() => ResetCount++;
+            public void SetSpreadFire(bool spreads) { }
 
             public void Release() { }
         }

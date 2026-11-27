@@ -190,15 +190,14 @@ namespace EmpireAtWar.Services.Enemy
                 EnemyStrategicState.EngageLocal or EnemyStrategicState.RebuildFleet;
 
         /// <summary>
-        /// D3: a group ship fights on its way; the group keeps going and asks for one reinforcement drop beside it, at
-        /// most once per <see cref="DROP_REQUEST_INTERVAL"/>. A strike ship lost in a hit-and-run cycle asks for one at
-        /// the safe point of the cycle the same way. False before the first decision.
+        /// A strike ship lost in a hit-and-run cycle asks for one reinforcement drop at the safe point of the cycle, at
+        /// most once per <see cref="DROP_REQUEST_INTERVAL"/>. False before the first decision.
         /// </summary>
         public bool TryRequestReinforcementDrop(float now, out Vector3 point)
         {
             point = default;
             if (Context == null || now < _nextDropRequestAt ||
-                !StrikeCycle.TryTakeLostStriker(out point) && !Executor.TryFindEngagedEnRoute(Context, out point))
+                !StrikeCycle.TryTakeLostStriker(out point))
                 return false;
             _nextDropRequestAt = now + DROP_REQUEST_INTERVAL;
             return true;

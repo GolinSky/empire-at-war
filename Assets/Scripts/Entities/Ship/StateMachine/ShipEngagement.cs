@@ -1,5 +1,4 @@
 using EmpireAtWar.Components.AttackComponent;
-using EmpireAtWar.Components.Movement.Formation;
 using EmpireAtWar.Components.Radar;
 using EmpireAtWar.Components.Ship.Movement;
 using EmpireAtWar.Components.Weapon;
@@ -17,9 +16,6 @@ namespace EmpireAtWar.Entities.Ship.StateMachine
     public static class ShipEngagement
     {
         private const float STANDOFF_RANGE_FACTOR = 0.65f;
-        // Attack-move rows: rear rows stand off farther so the front row takes the contact; never past full reach.
-        private const float MIDDLE_ROW_STANDOFF_RANGE_FACTOR = 0.75f;
-        private const float BACK_ROW_STANDOFF_RANGE_FACTOR = 0.9f;
         private const float SIEGE_CLEARANCE_MARGIN = 1f;
         /// <summary>
         /// A ship already holding on a target keeps holding while the target is within this multiple of its reach;
@@ -261,20 +257,11 @@ namespace EmpireAtWar.Entities.Ship.StateMachine
         /// Commits to one firing-range approach until arrival or a new target.
         /// </summary>
         public static void Pursue(IShipMovement movement, IWeaponComponent weapon,
-            IEntity target, bool newTarget = false, float standoffFactor = STANDOFF_RANGE_FACTOR)
+            IEntity target, bool newTarget = false)
         {
             if (!newTarget && movement.IsMoving) return;
-            movement.MoveToPosition(GetStandoffPosition(movement, weapon, target, standoffFactor: standoffFactor),
-                preserveCourse: !newTarget);
+            movement.MoveToPosition(GetStandoffPosition(movement, weapon, target), preserveCourse: !newTarget);
         }
-
-        /// <summary>Share of engagement range an attack-move ship in <paramref name="row"/> stands off at.</summary>
-        public static float GetStandoffFactor(FormationRow row) => row switch
-        {
-            FormationRow.Middle => MIDDLE_ROW_STANDOFF_RANGE_FACTOR,
-            FormationRow.Back => BACK_ROW_STANDOFF_RANGE_FACTOR,
-            _ => STANDOFF_RANGE_FACTOR
-        };
 
         public static Vector3 GetStandoffPosition(IShipMovement movement,
             IWeaponComponent weapon, IEntity target, Vector3 formationOffset = default,

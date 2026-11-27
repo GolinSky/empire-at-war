@@ -165,7 +165,6 @@ namespace EmpireAtWar.Services.Enemy
             _markerShips.Clear();
             HoldsAtGatherPoint = false;
             IsAssemblingCapture = false;
-            ForgetEngagedEnRoute(context);
             // W49: a new state that sends the ships to the point they already hold or head for keeps their assignments.
             Vector3? orderPoint = GetOrderPoint(decision.State, context);
             bool samePoint = orderPoint.HasValue && _lastOrderPoint.HasValue &&
@@ -333,16 +332,6 @@ namespace EmpireAtWar.Services.Enemy
         };
 
         /// <summary>
-        /// A ship fighting a warship that hit it on its attack-move is not ordered (the order filter skips it, W66);
-        /// its assignment is dropped so it is placed afresh once the fight ends.
-        /// </summary>
-        private void ForgetEngagedEnRoute(EnemyStrategicContext context)
-        {
-            foreach (IShipEntity ship in context.Ships)
-                if (IsEngagingEnRoute(context, ship)) ForgetShip(ship);
-        }
-
-        /// <summary>
         /// X4: drops every per-ship assignment, so the next state places the ship afresh instead of trusting an order
         /// another path replaced. <paramref name="keepGathering"/> keeps the rally anchor and hold point that a rally
         /// itself manages.
@@ -363,22 +352,6 @@ namespace EmpireAtWar.Services.Enemy
             _defensePoints.Remove(ship);
             _defenseTargets.Remove(ship);
         }
-
-        /// <summary>A group ship fighting on its way (W66, D3): the group keeps going and may ask for a reinforcement there.</summary>
-        public bool TryFindEngagedEnRoute(EnemyStrategicContext context, out Vector3 position)
-        {
-            foreach (IShipEntity ship in context.Ships)
-            {
-                if (!IsEngagingEnRoute(context, ship)) continue;
-                position = ship.WorldPosition;
-                return true;
-            }
-            position = default;
-            return false;
-        }
-
-        private static bool IsEngagingEnRoute(EnemyStrategicContext context, IShipEntity ship) =>
-            context.Receivers[ship].GetFacade<IUnitOrderObserverFacade>().IsEngagingEnRoute;
 
         private void ExecuteLocalEngagement(EnemyStrategicDecision decision, EnemyStrategicContext context)
         {
@@ -837,8 +810,6 @@ namespace EmpireAtWar.Services.Enemy
             {
                 if (marker.Type == TacticalMarkerType.Retreat &&
                     !AllyAiMarkerSource.Near(ship.WorldPosition, marker.Point)) continue;
-                // A ship fighting on its way takes the marker once its fight ends (W66).
-                if (marker.Type != TacticalMarkerType.Retreat && IsEngagingEnRoute(context, ship)) continue;
                 if (!_markerShips.Add(ship)) continue;
                 ForgetShip(ship);
                 receivers.Add(context.Receivers[ship]);
@@ -877,7 +848,6 @@ namespace EmpireAtWar.Services.Enemy
             _markerShips.Clear();
             HoldsAtGatherPoint = context.GuardPosition.HasValue;
             if (context.Ships.Count == 0) return;
-            ForgetEngagedEnRoute(context);
             foreach (IShipEntity ship in context.Ships) ForgetShip(ship, keepGathering: true);
             IShipEntity anchor = SplitBody(context.Ships, context.Ships.Count);
             RallyBody(context, anchor, context.GuardPosition);

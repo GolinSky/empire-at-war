@@ -212,7 +212,6 @@ namespace EmpireAtWar.Tests.Editor
             public IHealthModelObserver Health { get; }
             public float RadarRange => RANGE * 2f;
             public UnitOrderType CurrentOrder { get; private set; }
-            public bool IsEngagingEnRoute => false;
 
             public IEntity AttackTarget
             {

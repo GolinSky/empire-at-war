@@ -43,5 +43,11 @@ namespace EmpireAtWar.Components.Weapon
         bool CanUseSiegeApproach(IEntity target);
 
         void ResetTarget();
+
+        /// <summary>
+        /// Spread fire (attack-move): a gun skips an enemy that already holds more than an even share of this ship's
+        /// guns while another enemy of the same preference is in its reach.
+        /// </summary>
+        void SetSpreadFire(bool spreads);
     }
 }

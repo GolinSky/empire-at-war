@@ -515,9 +515,14 @@ namespace EmpireAtWar.Tests.Movement
             return state;
         }
 
-        [Test]
-        public void Attack_TargetKilled_NoRadarContactStaysInPlace()
+        // The ship stays at the origin. Engagement range of the fake weapon is 100: a target dying at 500 leaves it
+        // short, so it closes to 400; one at 80 is already in reach.
+        [TestCase(500f, 400f, true)]
+        [TestCase(80f, 0f, false)]
+        public void Attack_TargetKilledWithNothingInReach_AttackMovesToFiringRangeOfTheFight(float targetX,
+            float expectedX, bool moves)
         {
+            _target.Transform.position = Vector3.right * targetX;
             AbilityCaster caster = new AbilityCaster(_target, _movement, ShipAbilityId.BoostEnginePower);
             var abilityRelations = TestPlayers.CreateDuel();
             ShipAbilityService abilities = new ShipAbilityService(new AbilityFactory(new RecordingAbility()),
@@ -526,18 +531,24 @@ namespace EmpireAtWar.Tests.Movement
             UnitOrderModel orders = new UnitOrderModel();
             ShipStateMachine machine = new ShipStateMachine();
             IdleState idle = new IdleState(_movement, _weapon, radar, new AttackDataFactory(), new FakeShipThreats(), FreeFocusFireClaim.Instance);
-            AttackMoveState attackMove = new AttackMoveState(_movement, _weapon, radar, null, new FakeShipThreats());
+            AttackMoveState attackMove = new AttackMoveState(_movement, _weapon, radar, new FakeShipThreats());
             ShipOrderRunner runner = new ShipOrderRunner(_movement, _weapon, null, orders, machine,
                 idle, null, new AttackTargetState(null, _weapon, _movement, FreeFocusFireClaim.Instance), attackMove, null, null, null, abilities, caster, radar, null, new NoTeamContacts(), TestPlayers.Human, FreeFocusFireClaim.Instance);
             runner.Start();
             runner.Attack(_target, Vector3.zero);
+            _movement.FinishLeg();
+            int plans = _movement.MoveCount;
 
             _target.Health.IsDestroyed = true;
             runner.Tick(0.1f);
 
-            Assert.That(orders.Current, Is.EqualTo(UnitOrderType.None));
-            Assert.That(machine.CurrentState, Is.SameAs(idle));
-            Assert.That(_movement.IsMoving, Is.False);
+            Assert.That(orders.Current, Is.EqualTo(UnitOrderType.AttackMove), "No idle back line after the kill.");
+            Assert.That(machine.CurrentState, Is.SameAs(attackMove));
+            Assert.That(_movement.MoveCount, Is.EqualTo(moves ? plans + 1 : plans));
+            if (moves)
+                Assert.That(_movement.Destination.x, Is.EqualTo(expectedX).Within(0.01f),
+                    "The ship closes to engagement range of where the target died, on its own bearing.");
+            Assert.That(_weapon.SpreadsFire, Is.True);
             abilities.Clear();
         }
 
@@ -799,19 +810,6 @@ namespace EmpireAtWar.Tests.Movement
         }
 
         [Test]
-        public void AttackMoveRows_RearRowsStandOffFartherButWithinReach()
-        {
-            float reach = _weapon.GetEngagementRange(_target.Health.ShipClass);
-            float Standoff(FormationRow row) => Vector3.Distance(_target.Transform.position,
-                ShipEngagement.GetStandoffPosition(_movement, _weapon, _target,
-                    standoffFactor: ShipEngagement.GetStandoffFactor(row)));
-
-            Assert.That(Standoff(FormationRow.Middle), Is.GreaterThan(Standoff(FormationRow.Front)));
-            Assert.That(Standoff(FormationRow.Back), Is.GreaterThan(Standoff(FormationRow.Middle)));
-            Assert.That(Standoff(FormationRow.Back), Is.LessThanOrEqualTo(reach));
-        }
-
-        [Test]
         public void SharedPursuit_FormationBearingSurvivesOwnDetour()
         {
             Vector3 offset = Vector3.forward * 20f;
@@ -968,7 +966,7 @@ namespace EmpireAtWar.Tests.Movement
         {
             // Seeded so the random first delay is above zero; edit-mode time does not advance between ticks.
             UnityEngine.Random.InitState(7);
-            AttackMoveState state = new AttackMoveState(_movement, _weapon, new Radar(), null, new FakeShipThreats());
+            AttackMoveState state = new AttackMoveState(_movement, _weapon, new Radar(), new FakeShipThreats());
             state.SetData(Vector3.zero, new AttackMoveEngagement());
             state.Enter();
             _movement.FinishLeg();
@@ -980,14 +978,43 @@ namespace EmpireAtWar.Tests.Movement
         }
 
         [Test]
-        public void AttackMove_EnRouteShipFliesPastContactsOutsideTheArea()
+        public void AttackMove_SpreadsFireWhileActiveAndMakesNoEnemyTheMainTarget()
         {
             const BindingFlags PRIVATE_INSTANCE = BindingFlags.Instance | BindingFlags.NonPublic;
+            _target.Transform.position = Vector3.right * 50f;
             Radar radar = new Radar();
             radar.Enemies.Add(_target);
+            AttackMoveState state = new AttackMoveState(_movement, _weapon, radar, new FakeShipThreats());
+            state.SetData(Vector3.zero, new AttackMoveEngagement());
+            state.Enter();
+            Assert.That(_weapon.SpreadsFire, Is.True);
+            _movement.FinishLeg();
+            typeof(AttackMoveState).GetField("_nextSearchTime", PRIVATE_INSTANCE)
+                .SetValue(state, float.NegativeInfinity);
+
+            state.Tick(0.1f);
+
+            Assert.That(state.IsEngaging, Is.True);
+            Assert.That(_weapon.MainTargetAdds, Is.Zero, "Guns pick their own targets.");
+            state.Exit();
+            Assert.That(_weapon.SpreadsFire, Is.False);
+        }
+
+        [TestCase(false)]
+        [TestCase(true)]
+        public void AttackMove_EnRouteShipKeepsItsCourseThroughEnemiesInReach(bool isHit)
+        {
+            const BindingFlags PRIVATE_INSTANCE = BindingFlags.Instance | BindingFlags.NonPublic;
+            _target.Transform.position = Vector3.right * 50f;
+            _target.Health.ShipClass = ShipClass.Capital;
+            Radar radar = new Radar();
+            radar.Enemies.Add(_target);
+            FakeShipThreats threats = new FakeShipThreats { WasDamagedRecently = isHit };
+            if (isHit) threats.SelfAttackers.Add(_target);
             AttackMoveEngagement engagement = new AttackMoveEngagement();
-            AttackMoveState state = new AttackMoveState(_movement, _weapon, radar, null, new FakeShipThreats());
-            state.SetData(Vector3.forward * 100f, engagement);
+            Vector3 point = Vector3.forward * 1000f;
+            AttackMoveState state = new AttackMoveState(_movement, _weapon, radar, threats);
+            state.SetData(point, engagement);
             state.Enter();
             int moves = _movement.MoveCount;
             typeof(AttackMoveState).GetField("_nextSearchTime", PRIVATE_INSTANCE)
@@ -997,99 +1024,66 @@ namespace EmpireAtWar.Tests.Movement
 
             Assert.That(engagement.Contains(_target), Is.True, "En-route ships report contacts to the group.");
             Assert.That(state.IsEngaging, Is.False);
+            Assert.That(_movement.HeldTarget, Is.Null, "The ship never stops on the way: the group stays in formation.");
             Assert.That(_movement.IsMoving, Is.True);
             Assert.That(_movement.MoveCount, Is.EqualTo(moves));
-            Assert.That(_movement.Destination, Is.EqualTo(Vector3.forward * 100f));
+            Assert.That(_movement.Destination, Is.EqualTo(point));
             state.Exit();
         }
 
         [Test]
-        public void AttackMove_EnRouteShipEngagesAnAreaEnemyFromFiringRangeWithoutReachingThePoint()
+        public void AttackMove_ArrivedShipTurnsToAnEnemyBeyondReachWithoutLeavingItsSlot()
         {
             const BindingFlags PRIVATE_INSTANCE = BindingFlags.Instance | BindingFlags.NonPublic;
-            Vector3 point = Vector3.forward * 1000f;
-            float reach = _weapon.GetEngagementRange(_target.Health.ShipClass);
-            _target.Transform.position = point + Vector3.back * (reach * 0.5f);
+            _target.Transform.position = Vector3.right * 300f;
             Radar radar = new Radar();
             radar.Enemies.Add(_target);
-            AttackMoveState state = new AttackMoveState(_movement, _weapon, radar, new AttackDataFactory(),
-                new FakeShipThreats());
-            state.SetData(point, new AttackMoveEngagement());
+            AttackMoveState state = new AttackMoveState(_movement, _weapon, radar, new FakeShipThreats());
+            state.SetData(Vector3.zero, new AttackMoveEngagement());
             state.Enter();
+            _movement.FinishLeg();
+            int moves = _movement.MoveCount;
             typeof(AttackMoveState).GetField("_nextSearchTime", PRIVATE_INSTANCE)
                 .SetValue(state, float.NegativeInfinity);
 
             state.Tick(0.1f);
 
             Assert.That(state.IsEngaging, Is.True);
-            Assert.That(state.IsEngagingEnRoute, Is.False);
-            Assert.That(_movement.Destination, Is.Not.EqualTo(point), "The ship heads for firing range, not the point.");
-            Assert.That(Vector3.Distance(_movement.Destination, _target.Transform.position), Is.LessThanOrEqualTo(reach));
-
-            _movement.FinishLeg();
-            state.Tick(0.1f);
-            Assert.That(_movement.HeldTarget, Is.SameAs(_target), "The ship stops and fights at firing range.");
+            Assert.That(_movement.LookTarget, Is.SameAs(_target));
+            Assert.That(_movement.MoveCount, Is.EqualTo(moves), "No chase off the slot.");
+            Assert.That(state.IsComplete, Is.False);
             state.Exit();
         }
 
         [Test]
-        public void AttackMove_ArrivedShipDoesNotChaseEnemiesBeyondReachOfItsPoint()
+        public void AttackMove_ArrivedShipCompletesOnceTheGroupReportsNoEnemy()
         {
             const BindingFlags PRIVATE_INSTANCE = BindingFlags.Instance | BindingFlags.NonPublic;
-            _target.Transform.position = Vector3.right * 300f;
-            Radar radar = new Radar();
-            radar.Enemies.Add(_target);
-            AttackMoveEngagement engagement = new AttackMoveEngagement();
-            AttackMoveState state = new AttackMoveState(_movement, _weapon, radar, null, new FakeShipThreats());
-            state.SetData(Vector3.zero, engagement);
-            state.Enter();
-            _movement.FinishLeg();
-            int moves = _movement.MoveCount;
-            typeof(AttackMoveState).GetField("_nextSearchTime", PRIVATE_INSTANCE)
-                .SetValue(state, float.NegativeInfinity);
-
-            state.Tick(0.1f);
-
-            Assert.That(engagement.Contains(_target), Is.True);
-            Assert.That(state.IsEngaging, Is.False);
-            Assert.That(_movement.MoveCount, Is.EqualTo(moves));
-            Assert.That(state.IsComplete, Is.True);
-            state.Exit();
-        }
-
-        [Test]
-        public void AttackMove_LostTargetSearchesBeforeReturningToThePoint()
-        {
-            const BindingFlags PRIVATE_INSTANCE = BindingFlags.Instance | BindingFlags.NonPublic;
-            // Seeded so the random search delay is above zero; edit-mode time does not advance between ticks.
-            UnityEngine.Random.InitState(7);
             _target.Transform.position = Vector3.right * 90f;
             Radar radar = new Radar();
             radar.Enemies.Add(_target);
-            AttackMoveState state = new AttackMoveState(_movement, _weapon, radar, null, new FakeShipThreats());
+            AttackMoveState state = new AttackMoveState(_movement, _weapon, radar, new FakeShipThreats());
             state.SetData(Vector3.zero, new AttackMoveEngagement());
             state.Enter();
             _movement.FinishLeg();
-            typeof(AttackMoveState).GetField("_engagementTarget", PRIVATE_INSTANCE).SetValue(state, _target);
+            FieldInfo nextSearch = typeof(AttackMoveState).GetField("_nextSearchTime", PRIVATE_INSTANCE);
+            nextSearch.SetValue(state, float.NegativeInfinity);
             state.Tick(0.1f);
-            _movement.CurrentPosition = Vector3.right * 50f;
+            Assert.That(state.IsEngaging, Is.True);
             int moves = _movement.MoveCount;
 
             radar.Enemies.Remove(_target);
+            nextSearch.SetValue(state, float.NegativeInfinity);
             state.Tick(0.1f);
-            Assert.That(state.IsEngaging, Is.False);
-            Assert.That(_movement.MoveCount, Is.EqualTo(moves), "No return before the next target search.");
 
-            typeof(AttackMoveState).GetField("_nextSearchTime", PRIVATE_INSTANCE)
-                .SetValue(state, float.NegativeInfinity);
-            state.Tick(0.1f);
-            Assert.That(_movement.MoveCount, Is.EqualTo(moves + 1));
-            Assert.That(_movement.Destination, Is.EqualTo(Vector3.zero));
+            Assert.That(state.IsEngaging, Is.False);
+            Assert.That(state.IsComplete, Is.True);
+            Assert.That(_movement.MoveCount, Is.EqualTo(moves), "The ship stays on its slot.");
             state.Exit();
         }
 
         [Test]
-        public void AttackMove_AfterAKillPicksTheNextTargetWithoutHeadingBackFirst()
+        public void AttackMove_AfterAKillTurnsToTheNextEnemyWithoutMoving()
         {
             const BindingFlags PRIVATE_INSTANCE = BindingFlags.Instance | BindingFlags.NonPublic;
             GameObject nextObject = new GameObject("Next enemy");
@@ -1101,68 +1095,26 @@ namespace EmpireAtWar.Tests.Movement
                 Radar radar = new Radar();
                 radar.Enemies.Add(_target);
                 radar.Enemies.Add(next);
-                AttackMoveState state = new AttackMoveState(_movement, _weapon, radar, new AttackDataFactory(),
-                    new FakeShipThreats());
+                AttackMoveState state = new AttackMoveState(_movement, _weapon, radar, new FakeShipThreats());
                 state.SetData(Vector3.zero, new AttackMoveEngagement());
                 state.Enter();
                 _movement.FinishLeg();
-                typeof(AttackMoveState).GetField("_engagementTarget", PRIVATE_INSTANCE).SetValue(state, _target);
+                FieldInfo nextSearch = typeof(AttackMoveState).GetField("_nextSearchTime", PRIVATE_INSTANCE);
+                typeof(AttackMoveState).GetField("_facingTarget", PRIVATE_INSTANCE).SetValue(state, _target);
                 state.Tick(0.1f);
                 Assert.That(_movement.HeldTarget, Is.SameAs(_target));
                 int moves = _movement.MoveCount;
 
                 _target.Health.IsDestroyed = true;
-                state.Tick(0.1f);
-                typeof(AttackMoveState).GetField("_nextSearchTime", PRIVATE_INSTANCE)
-                    .SetValue(state, float.NegativeInfinity);
+                nextSearch.SetValue(state, float.NegativeInfinity);
                 state.Tick(0.1f);
 
                 Assert.That(state.IsEngaging, Is.True);
                 Assert.That(_movement.HeldTarget, Is.SameAs(next));
-                Assert.That(_movement.MoveCount, Is.EqualTo(moves), "No leg back to the point before the next target.");
+                Assert.That(_movement.MoveCount, Is.EqualTo(moves));
                 state.Exit();
             }
             finally { Object.DestroyImmediate(nextObject); }
-        }
-
-        [TestCase(ShipClass.Fighter, true, true, false)]
-        [TestCase(ShipClass.Corvette, false, true, false)]
-        [TestCase(ShipClass.Capital, true, false, false)]
-        [TestCase(ShipClass.Corvette, true, true, true)]
-        [TestCase(ShipClass.Capital, true, true, true)]
-        public void AttackMove_EnRouteBreaksOffOnlyForAWarshipThatHitsIt(ShipClass shipClass, bool takesOrders,
-            bool isAttacker, bool breaksOff)
-        {
-            _target.Transform.position = Vector3.right * 50f;
-            _target.Health.ShipClass = shipClass;
-            _target.HasOrders = takesOrders;
-            Radar radar = new Radar();
-            radar.Enemies.Add(_target);
-            FakeShipThreats threats = new FakeShipThreats { WasDamagedRecently = true };
-            if (isAttacker) threats.SelfAttackers.Add(_target);
-            Vector3 point = Vector3.forward * 1000f;
-            AttackMoveState state = new AttackMoveState(_movement, _weapon, radar, new AttackDataFactory(), threats);
-            state.SetData(point, new AttackMoveEngagement());
-            state.Enter();
-
-            state.Tick(0.1f);
-
-            Assert.That(state.IsEngagingEnRoute, Is.EqualTo(breaksOff));
-            Assert.That(_movement.IsMoving, Is.EqualTo(!breaksOff), "Fly-first holds for everything else.");
-            if (!breaksOff)
-            {
-                Assert.That(_movement.Destination, Is.EqualTo(point));
-                state.Exit();
-                return;
-            }
-
-            Assert.That(_movement.HeldTarget, Is.SameAs(_target));
-            _target.Health.IsDestroyed = true;
-            state.Tick(0.1f);
-            Assert.That(state.IsEngagingEnRoute, Is.False);
-            Assert.That(_movement.IsMoving, Is.True, "The flight resumes once the attacker is gone.");
-            Assert.That(_movement.Destination, Is.EqualTo(point));
-            state.Exit();
         }
 
         [Test]
@@ -1385,7 +1337,7 @@ namespace EmpireAtWar.Tests.Movement
             ShipAbilityService abilities = new ShipAbilityService(new AbilityFactory(new RecordingAbility()),
                 abilityRelations, new VisionService(abilityRelations, fogEnabled: false));
             Radar radar = new Radar();
-            AttackMoveState attackMove = new AttackMoveState(_movement, _weapon, radar, null, new FakeShipThreats());
+            AttackMoveState attackMove = new AttackMoveState(_movement, _weapon, radar, new FakeShipThreats());
             ShipOrderRunner runner = new ShipOrderRunner(_movement, _weapon, null, new UnitOrderModel(),
                 new ShipStateMachine(), new IdleState(_movement, _weapon, radar, new AttackDataFactory(), new FakeShipThreats(), FreeFocusFireClaim.Instance), null, null, attackMove,
                 null, null, null, abilities, caster, radar, null, new NoTeamContacts(), TestPlayers.Human, FreeFocusFireClaim.Instance);
@@ -1538,12 +1490,12 @@ namespace EmpireAtWar.Tests.Movement
             if (branch == "attack-move")
             {
                 _target.Transform.position = Vector3.right * 95f;
-                var attackMove = new AttackMoveState(_movement, _weapon, radar, null, new FakeShipThreats());
+                var attackMove = new AttackMoveState(_movement, _weapon, radar, new FakeShipThreats());
                 attackMove.SetData(Vector3.zero, new AttackMoveEngagement());
                 attackMove.Enter();
-                // Attack-move fights only once the ship has reached its point.
+                // Attack-move turns to its enemy only once the ship has reached its slot.
                 _movement.FinishLeg();
-                typeof(AttackMoveState).GetField("_engagementTarget", PRIVATE_INSTANCE).SetValue(attackMove, _target);
+                typeof(AttackMoveState).GetField("_facingTarget", PRIVATE_INSTANCE).SetValue(attackMove, _target);
                 state = attackMove;
             }
             else if (branch == "guard")
@@ -1736,9 +1688,15 @@ namespace EmpireAtWar.Tests.Movement
                 offset = HardPointApproach;
                 return true;
             }
-            public void AddTarget(AttackData data, AttackType type) { }
+            public int MainTargetAdds { get; private set; }
+            public void AddTarget(AttackData data, AttackType type)
+            {
+                if (type != AttackType.Base) MainTargetAdds++;
+            }
             public bool HasTarget(IHealthFacade healthFacade) => false;
             public void ResetTarget() { }
+            public bool SpreadsFire { get; private set; }
+            public void SetSpreadFire(bool spreads) => SpreadsFire = spreads;
             public void Release() { }
         }
 
@@ -1779,7 +1737,6 @@ namespace EmpireAtWar.Tests.Movement
             public bool HasOrders { get; set; }
             public UnitOrderType CurrentOrder => UnitOrderType.None;
             public IEntity AttackTarget => null;
-            public bool IsEngagingEnRoute => false;
             public float HullBottom => -1f;
             public float HullTop => 1f;
             public float GetHullRadius(Vector3 center) => HullRadius;

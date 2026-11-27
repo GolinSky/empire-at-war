@@ -123,6 +123,10 @@ namespace EmpireAtWar.Components.Weapon
         private bool _isInitialized;
         // Online client: targets come from the host (IWeaponTargetReplica); local AI, radar and order picks are ignored.
         private bool _followsHost;
+        // Attack-move: guns share out over the enemies they reach instead of all firing at one (see IsCrowded).
+        private bool _spreadsFire;
+        // Index = hardpoint: the group its last salvo started on.
+        private AttackData[] _engagedGroups = Array.Empty<AttackData>();
 
         public event Action<WeaponProfile, Transform, float> ShotEmitted;
         public event Action<WeaponProfile, Transform, Vector3> MainBatterySalvoStarted;
@@ -182,6 +186,7 @@ namespace EmpireAtWar.Components.Weapon
             _isInitialized = true;
             _retryAt = new float[hardPoints.Count];
             _facingWeights = new int[hardPoints.Count];
+            _engagedGroups = new AttackData[hardPoints.Count];
             _groupSortAt = Time.time + UnityEngine.Random.Range(0f, GROUP_SORT_INTERVAL);
             _attackCoordinator.Register(this);
 
@@ -255,6 +260,7 @@ namespace EmpireAtWar.Components.Weapon
             }
 
             _isReleased = true;
+            _spreadsFire = false;
 #if UNITY_EDITOR || DEVELOPMENT_BUILD
             if (_attackRangeCircle != null) { _attackRangeCircle.Destroy(); _attackRangeCircle = null; }
 #endif
@@ -791,8 +797,29 @@ namespace EmpireAtWar.Components.Weapon
         }
 
         // An ordered target is never skipped: the player's or AI's explicit order wins over overkill avoidance.
+        // Doomed groups are picked only when nothing else of the same preference is in reach; spread fire puts
+        // crowded groups in that tier too.
         private bool IsDoomed(AttackData group) =>
-            !ReferenceEquals(group, _mainAttackData) && _attackCoordinator.IsDoomed(group.TargetHealth);
+            !ReferenceEquals(group, _mainAttackData) &&
+            (_attackCoordinator.IsDoomed(group.TargetHealth) || _spreadsFire && IsCrowded(group));
+
+        public void SetSpreadFire(bool spreads) => _spreadsFire = spreads;
+
+        // More of this ship's live guns on the group than an even share over every enemy it tracks.
+        private bool IsCrowded(AttackData group)
+        {
+            int liveGuns = 0;
+            int onGroup = 0;
+            for (int i = 0; i < hardPoints.Count; i++)
+            {
+                if (hardPoints[i].IsDestroyed) continue;
+                liveGuns++;
+                if (ReferenceEquals(_engagedGroups[i], group)) onGroup++;
+            }
+
+            int share = (liveGuns + _attackDataList.Count - 1) / Math.Max(1, _attackDataList.Count);
+            return onGroup > Math.Max(1, share);
+        }
 
         private bool TryFireWeapon(WeaponHardPoint weapon)
         {
@@ -930,8 +957,13 @@ namespace EmpireAtWar.Components.Weapon
         private void AttackOrDelay(WeaponHardPoint weapon, AttackData group, IHardPointModel unit)
         {
             weapon.Attack(group, unit);
-            if (weapon.IsBusy) return;
-            _retryAt[hardPoints.IndexOf(weapon)] =
+            int index = hardPoints.IndexOf(weapon);
+            if (weapon.IsBusy)
+            {
+                _engagedGroups[index] = group;
+                return;
+            }
+            _retryAt[index] =
                 Time.time + UnityEngine.Random.Range(MIN_RETRY_INTERVAL, MAX_RETRY_INTERVAL);
         }
 
