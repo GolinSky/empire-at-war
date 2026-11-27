@@ -56,7 +56,7 @@ namespace EmpireAtWar.ViewComponents.Health
         internal bool IsMainBattery => mainBattery;
         internal int ShotsPerSalvo => _profile.ShotsPerSalvo;
         internal bool StrikecraftOnly => _profile.StrikecraftOnly;
-        internal virtual bool ShipsOnly => _profile.DamageType == DamageType.Ion || _profile.DamageType == DamageType.IonCannon;
+        internal virtual bool ShipsOnly => _profile.ShipsOnly;
         /// <summary>False while the mount would refuse any salvo; it then skips target selection.</summary>
         internal virtual bool CanStartSalvo => true;
         internal TargetPreference PreferredTarget => _profile.PreferredTarget;

@@ -28,8 +28,8 @@ MonoBehaviour:
   <WarheadDamageMultiplier>k__BackingField: 1
   <WarheadReloadMultiplier>k__BackingField: 1
   <ShipClass>k__BackingField: 0
-  <MemberHull>k__BackingField: 420
-  <MemberShields>k__BackingField: 200
+  <MemberHull>k__BackingField: 840
+  <MemberShields>k__BackingField: 400
   <ShieldRegenerateValue>k__BackingField: 0.5
   <ShieldRegenerateDelay>k__BackingField: 1
   <LaserShieldDamageMultiplier>k__BackingField: 1
@@ -47,3 +47,4 @@ MonoBehaviour:
     count: 3
   - weaponType: 159
     count: 3
+  roles: 0

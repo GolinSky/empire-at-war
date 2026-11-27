@@ -179,7 +179,7 @@ namespace EmpireAtWar.Tests.Editor
         public void ImpactOnFighterDestroyedInFlight_IsWastedWhileOtherMembersLive()
         {
             var a = Unit("A", 1000, 10);
-            a.Mounts[0].Profile = Profile(10, shots: 2);
+            a.Mounts[0].Profile = Profile(10, shots: 2, family: WeaponFamily.Laser);
             var b = Unit("B", 20, 0);
             b.IsSquadron = true;
             b.MemberHull = 10;
@@ -232,8 +232,19 @@ namespace EmpireAtWar.Tests.Editor
             var b = Unit("B", 100, 1); b.IsSquadron = true; b.MemberHull = 10;
             b.ShipClass = ShipClass.Fighter;
             var setup = Setup(); setup.TimeLimit = 3;
-            var result = Run(setup, Unit("A", 100, 10), b);
+            var result = Run(setup, Unit("A", 100, 10, family: WeaponFamily.Laser), b);
             Assert.That(result.Units[1].DestroyedAt, Is.Zero);
+        }
+
+        [TestCase(WeaponFamily.Turbolaser, 0)]
+        [TestCase(WeaponFamily.Laser, 1)]
+        public void ShipGuns_OnlyLasersAndPointDefenseFireAtStrikecraft(WeaponFamily family, int expectedShots)
+        {
+            var b = Unit("B", 100, 0); b.IsSquadron = true; b.MemberHull = 100;
+            b.ShipClass = ShipClass.Fighter;
+            var setup = Setup(); setup.TimeLimit = 0.5f;
+            var result = Run(setup, Unit("A", 100, 10, family: family), b);
+            Assert.That(result.Units[0].Shots, Is.EqualTo(expectedShots));
         }
 
         private BattleResult Run(BattleSetup setup, params SimUnitDefinition[] units)
@@ -292,18 +303,19 @@ namespace EmpireAtWar.Tests.Editor
             SideA = new List<BattleFleetEntry> { new BattleFleetEntry { UnitId = "A" } },
             SideB = new List<BattleFleetEntry> { new BattleFleetEntry { UnitId = "B" } } };
 
-        public static SimUnitDefinition Unit(string id, float hull, float damage, bool pointDefense = false, DamageType type = DamageType.Turbolaser)
+        public static SimUnitDefinition Unit(string id, float hull, float damage, bool pointDefense = false, DamageType type = DamageType.Turbolaser,
+            WeaponFamily family = WeaponFamily.Turbolaser)
         {
             var unit = new SimUnitDefinition { Id = id, Name = id, Hull = hull, ShipClass = ShipClass.Capital,
                 ShieldRegenerateDelay = 1 };
             unit.HardPoints.Add(new SimHardPointDefinition { Name = "Weapon", Type = HardPointType.Weapon });
-            if (damage > 0) unit.Mounts.Add(new SimMountDefinition { HardPointId = 0, Profile = Profile(damage, pointDefense: pointDefense, type: type) });
+            if (damage > 0) unit.Mounts.Add(new SimMountDefinition { HardPointId = 0, Profile = Profile(damage, pointDefense: pointDefense, type: type, family: family) });
             return unit;
         }
 
         public static WeaponProfile Profile(float damage, int shots = 1, float interval = 0, float reload = 1,
-            bool pointDefense = false, DamageType type = DamageType.Turbolaser) => new WeaponProfile(WeaponType.TurboLaser,
-            "Test", WeaponFamily.Turbolaser, type, damage, shots, interval, reload, 10, pointDefense, false,
+            bool pointDefense = false, DamageType type = DamageType.Turbolaser, WeaponFamily family = WeaponFamily.Turbolaser) =>
+            new WeaponProfile(WeaponType.TurboLaser, "Test", family, type, damage, shots, interval, reload, 10, pointDefense, false,
             null, 10, Color.white, Vector3.one, false, false, default, default, 0);
 
         private static void FragilePoints(SimUnitDefinition unit, int count = -1)

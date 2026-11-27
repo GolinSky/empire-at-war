@@ -128,17 +128,36 @@ namespace EmpireAtWar.Tests.Editor
         }
 
         [Test]
-        public void AntiSquadronWeapons_PenetrateSquadronShieldsWithoutBuffingShipShieldDamage()
+        public void AntiSquadronWeapons_HitStrikecraftHarderThanFrigatesWithoutBuffingShipShieldDamage()
         {
             DamageMatrixData matrix = AssetDatabase.LoadAssetAtPath<DamageMatrixData>(MATRIX);
 
             foreach (DamageType gun in new[] { DamageType.Laser, DamageType.PointDefense })
             {
                 Assert.That(matrix.GetShieldMultiplier(gun), Is.LessThanOrEqualTo(1f), gun + " must not buff ship shield damage.");
-                Assert.That(matrix.GetSquadronShieldMultiplier(gun), Is.GreaterThan(matrix.GetShieldMultiplier(gun)),
-                    gun + " must penetrate squadron shields better than ship shields.");
+                Assert.That(matrix.GetSquadronShieldMultiplier(gun), Is.GreaterThanOrEqualTo(matrix.GetShieldMultiplier(gun)),
+                    gun + " must not be weaker against squadron shields than ship shields.");
                 foreach (ShipClass strikecraft in new[] { ShipClass.Fighter, ShipClass.Bomber, ShipClass.Interceptor })
-                    Assert.That(matrix.GetDamageMultiplier(gun, strikecraft), Is.GreaterThan(1f), gun + " vs " + strikecraft);
+                    Assert.That(matrix.GetDamageMultiplier(gun, strikecraft),
+                        Is.GreaterThan(matrix.GetDamageMultiplier(gun, ShipClass.Frigate)), gun + " vs " + strikecraft);
+            }
+        }
+
+        [Test]
+        public void ShipGuns_OnlyLasersAndPointDefenseCanTargetStrikecraft()
+        {
+            WeaponFamily[] shipFamilies =
+            {
+                WeaponFamily.Laser, WeaponFamily.Turbolaser, WeaponFamily.Ion, WeaponFamily.MassDriver,
+                WeaponFamily.Missile, WeaponFamily.Torpedo, WeaponFamily.IonTorpedo, WeaponFamily.PointDefense,
+                WeaponFamily.Beam,
+            };
+            WeaponsData weapons = Weapons;
+            foreach (WeaponDefinition definition in weapons.Weapons.Where(d => shipFamilies.Contains(d.Family)))
+            {
+                bool antiStrikecraft = definition.Family is WeaponFamily.Laser or WeaponFamily.PointDefense;
+                Assert.That(weapons.GetProfile(definition.WeaponType).ShipsOnly, Is.EqualTo(!antiStrikecraft),
+                    definition.WeaponType.ToString());
             }
         }
 
@@ -231,7 +250,7 @@ namespace EmpireAtWar.Tests.Editor
                     heavy.AccuracyBias[target] * matrix.GetDamageMultiplier(DamageType.Turbolaser, target) *
                     matrix.GetAccuracy(DamageType.Turbolaser, target);
 
-                Assert.That(laserEffectiveness, Is.GreaterThanOrEqualTo(0.8f));
+                Assert.That(laserEffectiveness, Is.GreaterThan(turboEffectiveness * 5f), target.ToString());
                 Assert.That(turboEffectiveness, Is.LessThan(0.1f));
             }
         }

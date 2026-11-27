@@ -110,7 +110,8 @@ namespace EmpireAtWar.Editor.BattleSimulator
                 _candidates.Clear();
                 foreach (SimUnit target in _units)
                     if (!target.IsDestroyed && target.Stats.Side != source.Stats.Side &&
-                        (!profile.StrikecraftOnly || target.Definition.ShipClass.IsStrikecraft())) _candidates.Add(target);
+                        (!profile.StrikecraftOnly || target.Definition.ShipClass.IsStrikecraft()) &&
+                        (!profile.ShipsOnly || !target.Definition.ShipClass.IsStrikecraft())) _candidates.Add(target);
                 if (_candidates.Count == 0) return;
                 mount.Target = _policies[source.Stats.Side].Select(source, _candidates);
                 mount.TargetHardPointId = SelectPoint(mount.Target);

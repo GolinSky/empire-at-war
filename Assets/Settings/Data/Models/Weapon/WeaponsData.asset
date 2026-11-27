@@ -2209,10 +2209,10 @@ MonoBehaviour:
     scope: 1
     faction: 1
     unit: 
-    damageMultiplier: 0.3083
+    damageMultiplier: 0.5
     reloadMultiplier: 1
     rangeMultiplier: 1
-    reason: DroidBomber squadron rebalance damage target.
+    reason: Separatist bomber torpedo buff (2026-11-27), was 0.3083.
     overrideVisual: 0
     shotPrefab: {fileID: 0}
     beamPrefab: {fileID: 0}

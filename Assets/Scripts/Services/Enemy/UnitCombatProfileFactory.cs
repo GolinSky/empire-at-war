@@ -43,7 +43,7 @@ namespace EmpireAtWar.Services.Enemy
                 bool piercing = damageMatrix.IsShieldPiercing(weapon.DamageType);
                 foreach (ShipClass target in ForceComposition.Classes)
                 {
-                    if (weapon.StrikecraftOnly && !target.IsStrikecraft())
+                    if (weapon.StrikecraftOnly && !target.IsStrikecraft() || weapon.ShipsOnly && target.IsStrikecraft())
                         continue;
 
                     int index = (int)target;

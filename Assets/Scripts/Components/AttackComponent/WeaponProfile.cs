@@ -103,6 +103,11 @@ namespace EmpireAtWar.Components.AttackComponent
         public float TurnRate => _turnRate;
         public TargetPreference PreferredTarget => _preferredTarget;
 
+        /// <summary>Ion never hits strikecraft; among ship guns only lasers and point defense do.</summary>
+        public bool ShipsOnly => damageType is DamageType.Ion or DamageType.IonCannon ||
+            Family is WeaponFamily.Turbolaser or WeaponFamily.MassDriver or WeaponFamily.Missile
+                or WeaponFamily.Torpedo or WeaponFamily.IonTorpedo or WeaponFamily.Beam;
+
         public WeaponProfile WithColor(Color boltColor) => new WeaponProfile(weaponType, displayName, Family, damageType,
             damage, shotsPerSalvo, shotInterval, reload, range, strikecraftOnly, interceptable, shotPrefab,
             projectileSpeed, boltColor, size, false, _hasTargetSizeBias, _damageBias, _accuracyBias, _turnRate,
