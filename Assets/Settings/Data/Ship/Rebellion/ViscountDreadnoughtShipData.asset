@@ -136,14 +136,14 @@ MonoBehaviour:
   <HangarInitialDelay>k__BackingField: 4
   <HangarLaunchInterval>k__BackingField: 1
   weaponLoadout:
-  - weaponType: 3
+  - weaponType: 176
     count: 56
-  - weaponType: 5
+  - weaponType: 177
     count: 16
-  - weaponType: 32
+  - weaponType: 178
     count: 12
-  - weaponType: 48
+  - weaponType: 179
     count: 12
-  - weaponType: 91
+  - weaponType: 180
     count: 6
   roles: 97

@@ -1302,9 +1302,11 @@ MonoBehaviour:
     unit: Executor
     damageMultiplier: 1.2784091
     reloadMultiplier: 2
-    rangeMultiplier: 1.5
-    reason: 'Executor stays overpowered: keeps its former long-range reach, reload
-      and expected damage (accuracy folded into damage).'
+    rangeMultiplier: 2.5
+    reason: 'Executor stays overpowered: keeps its reload and expected damage (accuracy
+      folded into damage). Range x2.5: its 1059 navigation radius holds targets about
+      1150 from its centre, so shorter guns left about 1 in 4 mounts in reach; x2.5
+      lets about 60% fire.'
     overrideVisual: 1
     shotPrefab: {fileID: 5542285853262679020, guid: d90ad13c075512a478c24f41fbf7c0b6,
       type: 3}
@@ -1323,10 +1325,11 @@ MonoBehaviour:
     unit: Executor
     damageMultiplier: 1.5980114
     reloadMultiplier: 2
-    rangeMultiplier: 1.5
-    reason: "Executor stays overpowered: keeps its former long-range reach, reload
-      and expected damage (accuracy folded into damage; \xD72/1.6 offsets the dual
-      mount rule)."
+    rangeMultiplier: 2.5
+    reason: 'Executor stays overpowered: keeps its reload and expected damage (accuracy
+      folded into damage; x2/1.6 offsets the dual mount rule). Range x2.5: its 1059
+      navigation radius holds targets about 1150 from its centre, so shorter guns
+      left about 1 in 4 mounts in reach; x2.5 lets about 60% fire.'
     overrideVisual: 1
     shotPrefab: {fileID: 4723455029226909166, guid: d08e869a202dee742b31818cc8c5b23b,
       type: 3}
@@ -1345,10 +1348,11 @@ MonoBehaviour:
     unit: Executor
     damageMultiplier: 1.5980114
     reloadMultiplier: 2
-    rangeMultiplier: 1.5
-    reason: "Executor stays overpowered: keeps its former long-range reach, reload
-      and expected damage (accuracy folded into damage; \xD72/1.6 offsets the dual
-      mount rule)."
+    rangeMultiplier: 2.5
+    reason: 'Executor stays overpowered: keeps its reload and expected damage (accuracy
+      folded into damage; x2/1.6 offsets the dual mount rule). Range x2.5: its 1059
+      navigation radius holds targets about 1150 from its centre, so shorter guns
+      left about 1 in 4 mounts in reach; x2.5 lets about 60% fire.'
     overrideVisual: 1
     shotPrefab: {fileID: 4723455029226909166, guid: d08e869a202dee742b31818cc8c5b23b,
       type: 3}
@@ -1367,10 +1371,11 @@ MonoBehaviour:
     unit: Executor
     damageMultiplier: 2.0833333
     reloadMultiplier: 2
-    rangeMultiplier: 1.5
-    reason: "Executor stays overpowered: keeps its former long-range reach, reload
-      and expected damage (accuracy folded into damage; \xD72/1.6 offsets the dual
-      mount rule)."
+    rangeMultiplier: 2.5
+    reason: 'Executor stays overpowered: keeps its reload and expected damage (accuracy
+      folded into damage; x2/1.6 offsets the dual mount rule). Range x2.5: its 1059
+      navigation radius holds targets about 1150 from its centre, so shorter guns
+      left about 1 in 4 mounts in reach; x2.5 lets about 60% fire.'
     overrideVisual: 1
     shotPrefab: {fileID: 4723455029226909166, guid: d08e869a202dee742b31818cc8c5b23b,
       type: 3}
@@ -2735,6 +2740,116 @@ MonoBehaviour:
     reason: 'Previous battery: Twenty escort lasers deliver 200 raw DPS; Luke''s
       four lasers add 450 for 650 total. Consolidated fighter weapon channel; damage
       per shot includes the former battery (4x).'
+    overrideVisual: 0
+    shotPrefab: {fileID: 0}
+    beamPrefab: {fileID: 0}
+    projectileSpeed: 0
+    size: {x: 1, y: 1, z: 1}
+    overrideColor: 0
+    color: {r: 1, g: 1, b: 1, a: 1}
+  - weaponType: 176
+    displayName: Heavy Dual Turbolaser
+    family: 1
+    caliber: 2
+    mount: 2
+    scope: 2
+    faction: 0
+    unit: ViscountDreadnought
+    damageMultiplier: 1
+    reloadMultiplier: 1
+    rangeMultiplier: 2.25
+    reason: 'Viscount reach: its 895 navigation radius holds targets about 990 from
+      its centre on a 1690-long hull, so stock guns left about 1 in 3 mounts in reach
+      and none at broadside; x2.25 range lets about 70% fire. Damage and reload stay
+      stock.'
+    overrideVisual: 0
+    shotPrefab: {fileID: 0}
+    beamPrefab: {fileID: 0}
+    projectileSpeed: 0
+    size: {x: 1, y: 1, z: 1}
+    overrideColor: 0
+    color: {r: 1, g: 1, b: 1, a: 1}
+  - weaponType: 177
+    displayName: Medium Dual Turbolaser
+    family: 1
+    caliber: 1
+    mount: 2
+    scope: 2
+    faction: 0
+    unit: ViscountDreadnought
+    damageMultiplier: 1
+    reloadMultiplier: 1
+    rangeMultiplier: 2.25
+    reason: 'Viscount reach: its 895 navigation radius holds targets about 990 from
+      its centre on a 1690-long hull, so stock guns left about 1 in 3 mounts in reach
+      and none at broadside; x2.25 range lets about 70% fire. Damage and reload stay
+      stock.'
+    overrideVisual: 0
+    shotPrefab: {fileID: 0}
+    beamPrefab: {fileID: 0}
+    projectileSpeed: 0
+    size: {x: 1, y: 1, z: 1}
+    overrideColor: 0
+    color: {r: 1, g: 1, b: 1, a: 1}
+  - weaponType: 178
+    displayName: Medium Ion Cannon
+    family: 2
+    caliber: 1
+    mount: 1
+    scope: 2
+    faction: 0
+    unit: ViscountDreadnought
+    damageMultiplier: 1
+    reloadMultiplier: 1
+    rangeMultiplier: 2.25
+    reason: 'Viscount reach: its 895 navigation radius holds targets about 990 from
+      its centre on a 1690-long hull, so stock guns left about 1 in 3 mounts in reach
+      and none at broadside; x2.25 range lets about 70% fire. Damage and reload stay
+      stock.'
+    overrideVisual: 0
+    shotPrefab: {fileID: 0}
+    beamPrefab: {fileID: 0}
+    projectileSpeed: 0
+    size: {x: 1, y: 1, z: 1}
+    overrideColor: 0
+    color: {r: 1, g: 1, b: 1, a: 1}
+  - weaponType: 179
+    displayName: Medium Proton Torpedo Launcher
+    family: 5
+    caliber: 1
+    mount: 1
+    scope: 2
+    faction: 0
+    unit: ViscountDreadnought
+    damageMultiplier: 1
+    reloadMultiplier: 1
+    rangeMultiplier: 2.25
+    reason: 'Viscount reach: its 895 navigation radius holds targets about 990 from
+      its centre on a 1690-long hull, so stock guns left about 1 in 3 mounts in reach
+      and none at broadside; x2.25 range lets about 70% fire. Damage and reload stay
+      stock.'
+    overrideVisual: 0
+    shotPrefab: {fileID: 0}
+    beamPrefab: {fileID: 0}
+    projectileSpeed: 0
+    size: {x: 1, y: 1, z: 1}
+    overrideColor: 0
+    color: {r: 1, g: 1, b: 1, a: 1}
+  - weaponType: 180
+    displayName: Heavy Dual Ion Cannon
+    family: 2
+    caliber: 2
+    mount: 2
+    scope: 2
+    faction: 0
+    unit: ViscountDreadnought
+    damageMultiplier: 1
+    reloadMultiplier: 1
+    rangeMultiplier: 2.25
+    reason: 'Viscount reach: its 895 navigation radius holds targets about 990 from
+      its centre on a 1690-long hull, so stock guns left about 1 in 3 mounts in reach
+      and none at broadside; x2.25 range lets about 70% fire. Damage and reload stay
+      stock.'
     overrideVisual: 0
     shotPrefab: {fileID: 0}
     beamPrefab: {fileID: 0}

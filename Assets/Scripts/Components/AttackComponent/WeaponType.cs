@@ -119,5 +119,10 @@ namespace EmpireAtWar.Components.AttackComponent
         TitanHeavyQuadTurbolaser = 173,
         TitanSiegeIonCannon = 174,
         HeavyDualProtonTorpedo = 175,
+        ViscountHeavyDualTurbolaser = 176,
+        ViscountMediumDualTurbolaser = 177,
+        ViscountMediumIonCannon = 178,
+        ViscountMediumProtonTorpedo = 179,
+        ViscountHeavyDualIonCannon = 180,
     }
 }

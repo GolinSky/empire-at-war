@@ -278,10 +278,10 @@ namespace EmpireAtWar.Tests.Editor
         // Projectile visual reduction (2026-11-19): missiles fire 1 shot per doubled reload with the salvo's damage,
         // so the baseline is held as sustained damage per second, not as shots and reload.
         [TestCase(WeaponType.HeavyArtilleryRocket, 75f, 1.2f, HEAVY_CALIBER_RAISE, 4, 10f, 1072.5f)]
-        [TestCase(WeaponType.ExecutorHeavyTurbolaser, 37.5f, 1.2f, HEAVY_CALIBER_RAISE, 3, 8f, 877.5f)]
-        [TestCase(WeaponType.ExecutorHeavyDualTurbolaser, 75f, 1.2f, HEAVY_CALIBER_RAISE, 3, 8f, 877.5f)]
-        [TestCase(WeaponType.ExecutorHeavyDualIonCannon, 140.625f, 1.2f, HEAVY_CALIBER_RAISE, 2, 12f, 975f)]
-        [TestCase(WeaponType.ExecutorMediumDualTurbolaser, 60f, 1.2f, 1f, 3, 8f, 776.25f)]
+        [TestCase(WeaponType.ExecutorHeavyTurbolaser, 37.5f, 1.2f, HEAVY_CALIBER_RAISE, 3, 8f, 1462.5f)]
+        [TestCase(WeaponType.ExecutorHeavyDualTurbolaser, 75f, 1.2f, HEAVY_CALIBER_RAISE, 3, 8f, 1462.5f)]
+        [TestCase(WeaponType.ExecutorHeavyDualIonCannon, 140.625f, 1.2f, HEAVY_CALIBER_RAISE, 2, 12f, 1625f)]
+        [TestCase(WeaponType.ExecutorMediumDualTurbolaser, 60f, 1.2f, 1f, 3, 8f, 1293.75f)]
         [TestCase(WeaponType.ExecutorHeavyLaser, 9.375f, 1f, HEAVY_CALIBER_RAISE, 3, 1.5f, 390f)]
         [TestCase(WeaponType.ExecutorPointDefense, 5f, 1f, 1f, 8, 2f, 230f)]
         public void Executor_WeaponProfilesMatchBaseline(WeaponType type, float baselineDamage, float foldedAccuracy,
@@ -298,6 +298,8 @@ namespace EmpireAtWar.Tests.Editor
 
         // RaW 1.5.5 red/blue turbolaser projectiles: twin 1.67×, quad 2.0–2.67× the single bolt.
         [TestCase(WeaponMount.Dual, 1.6f)]
+        // Executor range x1.5 -> x2.5 (2026-11-27): its navigation radius holds targets ~1150 from its centre,
+        // so x1.5 guns left about 1 in 4 mounts in reach.
         [TestCase(WeaponMount.Triple, 2f)]
         [TestCase(WeaponMount.Quad, 2.4f)]
         [TestCase(WeaponMount.Octuple, 4f)]
@@ -315,6 +317,26 @@ namespace EmpireAtWar.Tests.Editor
                 mount == WeaponMount.Octuple ? family.OctupleShotPrefab : family.MultiBarrelShotPrefab;
             Assert.That(expectedPrefab, Is.Not.Null);
             Assert.That(mounted.ShotPrefab, Is.EqualTo(expectedPrefab));
+        }
+
+        // The Viscount's navigation radius keeps targets far from its centre: its guns keep stock damage and reload but
+        // must outrange the stock guns so most mounts reach.
+        [TestCase(WeaponType.ViscountHeavyDualTurbolaser, WeaponType.DualHeavyTurboLaser)]
+        [TestCase(WeaponType.ViscountMediumDualTurbolaser, WeaponType.DualMediumTurboLaser)]
+        [TestCase(WeaponType.ViscountMediumIonCannon, WeaponType.MediumIonCannon)]
+        [TestCase(WeaponType.ViscountMediumProtonTorpedo, WeaponType.MediumProtonTorpedo)]
+        [TestCase(WeaponType.ViscountHeavyDualIonCannon, WeaponType.HeavyDualIonCannon)]
+        public void Viscount_WeaponsMatchStockDamage_AndOutrangeIt(WeaponType viscountType, WeaponType stockType)
+        {
+            WeaponDefinition definition = Weapons.GetDefinition(viscountType);
+            WeaponProfile viscount = Weapons.GetProfile(viscountType);
+            WeaponProfile stock = Weapons.GetProfile(stockType);
+
+            Assert.That(definition.Scope, Is.EqualTo(WeaponScope.Unit));
+            Assert.That(definition.Unit, Is.EqualTo(nameof(ShipType.ViscountDreadnought)));
+            Assert.That(viscount.DamagePerSecond, Is.EqualTo(stock.DamagePerSecond).Within(stock.DamagePerSecond * 0.001f));
+            Assert.That(viscount.ShotPrefab, Is.EqualTo(stock.ShotPrefab));
+            Assert.That(viscount.Range, Is.GreaterThan(stock.Range));
         }
 
         [Test]
