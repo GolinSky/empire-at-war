@@ -1072,6 +1072,17 @@ namespace EmpireAtWar.Tests.Editor
             scope.Container.Resolve<ShipMoveModel>().FinishArrival();
             var searchTime = typeof(AttackMoveState)
                 .GetField("_nextSearchTime", System.Reflection.BindingFlags.Instance | System.Reflection.BindingFlags.NonPublic);
+            var slotField = typeof(AttackMoveState)
+                .GetField("_destination", System.Reflection.BindingFlags.Instance | System.Reflection.BindingFlags.NonPublic);
+            Transform shipTransform = ((Component)movement).transform;
+            // A ship stopped short of its slot tries again; only a stop on the slot completes the order.
+            void StopOnSlot()
+            {
+                movement.Stop();
+                Vector3 slotPosition = (Vector3)slotField.GetValue(attackMove);
+                slotPosition.y = shipTransform.position.y;
+                shipTransform.position = slotPosition;
+            }
             int issued = 0;
             orders.OrderIssued += order =>
             {
@@ -1097,7 +1108,7 @@ namespace EmpireAtWar.Tests.Editor
             Assert.That(issued, Is.Zero, "Attack-move waits for its first target search before completing.");
             // Real runner and order service; isolate the no-target, stopped-movement completion path.
             // Force only the search deadline, since EditMode does not advance the player clock.
-            movement.Stop();
+            StopOnSlot();
             searchTime.SetValue(attackMove, float.NegativeInfinity);
             runner.Tick(1f / 60f);
             Assert.That(runner.CurrentOrder, Is.EqualTo(UnitOrderType.None));
@@ -1110,7 +1121,7 @@ namespace EmpireAtWar.Tests.Editor
             long allocated = 0;
             for (int i = 0; i < ITERATIONS; i++)
             {
-                movement.Stop();
+                StopOnSlot();
                 searchTime.SetValue(attackMove, float.NegativeInfinity);
                 runner.Tick(1f / 60f);
                 // Advance the retry deadline by one simulated frame; EditMode time stays fixed.

@@ -245,6 +245,20 @@ created: 2026-11-26
   - Tests: `FormationModelTests` 19/19, `UnitOrderServiceTests` 39/39, Navigation 424/425 before the test fix (test measured Z, not heading depth; fixed), BattleInput 488/489 likewise, Ships 490/490. New: `RowDestinations_FrontLineStandsOnThePointAndRowsCloseUpBehindIt`, `RowDestinations_ALoneLargestShipJoinsTheNextTierInFront`, `RowDestinations_LargerHullsTakeTheRowsFirstLine`, `AttackMove_RepeatedNearby_KeepsEachShipsSlotOffsetAndRow`, `AttackMove_FarFromTheLastOrder_RebuildsTheRows`.
   - Gate: user battle check of both behaviours.
 
+## Battle 2026-11-27 #2 (`Loading_20261127_135651_ai_orders.csv`, loaded save, Editor, 1,249 s)
+- Build includes `504d831f3` (attack-move = fly to slot and hold, spread fire; role standoff and `attackMoveDrop` removed).
+- Overshoot fixed: no ship passed its slot in any Player0 attack-move group (max reached ≤ slot depth in every group).
+- Side-ship turns fixed: 0 / 37 re-issues changed course > 90° (45–78°: 3). No restart from a stopped slot with the same destination.
+- Holding: 362 stopped attack-move samples, all with a facing target; 247 face it at dot ≥ 0.95. 6 runs ≥ 10 s face away (dot < 0.5): Imperator 1453 at t=767 for ~20 s (target 660 away, out of reach).
+- Minor: 129 stopped samples 100–250 from their slot (no restart); 44 Idle samples with an enemy in weapon range (start of battle, after an Attack/Attack-move completed: Praetor 1329 ~40 s at t=322, Victory 1668 ~45 s at t=1166). `idleUnderFire` 2 only → guns still fired.
+- Gate for both behaviours: met by telemetry; user confirmation pending. Step 5 still blocked.
+- Minor-issue review (2026-11-27):
+  - Facing away on the slot: not a defect. `LookAtTarget` turns to `IWeaponFacing.GetFiringTurnAngle` (most gun weight bearing, often broadside); telemetry `facingDot` is the nose only.
+  - Idle with an enemy in range: not a defect for `IdleState` (turns to and marks the best threat in reach; `trackedContactId` set in every case). Held-replacement Attack ending → Idle is being changed by another session (`ShipOrderRunner` fight watch, uncommitted).
+  - **Stop short of the slot: defect.** `AttackMoveState.Tick` set `_hasArrived` on the first `!IsMoving`, then `HoldPosition` stopped the ship for good. Seen: VenatorII 1584 held 1,292 from its slot (t=1072), Venator 1529 731 (t=1098), fresh Rothana 1585 894 (planner fallback 70 from spawn, t=775). Stops 112–284 away were planner relocations of an occupied slot (≤ 2 rings × 2 radii).
+  - Fix: arrival = stopped within `ARRIVAL_RADIUS_FACTOR` (5) × `NavigationRadius` of the slot; farther → `MoveToPosition` retry every `MOVE_RETRY_INTERVAL` (2 s), turning to the facing target without a hold; order does not complete short of the slot.
+  - Tests: `AttackMove_ShipStoppedFarShortOfItsSlotTriesAgainInsteadOfHolding`, `AttackMove_StopBesideAnOccupiedSlotIsTheArrival`; `RealEntityCompositionTests.SurvivalAttackers_ProfileRepeatedCompletedOrders` now stops the ship on its slot (`StopOnSlot`) before expecting completion. Results: ShipPursuitTests 91/93 (2 failures in the other session's uncommitted `ShipOrderRunner` work), Ships 491/491, RealEntityCompositionTests 38/38.
+
 ## Open decisions
 - None. Decided: D1, D2 (optional), D3, D4, D5, D6, D7.
 

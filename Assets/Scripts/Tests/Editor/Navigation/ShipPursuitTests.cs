@@ -260,7 +260,7 @@ namespace EmpireAtWar.Tests.Movement
 
         [TestCase(false)]
         [TestCase(true)]
-        public void Attack_TargetKilled_PicksInReachContactAndHoldsWhenItLeaves(bool formation)
+        public void Attack_TargetKilled_PicksInReachContactAndAttackMovesToItWhenItLeaves(bool formation)
         {
             GameObject deadObject = new GameObject("Dead enemy");
             GameObject fighterObject = new GameObject("Near fighter");
@@ -286,8 +286,9 @@ namespace EmpireAtWar.Tests.Movement
                 UnitOrderModel orders = new UnitOrderModel();
                 ShipStateMachine machine = new ShipStateMachine();
                 AttackTargetState attack = new AttackTargetState(null, _weapon, _movement, FreeFocusFireClaim.Instance);
+                AttackMoveState attackMove = new AttackMoveState(_movement, _weapon, radar, new FakeShipThreats());
                 ShipOrderRunner runner = new ShipOrderRunner(_movement, _weapon, null, orders, machine,
-                    new IdleState(_movement, _weapon, radar, new AttackDataFactory(), new FakeShipThreats(), FreeFocusFireClaim.Instance), null, attack, null, null, null, null, abilities, caster, radar, null, new NoTeamContacts(), TestPlayers.Human, FreeFocusFireClaim.Instance);
+                    new IdleState(_movement, _weapon, radar, new AttackDataFactory(), new FakeShipThreats(), FreeFocusFireClaim.Instance), null, attack, attackMove, null, null, null, abilities, caster, radar, null, new NoTeamContacts(), TestPlayers.Human, FreeFocusFireClaim.Instance);
                 runner.Start();
                 Vector3 offset = formation ? Vector3.forward * 20f : Vector3.zero;
                 runner.Attack(_target, offset);
@@ -301,10 +302,13 @@ namespace EmpireAtWar.Tests.Movement
                 runner.Tick(0.1f);
                 Assert.That(_movement.IsMoving, Is.False);
 
+                // Out of the held reach: the ship follows the fight to engagement range (100 on the fake weapon).
                 fighterObject.transform.position = Vector3.forward * 300f;
                 runner.Tick(0.1f);
-                Assert.That(orders.Current, Is.EqualTo(UnitOrderType.None));
-                Assert.That(_movement.IsMoving, Is.False);
+                Assert.That(orders.Current, Is.EqualTo(UnitOrderType.AttackMove), "No idle ship after the target leaves.");
+                Assert.That(machine.CurrentState, Is.SameAs(attackMove));
+                Assert.That(_movement.IsMoving, Is.True);
+                Assert.That(_movement.Destination.z, Is.EqualTo(200f).Within(0.01f));
             }
             finally
             {
@@ -550,6 +554,74 @@ namespace EmpireAtWar.Tests.Movement
                     "The ship closes to engagement range of where the target died, on its own bearing.");
             Assert.That(_weapon.SpreadsFire, Is.True);
             abilities.Clear();
+        }
+
+        // The ship stays at the origin; engagement range of the fake weapon is 100.
+        [TestCase(ShipClass.Capital, true)]
+        [TestCase(ShipClass.Fighter, false)]
+        public void AttackMove_EndedThenAnEnemyAppearsBeyondReach_ClosesOnlyOnAShip(ShipClass enemyClass, bool closes)
+        {
+            ShipOrderRunner runner = CreateFightWatchRunner(out Radar radar, out UnitOrderModel orders,
+                out ShipAbilityService abilities);
+            try
+            {
+                _target.Transform.position = Vector3.right * 500f;
+                _target.Health.ShipClass = enemyClass;
+                radar.Enemies.Add(_target);
+                runner.Tick(0.1f);
+                Assert.That(orders.Current, Is.EqualTo(UnitOrderType.None), "The first check waits one interval.");
+                runner.Tick(0.5f);
+
+                Assert.That(orders.Current, Is.EqualTo(closes ? UnitOrderType.AttackMove : UnitOrderType.None));
+                Assert.That(_movement.IsMoving, Is.EqualTo(closes));
+                if (closes)
+                    Assert.That(_movement.Destination.x, Is.EqualTo(400f).Within(0.01f),
+                        "The idle ship closes to engagement range of the enemy on its radar.");
+            }
+            finally { abilities.Clear(); }
+        }
+
+        [Test]
+        public void AttackMove_EndedThenStopped_StaysPutWhenAnEnemyAppears()
+        {
+            ShipOrderRunner runner = CreateFightWatchRunner(out Radar radar, out UnitOrderModel orders,
+                out ShipAbilityService abilities);
+            try
+            {
+                runner.Stop();
+                _target.Transform.position = Vector3.right * 500f;
+                radar.Enemies.Add(_target);
+                runner.Tick(0.6f);
+
+                Assert.That(orders.Current, Is.EqualTo(UnitOrderType.None), "A Stop order ends the watch.");
+                Assert.That(_movement.IsMoving, Is.False);
+            }
+            finally { abilities.Clear(); }
+        }
+
+        // A runner whose attack-move on its own spot has just ended with no enemy reported.
+        private ShipOrderRunner CreateFightWatchRunner(out Radar radar, out UnitOrderModel orders,
+            out ShipAbilityService abilities)
+        {
+            AbilityCaster caster = new AbilityCaster(_target, _movement, ShipAbilityId.BoostEnginePower);
+            var abilityRelations = TestPlayers.CreateDuel();
+            abilities = new ShipAbilityService(new AbilityFactory(new RecordingAbility()),
+                abilityRelations, new VisionService(abilityRelations, fogEnabled: false));
+            radar = new Radar();
+            orders = new UnitOrderModel();
+            ShipStateMachine machine = new ShipStateMachine();
+            IdleState idle = new IdleState(_movement, _weapon, radar, new AttackDataFactory(), new FakeShipThreats(), FreeFocusFireClaim.Instance);
+            AttackMoveState attackMove = new AttackMoveState(_movement, _weapon, radar, new FakeShipThreats());
+            ShipOrderRunner runner = new ShipOrderRunner(_movement, _weapon, null, orders, machine,
+                idle, null, new AttackTargetState(null, _weapon, _movement, FreeFocusFireClaim.Instance), attackMove, null, null, null, abilities, caster, radar, null, new NoTeamContacts(), TestPlayers.Human, FreeFocusFireClaim.Instance);
+            runner.Start();
+            runner.AttackMoveTo(Vector3.zero, new AttackMoveEngagement());
+            typeof(AttackMoveState).GetField("_nextSearchTime", BindingFlags.Instance | BindingFlags.NonPublic)
+                .SetValue(attackMove, float.NegativeInfinity);
+            runner.Tick(0.1f);
+            Assert.That(orders.Current, Is.EqualTo(UnitOrderType.None), "Setup: the attack-move ended.");
+            Assert.That(machine.CurrentState, Is.SameAs(idle));
+            return runner;
         }
 
         [Test]
@@ -1079,6 +1151,69 @@ namespace EmpireAtWar.Tests.Movement
             Assert.That(state.IsEngaging, Is.False);
             Assert.That(state.IsComplete, Is.True);
             Assert.That(_movement.MoveCount, Is.EqualTo(moves), "The ship stays on its slot.");
+            state.Exit();
+        }
+
+        [Test]
+        public void AttackMove_ShipStoppedFarShortOfItsSlotTriesAgainInsteadOfHolding()
+        {
+            const BindingFlags PRIVATE_INSTANCE = BindingFlags.Instance | BindingFlags.NonPublic;
+            _target.Transform.position = Vector3.right * 50f;
+            Radar radar = new Radar();
+            radar.Enemies.Add(_target);
+            Vector3 slot = Vector3.forward * 1000f;
+            AttackMoveState state = new AttackMoveState(_movement, _weapon, radar, new FakeShipThreats());
+            state.SetData(slot, new AttackMoveEngagement());
+            state.Enter();
+            // The plan found no route: the ship stops where it started, far from its slot.
+            _movement.Stop();
+            int moves = _movement.MoveCount;
+            FieldInfo nextSearch = typeof(AttackMoveState).GetField("_nextSearchTime", PRIVATE_INSTANCE);
+            FieldInfo nextRetry = typeof(AttackMoveState).GetField("_nextMoveRetryTime", PRIVATE_INSTANCE);
+            nextSearch.SetValue(state, float.NegativeInfinity);
+            nextRetry.SetValue(state, float.NegativeInfinity);
+
+            state.Tick(0.1f);
+
+            Assert.That(_movement.MoveCount, Is.EqualTo(moves + 1), "The ship tries its slot again.");
+            Assert.That(_movement.Destination, Is.EqualTo(slot));
+            Assert.That(_movement.HeldTarget, Is.Null);
+
+            _movement.Stop();
+            nextRetry.SetValue(state, float.PositiveInfinity);
+            nextSearch.SetValue(state, float.NegativeInfinity);
+            state.Tick(0.1f);
+
+            Assert.That(_movement.LookTarget, Is.SameAs(_target), "Between tries it turns its guns to the enemy.");
+            Assert.That(_movement.HeldTarget, Is.Null, "A hold would stop the next try.");
+            Assert.That(_movement.MoveCount, Is.EqualTo(moves + 1));
+            Assert.That(state.IsComplete, Is.False, "The order is not done short of the slot.");
+            state.Exit();
+        }
+
+        [Test]
+        public void AttackMove_StopBesideAnOccupiedSlotIsTheArrival()
+        {
+            const BindingFlags PRIVATE_INSTANCE = BindingFlags.Instance | BindingFlags.NonPublic;
+            _target.Transform.position = Vector3.right * 50f;
+            Radar radar = new Radar();
+            radar.Enemies.Add(_target);
+            // The planner moved the occupied slot two candidate rings (4 radii) away.
+            Vector3 slot = Vector3.forward * (_movement.NavigationRadius * 4f);
+            AttackMoveState state = new AttackMoveState(_movement, _weapon, radar, new FakeShipThreats());
+            state.SetData(slot, new AttackMoveEngagement());
+            state.Enter();
+            _movement.Stop();
+            int moves = _movement.MoveCount;
+            typeof(AttackMoveState).GetField("_nextSearchTime", PRIVATE_INSTANCE)
+                .SetValue(state, float.NegativeInfinity);
+            typeof(AttackMoveState).GetField("_nextMoveRetryTime", PRIVATE_INSTANCE)
+                .SetValue(state, float.NegativeInfinity);
+
+            state.Tick(0.1f);
+
+            Assert.That(_movement.MoveCount, Is.EqualTo(moves), "No new try beside the slot.");
+            Assert.That(_movement.HeldTarget, Is.SameAs(_target));
             state.Exit();
         }
 

@@ -54,6 +54,8 @@ namespace EmpireAtWar.Entities.Ship.Orders
 
         // Team-vision replacement search around the dead target; ships do not cross the map for one.
         private const float REPLACEMENT_RADIUS = 1500f;
+        // Seconds between radar checks of an idle ship watching for the next fight after its attack-move.
+        private const float FIGHT_WATCH_INTERVAL = 0.5f;
 
         private UnitOrderType? _replicaOrder;
         // Host-only and not saved: a loaded order resumes at the ship's own speed.
@@ -63,6 +65,9 @@ namespace EmpireAtWar.Entities.Ship.Orders
         private float _stuckTimer;
         // A ship turning or accelerating at the start of its order is slow but not stuck.
         private bool _hasPaceMoved;
+        // Set when an attack-move ends; any new order clears it.
+        private bool _watchesForFight;
+        private float _fightWatchTimer;
 
         // Online clients show the host's order; ships there never run their own (see ApplyReplicaOrder).
         public UnitOrderType CurrentOrder => _replicaOrder ??
@@ -164,6 +169,7 @@ namespace EmpireAtWar.Entities.Ship.Orders
                     attacking ? _attackTargetState.AttackDiagnostics : "");
 #endif
             if (_stateMachine.CurrentState.IsComplete) CompleteOrder();
+            WatchForFight(deltaTime);
             UpdatePace(deltaTime);
 #if UNITY_EDITOR || DEVELOPMENT_BUILD
             if (ShipOrderTelemetry.IsSampleDue(_telemetrySource, _orders))
@@ -183,6 +189,7 @@ namespace EmpireAtWar.Entities.Ship.Orders
             RecordOrder("release", "Ship released; active order cancelled.");
             IsAbilityFacing = false;
             _pendingAbilityTarget = null;
+            _watchesForFight = false;
             LeavePace();
             _orders.Clear();
             // Leaves the shared attack-move engagement so the group stops counting this ship.
@@ -460,6 +467,7 @@ namespace EmpireAtWar.Entities.Ship.Orders
             AttackMoveEngagement engagement = null, bool holdAttackPosition = false)
         {
             _movement.CancelCombatHold();
+            _watchesForFight = false;
             if (_orders.Current != UnitOrderType.None || _pendingAbilityTarget != null)
                 RecordOrder("cancel", $"Replaced by {type}.");
             _pendingAbilityTarget = null;
@@ -550,15 +558,17 @@ namespace EmpireAtWar.Entities.Ship.Orders
 
         public float GetEngagementRange(ShipClass targetClass) => _weapon.GetEngagementRange(targetClass);
 
-        // The point on the line to the dead target where it would sit at engagement range; the ship's own
-        // position when it is already that close.
-        private Vector3 GetFightApproach()
+        private Vector3 GetFightApproach() =>
+            GetFightApproach(_attackTargetState.LastTargetPosition, _attackTargetState.LastTargetClass.Value);
+
+        // The point on the line to the fight where the ship would sit at engagement range of that class; the ship's
+        // own position when it is already that close.
+        private Vector3 GetFightApproach(Vector3 fight, ShipClass targetClass)
         {
             Vector3 position = _movement.CurrentPosition;
-            Vector3 fight = _attackTargetState.LastTargetPosition;
             Vector3 offset = position - fight;
             offset.y = 0f;
-            float range = _weapon.GetEngagementRange(_attackTargetState.LastTargetClass.Value);
+            float range = _weapon.GetEngagementRange(targetClass);
             float distance = offset.magnitude;
             if (distance <= range) return position;
             Vector3 approach = fight + offset * (range / distance);
@@ -620,10 +630,48 @@ namespace EmpireAtWar.Entities.Ship.Orders
                 return;
             }
 
+            // A replacement target held from the ship's spot drifted out of reach: follow the fight, not idle.
+            if (_orders.Current == UnitOrderType.Attack && _orders.HoldAttackPosition)
+            {
+                RecordOrder("complete", "Attack target left weapons reach; attack-moving to the fight.");
+                IEntity lost = _orders.Target;
+                Vector3 fight = lost.GetFacade<IEntityTransformFacade>().Transform.position;
+                Issue(UnitOrderType.AttackMove, ToPoint(GetFightApproach(fight, lost.HealthModel.ShipClass)),
+                    engagement: new AttackMoveEngagement());
+                return;
+            }
+
+            bool wasAttackMove = _orders.Current == UnitOrderType.AttackMove;
             RecordOrder("complete", _orders.Target != null && _orders.Target.HealthModel.IsDestroyed
                 ? "Target destroyed; no replacement order." : "State completed; returning to Idle.");
             _orders.Clear();
             _stateMachine.SetState(_idleState);
+            // Set after the clear: Issue resets it, so any later order ends the watch. The first check waits one
+            // interval so an AI or survival director can give its own order first.
+            _watchesForFight = wasAttackMove;
+            _fightWatchTimer = FIGHT_WATCH_INTERVAL;
+        }
+
+        // After an attack-move ends, an idle ship closes to engagement range of the next enemy ship its radar finds
+        // beyond that range, instead of waiting for it. Squadrons are left to the guns: they would lead it off.
+        private void WatchForFight(float deltaTime)
+        {
+            if (!_watchesForFight || _stateMachine.CurrentState != _idleState) return;
+            _fightWatchTimer -= deltaTime;
+            if (_fightWatchTimer > 0f) return;
+            _fightWatchTimer = FIGHT_WATCH_INTERVAL;
+
+            _ownCandidates.Clear();
+            for (int i = 0; i < _radar.Enemies.Count; i++)
+                if (!_radar.Enemies[i].HealthModel.ShipClass.IsStrikecraft())
+                    _ownCandidates.Add(_radar.Enemies[i]);
+            IEntity enemy = ShipEngagement.FindNearestEnemy(_ownCandidates, _movement, _weapon);
+            if (enemy == null) return;
+            Vector3 fight = enemy.GetFacade<IEntityTransformFacade>().Transform.position;
+            Vector3 approach = GetFightApproach(fight, enemy.HealthModel.ShipClass);
+            if (approach == _movement.CurrentPosition) return;
+            RecordOrder("fightWatch", $"Enemy {enemy.Id} on radar beyond reach; attack-moving to it.");
+            Issue(UnitOrderType.AttackMove, ToPoint(approach), engagement: new AttackMoveEngagement());
         }
 
         [System.Diagnostics.Conditional("UNITY_EDITOR"), System.Diagnostics.Conditional("DEVELOPMENT_BUILD")]

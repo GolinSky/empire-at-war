@@ -25,6 +25,12 @@ namespace EmpireAtWar.Entities.Ship.StateMachine
         private const float SEARCH_INTERVAL = 0.25f;
         // Facing priority of an enemy already in weapon reach; above every threat rank.
         private const int IN_REACH_PRIORITY = 3;
+        // A stop within this many navigation radii of the slot is the arrival: the planner moves an occupied slot
+        // up to two candidate rings (2 radii apart) away. Farther, the plan failed or fell back near the start
+        // (battle 2026-11-27: a VenatorII held 1,292 away, a fresh Rothana 894 away).
+        private const float ARRIVAL_RADIUS_FACTOR = 5f;
+        // Seconds between new tries to reach a slot the last plan did not reach.
+        private const float MOVE_RETRY_INTERVAL = 2f;
 
         private readonly IShipMovement _movement;
         private readonly IWeaponComponent _weapon;
@@ -40,6 +46,7 @@ namespace EmpireAtWar.Entities.Ship.StateMachine
         private Vector3 _destination;
         private int _member;
         private float _nextSearchTime;
+        private float _nextMoveRetryTime;
         // A search ran since the ship stopped on its slot; until then the order is not finished.
         private bool _hasSearched;
         private bool _hasArrived;
@@ -81,6 +88,7 @@ namespace EmpireAtWar.Entities.Ship.StateMachine
             // A ship stopped on its slot stays put: a re-plan this short only loops around it.
             if (_movement.IsMoving || _movement.GetRange(_destination) > _movement.NavigationRadius)
                 _movement.MoveToPosition(_destination);
+            _nextMoveRetryTime = Time.time + MOVE_RETRY_INTERVAL;
             _nextSearchTime = Time.time + UnityEngine.Random.value * SEARCH_INTERVAL;
         }
 
@@ -91,7 +99,15 @@ namespace EmpireAtWar.Entities.Ship.StateMachine
             {
                 // Flying with the group: guns fire on the way, the course holds.
                 if (_movement.IsMoving) return;
-                _hasArrived = true;
+                if (_movement.GetRange(_destination) <= _movement.NavigationRadius * ARRIVAL_RADIUS_FACTOR)
+                    _hasArrived = true;
+                else if (Time.time >= _nextMoveRetryTime)
+                {
+                    // Stopped short of the slot: try again instead of holding where the failed plan left it.
+                    _nextMoveRetryTime = Time.time + MOVE_RETRY_INTERVAL;
+                    _movement.MoveToPosition(_destination);
+                    return;
+                }
             }
 
             if (Time.time >= _nextSearchTime)
@@ -104,7 +120,8 @@ namespace EmpireAtWar.Entities.Ship.StateMachine
             }
 
             if (_facingTarget == null) return;
-            _movement.HoldPosition(_facingTarget);
+            // Short of the slot the ship only turns: a hold would stop the next try.
+            if (_hasArrived) _movement.HoldPosition(_facingTarget);
             _movement.LookAtTarget(_facingTarget);
         }
 
