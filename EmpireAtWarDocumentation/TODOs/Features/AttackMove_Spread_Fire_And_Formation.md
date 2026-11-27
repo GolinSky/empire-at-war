@@ -42,9 +42,25 @@ created: 2026-11-27
 - Overflow ship already within engagement range: attack-moves in place.
 - Crowded check counts guns by their last started salvo; a gun may hop between near-equal enemies on later salvos (bounded by the share).
 
+## Battle check 2026-11-27 #2 (`Loading_20261127_135651_ai_orders.csv`, loaded save, 1,249 s)
+- Team Player0+2 won in 21 min; enemy lost 188 ships, Player0 36 of 48.
+- Dreadnoughts: Praetor in main fight 158 s (before 43–63 s). Praetor 1475 (30 s) and Mandator 1510 (55 s): solo Attack on enemy station (id 2) 1–2 s after spawn, 21–25 contacts, ~9k HP/s lost → not a cap issue.
+- Max ships with a dreadnought as main target 4 (cap 5; before 5–11). Enemies in gun range: median 3–4 (before 5–7).
+- Attack-move stopped samples: median 0 from slot (before ~600). Player1 median 116.
+- Damage to dreadnoughts: Capital 62%, BattleCruiser 28% (Bulwark, Providence, Invincible, Recusant).
+- Idle with enemies on radar, Player0: 686 s / 21 min (before 3,890 s / 40 min). Causes: held replacement target left reach → Idle (263 s); attack-move ended, enemies then arrived inside radar beyond guns (296 s, 39 cases); fresh reinforcements (240 s, normal).
+
+## Idle leak fixes (2026-11-27)
+- `CompleteOrder`: Attack with `HoldAttackPosition` (auto replacement) ending while the target lives → `AttackMove` to `GetFightApproach()`; telemetry reason "Attack target left weapons reach; attack-moving to the fight."
+- Attack-move ends → `_watchesForFight`. Idle ship checks radar every `FIGHT_WATCH_INTERVAL` 0.5 s; nearest non-strikecraft enemy beyond engagement range → `AttackMove` to engagement range on own bearing (telemetry kind `fightWatch`). Any `Issue` (Stop, Move, Guard…) or `Release` ends the watch.
+- Applies to AI ships too (AI orders replace it).
+- Tests: `Attack_TargetKilled_PicksInReachContactAndAttackMovesToItWhenItLeaves` (was `…AndHoldsWhenItLeaves`, expected Idle), new `AttackMove_EndedThenAnEnemyAppearsBeyondReach_ClosesOnlyOnAShip`, `AttackMove_EndedThenStopped_StaysPutWhenAnEnemyAppears`.
+
 ## TODO
 - [x] Category test run green (2026-11-27).
-- [ ] User battle (Development build/Editor): dreadnought lifetime, attackers per dreadnought, idle back line, attack-move formation; AI attack-move strength.
+- [x] Battle check #2 analysed (above).
+- [ ] Idle leak fixes: category run (Navigation, Ships, EnemyAi, BattleInput).
+- [ ] User battle: idle back line after the leak fixes; AI behaviour with the fight watch.
 - [ ] Then: Review → acceptance queue.
 
 ## Related
