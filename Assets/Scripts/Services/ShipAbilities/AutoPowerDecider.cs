@@ -48,7 +48,11 @@ namespace EmpireAtWar.Services.ShipAbilities
 
         public void HoldManual(long id, float now) => GetMonitor(id).HoldManual(now);
 
-        public void Remove(long id) => _monitors.Remove(id);
+        public void Remove(long id)
+        {
+            _monitors.Remove(id);
+            AutoPowerTelemetry.Forget(id);
+        }
 
         public void Clear() => _monitors.Clear();
 
@@ -74,21 +78,26 @@ namespace EmpireAtWar.Services.ShipAbilities
             if (!monitor.IsHeld(now))
                 foreach (ShipAbilitySlot slot in caster.Slots)
                     if (slot.State == ShipAbilityState.Active && _autoUse.ShouldStop(caster, slot.Definition) &&
-                        _cancel(caster, slot.Id)) return true;
-            // An active shield boost is the one ability Weapons may stack on; any other active ability waits.
+                        _cancel(caster, slot.Id))
+                        return Report(entity, caster, automation, AutoPowerReason.StopRuleCancelled, slot, shieldLoss, true);
+            // Weapons may stack on an active shield boost, and a shield boost on any other active ability;
+            // every other role waits while an ability runs.
             bool shieldsBoosted = false;
+            bool otherActive = false;
             foreach (ShipAbilitySlot slot in caster.Slots)
             {
                 if (slot.State != ShipAbilityState.Active) continue;
-                if (slot.Definition.AutoPower != AutoPowerRole.Shields)
-                {
-                    monitor.ResetConfirmation();
-                    return false;
-                }
-                shieldsBoosted = true;
+                if (slot.Definition.AutoPower == AutoPowerRole.Shields) shieldsBoosted = true;
+                else otherActive = true;
             }
-            if (monitor.IsHeld(now)) return false;
-            for (int i = 0; i < caster.Slots.Count && !shieldsBoosted; i++)
+            if (shieldsBoosted && otherActive)
+            {
+                monitor.ResetConfirmation();
+                return Report(entity, caster, automation, AutoPowerReason.AbilitiesRunning, null, shieldLoss, false);
+            }
+            if (monitor.IsHeld(now))
+                return Report(entity, caster, automation, AutoPowerReason.ManualHold, null, shieldLoss, false);
+            for (int i = 0; i < caster.Slots.Count && !shieldsBoosted && !otherActive; i++)
             {
                 ShipAbilitySlot slot = caster.Slots[i];
                 if (!slot.CanActivate || !ShipAbilityAutoUse.HasRule(slot.Definition) ||
@@ -97,28 +106,62 @@ namespace EmpireAtWar.Services.ShipAbilities
                 // A targeted rule ability takes the same target an auto-power role would.
                 IEntity ruleTarget = slot.Definition.RequiresEnemyTarget ? _combat.FindTarget(caster, slot.Definition) : null;
                 if ((ruleTarget != null || !slot.Definition.RequiresEnemyTarget) && _activate(caster, slot.Id, ruleTarget))
-                    return true;
+                    return Report(entity, caster, automation, AutoPowerReason.RuleActivated, slot, shieldLoss, true);
             }
-            if (automation == null || !automation.Eligible) return false;
+            if (automation == null || !automation.Eligible)
+                return Report(entity, caster, automation, AutoPowerReason.NoAutoPowerRoles, null, shieldLoss, false);
             AutoPowerSituation situation = _combat.Assess(caster, automation, shieldLoss, IsTravelling(entity));
-            AutoPowerRole decision = Choose(caster, monitor, now, situation, shieldsBoosted, out _, out _);
+            AutoPowerRole only = shieldsBoosted ? AutoPowerRole.Weapons
+                : otherActive ? AutoPowerRole.Shields : AutoPowerRole.None;
+            AutoPowerRole decision = Choose(caster, monitor, now, situation, only, out _, out _, out AutoPowerRole wanted);
+            if (decision == AutoPowerRole.None)
+            {
+                monitor.Confirm(AutoPowerRole.None);
+                return Report(entity, caster, automation, wanted == AutoPowerRole.None
+                    ? AutoPowerReason.NothingWanted : AutoPowerReason.WantedNotReady, wanted, null, shieldLoss, situation, false);
+            }
             // A drained shield with a warship in reach cannot wait for a second check.
             bool urgent = situation.Urgent && decision == AutoPowerRole.Shields;
-            if (!urgent && !monitor.Confirm(decision)) return false;
+            if (!urgent && !monitor.Confirm(decision))
+                return Report(entity, caster, automation, AutoPowerReason.AwaitingConfirmation, decision, null,
+                    shieldLoss, situation, false);
             monitor.ResetConfirmation();
             // Recheck right before spending: the target or readiness can change between checks.
-            return Choose(caster, monitor, now, situation, shieldsBoosted, out ShipAbilitySlot chosen, out IEntity target) == decision &&
-                   decision != AutoPowerRole.None && _activate(caster, chosen.Id, target);
+            if (Choose(caster, monitor, now, situation, only, out ShipAbilitySlot chosen, out IEntity target, out _) != decision)
+                return Report(entity, caster, automation, AutoPowerReason.RecheckChanged, decision, null,
+                    shieldLoss, situation, false);
+            bool started = _activate(caster, chosen.Id, target);
+            return Report(entity, caster, automation, started ? AutoPowerReason.Activated : AutoPowerReason.ActivationRefused,
+                decision, chosen, shieldLoss, situation, started);
+        }
+
+        private static bool Report(IEntity entity, IShipAbilityFacade caster, IShipAutoPowerFacade automation,
+            AutoPowerReason reason, ShipAbilitySlot slot, AutoPowerShieldLoss shieldLoss, bool started) =>
+            Report(entity, caster, automation, reason, slot?.Definition.AutoPower ?? AutoPowerRole.None, slot, shieldLoss,
+                null, started);
+
+        // Every exit of a check reports its reason; the telemetry keeps only changes per caster.
+        private static bool Report(IEntity entity, IShipAbilityFacade caster, IShipAutoPowerFacade automation,
+            AutoPowerReason reason, AutoPowerRole role, ShipAbilitySlot slot, AutoPowerShieldLoss shieldLoss,
+            AutoPowerSituation? situation, bool started)
+        {
+            AutoPowerTelemetry.Record(entity, caster, automation, reason, role, slot?.Id ?? ShipAbilityId.None,
+                shieldLoss, situation);
+            return started;
         }
 
         // First wanted role with a ready slot; a recovering power never swaps Shields for Weapons or back.
-        // While shields are boosted only Weapons may be added on top. A slot inside its start delay is skipped.
+        // only: the one role allowed beside an active ability (None = any). A slot inside its start delay is skipped.
+        // wanted: the first role the situation asks for, ready or not.
         private AutoPowerRole Choose(IShipAbilityFacade caster, AutoPowerMonitor monitor, float now,
-            AutoPowerSituation situation, bool weaponsOnly, out ShipAbilitySlot chosen, out IEntity target)
+            AutoPowerSituation situation, AutoPowerRole only, out ShipAbilitySlot chosen, out IEntity target,
+            out AutoPowerRole wanted)
         {
+            wanted = AutoPowerRole.None;
             foreach (AutoPowerRole role in AutoPowerSituation.Priority)
             {
-                if (!situation.Wants(role) || weaponsOnly && role != AutoPowerRole.Weapons) continue;
+                if (!situation.Wants(role) || only != AutoPowerRole.None && role != only) continue;
+                if (wanted == AutoPowerRole.None) wanted = role;
                 foreach (ShipAbilitySlot slot in caster.Slots)
                 {
                     if (slot.Definition.AutoPower != role || !slot.CanActivate ||

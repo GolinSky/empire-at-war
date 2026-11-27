@@ -605,6 +605,23 @@ namespace EmpireAtWar.Tests.Editor
                 "An unavailable preferred power must not fall through to another ability.");
         }
 
+        [Test]
+        public void PlayerAutoPower_ShieldBoostStartsWhileAnotherAbilityRuns()
+        {
+            using AutoPowerRuntime runtime = CreateAutoPowerRuntime();
+            Assert.That(runtime.Abilities.TryActivate(runtime.Caster.GetFacade<IShipAbilityFacade>(),
+                runtime.Weapon.Id, null), Is.True);
+            float lowShields = runtime.Catalog.AutoPower.ShieldBoostBelow * 0.5f;
+            runtime.Health.Restore(1f, lowShields, runtime.Health.HardPointModels.Select(_ => 1f).ToArray());
+            Assert.That(runtime.Automation.CanRegenerateShields, Is.True, "The fixture must leave shields able to regenerate.");
+
+            runtime.TickAt(1f);
+            Assert.That(runtime.Shields.State, Is.EqualTo(ShipAbilityState.Active),
+                "Drained shields with a hostile warship near must boost even while weapons power runs.");
+            Assert.That(runtime.Weapon.State, Is.EqualTo(ShipAbilityState.Active),
+                "The shield boost must not end the running ability.");
+        }
+
         [TestCase(ShipType.Allegiance)]
         [TestCase(ShipType.ISDII)]
         public void PlayerAutoPower_MainBatteriesUsesNormalLifecycle(ShipType shipType)
@@ -664,8 +681,9 @@ namespace EmpireAtWar.Tests.Editor
             battle.SetState(BattleState.Running);
             var autoUse = _battle.Container.Resolve<ShipAbilityAutoUse>();
             var service = new PlayerAutoPowerService(entities, local, settings, battle, abilities, combat, catalog, autoUse);
+            HealthModel health = ship.transform.parent.GetComponent<EntityLifetimeScope>().Container.Resolve<HealthModel>();
             return new AutoPowerRuntime(service, abilities, entities, caster, entities.GetEntity(hostile.EntityId), settings,
-                (SelectionContext)selection.PlayerSelectionContext);
+                (SelectionContext)selection.PlayerSelectionContext, health, catalog);
         }
 
         private sealed class AutoPowerRuntime : IDisposable
@@ -677,6 +695,8 @@ namespace EmpireAtWar.Tests.Editor
             public IEntity Caster { get; }
             public IEntity Enemy { get; }
             public ISettingsService Settings { get; }
+            public HealthModel Health { get; }
+            public ShipAbilityCatalog Catalog { get; }
             public IShipAutoPowerFacade Automation => Caster.GetFacade<IShipAutoPowerFacade>();
             public ShipAbilitySlot Weapon => Caster.GetFacade<IShipAbilityFacade>().Slots.Single(slot =>
                 slot.Definition.Settings is BoostWeaponPowerSettings);
@@ -684,10 +704,12 @@ namespace EmpireAtWar.Tests.Editor
                 slot.Definition.Settings is BoostShieldPowerSettings);
 
             public AutoPowerRuntime(PlayerAutoPowerService service, ShipAbilityService abilities, IEntityLocator entities,
-                IEntity caster, IEntity enemy, ISettingsService settings, SelectionContext selection)
+                IEntity caster, IEntity enemy, ISettingsService settings, SelectionContext selection, HealthModel health,
+                ShipAbilityCatalog catalog)
             {
                 Service = service; Abilities = abilities; Entities = entities;
                 Caster = caster; Enemy = enemy; Settings = settings; _selection = selection;
+                Health = health; Catalog = catalog;
             }
 
             public void TickAt(float simulationTime)

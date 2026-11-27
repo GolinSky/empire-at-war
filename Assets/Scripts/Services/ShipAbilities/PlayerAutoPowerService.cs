@@ -87,6 +87,8 @@ namespace EmpireAtWar.Services.ShipAbilities
             if (automation != null && !automation.Enabled)
             {
                 _decider.Suspend(entity.Id);
+                AutoPowerTelemetry.Record(entity, caster, automation, AutoPowerReason.ShipToggleOff, AutoPowerRole.None,
+                    ShipAbilityId.None, AutoPowerShieldLoss.None, null);
                 return;
             }
             _decider.Check(entity, caster, automation, _now);

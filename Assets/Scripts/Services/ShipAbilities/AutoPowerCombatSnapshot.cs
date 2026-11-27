@@ -191,7 +191,7 @@ namespace EmpireAtWar.Services.ShipAbilities
                 endangered: heavyLoss && health.ShieldPercentage < _tuning.LowShields,
                 cornered: heavyLoss && health.HullPercentage < _tuning.LastStandHull, travelling,
                 urgent: IsUrgentShieldBoost(health.ShieldPercentage, hasShieldPower && automation.CanRegenerateShields,
-                    shieldsBoosted, hostileShipNearby));
+                    shieldsBoosted, hostileShipNearby), hostileShip: hostileShipNearby);
         }
 
         /// <summary>

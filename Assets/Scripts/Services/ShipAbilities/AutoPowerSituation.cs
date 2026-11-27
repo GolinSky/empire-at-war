@@ -18,11 +18,14 @@ namespace EmpireAtWar.Services.ShipAbilities
         public bool Travelling { get; }
         /// <summary>The shield boost is urgent: it fires without waiting for a confirming check.</summary>
         public bool Urgent { get; }
+        /// <summary>A visible hostile ship that is not strikecraft is in radar range.</summary>
+        public bool HostileShip { get; }
 
         public AutoPowerSituation(AutoPowerRole power, bool hostileNearby, bool engaged, bool endangered,
-            bool cornered, bool travelling, bool urgent = false)
+            bool cornered, bool travelling, bool urgent = false, bool hostileShip = false)
         {
             Urgent = urgent;
+            HostileShip = hostileShip;
             Power = power;
             HostileNearby = hostileNearby;
             Engaged = engaged;
