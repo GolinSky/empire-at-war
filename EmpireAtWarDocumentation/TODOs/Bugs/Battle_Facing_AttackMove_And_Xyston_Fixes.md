@@ -233,6 +233,18 @@ created: 2026-11-26
 - Tests (2026-11-26, EditMode, explicit off): Combat 344/344, Abilities 268/268, BattleInput 487/487, Navigation 422/422, Squadrons 236/236, Ships 490/490 passed. New: `MainBatteryReaches_WhileHolding_NeedsHalfTheBearingMainWeightInRange`, `Attack_HoldingShipDoesNotStartALegWhenOneMainDropsOutOfRange`, `CombatHold_SettleGoalMovedByThePlannerIsRefusedAndTheShipStays`, Ion Pulse/Superlaser ordered-target cases, `AttackMove_GroupGetsRowsByRole_FrontRowNearestThePoint`, 4 `RowDestinations_*`, `AttackMoveRows_RearRowsStandOffFartherButWithinReach`. Changed contract: `IonPulseTargetPriorityTests` station/biggest-class cases now run without an order; `SuperlaserTargetRuleTests` ranking.
 - No reusable guidance extracted yet: rules wait for the battle check (step 7).
 
+## Battle 2026-11-27 (`Loading_20261127_103730_ai_orders.csv`, Editor/dev)
+- Fixes held: settle hop angle median 90° (was 115–127°); 183 / 222 settles refused. Stern while moving in a fight: 23 / 492 samples.
+- **Overshoot** (user: big front ships go far past the point). Block depth 1,300–2,800; lone front ship slot +978 (Secutor), +1,424 (Praetor) past the click. Causes: block centred on the click; line gap `r1 + r2 + max(r1, r2)`; lines spaced by the row's largest radius (Rothana 142, Praetor 317); a lone largest ship as the whole front row; middle-row lines filled by position (t=1041: Arquitens +532 ahead of Imperator +215).
+- **Side ships turn again** (user: Victory). Re-issued attack-move every 7–14 s rebuilt the rows; ships near their slot got one behind them: course change 133–165° (t=1146, 3 of 3), 158°/164° (t=1314), 132° (t=1376). Not visible directly in 5 s samples.
+- Also seen: 81 / 468 drops (17%) were `leash` drops of targets still in reach (out of reach from the slot). Not changed.
+- Fix 2026-11-27:
+  - `FormationModel.CalculateRowDestinations`: front line on the point, lines behind at `r1 + r2`; each line spaced by its own largest radius; a lone largest-tier ship joins the next tier in front; lines filled larger tier first.
+  - `UnitOrderService.IssueAttackMove(receivers, point)`: same owner, same ships, new point ≤ `ATTACK_MOVE_SLOT_REUSE_DISTANCE` (300) from the last → keep each ship's slot offset and row.
+  - `AttackMoveState.Enter`: a stopped ship already within `NavigationRadius` of its slot does not re-plan.
+  - Tests: `FormationModelTests` 19/19, `UnitOrderServiceTests` 39/39, Navigation 424/425 before the test fix (test measured Z, not heading depth; fixed), BattleInput 488/489 likewise, Ships 490/490. New: `RowDestinations_FrontLineStandsOnThePointAndRowsCloseUpBehindIt`, `RowDestinations_ALoneLargestShipJoinsTheNextTierInFront`, `RowDestinations_LargerHullsTakeTheRowsFirstLine`, `AttackMove_RepeatedNearby_KeepsEachShipsSlotOffsetAndRow`, `AttackMove_FarFromTheLastOrder_RebuildsTheRows`.
+  - Gate: user battle check of both behaviours.
+
 ## Open decisions
 - None. Decided: D1, D2 (optional), D3, D4, D5, D6, D7.
 

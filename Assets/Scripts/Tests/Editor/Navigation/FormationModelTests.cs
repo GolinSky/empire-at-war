@@ -35,23 +35,112 @@ namespace EmpireAtWar.Tests.Movement
         [Test]
         public void RowDestinations_HeavyCruiserLeadsWithoutCapitalsAndFollowsThem()
         {
-            var positions = new[] { new FormationPoint(-20f, 0f), new FormationPoint(20f, 0f) };
-            var radii = new[] { 5f, 5f };
-            var backRow = new[] { false, false };
+            var positions = new[]
+            {
+                new FormationPoint(-20f, 0f), new FormationPoint(20f, 0f), new FormationPoint(60f, 0f)
+            };
+            var radii = new[] { 5f, 5f, 5f };
+            var backRow = new[] { false, false, false };
             var target = new FormationPoint(0f, 500f);
             var destinations = new List<FormationPoint>();
             var rows = new List<FormationRow>();
 
-            FormationModel.CalculateRowDestinations(positions, radii, new[] { HEAVY_CRUISER, HEAVY_CRUISER }, backRow,
-                target, destinations, rows);
+            FormationModel.CalculateRowDestinations(positions, radii,
+                new[] { HEAVY_CRUISER, HEAVY_CRUISER, HEAVY_CRUISER }, backRow, target, destinations, rows);
             Assert.That(rows, Is.All.EqualTo(FormationRow.Front));
 
-            FormationModel.CalculateRowDestinations(positions, radii, new[] { HEAVY_CRUISER, CAPITAL }, backRow,
-                target, destinations, rows);
-            Assert.That(rows[0], Is.EqualTo(FormationRow.Middle));
-            Assert.That(rows[1], Is.EqualTo(FormationRow.Front));
+            FormationModel.CalculateRowDestinations(positions, radii, new[] { HEAVY_CRUISER, CAPITAL, CAPITAL },
+                backRow, target, destinations, rows);
+            Assert.That(rows, Is.EqualTo(new[] { FormationRow.Middle, FormationRow.Front, FormationRow.Front }));
             Assert.That(destinations[1].Z, Is.GreaterThan(destinations[0].Z), "The strongest tier present leads.");
-            Assert.That(FormationModel.HasClearance(destinations[0], 5f, destinations[1], 5f), Is.True);
+            for (int i = 0; i < destinations.Count; i++)
+            for (int j = i + 1; j < destinations.Count; j++)
+                // Hull to hull: allow float rounding at contact.
+                Assert.That(FormationModel.HasClearance(destinations[i], 4.99f, destinations[j], 4.99f), Is.True);
+        }
+
+        [Test]
+        public void RowDestinations_FrontLineStandsOnThePointAndRowsCloseUpBehindIt()
+        {
+            var positions = new[]
+            {
+                new FormationPoint(-30f, 0f), new FormationPoint(30f, 0f), new FormationPoint(0f, -40f),
+                new FormationPoint(10f, -40f)
+            };
+            var radii = new[] { 50f, 50f, 10f, 10f };
+            var tiers = new[] { CAPITAL, CAPITAL, 2, 2 };
+            var backRow = new[] { false, false, false, false };
+            var target = new FormationPoint(0f, 1000f);
+            var destinations = new List<FormationPoint>();
+            var rows = new List<FormationRow>();
+
+            FormationModel.CalculateRowDestinations(positions, radii, tiers, backRow, target, destinations, rows);
+
+            FormationPoint center = FormationModel.CalculateCenter(positions);
+            float headingX = target.X - center.X;
+            float headingZ = target.Z - center.Z;
+            float length = (float)System.Math.Sqrt(headingX * headingX + headingZ * headingZ);
+            float Depth(FormationPoint point) =>
+                ((point.X - target.X) * headingX + (point.Z - target.Z) * headingZ) / length;
+
+            Assert.That(Depth(destinations[0]), Is.EqualTo(0f).Within(0.01f), "No ship stands past the point.");
+            Assert.That(Depth(destinations[1]), Is.EqualTo(0f).Within(0.01f));
+            Assert.That(-Depth(destinations[2]), Is.EqualTo(radii[0] + radii[2]).Within(0.01f),
+                "Rows stand hull to hull.");
+            Assert.That(destinations[3].X - destinations[2].X, Is.EqualTo(radii[2] * 2f).Within(0.01f),
+                "A line of small hulls spaces by its own hulls, not the row's largest.");
+        }
+
+        [Test]
+        public void RowDestinations_ALoneLargestShipJoinsTheNextTierInFront()
+        {
+            var positions = new[]
+            {
+                new FormationPoint(0f, 0f), new FormationPoint(-40f, 0f), new FormationPoint(40f, 0f),
+                new FormationPoint(0f, -40f)
+            };
+            var radii = new[] { 30f, 10f, 10f, 5f };
+            var tiers = new[] { 6, CAPITAL, CAPITAL, 2 };
+            var backRow = new[] { false, false, false, false };
+            var destinations = new List<FormationPoint>();
+            var rows = new List<FormationRow>();
+
+            FormationModel.CalculateRowDestinations(positions, radii, tiers, backRow, new FormationPoint(0f, 500f),
+                destinations, rows);
+
+            Assert.That(rows, Is.EqualTo(new[]
+                { FormationRow.Front, FormationRow.Front, FormationRow.Front, FormationRow.Middle }));
+            Assert.That(destinations[0].Z, Is.EqualTo(destinations[1].Z).Within(0.01f));
+        }
+
+        [Test]
+        public void RowDestinations_LargerHullsTakeTheRowsFirstLine()
+        {
+            var positions = new List<FormationPoint>();
+            var radii = new List<float>();
+            var tiers = new List<int>();
+            var backRow = new List<bool>();
+            for (int i = 0; i < 2; i++) AddShip(i * 30f, -200f, 6);
+            // Six cruisers ahead of six capitals: the capitals still take the middle row's first line.
+            for (int i = 0; i < 6; i++) AddShip(i * 30f, 100f, 3);
+            for (int i = 0; i < 6; i++) AddShip(i * 30f, -100f, CAPITAL);
+            var destinations = new List<FormationPoint>();
+            var rows = new List<FormationRow>();
+
+            FormationModel.CalculateRowDestinations(positions, radii, tiers, backRow, new FormationPoint(0f, 2000f),
+                destinations, rows);
+
+            for (int cruiser = 2; cruiser < 8; cruiser++)
+            for (int capital = 8; capital < 14; capital++)
+                Assert.That(destinations[capital].Z, Is.GreaterThan(destinations[cruiser].Z));
+
+            void AddShip(float x, float z, int tier)
+            {
+                positions.Add(new FormationPoint(x, z));
+                radii.Add(10f);
+                tiers.Add(tier);
+                backRow.Add(false);
+            }
         }
 
         [Test]
@@ -59,23 +148,27 @@ namespace EmpireAtWar.Tests.Movement
         {
             var positions = new[]
             {
-                new FormationPoint(0f, 40f), new FormationPoint(-30f, 0f), new FormationPoint(30f, 0f)
+                new FormationPoint(0f, 40f), new FormationPoint(-30f, 0f), new FormationPoint(-10f, 0f),
+                new FormationPoint(30f, 0f)
             };
-            var radii = new[] { 8f, 5f, 5f };
-            var tiers = new[] { CAPITAL, HEAVY_CRUISER, 2 };
-            var backRow = new[] { true, false, false };
+            var radii = new[] { 8f, 5f, 5f, 5f };
+            // Two front ships: a lone largest ship would join the next tier.
+            var tiers = new[] { CAPITAL, HEAVY_CRUISER, HEAVY_CRUISER, 2 };
+            var backRow = new[] { true, false, false, false };
             var target = new FormationPoint(0f, 800f);
             var destinations = new List<FormationPoint>();
             var rows = new List<FormationRow>();
 
             FormationModel.CalculateRowDestinations(positions, radii, tiers, backRow, target, destinations, rows);
 
-            Assert.That(rows, Is.EqualTo(new[] { FormationRow.Back, FormationRow.Front, FormationRow.Middle }));
-            Assert.That(destinations[1].Z, Is.GreaterThan(destinations[2].Z));
-            Assert.That(destinations[2].Z, Is.GreaterThan(destinations[0].Z));
+            Assert.That(rows, Is.EqualTo(new[]
+                { FormationRow.Back, FormationRow.Front, FormationRow.Front, FormationRow.Middle }));
+            Assert.That(destinations[1].Z, Is.GreaterThan(destinations[3].Z));
+            Assert.That(destinations[3].Z, Is.GreaterThan(destinations[0].Z));
             for (int i = 0; i < destinations.Count; i++)
             for (int j = i + 1; j < destinations.Count; j++)
-                Assert.That(FormationModel.HasClearance(destinations[i], radii[i], destinations[j], radii[j]), Is.True);
+                Assert.That(FormationModel.HasClearance(destinations[i], radii[i] * 0.999f, destinations[j],
+                    radii[j] * 0.999f), Is.True, "Hull to hull, allowing float rounding at contact.");
         }
 
         [Test]

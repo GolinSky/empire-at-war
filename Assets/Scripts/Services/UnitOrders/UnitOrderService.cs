@@ -11,6 +11,7 @@ using EmpireAtWar.Entities.BaseEntity.Orders;
 using EmpireAtWar.Entities.UnitActions;
 using EmpireAtWar.Services.ReinforcementZones;
 using EmpireAtWar.Services.ShipNavigation;
+using EmpireAtWar.Utils;
 using UnityEngine;
 using EmpireAtWar.Entities.Units;
 
@@ -19,6 +20,9 @@ namespace EmpireAtWar.Services.UnitOrders
     public sealed class UnitOrderService : IUnitOrderService
     {
         private const float ATTACK_ARC_HALF_DEGREES = 60f;
+        // A repeated attack-move this close to the last one keeps each ship's slot offset and row: rebuilt rows
+        // gave ships near their slot a new one behind them, and they turned around for a short hop.
+        private const float ATTACK_MOVE_SLOT_REUSE_DISTANCE = 300f;
 
         private readonly IEntityLocator _entityLocator;
         private readonly IReinforcementZonesSystem _zones;
@@ -33,6 +37,8 @@ namespace EmpireAtWar.Services.UnitOrders
         private readonly List<RadarContact> _obstacleBuffer = new List<RadarContact>();
         private readonly List<PaceMemberCandidate> _paceCandidates = new List<PaceMemberCandidate>();
         private readonly List<PaceCluster> _createdClusters = new List<PaceCluster>();
+        private readonly Dictionary<PlayerId, AttackMoveLayout> _lastAttackMoves =
+            new Dictionary<PlayerId, AttackMoveLayout>();
         private readonly Func<System.Numerics.Vector2, System.Numerics.Vector2, bool> _isSegmentClear;
         private int _nextOrderId;
 
@@ -383,7 +389,9 @@ namespace EmpireAtWar.Services.UnitOrders
             List<IEntity> entities = new List<IEntity>();
             List<IAttackMoveFacade> commands = Collect<IAttackMoveFacade>(receivers, entities);
             List<FormationRow> rows = new List<FormationRow>(commands.Count);
-            List<Vector3> slots = AttackMoveRows(commands, point, rows);
+            List<Vector3> slots = TryReuseAttackMoveLayout(entities, commands, point, rows) ??
+                AttackMoveRows(commands, point, rows);
+            if (entities.Count > 0) RememberAttackMoveLayout(entities, point, slots, rows);
             AttackMoveEngagement engagement = new AttackMoveEngagement();
             PaceCluster[] clusters = pace == MovePace.Formation
                 ? CreateAttackMoveClusters(entities, commands, point)
@@ -583,6 +591,42 @@ namespace EmpireAtWar.Services.UnitOrders
                 slots.Add(new Vector3(destinations[i].X, position(commands[i]).y,
                     destinations[i].Z));
             return slots;
+        }
+
+        private List<Vector3> TryReuseAttackMoveLayout(IReadOnlyList<IEntity> entities,
+            IReadOnlyList<IAttackMoveFacade> commands, Vector3 point, List<FormationRow> rows)
+        {
+            if (entities.Count == 0 || !_lastAttackMoves.TryGetValue(entities[0].Owner, out AttackMoveLayout last) ||
+                PlanarGeometry.Distance(last.Point, point) > ATTACK_MOVE_SLOT_REUSE_DISTANCE)
+                return null;
+            foreach (IEntity entity in entities)
+                if (!last.Slots.ContainsKey(entity.Id)) return null;
+            List<Vector3> slots = new List<Vector3>(entities.Count);
+            for (int i = 0; i < entities.Count; i++)
+            {
+                (Vector3 offset, FormationRow row) = last.Slots[entities[i].Id];
+                slots.Add(new Vector3(point.x + offset.x, commands[i].WorldPosition.y, point.z + offset.z));
+                rows.Add(row);
+            }
+            return slots;
+        }
+
+        private void RememberAttackMoveLayout(IReadOnlyList<IEntity> entities, Vector3 point,
+            IReadOnlyList<Vector3> slots, IReadOnlyList<FormationRow> rows)
+        {
+            var layout = new AttackMoveLayout(point);
+            for (int i = 0; i < entities.Count; i++)
+                layout.Slots[entities[i].Id] = (new Vector3(slots[i].x - point.x, 0f, slots[i].z - point.z), rows[i]);
+            _lastAttackMoves[entities[0].Owner] = layout;
+        }
+
+        private sealed class AttackMoveLayout
+        {
+            public Vector3 Point { get; }
+            public Dictionary<long, (Vector3 Offset, FormationRow Row)> Slots { get; } =
+                new Dictionary<long, (Vector3, FormationRow)>();
+
+            public AttackMoveLayout(Vector3 point) => Point = point;
         }
 
         private static List<Vector3> AttackMoveRows(IReadOnlyList<IAttackMoveFacade> commands, Vector3 point,

@@ -132,7 +132,9 @@ namespace EmpireAtWar.Entities.Ship.StateMachine
             _isHolding = false;
             _nextEnRouteSearchTime = float.NegativeInfinity;
             _member = _engagement.Join();
-            _movement.MoveToPosition(_destination);
+            // A ship stopped on its slot stays put: a re-plan this short only loops around it.
+            if (_movement.IsMoving || _movement.GetRange(_destination) > _movement.NavigationRadius)
+                _movement.MoveToPosition(_destination);
             DelaySearch();
         }
 

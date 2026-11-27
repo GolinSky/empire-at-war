@@ -466,24 +466,81 @@ namespace EmpireAtWar.Tests.Editor
         public void AttackMove_GroupGetsRowsByRole_FrontRowNearestThePoint()
         {
             FakeEntity capital = Entity(1, TestPlayers.Human);
+            FakeEntity wingman = Entity(4, TestPlayers.Human);
             FakeEntity cruiser = Entity(2, TestPlayers.Human);
             FakeEntity artillery = Entity(3, TestPlayers.Human);
             capital.Command.HullTier = 5;
+            wingman.Command.HullTier = 5;
             cruiser.Command.HullTier = 3;
             artillery.Command.HullTier = 5;
             artillery.Command.IsBackRow = true;
             capital.Command.WorldPosition = new Vector3(-50f, 0f, 0f);
+            wingman.Command.WorldPosition = new Vector3(-100f, 0f, 0f);
             cruiser.Command.WorldPosition = Vector3.zero;
             artillery.Command.WorldPosition = new Vector3(50f, 0f, 0f);
             Vector3 point = new Vector3(0f, 0f, 1000f);
 
-            _unitOrderService.IssueAttackMove(new IEntity[] { capital, cruiser, artillery }, point);
+            _unitOrderService.IssueAttackMove(new IEntity[] { capital, wingman, cruiser, artillery }, point);
 
             Assert.That(capital.Command.LastRow, Is.EqualTo(FormationRow.Front));
+            Assert.That(wingman.Command.LastRow, Is.EqualTo(FormationRow.Front));
+            Vector3 heading = (point - new Vector3(-25f, 0f, 0f)).normalized;
+            Assert.That(Vector3.Dot(capital.Command.LastPoint - point, heading), Is.EqualTo(0f).Within(0.01f),
+                "The front line stands on the point.");
             Assert.That(cruiser.Command.LastRow, Is.EqualTo(FormationRow.Middle));
             Assert.That(artillery.Command.LastRow, Is.EqualTo(FormationRow.Back));
             Assert.That(capital.Command.LastPoint.z, Is.GreaterThan(cruiser.Command.LastPoint.z));
             Assert.That(cruiser.Command.LastPoint.z, Is.GreaterThan(artillery.Command.LastPoint.z));
+        }
+
+        [Test]
+        public void AttackMove_RepeatedNearby_KeepsEachShipsSlotOffsetAndRow()
+        {
+            FakeEntity[] ships = { Entity(1, TestPlayers.Human), Entity(2, TestPlayers.Human), Entity(3, TestPlayers.Human) };
+            ships[0].Command.HullTier = 5;
+            ships[1].Command.HullTier = 5;
+            ships[2].Command.HullTier = 3;
+            for (int i = 0; i < ships.Length; i++) ships[i].Command.WorldPosition = new Vector3(i * 60f, 0f, 0f);
+            Vector3 first = new Vector3(0f, 0f, 1000f);
+            _unitOrderService.IssueAttackMove(ships, first);
+            Vector3[] offsets = new Vector3[ships.Length];
+            FormationRow[] rows = new FormationRow[ships.Length];
+            for (int i = 0; i < ships.Length; i++)
+            {
+                offsets[i] = ships[i].Command.LastPoint - first;
+                rows[i] = ships[i].Command.LastRow;
+                // The ships moved since: a rebuilt layout would sort them differently.
+                ships[i].Command.WorldPosition = new Vector3(-i * 80f, 0f, 700f + i * 50f);
+            }
+
+            Vector3 second = first + new Vector3(80f, 0f, 40f);
+            _unitOrderService.IssueAttackMove(ships, second);
+
+            for (int i = 0; i < ships.Length; i++)
+            {
+                Vector3 offset = ships[i].Command.LastPoint - second;
+                Assert.That(offset.x, Is.EqualTo(offsets[i].x).Within(0.01f));
+                Assert.That(offset.z, Is.EqualTo(offsets[i].z).Within(0.01f));
+                Assert.That(ships[i].Command.LastRow, Is.EqualTo(rows[i]));
+            }
+        }
+
+        [Test]
+        public void AttackMove_FarFromTheLastOrder_RebuildsTheRows()
+        {
+            FakeEntity[] ships = { Entity(1, TestPlayers.Human), Entity(2, TestPlayers.Human), Entity(3, TestPlayers.Human) };
+            ships[0].Command.HullTier = 5;
+            ships[1].Command.HullTier = 5;
+            ships[2].Command.HullTier = 3;
+            for (int i = 0; i < ships.Length; i++) ships[i].Command.WorldPosition = new Vector3(i * 60f, 0f, 0f);
+            _unitOrderService.IssueAttackMove(ships, new Vector3(0f, 0f, 1000f));
+
+            // Turned 90 degrees and far away: the front line must face the new heading.
+            Vector3 point = new Vector3(3000f, 0f, 0f);
+            _unitOrderService.IssueAttackMove(ships, point);
+
+            Assert.That(ships[0].Command.LastPoint.x, Is.EqualTo(point.x).Within(0.01f));
+            Assert.That(ships[2].Command.LastPoint.x, Is.LessThan(point.x));
         }
 
         [Test]
