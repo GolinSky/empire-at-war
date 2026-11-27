@@ -65,7 +65,7 @@ MonoBehaviour:
   <ShieldRegenTier>k__BackingField: 2
   <ShieldRegenMultiplier>k__BackingField: 1
   <ShieldRegenerateDelay>k__BackingField: 1
-  <Range>k__BackingField: 600
+  <Range>k__BackingField: 635
   <Delay>k__BackingField: 0.25
   abilities: 0500000003000000
   hangarBays:
@@ -85,10 +85,10 @@ MonoBehaviour:
   <HangarInitialDelay>k__BackingField: 4
   <HangarLaunchInterval>k__BackingField: 1
   weaponLoadout:
-  - weaponType: 120
+  - weaponType: 121
     count: 1
   - weaponType: 14
     count: 2
   - weaponType: 90
-    count: 3
+    count: 4
   roles: 97

@@ -1554,6 +1554,64 @@ Transform:
   m_Children: []
   m_Father: {fileID: 8198548256258590017}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!1 &1609940461272377571
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 433939473332472194}
+  - component: {fileID: 5277832505181627719}
+  m_Layer: 0
+  m_Name: ProjectileR3
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &433939473332472194
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1609940461272377571}
+  serializedVersion: 2
+  m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
+  m_LocalPosition: {x: 3.1, y: 0.49, z: -0.59}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children:
+  - {fileID: 3932336086449146654}
+  m_Father: {fileID: 4094410639809554410}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &5277832505181627719
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1609940461272377571}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 6535a63451984d3d8510459aec130f3f, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  spawnDestroyedExplosion: 1
+  destroyedVfxAnchor: {fileID: 3932336086449146654}
+  destroyedVfxScale: 1.0702477
+  unlockLevel: 1
+  healthOverride: 0
+  healthWeight: 1
+  <HardPointType>k__BackingField: 0
+  <Id>k__BackingField: 9
+  yAxisRange:
+    <Min>k__BackingField: -27
+    <Max>k__BackingField: 180
+  mainBattery: 0
+  <WeaponType>k__BackingField: 90
 --- !u!1 &1793888960923317221
 GameObject:
   m_ObjectHideFlags: 0
@@ -2040,6 +2098,7 @@ Transform:
   - {fileID: 8549121165357114057}
   - {fileID: 7143495301976279931}
   - {fileID: 318696218317543096}
+  - {fileID: 433939473332472194}
   m_Father: {fileID: 6639587243538167660}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!114 &3187838946373229354
@@ -2061,6 +2120,7 @@ MonoBehaviour:
   - {fileID: 5788021083433736437}
   - {fileID: 5032053248851161415}
   - {fileID: 2493734567307619460}
+  - {fileID: 5277832505181627719}
   rangeMultiplier: 1
 --- !u!1 &3436786828147559109
 GameObject:
@@ -3891,6 +3951,37 @@ Transform:
   m_Children: []
   m_Father: {fileID: 3248871477879454682}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!1 &7800160421500249103
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 3932336086449146654}
+  m_Layer: 0
+  m_Name: DestroyedVfxAnchor
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &3932336086449146654
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 7800160421500249103}
+  serializedVersion: 2
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: -0.018999577, y: 0.08288059, z: 0.000000059604645}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 433939473332472194}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &7805261741481498874
 GameObject:
   m_ObjectHideFlags: 0
@@ -4337,6 +4428,7 @@ MonoBehaviour:
   - {fileID: 1014526724357004300}
   - {fileID: 2493734567307619460}
   - {fileID: 2235957021269889044}
+  - {fileID: 5277832505181627719}
 --- !u!114 &6930281553757434045
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -4445,6 +4537,8 @@ MonoBehaviour:
   <SquadronIcon>k__BackingField: {fileID: 0}
   <SFoils>k__BackingField: {fileID: 0}
   <GravityWellEmitter>k__BackingField: {fileID: 0}
+  <Cloak>k__BackingField: {fileID: 0}
+  <RepairRange>k__BackingField: {fileID: 0}
   <Injectables>k__BackingField:
   - {fileID: 334406596647582418}
   - {fileID: 8372322827020108633}
@@ -4457,6 +4551,7 @@ MonoBehaviour:
   - {fileID: 1014526724357004300}
   - {fileID: 2235957021269889044}
   - {fileID: 8437183460448200138}
+  - {fileID: 5277832505181627719}
 --- !u!114 &8437183460448200138
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -5180,7 +5275,7 @@ PrefabInstance:
     - target: {fileID: 1396921986716529170, guid: 23702bc0e5303b740b61f1b451630b85,
         type: 3}
       propertyPath: <WeaponType>k__BackingField
-      value: 120
+      value: 121
       objectReference: {fileID: 0}
     - target: {fileID: 1396921986716529170, guid: 23702bc0e5303b740b61f1b451630b85,
         type: 3}
