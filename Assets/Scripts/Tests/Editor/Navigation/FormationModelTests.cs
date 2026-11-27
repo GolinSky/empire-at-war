@@ -60,7 +60,7 @@ namespace EmpireAtWar.Tests.Movement
         }
 
         [Test]
-        public void RowDestinations_FrontLineStandsOnThePointAndRowsCloseUpBehindIt()
+        public void RowDestinations_FrontLineStandsOnThePointAndRowsStandBehindItWithAHullGap()
         {
             var positions = new[]
             {
@@ -85,10 +85,63 @@ namespace EmpireAtWar.Tests.Movement
 
             Assert.That(Depth(destinations[0]), Is.EqualTo(0f).Within(0.01f), "No ship stands past the point.");
             Assert.That(Depth(destinations[1]), Is.EqualTo(0f).Within(0.01f));
-            Assert.That(-Depth(destinations[2]), Is.EqualTo(radii[0] + radii[2]).Within(0.01f),
-                "Rows stand hull to hull.");
-            Assert.That(destinations[3].X - destinations[2].X, Is.EqualTo(radii[2] * 2f).Within(0.01f),
+            const float CLEARANCE = FormationModel.ROW_SLOT_CLEARANCE;
+            Assert.That(CLEARANCE, Is.GreaterThan(1f), "Holding ships keep a gap between hulls.");
+            Assert.That(Depth(destinations[2]), Is.LessThan(0f), "The smaller line stands behind the front line.");
+            Assert.That(Depth(destinations[3]), Is.EqualTo(Depth(destinations[2])).Within(0.01f));
+            AssertHullGaps(destinations, radii);
+            Assert.That(-Depth(destinations[2]), Is.LessThan((radii[0] + radii[2]) * CLEARANCE),
+                "Lines close up as far as the hulls ahead of them allow.");
+            Assert.That(destinations[3].X - destinations[2].X, Is.EqualTo(radii[2] * 2f * CLEARANCE).Within(0.01f),
                 "A line of small hulls spaces by its own hulls, not the row's largest.");
+        }
+
+        [Test]
+        public void RowDestinations_OversizedHullTakesThePointAndTheOthersIgnoreIt()
+        {
+            // Battle 2026-11-27: spacing the group around a radius-895 dreadnought put every line ~1,400 behind the
+            // point. The dreadnought flies in the deepest height layer, so it overlaps nobody.
+            var positions = new[]
+            {
+                new FormationPoint(-200f, 0f), new FormationPoint(0f, 0f), new FormationPoint(200f, 0f),
+                new FormationPoint(-100f, -50f), new FormationPoint(100f, -50f), new FormationPoint(0f, -100f)
+            };
+            var radii = new[] { 895f, 125f, 63f, 63f, 36f, 36f };
+            var tiers = new[] { 7, 6, CAPITAL, CAPITAL, 4, 4 };
+            var backRow = new[] { false, false, false, false, false, false };
+            var target = new FormationPoint(0f, 1000f);
+            var destinations = new List<FormationPoint>();
+            var rows = new List<FormationRow>();
+            var withoutGiant = new List<FormationPoint>();
+            var withoutGiantRows = new List<FormationRow>();
+
+            FormationModel.CalculateRowDestinations(positions, radii, tiers, backRow, target, destinations, rows);
+            FormationModel.CalculateRowDestinations(positions[1..], radii[1..], tiers[1..], backRow[1..], target,
+                withoutGiant, withoutGiantRows);
+
+            Assert.That(rows[0], Is.EqualTo(FormationRow.Front));
+            Assert.That(destinations[0].X, Is.EqualTo(target.X).Within(0.01f), "The giant takes the point.");
+            Assert.That(destinations[0].Z, Is.EqualTo(target.Z).Within(0.01f));
+            for (int i = 1; i < positions.Length; i++)
+            {
+                Assert.That(rows[i], Is.EqualTo(withoutGiantRows[i - 1]));
+                Assert.That(destinations[i].X, Is.EqualTo(withoutGiant[i - 1].X).Within(0.5f),
+                    "The other slots are laid out as if the giant were not there.");
+                Assert.That(destinations[i].Z, Is.EqualTo(withoutGiant[i - 1].Z).Within(0.5f));
+            }
+        }
+
+        private static void AssertHullGaps(IReadOnlyList<FormationPoint> destinations, IReadOnlyList<float> radii)
+        {
+            for (int a = 0; a < destinations.Count; a++)
+            for (int b = a + 1; b < destinations.Count; b++)
+            {
+                float dx = destinations[a].X - destinations[b].X;
+                float dz = destinations[a].Z - destinations[b].Z;
+                Assert.That((float)System.Math.Sqrt(dx * dx + dz * dz),
+                    Is.GreaterThanOrEqualTo(FormationModel.SlotGap(radii[a], radii[b]) - 0.01f),
+                    $"Slots {a} and {b} keep a hull gap.");
+            }
         }
 
         [Test]
@@ -188,7 +241,7 @@ namespace EmpireAtWar.Tests.Movement
         }
 
         [Test]
-        public void RowDestinations_OneTierMatchesTheCompactClump()
+        public void RowDestinations_OneTierMatchesTheCompactClumpWithAHullGap()
         {
             var positions = new[] { new FormationPoint(0f, 0f), new FormationPoint(10f, 0f), new FormationPoint(20f, 5f) };
             var radii = new[] { 5f, 6f, 5f };
@@ -197,7 +250,9 @@ namespace EmpireAtWar.Tests.Movement
             var destinations = new List<FormationPoint>();
             var rows = new List<FormationRow>();
 
-            FormationModel.CalculateCompactDestinations(positions, radii, target, compact);
+            var spaced = new float[radii.Length];
+            for (int i = 0; i < radii.Length; i++) spaced[i] = radii[i] * FormationModel.ROW_SLOT_CLEARANCE;
+            FormationModel.CalculateCompactDestinations(positions, spaced, target, compact);
             FormationModel.CalculateRowDestinations(positions, radii, new[] { 3, 3, 3 },
                 new[] { false, false, false }, target, destinations, rows);
 

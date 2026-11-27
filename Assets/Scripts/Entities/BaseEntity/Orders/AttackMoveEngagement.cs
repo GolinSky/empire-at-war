@@ -21,6 +21,11 @@ namespace EmpireAtWar.Entities.BaseEntity.Orders
         private readonly Dictionary<IEntity, int> _reporters = new Dictionary<IEntity, int>();
         // Enemy → how many members claim it.
         private readonly Dictionary<IEntity, int> _attackers = new Dictionary<IEntity, int>();
+        // Member → its slot, its flight height and how far short of its slot it stopped (slot minus stop position).
+        // Ships in other height layers pass over or under each other, so a stop pulls back only its own layer
+        // (a deep-flying dreadnought stops at its long range without holding the group back).
+        public const float SAME_LAYER_HEIGHT = 50f;
+        private readonly Dictionary<int, PullBack> _pullBacks = new Dictionary<int, PullBack>();
 
         private int _nextMemberId;
         private string _groupId;
@@ -42,6 +47,44 @@ namespace EmpireAtWar.Entities.BaseEntity.Orders
             ClearContacts(_contacts[member]);
             _contacts.Remove(member);
             DropClaim(member);
+            _pullBacks.Remove(member);
+        }
+
+        /// <summary>
+        /// The member stopped short of its slot (an enemy came into its reach). Members whose slots lie behind
+        /// this one along the shortfall shift their slots back by it, so rear rows do not fly into the stopped line.
+        /// </summary>
+        public void SetPullBack(int member, float slotX, float slotZ, float height, float pullX, float pullZ) =>
+            _pullBacks[member] = new PullBack(slotX, slotZ, height, pullX, pullZ);
+
+        public void ClearPullBack(int member) => _pullBacks.Remove(member);
+
+        /// <summary>
+        /// The largest shortfall of another member in this height layer whose slot is ahead of this slot along that
+        /// shortfall; false when no such member stopped short.
+        /// </summary>
+        public bool TryGetPullBack(int member, float slotX, float slotZ, float height, out float pullX,
+            out float pullZ)
+        {
+            pullX = 0f;
+            pullZ = 0f;
+            float best = 0f;
+            foreach (KeyValuePair<int, PullBack> entry in _pullBacks)
+            {
+                if (entry.Key == member) continue;
+                PullBack pull = entry.Value;
+                if (Math.Abs(pull.Height - height) > SAME_LAYER_HEIGHT) continue;
+                float length = (float)Math.Sqrt(pull.PullX * pull.PullX + pull.PullZ * pull.PullZ);
+                if (length <= best) continue;
+                // Ahead: the stopped member's slot is farther along its shortfall than this slot.
+                float ahead = ((pull.SlotX - slotX) * pull.PullX + (pull.SlotZ - slotZ) * pull.PullZ) / length;
+                if (ahead <= 0f) continue;
+                best = length;
+                pullX = pull.PullX;
+                pullZ = pull.PullZ;
+            }
+
+            return best > 0f;
         }
 
         // IList, not IEnumerable: the radar's ObservableList boxes its enumerator.
@@ -139,5 +182,23 @@ namespace EmpireAtWar.Entities.BaseEntity.Orders
 
         private static bool IsAlive(IEntity enemy) =>
             !enemy.HealthModel.IsDestroyed && enemy.HealthModel.HasUnits && !enemy.IsCloaked();
+
+        private readonly struct PullBack
+        {
+            public readonly float SlotX;
+            public readonly float SlotZ;
+            public readonly float Height;
+            public readonly float PullX;
+            public readonly float PullZ;
+
+            public PullBack(float slotX, float slotZ, float height, float pullX, float pullZ)
+            {
+                SlotX = slotX;
+                SlotZ = slotZ;
+                Height = height;
+                PullX = pullX;
+                PullZ = pullZ;
+            }
+        }
     }
 }

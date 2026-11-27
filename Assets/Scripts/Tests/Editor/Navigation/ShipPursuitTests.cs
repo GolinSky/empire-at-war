@@ -1074,7 +1074,7 @@ namespace EmpireAtWar.Tests.Movement
 
         [TestCase(false)]
         [TestCase(true)]
-        public void AttackMove_EnRouteShipKeepsItsCourseThroughEnemiesInReach(bool isHit)
+        public void AttackMove_EnRouteShipStopsOnceAnEnemyIsInItsOwnReach(bool isHit)
         {
             const BindingFlags PRIVATE_INSTANCE = BindingFlags.Instance | BindingFlags.NonPublic;
             _target.Transform.position = Vector3.right * 50f;
@@ -1084,9 +1084,32 @@ namespace EmpireAtWar.Tests.Movement
             FakeShipThreats threats = new FakeShipThreats { WasDamagedRecently = isHit };
             if (isHit) threats.SelfAttackers.Add(_target);
             AttackMoveEngagement engagement = new AttackMoveEngagement();
-            Vector3 point = Vector3.forward * 1000f;
             AttackMoveState state = new AttackMoveState(_movement, _weapon, radar, threats);
-            state.SetData(point, engagement);
+            state.SetData(Vector3.forward * 1000f, engagement);
+            state.Enter();
+            typeof(AttackMoveState).GetField("_nextSearchTime", PRIVATE_INSTANCE)
+                .SetValue(state, float.NegativeInfinity);
+
+            state.Tick(0.1f);
+
+            Assert.That(engagement.Contains(_target), Is.True, "En-route ships report contacts to the group.");
+            Assert.That(_movement.IsMoving, Is.False, "The point marks the enemy area: the ship fights from its reach.");
+            Assert.That(state.IsEngaging, Is.True);
+            Assert.That(_movement.HeldTarget, Is.SameAs(_target));
+            state.Exit();
+        }
+
+        [Test]
+        public void AttackMove_StrikecraftInReachDoNotStopTheApproach()
+        {
+            const BindingFlags PRIVATE_INSTANCE = BindingFlags.Instance | BindingFlags.NonPublic;
+            _target.Transform.position = Vector3.right * 50f;
+            _target.Health.ShipClass = ShipClass.Fighter;
+            Radar radar = new Radar();
+            radar.Enemies.Add(_target);
+            Vector3 point = Vector3.forward * 1000f;
+            AttackMoveState state = new AttackMoveState(_movement, _weapon, radar, new FakeShipThreats());
+            state.SetData(point, new AttackMoveEngagement());
             state.Enter();
             int moves = _movement.MoveCount;
             typeof(AttackMoveState).GetField("_nextSearchTime", PRIVATE_INSTANCE)
@@ -1094,17 +1117,106 @@ namespace EmpireAtWar.Tests.Movement
 
             state.Tick(0.1f);
 
-            Assert.That(engagement.Contains(_target), Is.True, "En-route ships report contacts to the group.");
-            Assert.That(state.IsEngaging, Is.False);
-            Assert.That(_movement.HeldTarget, Is.Null, "The ship never stops on the way: the group stays in formation.");
             Assert.That(_movement.IsMoving, Is.True);
             Assert.That(_movement.MoveCount, Is.EqualTo(moves));
             Assert.That(_movement.Destination, Is.EqualTo(point));
+            Assert.That(_movement.HeldTarget, Is.Null);
             state.Exit();
         }
 
         [Test]
-        public void AttackMove_ArrivedShipTurnsToAnEnemyBeyondReachWithoutLeavingItsSlot()
+        public void AttackMove_EnemyBeyondReachDoesNotStopTheApproach()
+        {
+            const BindingFlags PRIVATE_INSTANCE = BindingFlags.Instance | BindingFlags.NonPublic;
+            _target.Transform.position = Vector3.right * 500f;
+            Radar radar = new Radar();
+            radar.Enemies.Add(_target);
+            AttackMoveState state = new AttackMoveState(_movement, _weapon, radar, new FakeShipThreats());
+            state.SetData(Vector3.forward * 1000f, new AttackMoveEngagement());
+            state.Enter();
+            typeof(AttackMoveState).GetField("_nextSearchTime", PRIVATE_INSTANCE)
+                .SetValue(state, float.NegativeInfinity);
+
+            state.Tick(0.1f);
+
+            Assert.That(_movement.IsMoving, Is.True);
+            Assert.That(_movement.HeldTarget, Is.Null);
+            state.Exit();
+        }
+
+        [Test]
+        public void AttackMove_StoppedShortFliesOnWhenNoEnemyStaysInReach()
+        {
+            const BindingFlags PRIVATE_INSTANCE = BindingFlags.Instance | BindingFlags.NonPublic;
+            _target.Transform.position = Vector3.right * 50f;
+            Radar radar = new Radar();
+            radar.Enemies.Add(_target);
+            Vector3 point = Vector3.forward * 1000f;
+            AttackMoveState state = new AttackMoveState(_movement, _weapon, radar, new FakeShipThreats());
+            state.SetData(point, new AttackMoveEngagement());
+            state.Enter();
+            FieldInfo nextSearch = typeof(AttackMoveState).GetField("_nextSearchTime", PRIVATE_INSTANCE);
+            nextSearch.SetValue(state, float.NegativeInfinity);
+            state.Tick(0.1f);
+            Assert.That(_movement.IsMoving, Is.False);
+            int moves = _movement.MoveCount;
+
+            // The enemy drew off beyond reach; the group still sees it.
+            _target.Transform.position = Vector3.right * 500f;
+            nextSearch.SetValue(state, float.NegativeInfinity);
+            state.Tick(0.1f);
+
+            Assert.That(_movement.MoveCount, Is.EqualTo(moves + 1));
+            Assert.That(_movement.Destination, Is.EqualTo(point), "It closes in toward its slot, never past it.");
+            Assert.That(_movement.IsMoving, Is.True);
+            Assert.That(state.IsComplete, Is.False);
+            state.Exit();
+        }
+
+        [Test]
+        public void AttackMove_RearShipStopsBehindAShipAheadThatStoppedShort()
+        {
+            AttackMoveEngagement engagement = new AttackMoveEngagement();
+            int front = engagement.Join();
+            // The front ship's slot is at z = 1000; it stopped 300 short when an enemy came into its range.
+            engagement.SetPullBack(front, 0f, 1000f, 0f, 0f, 300f);
+            Radar radar = new Radar();
+            Vector3 slot = Vector3.forward * 900f;
+            AttackMoveState state = new AttackMoveState(_movement, _weapon, radar, new FakeShipThreats());
+            state.SetData(slot, engagement);
+
+            state.Enter();
+
+            Assert.That(_movement.Destination, Is.EqualTo(Vector3.forward * 600f),
+                "The rear slot moves back by the same shortfall, so the rows keep their spacing.");
+            state.Exit();
+        }
+
+        [Test]
+        public void AttackMove_ShipAlreadyInReachStaysWhereItIsEvenWithItsSlotBehindIt()
+        {
+            const BindingFlags PRIVATE_INSTANCE = BindingFlags.Instance | BindingFlags.NonPublic;
+            _target.Transform.position = Vector3.forward * 90f;
+            Radar radar = new Radar();
+            radar.Enemies.Add(_target);
+            int moves = _movement.MoveCount;
+            AttackMoveState state = new AttackMoveState(_movement, _weapon, radar, new FakeShipThreats());
+            // The new order's slot lies behind the ship, away from the enemy.
+            state.SetData(Vector3.back * 600f, new AttackMoveEngagement());
+
+            state.Enter();
+            typeof(AttackMoveState).GetField("_nextSearchTime", PRIVATE_INSTANCE)
+                .SetValue(state, float.NegativeInfinity);
+            state.Tick(0.1f);
+
+            Assert.That(_movement.MoveCount, Is.EqualTo(moves), "No turn-around to fly back to the rows.");
+            Assert.That(_movement.IsMoving, Is.False);
+            Assert.That(_movement.HeldTarget, Is.SameAs(_target));
+            state.Exit();
+        }
+
+        [Test]
+        public void AttackMove_ArrivedShipFacesAnEnemyBeyondReachBowOnWithoutLeavingItsSlot()
         {
             const BindingFlags PRIVATE_INSTANCE = BindingFlags.Instance | BindingFlags.NonPublic;
             _target.Transform.position = Vector3.right * 300f;
@@ -1121,7 +1233,9 @@ namespace EmpireAtWar.Tests.Movement
             state.Tick(0.1f);
 
             Assert.That(state.IsEngaging, Is.True);
-            Assert.That(_movement.LookTarget, Is.SameAs(_target));
+            Assert.That(_movement.LookTarget, Is.Null, "No gun-arc broadside toward an enemy it cannot hit.");
+            Assert.That(_movement.LookDirection.HasValue, Is.True);
+            Assert.That(Vector3.Angle(_movement.LookDirection.Value, Vector3.right), Is.LessThan(1f), "Bow-on.");
             Assert.That(_movement.MoveCount, Is.EqualTo(moves), "No chase off the slot.");
             Assert.That(state.IsComplete, Is.False);
             state.Exit();
@@ -1158,7 +1272,8 @@ namespace EmpireAtWar.Tests.Movement
         public void AttackMove_ShipStoppedFarShortOfItsSlotTriesAgainInsteadOfHolding()
         {
             const BindingFlags PRIVATE_INSTANCE = BindingFlags.Instance | BindingFlags.NonPublic;
-            _target.Transform.position = Vector3.right * 50f;
+            // Beyond reach: an enemy in reach would make the ship fight from here instead.
+            _target.Transform.position = Vector3.right * 500f;
             Radar radar = new Radar();
             radar.Enemies.Add(_target);
             Vector3 slot = Vector3.forward * 1000f;
@@ -1184,7 +1299,7 @@ namespace EmpireAtWar.Tests.Movement
             nextSearch.SetValue(state, float.NegativeInfinity);
             state.Tick(0.1f);
 
-            Assert.That(_movement.LookTarget, Is.SameAs(_target), "Between tries it turns its guns to the enemy.");
+            Assert.That(_movement.LookDirection.HasValue, Is.True, "Between tries it turns bow-on to the enemy.");
             Assert.That(_movement.HeldTarget, Is.Null, "A hold would stop the next try.");
             Assert.That(_movement.MoveCount, Is.EqualTo(moves + 1));
             Assert.That(state.IsComplete, Is.False, "The order is not done short of the slot.");
@@ -1782,7 +1897,8 @@ namespace EmpireAtWar.Tests.Movement
             { _isSettling = true; Destination = destination; IsMoving = true; MoveCount++; }
             public void FinishLeg() { CurrentPosition = Destination; IsMoving = false; }
             public void LookAtTarget(IEntity target) => LookTarget = target;
-            public void LookInDirection(Vector3 direction) { }
+            public Vector3? LookDirection { get; private set; }
+            public void LookInDirection(Vector3 direction) => LookDirection = direction;
             public float GetRange(Vector3 position) => Vector3.Distance(CurrentPosition, position);
             public void Stop() { CancelCombatHold(); IsMoving = false; }
             public void HoldPosition(IEntity target)

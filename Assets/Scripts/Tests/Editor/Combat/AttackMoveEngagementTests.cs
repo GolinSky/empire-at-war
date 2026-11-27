@@ -18,6 +18,57 @@ namespace EmpireAtWar.Tests.Editor
         private static readonly Func<IEntity, bool> ANY = enemy => true;
 
         [Test]
+        public void PullBack_AppliesOnlyToSlotsBehindTheStoppedMemberAndLeaveClearsIt()
+        {
+            var engagement = new AttackMoveEngagement();
+            int front = engagement.Join();
+            int rear = engagement.Join();
+            int side = engagement.Join();
+            engagement.SetPullBack(front, 0f, 1000f, 0f, 0f, 300f);
+
+            Assert.That(engagement.TryGetPullBack(rear, 0f, 800f, 0f, out float x, out float z), Is.True);
+            Assert.That(x, Is.EqualTo(0f));
+            Assert.That(z, Is.EqualTo(300f));
+            Assert.That(engagement.TryGetPullBack(side, 200f, 1000f, 0f, out _, out _), Is.False,
+                "A ship beside the stopped one keeps its slot and closes to its own range.");
+            Assert.That(engagement.TryGetPullBack(front, 0f, 1000f, 0f, out _, out _), Is.False, "Not its own.");
+
+            engagement.Leave(front);
+            Assert.That(engagement.TryGetPullBack(rear, 0f, 800f, 0f, out _, out _), Is.False);
+        }
+
+        [Test]
+        public void PullBack_TheLargestShortfallAheadWins()
+        {
+            var engagement = new AttackMoveEngagement();
+            int small = engagement.Join();
+            int large = engagement.Join();
+            int rear = engagement.Join();
+            engagement.SetPullBack(small, -100f, 1000f, 0f, 0f, 100f);
+            engagement.SetPullBack(large, 100f, 1000f, 0f, 0f, 250f);
+            engagement.ClearPullBack(small);
+            engagement.SetPullBack(small, -100f, 1000f, 0f, 0f, 100f);
+
+            Assert.That(engagement.TryGetPullBack(rear, 0f, 700f, 0f, out _, out float z), Is.True);
+            Assert.That(z, Is.EqualTo(250f));
+        }
+
+        [Test]
+        public void PullBack_AStopInAnotherHeightLayerHoldsNobodyBack()
+        {
+            var engagement = new AttackMoveEngagement();
+            int dreadnought = engagement.Join();
+            int frigate = engagement.Join();
+            // A deep-flying dreadnought stopped 900 short at its long range.
+            engagement.SetPullBack(dreadnought, 0f, 1000f, -391f, 0f, 900f);
+
+            Assert.That(engagement.TryGetPullBack(frigate, 0f, 800f, 30f, out _, out _), Is.False,
+                "Ships in other height layers pass over or under it.");
+            Assert.That(engagement.TryGetPullBack(frigate, 0f, 800f, -391f + AttackMoveEngagement.SAME_LAYER_HEIGHT,
+                out _, out _), Is.True);
+        }
+
+        [Test]
         public void SelectTarget_SpreadsMembersAcrossEnemyGroup()
         {
             AttackMoveEngagement engagement = new AttackMoveEngagement();

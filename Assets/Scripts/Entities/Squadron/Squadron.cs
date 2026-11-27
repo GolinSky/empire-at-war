@@ -668,13 +668,15 @@ namespace EmpireAtWar.Entities.Squadrons
                         DefendArea(_targetSelector.SelectGuardTarget(_orders.Target, guardedPosition, guardRadius));
                     break;
                 case UnitOrderType.AttackMove:
-                    if (!_hasReachedAttackMovePoint)
+                    if (!_hasReachedAttackMovePoint && _pilot.HasArrived)
                     {
-                        if (!_pilot.HasArrived) break;
                         _hasReachedAttackMovePoint = true;
                         // Search on arrival, before the empty-handed order clears below.
                         _targetSearchTimer = 0f;
                     }
+                    // Fighters search on the way too: escorting ships stop at their firing range, short of the
+                    // squadron's point, so an arrival-only search left squadrons idle beside the formation
+                    // (battle 2026-11-27: no target 73% of attack-move samples).
                     if (ShouldSearchTargets(elapsed))
                         DefendArea(_targetSelector.SelectNear(_radar, _flight.Centroid, Data.GuardRadius));
                     if (_engaged == null && _pilot.HasArrived) _orders.Clear();

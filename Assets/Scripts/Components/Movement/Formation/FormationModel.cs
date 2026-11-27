@@ -21,6 +21,30 @@ namespace EmpireAtWar.Components.Movement.Formation
         private const int HEXAGONAL_RING_SIDE_COUNT = 6;
         // A row wider than this many ships continues in a second line behind it.
         private const int MAX_SHIPS_PER_LINE = 6;
+        // Attack-move slots keep a hull gap: slots spaced hull to hull left holding ships touching (battle
+        // 2026-11-27: median neighbour gap 1.04 x combined radii). 1.5 leaves about one radius between hulls.
+        public const float ROW_SLOT_CLEARANCE = 1.5f;
+        // The largest hull is oversized when it is this many times the next largest (battle 2026-11-27: Viscount
+        // radius 895, next 125). It flies in the deepest height layer, so it takes the point itself on the front
+        // line and the other ships are laid out as if it were not there; spacing them around its footprint put
+        // every line ~1,400 behind the point.
+        public const float OVERSIZED_RADIUS_FACTOR = 3f;
+
+        private static FormationPoint CalculateCenter(IReadOnlyList<FormationPoint> positions, int skipped)
+        {
+            if (skipped < 0) return CalculateCenter(positions);
+            float x = 0f;
+            float z = 0f;
+            for (int i = 0; i < positions.Count; i++)
+            {
+                if (i == skipped) continue;
+                x += positions[i].X;
+                z += positions[i].Z;
+            }
+
+            int count = positions.Count - 1;
+            return new FormationPoint(x / count, z / count);
+        }
 
         public static FormationPoint CalculateCenter(IReadOnlyList<FormationPoint> positions)
         {
@@ -206,6 +230,7 @@ namespace EmpireAtWar.Components.Movement.Formation
                 throw new ArgumentException("Formation positions, radii, tiers and rows must have the same count.");
 
             rows.Clear();
+            float oversizedRadius = NextLargest(radii) * OVERSIZED_RADIUS_FACTOR;
             // Line tiers, largest first. A lone ship of the largest tier joins the next tier in the front row
             // instead of standing alone ahead of the group.
             int frontTier = int.MinValue;
@@ -213,7 +238,7 @@ namespace EmpireAtWar.Components.Movement.Formation
             int frontCount = 0;
             for (int i = 0; i < positions.Count; i++)
             {
-                if (isBackRow[i]) continue;
+                if (isBackRow[i] || radii[i] > oversizedRadius) continue;
                 int tier = hullTiers[i];
                 if (tier > frontTier)
                 {
@@ -226,8 +251,16 @@ namespace EmpireAtWar.Components.Movement.Formation
             }
             int frontMinimum = frontCount == 1 && secondTier != int.MinValue ? secondTier : frontTier;
             bool[] present = new bool[3];
+            int oversized = -1;
             for (int i = 0; i < positions.Count; i++)
             {
+                if (radii[i] > oversizedRadius)
+                {
+                    oversized = i;
+                    rows.Add(FormationRow.Front);
+                    continue;
+                }
+
                 FormationRow row = isBackRow[i] ? FormationRow.Back
                     : hullTiers[i] >= frontMinimum ? FormationRow.Front : FormationRow.Middle;
                 rows.Add(row);
@@ -237,13 +270,14 @@ namespace EmpireAtWar.Components.Movement.Formation
             int rowCount = (present[0] ? 1 : 0) + (present[1] ? 1 : 0) + (present[2] ? 1 : 0);
             if (rowCount <= 1)
             {
-                CalculateCompactDestinations(positions, radii, targetCenter, destinations);
+                CalculateSpacedClump(positions, radii, oversized, targetCenter, destinations);
                 return;
             }
 
             destinations.Clear();
+            // The oversized hull keeps the point (its default) and is left out of the heading and the lines.
             for (int i = 0; i < positions.Count; i++) destinations.Add(targetCenter);
-            FormationPoint center = CalculateCenter(positions);
+            FormationPoint center = CalculateCenter(positions, oversized);
             double heading = Math.Atan2(targetCenter.Z - center.Z, targetCenter.X - center.X);
             float forwardX = (float)Math.Cos(heading);
             float forwardZ = (float)Math.Sin(heading);
@@ -252,14 +286,14 @@ namespace EmpireAtWar.Components.Movement.Formation
             float rightZ = -forwardX;
 
             List<List<int>> lines = new List<List<int>>();
-            List<float> lineRadii = new List<float>();
             List<int> members = new List<int>();
             for (int row = 0; row < present.Length; row++)
             {
                 if (!present[row]) continue;
                 members.Clear();
                 for (int i = 0; i < positions.Count; i++)
-                    if ((int)rows[i] == row) members.Add(i);
+                    if ((int)rows[i] == row && radii[i] <= oversizedRadius) members.Add(i);
+                if (members.Count == 0) continue;
 
                 // Larger hulls take the row's first lines; within a tier, the ships farthest along the heading.
                 members.Sort((a, b) =>
@@ -271,30 +305,97 @@ namespace EmpireAtWar.Components.Movement.Formation
                 for (int start = 0; start < members.Count; start += MAX_SHIPS_PER_LINE)
                 {
                     List<int> line = members.GetRange(start, Math.Min(MAX_SHIPS_PER_LINE, members.Count - start));
-                    float lineRadius = 0f;
-                    foreach (int ship in line) lineRadius = Math.Max(lineRadius, radii[ship]);
                     line.Sort((a, b) => Project(positions[a], center, rightX, rightZ)
                         .CompareTo(Project(positions[b], center, rightX, rightZ)));
                     lines.Add(line);
-                    lineRadii.Add(lineRadius);
                 }
             }
 
-            // The front line stands on the point; each line behind it clears the one ahead hull to hull.
-            float depth = 0f;
-            for (int line = 0; line < lines.Count; line++)
+            // Neighbours in a line keep a hull gap sized by their own two hulls, not the line's largest.
+            float[] laterals = new float[positions.Count];
+            foreach (List<int> ships in lines)
             {
-                if (line > 0) depth -= lineRadii[line - 1] + lineRadii[line];
-                float spacing = lineRadii[line] * 2f;
-                List<int> ships = lines[line];
+                float offset = 0f;
                 for (int slot = 0; slot < ships.Count; slot++)
                 {
-                    float lateral = (slot - (ships.Count - 1) * 0.5f) * spacing;
-                    destinations[ships[slot]] = new FormationPoint(
-                        targetCenter.X + forwardX * depth + rightX * lateral,
-                        targetCenter.Z + forwardZ * depth + rightZ * lateral);
+                    if (slot > 0) offset += SlotGap(radii[ships[slot - 1]], radii[ships[slot]]);
+                    laterals[ships[slot]] = offset;
                 }
+                float middle = offset * 0.5f;
+                foreach (int ship in ships) laterals[ship] -= middle;
             }
+
+            // The front line stands on the point. Each line behind stands just far enough back that every hull in it
+            // clears, with a gap, every hull ahead of it (circle clearance, so ships off to the side need no room),
+            // and never ahead of the line in front.
+            float[] lineDepths = new float[lines.Count];
+            for (int line = 1; line < lines.Count; line++)
+            {
+                float depth = lineDepths[line - 1];
+                foreach (int ship in lines[line])
+                for (int earlier = 0; earlier < line; earlier++)
+                foreach (int other in lines[earlier])
+                {
+                    float clearance = SlotGap(radii[ship], radii[other]);
+                    float sideways = Math.Abs(laterals[ship] - laterals[other]);
+                    if (sideways >= clearance) continue;
+                    float back = (float)Math.Sqrt(clearance * clearance - sideways * sideways);
+                    depth = Math.Min(depth, lineDepths[earlier] - back);
+                }
+                lineDepths[line] = depth;
+            }
+
+            for (int line = 0; line < lines.Count; line++)
+            foreach (int ship in lines[line])
+                destinations[ship] = new FormationPoint(
+                    targetCenter.X + forwardX * lineDepths[line] + rightX * laterals[ship],
+                    targetCenter.Z + forwardZ * lineDepths[line] + rightZ * laterals[ship]);
+        }
+
+        /// <summary>
+        /// Centre distance two attack-move slots keep: both hulls plus a gap sized by the smaller one, so a huge hull
+        /// keeps its footprint without pushing neighbours back by a margin of its own size.
+        /// </summary>
+        public static float SlotGap(float radiusA, float radiusB) =>
+            radiusA + radiusB + Math.Min(radiusA, radiusB) * 2f * (ROW_SLOT_CLEARANCE - 1f);
+
+        // One row: the compact clump with a hull gap; an oversized hull takes the point and is left out of it.
+        private static void CalculateSpacedClump(IReadOnlyList<FormationPoint> positions, IReadOnlyList<float> radii,
+            int oversized, FormationPoint targetCenter, IList<FormationPoint> destinations)
+        {
+            List<FormationPoint> others = new List<FormationPoint>();
+            List<float> spaced = new List<float>();
+            for (int i = 0; i < positions.Count; i++)
+            {
+                if (i == oversized) continue;
+                others.Add(positions[i]);
+                spaced.Add(radii[i] * ROW_SLOT_CLEARANCE);
+            }
+
+            List<FormationPoint> clump = new List<FormationPoint>();
+            CalculateCompactDestinations(others, spaced, targetCenter, clump);
+            destinations.Clear();
+            int next = 0;
+            for (int i = 0; i < positions.Count; i++)
+                destinations.Add(i == oversized ? targetCenter : clump[next++]);
+        }
+
+        // The second largest value; infinity with fewer than two, so a lone ship is never oversized.
+        private static float NextLargest(IReadOnlyList<float> values)
+        {
+            float largest = float.NegativeInfinity;
+            float next = float.NegativeInfinity;
+            for (int i = 0; i < values.Count; i++)
+            {
+                if (values[i] > largest)
+                {
+                    next = largest;
+                    largest = values[i];
+                }
+                else if (values[i] > next) next = values[i];
+            }
+
+            return values.Count < 2 ? float.PositiveInfinity : next;
         }
 
         private static float Project(FormationPoint point, FormationPoint origin, float axisX, float axisZ) =>
