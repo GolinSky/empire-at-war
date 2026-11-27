@@ -5,20 +5,18 @@ using EmpireAtWar.Entities.BaseEntity.EntityFacades;
 using EmpireAtWar.Entities.Ship.Abilities;
 using EmpireAtWar.Lifecycle;
 using EmpireAtWar.Models.Players;
-using EmpireAtWar.Services.Battle;
 using EmpireAtWar.Services.Settings;
 using UnityEngine;
 
 namespace EmpireAtWar.Services.ShipAbilities
 {
     /// <summary>The local player's auto-power: picks its own eligible ships and runs the shared
-    /// <see cref="AutoPowerDecider"/> on them; the ship the player alone has selected is left to manual control.</summary>
+    /// <see cref="AutoPowerDecider"/> on them. A manual ability press holds that ship for <see cref="AutoPowerTuning.ManualActionDelay"/>.</summary>
     public sealed class PlayerAutoPowerService : IPostTickable, ILateDisposable
     {
         private readonly IEntityLocator _entities;
         private readonly ILocalPlayer _player;
         private readonly ISettingsService _settings;
-        private readonly ISelectionService _selection;
         private readonly SkirmishStateModel _battle;
         private readonly ShipAbilityService _abilities;
         private readonly AutoPowerTuning _tuning;
@@ -29,13 +27,12 @@ namespace EmpireAtWar.Services.ShipAbilities
         private float _nextDecision;
 
         public PlayerAutoPowerService(IEntityLocator entities, ILocalPlayer player, ISettingsService settings,
-            ISelectionService selection, SkirmishStateModel battle, ShipAbilityService abilities,
+            SkirmishStateModel battle, ShipAbilityService abilities,
             AutoPowerCombatSnapshot combat, ShipAbilityCatalog catalog, ShipAbilityAutoUse autoUse)
         {
             _entities = entities;
             _player = player;
             _settings = settings;
-            _selection = selection;
             _battle = battle;
             _abilities = abilities;
             _tuning = catalog.AutoPower;
@@ -87,8 +84,7 @@ namespace EmpireAtWar.Services.ShipAbilities
         private void Check(IEntity entity)
         {
             if (!CanMonitor(entity, out IShipAbilityFacade caster, out IShipAutoPowerFacade automation)) return;
-            if ((automation != null && !automation.Enabled) ||
-                (_selection.PlayerSelectionContext.Count == 1 && _selection.PlayerSelectionContext.Contains(entity)))
+            if (automation != null && !automation.Enabled)
             {
                 _decider.Suspend(entity.Id);
                 return;

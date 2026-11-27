@@ -526,27 +526,14 @@ namespace EmpireAtWar.Tests.Editor
         }
 
         [Test]
-        public void PlayerAutoPower_SingleSelectionPausesAndMultiSelectionContinues()
+        public void PlayerAutoPower_SingleSelectionDoesNotPause()
         {
             using AutoPowerRuntime runtime = CreateAutoPowerRuntime();
             runtime.Select(runtime.Caster);
             runtime.TickAt(1f);
             runtime.TickAt(1.5f);
-            Assert.That(runtime.Weapon.State, Is.EqualTo(ShipAbilityState.Ready));
-
-            HumanPlayerScope human = _battle.GetComponentsInChildren<HumanPlayerScope>(true).Single();
-            ShipEntity second = human.Container.Resolve<ShipFactory>().Create(runtime.Caster.Owner,
-                ShipType.Acclamator, runtime.Caster.GetFacade<IEntityTransformFacade>().Transform.position);
-            IEntity secondEntity = runtime.Entities.GetEntity(second.EntityId);
-            runtime.Select(runtime.Caster, secondEntity);
-            runtime.TickAt(2f);
-            runtime.TickAt(2.5f);
-            Assert.That(runtime.Weapon.State, Is.EqualTo(ShipAbilityState.Active));
-
-            runtime.Select(runtime.Caster);
-            runtime.TickAt(3f);
             Assert.That(runtime.Weapon.State, Is.EqualTo(ShipAbilityState.Active),
-                "Selecting the caster must not cancel its running effect.");
+                "A ship selected alone keeps automatic power abilities.");
         }
 
         [TestCase(true)]
@@ -574,7 +561,7 @@ namespace EmpireAtWar.Tests.Editor
         }
 
         [Test]
-        public void PlayerAutoPower_ManualCancellationAndSelectionRetainManualDelay()
+        public void PlayerAutoPower_ManualCancellationRetainsManualDelay()
         {
             using AutoPowerRuntime runtime = CreateAutoPowerRuntime();
             runtime.TickAt(1f);
@@ -585,9 +572,7 @@ namespace EmpireAtWar.Tests.Editor
             Assert.That(runtime.Shields.State, Is.EqualTo(ShipAbilityState.Active));
             Assert.That(runtime.Shields.TimeLeft, Is.EqualTo(runtime.Shields.Definition.Duration));
 
-            runtime.Select(runtime.Caster);
             runtime.TickAt(1.5f);
-            runtime.Select();
             runtime.TickAt(2f);
             runtime.TickAt(2.5f);
             Assert.That(runtime.Weapon.State, Is.EqualTo(ShipAbilityState.Ready));
@@ -678,7 +663,7 @@ namespace EmpireAtWar.Tests.Editor
             var battle = _battle.Container.Resolve<SkirmishStateModel>();
             battle.SetState(BattleState.Running);
             var autoUse = _battle.Container.Resolve<ShipAbilityAutoUse>();
-            var service = new PlayerAutoPowerService(entities, local, settings, selection, battle, abilities, combat, catalog, autoUse);
+            var service = new PlayerAutoPowerService(entities, local, settings, battle, abilities, combat, catalog, autoUse);
             return new AutoPowerRuntime(service, abilities, entities, caster, entities.GetEntity(hostile.EntityId), settings,
                 (SelectionContext)selection.PlayerSelectionContext);
         }

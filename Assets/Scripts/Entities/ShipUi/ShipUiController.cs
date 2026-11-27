@@ -309,7 +309,7 @@ namespace EmpireAtWar.Entities.ShipUi
             _shipUi.SetState(orders, !hasGroup ? _abilitySlots : Array.Empty<ShipAbilitySlot>());
             IReadOnlyList<IEntity> selected = _model.HasShips
                 ? _playerSelectionContext.Entities : Array.Empty<IEntity>();
-            _shipUi.SetAutoPower(GetAutoPowerState(selected, individuallySelected: !hasGroup),
+            _shipUi.SetAutoPower(GetAutoPowerState(selected),
                 () => ToggleAutoPower(selected));
             _shipUi.SetHealth(_model.HasShips && !hasGroup
                 ? _playerSelectionContext.Entity.HealthModel : null);
@@ -363,11 +363,11 @@ namespace EmpireAtWar.Entities.ShipUi
                 }
                 List<IEntity> casters = group.Value;
                 addGroup(group.Key, getDisplayName(group.Key), entries, id => _shipAbilityService.Press(casters, id, allowCancel: false),
-                    GetAutoPowerState(casters, individuallySelected: false), () => ToggleAutoPower(casters));
+                    GetAutoPowerState(casters), () => ToggleAutoPower(casters));
             }
         }
 
-        private ShipAutoPowerUiState GetAutoPowerState(IReadOnlyList<IEntity> entities, bool individuallySelected)
+        private ShipAutoPowerUiState GetAutoPowerState(IReadOnlyList<IEntity> entities)
         {
             int eligible = 0;
             int enabled = 0;
@@ -377,8 +377,7 @@ namespace EmpireAtWar.Entities.ShipUi
                 eligible++;
                 if (autoPower.Enabled) enabled++;
             }
-            return new ShipAutoPowerUiState(eligible, enabled, _settings.Saved.Gameplay.AutoPowerAbilities,
-                individuallySelected);
+            return new ShipAutoPowerUiState(eligible, enabled, _settings.Saved.Gameplay.AutoPowerAbilities);
         }
 
         private bool IsAutoPowerEligible(IEntity entity, out IShipAutoPowerFacade autoPower)
@@ -391,7 +390,7 @@ namespace EmpireAtWar.Entities.ShipUi
         private void ToggleAutoPower(IReadOnlyList<IEntity> entities)
         {
             if (!_settings.Saved.Gameplay.AutoPowerAbilities) return;
-            bool enable = !GetAutoPowerState(entities, individuallySelected: false).Enabled;
+            bool enable = !GetAutoPowerState(entities).Enabled;
             foreach (IEntity entity in entities)
                 if (IsAutoPowerEligible(entity, out IShipAutoPowerFacade autoPower))
                     autoPower.SetEnabled(enable);

@@ -48,7 +48,7 @@ namespace EmpireAtWar.Tests.Editor
                 TMP_Text label = (TMP_Text)serialized.FindProperty("label").objectReferenceValue;
                 // The compact toggle always reads "A"; the highlight carries on/mixed state (b3bf8a4f3).
                 GameObject highlight = (GameObject)serialized.FindProperty("activeHighlight").objectReferenceValue;
-                ShipAutoPowerUiState mixed = new ShipAutoPowerUiState(3, 2, true, false);
+                ShipAutoPowerUiState mixed = new ShipAutoPowerUiState(3, 2, true);
                 control.Configure(mixed, () => { });
                 Assert.That(control.gameObject.activeSelf, Is.True);
                 Assert.That(button.interactable, Is.True);
@@ -56,7 +56,7 @@ namespace EmpireAtWar.Tests.Editor
                 Assert.That(highlight.activeSelf, Is.True, "Mixed selections show the highlight.");
                 Assert.That(mixed.Description, Does.Contain("enable"));
 
-                ShipAutoPowerUiState disabled = new ShipAutoPowerUiState(3, 2, false, false);
+                ShipAutoPowerUiState disabled = new ShipAutoPowerUiState(3, 2, false);
                 control.Configure(disabled, () => { });
                 Assert.That(button.interactable, Is.False);
                 Assert.That(disabled.Mixed, Is.True);
@@ -64,12 +64,12 @@ namespace EmpireAtWar.Tests.Editor
                 Assert.That(highlight.activeSelf, Is.False, "Disabled in Settings shows no highlight.");
                 Assert.That(disabled.Description, Does.Contain("Disabled in Settings"));
 
-                ShipAutoPowerUiState selected = new ShipAutoPowerUiState(1, 1, true, true);
-                control.Configure(selected, () => { });
-                Assert.That(selected.Description, Does.Contain("paused while individually selected"));
+                ShipAutoPowerUiState enabled = new ShipAutoPowerUiState(1, 1, true);
+                control.Configure(enabled, () => { });
+                Assert.That(enabled.Description, Does.Contain("enabled"));
                 Assert.That(label.text, Is.EqualTo("A"));
                 Assert.That(highlight.activeSelf, Is.True, "An enabled ship shows the highlight.");
-                control.Configure(new ShipAutoPowerUiState(0, 0, true, false), () => { });
+                control.Configure(new ShipAutoPowerUiState(0, 0, true), () => { });
                 Assert.That(control.gameObject.activeSelf, Is.False);
             }
             finally
