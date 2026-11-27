@@ -213,6 +213,27 @@ namespace EmpireAtWar.Tests.Editor
             Assert.That(Price(interceptorType), Is.GreaterThan(Price(fighterType)));
         }
 
+        // Elite fighters (Delta-7, TIE Defender) are deliberately tougher than bombers and stay out of this rule.
+        [TestCase(SquadronType.YWingBomber, SquadronType.XWing)]
+        [TestCase(SquadronType.YWing, SquadronType.ARC170)]
+        [TestCase(SquadronType.YWing, SquadronType.V19Torrent)]
+        [TestCase(SquadronType.NTB630, SquadronType.ARC170)]
+        [TestCase(SquadronType.NTB630, SquadronType.V19Torrent)]
+        [TestCase(SquadronType.TIEBomber, SquadronType.TIEAvenger)]
+        [TestCase(SquadronType.TIEBomber, SquadronType.TIEBrute)]
+        [TestCase(SquadronType.TIEPunisher, SquadronType.TIEAvenger)]
+        [TestCase(SquadronType.HyenaBomber, SquadronType.Vulture)]
+        [TestCase(SquadronType.DroidBomber, SquadronType.Vulture)]
+        public void SquadronRoles_BombersAreTougherThanFighters(SquadronType bomberType, SquadronType fighterType)
+        {
+            SquadronData bomber = LoadSquadron(bomberType);
+            SquadronData fighter = LoadSquadron(fighterType);
+            Assert.That(bomber.ShipClass, Is.EqualTo(ShipClass.Bomber));
+            Assert.That(fighter.ShipClass, Is.EqualTo(ShipClass.Fighter));
+            Assert.That(bomber.MemberHull + bomber.MemberShields,
+                Is.GreaterThan(fighter.MemberHull + fighter.MemberShields));
+        }
+
         [Test]
         public void HeroStrikecraft_ResistsNonHeroGuns_AndHeroLasersHitHeroes()
         {

@@ -58,7 +58,7 @@ MonoBehaviour:
     reserve: 6
     maxActive: 1
   - squadronType: 1
-    reserve: 3
+    reserve: 6
     maxActive: 1
   <HangarMaxActive>k__BackingField: -1
   <HangarInitialDelay>k__BackingField: 4
