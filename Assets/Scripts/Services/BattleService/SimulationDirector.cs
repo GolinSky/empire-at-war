@@ -84,7 +84,12 @@ namespace EmpireAtWar.Services.Battle
                 if (entity.Owner.Index == 0) { _livingA.Add(entity); hullA += entity.HealthModel.Hull; }
                 else if (entity.Owner.Index == 1) { _livingB.Add(entity); hullB += entity.HealthModel.Hull; }
             }
-            _targeting.Command(_livingA, _livingB); _targeting.Command(_livingB, _livingA);
+            if (_model.Setup.UseAttackMove)
+            {
+                _targeting.CommandAttackMove(_livingA, _livingB);
+                _targeting.CommandAttackMove(_livingB, _livingA);
+            }
+            else { _targeting.Command(_livingA, _livingB); _targeting.Command(_livingB, _livingA); }
             _model.Advance(Time.deltaTime, _livingA.Count, _livingB.Count, hullA, hullB);
         }
 

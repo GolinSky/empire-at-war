@@ -1,12 +1,16 @@
 using System.Collections.Generic;
 using EmpireAtWar.Entities.BaseEntity;
 using EmpireAtWar.Entities.BaseEntity.EntityFacades;
+using EmpireAtWar.Entities.BaseEntity.Orders;
 using EmpireAtWar.Services.UnitOrders;
 using UnityEngine;
 
 namespace EmpireAtWar.Services.Battle
 {
-    /// <summary>Orders each simulation unit to attack its nearest living enemy, retargeting when that enemy dies.</summary>
+    /// <summary>
+    /// Orders each simulation unit to attack its nearest living enemy, retargeting when that enemy dies; or, with
+    /// attack-move on, sends each side's idle units as one attack-move group to the point between both fleets.
+    /// </summary>
     public sealed class SimulationTargeting
     {
         private readonly IUnitOrderService _orders;
@@ -15,7 +19,25 @@ namespace EmpireAtWar.Services.Battle
 
         public SimulationTargeting(IUnitOrderService orders) => _orders = orders;
 
+        private readonly List<IEntity> _idle = new();
+
         public void Clear() { _targets.Clear(); _livingIds.Clear(); }
+
+        /// <summary>
+        /// Units without an order attack-move together to the midpoint of both fleets' centres, so the two groups meet
+        /// in the middle: one group order, so the formation rows and slot hold are tested in isolation. A unit gets a
+        /// new order once its attack-move ends.
+        /// </summary>
+        public void CommandAttackMove(IReadOnlyList<IEntity> own, IReadOnlyList<IEntity> opponents)
+        {
+            if (own.Count == 0 || opponents.Count == 0) return;
+            _idle.Clear();
+            for (int i = 0; i < own.Count; i++)
+                if (own[i].GetFacade<IUnitOrderObserverFacade>().CurrentOrder == UnitOrderType.None)
+                    _idle.Add(own[i]);
+            if (_idle.Count == 0) return;
+            _orders.IssueAttackMove(_idle, (Center(own) + Center(opponents)) * 0.5f);
+        }
 
         public void Command(IReadOnlyList<IEntity> own, IReadOnlyList<IEntity> opponents)
         {
@@ -40,6 +62,13 @@ namespace EmpireAtWar.Services.Battle
                 _orders.IssueAttack(group.Value, group.Key);
                 foreach (IEntity entity in group.Value) _targets[entity.Id] = group.Key.Id;
             }
+        }
+
+        private static Vector3 Center(IReadOnlyList<IEntity> units)
+        {
+            Vector3 sum = Vector3.zero;
+            for (int i = 0; i < units.Count; i++) sum += units[i].GetFacade<IEntityTransformFacade>().Transform.position;
+            return sum / units.Count;
         }
 
         private static IEntity Nearest(IEntity entity, IReadOnlyList<IEntity> opponents)

@@ -13,5 +13,6 @@ namespace EmpireAtWar.Entities.MainMenu.Simulation
         void SetFastSpeed(bool value);
         void SetUseHangars(bool value);
         void SetUseAbilities(bool value);
+        void SetUseAttackMove(bool value);
     }
 }

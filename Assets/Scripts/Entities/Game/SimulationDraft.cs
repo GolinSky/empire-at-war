@@ -14,9 +14,11 @@ namespace EmpireAtWar.Entities.Game
         public bool FastSpeed { get; set; }
         public bool UseHangars { get; set; } = true;
         public bool UseAbilities { get; set; } = true;
+        public bool UseAttackMove { get; set; } = true;
         public bool CanStart => FleetA.Count > 0 && FleetB.Count > 0;
         public SimulationSetup Build() =>
-            new SimulationSetup(FactionA, FactionB, FleetA, FleetB, Distance, TimeLimit, FastSpeed, UseHangars, UseAbilities);
+            new SimulationSetup(FactionA, FactionB, FleetA, FleetB, Distance, TimeLimit, FastSpeed, UseHangars, UseAbilities,
+                UseAttackMove);
         public void Load(SimulationSetup setup)
         {
             FactionA = setup.FactionA; FactionB = setup.FactionB;
@@ -24,6 +26,7 @@ namespace EmpireAtWar.Entities.Game
             Distance = setup.Distance; TimeLimit = setup.TimeLimit; FastSpeed = setup.FastSpeed;
             UseHangars = setup.UseHangars;
             UseAbilities = setup.UseAbilities;
+            UseAttackMove = setup.UseAttackMove;
         }
     }
 }

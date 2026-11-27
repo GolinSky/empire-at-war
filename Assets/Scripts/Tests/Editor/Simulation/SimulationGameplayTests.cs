@@ -112,6 +112,64 @@ namespace EmpireAtWar.Tests.Editor
         }
 
         [Test]
+        public void AttackMove_IdleUnitsMoveAsOneGroupToThePointBetweenBothFleets()
+        {
+            var idleA = new Unit(1, 0);
+            var idleB = new Unit(2, 5);
+            var busy = new Unit(3, 10) { CurrentOrder = UnitOrderType.AttackMove };
+            var near = new Unit(4, 100, 1);
+            var far = new Unit(5, 300, 1);
+            try
+            {
+                var orders = new AttackRecorder();
+                var targeting = new SimulationTargeting(orders);
+
+                targeting.CommandAttackMove(new IEntity[] { idleA, idleB, busy }, new IEntity[] { near, far });
+
+                Assert.That(orders.AttackMoves.Count, Is.EqualTo(1), "One group order for the side.");
+                Assert.That(orders.AttackMoves[0].Receivers, Is.EquivalentTo(new long[] { 1, 2 }),
+                    "A unit still on its attack-move keeps it.");
+                // Own centre x = 5 (all living units, busy included), enemy centre x = 200 → midpoint 102.5.
+                Assert.That(orders.AttackMoves[0].Point, Is.EqualTo(new Vector3(102.5f, 0f, 0f)));
+                Assert.That(orders.Calls, Is.Zero, "No direct attacks in attack-move mode.");
+            }
+            finally
+            {
+                foreach (Unit unit in new[] { idleA, idleB, busy, near, far }) UnityEngine.Object.DestroyImmediate(unit.Root);
+            }
+        }
+
+        [Test]
+        public void AttackMove_SideWithEveryUnitOrderedGetsNoNewOrder()
+        {
+            var own = new Unit(1, 0) { CurrentOrder = UnitOrderType.AttackMove };
+            var enemy = new Unit(2, 100, 1);
+            try
+            {
+                var orders = new AttackRecorder();
+                new SimulationTargeting(orders).CommandAttackMove(new IEntity[] { own }, new IEntity[] { enemy });
+                Assert.That(orders.AttackMoves, Is.Empty);
+            }
+            finally
+            {
+                UnityEngine.Object.DestroyImmediate(own.Root);
+                UnityEngine.Object.DestroyImmediate(enemy.Root);
+            }
+        }
+
+        [Test]
+        public void Setup_AttackMoveIsOnByDefaultAndSurvivesTheDraft()
+        {
+            var draft = new SimulationDraft();
+            Assert.That(draft.UseAttackMove, Is.True);
+            draft.FleetA.Add(Entry()); draft.FleetB.Add(Entry());
+            draft.UseAttackMove = false;
+            var copy = new SimulationDraft();
+            copy.Load(draft.Build());
+            Assert.That(copy.UseAttackMove, Is.False);
+        }
+
+        [Test]
         public void Targeting_UnchangedTargets_DoNotAllocate()
         {
             var own = new Unit(1, 0);
@@ -176,8 +234,10 @@ namespace EmpireAtWar.Tests.Editor
             }
         }
 
-        private sealed class Unit : IEntity, IEntityTransformFacade
+        private sealed class Unit : IEntity, IEntityTransformFacade, IUnitOrderObserverFacade
         {
+            public UnitOrderType CurrentOrder { get; set; }
+            public IEntity AttackTarget => null;
             public GameObject Root { get; } = new GameObject(nameof(Unit));
             public long Id { get; }
             public PlayerId Owner { get; }
@@ -215,6 +275,7 @@ namespace EmpireAtWar.Tests.Editor
         private sealed class AttackRecorder : IUnitOrderService
         {
             public readonly Dictionary<long, long> Targets = new();
+            public readonly List<(long[] Receivers, Vector3 Point)> AttackMoves = new();
             public int Calls { get; private set; }
             public event Action<UnitOrder> OrderIssued { add { } remove { } }
             public void IssueAttack(IReadOnlyList<IEntity> receivers, IEntity target, MovePace pace = MovePace.Formation)
@@ -226,7 +287,12 @@ namespace EmpireAtWar.Tests.Editor
             public void IssueMove(IReadOnlyList<IEntity> receivers, IReadOnlyList<Vector3> destinations) => throw new NotSupportedException();
             public void IssueAttack(IReadOnlyList<IEntity> receivers, IEntity target, IReadOnlyList<Vector3> offsets) => throw new NotSupportedException();
             public void IssueHardPointAttack(IReadOnlyList<IEntity> receivers, IEntity target, int hardPointId, MovePace pace = MovePace.Formation) => throw new NotSupportedException();
-            public void IssueAttackMove(IReadOnlyList<IEntity> receivers, Vector3 point, MovePace pace = MovePace.Formation) => throw new NotSupportedException();
+            public void IssueAttackMove(IReadOnlyList<IEntity> receivers, Vector3 point, MovePace pace = MovePace.Formation)
+            {
+                var ids = new long[receivers.Count];
+                for (int i = 0; i < ids.Length; i++) ids[i] = receivers[i].Id;
+                AttackMoves.Add((ids, point));
+            }
             public void IssueAttackMove(IReadOnlyList<IEntity> receivers, IReadOnlyList<Vector3> destinations) => throw new NotSupportedException();
             public void IssueStop(IReadOnlyList<IEntity> receivers) => throw new NotSupportedException();
             public void IssueGuard(IReadOnlyList<IEntity> receivers, IEntity friendly) => throw new NotSupportedException();

@@ -17,10 +17,13 @@ namespace EmpireAtWar.Entities.Game
         /// <summary>When false, hangars never launch squadrons.</summary>
         public bool UseHangars { get; }
         public bool UseAbilities { get; }
+        /// <summary>When true, each side's idle units attack-move as one group toward the enemy fleet.</summary>
+        public bool UseAttackMove { get; }
 
         public SimulationSetup(FactionType factionA, FactionType factionB,
             IEnumerable<SimulationFleetEntry> fleetA, IEnumerable<SimulationFleetEntry> fleetB,
-            float distance, float timeLimit, bool fastSpeed, bool useHangars = true, bool useAbilities = true)
+            float distance, float timeLimit, bool fastSpeed, bool useHangars = true, bool useAbilities = true,
+            bool useAttackMove = true)
         {
             FactionA = factionA; FactionB = factionB;
             FleetA = Array.AsReadOnly(fleetA.ToArray()); FleetB = Array.AsReadOnly(fleetB.ToArray());
@@ -29,6 +32,7 @@ namespace EmpireAtWar.Entities.Game
             if (!float.IsFinite(timeLimit) || timeLimit <= 0) throw new ArgumentOutOfRangeException(nameof(timeLimit));
             Distance = distance; TimeLimit = timeLimit; FastSpeed = fastSpeed; UseHangars = useHangars;
             UseAbilities = useAbilities;
+            UseAttackMove = useAttackMove;
         }
     }
 }

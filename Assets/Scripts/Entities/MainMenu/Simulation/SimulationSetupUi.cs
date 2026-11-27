@@ -23,6 +23,7 @@ namespace EmpireAtWar.Entities.MainMenu.Simulation
         [SerializeField] private Toggle fastSpeed;
         [SerializeField] private Toggle useHangars;
         [SerializeField] private Toggle useAbilities;
+        [SerializeField] private Toggle useAttackMove;
         [SerializeField] private Button startButton;
         [SerializeField] private Button closeButton;
         private ISimulationSetupPresenter _presenter;
@@ -45,6 +46,7 @@ namespace EmpireAtWar.Entities.MainMenu.Simulation
             fastSpeed.onValueChanged.AddListener(_presenter.SetFastSpeed);
             useHangars.onValueChanged.AddListener(_presenter.SetUseHangars);
             useAbilities.onValueChanged.AddListener(_presenter.SetUseAbilities);
+            useAttackMove.onValueChanged.AddListener(_presenter.SetUseAttackMove);
             startButton.onClick.AddListener(_presenter.StartBattle); closeButton.onClick.AddListener(_presenter.Close);
             QuantityA(quantities[0].value); QuantityB(quantities[1].value); _initialized = true;
         }
@@ -78,12 +80,14 @@ namespace EmpireAtWar.Entities.MainMenu.Simulation
                 _fleetRows[side].Add(row);
             }
         }
-        public void RenderValues(float separation, float seconds, bool fast, bool hangars, bool canStart, bool abilities = true)
+        public void RenderValues(float separation, float seconds, bool fast, bool hangars, bool canStart, bool abilities = true,
+            bool attackMove = true)
         {
             distance.SetValueWithoutNotify(separation); timeLimit.SetValueWithoutNotify(seconds);
             distanceLabel.text = $"Separation: {separation:0} m"; timeLabel.text = $"Time limit: {seconds:0} s";
             fastSpeed.SetIsOnWithoutNotify(fast); useHangars.SetIsOnWithoutNotify(hangars);
             useAbilities.SetIsOnWithoutNotify(abilities);
+            useAttackMove.SetIsOnWithoutNotify(attackMove);
             startButton.interactable = canStart;
         }
         private void FactionA(int index) => _presenter.SelectFaction(0, index);
@@ -112,6 +116,7 @@ namespace EmpireAtWar.Entities.MainMenu.Simulation
             fastSpeed.onValueChanged.RemoveListener(_presenter.SetFastSpeed);
             useHangars.onValueChanged.RemoveListener(_presenter.SetUseHangars);
             useAbilities.onValueChanged.RemoveListener(_presenter.SetUseAbilities);
+            useAttackMove.onValueChanged.RemoveListener(_presenter.SetUseAttackMove);
             startButton.onClick.RemoveListener(_presenter.StartBattle); closeButton.onClick.RemoveListener(_presenter.Close);
             _initialized = false;
         }

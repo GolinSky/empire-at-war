@@ -94,6 +94,7 @@ namespace EmpireAtWar.Entities.MainMenu.Simulation
         public void SetFastSpeed(bool value) => _draft.FastSpeed = value;
         public void SetUseHangars(bool value) => _draft.UseHangars = value;
         public void SetUseAbilities(bool value) => _draft.UseAbilities = value;
+        public void SetUseAttackMove(bool value) => _draft.UseAttackMove = value;
         private ShipClass ClassOf(UnitTypeId unit)
         {
             if (_classes.TryGetValue(unit, out ShipClass type)) return type;
@@ -116,7 +117,8 @@ namespace EmpireAtWar.Entities.MainMenu.Simulation
             }).ToArray());
         }
         private void RenderValues() =>
-            _ui.RenderValues(_draft.Distance, _draft.TimeLimit, _draft.FastSpeed, _draft.UseHangars, _draft.CanStart, _draft.UseAbilities);
+            _ui.RenderValues(_draft.Distance, _draft.TimeLimit, _draft.FastSpeed, _draft.UseHangars, _draft.CanStart, _draft.UseAbilities,
+                _draft.UseAttackMove);
         public void LateDispose() { if (_ui != null) _ui.Dispose(); Unfocus(); }
     }
 }
